@@ -1,0 +1,67 @@
+/* 设置波浪容器的位置 */
+.md-hero-waves {
+    position: relative;
+    width: 100%;
+    height: 15vh; /* 波浪区域高度 */
+    margin-bottom: -7px; /* 修复底部微小缝隙 */
+    min-height: 100px;
+    max-height: 150px;
+    background: var(--md-primary-fg-color); /* 使用主题的主色调作为背景 */
+    overflow: hidden;
+}
+
+/* SVG 基础样式 */
+.waves {
+    position: absolute;
+    width: 100%;
+    height: 100%; /* 填满容器 */
+    bottom: 0;
+    left: 0;
+}
+
+/* 动画定义：简单的水平位移 */
+@keyframes move-forever {
+    0% {
+        transform: translate3d(-90px, 0, 0);
+    }
+    100% {
+        transform: translate3d(85px, 0, 0);
+    }
+}
+
+/* 对每一层波浪应用动画 */
+.parallax > use {
+    animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+}
+
+/* 第一层：最快 */
+.parallax > use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+}
+
+/* 第二层 */
+.parallax > use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+}
+
+/* 第三层 */
+.parallax > use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+}
+
+/* 第四层：最慢，通常是实色 */
+.parallax > use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+}
+
+/* 移动端适配：减小波浪高度 */
+@media (max-width: 768px) {
+    .md-hero-waves {
+        height: 40px;
+        min-height: 40px;
+    }
+}
