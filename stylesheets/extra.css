@@ -90,37 +90,68 @@
    ========================================================================== */
 
 /* 正文区域 */
+/* ==========================================================================
+   3. 磨砂玻璃容器 (修复版：侧边栏自动高度适配)
+   ========================================================================== */
+
+/* 1. 正文区域 (中间的文章) - 保持不变 */
 .md-content {
-    background-color: rgba(255, 255, 255, 0.85); /* 白色半透明 */
+    background-color: rgba(255, 255, 255, 0.85);
     border-radius: 16px; 
     padding: 20px;
     margin-top: 20px; margin-bottom: 20px;
-    
-    /* 磨砂滤镜 */
-    backdrop-filter: blur(5px); 
-    -webkit-backdrop-filter: blur(5px);
-    
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-/* 侧边栏区域 */
-.md-sidebar {
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 16px; padding: 10px; margin-top: 20px;
-    backdrop-filter: blur(5px);
+/* 2. 侧边栏 (左侧导航 + 右侧 TOC) - 强制卡片化 */
+.md-sidebar__scrollwrap {
+    /* 背景与磨砂 */
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    
+    /* 布局间距 */
+    padding: 12px;
+    margin: 20px 0;
+    
+    /* --- 核心修复 (解决太长/不适配问题) --- */
+    
+    /* 1. 强制覆盖 JS 设置的高度，让高度随内容自动收缩 */
+    height: auto !important; 
+    min-height: 0 !important;
+    
+    /* 2. 限制最大高度为屏幕高度的 75%，防止顶天立地 */
+    max-height: 75vh !important; 
+    
+    /* 3. 内容超出时显示滚动条 */
+    overflow-y: auto !important;
 }
 
-/* 暗色模式下的磨砂玻璃 (变为深色) */
+/* 3. 清除外层轨道的干扰 */
+.md-sidebar {
+    background: none !important;
+    box-shadow: none !important;
+    /* 让侧边栏容器不要强制撑满 */
+    height: auto !important; 
+}
+
+/* 4. 隐藏侧边栏滚动条 (美观) */
+.md-sidebar__scrollwrap::-webkit-scrollbar {
+    width: 0 !important; display: none;
+}
+.md-sidebar__scrollwrap {
+    scrollbar-width: none; -ms-overflow-style: none;
+}
+
+/* 5. 暗色模式适配 */
 [data-md-color-scheme="slate"] .md-content,
-[data-md-color-scheme="slate"] .md-sidebar {
-    background-color: rgba(30, 32, 48, 0.85); /* 深色半透明 */
+[data-md-color-scheme="slate"] .md-sidebar__scrollwrap {
+    background-color: rgba(30, 32, 48, 0.85) !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
-
-/* 清除侧边栏内部默认背景 */
-.md-sidebar__scrollwrap { background: transparent !important; }
-
-
 /* ==========================================================================
    4. 首页名片卡 (保留左侧介绍，去除了右侧文章列表样式)
    ========================================================================== */
