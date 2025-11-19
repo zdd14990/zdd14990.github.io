@@ -1,67 +1,84 @@
-/* 设置波浪容器的位置 */
-.md-hero-waves {
-    position: relative;
-    width: 100%;
-    height: 15vh; /* 波浪区域高度 */
-    margin-bottom: -7px; /* 修复底部微小缝隙 */
-    min-height: 100px;
-    max-height: 150px;
-    background: var(--md-primary-fg-color); /* 使用主题的主色调作为背景 */
-    overflow: hidden;
+/* ==========================================================================
+   APlayer 音乐播放器 (整合美化版)
+   包含：右下角悬浮、磨砂玻璃特效、拖动适配、暗色模式适配
+   ========================================================================== */
+
+/* 1. 容器核心布局：位置、圆角、阴影 */
+.aplayer-fixed {
+    display: block !important;       /* 强制显示 */
+    max-width: 400px;                /* 限制最大宽度 */
+    border-radius: 12px !important;  /* 大圆角 */
+    overflow: hidden;                /* 防止内容溢出圆角 */
+    z-index: 99999 !important;       /* 保证在最顶层 */
+    
+    /* 阴影：产生悬浮感 */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25) !important;
+    
+    /* 初始位置：右下角 (留出 20px 间距) */
+    bottom: 20px !important;
+    left: auto !important;           /* 覆盖默认的左对齐 */
+    right: 20px !important;          /* 强制右对齐 */
 }
 
-/* SVG 基础样式 */
-.waves {
-    position: absolute;
-    width: 100%;
-    height: 100%; /* 填满容器 */
-    bottom: 0;
-    left: 0;
+/* 2. 磨砂玻璃效果 (Glassmorphism) - 亮色模式 */
+.aplayer.aplayer-fixed .aplayer-body {
+    background: rgba(255, 255, 255, 0.75) !important; /* 75%透明度白色 */
+    backdrop-filter: blur(10px);     /* 背景模糊 */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);      /* 玻璃边缘高光 */
+    font-family: "Roboto", sans-serif;                /* 修复字体 */
 }
 
-/* 动画定义：简单的水平位移 */
-@keyframes move-forever {
-    0% {
-        transform: translate3d(-90px, 0, 0);
-    }
-    100% {
-        transform: translate3d(85px, 0, 0);
-    }
+/* 3. 磨砂玻璃效果 - 暗色模式适配 */
+[data-md-color-scheme="slate"] .aplayer.aplayer-fixed .aplayer-body {
+    background: rgba(46, 48, 62, 0.8) !important;     /* 深色半透明 */
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+[data-md-color-scheme="slate"] .aplayer .aplayer-info .aplayer-music .aplayer-title {
+    color: #fff !important;
 }
 
-/* 对每一层波浪应用动画 */
-.parallax > use {
-    animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+/* 4. 歌词区域 (如果你不想看歌词，保留 display: none) */
+.aplayer.aplayer-fixed .aplayer-lrc {
+    display: none !important; /* 隐藏歌词 */
+    /* 如果想显示歌词，把上面这行删掉，用下面的样式: */
+    /* background: transparent !important; */
+    /* text-shadow: none !important; */
 }
 
-/* 第一层：最快 */
-.parallax > use:nth-child(1) {
-    animation-delay: -2s;
-    animation-duration: 7s;
+/* 5. 播放列表美化 (点击菜单展开的部分) */
+.aplayer-list {
+    border-radius: 12px 12px 0 0 !important;
+    margin-bottom: 0 !important;
 }
 
-/* 第二层 */
-.parallax > use:nth-child(2) {
-    animation-delay: -3s;
-    animation-duration: 10s;
+/* 亮色模式列表背景 */
+.aplayer-list {
+    background: rgba(255, 255, 255, 0.95) !important;
 }
 
-/* 第三层 */
-.parallax > use:nth-child(3) {
-    animation-delay: -4s;
-    animation-duration: 13s;
+/* 暗色模式列表背景 */
+[data-md-color-scheme="slate"] .aplayer-list {
+    background: #2e303e !important;
+}
+[data-md-color-scheme="slate"] .aplayer-list ol li:hover {
+    background: rgba(255,255,255,0.1) !important;
+}
+[data-md-color-scheme="slate"] .aplayer-list ol li.aplayer-list-light {
+    background: rgba(230, 126, 150, 0.2) !important; /* 选中歌曲的高亮色(粉色) */
+}
+[data-md-color-scheme="slate"] .aplayer-list ol li .aplayer-list-title,
+[data-md-color-scheme="slate"] .aplayer-list ol li .aplayer-list-author {
+    color: #ddd !important;
 }
 
-/* 第四层：最慢，通常是实色 */
-.parallax > use:nth-child(4) {
-    animation-delay: -5s;
-    animation-duration: 20s;
+/* 6. 拖动光标提示 */
+/* 设置封面和信息区域为“可移动”手势 */
+.aplayer-pic, .aplayer-info {
+    cursor: move !important; 
 }
-
-/* 移动端适配：减小波浪高度 */
-@media (max-width: 768px) {
-    .md-hero-waves {
-        height: 40px;
-        min-height: 40px;
-    }
+/* 按钮区域保持“点击”手势，避免误导 */
+.aplayer-icon, .aplayer-controller, .aplayer-list {
+    cursor: pointer !important;
 }
