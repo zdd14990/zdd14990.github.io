@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://your-site-url.com/%E5%8D%9A%E6%96%87/%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/">
+        <link rel="canonical" href="https://zdd14990.github.io/%E5%8D%9A%E6%96%87/%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/">
       
       
         <link rel="prev" href="../../%E5%87%B8%E4%BC%98%E5%8C%96/%E5%87%B8%E4%BC%98%E5%8C%96/">
@@ -1298,21 +1298,30 @@
       
     
 
+  <style>
+    /* 亮色模式背景 */
+    body[data-md-color-scheme="default"]::before {
+        background-image: url('../../../assets/site_bg_light.jpg');
+    }
+    /* 暗色模式背景 */
+    body[data-md-color-scheme="slate"]::after {
+        background-image: url('../../../assets/site_bg_dark.jpg');
+    }
+  </style>
+
   <script>
   (function() {
-      // =================================================
-      // 1. 全局音频单例 (保证切换页面音乐不断)
-      // =================================================
+      // 定义音频路径 (利用 base_url 修复路径错误)
+      var audioPath = "../../../assets/bgm.mp3";
+
+      // 1. 全局音频单例
       if (!window.myGlobalAudio) {
-          window.myGlobalAudio = new Audio("../../../assets/bgm.mp3");
+          window.myGlobalAudio = new Audio(audioPath);
           window.myGlobalAudio.loop = true; 
           window.myGlobalAudio.volume = 0.5; 
       }
 
-      // =================================================
       // 2. 渲染 UI (固定在右下角)
-      // =================================================
-      // 移除旧实例，防止重复
       var oldBtn = document.getElementById('my-simple-player');
       if (oldBtn) oldBtn.remove();
 
@@ -1330,31 +1339,35 @@
       `;
       document.body.appendChild(playerContainer);
 
-      // =================================================
-      // 3. 纯粹的点击交互
-      // =================================================
+      // 3. 交互逻辑
       var btnIcon = document.getElementById('player-btn');
       var audio = window.myGlobalAudio;
 
-      // 同步状态：如果切换页面时音乐正在放，按钮保持旋转
+      // 检查音频文件是否加载成功
+      audio.onerror = function() {
+          console.error("音频加载失败，请检查路径:", audioPath);
+          alert("BGM 加载失败，请检查 assets/bgm.mp3 是否存在或文件名大小写是否正确。");
+      };
+
       if (!audio.paused) {
           btnIcon.classList.add('playing');
       }
 
-      // 点击事件：只有播放和暂停，没有其他逻辑
       btnIcon.onclick = function() {
           if (audio.paused) {
               var p = audio.play();
               if (p !== undefined) {
                   p.then(_ => btnIcon.classList.add('playing'))
-                   .catch(e => console.error("播放受阻:", e));
+                   .catch(e => {
+                       console.error("播放受阻:", e);
+                       // 很多时候是因为浏览器策略，必须用户交互
+                   });
               }
           } else {
               audio.pause();
               btnIcon.classList.remove('playing');
           }
       };
-
   })();
   </script>
 
