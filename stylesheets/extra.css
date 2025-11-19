@@ -156,12 +156,15 @@ svg {
 /* ==========================================================================
    背景图淡入淡出效果 (通过伪元素实现)
    ========================================================================== */
-
+html, body {
+    background: none !important; /* 这一行至关重要，防止白色底色遮挡背景图 */
+    background-color: transparent !important;
+}
 /* 核心：将 body 设为相对定位，为伪元素做准备 */
 body {
-    position: relative; /* 允许伪元素相对于 body 定位 */
-    background: none !important; /* 清除 body 可能存在的其他背景色 */
-    overflow-x: hidden; /* 防止背景图切换时出现横向滚动条 */
+    position: relative; 
+    min-height: 100vh; 
+    overflow-x: hidden; 
 }
 
 /* 伪元素基类：全屏覆盖，固定不动 */
