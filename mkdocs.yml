@@ -1,3 +1,144 @@
 site_name: zdd14990
+site_url: https://your-site-url.com  # 建议填写，有助于SEO和生成正确的sitemap
+copyright: copyright © zdd All Rights Reserved
+
+# 仓库信息 (可选，配置后右上角会出现 GitHub 图标)
+repo_name: zdd14990
+repo_url: https://github.com/zdd14990/zdd14990.github.io
+
 theme:
   name: material
+  custom_dir: overrides
+  language: zh
+  favicon: assets/favicon.png
+  # 图标配置
+  icon:
+    logo: material/cat
+    repo: fontawesome/brands/github # 如果配置了 repo_url
+  
+  # 字体美化：正文 Roboto，代码 JetBrains Mono
+  font:
+    text: Roboto
+    code: JetBrains Mono
+
+  # 颜色主题配置
+  palette:
+    # 亮色模式
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: indigo # 强调色，建议加一个
+      toggle:
+        icon: material/brightness-7
+        name: 切换到暗色模式
+
+    # 暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到亮色模式
+
+  # 功能特性增强
+  features:
+    # - navigation.instant
+    - navigation.tabs        # 顶部选项卡
+    - navigation.tabs.sticky # 选项卡吸顶（下滑时保留）
+    - navigation.top         # 返回顶部按钮
+    - navigation.tracking    # URL 随滚动自动变化
+    - navigation.indexes     # 允许点击目录本身
+    - navigation.expand      # 侧边栏默认展开
+    - search.highlight       # 搜索高亮
+    - search.suggest         # 搜索建议
+    - content.code.copy      # 代码块复制按钮
+    # - content.action.edit    # 允许编辑页面按钮 (配合 repo_url)
+
+
+# CSS 样式
+extra_css:
+  - stylesheets/extra.css
+
+# JavaScript (数学公式配置)
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - javascripts/funny_title.js
+
+# Markdown 扩展 (功能核心)
+markdown_extensions:
+  - admonition          # 必须有：用于解析 !!!
+  - attr_list           # 必须有：用于解析 { .md-button }
+  - md_in_html          # 必须有：允许在 html 标签内解析 markdown
+  - pymdownx.details    # 必须有：支持 ??? 折叠块
+  - pymdownx.emoji
+  - pymdownx.superfences
+  # 脚注
+  - footnotes
+  # 数学公式支持
+  - pymdownx.arithmatex:
+      generic: true
+  # 更好的表格
+  - tables
+  # 任务列表
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  # 代码块高亮
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  # 极其重要的提示块 (用于写定理、证明)
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  # Emoji 支持
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+
+# 导航结构 (修正了路径分隔符)
+nav:
+  - 首页: index.md
+  
+  # 修改这里：
+  - 博文:
+      # 1. 这里的 index.md 就是刚才创建的总分类页
+      # 由于开启了 navigation.indexes，点击"博文"会直接展示这个页面的内容
+      - 概览: 博文/index.md
+      
+      # 2. 下面是各个子板块 (保持原有结构，链接指向之前创建的 catalog_*.md)
+      - 分析:
+          - 概览: 博文/catalog_analysis.md
+          - 分析2-H笔记: 博文/分析2-H笔记.md
+          - 实分析: 博文/实分析.md
+      
+      - 代数:
+          - 概览: 博文/catalog_algebra.md
+          - 代数2-H笔记: 博文/代数2-H笔记.md
+          - 交换代数: 博文/交换代数.md
+          - 表示论: 博文/表示论.md
+      
+      - 应用数学:
+          - 概览: 博文/catalog_applied.md
+          - PDE 数值解: 博文/PDE 数值解/PDE 数值解.md
+          - 凸优化: 博文/凸优化/凸优化.md
+          - 渐进分析: 博文/渐进分析/渐进分析.md
+      
+      - 经济学:
+          - 概览: 博文/catalog_econ.md
+          - 中级微观经济学: 博文/中级微观经济学/中级微观经济学.md
+
+  - 友链:
+      - 友链: 友链/友链.md
+# mkdocs.yml
+
+# ... 其他配置 ...
+
+hooks:
+  - hooks.py  # 启用刚才创建的脚本
+# mkdocs.yml
+
+
