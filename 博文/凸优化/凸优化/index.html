@@ -39,11 +39,8 @@
 
     
     
-  
       
     
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
     
       
         
@@ -55,8 +52,6 @@
     
     
       <link rel="stylesheet" href="../../../stylesheets/extra.css">
-    
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -74,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -127,7 +122,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
@@ -1055,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%E4%B8%AD%E7%BA%A7%E5%BE%AE%E8%A7%82%E7%BB%8F%E6%B5%8E%E5%AD%A6/%E4%B8%AD%E7%BA%A7%E5%BE%AE%E8%A7%82%E7%BB%8F%E6%B5%8E%E5%AD%A6/" class="md-nav__link">
+      <a href="../../../博文/中级微观经济学/中级微观经济学.md" class="md-nav__link">
         
   
   
@@ -1258,7 +1253,6 @@
         
       </main>
       
-  
         <footer class="md-footer">
   
   <div class="md-footer-meta md-typeset">
@@ -1281,77 +1275,6 @@
   </div>
 </footer>
       
-
-  <meting-js 
-      server="netease" 
-      type="playlist" 
-      id="7464748623" 
-      fixed="true" 
-      mini="true"
-      order="list"
-      loop="all"
-      theme="#e67e96">
-  </meting-js>
-
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // 使用定时器等待 APlayer 加载完成
-    var checkPlayer = setInterval(function() {
-        var apContainer = document.querySelector('.aplayer-fixed');
-        
-        if (apContainer) {
-            clearInterval(checkPlayer); // 找到了，清除定时器
-            makeDraggable(apContainer); // 绑定拖动
-        }
-    }, 1000); // 每秒检查一次
-
-    function makeDraggable(elmnt) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        
-        // 尝试在 APlayer 的封面或主体上绑定鼠标按下事件
-        // 注意：APlayer 内部结构复杂，我们监听整个容器，但要防止误触按钮
-        elmnt.onmousedown = dragMouseDown;
-
-        function dragMouseDown(e) {
-            // 如果点击的是按钮（播放、暂停、列表），则不拖动
-            if (e.target.tagName === 'BUTTON' || e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-list')) {
-                return;
-            }
-            
-            e = e || window.event;
-            e.preventDefault();
-            // 获取鼠标初始位置
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // 计算位移
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            
-            // 设置新位置 (注意要覆盖默认的 bottom/left 样式)
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            elmnt.style.bottom = "auto"; // 清除吸底属性
-            elmnt.style.right = "auto";  // 清除靠右属性
-        }
-
-        function closeDragElement() {
-            // 停止移动
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
-  });
-  </script>
-
     </div>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
@@ -1364,18 +1287,76 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
+  
       <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
         <script src="../../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
-        <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-      
-        <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-      
         <script src="../../../javascripts/funny_title.js"></script>
       
     
+
+  <script>
+  (function() {
+      // =================================================
+      // 1. 全局音频单例 (保证切换页面音乐不断)
+      // =================================================
+      if (!window.myGlobalAudio) {
+          window.myGlobalAudio = new Audio("../../../assets/bgm.mp3");
+          window.myGlobalAudio.loop = true; 
+          window.myGlobalAudio.volume = 0.5; 
+      }
+
+      // =================================================
+      // 2. 渲染 UI (固定在右下角)
+      // =================================================
+      // 移除旧实例，防止重复
+      var oldBtn = document.getElementById('my-simple-player');
+      if (oldBtn) oldBtn.remove();
+
+      var playerContainer = document.createElement('div');
+      playerContainer.id = 'my-simple-player';
+      playerContainer.className = 'simple-player-floating';
+      playerContainer.innerHTML = `
+          <div class="player-icon" id="player-btn" title="点击播放/暂停">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+          </div>
+      `;
+      document.body.appendChild(playerContainer);
+
+      // =================================================
+      // 3. 纯粹的点击交互
+      // =================================================
+      var btnIcon = document.getElementById('player-btn');
+      var audio = window.myGlobalAudio;
+
+      // 同步状态：如果切换页面时音乐正在放，按钮保持旋转
+      if (!audio.paused) {
+          btnIcon.classList.add('playing');
+      }
+
+      // 点击事件：只有播放和暂停，没有其他逻辑
+      btnIcon.onclick = function() {
+          if (audio.paused) {
+              var p = audio.play();
+              if (p !== undefined) {
+                  p.then(_ => btnIcon.classList.add('playing'))
+                   .catch(e => console.error("播放受阻:", e));
+              }
+          } else {
+              audio.pause();
+              btnIcon.classList.remove('playing');
+          }
+      };
+
+  })();
+  </script>
+
   </body>
 </html>

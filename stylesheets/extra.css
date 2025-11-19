@@ -1,84 +1,200 @@
 /* ==========================================================================
-   APlayer 音乐播放器 (整合美化版)
-   包含：右下角悬浮、磨砂玻璃特效、拖动适配、暗色模式适配
+   极简本地播放器 (Simple Local Player)
+   ========================================================================== */
+/* ==========================================================================
+   极简本地播放器 (固定版)
    ========================================================================== */
 
-/* 1. 容器核心布局：位置、圆角、阴影 */
-.aplayer-fixed {
-    display: block !important;       /* 强制显示 */
-    max-width: 400px;                /* 限制最大宽度 */
-    border-radius: 12px !important;  /* 大圆角 */
-    overflow: hidden;                /* 防止内容溢出圆角 */
-    z-index: 99999 !important;       /* 保证在最顶层 */
+/* 1. 容器位置 (固定在右下角) */
+.simple-player-floating {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999; 
+}
+
+/* 2. 按钮外观 */
+.player-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     
-    /* 阴影：产生悬浮感 */
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25) !important;
+    /* 居中图标 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
-    /* 初始位置：右下角 (留出 20px 间距) */
-    bottom: 20px !important;
-    left: auto !important;           /* 覆盖默认的左对齐 */
-    right: 20px !important;          /* 强制右对齐 */
+    /* 磨砂玻璃 */
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    
+    /* 关键：鼠标放上去是手指形状，不再是十字箭头 */
+    cursor: pointer; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 2. 磨砂玻璃效果 (Glassmorphism) - 亮色模式 */
-.aplayer.aplayer-fixed .aplayer-body {
-    background: rgba(255, 255, 255, 0.75) !important; /* 75%透明度白色 */
-    backdrop-filter: blur(10px);     /* 背景模糊 */
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);      /* 玻璃边缘高光 */
-    font-family: "Roboto", sans-serif;                /* 修复字体 */
+.player-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
-/* 3. 磨砂玻璃效果 - 暗色模式适配 */
-[data-md-color-scheme="slate"] .aplayer.aplayer-fixed .aplayer-body {
-    background: rgba(46, 48, 62, 0.8) !important;     /* 深色半透明 */
-    color: #fff !important;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-[data-md-color-scheme="slate"] .aplayer .aplayer-info .aplayer-music .aplayer-title {
-    color: #fff !important;
+.player-icon svg {
+    stroke: #555;
+    transition: stroke 0.3s;
 }
 
-/* 4. 歌词区域 (如果你不想看歌词，保留 display: none) */
-.aplayer.aplayer-fixed .aplayer-lrc {
-    display: none !important; /* 隐藏歌词 */
-    /* 如果想显示歌词，把上面这行删掉，用下面的样式: */
-    /* background: transparent !important; */
-    /* text-shadow: none !important; */
+/* 3. 暗色模式适配 */
+[data-md-color-scheme="slate"] .player-icon {
+    background: rgba(46, 48, 62, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+[data-md-color-scheme="slate"] .player-icon svg {
+    stroke: #ddd;
 }
 
-/* 5. 播放列表美化 (点击菜单展开的部分) */
-.aplayer-list {
-    border-radius: 12px 12px 0 0 !important;
-    margin-bottom: 0 !important;
+/* 4. 旋转动画 */
+.player-icon.playing {
+    animation: rotate-player 3s linear infinite;
+    border-color: #e67e96; 
+}
+.player-icon.playing svg {
+    stroke: #e67e96;
 }
 
-/* 亮色模式列表背景 */
-.aplayer-list {
-    background: rgba(255, 255, 255, 0.95) !important;
+@keyframes rotate-player {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* 暗色模式列表背景 */
-[data-md-color-scheme="slate"] .aplayer-list {
-    background: #2e303e !important;
+/* 5. 移动端适配 (稍微抬高，避免挡住底部操作条) */
+@media (max-width: 768px) {
+    .simple-player-floating {
+        bottom: 80px;
+        right: 15px;
+    }
 }
-[data-md-color-scheme="slate"] .aplayer-list ol li:hover {
-    background: rgba(255,255,255,0.1) !important;
-}
-[data-md-color-scheme="slate"] .aplayer-list ol li.aplayer-list-light {
-    background: rgba(230, 126, 150, 0.2) !important; /* 选中歌曲的高亮色(粉色) */
-}
-[data-md-color-scheme="slate"] .aplayer-list ol li .aplayer-list-title,
-[data-md-color-scheme="slate"] .aplayer-list ol li .aplayer-list-author {
-    color: #ddd !important;
+/* ==========================================================================
+   2. 全局背景图 (核心修复)
+   ========================================================================== */
+
+/* 重要：路径 ../assets/ 指的是从 stylesheets 文件夹向上一级找到 assets 文件夹
+   请确保文件名完全匹配
+*/
+
+
+/* ==========================================================================
+   3. 磨砂玻璃容器 (让文字清晰)
+   ========================================================================== */
+
+/* 正文区域 */
+.md-content {
+    background-color: rgba(255, 255, 255, 0.85); /* 白色半透明 */
+    border-radius: 16px; 
+    padding: 20px;
+    margin-top: 20px; margin-bottom: 20px;
+    
+    /* 磨砂滤镜 */
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px);
+    
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-/* 6. 拖动光标提示 */
-/* 设置封面和信息区域为“可移动”手势 */
-.aplayer-pic, .aplayer-info {
-    cursor: move !important; 
+/* 侧边栏区域 */
+.md-sidebar {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 16px; padding: 10px; margin-top: 20px;
+    backdrop-filter: blur(5px);
 }
-/* 按钮区域保持“点击”手势，避免误导 */
-.aplayer-icon, .aplayer-controller, .aplayer-list {
-    cursor: pointer !important;
+
+/* 暗色模式下的磨砂玻璃 (变为深色) */
+[data-md-color-scheme="slate"] .md-content,
+[data-md-color-scheme="slate"] .md-sidebar {
+    background-color: rgba(30, 32, 48, 0.85); /* 深色半透明 */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* 清除侧边栏内部默认背景 */
+.md-sidebar__scrollwrap { background: transparent !important; }
+
+
+/* ==========================================================================
+   4. 首页名片卡 (保留左侧介绍，去除了右侧文章列表样式)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   5. 主题切换平滑过渡 (修复版 - 仅针对核心容器)
+   ========================================================================== */
+
+/* 只对 body、内容卡片、侧边栏、标题栏应用过渡 
+   避免对所有 DOM 元素使用通配符 *
+*/
+
+.md-content, 
+.md-sidebar, 
+.md-header, 
+.md-footer,
+.md-nav {
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 伪元素背景图过渡 (之前定义的) */
+body::before, 
+body::after {
+    transition: opacity 0.6s ease-in-out;
+}
+
+/* SVG 图标填充色过渡 */
+svg {
+    transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* ==========================================================================
+   背景图淡入淡出效果 (通过伪元素实现)
+   ========================================================================== */
+
+/* 核心：将 body 设为相对定位，为伪元素做准备 */
+body {
+    position: relative; /* 允许伪元素相对于 body 定位 */
+    background: none !important; /* 清除 body 可能存在的其他背景色 */
+    overflow-x: hidden; /* 防止背景图切换时出现横向滚动条 */
+}
+
+/* 伪元素基类：全屏覆盖，固定不动 */
+body::before,
+body::after {
+    content: '';
+    position: fixed; /* 固定在视口 */
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1; /* 确保背景在所有内容之下 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.6s ease-in-out; /* 淡入淡出过渡时间 */
+    pointer-events: none; /* 确保不影响鼠标事件 */
+}
+
+/* body::before 用于亮色模式背景 */
+body::before {
+    background-image: url('../assets/site_bg_light.jpg'); /* 亮色背景图路径 */
+    opacity: 1; /* 默认亮色模式显示 */
+}
+
+/* body::after 用于暗色模式背景 */
+body::after {
+    background-image: url('../assets/site_bg_dark.jpg'); /* 暗色背景图路径 */
+    opacity: 0; /* 默认暗色模式隐藏 */
+}
+
+/* 当切换到暗色模式时 */
+body[data-md-color-scheme="slate"]::before {
+    opacity: 0; /* 亮色背景淡出 */
+}
+
+body[data-md-color-scheme="slate"]::after {
+    opacity: 1; /* 暗色背景淡入 */
 }
