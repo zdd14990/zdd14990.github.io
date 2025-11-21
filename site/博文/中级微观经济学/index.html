@@ -1674,6 +1674,8 @@
   
       <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
+        <script src="https://unpkg.com/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+      
         <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1683,11 +1685,9 @@
     
 
   <style>
-    /* 亮色模式背景 */
     body[data-md-color-scheme="default"]::before {
         background-image: url('../../assets/site_bg_light.jpg');
     }
-    /* 暗色模式背景 */
     body[data-md-color-scheme="slate"]::after {
         background-image: url('../../assets/site_bg_dark.jpg');
     }
@@ -1695,17 +1695,14 @@
 
   <script>
   (function() {
-      // 定义音频路径 (利用 base_url 修复路径错误)
       var audioPath = "../../assets/bgm.mp3";
 
-      // 1. 全局音频单例
       if (!window.myGlobalAudio) {
           window.myGlobalAudio = new Audio(audioPath);
           window.myGlobalAudio.loop = true; 
           window.myGlobalAudio.volume = 0.5; 
       }
 
-      // 2. 渲染 UI (固定在右下角)
       var oldBtn = document.getElementById('my-simple-player');
       if (oldBtn) oldBtn.remove();
 
@@ -1723,14 +1720,11 @@
       `;
       document.body.appendChild(playerContainer);
 
-      // 3. 交互逻辑
       var btnIcon = document.getElementById('player-btn');
       var audio = window.myGlobalAudio;
 
-      // 检查音频文件是否加载成功
       audio.onerror = function() {
-          console.error("音频加载失败，请检查路径:", audioPath);
-          alert("BGM 加载失败，请检查 assets/bgm.mp3 是否存在或文件名大小写是否正确。");
+          console.error("BGM加载失败:", audioPath);
       };
 
       if (!audio.paused) {
@@ -1741,11 +1735,7 @@
           if (audio.paused) {
               var p = audio.play();
               if (p !== undefined) {
-                  p.then(_ => btnIcon.classList.add('playing'))
-                   .catch(e => {
-                       console.error("播放受阻:", e);
-                       // 很多时候是因为浏览器策略，必须用户交互
-                   });
+                  p.then(_ => btnIcon.classList.add('playing')).catch(e => console.error(e));
               }
           } else {
               audio.pause();
@@ -1753,6 +1743,81 @@
           }
       };
   })();
+  </script>
+
+  <script>
+    document$.subscribe(function() {
+        var h1 = document.querySelector(".md-content__inner h1");
+        var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
+        
+        if (h1 && !document.getElementById("page-pv-container") && !isHomePage) {
+            var pvContainer = document.createElement("div");
+            pvContainer.id = "page-pv-container";
+            pvContainer.style.cssText = "color: var(--md-default-fg-color--light); font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;";
+            pvContainer.innerHTML = `
+                <span id="busuanzi_container_page_pv" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; fill: currentColor; margin-right: 4px;">
+                        <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
+                    </svg>
+                    阅读量：<span id="busuanzi_value_page_pv" style="font-weight: bold;">--</span>
+                </span>
+            `;
+            h1.parentNode.insertBefore(pvContainer, h1.nextSibling);
+        }
+
+        var oldScript = document.getElementById("busuanzi-script-tag");
+        if (oldScript) { oldScript.remove(); }
+        
+        var sitePv = document.getElementById("busuanzi_container_site_pv");
+        if (sitePv) sitePv.style.display = "none";
+
+        var script = document.createElement("script");
+        script.id = "busuanzi-script-tag";
+        script.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+        script.async = true;
+        document.body.appendChild(script);
+    });
+  </script>
+
+<script>
+    document$.subscribe(function() {
+        var card = document.querySelector(".profile-card");
+        
+        // 如果当前页面没有名片卡，直接退出
+        if (!card) return;
+
+        // 定义初始化函数
+        function initTilt() {
+            // 检查库是否已加载
+            if (window.VanillaTilt) {
+                // 清理旧实例（防止重复绑定）
+                if (card.vanillaTilt) {
+                    card.vanillaTilt.destroy();
+                }
+                // 正式初始化
+                VanillaTilt.init(card, {
+                    max: 15,            // 最大倾斜角度
+                    speed: 400,         // 动画速度
+                    glare: true,        // 开启反光
+                    "max-glare": 0.2,   // 反光强度
+                    scale: 1.05,        // 悬停放大
+                    gyroscope: false,   // 禁用手机陀螺仪(防抖)
+                    perspective: 1000
+                });
+                return true; // 成功
+            }
+            return false; // 失败
+        }
+
+        // 尝试运行。如果失败（库没加载完），开启定时器等待
+        if (!initTilt()) {
+            var checkTilt = setInterval(function() {
+                if (initTilt()) {
+                    clearInterval(checkTilt); // 加载成功，清除定时器
+                }
+            }, 100); // 每 100ms 检查一次
+        }
+    });
   </script>
 
   </body>
