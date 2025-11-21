@@ -1,10 +1,17 @@
 ---
-title: 代数结构系列
+title: 代数
 hide:
   - navigation
+  - toc
+git_revision_date_localized:
+  enable: false
 ---
-
-# :material-sigma: 代数结构
+<style>
+  .md-source-file { 
+      display: none !important; 
+  }
+</style>
+# :material-sigma: 代数
 
 群、环、域、模以及表示论的学习记录。
 
@@ -16,7 +23,7 @@ hide:
     高阶代数结构的补充笔记。Atiyah-MacDonald 笔记，环与模的性质。
 
     [:octicons-arrow-right-24: 阅读笔记](代数2-H笔记.md)
-    
+
 -   **表示论**
 
     ---

@@ -1,10 +1,17 @@
 ---
-title: 应用数学系列
+title: 应用
 hide:
   - navigation
+  - toc
+git_revision_date_localized:
+  enable: false
 ---
-
-# :material-vector-curve: 应用数学
+<style>
+  .md-source-file { 
+      display: none !important; 
+  }
+</style>
+# :material-vector-curve: 应用
 
 数值计算、优化理论与渐进分析。
 

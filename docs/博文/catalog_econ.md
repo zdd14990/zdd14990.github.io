@@ -1,10 +1,17 @@
 ---
-title: 经济学系列
+title: 经济
 hide:
   - navigation
+  - toc
+git_revision_date_localized:
+  enable: false
 ---
-
-# :material-chart-bell-curve-cumulative: 经济学
+<style>
+  .md-source-file { 
+      display: none !important; 
+  }
+</style>
+# :material-chart-bell-curve-cumulative: 经济
 
 理性人的决策、博弈论与市场均衡。
 

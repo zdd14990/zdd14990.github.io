@@ -3,8 +3,14 @@ title: 总览
 hide:
   - navigation # 隐藏侧边栏，让内容更宽敞
   - toc
+git_revision_date_localized:
+  enable: false
 ---
-
+<style>
+  .md-source-file { 
+      display: none !important; 
+  }
+</style>
 # :material-library: 总览
 
 >这里收录了所有学习笔记，按学科分类排列。
@@ -28,6 +34,13 @@ hide:
     多元微积分、微分形式与流形导论。
     
     [:octicons-arrow-right-24: 阅读笔记](分析2-H笔记.md)
+
+-  **微分几何笔记**
+  
+    ---
+    流形上的分析。
+    
+    [:octicons-arrow-right-24: 阅读笔记](微分几何.md)
 
 </div>
 

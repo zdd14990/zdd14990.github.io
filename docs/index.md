@@ -4,8 +4,15 @@ title: 首页
 hide:
   - navigation
   - toc
+git_revision_date_localized:
+  enable: false
 ---
 
+<style>
+  .md-source-file { 
+      display: none !important; 
+  }
+</style>
 
 <div align="center" style="margin-top: 20px; margin-bottom: 40px;" markdown="1">
 
@@ -84,7 +91,9 @@ hide:
 !!! quote "人生在世"
     头号观众不是别人，而是我们自己。
 
-这里是我整理笔记的数字花园。你可以通过上方的按钮快速跳转到不同学科的笔记。
+数学专业大三学生，这里是我整理笔记的数字花园。你可以通过上方的按钮快速跳转到不同学科的笔记。
+
+本学期主修应用方向，因此近期会专心更新应用数学板块。
 
 建站前的笔记实在是懒得将tex转成md直接传了pdf见谅_(:3 」∠ )_
 
