@@ -2466,11 +2466,9 @@ p^{k+1}=z^{k+1}+\beta_k p^k\\
     
 
   <style>
-    /* 亮色模式背景 */
     body[data-md-color-scheme="default"]::before {
         background-image: url('../../../assets/site_bg_light.jpg');
     }
-    /* 暗色模式背景 */
     body[data-md-color-scheme="slate"]::after {
         background-image: url('../../../assets/site_bg_dark.jpg');
     }
@@ -2478,17 +2476,17 @@ p^{k+1}=z^{k+1}+\beta_k p^k\\
 
   <script>
   (function() {
-      // 定义音频路径 (利用 base_url 修复路径错误)
+      // 定义音频路径
       var audioPath = "../../../assets/bgm.mp3";
 
-      // 1. 全局音频单例
+      // A. 全局音频对象 (只创建一次)
       if (!window.myGlobalAudio) {
           window.myGlobalAudio = new Audio(audioPath);
           window.myGlobalAudio.loop = true; 
           window.myGlobalAudio.volume = 0.5; 
       }
 
-      // 2. 渲染 UI (固定在右下角)
+      // B. 渲染 UI 按钮
       var oldBtn = document.getElementById('my-simple-player');
       if (oldBtn) oldBtn.remove();
 
@@ -2506,29 +2504,26 @@ p^{k+1}=z^{k+1}+\beta_k p^k\\
       `;
       document.body.appendChild(playerContainer);
 
-      // 3. 交互逻辑
+      // C. 交互逻辑
       var btnIcon = document.getElementById('player-btn');
       var audio = window.myGlobalAudio;
 
-      // 检查音频文件是否加载成功
+      // 错误检测
       audio.onerror = function() {
-          console.error("音频加载失败，请检查路径:", audioPath);
-          alert("BGM 加载失败，请检查 assets/bgm.mp3 是否存在或文件名大小写是否正确。");
+          console.error("BGM加载失败:", audioPath);
       };
 
+      // 同步状态
       if (!audio.paused) {
           btnIcon.classList.add('playing');
       }
 
+      // 点击事件
       btnIcon.onclick = function() {
           if (audio.paused) {
               var p = audio.play();
               if (p !== undefined) {
-                  p.then(_ => btnIcon.classList.add('playing'))
-                   .catch(e => {
-                       console.error("播放受阻:", e);
-                       // 很多时候是因为浏览器策略，必须用户交互
-                   });
+                  p.then(_ => btnIcon.classList.add('playing')).catch(e => console.error(e));
               }
           } else {
               audio.pause();
@@ -2536,6 +2531,43 @@ p^{k+1}=z^{k+1}+\beta_k p^k\\
           }
       };
   })();
+  </script>
+
+  <script>
+    document$.subscribe(function() {
+        // A. 插入文章阅读量到标题下
+        var h1 = document.querySelector(".md-content__inner h1");
+        var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
+        
+        if (h1 && !document.getElementById("page-pv-container") && !isHomePage) {
+            var pvContainer = document.createElement("div");
+            pvContainer.id = "page-pv-container";
+            pvContainer.style.cssText = "color: var(--md-default-fg-color--light); font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;";
+            pvContainer.innerHTML = `
+                <span id="busuanzi_container_page_pv" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; fill: currentColor; margin-right: 4px;">
+                        <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
+                    </svg>
+                    阅读量：<span id="busuanzi_value_page_pv" style="font-weight: bold;">--</span>
+                </span>
+            `;
+            h1.parentNode.insertBefore(pvContainer, h1.nextSibling);
+        }
+
+        // B. 强制重载不蒜子脚本 (解决切换页面不刷新问题)
+        var oldScript = document.getElementById("busuanzi-script-tag");
+        if (oldScript) { oldScript.remove(); }
+        
+        // 重置页脚显示状态
+        var sitePv = document.getElementById("busuanzi_container_site_pv");
+        if (sitePv) sitePv.style.display = "none";
+
+        var script = document.createElement("script");
+        script.id = "busuanzi-script-tag";
+        script.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+        script.async = true;
+        document.body.appendChild(script);
+    });
   </script>
 
   </body>
