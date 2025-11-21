@@ -1824,9 +1824,15 @@
       
         <script src="../javascripts/mathjax.js"></script>
       
+        <script src="../javascripts/click_effect.js"></script>
+      
+        <script src="../javascripts/vanilla-tilt.min.js"></script>
+      
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
         <script src="../javascripts/funny_title.js"></script>
+      
+        <script src="../javascripts/smooth_trail.js"></script>
       
     
 
@@ -1925,46 +1931,7 @@
     });
   </script>
 
-<script>
-    document$.subscribe(function() {
-        var card = document.querySelector(".profile-card");
-        
-        // 如果当前页面没有名片卡，直接退出
-        if (!card) return;
 
-        // 定义初始化函数
-        function initTilt() {
-            // 检查库是否已加载
-            if (window.VanillaTilt) {
-                // 清理旧实例（防止重复绑定）
-                if (card.vanillaTilt) {
-                    card.vanillaTilt.destroy();
-                }
-                // 正式初始化
-                VanillaTilt.init(card, {
-                    max: 15,            // 最大倾斜角度
-                    speed: 400,         // 动画速度
-                    glare: true,        // 开启反光
-                    "max-glare": 0.2,   // 反光强度
-                    scale: 1.05,        // 悬停放大
-                    gyroscope: false,   // 禁用手机陀螺仪(防抖)
-                    perspective: 1000
-                });
-                return true; // 成功
-            }
-            return false; // 失败
-        }
-
-        // 尝试运行。如果失败（库没加载完），开启定时器等待
-        if (!initTilt()) {
-            var checkTilt = setInterval(function() {
-                if (initTilt()) {
-                    clearInterval(checkTilt); // 加载成功，清除定时器
-                }
-            }, 100); // 每 100ms 检查一次
-        }
-    });
-  </script>
 
 <script>
     document$.subscribe(function() {
@@ -1976,11 +1943,15 @@
             if (window.VanillaTilt) {
                 if (card.vanillaTilt) card.vanillaTilt.destroy(); // 清理旧实例
                 VanillaTilt.init(card, {
-                    max: 15,            // 倾斜角度
-                    speed: 400,         // 动画速度
+                    max: 8,             // 倾斜角度
+                    
+                    /* ✅ 修改这里：改大数值，回弹更慢更平滑 */
+                    speed: 1000,        // 建议 1000 (1秒)
+                    
                     glare: true,        // 开启反光
                     "max-glare": 0.2,   // 反光强度
                     scale: 1.05,        // 悬停放大
+                    gyroscope: false,
                     perspective: 1000
                 });
                 return true;
@@ -1998,6 +1969,7 @@
         }
     });
   </script>
+
 
   </body>
 </html>

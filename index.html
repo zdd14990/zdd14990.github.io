@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#z" class="md-skip">
+        <a href="#zdd" class="md-skip">
           跳转至
         </a>
       
@@ -344,8 +344,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -387,8 +385,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="目录">
   
   
-  
-    
   
   
     <label class="md-nav__title" for="__toc">
@@ -1648,8 +1644,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1724,26 +1718,134 @@
   
 
 
+  <h1>首页</h1>
+
 <style>
-  .md-source-file { 
-      display: none !important; 
+  /* 1. 隐藏默认元素 */
+  .md-typeset h1, .md-content__inner h1 { display: none !important; }
+  .md-source-file { display: none !important; }
+
+  /* 2. 顶栏布局 */
+  /* .md-header__inner { padding-left: 40px !important; padding-right: 40px !important; } */
+
+  /* 3. 清除背景 */
+  .md-content, .md-content__inner, .md-main__inner {
+    background: transparent !important;       
+    background-color: transparent !important; 
+    box-shadow: none !important;              
+    border: none !important;                  
+    backdrop-filter: none !important;         
+    -webkit-backdrop-filter: none !important; 
+    padding-top: 0 !important;
   }
+
+  /* 4. 暗色模式适配 */
+  [data-md-color-scheme="slate"] .md-content,
+  [data-md-color-scheme="slate"] .md-main__inner,
+  [data-md-color-scheme="slate"] .md-grid {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* 5. 解除宽度限制 */
+  /* .md-grid { max-width: none !important; } */
+
+  /* =========================================================
+     自定义元素样式
+     ========================================================= */
+
+  /* 标题样式 */
+  .home-hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-top: 60px;   
+    margin-bottom: 20px;
+    line-height: 1.2;
+    background: linear-gradient(to right, #e67e96, #5e72e4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* 副标题容器 */
+  .home-hero-subtitle {
+    font-size: 1.5rem;
+    font-style: italic;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+    opacity: 0.95;
+    min-height: 1.5em; 
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
+  }
+
+  /* JS打字机光标 */
+  #typing-text::after {
+      content: '|';
+      color: currentColor;
+      animation: blink 1s infinite;
+      margin-left: 4px;
+      font-weight: 400;
+      opacity: 1;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* 亮色模式适配 */
+  [data-md-color-scheme="default"] .home-hero-subtitle {
+     color: #333;
+     text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+  }
+
+  /* 下方磨砂盒子 */
+  .home-glass-wrapper {
+    margin-top: 100px !important; 
+    margin-left: auto; margin-right: auto; margin-bottom: 60px;
+    max-width: 1100px; 
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    padding: 40px;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s backwards;
+  }
+
+  [data-md-color-scheme="slate"] .home-glass-wrapper {
+    background-color: rgba(30, 32, 48, 0.85); 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  }
+
+  @media (max-width: 768px) {
+    .md-header__inner { padding-left: 15px !important; padding-right: 15px !important; }
+    .home-hero-title { font-size: 2.2rem; margin-top: 40px; }
+    .home-glass-wrapper { margin-top: 50px !important; padding: 20px; margin-left: 15px; margin-right: 15px; }
+  }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 40px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 </style>
 
-<div align="center" style="margin-top: 20px; margin-bottom: 40px;">
-<h1 id="z"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"/></svg></span> Z弟弟的数理秘密花园</h1>
-<p style="font-size: 1.2rem; color: var(--md-default-fg-color--light); font-style: italic;">
-    “ 按理来讲你这个级别的基米无权哈我 ”
-</p>
-<p><br></p>
+<div class="home-hero-title">
+  ZDD的数理秘密花园
+</div>
+
+<div class="home-hero-subtitle">
+  <span id="typing-text"></span>
+</div>
+
+<div class="home-glass-wrapper">
+<div align="center" style="margin-bottom: 30px;">
 <p><a class="md-button md-button--primary" href="%E5%8D%9A%E6%96%87/catalog_analysis/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.5 19.1c-.2 1.1-.6 1.9-1.3 2.4s-1.6.6-2.7.4c-.4-.1-1.2-.2-1.5-.4l.5-1.5c.3.1.9.3 1.2.3 1.1.2 1.7-.3 1.9-1.5L12 5.2c.2-1.2.7-2 1.4-2.6.7-.5 1.7-.7 2.8-.5.4.1 1.2.2 1.8.5L17.5 4c-.2-.1-.9-.2-1.2-.3-1.3-.2-2 .4-2.3 1.9z"/></svg></span> 分析</a>
 <a class="md-button md-button--primary" href="%E5%8D%9A%E6%96%87/catalog_algebra/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 6H8.83l6 6-6 6H18v2H6v-2l6-6-6-6V4h12z"/></svg></span> 代数</a>
 <a class="md-button md-button--primary" href="%E5%8D%9A%E6%96%87/catalog_applied/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.5 2A1.5 1.5 0 0 1 20 3.5 1.5 1.5 0 0 1 18.5 5c-.23 0-.45-.05-.65-.15l-3.69 3.7.34.45c2.19-1.26 4.76-2 7.5-2l1 .03v2.01L22 9c-2.58 0-5 .75-7 2.04A3.96 3.96 0 0 1 11.04 15C9.75 17 9 19.42 9 22l.04 1H7.03L7 22c0-2.74.74-5.31 2-7.5l-.45-.34-3.7 3.69c.1.2.15.42.15.65A1.5 1.5 0 0 1 3.5 20 1.5 1.5 0 0 1 2 18.5 1.5 1.5 0 0 1 3.5 17c.23 0 .45.05.65.15l3.69-3.7C7.31 12.78 7 11.92 7 11a4 4 0 0 1 4-4c.92 0 1.78.31 2.45.84l3.7-3.69c-.1-.2-.15-.42-.15-.65A1.5 1.5 0 0 1 18.5 2M11 9a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2"/></svg></span> 应用</a>
 <a class="md-button md-button--primary" href="%E5%8D%9A%E6%96%87/catalog_econ/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19v1h18v2H2V2h2v15c3 0 6-2 8.1-5.6 3-5 6.3-7.4 9.9-7.4v2c-2.8 0-5.5 2.1-8.1 6.5C11.3 16.6 7.7 19 4 19"/></svg></span> 经济</a>
 <a class="md-button" href="%E5%8F%8B%E9%93%BE/%E5%8F%8B%E9%93%BE/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.98 2.98 0 0 0 0-4.24 2.98 2.98 0 0 0-4.24 0l-3.53 3.53a2.98 2.98 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.98 2.98 0 0 0 0 4.24 2.98 2.98 0 0 0 4.24 0l3.53-3.53a2.98 2.98 0 0 0 0-4.24.973.973 0 0 1 0-1.42"/></svg></span> 友链</a></p>
 </div>
-<hr style="border-top: 1px solid var(--md-default-fg-color--light); opacity: 0.2; margin: 0 auto; max-width: 800px;">
-<p><br></p>
+<hr style="border-top: 1px solid var(--md-default-fg-color--light); opacity: 0.2; margin: 0 auto 40px auto; max-width: 800px;">
 <div class="hero-layout">
 <div class="profile-card" data-tilt="data-tilt" data-tilt-glare="data-tilt-glare" data-tilt-max="10" data-tilt-max-glare="0.3" data-tilt-speed="400">
 <div class="avatar-wrapper">
@@ -1752,7 +1854,7 @@
 <div class="profile-info">
 <h2 class="profile-name" id="zdd">zdd</h2>
 <div class="typing-container">
-<p class="profile-bio typing-text">家里蹲是绝对正义</p>
+  家里蹲是绝对正义
 </div>
 </div>
 <div class="visitor-badge">
@@ -1796,8 +1898,8 @@
 <div class="intro-area">
 <h3 id="_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23 17c0 3.31-2.69 6-6 6v-1.5c2.5 0 4.5-2 4.5-4.5zM1 7c0-3.31 2.69-6 6-6v1.5c-2.5 0-4.5 2-4.5 4.5zm7-2.68-4.59 4.6c-3.22 3.22-3.22 8.45 0 11.67s8.45 3.22 11.67 0l7.07-7.09c.49-.47.49-1.26 0-1.75a1.25 1.25 0 0 0-1.77 0l-4.42 4.42-.71-.71 6.54-6.54c.49-.49.49-1.28 0-1.77s-1.29-.49-1.79 0L14.19 13l-.69-.73 6.87-6.89c.49-.49.49-1.28 0-1.77s-1.28-.49-1.77 0l-6.89 6.89-.71-.7 5.5-5.48c.5-.49.5-1.28 0-1.77s-1.28-.49-1.77 0l-7.62 7.62a4 4 0 0 1-.33 5.28l-.71-.71a3 3 0 0 0 0-4.24l-.35-.35 4.07-4.07c.49-.49.49-1.28 0-1.77-.5-.48-1.29-.48-1.79.01"/></svg></span> 欢迎光临</h3>
 <div class="admonition quote">
-<p class="admonition-title">人生在世</p>
-<p>头号观众不是别人，而是我们自己。</p>
+<p class="admonition-title"> </p>
+<p>若还想与我相见 就来我的梦里边</p>
 </div>
 <p>数学专业大三学生，这里是我整理笔记的数字花园。你可以通过上方的按钮快速跳转到不同学科的笔记。</p>
 <p>本学期主修应用方向，因此近期会专心更新应用数学板块。</p>
@@ -1805,222 +1907,115 @@
 <p>之后有空也许会慢慢在ai帮助下换成md方便在网站上阅读。</p>
 <h4 id="_2">最近更新 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg></span></h4>
 <ul>
+<li>[2025-11-21] 完成了首页美化</li>
+<li>[2025-11-20] 更新了 PDE 数值解笔记</li>
 <li>[2025-11-19] 上传了建站前笔记的pdf版本</li>
 <li>[2025-11-18] 建站</li>
 </ul>
 </div>
 </div>
+</div>
+<script>
+  (function() {
+    // 1. 定义文案库
+    const textLight = "“ 去过和没去过的地方 哪里更远 ”";
+    const textDark  = "“ 抓住和抓不住的照片 哪张更美 ”";
+
+    // 2. 获取容器
+    const container = document.getElementById('typing-text');
+    if (!container) return;
+
+    // 3. 状态变量
+    let currentTimer = null;
+    let currentIndex = 0;
+
+    // 4. 核心打字机函数 (支持随时打断重来)
+    function typeWriter(text) {
+      // 如果上一次还没打完，先停掉，防止重影
+      if (currentTimer) {
+        clearTimeout(currentTimer);
+      }
+
+      // 清空容器，准备开始
+      container.innerHTML = "";
+      currentIndex = 0;
+
+      function nextChar() {
+        if (currentIndex < text.length) {
+          container.innerHTML += text.charAt(currentIndex);
+          currentIndex++;
+          // 150ms 打一个字
+          currentTimer = setTimeout(nextChar, 150); 
+        } else {
+          currentTimer = null; // 打完了
+        }
+      }
+
+      nextChar();
+    }
+
+    // 5. 判断当前主题并执行打字
+    function updateTextBasedOnScheme() {
+      // 获取 body 上的 data-md-color-scheme 属性
+      // 默认是 'default' (亮色), 暗色是 'slate'
+      const scheme = document.body.getAttribute('data-md-color-scheme');
+
+      // 根据模式选择文案
+      const targetText = (scheme === 'slate') ? textDark : textLight;
+
+      // 执行打字
+      typeWriter(targetText);
+    }
+
+    // A. 首次加载：延迟 1秒 等待进场动画，然后打字
+    setTimeout(updateTextBasedOnScheme, 1000);
+
+    // B. 监听模式切换：只要属性变了，立刻重打
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-md-color-scheme") {
+           updateTextBasedOnScheme();
+        }
+      });
+    });
+
+    // 开始监听 body 属性变化
+    observer.observe(document.body, {
+      attributes: true 
+    });
+
+  })();
+</script>
+
 <style>
-/* --- 布局容器 --- */
-.hero-layout {
-    display: flex;
-    gap: 40px;
-    max-width: 1000px;
-    margin: 20px auto 0;
-    align-items: flex-start;
-    justify-content: center;
-}
-
-/* --- 左侧名片卡样式 --- */
-.profile-card {
-    flex: 0 0 280px;
-    background-color: var(--md-default-bg-color);
-    border-radius: 20px;
-    padding: 30px 20px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-/* 暗色模式适配 */
-[data-md-color-scheme="slate"] .profile-card {
-    background-color: #2e303e;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* 头像 */
-.avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 15px;
-    border: 3px solid var(--md-default-bg-color);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* 名字 */
-.profile-name {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--md-default-fg-color);
-}
-.profile-bio {
-    margin: 5px 0 10px;
-    font-size: 0.85rem;
-    color: var(--md-default-fg-color--light);
-}
-
-/* --- 访客统计徽章样式 (Flexbox 修复版) --- */
-.visitor-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.03);
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    font-size: 0.75rem;
-    color: var(--md-default-fg-color--light);
-    font-family: "Roboto Mono", monospace;
-}
-
-[data-md-color-scheme="slate"] .visitor-badge {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* 内部 Flex 容器，确保对齐 */
-.pv-container {
-    display: flex !important;
-    align-items: center;
-    gap: 6px;
-}
-
-/* 图标微调 */
-.visitor-badge .icon {
-    display: flex;
-    align-items: center;
-    opacity: 0.8;
-}
-
-/* 数字样式 */
-#busuanzi_value_site_pv {
-    font-weight: bold;
-    color: #e67e96;
-    margin-top: 1px; /* 视觉微调 */
-}
-
-/* --- 统计栏 --- */
-.stats-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
+.hero-layout { display: flex; gap: 40px; align-items: flex-start; justify-content: center; }
+.profile-card { flex: 0 0 280px; background-color: var(--md-default-bg-color); border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+[data-md-color-scheme="slate"] .profile-card { background-color: #2e303e; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+.avatar { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--md-default-bg-color); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.profile-name { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--md-default-fg-color); }
+.profile-bio { margin: 5px 0 10px; font-size: 0.85rem; color: var(--md-default-fg-color--light); }
+.visitor-badge { display: inline-flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.03); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; font-size: 0.75rem; color: var(--md-default-fg-color--light); font-family: "Roboto Mono", monospace; }
+[data-md-color-scheme="slate"] .visitor-badge { background: rgba(255, 255, 255, 0.05); }
+.pv-container { display: flex !important; align-items: center; gap: 6px; }
+.visitor-badge .icon { display: flex; align-items: center; opacity: 0.8; }
+#busuanzi_value_site_pv { font-weight: bold; color: #e67e96; margin-top: 1px; }
+.stats-row { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
 .stat-item { padding: 0 12px; }
-.stat-num {
-    display: block;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--md-default-fg-color);
-}
-.stat-label {
-    font-size: 0.7rem;
-    color: var(--md-default-fg-color--light);
-}
-.stat-divider {
-    width: 1px; height: 20px;
-    background-color: var(--md-default-fg-color--light);
-    opacity: 0.2;
-}
-
-/* 装饰图标 */
-.decoration-icon {
-    margin: 10px 0;
-    color: var(--md-default-fg-color--light);
-    opacity: 0.3;
-    animation: spin 8s linear infinite;
-}
+.stat-num { display: block; font-size: 1.1rem; font-weight: bold; color: var(--md-default-fg-color); }
+.stat-label { font-size: 0.7rem; font-weight: normal; color: var(--md-default-fg-color--light); }
+.stat-divider { width: 1px; height: 20px; background-color: var(--md-default-fg-color--light); opacity: 0.2; }
+.decoration-icon { margin: 10px 0; color: var(--md-default-fg-color--light); opacity: 0.3; animation: spin 8s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* 名片上的按钮 */
-.btn-main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 10px 0;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #a16b83, #8f5c70);
-    color: #fff !important;
-    font-weight: bold;
-    text-decoration: none;
-    transition: transform 0.2s;
-}
+.btn-main { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px 0; margin-bottom: 15px; border-radius: 10px; background: linear-gradient(135deg, #a16b83, #8f5c70); color: #fff !important; font-weight: bold; text-decoration: none; transition: transform 0.2s; }
 .btn-main:hover { transform: translateY(-2px); opacity: 0.9; }
-
 .sub-actions { display: flex; justify-content: space-around; }
-.btn-text {
-    display: flex; align-items: center; gap: 5px;
-    color: var(--md-default-fg-color--light);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.2s;
-}
+.btn-text { display: flex; align-items: center; gap: 5px; color: var(--md-default-fg-color--light); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
 .btn-text:hover { color: var(--md-accent-fg-color); }
-
-/* --- 右侧内容区 --- */
-.intro-area {
-    flex: 1;
-    padding-left: 20px;
-}
-
-/* --- 移动端适配 --- */
-@media (max-width: 768px) {
-    .hero-layout {
-        flex-direction: column;
-        align-items: center;
-    }
-    .profile-card {
-        width: 100%;
-        max-width: 350px;
-    }
-    .intro-area {
-        width: 100%;
-        padding-left: 0;
-        margin-top: 30px;
-    }
-}
-
-/* ==========================================
-   首页进场动画 (Entrance Animation)
-   ========================================== */
-
-/* 定义动画关键帧：从下往上浮动，透明度从 0 到 1 */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 40px, 0);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-/* 应用到左侧名片 (延迟 0.1秒) */
-.profile-card {
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    animation-fill-mode: both; /* 保持动画结束状态 */
-    animation-delay: 0.1s;
-}
-
-/* 应用到右侧文字区 (延迟 0.3秒，形成错落感) */
-.intro-area {
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    animation-fill-mode: both;
-    animation-delay: 0.3s;
-}
-
-/* 应用到顶部的 Hero 标题 (延迟 0秒) */
-.md-typeset h1 {
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
+.intro-area { flex: 1; padding-left: 20px; }
+@media (max-width: 768px) { .hero-layout { flex-direction: column; align-items: center; } .profile-card { width: 100%; max-width: 350px; } .intro-area { width: 100%; padding-left: 0; margin-top: 30px; } }
+.profile-card { animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); animation-fill-mode: both; animation-delay: 0.1s; }
+.intro-area { animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); animation-fill-mode: both; animation-delay: 0.3s; }
+#page-pv-container { display: none !important; }
 </style>
 
 
@@ -2044,7 +2039,7 @@
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2025年11月21日 09:56:42 UTC">2025年11月21日</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2025年11月21日 13:46:51 UTC">2025年11月21日</span>
   </span>
 
     
@@ -2123,9 +2118,15 @@
       
         <script src="javascripts/mathjax.js"></script>
       
+        <script src="javascripts/click_effect.js"></script>
+      
+        <script src="javascripts/vanilla-tilt.min.js"></script>
+      
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
         <script src="javascripts/funny_title.js"></script>
+      
+        <script src="javascripts/smooth_trail.js"></script>
       
     
 
@@ -2224,46 +2225,7 @@
     });
   </script>
 
-<script>
-    document$.subscribe(function() {
-        var card = document.querySelector(".profile-card");
-        
-        // 如果当前页面没有名片卡，直接退出
-        if (!card) return;
 
-        // 定义初始化函数
-        function initTilt() {
-            // 检查库是否已加载
-            if (window.VanillaTilt) {
-                // 清理旧实例（防止重复绑定）
-                if (card.vanillaTilt) {
-                    card.vanillaTilt.destroy();
-                }
-                // 正式初始化
-                VanillaTilt.init(card, {
-                    max: 15,            // 最大倾斜角度
-                    speed: 400,         // 动画速度
-                    glare: true,        // 开启反光
-                    "max-glare": 0.2,   // 反光强度
-                    scale: 1.05,        // 悬停放大
-                    gyroscope: false,   // 禁用手机陀螺仪(防抖)
-                    perspective: 1000
-                });
-                return true; // 成功
-            }
-            return false; // 失败
-        }
-
-        // 尝试运行。如果失败（库没加载完），开启定时器等待
-        if (!initTilt()) {
-            var checkTilt = setInterval(function() {
-                if (initTilt()) {
-                    clearInterval(checkTilt); // 加载成功，清除定时器
-                }
-            }, 100); // 每 100ms 检查一次
-        }
-    });
-  </script>
 
 <script>
     document$.subscribe(function() {
@@ -2275,11 +2237,15 @@
             if (window.VanillaTilt) {
                 if (card.vanillaTilt) card.vanillaTilt.destroy(); // 清理旧实例
                 VanillaTilt.init(card, {
-                    max: 15,            // 倾斜角度
-                    speed: 400,         // 动画速度
+                    max: 8,             // 倾斜角度
+                    
+                    /* ✅ 修改这里：改大数值，回弹更慢更平滑 */
+                    speed: 1000,        // 建议 1000 (1秒)
+                    
                     glare: true,        // 开启反光
                     "max-glare": 0.2,   // 反光强度
                     scale: 1.05,        // 悬停放大
+                    gyroscope: false,
                     perspective: 1000
                 });
                 return true;
@@ -2297,6 +2263,7 @@
         }
     });
   </script>
+
 
   </body>
 </html>
