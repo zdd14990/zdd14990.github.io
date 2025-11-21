@@ -1607,6 +1607,8 @@
   
       <script src="/assets/javascripts/bundle.e71a0d61.min.js"></script>
       
+        <script src="https://unpkg.com/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+      
         <script src="/javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1626,17 +1628,14 @@
 
   <script>
   (function() {
-      // 定义音频路径
       var audioPath = "//assets/bgm.mp3";
 
-      // A. 全局音频对象 (只创建一次)
       if (!window.myGlobalAudio) {
           window.myGlobalAudio = new Audio(audioPath);
           window.myGlobalAudio.loop = true; 
           window.myGlobalAudio.volume = 0.5; 
       }
 
-      // B. 渲染 UI 按钮
       var oldBtn = document.getElementById('my-simple-player');
       if (oldBtn) oldBtn.remove();
 
@@ -1654,21 +1653,17 @@
       `;
       document.body.appendChild(playerContainer);
 
-      // C. 交互逻辑
       var btnIcon = document.getElementById('player-btn');
       var audio = window.myGlobalAudio;
 
-      // 错误检测
       audio.onerror = function() {
           console.error("BGM加载失败:", audioPath);
       };
 
-      // 同步状态
       if (!audio.paused) {
           btnIcon.classList.add('playing');
       }
 
-      // 点击事件
       btnIcon.onclick = function() {
           if (audio.paused) {
               var p = audio.play();
@@ -1685,7 +1680,6 @@
 
   <script>
     document$.subscribe(function() {
-        // A. 插入文章阅读量到标题下
         var h1 = document.querySelector(".md-content__inner h1");
         var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
         
@@ -1704,11 +1698,9 @@
             h1.parentNode.insertBefore(pvContainer, h1.nextSibling);
         }
 
-        // B. 强制重载不蒜子脚本 (解决切换页面不刷新问题)
         var oldScript = document.getElementById("busuanzi-script-tag");
         if (oldScript) { oldScript.remove(); }
         
-        // 重置页脚显示状态
         var sitePv = document.getElementById("busuanzi_container_site_pv");
         if (sitePv) sitePv.style.display = "none";
 
@@ -1717,6 +1709,47 @@
         script.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
         script.async = true;
         document.body.appendChild(script);
+    });
+  </script>
+
+<script>
+    document$.subscribe(function() {
+        var card = document.querySelector(".profile-card");
+        
+        // 如果当前页面没有名片卡，直接退出
+        if (!card) return;
+
+        // 定义初始化函数
+        function initTilt() {
+            // 检查库是否已加载
+            if (window.VanillaTilt) {
+                // 清理旧实例（防止重复绑定）
+                if (card.vanillaTilt) {
+                    card.vanillaTilt.destroy();
+                }
+                // 正式初始化
+                VanillaTilt.init(card, {
+                    max: 15,            // 最大倾斜角度
+                    speed: 400,         // 动画速度
+                    glare: true,        // 开启反光
+                    "max-glare": 0.2,   // 反光强度
+                    scale: 1.05,        // 悬停放大
+                    gyroscope: false,   // 禁用手机陀螺仪(防抖)
+                    perspective: 1000
+                });
+                return true; // 成功
+            }
+            return false; // 失败
+        }
+
+        // 尝试运行。如果失败（库没加载完），开启定时器等待
+        if (!initTilt()) {
+            var checkTilt = setInterval(function() {
+                if (initTilt()) {
+                    clearInterval(checkTilt); // 加载成功，清除定时器
+                }
+            }, 100); // 每 100ms 检查一次
+        }
     });
   </script>
 

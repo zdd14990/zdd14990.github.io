@@ -227,3 +227,51 @@ body[data-md-color-scheme="slate"]::before {
 body[data-md-color-scheme="slate"]::after {
     opacity: 1; /* 暗色背景淡入 */
 }
+
+/* ==========================================
+   打字机特效
+   ========================================== */
+.typing-container {
+    display: inline-block;
+}
+
+.typing-text {
+    overflow: hidden; /* 隐藏溢出部分 */
+    border-right: 2px solid #e67e96; /* 光标颜色 */
+    white-space: nowrap; /* 不换行 */
+    margin: 0 auto;
+    letter-spacing: 0.1em; /* 字间距 */
+    
+    /* 动画：打字(2秒) + 光标闪烁 */
+    animation: 
+        typing 2s steps(8, end), /* 这里的 steps(9) 对应你的字数(9个字)，请根据字数调整 */
+        blink-caret 0.75s step-end infinite;
+}
+
+/* 打字动画：宽度从0变到100% */
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+/* 光标闪烁动画 */
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #e67e96 }
+}
+
+/* 开启 3D 硬件加速，防止倾斜时模糊 */
+/* 开启 3D 硬件加速，防止倾斜时模糊 */
+.profile-card {
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    /* 关键：这里不能有 transition: all 或 transition: transform 
+       否则会覆盖 JS 的实时计算，导致卡顿
+    */
+    transition: box-shadow 0.3s ease !important; 
+}
+
+/* 让内部元素稍微浮起来一点，增强 3D 感 */
+.avatar-wrapper, .profile-info, .visitor-badge {
+    transform: translateZ(20px); /* Z轴位移 */
+}
