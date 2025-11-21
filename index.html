@@ -1754,13 +1754,12 @@
 <p class="profile-bio">家里蹲是绝对正义</p>
 </div>
 <div class="visitor-badge">
-  <span id="busuanzi_container_site_pv" style="display:none">
+  <span id="busuanzi_container_site_pv" class="pv-container" style="display:none">
     <span class="icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="vertical-align: text-bottom; fill: currentColor;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="fill: currentColor;">
         <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
       </svg>
     </span>
-    &nbsp;
     <span id="busuanzi_value_site_pv">--</span>
   </span>
 </div>
@@ -1817,12 +1816,12 @@
     max-width: 1000px;
     margin: 20px auto 0;
     align-items: flex-start;
-    justify-content: center; /* 居中整个布局 */
+    justify-content: center;
 }
 
 /* --- 左侧名片卡样式 --- */
 .profile-card {
-    flex: 0 0 280px; /* 稍微调窄一点以适应上方按钮的比例 */
+    flex: 0 0 280px;
     background-color: var(--md-default-bg-color);
     border-radius: 20px;
     padding: 30px 20px;
@@ -1833,7 +1832,7 @@
 
 /* 暗色模式适配 */
 [data-md-color-scheme="slate"] .profile-card {
-    background-color: #2e303e; /* 模仿图片中的深色背景 */
+    background-color: #2e303e;
     border: none;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
@@ -1857,18 +1856,17 @@
     color: var(--md-default-fg-color);
 }
 .profile-bio {
-    margin: 5px 0 10px; /* 稍微减小下边距，给统计条腾位置 */
+    margin: 5px 0 10px;
     font-size: 0.85rem;
     color: var(--md-default-fg-color--light);
 }
 
-/* [新增] 访客统计徽章样式 */
+/* --- 访客统计徽章样式 (Flexbox 修复版) --- */
 .visitor-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    background: rgba(0, 0, 0, 0.03); /* 浅灰色背景胶囊 */
+    background: rgba(0, 0, 0, 0.03);
     padding: 4px 12px;
     border-radius: 20px;
     margin-bottom: 20px;
@@ -1876,26 +1874,33 @@
     color: var(--md-default-fg-color--light);
     font-family: "Roboto Mono", monospace;
 }
+
 [data-md-color-scheme="slate"] .visitor-badge {
-    background: rgba(255, 255, 255, 0.05); /* 暗色模式背景 */
-}
-.visitor-badge .icon {
-    font-size: 1rem;
-    vertical-align: middle;
-    margin-right: 2px;
-    opacity: 0.8;
-}
-#busuanzi_value_site_pv, 
-#busuanzi_value_site_uv {
-    font-weight: bold;
-    color: #e67e96; /* 粉色数字 */
-}
-.visitor-badge .divider {
-    opacity: 0.3;
-    margin: 0 2px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* 统计栏 */
+/* 内部 Flex 容器，确保对齐 */
+.pv-container {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 图标微调 */
+.visitor-badge .icon {
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+}
+
+/* 数字样式 */
+#busuanzi_value_site_pv {
+    font-weight: bold;
+    color: #e67e96;
+    margin-top: 1px; /* 视觉微调 */
+}
+
+/* --- 统计栏 --- */
 .stats-row {
     display: flex;
     justify-content: center;
@@ -1938,7 +1943,7 @@
     padding: 10px 0;
     margin-bottom: 15px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #a16b83, #8f5c70); /* 粉褐色渐变 */
+    background: linear-gradient(135deg, #a16b83, #8f5c70);
     color: #fff !important;
     font-weight: bold;
     text-decoration: none;
@@ -1959,7 +1964,7 @@
 /* --- 右侧内容区 --- */
 .intro-area {
     flex: 1;
-    padding-left: 20px; /* 给右侧内容一点左边距 */
+    padding-left: 20px;
 }
 
 /* --- 移动端适配 --- */
