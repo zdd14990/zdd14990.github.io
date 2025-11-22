@@ -693,3 +693,73 @@ body[data-md-color-scheme="slate"]::after {
 [data-md-color-scheme="slate"] .post-card-preview {
     color: rgba(255, 255, 255, 0.65) !important;
 }
+
+/* ==========================================
+   图片美化与图注
+   ========================================== */
+   
+/* 1. 图片容器：居中、加阴影、圆角 */
+.md-content img {
+    display: block;
+    margin: 20px auto; /* 上下留白，水平居中 */
+    max-width: 90%;    /* 防止太宽 */
+    border-radius: 8px; /* 圆角 */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* 柔和阴影 */
+    transition: transform 0.3s;
+}
+
+/* 悬停轻微放大 */
+.md-content img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* 2. 自动图注 (利用 title 属性) */
+/* 语法：![Alt](image.jpg "这里是图注") */
+.md-content img[title] + em {
+    display: none; /* 隐藏默认的 em */
+}
+
+/* 利用伪元素显示 title 内容 - 需要一点 trick，
+   但 MkDocs Material 默认并不直接把 title 渲染成紧跟的元素。
+   最简单的方法是：在图片下面手动写一行斜体字，或者使用下面的 CSS 居中你的斜体说明 */
+
+.md-content em {
+    display: block;
+    text-align: center;
+    font-size: 0.85em;
+    color: gray;
+    margin-top: -10px; /* 紧贴图片底部 */
+    margin-bottom: 25px;
+}
+
+/* ==========================================
+   移动端数学公式横向滚动
+   ========================================== */
+.md-typeset .MathJax {
+    overflow-x: auto;      /* 超出范围允许滚动 */
+    overflow-y: hidden;    /* 隐藏垂直滚动条 */
+    max-width: 100%;       /* 限制最大宽度 */
+    padding-bottom: 4px;   /* 预留滚动条位置 */
+}
+
+/* 针对块级公式 (Display Math) */
+mjx-container[display="true"] {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+}
+
+/* ==========================================
+   页脚净化
+   ========================================== */
+/* 隐藏 "Made with..." 这一行 */
+.md-footer-copyright__text .md-footer-copyright__citation {
+    display: none;
+}
+
+/* 调整版权文字居中 */
+.md-footer-copyright {
+    text-align: center;
+    width: 100%;
+}
