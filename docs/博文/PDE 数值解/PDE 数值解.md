@@ -27,9 +27,14 @@ hide:
     [:octicons-arrow-right-24: 阅读章节](chapter1.md)
 
 
--   **第二章：**
+-   **第二章：抛物 PDE 的有限差分方法**
 
     ---
     [:octicons-arrow-right-24: 阅读章节](chapter2.md)
+
+-   **第三章：双曲 PDE 的有限差分方法**
+
+    ---
+    [:octicons-arrow-right-24: 阅读章节](chapter3.md)
 
 </div>

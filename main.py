@@ -148,7 +148,7 @@ def define_env(env):
             card = (
                 f'<div class="post-card-item">'
                 f'<a class="post-card-link" href="{p["url"]}">'
-                f'<span class="post-card-title"><span class="icon">📌</span>{p["title"]}</span>'
+                f'<span class="post-card-title">{p["title"]}</span>'
                 f'<span class="post-card-meta">'
                 f'<span class="icon">📂</span>{p["category"]}'
                 f'<span style="margin: 0 8px; opacity: 0.3;">|</span>'

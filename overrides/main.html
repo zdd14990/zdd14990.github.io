@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+  {{ super() }} <meta name="description" content="{{ config.site_description }}">
+  <meta name="author" content="{{ config.site_author }}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  <meta property="og:title" content="{{ page.title }} - {{ config.site_name }}">
+  <meta property="og:description" content="{{ config.site_description }}">
+  <meta property="og:image" content="{{ config.site_url }}assets/cover.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="{{ page.canonical_url }}">
+  <meta name="twitter:title" content="{{ page.title }} - {{ config.site_name }}">
+  <meta name="twitter:description" content="{{ config.site_description }}">
+  <meta name="twitter:image" content="{{ config.site_url }}assets/cover.jpg">
+{% endblock %}
+
+
 {% block copyright %}
   <div class="md-copyright">
     {% if config.copyright %}
@@ -37,7 +56,24 @@
 
 {% block scripts %}
   {{ super() }}
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // 1. 创建进度条容器
+      var progressBar = document.createElement("div");
+      progressBar.id = "reading-progress";
+      // 样式：固定顶部，高度3px，粉色，初始宽度0
+      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
+      document.body.appendChild(progressBar);
 
+      // 2. 监听滚动事件
+      window.addEventListener("scroll", function() {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width = scrolled + "%";
+      });
+  });
+</script>
   <style>
     body[data-md-color-scheme="default"]::before {
         background-image: url('{{ base_url }}/assets/site_bg_light.jpg');
@@ -133,26 +169,20 @@
     });
   </script>
 
-
-
-<script>
+  <script>
     document$.subscribe(function() {
         var card = document.querySelector(".profile-card");
         if (!card) return;
 
-        // 定义初始化函数
         function initTilt() {
             if (window.VanillaTilt) {
-                if (card.vanillaTilt) card.vanillaTilt.destroy(); // 清理旧实例
+                if (card.vanillaTilt) card.vanillaTilt.destroy();
                 VanillaTilt.init(card, {
-                    max: 8,             // 倾斜角度
-                    
-                    /* ✅ 修改这里：改大数值，回弹更慢更平滑 */
-                    speed: 1000,        // 建议 1000 (1秒)
-                    
-                    glare: true,        // 开启反光
-                    "max-glare": 0.2,   // 反光强度
-                    scale: 1.05,        // 悬停放大
+                    max: 8,
+                    speed: 1000,
+                    glare: true,
+                    "max-glare": 0.2,
+                    scale: 1.05,
                     gyroscope: false,
                     perspective: 1000
                 });
@@ -161,7 +191,6 @@
             return false;
         }
 
-        // 尝试运行。如果失败（库还没加载完），开启定时器等待
         if (!initTilt()) {
             var checkTilt = setInterval(function() {
                 if (initTilt()) {

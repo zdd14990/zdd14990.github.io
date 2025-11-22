@@ -518,6 +518,6 @@ FMG 成本 $<(1+\rho+\dots)\text{V-cycle-cost} < \frac{2}{(1-\rho)^{2}}W_{1}$。
 
 [ :octicons-arrow-left-24:  上一章：基本定义 ](chapter0.md){ .md-button }
 
-[ 下一章：还没写 :octicons-arrow-right-24: ](chapter2.md){ .md-button .md-button--primary }
+[ 下一章：抛物 PDE 的有限差分法 :octicons-arrow-right-24: ](chapter2.md){ .md-button .md-button--primary }
 
 </div>

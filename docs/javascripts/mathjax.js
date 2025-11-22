@@ -1,19 +1,19 @@
 window.MathJax = {
   tex: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"], ["$$", "$$"]],
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
     processEscapes: true,
-    processEnvironments: true,
-    
-    // 核心开启：自动编号 (AMS 风格)
-    tags: 'ams' 
+    processEnvironments: true
   },
   options: {
-    ignoreHtmlClass: "tex2jax_ignore",
-    processHtmlClass: "tex2jax_process"
+    ignoreHtmlClass: ".*|",
+    processHtmlClass: "arithmatex",
+    // 开启右键菜单功能
+    enableMenu: true 
+  },
+  // 启动时自动把公式转为可读的 LaTeX 代码（辅助功能）
+  menuSettings: { 
+    zoom: "Double-Click" // 双击放大公式
   }
 };
 
-document$.subscribe(() => { 
-  MathJax.typesetPromise()
-})

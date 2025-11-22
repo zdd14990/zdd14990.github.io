@@ -1,42 +1,53 @@
 site_name: zdd14990
-site_url: https://zdd14990.github.io/  # 建议填写，有助于SEO和生成正确的sitemap
+site_url: https://zdd14990.github.io/
+# --- 确保加上这几行 ---
+site_description: 数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。
+site_author: zdd
+# --------------------
 copyright: copyright © zdd All Rights Reserved
 
-# 仓库信息 (可选，配置后右上角会出现 GitHub 图标)
+# 仓库信息
 repo_name: zdd14990
 repo_url: https://github.com/zdd14990/zdd14990.github.io
 
 plugins:
   - search # 必须保留搜索插件
   - git-revision-date-localized:
-      enable_creation_date: true   # 可选：显示“创建日期”
-      type: date                   # 显示格式：date (2025年11月19日), datetime, timeago
+      enable_creation_date: true   # 显示“创建日期”
+      type: date                   # 格式：2025年11月19日
       locale: zh                   # 强制中文
-      fallback_to_build_date: true # 如果文件未提交到git，则显示构建时间
+      fallback_to_build_date: true # 兜底构建时间
   - macros
-      
+  
+  # ❌ 【已注释】Social 插件 (为了解决 Windows cairo 报错，暂时关闭自动生成图片功能)
+  # - social:
+  #     cards_layout_options:
+  #       font_family: Roboto
+  #       background_color: "#e67e96"
+
 theme:
   name: material
   custom_dir: overrides
   language: zh
   favicon: assets/favicon.png
-  # 图标配置
   icon:
     logo: material/cat
-    repo: fontawesome/brands/github # 如果配置了 repo_url
+    repo: fontawesome/brands/github
   
-  # 字体美化：正文 Roboto，代码 JetBrains Mono
   font:
     text: Roboto
     code: JetBrains Mono
+  
+  # 强制生成 404 页面
+  static_templates:
+    - 404.html
 
-  # 颜色主题配置
   palette:
     # 亮色模式
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: blue
-      accent: indigo # 强调色，建议加一个
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: 切换到暗色模式
@@ -50,80 +61,74 @@ theme:
         icon: material/brightness-4
         name: 切换到亮色模式
 
-  # 功能特性增强
   features:
-    # - navigation.instant
-    - navigation.tabs        # 顶部选项卡
-    - navigation.tabs.sticky # 选项卡吸顶（下滑时保留）
-    - navigation.top         # 返回顶部按钮
-    - navigation.tracking    # URL 随滚动自动变化
-    - navigation.indexes     # 允许点击目录本身
-    - navigation.expand      # 侧边栏默认展开
-    - search.highlight       # 搜索高亮
-    - search.suggest         # 搜索建议
-    - content.code.copy      # 代码块复制按钮
-    # - content.action.edit    # 允许编辑页面按钮 (配合 repo_url)
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - navigation.indexes
+    - navigation.expand
+    - search.highlight
+    - search.suggest
+    - content.code.copy
 
+# 社交链接与元数据配置
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/zdd14990
+  
+  # Open Graph 元数据 (静态方案)
+  meta:
+    site_name: ZDD的数理秘密花园
+    site_description: 数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。
+    site_author: zdd
+    # ✅ 这里指定一张静态图片作为分享封面 (建议找一张好看的图放进 docs/assets/ 命名为 cover.jpg)
+    # 如果没有 cover.jpg，暂时用头像 avatar.jpg 代替，总比没有强
+    site_image: assets/avatar.jpg 
 
 # CSS 样式
 extra_css:
   - stylesheets/extra.css
 
-# JavaScript (数学公式配置)
+# JavaScript
 extra_javascript:
   - javascripts/mathjax.js
   - javascripts/click_effect.js
-  - javascripts\vanilla-tilt.min.js
+  # ✅ 【已修复】将反斜杠 \ 改为正斜杠 /，消除警告
+  - javascripts/vanilla-tilt.min.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - javascripts/funny_title.js
-  # - javascripts/cursor_effect.js
   - javascripts/smooth_trail.js
-  
 
-# Markdown 扩展 (功能核心)
+# Markdown 扩展
 markdown_extensions:
-  - admonition          # 必须有：用于解析 !!!
-  - attr_list           # 必须有：用于解析 { .md-button }
-  - md_in_html          # 必须有：允许在 html 标签内解析 markdown
-  - pymdownx.details    # 必须有：支持 ??? 折叠块
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
   - pymdownx.emoji
   - pymdownx.superfences
-  # 脚注
   - footnotes
-  # 数学公式支持
   - pymdownx.arithmatex:
       generic: true
-  # 更好的表格
   - tables
-  # 任务列表
   - pymdownx.tasklist:
       custom_checkbox: true
-  # 代码块高亮
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  # 极其重要的提示块 (用于写定理、证明)
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences
-  # Emoji 支持
-  # - nl2br
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
-# 导航结构 (修正了路径分隔符)
+# 导航结构
 nav:
   - 首页: index.md
   
-  # 修改这里：
   - 博文:
-      # 1. 这里的 index.md 就是刚才创建的总分类页
-      # 由于开启了 navigation.indexes，点击"博文"会直接展示这个页面的内容
       - 概览: 博文/index.md
-      
-      # 2. 下面是各个子板块 (保持原有结构，链接指向之前创建的 catalog_*.md)
       - 分析:
           - 概览: 博文/catalog_analysis.md
           - 分析2-H笔记: 博文/分析2-H笔记.md
@@ -141,8 +146,8 @@ nav:
           - PDE 数值解:
               - 概览: 博文/PDE 数值解/PDE 数值解.md
               - 第零章:基本定义: 博文/PDE 数值解/chapter0.md
-              - 第一章:椭圆 PDE的有限差分方法: 博文/PDE 数值解/chapter1.md
-              - 第二章:还没写: 博文/PDE 数值解/chapter2.md
+              - 第一章:椭圆 PDE 的有限差分方法: 博文/PDE 数值解/chapter1.md
+              - 第二章:抛物 PDE 的有限差分法: 博文/PDE 数值解/chapter2.md
           - 凸优化: 
               - 概览: 博文/凸优化/凸优化.md
               - 第一章:凸分析: 博文/凸优化/chapter1.md
@@ -159,8 +164,5 @@ nav:
       - 友链: 友链/友链.md
 
 hooks:
-  - hooks.py  # 启用刚才创建的脚本
+  - hooks.py
   - main.py
-# mkdocs.yml
-
-
