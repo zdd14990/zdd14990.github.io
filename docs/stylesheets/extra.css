@@ -1,3 +1,36 @@
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css');
+
+body, .md-typeset {
+    /* 优先使用霞鹜文楷，没有则退化为系统字体 */
+    font-family: "LXGW WenKai Screen", "Roboto", sans-serif !important;
+}
+
+/* 代码块保持等宽字体 */
+code, kbd, pre {
+    font-family: "JetBrains Mono", monospace !important;
+}
+
+/* 定义 - 绿色 */
+.md-typeset .admonition.definition,
+.md-typeset details.definition {
+    border-color: #00b8d4;
+}
+.md-typeset .definition > .admonition-title,
+.md-typeset .definition > summary {
+    background-color: rgba(0, 184, 212, 0.1);
+    border-color: #00b8d4;
+}
+
+/* 定理 - 蓝色 */
+.md-typeset .admonition.theorem,
+.md-typeset details.theorem {
+    border-color: #5e72e4;
+}
+.md-typeset .theorem > .admonition-title,
+.md-typeset .theorem > summary {
+    background-color: rgba(94, 114, 228, 0.1);
+    border-color: #5e72e4;
+}
 /* ==========================================================================
    极简本地播放器 (Simple Local Player)
    ========================================================================== */
@@ -273,7 +306,7 @@ body[data-md-color-scheme="slate"]::after {
     padding: 30px 20px;
     text-align: center;
     border: 1px solid rgba(0,0,0,0.05);
-    overflow: hidden; /* 适配圆角 */
+    /* overflow: hidden; <--- 罪魁祸首在这里，把它删了 */
     
     /* --- 3D 核心设置 --- */
     transform-style: preserve-3d;
@@ -566,4 +599,97 @@ body[data-md-color-scheme="slate"]::after {
         margin-bottom: 60px !important; 
     }
     .home-glass-wrapper { padding: 20px; }
+}
+/* ==========================================
+   首页卡片样式 (紧凑精致版)
+   ========================================== */
+.recent-post-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important; /* 卡片间距从 15px -> 12px */
+    margin-top: 20px;
+}
+
+.post-card-item {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important; 
+    padding: 0 !important;
+}
+
+.post-card-link {
+    display: block !important;
+    text-decoration: none !important;
+    
+    /* 卡片外观 */
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px; /* 圆角稍小一点 */
+    padding: 12px 16px;  /* 内边距缩小，更紧凑 */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.post-card-link:hover {
+    transform: translateY(-2px);
+    background: rgba(230, 126, 150, 0.1);
+    border-color: rgba(230, 126, 150, 0.4);
+    box-shadow: 0 4px 12px rgba(230, 126, 150, 0.15);
+}
+
+/* 标题 */
+.post-card-title {
+    display: flex !important;
+    align-items: center; 
+    gap: 6px;
+    
+    /* 字号从 1.15rem -> 1.0rem */
+    font-size: 1.0rem !important; 
+    font-weight: 700 !important;
+    color: var(--md-default-fg-color) !important;
+    margin-bottom: 4px !important; /* 间距减小 */
+}
+.post-card-title .icon { font-size: 0.9rem; } /* 图标也缩小 */
+
+/* 日期 */
+.post-card-meta {
+    display: flex !important;
+    align-items: center; 
+    gap: 5px;
+    
+    /* 字号从 0.85rem -> 0.75rem */
+    font-size: 0.75rem !important; 
+    color: rgba(0, 0, 0, 0.55) !important;
+    margin-bottom: 8px !important; /* 间距减小 */
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+}
+.post-card-meta .icon { font-size: 0.75rem; }
+
+/* 预览文字 */
+.post-card-preview {
+    display: block !important;
+    
+    /* 字号从 0.95rem -> 0.85rem */
+    font-size: 0.85rem !important; 
+    color: rgba(0, 0, 0, 0.7) !important;
+    line-height: 1.5 !important; /* 行高微调 */
+    
+    /* 多行省略 */
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 暗色模式适配 */
+[data-md-color-scheme="slate"] .post-card-link {
+    background: rgba(30, 32, 48, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+[data-md-color-scheme="slate"] .post-card-meta {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+[data-md-color-scheme="slate"] .post-card-preview {
+    color: rgba(255, 255, 255, 0.65) !important;
 }

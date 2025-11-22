@@ -262,16 +262,308 @@ body[data-md-color-scheme="slate"]::after {
 
 /* 开启 3D 硬件加速，防止倾斜时模糊 */
 /* 开启 3D 硬件加速，防止倾斜时模糊 */
+
+/* ==========================================
+   首页名片卡 (3D 特效修复版)
+   ========================================== */
 .profile-card {
+    flex: 0 0 280px;
+    background-color: var(--md-default-bg-color);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden; /* 适配圆角 */
+    
+    /* --- 3D 核心设置 --- */
     transform-style: preserve-3d;
-    transform: perspective(1000px);
-    /* 关键：这里不能有 transition: all 或 transition: transform 
-       否则会覆盖 JS 的实时计算，导致卡顿
+    z-index: 10;
+    
+    /* ✅ 关键修改：
+       1. 移除了 transform 0s !important (让 JS 库接管动画)
+       2. 加入 will-change 提升性能
     */
-    transition: box-shadow 0.3s ease !important; 
+    transition: box-shadow 0.3s ease; 
+    will-change: transform;
+    
+    /* 确保没有 animation 干扰 */
+    animation: none !important; 
 }
 
-/* 让内部元素稍微浮起来一点，增强 3D 感 */
-.avatar-wrapper, .profile-info, .visitor-badge {
-    transform: translateZ(20px); /* Z轴位移 */
+/* 悬停时的阴影增强 (让浮动感更强) */
+.profile-card:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+}
+
+/* 暗色模式适配 */
+[data-md-color-scheme="slate"] .profile-card {
+    background-color: #2e303e;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* 让内部元素产生位移 (增强 3D 层次感) */
+.avatar-wrapper {
+    transform: translateZ(50px); /* 头像浮得最高 */
+}
+.profile-info {
+    transform: translateZ(30px); /* 文字浮在中间 */
+}
+.visitor-badge, .stats-row, .action-buttons {
+    transform: translateZ(20px); /* 按钮浮得低一点 */
+}
+
+
+/* ==========================================
+   自定义滚动条 (Webkit内核: Chrome, Edge, Safari)
+   ========================================== */
+
+/* 滚动条整体宽度 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* 滚动条轨道 (背景) */
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+/* 滚动条滑块 (手指捏住的部分) */
+::-webkit-scrollbar-thumb {
+    background: #0e55c0; /* 你的主题粉色 */
+    border-radius: 4px;
+}
+
+/* 鼠标悬停在滑块上时 */
+::-webkit-scrollbar-thumb:hover {
+    background: #0c3779; /* 加深一点 */
+}
+
+/* 暗色模式适配 */
+[data-md-color-scheme="slate"] ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+[data-md-color-scheme="slate"] ::-webkit-scrollbar-thumb {
+    background: #0e55c0;
+}
+
+/* ==========================================
+   正文链接交互动画 (修复版：防止误伤首页按钮)
+   ========================================== */
+
+/* 关键：在 :not() 里把 .btn-main 和 .btn-text 加进去 */
+.md-typeset a:not(.md-button):not(.headerlink):not(.md-content__button):not(.btn-main) {
+    text-decoration: none; 
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 2px; /* 初始宽度 */
+    transition: background-size 0.3s;
+    color: var(--md-accent-fg-color); /* 使用主题色 */
+}
+
+/* 悬停效果 */
+.md-typeset a:not(.md-button):not(.headerlink):not(.md-content__button):hover {
+    background-size: 100% 2px; /* 悬停时画线 */
+}
+
+/* ==========================================
+   Mac 风格代码块 (Mac-style Code Block)
+   ========================================== */
+.md-typeset pre > code {
+    position: relative;
+    margin-top: 24px; /* 给上面留出放圆点的位置 */
+    border-radius: 8px; /* 圆角 */
+}
+
+/* 伪元素画出红黄绿三个点 */
+.md-typeset pre > code::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fc625d; /* 红色点 */
+    box-shadow: 
+        20px 0 #fdbc40, /* 黄色点 */
+        40px 0 #35cd4b; /* 绿色点 */
+    z-index: 10;
+}
+
+/* 调整代码块背景容器，包裹住圆点 */
+.highlight {
+    background-color: var(--md-code-bg-color);
+    border-radius: 8px;
+    padding-top: 10px;
+}
+
+/* ==========================================
+   全屏封面 (Hero Cover) 样式
+   ========================================== */
+
+/* 1. 封面容器：占满屏幕高度，减去顶部导航栏高度 */
+.landing-cover {
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 60px); /* 减去 header 高度，防止溢出 */
+    
+    /* 强制突破 MkDocs 容器限制，全宽显示 */
+    margin-left: 50%;
+    transform: translateX(-50%);
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    /* 背景图设置 (这里你可以换一张更震撼的大图) */
+    /* 如果不设，它会复用 body 的背景，也很和谐 */
+    /* background-image: url('../assets/hero_bg.jpg'); */
+    /* background-size: cover; background-position: center; */
+}
+
+/* 2. 封面内容微调 */
+.cover-title {
+    font-size: 3rem !important; /* 超大标题 */
+    font-weight: 800 !important;
+    margin-bottom: 1rem !important;
+    /* 渐变文字效果 */
+    background: linear-gradient(to right, #e67e96, #5e72e4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.cover-slogan {
+    font-size: 1.5rem !important;
+    color: var(--md-default-fg-color--light);
+    font-style: italic;
+    margin-bottom: 3rem !important;
+}
+
+/* 3. 按钮组间距 */
+.cover-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* 4. 向下滚动箭头动画 */
+.scroll-down-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--md-default-fg-color--light);
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* ==========================================
+   调整下方内容布局
+   ========================================== */
+/* 给下方的内容加一点上边距，防止紧贴封面 */
+.hero-layout {
+    margin-top: 60px !important;
+    padding-bottom: 40px; /* 底部留白 */
+}
+
+/* ==========================================================================
+   6. 首页大屏特效 (宽松版 - 这里的数字控制间距)
+   ========================================================================== */
+
+/* 1. 浮空的英雄大标题 (Z弟弟的数理秘密花园) */
+.home-hero-title {
+    font-size: 3rem !important; /* 稍微再大一点 */
+    font-weight: 800 !important;
+    
+    /* --- 关键修改：加大间距 --- */
+    margin-top: 200px !important;    /* 顶部留空：原60px -> 改为120px (往下挪) */
+    margin-bottom: 40px !important;  /* 两行字中间的空隙：原20px -> 改为40px */
+    
+    text-align: center;
+    line-height: 1.2;
+    
+    /* 渐变色文字 */
+    background: linear-gradient(to right, #e67e96, #5e72e4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* 文字投影 */
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+    
+    /* 进场动画 */
+    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 2. 浮空的副标题 (按理来讲...) */
+.home-hero-subtitle {
+    font-size: 1.5rem !important;
+    text-align: center;
+    font-style: italic;
+    
+    /* --- 关键修改：加大底部间距 --- */
+    margin-bottom: 200px !important; /* 下方留空：原50px -> 改为100px (离磨砂卡片更远) */
+    
+    /* 亮色模式字色 */
+    color: #444; 
+    text-shadow: 0 2px 10px rgba(255,255,255, 0.8);
+    
+    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
+}
+
+/* 暗色模式适配 */
+[data-md-color-scheme="slate"] .home-hero-subtitle {
+    color: #ddd;
+    text-shadow: 0 2px 10px rgba(0,0,0, 0.8);
+}
+
+/* 3. 手动构建的磨砂玻璃盒子 */
+.home-glass-wrapper {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    padding: 40px;
+    margin: 80px auto 60px auto !important; /* 底部增加一点外边距，防止贴底 */
+    max-width: 1100px; 
+    
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    
+    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s backwards;
+}
+
+/* 暗色模式下的磨砂盒子 */
+[data-md-color-scheme="slate"] .home-glass-wrapper {
+    background-color: rgba(30, 32, 48, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .home-hero-title { 
+        font-size: 2rem !important; 
+        margin-top: 80px !important;    /* 移动端稍微紧凑一点，不然首屏全是空白 */
+        margin-bottom: 30px !important; 
+    }
+    .home-hero-subtitle { 
+        font-size: 1.1rem !important; 
+        margin-bottom: 60px !important; 
+    }
+    .home-glass-wrapper { padding: 20px; }
 }

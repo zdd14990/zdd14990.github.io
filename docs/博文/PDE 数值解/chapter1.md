@@ -1,3 +1,6 @@
+---
+date: 2025-11-21
+---
 首先我们给出推广的定义。考虑高维 PDE
 
 $$
@@ -358,7 +361,9 @@ $$x^{(k+1)}=x^{(k)}+\alpha P^{-1}(b-Ax^{(k)}) = (I-\alpha P^{-1}A)x^{(k)}+\alpha
 令 $x^{(k+1)}=x^{(k)}+\alpha_{k}d^{k}$，$d^{k}=r^{k}=b-Ax^{(k)}=-\nabla\phi(x^{(k)})$。我们希望 $\alpha_{k}=\arg \min_{\alpha}\phi(x^{(k)}+\alpha d^{k})$。
 则我们有：
 
-$$\alpha_{k}=\frac{{r^k}^{T}r^{k}}{{r^{k}}^TAr^{k}},\quad r^{k+1}=r^k \alpha_k A r^k$$
+$$
+\alpha_{k} = \frac{(r^k)^T r^k}{(r^k)^T A r^k}, \quad r^{k+1} = r^k - \alpha_k A r^k
+$$
 
 !!! quote "引理 4"
     $||x^{(k+1)}-x||_{A}\le\frac{\kappa(A)-1}{\kappa(A)+1}||x^{(k)}-x||_{A}$，
@@ -368,7 +373,7 @@ $$\alpha_{k}=\frac{{r^k}^{T}r^{k}}{{r^{k}}^TAr^{k}},\quad r^{k+1}=r^k \alpha_k A
 
 $$\begin{cases}
 r^{(0)}=b-Ax^{(0)}, z^{(0)}=P^{-1}r^{(0)}\\
-\alpha_{k}=\frac{{r^k}^{T}r^{k}}{{r^{k}}^TAr^{k}}\\
+\alpha_{k} = \frac{(r^k)^T r^k}{(r^k)^T A r^k}\\
 x^{(k+1)}=x^{(k)} + \alpha_k z^k\\
 r^{k+1} = r^k - \alpha_k A z^k\\
 z^{k+1} = P^{-1}r^{k+1}\\
@@ -384,10 +389,10 @@ z^{k+1} = P^{-1}r^{k+1}\\
 
 $$\begin{cases}
 r^{(0)}=b-Ax^{(0)}\\
-\alpha_{k}=\frac{{r^k}^{T}r^{k}}{{p^{k}}^TAp^{k}}\\
+\alpha_{k}=\frac{(r^k)^{T}r^{k}}{(p^{k})^TAp^{k}}\\
 x^{(k+1)}= x^{(k)} + \alpha_k p^k\\
 r^{k+1} = r^k - \alpha_k Ap^k=b-Ax^{(k+1)}\\
-\beta_k = -\frac{{p^k}^TAr^{k+1}}{{p^k}^T A p^k}=\frac{||r^{k+1}||^2}{||r^k||^2}\\
+\beta_k = -\frac{(p^k)^TAr^{k+1}}{(p^k)^T A p^k}=\frac{||r^{k+1}||^2}{||r^k||^2}\\
 p^{k+1}=r^{k+1}+\beta_k p^k\\
 \end{cases}
 $$
@@ -398,11 +403,11 @@ $$
 **预处理 CGM (Pre-conditioned CGM)**：
 
 $$\begin{cases}
-\alpha_{k}=\frac{{r^k}^{T}r^{k}}{{p^{k}}^TAp^{k}}\\
+\alpha_{k}=\frac{(r^k)^{T}r^{k}}{(p^{k})^TAp^{k}}\\
 x^{(k+1)}= x^{(k)} + \alpha_k p^k\\
 r^{k+1} = r^k - \alpha_k Ap^k\\
 Pz^{k+1} = r^{k+1}\\
-\beta_k = \frac{{r^{k+1}}^Tz^{k+1}}{{r^{k}}Tz^k}\\
+\beta_k = \frac{(r^{k+1})^Tz^{k+1}}{(r^{k})Tz^k}\\
 p^{k+1}=z^{k+1}+\beta_k p^k\\
 \end{cases}$$
 
