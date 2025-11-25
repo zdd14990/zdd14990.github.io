@@ -839,6 +839,7 @@ $$
 
 [ :octicons-arrow-left-24:  上一章：椭圆 PDE 的有限差分法 ](chapter1.md){ .md-button }
 
+<!-- [ 下一章：还没写 :octicons-arrow-right-24: ](chapter2.md){ .md-button .md-button--primary } -->
 [ 下一章：双曲 PDE 的有限差分法 :octicons-arrow-right-24: ](chapter3.md){ .md-button .md-button--primary }
 
 </div>

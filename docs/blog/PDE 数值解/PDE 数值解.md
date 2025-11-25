@@ -22,7 +22,7 @@ hide:
 -   **第一章：椭圆 PDE 的有限差分方法**
 
     ---
-    介绍有限差分方法。
+    介绍椭圆 PDE 的有限差分方法。
 
     [:octicons-arrow-right-24: 阅读章节](chapter1.md)
 
@@ -30,11 +30,13 @@ hide:
 -   **第二章：抛物 PDE 的有限差分方法**
 
     ---
+    介绍抛物 PDE 的有限差分方法。
     [:octicons-arrow-right-24: 阅读章节](chapter2.md)
 
 -   **第三章：双曲 PDE 的有限差分方法**
 
     ---
+    介绍双曲 PDE 的有限差分方法。
     [:octicons-arrow-right-24: 阅读章节](chapter3.md)
 
 </div>
