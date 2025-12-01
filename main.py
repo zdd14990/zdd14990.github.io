@@ -87,7 +87,7 @@ def define_env(env):
             path = page.file.src_path.replace('\\', '/')
             
             # 统一过滤条件：在博文目录下，且不是索引页、目录页、概览页
-            if ("博文" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
+            if ("blog" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
                 valid_pages.append(page)
         return valid_pages
 
@@ -121,7 +121,7 @@ def define_env(env):
             if not page.title: continue
             path = page.file.src_path.replace('\\', '/')
             
-            if ("博文" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
+            if ("blog" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
                 
                 sort_key, date_str, preview = parse_file_content(page.file.abs_src_path)
                 safe_title = html.escape(page.title).replace('{', '&#123;').replace('}', '&#125;')

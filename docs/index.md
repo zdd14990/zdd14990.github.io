@@ -330,10 +330,11 @@ git_revision_date_localized:
 
 <div align="center" style="margin-bottom: 30px;" markdown="1">
 
-[:material-math-integral: 分析](博文/catalog_analysis.md){ .md-button .md-button--primary }
-[:material-sigma: 代数](博文/catalog_algebra.md){ .md-button .md-button--primary }
-[:material-vector-curve: 应用](博文/catalog_applied.md){ .md-button .md-button--primary }
-[:material-chart-bell-curve-cumulative: 经济](博文/catalog_econ.md){.md-button  .md-button--primary }
+[:material-math-integral: 分析](blog/catalog_analysis.md){ .md-button .md-button--primary }
+[:material-sigma: 代数](blog/catalog_algebra.md){ .md-button .md-button--primary }
+[:material-vector-curve: 应用](blog/catalog_applied.md){ .md-button .md-button--primary }
+[:material-atom: 物理](blog/catalog_phy.md){ .md-button .md-button--primary }
+[:material-chart-bell-curve-cumulative: 经济](blog/catalog_econ.md){.md-button  .md-button--primary }
 [:material-link-variant: 友链](友链/友链.md){ .md-button }
 
 </div>
@@ -391,7 +392,7 @@ git_revision_date_localized:
   </a>
 
   <div class="sub-actions">
-    <a href="博文/" class="btn-secondary">文章</a>
+    <a href="blog/" class="btn-secondary">文章</a>
     <a href="友链/友链/" class="btn-secondary">友链</a>
   </div>
 

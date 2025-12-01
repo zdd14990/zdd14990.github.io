@@ -110,3 +110,16 @@ git_revision_date_localized:
     [:octicons-arrow-right-24: 阅读笔记](中级微观经济学.md)
 
 </div>
+
+<br>
+
+## :material-atom: 物理
+
+<div class="grid cards" markdown>
+-   **统计力学**
+
+    ---
+    从微观状态到宏观热力学量的概率解释与系综理论。
+
+    [:octicons-arrow-right-24: 阅读笔记](统计力学/统计力学.md)
+</div>
