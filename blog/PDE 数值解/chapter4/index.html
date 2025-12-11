@@ -1,0 +1,3166 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/PDE%20%E6%95%B0%E5%80%BC%E8%A7%A3/chapter4/">
+      
+      
+        <link rel="prev" href="../chapter3/">
+      
+      
+        <link rel="next" href="../../%E5%87%B8%E4%BC%98%E5%8C%96/%E5%87%B8%E4%BC%98%E5%8C%96/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>第四章:有限元方法 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+   <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="author" content="zdd">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/PDE%20%E6%95%B0%E5%80%BC%E8%A7%A3/chapter4/">
+  <meta property="og:title" content="第四章:有限元方法 - zdd14990">
+  <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/PDE%20%E6%95%B0%E5%80%BC%E8%A7%A3/chapter4/">
+  <meta name="twitter:title" content="第四章:有限元方法 - zdd14990">
+  <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第四章:有限元方法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zdd14990/zdd14990.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zdd14990
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  博文
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../%E5%8F%8B%E9%93%BE/%E5%8F%8B%E9%93%BE/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  友链
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zdd14990/zdd14990.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zdd14990
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    博文
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    博文
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    分析
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    分析
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../catalog_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%88%86%E6%9E%902-H%E7%AC%94%E8%AE%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    分析2-H笔记
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%AE%9E%E5%88%86%E6%9E%90/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实分析
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%BE%AE%E5%88%86%E5%87%A0%E4%BD%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    微分几何
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    代数
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    代数
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../catalog_algebra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E4%BB%A3%E6%95%B02-H%E7%AC%94%E8%AE%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    代数2-H笔记
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E4%BA%A4%E6%8D%A2%E4%BB%A3%E6%95%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    交换代数
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E8%A1%A8%E7%A4%BA%E8%AE%BA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    表示论
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    应用数学
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    应用数学
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../catalog_applied/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PDE 数值解
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    PDE 数值解
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PDE%20%E6%95%B0%E5%80%BC%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第零章:基本定义
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一章:椭圆 PDE 的有限差分方法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二章:抛物 PDE 的有限差分法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三章:双曲 PDE 的有限差分法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第四章:有限元方法
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第四章:有限元方法
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.椭圆边值条件的变分形式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.椭圆边值条件的变分形式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 抽象变分问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 变分形式和弱解
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.椭圆边值问题的有限元方法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.椭圆边值问题的有限元方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-galerkin-ritz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Galerkin 方法和 Ritz 方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 有限元方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.误差分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.误差分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Céa 引理与抽象误差估计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-sobolev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Sobolev 空间插值理论
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    凸优化
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    凸优化
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/%E5%87%B8%E4%BC%98%E5%8C%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/chapter1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一章:凸分析
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/chapter2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二章:凸多面体
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/chapter3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三章:凸优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/chapter4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第四章:几何对偶框架
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%87%B8%E4%BC%98%E5%8C%96/homework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    课程作业
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    渐进分析
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%B8%93%E9%A2%98/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    数据科学专题
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4_6" id="__nav_2_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    应用数学博资考
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    应用数学博资考
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%BA%94%E7%94%A8%E6%95%B0%E5%AD%A6%E5%8D%9A%E8%B5%84%E8%80%83/%E5%BA%94%E7%94%A8%E6%95%B0%E5%AD%A6%E5%8D%9A%E8%B5%84%E8%80%83/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%BA%94%E7%94%A8%E6%95%B0%E5%AD%A6%E5%8D%9A%E8%B5%84%E8%80%83/%E6%95%B0%E5%80%BC%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    数值线性代数
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    物理
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    物理
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../catalog_phy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BB%9F%E8%AE%A1%E5%8A%9B%E5%AD%A6/%E7%BB%9F%E8%AE%A1%E5%8A%9B%E5%AD%A6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    统计力学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    经济学
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    经济学
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../catalog_econ/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    概览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E4%B8%AD%E7%BA%A7%E5%BE%AE%E8%A7%82%E7%BB%8F%E6%B5%8E%E5%AD%A6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    中级微观经济学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    友链
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    友链
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8F%8B%E9%93%BE/%E5%8F%8B%E9%93%BE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    友链
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.椭圆边值条件的变分形式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.椭圆边值条件的变分形式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 抽象变分问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 变分形式和弱解
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.椭圆边值问题的有限元方法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.椭圆边值问题的有限元方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-galerkin-ritz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Galerkin 方法和 Ritz 方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 有限元方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.误差分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.误差分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Céa 引理与抽象误差估计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-sobolev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Sobolev 空间插值理论
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+  
+  
+
+
+<h1 id="_1">第四章：有限元方法</h1>
+<h2 id="1">1.椭圆边值条件的变分形式</h2>
+<h3 id="11">1.1 抽象变分问题</h3>
+<p>许多物理问题可以通过能量极小化原理求解，相应的变分问题是：</p>
+<div class="admonition definition">
+<p class="admonition-title">抽象变分问题</p>
+<div class="arithmatex">\[
+    \text{求 }u\in \mathbb{U},\quad \text{使得 } J(u) = \min_{v\in \mathbb{U}} J(v)
+\]</div>
+<p>其中 <span class="arithmatex">\(\mathbb{U}\)</span> 是 Banach 空间 <span class="arithmatex">\(\mathbb{V}\)</span> 的一个非空闭子集，<span class="arithmatex">\(J:\mathbb{U}\to \mathbb{R}\)</span> 是定义在 <span class="arithmatex">\(\mathbb{U}\)</span> 上的能量泛函。特别的，在许多问题中 <span class="arithmatex">\(\mathbb{V}\)</span> 是 Hilbert 空间，<span class="arithmatex">\(\mathbb{U}\)</span> 是 <span class="arithmatex">\(\mathbb{V}\)</span> 的一个闭线性子空间，泛函 <span class="arithmatex">\(J\)</span> 具有如下形式：</p>
+<div class="arithmatex">\[
+    J(v) = \frac{1}{2} a(v,v) - f(v)
+\]</div>
+<p>其中 <span class="arithmatex">\(a(\cdot,\cdot): \mathbb{V}\times \mathbb{V}\to \mathbb{R}\)</span> 是一个双线性形式，<span class="arithmatex">\(f:\mathbb{V}\to \mathbb{R}\)</span> 是一个连续的线性泛函。</p>
+</div>
+<p>这类问题一般直接求解，或利用变分问题的 Euler-Lagrange 方程进行求解。两种方法都会用到微商的概念。</p>
+<div class="admonition definition">
+<p class="admonition-title">Frechet 微商</p>
+<p><span class="arithmatex">\(F\)</span> 称为在 <span class="arithmatex">\(x\in \Omega\)</span> 处 <strong>Frechet 可微</strong> 的，若存在线性映射 <span class="arithmatex">\(A:\mathbb{X}\to \mathbb{Y}\)</span>，使得对任意的 <span class="arithmatex">\(\varepsilon &gt;0\)</span>，存在 <span class="arithmatex">\(\delta &gt;0\)</span>，当 <span class="arithmatex">\(z\in \mathbb{X}\)</span> 满足 <span class="arithmatex">\(\|z\|\le \delta\)</span> 时，有</p>
+<div class="arithmatex">\[
+    \|F(x+z) - F(x) - Az\|_{\mathbb{Y}} \le \varepsilon \|z\|_{\mathbb{X}}
+\]</div>
+<p>这时称 <span class="arithmatex">\(A\)</span> 为 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处的 <strong>Frechet 微商</strong>，记为 <span class="arithmatex">\(F'(x)=A\)</span> 或 <span class="arithmatex">\(\mathrm{d}F(x)=A\)</span>。
+<span class="arithmatex">\(F'(x)z=Az\)</span> 称为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处的 <strong>Frechet 微分</strong> 或 <strong>一阶变分</strong>。如果对任意的 <span class="arithmatex">\(z\in \mathbb{X}\)</span>，<span class="arithmatex">\(F'(x)z\)</span> 在 <span class="arithmatex">\(x\in \Omega\)</span> 处是 <strong>Frechet 可微</strong> 的，则称 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处是 <strong>二次 Frechet 可微</strong> 的，且 <strong>二阶 Frechet 微商</strong> 是一个 <span class="arithmatex">\(\mathbb{X}\times \mathbb{X}\)</span> 上的双线性映射，记为 <span class="arithmatex">\(F''(x)\)</span> 或 <span class="arithmatex">\(\mathrm{d}^2 F(x)\)</span>。此时 <span class="arithmatex">\(F''(x)(z,y)=\mathrm{d}^2 F(x)(z,y)=(F'(x)z)'y\)</span> 称为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处的 <strong>二阶 Frechet 微分</strong> 或 <strong>二阶变分</strong>。一般地，可由 <span class="arithmatex">\(\mathrm{d}^mF(x)=\mathrm{d}(\mathrm{d}^{m-1}F(x))\)</span> 定义 <strong><span class="arithmatex">\(m\)</span> 阶 Frechet 微商</strong>，以及 <strong><span class="arithmatex">\(m\)</span> 阶 Frechet 微分</strong> <span class="arithmatex">\(\mathrm{d}^mF(x)(z_1,z_2,\ldots,z_m)\)</span>。点 <span class="arithmatex">\(x\)</span> 处的 <span class="arithmatex">\(m\)</span> 阶 Frechet 微商 <span class="arithmatex">\(\mathrm{d}^mF(x)\)</span> 称为 <strong>有界</strong> 的，若 <span class="arithmatex">\(\mathrm{d}^mF(x)\)</span> 是一个有界的多线性映射。</p>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">Gateaux 微商</p>
+<p><span class="arithmatex">\(F\)</span> 称为在 <span class="arithmatex">\(x\in \Omega\)</span> 处沿方向 <span class="arithmatex">\(z\in \mathbb{X}\)</span> 是 <strong>Gateaux 可微</strong> 的，若以下极限存在：</p>
+<div class="arithmatex">\[
+\mathrm{D}F(x;z)=\lim_{t\to 0}\frac{F(x+tz)-F(x)}{t}
+\]</div>
+<p>这时称 <span class="arithmatex">\(\mathrm{D}F(x;z)\)</span> 为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处沿方向 <span class="arithmatex">\(z\)</span> 的 <strong>Gateaux 微分</strong>。若 <span class="arithmatex">\(\mathrm{D}F(x;z)\)</span> 关于 <span class="arithmatex">\(z\)</span> 是线性的，即存在一个线性映射 <span class="arithmatex">\(A:\mathbb{X}\to \mathbb{Y}\)</span>，使得 <span class="arithmatex">\(\mathrm{D}F(x;z)=Az\)</span>，则称 <span class="arithmatex">\(A\)</span> 是 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处的 <strong>Gateaux 微商</strong>，记为 <span class="arithmatex">\(\mathrm{D}F(x)=A\)</span>。若对给定的 <span class="arithmatex">\(z\in \mathbb{X}\)</span>，<span class="arithmatex">\(\mathrm{D}F(x;z)\)</span> 在 <span class="arithmatex">\(x\in \Omega\)</span> 处沿方向 <span class="arithmatex">\(y\in \mathbb{X}\)</span> 是 <strong>Gateaux 可微</strong> 的，则称其微分为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处沿方向 <span class="arithmatex">\(z\)</span> 和 <span class="arithmatex">\(y\)</span> 的 <strong>二阶混合 Gateaux 微分</strong>，记为 <span class="arithmatex">\(\mathrm{D}^2F(x;z,y)\)</span>。若 <span class="arithmatex">\(\mathrm{D}^2F(x;z,y)\)</span> 关于 <span class="arithmatex">\(z\)</span> 和 <span class="arithmatex">\(y\)</span> 是双线性的，则定义 <span class="arithmatex">\(\mathrm{D}^2F(x)(z,y)=\mathrm{D}^2F(x;z,y)\)</span>，并称 <span class="arithmatex">\(\mathrm{D}^2F(x)\)</span> 为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(x\)</span> 处的 <strong>二阶 Gateaux 微商</strong>。一般地，可归纳定义 <strong><span class="arithmatex">\(m\)</span> 阶混合 Gateaux 微分</strong> <span class="arithmatex">\(\mathrm{D}^mF(x;z_1,z_2,\ldots,z_m)=\mathrm{D}(\mathrm{D}^{m-1}F(x;z_1,z_2,\ldots,z_{m-1});z_m)\)</span>，以及 <strong><span class="arithmatex">\(m\)</span> 阶 Gateaux 微商</strong> <span class="arithmatex">\(\mathrm{D}^mF(x)=\mathrm{D}(\mathrm{D}^{m-1}F(x))\)</span>。</p>
+</div>
+<p>若 <span class="arithmatex">\(F\)</span> 的 Frechet 微商存在，则其 Gateaux 微商也存在，且两者相等；反之，若 <span class="arithmatex">\(F\)</span> 的 Gateaux 微商在 <span class="arithmatex">\(x\)</span> 的邻域中存在且在 <span class="arithmatex">\(x\)</span> 处连续，则 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处的 Frechet 微商也存在，且两者相等。这时可以利用 Gateaux 微商来计算 Frechet 微商：</p>
+<div class="arithmatex">\[
+F'(x)z=\mathrm{D}F(x)z=\frac{\mathrm{d}}{\mathrm{d}t}F(x+tz)\Big|_{t=0}
+\]</div>
+<p>一般 <span class="arithmatex">\(\mathrm{D}^2F(x;z,y)\neq F''(x)(z,y)\)</span>，但若 <span class="arithmatex">\(m\)</span> 阶 Gateaux 微商 <span class="arithmatex">\(\mathrm{D}^mF(\cdot)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 的邻域中是一致有界的 <span class="arithmatex">\(m\)</span> 线性映射，且关于 <span class="arithmatex">\(x\)</span> 一致连续时，则它关于 <span class="arithmatex">\((z_1,\cdots,z_m)\)</span> 有对称性，且此时 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处的 <span class="arithmatex">\(m\)</span> 阶 Frechet 微商存在，且取值为 <span class="arithmatex">\(\mathrm{D}^mF(x_0)\)</span>。这时我们可以用 <span class="arithmatex">\(m\)</span> 阶 Gateaux 微分来计算 <span class="arithmatex">\(m\)</span> 阶 Frechet 微分：</p>
+<div class="arithmatex">\[
+F^{(m)}(x)(z_1,z_2,\ldots,z_m)=\frac{\mathrm{d}}{\mathrm{d}t_m}\left[\cdots \frac{\mathrm{d}}{\mathrm{d}t_1}(x+t_1z_1+\cdots +t_mz_m)\Big|_{t_1=0}\cdots\right]\Big|_{t_m=0}
+\]</div>
+<p>若 Frechet 可微的函数 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处取得极小值，则对任意的 <span class="arithmatex">\(z\in \mathbb{X}\)</span>，<span class="arithmatex">\(F(x+tz)\)</span> 作为 <span class="arithmatex">\(t\)</span> 的函数在 <span class="arithmatex">\(t=0\)</span> 处也取得极小值，因此有</p>
+<div class="arithmatex">\[
+F'(x)z=0, \forall z\in \mathbb{X}
+\]</div>
+<p>因此 Frechet 可微泛函 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处取得极小值的必要条件是 <span class="arithmatex">\(x\)</span> 满足上式。上式也被称为 Euler-Lagrange 方程 <span class="arithmatex">\(F'(x)=0\)</span> 的弱形式。此外若存在 <span class="arithmatex">\(\alpha &gt;0\)</span> 和 <span class="arithmatex">\(\delta &gt;0\)</span>，使得对任意的 <span class="arithmatex">\(z\in \mathbb{X}\)</span> 和 <span class="arithmatex">\(\|z\|\le \delta\)</span>，有 <span class="arithmatex">\(F''(x)(z,z)\ge \alpha \|z\|^2\)</span>，则 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x\)</span> 处取得极小值的充分条件也成立。</p>
+<div class="admonition example">
+<p class="admonition-title">例</p>
+<p>设 <span class="arithmatex">\(J=\frac{1}{2}a(v,v)-f(v)\)</span>，则</p>
+<div class="arithmatex">\[
+\frac{1}{t}(J(u+tv)-J(u)) = + a(u,v) - f(v)+\frac{1}{2}a(v,v)t 
+\]</div>
+<p>结合 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 和 <span class="arithmatex">\(f(\cdot)\)</span> 的连续性可知</p>
+<div class="arithmatex">\[
+J'(u)(v)=a(u,v)-f(v)
+\]</div>
+<p>若 <span class="arithmatex">\(J\)</span> 在 <span class="arithmatex">\(u\)</span> 处取得极小值，则 <span class="arithmatex">\(u\)</span> 满足方程</p>
+<div class="arithmatex">\[
+a(u,v)-f(v)=0, \forall v\in \mathbb{U}
+\]</div>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">Lax-Milgram 定理</p>
+<p>设 <span class="arithmatex">\(\mathbb{V}\)</span> 是 Hilbert 空间，<span class="arithmatex">\(a(\cdot,\cdot):\mathbb{V}\times \mathbb{V}\to \mathbb{R}\)</span> 是一个连续的双线性泛函，且满足 <span class="arithmatex">\(\mathbb{V}\)</span> <strong>椭圆性条件</strong>(也称为 <strong>强制性条件</strong>)：</p>
+<div class="arithmatex">\[
+\exists \alpha &gt;0, \quad a(v,v)\ge \alpha \|u\|^2, \forall u\in \mathbb{V}
+\]</div>
+<p>设 <span class="arithmatex">\(f:\mathbb{V}\to \mathbb{R}\)</span> 是一个连续的线性泛函，则抽象变分问题</p>
+<div class="arithmatex">\[
+\text{求 }u\in \mathbb{V},\quad \text{使得 } a(u,v)=f(v), \forall v\in \mathbb{V}
+\]</div>
+<p>存在唯一解。</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>由双线性泛函 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 的连续性可知，存在常数 <span class="arithmatex">\(M&gt;0\)</span>，使得</p>
+<div class="arithmatex">\[
+a(u,v)\le M\|u\|\|v\|, \forall u,v\in \mathbb{V}
+\]</div>
+<p>对任意 <span class="arithmatex">\(u\in \mathbb{V}\)</span>，由 <span class="arithmatex">\(v\in \mathbb{V}\mapsto a(u,v)\)</span> 是连续线性泛函知存在唯一的 <span class="arithmatex">\(A(u)\in \mathbb{V}^*\)</span>，使得</p>
+<div class="arithmatex">\[
+A(u)v=a(u,v), \forall v\in \mathbb{V}
+\]</div>
+<p>易知 <span class="arithmatex">\(A:\mathbb{V}\to \mathbb{V}^*\)</span> 是线性映射，且</p>
+<div class="arithmatex">\[
+\|A\|_{\mathcal{L}(\mathbb{V},\mathbb{V}^*)}\triangleq \sup_{u\in \mathbb{V},\|u\|=1}{\|A(u)\|_{\mathbb{V}^*}}=\sup_{u,v\in \mathbb{V},\|u\|=\|v\|=1}|A(u)v|\le M
+\]</div>
+<p>记 <span class="arithmatex">\(\tau:\mathbb{V}^*\to \mathbb{V}\)</span> 为 Riesz 映射，由定义有</p>
+<div class="arithmatex">\[
+f(v)=\left&lt;\tau f,v\right&gt;, \forall v\in \mathbb{V}
+\]</div>
+<p>于是求解该问题等价于求解问题</p>
+<div class="arithmatex">\[
+\text{求 }u\in \mathbb{V},\quad \text{使得 } \tau A(u)=\tau f
+\]</div>
+<p>定义映射 <span class="arithmatex">\(F:\mathbb{V}\to \mathbb{V}\)</span> 为 <span class="arithmatex">\(F(v)=v-\rho(\tau A(v)-\tau f)\)</span>，其中 <span class="arithmatex">\(\rho &gt;0\)</span> 是待定参数。则求解上问题的解等价于求解 <span class="arithmatex">\(F(\cdot)\)</span> 的不动点。我们还有</p>
+<div class="arithmatex">\[
+\left&lt;\tau A(v),v\right&gt;=a(v,v)\ge \alpha \|v\|^2
+\]</div>
+<div class="arithmatex">\[
+\| \tau A(v) \| = \| A(v) \|_{\mathbb{V}^*} \le M \| v \|
+\]</div>
+<p>因此对于给定的 <span class="arithmatex">\(\rho\in (0, \frac{2\alpha}{M^2})\)</span>，有</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \|F(v_1)-F(v_2)\|^2 &amp;= \|v_1-v_2\|^2 - 2\rho \left&lt;\tau A(v_1)-\tau A(v_2), v_1-v_2\right&gt; + \rho^2 \|\tau A(v_1)-\tau A(v_2)\|^2\\
+    &amp;\le \left(1 - 2\rho \alpha + \rho^2 M^2\right) \|v_1-v_2\|^2 &lt; \|v_1-v_2\|^2
+\end{aligned}
+\]</div>
+<p>即 <span class="arithmatex">\(F\)</span> 为 <span class="arithmatex">\(\mathbb{V}\)</span> 上的压缩映射。由 Banach 不动点定理可知，<span class="arithmatex">\(F\)</span> 存在唯一不动点，即原问题存在唯一解。</p>
+</div>
+<h3 id="12">1.2 变分形式和弱解</h3>
+<p>Poisson 方程的边值问题通常有如下形式：</p>
+<div class="arithmatex">\[
+\begin{cases}
+    -\Delta u=f ,&amp;x\in \Omega\\
+    u=\bar{u}_0,&amp;x\in \partial \Omega_0\\
+    \frac{\partial u}{\partial n}+bu=g,&amp;x\in \partial \Omega_1
+\end{cases}
+\]</div>
+<p>下面我们考虑 Sobolev 空间。</p>
+<p>设 <span class="arithmatex">\(\Omega\subset \mathbb{R}^d\)</span> 是连通的开区域，<span class="arithmatex">\(\partial \Omega\)</span> 是其边界，在 <span class="arithmatex">\(\Omega\)</span> 内具有紧支集的 <span class="arithmatex">\(m\)</span> 次连续可微函数的集合记作 <span class="arithmatex">\(C_0^m(\Omega)\)</span>。</p>
+<p>设 <span class="arithmatex">\(u\in C^m(\Omega)\)</span>，<span class="arithmatex">\(\alpha=(\alpha_1,\alpha_2,\ldots,\alpha_d)\)</span> 为多重指标，则对任意的 <span class="arithmatex">\(\phi\in C_0^m(\Omega)\)</span>，由 Green 公式有</p>
+<div class="arithmatex">\[
+\int_{\Omega} \phi \partial^\alpha u\mathrm{d}x = (-1)^{|\alpha|} \int_{\Omega} u \partial^\alpha \phi \mathrm{d}x
+\]</div>
+<p>这启发了我们关于区域 <span class="arithmatex">\(\Omega\)</span> 上所有局部 Lebesgue 可积函数构成的线性空间 <span class="arithmatex">\(\mathbb{L}_{\mathrm{loc}}^1(\Omega)\)</span> 中的广义导数的概念。</p>
+<div class="admonition definition">
+<p class="admonition-title">广义导数</p>
+<p>设 <span class="arithmatex">\(u\in \mathbb{L}_{\mathrm{loc}}^1(\Omega)\)</span>，若存在 <span class="arithmatex">\(v_\alpha\in \mathbb{L}_{\mathrm{loc}}^1(\Omega)\)</span>，使得对任意的 <span class="arithmatex">\(\phi\in C_0^\infty(\Omega)\)</span>，有</p>
+<div class="arithmatex">\[
+\int_{\Omega} \phi v_\alpha \mathrm{d}x = (-1)^{|\alpha|} \int_{\Omega} u \partial^\alpha \phi \mathrm{d}x
+\]</div>
+<p>则称 <span class="arithmatex">\(v_\alpha\)</span> 为 <span class="arithmatex">\(u\)</span> 关于多重指标 <span class="arithmatex">\(\alpha\)</span> 的一个 <span class="arithmatex">\(\left|\alpha\right|\)</span> 阶 <strong>广义偏导数</strong>，记为 <span class="arithmatex">\(\partial^\alpha u = v_\alpha\)</span>。</p>
+</div>
+<p>下文中若不作特别说明，均假设所有的导数为广义导数。</p>
+<div class="admonition theorem">
+<p class="admonition-title">定理</p>
+<p>设 <span class="arithmatex">\(\Omega\subset \mathbb{R}^n\)</span> 是连通的开区域，<span class="arithmatex">\(u\)</span> 的所有 <span class="arithmatex">\(\left|\alpha\right|=m+1\)</span> 阶广义偏导数均为零，则 <span class="arithmatex">\(u\)</span> 是 <span class="arithmatex">\(\Omega\)</span> 上的一个次数不超过 <span class="arithmatex">\(m\)</span> 的多项式。</p>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">Sobolev 空间</p>
+<p>设 <span class="arithmatex">\(m\)</span> 为非负整数，<span class="arithmatex">\(1\le p\le \infty\)</span>，令</p>
+<div class="arithmatex">\[
+\mathbb{W}=\left\{u\in \mathbb{L}^p(\Omega): \partial^\alpha u \in \mathbb{L}^p(\Omega), \forall |\alpha|\le m\right\}
+\]</div>
+<p>其中 <span class="arithmatex">\(\mathbb{L}^p(\Omega)\)</span> 是 <span class="arithmatex">\(\Omega\)</span> 上的 <span class="arithmatex">\(p\)</span> 次 Lebesgue 可积函数空间，其范数记为 <span class="arithmatex">\(\|\cdot\|_{0,p,\Omega}\)</span>。集合 <span class="arithmatex">\(\mathbb{W}\)</span> 赋予范数</p>
+<div class="arithmatex">\[
+\|u\|_{m,p,\Omega} = \left( \sum_{|\alpha|\le m} \|\partial^\alpha u\|_{0,p,\Omega}^p \right)^{1/p}, \quad 1\le p &lt; \infty
+\]</div>
+<div class="arithmatex">\[
+\|u\|_{m,\infty,\Omega} = \max_{|\alpha|\le m} \|\partial^\alpha u\|_{0,\infty,\Omega}
+\]</div>
+<p>后得到的线性赋范空间称为一个 <strong>Sobolev 空间</strong>，记为 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span>，并称 <span class="arithmatex">\(p\)</span> 是 <strong>Sobolev 指标</strong>。</p>
+</div>
+<p>我们有如下重要不等式</p>
+<div class="admonition theorem">
+<p class="admonition-title">Minkowski 不等式</p>
+<p>对任意 <span class="arithmatex">\(1\le p \le \infty\)</span> 和 <span class="arithmatex">\(f,g\in \mathbb{L}^p(\Omega)\)</span>，有</p>
+<div class="arithmatex">\[
+\|f+g\|_{0,p,\Omega} \le \|f\|_{0,p,\Omega} + \|g\|_{0,p,\Omega}
+\]</div>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">Holder 不等式</p>
+<p>设 <span class="arithmatex">\(1\le p,q \le \infty\)</span>，且 <span class="arithmatex">\(\frac{1}{p}+\frac{1}{q}=1\)</span>，则对任意的 <span class="arithmatex">\(f\in \mathbb{L}^p(\Omega)\)</span> 和 <span class="arithmatex">\(g\in \mathbb{L}^q(\Omega)\)</span>，有</p>
+<div class="arithmatex">\[
+\|fg\|_{0,1,\Omega} \le \|f\|_{0,p,\Omega} \|g\|_{0,q,\Omega}
+\]</div>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">Cauchy 不等式</p>
+<p>当 <span class="arithmatex">\(p=q=2\)</span> 时，由 Holder 不等式可得 Cauchy 不等式：</p>
+<div class="arithmatex">\[
+\|fg\|_{0,1,\Omega} \le \|f\|_{0,2,\Omega} \|g\|_{0,2,\Omega}
+\]</div>
+</div>
+<p>不难证明，<span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 是 Banach 空间，当 <span class="arithmatex">\(p=2\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m,2}(\Omega)\)</span> 是 Hilbert 空间，记为 <span class="arithmatex">\(\mathbb{H}^m(\Omega)\)</span>，其范数记为 <span class="arithmatex">\(\|\cdot\|_{m,\Omega}\)</span>。</p>
+<div class="admonition theorem">
+<p class="admonition-title">定理</p>
+<p>若 <span class="arithmatex">\(\Omega\)</span> 的边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面，$1\le p&lt;\infty $，则 <span class="arithmatex">\(C^\infty(\bar{\Omega})\)</span> 在 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 中是稠密的。</p>
+</div>
+<p>由该定理我们有对于具有 Lipschitz 连续边界的区域 <span class="arithmatex">\(\Omega\)</span>，<span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 是 <span class="arithmatex">\(C^\infty(\bar{\Omega})\)</span> 在范数 <span class="arithmatex">\(\|\cdot\|_{m,p,\Omega}\)</span> 下的完备化度量空间。空间 <span class="arithmatex">\(C_0^\infty(\Omega)\)</span> 在 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 中的闭包是 Sobolev 空间 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 的一个子空间，记为 <span class="arithmatex">\(\mathbb{W}_0^{m,p}(\Omega)\)</span>。不难证明 <span class="arithmatex">\(\mathbb{W}_0^{m,2}(\Omega)\)</span> 在范数 <span class="arithmatex">\(\|\cdot\|_{m,\Omega}\)</span> 下是 Banach 空间，特别的，当 <span class="arithmatex">\(p=2\)</span> 时，它是 Hilbert 空间，记为 <span class="arithmatex">\(\mathbb{H}_0^m(\Omega)\)</span>。</p>
+<div class="admonition theorem">
+<p class="admonition-title">Poincare-Friedrichs 不等式</p>
+<p>设 <span class="arithmatex">\(\Omega\)</span> 有有限宽度，即它位于两个平行的超平面之间，则存在只依赖于空间维数 <span class="arithmatex">\(n\)</span>，偏导数的阶数 <span class="arithmatex">\(m\)</span>，两超平面距离 <span class="arithmatex">\(d\)</span> 和 Sobolev 指标 $1\le p&lt;\infty $ 的常数 <span class="arithmatex">\(K(n,m,d,p)\)</span>，使得</p>
+<div class="arithmatex">\[
+|u|_{m,p,\Omega}\le \|u\|_{m,p,\Omega} \le K(n,m,d,p) |u|_{m,p,\Omega}, \forall u\in \mathbb{W}_0^{m,p}(\Omega)
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+|u|_{m,p,\Omega} = \left( \sum_{|\alpha|=m} \|\partial^\alpha u\|_{0,p,\Omega}^p \right)^{1/p}, \quad 1\le p &lt; \infty
+\]</div>
+<p>是 Sobolev 空间 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 上的 <strong>半范数</strong>。</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设 <span class="arithmatex">\(\Omega\)</span> 位于 <span class="arithmatex">\(x_n=0\)</span> 和 <span class="arithmatex">\(x_n=d\)</span> 两个平行超平面之间，令 <span class="arithmatex">\(x=(x',x_n)\)</span>，其中 <span class="arithmatex">\(x'=(x_1,x_2,\ldots,x_{n-1})\)</span>。对任意的 <span class="arithmatex">\(u\in C_0^\infty(\Omega)\)</span>，有</p>
+<div class="arithmatex">\[
+u(x)= \int_0^{x_n} \partial_t u(x',t) \mathrm{d}t
+\]</div>
+<p>因此，由 Holder 不等式可得</p>
+<div class="arithmatex">\[
+\left| \int_0^{x_n} \partial_t u(x',t) \mathrm{d}t \right|^p \le \left( \int_0^{x_n} |\partial_t u(x',t)|^p \mathrm{d}t \right) \left( \int_0^{x_n} 1 \mathrm{d}t \right)^{p-1} = x_n^{p-1} \int_0^{x_n} |\partial_t u(x',t)|^p \mathrm{d}t
+\]</div>
+<p>进而有</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \|u\|_{0,p,\Omega}^p&amp;=\int_{\mathbb{R}^{n-1}} \mathrm{d}x' \int_0^d |u(x)|^p \mathrm{d}x_n \\
+    &amp;\le \int_{\mathbb{R}^{n-1}} \mathrm{d}x' \int_0^d x_n^{p-1} \mathrm{d}x_n \int_0^{x_n} |\partial_t u(x',t)|^p \mathrm{d}t \\
+    &amp;\le \left(\frac{d^p}{p}\right) |u|_{1,p,\Omega}^p
+\end{aligned}
+\]</div>
+<p>于是得</p>
+<div class="arithmatex">\[
+|u|_{1,p,\Omega} \le \|u\|_{1,p,\Omega} =\|u\|_{0,p,\Omega}+|u|_{1,p,\Omega} \le \left(1+\frac{d^p}{p}\right) |u|_{1,p,\Omega}
+\]</div>
+<p>对导函数 <span class="arithmatex">\(\partial^\alpha u\)</span>，<span class="arithmatex">\(|\alpha|&lt;m\)</span>，重复上述过程，可得</p>
+<div class="arithmatex">\[
+|u|_{m,p,\Omega} \le \|u\|_{m,p,\Omega} \le K(d,p) |u|_{m,p,\Omega}, \quad \forall u\in C_0^\infty(\Omega)
+\]</div>
+<p>由此与 <span class="arithmatex">\(C_0^\infty(\Omega)\)</span> 在 <span class="arithmatex">\(\mathbb{W}_0^{m,p}(\Omega)\)</span> 中的稠密性可知该不等式对任意的 <span class="arithmatex">\(u\in \mathbb{W}_0^{m,p}(\Omega)\)</span> 成立。</p>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">嵌入算子</p>
+<p>对于 Banach 空间 <span class="arithmatex">\(\mathbb{X}\)</span> 和 <span class="arithmatex">\(\mathbb{Y}\)</span>，若 <span class="arithmatex">\(\mathbb{X}\subset \mathbb{Y}\)</span>，且存在常数 <span class="arithmatex">\(C&gt;0\)</span>，使得对任意的 <span class="arithmatex">\(x\in \mathbb{X}\)</span>，有 <span class="arithmatex">\(\|x\|_{\mathbb{Y}}\le C \|x\|_{\mathbb{X}}\)</span>，则称恒同算子 <span class="arithmatex">\(I:\mathbb{X}\to \mathbb{Y}\)</span> 为一个 <strong>嵌入算子</strong>，记为 <span class="arithmatex">\(\mathbb{X}\hookrightarrow \mathbb{Y}\)</span>。若嵌入算子 <span class="arithmatex">\(I\)</span> 是紧的，即 <span class="arithmatex">\(I\)</span> 将 <span class="arithmatex">\(\mathbb{X}\)</span> 中的有界闭集映为 <span class="arithmatex">\(\mathbb{Y}\)</span> 中的紧集，则称相应的嵌入算子为 <strong>紧嵌入算子</strong>，记为 <span class="arithmatex">\(\mathbb{X}\overset{c}{\hookrightarrow} \mathbb{Y}\)</span>。</p>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">Sobolev 嵌入定理</p>
+<p>设有界连通区域 <span class="arithmatex">\(\Omega\)</span> 的边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面，则：</p>
+<ul>
+<li>当 <span class="arithmatex">\(m&lt;n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m+k,p}(\Omega)\hookrightarrow \mathbb{W}^{k,q}(\Omega)\)</span>，<span class="arithmatex">\(1\le q\le \frac{np}{n-mp}\)</span>，<span class="arithmatex">\(k\ge 0\)</span>；</li>
+<li>当 <span class="arithmatex">\(m&lt;n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m+k,p}(\Omega)\overset{c}{\hookrightarrow} \mathbb{W}^{k,q}(\Omega)\)</span>，<span class="arithmatex">\(1\le q&lt; \frac{np}{n-mp}\)</span>，<span class="arithmatex">\(k\ge 0\)</span>；</li>
+<li>当 <span class="arithmatex">\(m=n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m+k,p}(\Omega)\overset{c}{\hookrightarrow} \mathbb{W}^{k,q}(\Omega)\)</span>，<span class="arithmatex">\(1\le q&lt; \infty\)</span>，<span class="arithmatex">\(k\ge 0\)</span>；</li>
+<li>当 <span class="arithmatex">\(m&gt;n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m+k,p}(\Omega)\overset{c}{\hookrightarrow} C^k(\bar{\Omega})\)</span>，<span class="arithmatex">\(k\ge 0\)</span>。</li>
+</ul>
+</div>
+<p>由于 Lipschitz 连续边界的 <span class="arithmatex">\(n\)</span> 维 Lebesgue 测度为零，所以 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 中的函数在 <span class="arithmatex">\(\partial \Omega\)</span> 上的值没有定义。但由于 <span class="arithmatex">\(C^\infty(\bar{\Omega})\)</span> 在 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 中是稠密的，因此对于任意 <span class="arithmatex">\(u\in \mathbb{W}^{m,p}(\Omega)\)</span>，都存在一个序列 <span class="arithmatex">\(\{u_k\}\subset C^\infty(\bar{\Omega})\)</span>，使得 <span class="arithmatex">\(\|u-u_k\|_{m,p,\Omega}\to 0\)</span>。记 <span class="arithmatex">\(u_k\)</span> 在 <span class="arithmatex">\(\partial \Omega\)</span> 上的限制为 <span class="arithmatex">\(u_k|_{\partial \Omega}\)</span>。若对于任意逼近序列 <span class="arithmatex">\(\{u_k\}\)</span>，<span class="arithmatex">\(u_k|_{\partial \Omega}\)</span> 在 <span class="arithmatex">\(\mathbb{L}^q(\partial \Omega)\)</span> 都收敛，则称其极限为 <span class="arithmatex">\(u\)</span> 在 <span class="arithmatex">\(\partial \Omega\)</span> 上的 <strong>迹</strong>，记为 <span class="arithmatex">\(u|_{\partial \Omega}\)</span>，称映射 <span class="arithmatex">\(\nu:\mathbb{W}^{m,p}(\Omega)\to \mathbb{L}^q(\partial \Omega)\)</span>，<span class="arithmatex">\(u\mapsto u|_{\partial \Omega}\)</span> 为 <strong>迹算子</strong>。若 <span class="arithmatex">\(\nu\)</span> 是连续的（且是紧的），则称空间 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\)</span> 嵌入（紧嵌入）到 <span class="arithmatex">\(\mathbb{L}^q(\partial \Omega)\)</span>，记为 <span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\hookrightarrow \mathbb{L}^q(\partial \Omega)\)</span>（<span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\overset{c}{\hookrightarrow} \mathbb{L}^q(\partial \Omega)\)</span>）。关于迹算子还有如下嵌入定理：</p>
+<div class="admonition theorem">
+<p class="admonition-title">迹嵌入定理</p>
+<p>设有界连通区域 <span class="arithmatex">\(\Omega\)</span> 的边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 <span class="arithmatex">\(m\ge 1\)</span> 阶光滑的曲面，则：</p>
+<ul>
+<li>当 <span class="arithmatex">\(m&lt;n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\hookrightarrow \mathbb{L}^q(\partial \Omega)\)</span>，<span class="arithmatex">\(1\le q\le \frac{(n-1)p}{n-mp}\)</span>；</li>
+<li>当 <span class="arithmatex">\(m=n/p\)</span> 时，<span class="arithmatex">\(\mathbb{W}^{m,p}(\Omega)\hookrightarrow \mathbb{L}^q(\partial \Omega)\)</span>，<span class="arithmatex">\(1\le q&lt; \infty\)</span>；</li>
+</ul>
+<p>另外，当 <span class="arithmatex">\(m=1,p=q=2\)</span> 时，若边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面，则特别的有</p>
+<div class="arithmatex">\[
+\mathbb{H}^1(\Omega)\hookrightarrow \mathbb{L}^2(\partial \Omega)
+\]</div>
+</div>
+<p>下面我们介绍椭圆边值问题的变分形式和弱解。我们总是假设区域 <span class="arithmatex">\(\Omega\)</span> 是有界连通区域，且其边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面。首先来考虑 Poisson 方程的 Dirichlet 边值问题：</p>
+<div class="arithmatex">\[
+\begin{cases}
+    -\Delta u=f ,&amp;x\in \Omega\\
+    u=\bar{u}_0,&amp;x\in \partial \Omega
+\end{cases}
+\]</div>
+<p>设其有古典解 <span class="arithmatex">\(u\in C^2(\bar{\Omega})\)</span>，任取函数 <span class="arithmatex">\(v\in C_0^\infty(\Omega)\)</span>，由 Green 公式有</p>
+<div class="arithmatex">\[
+\int_{\Omega} \nabla u \cdot \nabla v \mathrm{d}x - \int_{\partial \Omega} v\partial_\nu u \mathrm{d}x= \int_{\Omega} f v \mathrm{d}x
+\]</div>
+<p>其中 <span class="arithmatex">\(\nabla=(\partial_1,\cdots,\partial_n)\)</span> 为梯度算子，<span class="arithmatex">\(\partial_\nu u\)</span> 为 <span class="arithmatex">\(u\)</span> 在边界 <span class="arithmatex">\(\partial \Omega\)</span> 上的外法向导数。由于 <span class="arithmatex">\(v\in C_0^\infty(\Omega)\)</span> 在 <span class="arithmatex">\(\partial \Omega\)</span> 上为零，所以上式化简为</p>
+<div class="arithmatex">\[
+\int_{\Omega} \nabla u \cdot \nabla v \mathrm{d}x = \int_{\Omega} f v \mathrm{d}x
+\]</div>
+<p>以 <span class="arithmatex">\((\cdot,\cdot)\)</span> 表示 <span class="arithmatex">\(\mathbb{L}^2(\Omega)\)</span> 上的内积，令</p>
+<div class="arithmatex">\[
+a(u,v) = \int_{\Omega} \nabla u \cdot \nabla v \mathrm{d}x
+\]</div>
+<p>则上述方程可写为</p>
+<div class="arithmatex">\[
+a(u, v) = (f,v)
+\]</div>
+<p>又因为 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 和 <span class="arithmatex">\((\cdot,\cdot)\)</span> 都是 <span class="arithmatex">\(\mathbb{H}^1(\Omega)\)</span> 上的连续的双线性泛函，再有稠密性就有</p>
+<div class="arithmatex">\[
+a(u,v) = (f,v), \quad \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>虽然这个方程是由 <span class="arithmatex">\(u\in C^2(\bar{\Omega})\)</span> 推导出来的，但它对 <span class="arithmatex">\(u\in \mathbb{H}^1(\Omega)\)</span> 也是有意义的。由此引出弱解的定义：</p>
+<div class="admonition definition">
+<p class="admonition-title">弱解</p>
+<p>若 <span class="arithmatex">\(u\in \mathbb{V}(\bar{u}_0;\Omega)=\left\{u\in\mathbb{H}^1(\Omega):u|_{\partial \Omega} = \bar{u}_0 \right\}\)</span> 满足变分方程：</p>
+<div class="arithmatex">\[
+a(u,v) = (f,v), \quad \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>则称 <span class="arithmatex">\(u\)</span> 为 Poisson 方程 Dirichlet 边值问题的一个 <strong>弱解</strong>，称相应的变分问题为该方程的 <strong>变分形式</strong> 或 <strong>弱形式</strong>，并分别称 <span class="arithmatex">\(u\)</span> 所属的空间 <span class="arithmatex">\(\mathbb{V}(\bar{u}_0;\Omega)\)</span> 和 <span class="arithmatex">\(v\)</span> 所属的空间 <span class="arithmatex">\(\mathbb{H}_0^1(\Omega)\)</span> 为 <strong>试探函数空间</strong> 和 <strong>检验函数空间</strong>。</p>
+</div>
+<p>弱解和古典解有如下关系：</p>
+<div class="admonition theorem">
+<p class="admonition-title">定理</p>
+<p>设 <span class="arithmatex">\(f\in C(\bar{\Omega})\)</span>，<span class="arithmatex">\(\bar{u}_0\in C(\partial \Omega)\)</span>，若 <span class="arithmatex">\(u\in C^2(\bar{\Omega})\)</span> 是 Poisson 方程 Dirichlet 边值问题的古典解，则 <span class="arithmatex">\(u\)</span> 也是该问题的弱解。反之，若 <span class="arithmatex">\(u\)</span> 是该问题的弱解，且 <span class="arithmatex">\(u\in \mathbb{H}^2(\Omega)\)</span>，则 <span class="arithmatex">\(u\)</span> 也是该问题的古典解。</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>前半部分我们在弱解导出过程中已证明。后半部分，设 <span class="arithmatex">\(u\)</span> 是该问题的弱解，且 <span class="arithmatex">\(u\in \mathbb{C}^2(\bar{\Omega})\)</span>，取检验函数 <span class="arithmatex">\(v\in C_0^\infty(\Omega)\)</span>，则有</p>
+<div class="arithmatex">\[
+\int_{\Omega} (\Delta u + f)v \mathrm{d}x = 0,\forall v\in C_0^\infty(\Omega)
+\]</div>
+<p>由于 <span class="arithmatex">\(\Delta u + f\)</span> 在 <span class="arithmatex">\(\Omega\)</span> 内连续，故</p>
+<div class="arithmatex">\[
+-\Delta u = f, x\in \Omega
+\]</div>
+<p>再由迹的定义知 <span class="arithmatex">\(u|_{\partial \Omega}=\bar{u}_0\)</span>，因此 <span class="arithmatex">\(u\)</span> 也是该问题的古典解。</p>
+</div>
+<p>注意到 <span class="arithmatex">\(a(u,v)-(f,v)\)</span> 是定义在 <span class="arithmatex">\(\mathbb{H}^1(\Omega)\)</span> 上的二次泛函</p>
+<div class="arithmatex">\[
+J(v)=\frac{1}{2}a(v,v)-(f,v)
+\]</div>
+<p>的 Frechet 微分，于是我们也可以通过极小化该泛函来定义变分形式和弱解：</p>
+<div class="admonition definition">
+<p class="admonition-title">变分形式和弱解</p>
+<p>若 <span class="arithmatex">\(u\in \mathbb{V}(\bar{u}_0;\Omega)\)</span> 为泛函 <span class="arithmatex">\(J(\cdot)\)</span> 在 <span class="arithmatex">\(\mathbb{V}(\bar{u}_0;\Omega)\)</span> 上的最小值点，即</p>
+<div class="arithmatex">\[
+J(u) = \min_{v\in \mathbb{V}(\bar{u}_0;\Omega)} J(v)
+\]</div>
+<p>则称 <span class="arithmatex">\(u\)</span> 为 Poisson 方程 Dirichlet 边值问题的一个 <strong>弱解</strong>，称相应的极小化问题为该方程的 <strong>变分形式</strong> 或 <strong>弱形式</strong>。</p>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">定理</p>
+<p>两种定义的弱解是等价的。</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设 <span class="arithmatex">\(u\in \mathbb{V}(\bar{u}_0;\Omega)\)</span> 满足 <span class="arithmatex">\(J(u) = \min_{v\in \mathbb{V}(\bar{u}_0;\Omega)} J(v)\)</span>，则有</p>
+<div class="arithmatex">\[
+J'(u)v=0, \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>由此以及 <span class="arithmatex">\(J'(u)v=a(u,v)-(f,v)\)</span> 可知 <span class="arithmatex">\(u\)</span> 满足变分方程</p>
+<div class="arithmatex">\[
+a(u,v) = (f,v), \quad \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>反之，设 <span class="arithmatex">\(u\in \mathbb{V}(\bar{u}_0;\Omega)\)</span> 满足变分方程</p>
+<div class="arithmatex">\[ 
+a(u,v) = (f,v), \quad \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>则对任意的 <span class="arithmatex">\(v\in \mathbb{V}(\bar{u}_0;\Omega)\)</span>，有</p>
+<div class="arithmatex">\[
+J(v)-J(u)=a(u,v-u)-(f,v-u)+\frac{1}{2}a(v-u,v-u)
+\]</div>
+<p>由于 <span class="arithmatex">\(v-u\in \mathbb{H}_0^1(\Omega)\)</span>，由变分方程可知</p>
+<div class="arithmatex">\[
+J(v)-J(u)=\frac{1}{2}a(v-u,v-u)\ge 0
+\]</div>
+<p>即 <span class="arithmatex">\(J(u) = \min_{v\in \mathbb{V}(\bar{u}_0;\Omega)} J(v)\)</span>。</p>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">存在唯一性定理</p>
+<p>设 <span class="arithmatex">\(\Omega\)</span> 是有界连通区域，且其边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面，<span class="arithmatex">\(f\in \mathbb{L}^2(\Omega)\)</span>，且存在 <span class="arithmatex">\(\bar{u}_0\in \mathbb{H}^1(\Omega)\)</span>，使得 <span class="arithmatex">\(\bar{u}_0|_{\partial \Omega} = \bar{u}_0\)</span>，则 Poisson 方程 Dirichlet 边值问题存在唯一弱解 <span class="arithmatex">\(u\in \mathbb{V}(\bar{u}_0;\Omega)\)</span>。</p>
+</div>
+<p>下面我们考虑 Poisson 方程的 Neumann 边值问题：</p>
+<div class="arithmatex">\[
+\begin{cases}
+    -\Delta u=f ,&amp;x\in \Omega\\
+    \frac{\partial u}{\partial \nu}=g,&amp;x\in \partial \Omega
+\end{cases}
+\]</div>
+<p>设其有古典解 <span class="arithmatex">\(u\in C^2(\bar{\Omega})\)</span>，任取函数 <span class="arithmatex">\(v\in C^\infty(\bar{\Omega})\)</span>，推导如上。需要注意的是，此时 <span class="arithmatex">\(v\)</span> 在 <span class="arithmatex">\(\partial \Omega\)</span> 上不必为零，因此有</p>
+<div class="arithmatex">\[
+a(u,v)=(f,v)+(g,v)_{\partial \Omega}
+\]</div>
+<p>其中 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 和 <span class="arithmatex">\((\cdot,\cdot)\)</span> 的定义如上，<span class="arithmatex">\((\cdot,\cdot)_{\partial \Omega}\)</span> 为 <span class="arithmatex">\(\mathbb{L}^2(\partial \Omega)\)</span> 上的内积，即：</p>
+<div class="arithmatex">\[
+(g,v)_{\partial \Omega} = \int_{\partial \Omega} g v \mathrm{d}s
+\]</div>
+<div class="admonition definition">
+<p class="admonition-title">弱解</p>
+<p>若 <span class="arithmatex">\(u\in \mathbb{H}^1(\Omega)\)</span> 满足变分方程：</p>
+<div class="arithmatex">\[
+a(u,v)=(f,v)+(g,v)_{\partial \Omega}, \quad \forall v\in \mathbb{H}^1(\Omega)
+\]</div>
+<p>则称 <span class="arithmatex">\(u\)</span> 为 Poisson 方程 Neumann 边值问题的一个 <strong>弱解</strong>，称相应的变分问题为该方程的 <strong>变分形式</strong> 或 <strong>弱形式</strong>，这里试探函数空间和检验函数空间均为 <span class="arithmatex">\(\mathbb{H}^1(\Omega)\)</span>。</p>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">定理</p>
+<p>设 <span class="arithmatex">\(f\in C(\bar{\Omega})\)</span>，<span class="arithmatex">\(g\in C(\partial \Omega)\)</span>，若 <span class="arithmatex">\(u\in C^2(\bar{\Omega})\)</span> 是 Poisson 方程 Neumann 边值问题的古典解，则 <span class="arithmatex">\(u\)</span> 也是该问题的弱解。反之，若 <span class="arithmatex">\(u\)</span> 是该问题的弱解，且 <span class="arithmatex">\(u\in \mathbb{C}^2(\Omega)\)</span>，则 <span class="arithmatex">\(u\)</span> 也是该问题的古典解。</p>
+</div>
+<p>下面我们考虑解的存在唯一性。注意到带入 <span class="arithmatex">\(v=1\)</span> 可得 </p>
+<div class="arithmatex">\[
+\int_{\Omega} f \mathrm{d}x + \int_{\partial \Omega} g \mathrm{d}s=0
+\]</div>
+<p>因此解的存在唯一性的必要条件是上式成立。事实上，若该条件成立，则弱解存在，且若 <span class="arithmatex">\(u\)</span> 是一个弱解，则对任意常数 <span class="arithmatex">\(c\)</span>，<span class="arithmatex">\(u+c\)</span> 也是一个弱解。为了避免这种不唯一性，我们考虑 <span class="arithmatex">\(\mathbb{H}^1(\Omega)\)</span> 的一个子空间：</p>
+<div class="arithmatex">\[
+\mathbb{V}_0=\left\{u\in \mathbb{H}^1(\Omega): \int_{\Omega} u \mathrm{d}x =0 \right\}
+\]</div>
+<p>上求解方程。</p>
+<div class="admonition theorem">
+<p class="admonition-title">Poincare-Friedrichs 不等式</p>
+<p>设 <span class="arithmatex">\(\Omega\)</span> 有界连通且具有 Lipschitz 连续边界，则存在常数 <span class="arithmatex">\(\gamma_1\ge \gamma_0&gt;0\)</span>，使得</p>
+<div class="arithmatex">\[
+\gamma_0 \|u\|_{1,2,\Omega} \le \left|\int_\Omega u \mathrm{d}x \right| + |u|_{1,2,\Omega} \le \gamma_1 \|u\|_{1,2,\Omega}, \forall u\in \mathbb{H}^1(\Omega)
+\]</div>
+</div>
+<div class="admonition theorem">
+<p class="admonition-title">存在唯一性定理</p>
+<p>设 <span class="arithmatex">\(\Omega\)</span> 是有界连通区域，且其边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面，<span class="arithmatex">\(f\in \mathbb{L}^2(\Omega)\)</span>，<span class="arithmatex">\(g\in \mathbb{L}^2(\partial \Omega)\)</span>，且满足</p>
+<div class="arithmatex">\[
+\int_{\Omega} f \mathrm{d}x + \int_{\partial \Omega} g \mathrm{d}s=0
+\]</div>
+<p><span class="arithmatex">\(F:\mathbb{V}_0\rightarrow \mathbb{R}\)</span> 定义为</p>
+<div class="arithmatex">\[
+F(v)=(f,v)+(g,v)_{\partial \Omega}
+\]</div>
+<p>则 Poisson 方程 Neumann 边值问题存在唯一弱解 <span class="arithmatex">\(u\in \mathbb{V}_0\)</span>。</p>
+</div>
+<h2 id="2">2.椭圆边值问题的有限元方法</h2>
+<h3 id="21-galerkin-ritz">2.1 Galerkin 方法和 Ritz 方法</h3>
+<p>我们来讨论如何数值求解椭圆边值问题的弱解，本节中我们始终假设 <span class="arithmatex">\(\Omega\)</span> 是有界连通区域，且其边界 <span class="arithmatex">\(\partial \Omega\)</span> 是 Lipschitz 连续的曲面。</p>
+<p>以 Poisson 方程的齐次 Dirichlet 边值问题为例：</p>
+<div class="arithmatex">\[
+\begin{cases}
+    -\Delta u=f ,&amp;x\in \Omega\\
+    u=0,&amp;x\in \partial \Omega
+\end{cases}
+\]</div>
+<p>该问题对应的虚功原理的弱解为：</p>
+<div class="arithmatex">\[
+\text{求 }u\in \mathbb{H}_0^1(\Omega),\quad \text{使得 } a(u,v) = (f,v), \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>其中 <span class="arithmatex">\(a(u,v)=\int_{\Omega} \nabla u \cdot \nabla v \mathrm{d}x,(f,v)=\int_{\Omega} f v \mathrm{d}x\)</span>。</p>
+<p>对应的最小势能的弱解为：</p>
+<div class="arithmatex">\[
+\text{求 }u\in \mathbb{H}_0^1(\Omega),\quad \text{使得 } J(u) = \min_{v\in \mathbb{H}_0^1(\Omega)} J(v)
+\]</div>
+<p>其中 <span class="arithmatex">\(J(v)=\frac{1}{2}a(v,v)-(f,v)\)</span>。</p>
+<p>为了数值求解该问题，我们引入有限维子空间 <span class="arithmatex">\(\mathbb{V}_h(0)\subset \mathbb{H}_0^1(\Omega)\)</span>，其中 <span class="arithmatex">\(h\)</span> 是与子空间维数相关的参数，就给出了该问题相应的近似解法：</p>
+<div class="arithmatex">\[
+\text{求 }u_h\in \mathbb{V}_h(0),\quad \text{使得 } a(u_h,v_h) = (f,v_h), \forall v_h\in \mathbb{V}_h(0)
+\]</div>
+<p>和 </p>
+<div class="arithmatex">\[
+\text{求 }u_h\in \mathbb{V}_h(0),\quad \text{使得 } J(u_h) = \min_{v_h\in \mathbb{V}_h(0)} J(v_h)
+\]</div>
+<p>分别称为 <strong>Galerkin 方法</strong> 和 <strong>Ritz 方法</strong>。不难证明这两种方法的等价性和解的存在唯一性。这两个问题可以化为线性代数的方程组求解。</p>
+<p>设 <span class="arithmatex">\(\left\{\varphi_i\right\}_{i=1}^{N}\)</span> 是 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span> 的一组基，令</p>
+<div class="arithmatex">\[
+u_h=\sum_{j=1}^{N_h} u_j \varphi_j,v_h=\sum_{i=1}^{N_h} v_i \varphi_i
+\]</div>
+<p>则 Galerkin 方法可写为</p>
+<div class="arithmatex">\[
+\text{求 }u_h=(u_1,\cdots,u_{N_h})^T\in \mathbb{R}^{N_h} ,\quad \text{使得 } \sum_{i,j=1}^{N_h} a(\varphi_j,\varphi_i) u_j v_i = \sum_{i=1}^{N_h} (f,\varphi_i) v_i, \forall v_h=(v_1,\cdots,v_{N_h})^T\in \mathbb{R}^{N_h}
+\]</div>
+<p>由于 <span class="arithmatex">\(v_i\)</span> 的任意性，这等价于求解线性方程组</p>
+<div class="arithmatex">\[
+\sum_{j=1}^{N_h} a(\varphi_j,\varphi_i) u_j = (f,\varphi_i), \quad i=1,2,\cdots,N_h
+\]</div>
+<p>通常将其写成</p>
+<div class="arithmatex">\[
+K u_h = f
+\]</div>
+<p>根据其力学背景，称 <span class="arithmatex">\(K=(k_{ij})=(a(\varphi_j,\varphi_i))\)</span> 为 <strong>刚度矩阵</strong>，<span class="arithmatex">\(u_h\)</span> 为 <strong>位移向量</strong>，<span class="arithmatex">\(f=(f_i) = ((f,\varphi_i))\)</span> 为 <strong>载荷向量</strong>。容易证明刚度矩阵 <span class="arithmatex">\(K\)</span> 是对称正定矩阵，因此该线性方程组存在唯一解。</p>
+<p>利用 Galerkin 方法或 Ritz 方法求解椭圆边值问题的关键在于如何选择合适的有限维子空间 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span>。有限元方法提供了一种系统的构造方法，下面我们介绍有限元方法的基本思想。</p>
+<h3 id="22">2.2 有限元方法</h3>
+<p>先看一个简单的例子。考虑定义在多边形区域 <span class="arithmatex">\(\Omega\subset \mathbb{R}^2\)</span> 上的 Poisson 方程的齐次 Dirichlet 边值问题的变分形式</p>
+<div class="arithmatex">\[
+\text{求 }u\in \mathbb{H}_0^1(\Omega),\quad \text{使得 } a(u,v) = (f,v), \forall v\in \mathbb{H}_0^1(\Omega)
+\]</div>
+<p>对于多边形区域 <span class="arithmatex">\(\Omega\)</span>，我们通过下述方法构造 <span class="arithmatex">\(\mathbb{H}^1(\Omega)\)</span> 和 <span class="arithmatex">\(\mathbb{H}_0^1(\Omega)\)</span> 的子空间。</p>
+<p>首先将 <span class="arithmatex">\(\bar{\Omega}\)</span> 做三角剖分 <span class="arithmatex">\(\mathfrak{T}_h(\Omega)\)</span>，即将其分割为有限个互相之间没有公共内点的三角形 <span class="arithmatex">\(T_i\)</span>，并作编号 <span class="arithmatex">\(i=1,2,\cdots,M\)</span> 称之为 <strong>单元</strong>，其中 <span class="arithmatex">\(h=\max_{1\le i \le M} \sup_{x,y\in T_i} |x-y|\)</span> 为剖分中所有单元的最大直径。要求每个单元的顶点（称为 <strong>节点</strong>）只能是其相邻单元的顶点。将所有剖分的节点作整体编号 <span class="arithmatex">\(A_i,i=1,2,\cdots,N\)</span>，并定义如下的空间：</p>
+<div class="arithmatex">\[
+\mathbb{V}_h=\left\{u\in C(\bar{\Omega}): u|_{T_i} \in \mathbb{P}_1(T_i), \forall T_i\in \mathfrak{T}_h(\Omega) \right\}
+\]</div>
+<p>并根据齐次强制要求边界条件取有限元试探函数空间和检验函数空间为</p>
+<div class="arithmatex">\[
+\mathbb{V}_h(0)=\left\{u\in \mathbb{V}_h:u(A_i)=0,\forall A_i \in \partial \Omega \right\}
+\]</div>
+<p>其中 <span class="arithmatex">\(\mathbb{P}_k(T_i)\)</span> 为定义在单元 <span class="arithmatex">\(T_i\)</span> 上所有次数不超过 <span class="arithmatex">\(k\)</span> 的多项式构成的空间。容易验证 <span class="arithmatex">\(\mathbb{V}_h\subset \mathbb{H}^1(\Omega)\)</span>，<span class="arithmatex">\(\mathbb{V}_h(0)\subset \mathbb{H}_0^1(\Omega)\)</span>。显然 <span class="arithmatex">\(\mathbb{V}_h\)</span> 和 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span> 中的任意函数都由其节点处函数值 <span class="arithmatex">\(\left\{u(A_i)\right\}\)</span> 唯一确定。这样一来，其基底的选择就是十分自然的了：</p>
+<div class="arithmatex">\[
+\varphi_i(A_j) = \delta_{ij}, \quad i,j=1,2,\cdots,N
+\]</div>
+<p>即 <span class="arithmatex">\(\varphi_i\)</span> 在节点 <span class="arithmatex">\(A_i\)</span> 处取值为 <span class="arithmatex">\(1\)</span>，在其他节点处取值为 <span class="arithmatex">\(0\)</span>，在每个单元上为其插值多项式，则 <span class="arithmatex">\(\left\{\varphi_i\right\}_{i=1}^{N}\)</span> 构成 <span class="arithmatex">\(\mathbb{V}_h\)</span> 的基底，<span class="arithmatex">\(\left\{\varphi_i\right\}_{A_i\notin \partial \Omega}\)</span> 构成 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span> 的基底。</p>
+<p>这样的基底有个突出的性质，即每个基底函数的支集都很小，实际上每个基底函数 <span class="arithmatex">\(\varphi_i\)</span> 仅在与节点 <span class="arithmatex">\(A_i\)</span> 相邻的单元上非零，这样就大大减少了刚度矩阵 <span class="arithmatex">\(K\)</span> 中非零元的个数，使得 <span class="arithmatex">\(K\)</span> 成为一个稀疏矩阵，从而节省了存储空间和计算时间。</p>
+<p>建立了 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span> 之后，我们就可以计算 <span class="arithmatex">\(K\)</span> 和 <span class="arithmatex">\(f\)</span> 了。为了方便数据管理，我们通常引入如下两个数组：</p>
+<ul>
+<li>取值为整体节点序数的 <span class="arithmatex">\(en(\alpha,e)\)</span>，其中 <span class="arithmatex">\(e\)</span> 为单元序数，<span class="arithmatex">\(\alpha\)</span> 为单元的局部节点序数，即第 <span class="arithmatex">\(e\)</span> 个单元的第 <span class="arithmatex">\(\alpha\)</span> 个节点在整体节点中的序数为 <span class="arithmatex">\(en(\alpha,e)\)</span>；</li>
+<li>取值为空间坐标的 <span class="arithmatex">\(cd(i,nd)\)</span>，其中 <span class="arithmatex">\(nd\)</span> 为整体节点序数，<span class="arithmatex">\(cd(i,nd)\)</span> 表示第 <span class="arithmatex">\(nd\)</span> 个节点的空间坐标的第 <span class="arithmatex">\(i\)</span> 个分量。</li>
+</ul>
+<p>记 <span class="arithmatex">\(a^e(u,v)=\int_{T_e} \nabla u \cdot \nabla v \mathrm{d}x\)</span>，由定义有</p>
+<div class="arithmatex">\[
+k_{ij}=a(\varphi_j,\varphi_i) = \sum_{e=1}^{M} a^e(\varphi_j,\varphi_i)= \sum_{e=1}^{M} \int_{T_e} \nabla \varphi_j \cdot \nabla \varphi_i \mathrm{d}x= \sum_{e=1}^{M} k_{ij}^e
+\]</div>
+<p>由于有大量 <span class="arithmatex">\(k_{ij}\)</span> 为零，故我们通常不遍历 <span class="arithmatex">\(i,j\)</span> 而选择遍历单元的方式计算。设 <span class="arithmatex">\(\alpha=1,2,3\)</span> 是单元 <span class="arithmatex">\(T_e\)</span> 的三个节点 <span class="arithmatex">\(A_i,A_j,A_k\)</span> 的局部节点序数，即在单元 <span class="arithmatex">\(T_e\)</span> 上这三个节点分别记作 <span class="arithmatex">\(A_1^e,A_2^e,A_3^e\)</span>，又 <span class="arithmatex">\(\lambda_\alpha^e\in \mathbb{P}_1(T_e)\)</span> 满足 <span class="arithmatex">\(\lambda_\alpha^e(A_\beta^e)=\delta_{\alpha\beta}\)</span>，则有</p>
+<div class="arithmatex">\[
+\lambda_\alpha^e(A)=\frac{|\nabla AA_\beta^eA_\gamma^e|}{|\nabla A_\alpha^eA_\beta^eA_\gamma^e|}, \forall A\in T_e
+\]</div>
+<p>这里 <span class="arithmatex">\(|T|\)</span> 表示 <span class="arithmatex">\(T\)</span> 的面积。通常称 <span class="arithmatex">\(\lambda^e(A)=(\lambda_1^e(A),\lambda_2^e(A),\lambda_3^e(A))\)</span> 为单元 <span class="arithmatex">\(T_e\)</span> 上的 <strong>重心坐标</strong>。显然有 <span class="arithmatex">\(\varphi_{en(\alpha,e)}|_{T_e}=\lambda_\alpha^e\)</span> 且 <span class="arithmatex">\(\left\{\lambda_\alpha^e\right\}_{\alpha=1}^3\)</span> 构成 <span class="arithmatex">\(\mathbb{P}_1(T_e)\)</span> 的基底。对于每一个单元 <span class="arithmatex">\(T_e\)</span> 定义 <strong>单元刚度矩阵</strong></p>
+<div class="arithmatex">\[
+K^e=(k_{\alpha\beta}^e), \quad k_{\alpha\beta}^e = a^e(\lambda_\beta^e,\lambda_\alpha^e) = \int_{T_e} \nabla \lambda_\beta^e \cdot \nabla \lambda_\alpha^e \mathrm{d}x
+\]</div>
+<p>则有 </p>
+<div class="arithmatex">\[
+k_{ij}=\sum_{en(\alpha,e)=i \in T_e\atop en(\beta,e)=j\in T_e} k_{\alpha\beta}^e
+\]</div>
+<p>同理可以通过遍历单元计算载荷向量 <span class="arithmatex">\(f=(f_i)\)</span>：</p>
+<div class="arithmatex">\[
+f_i = \sum_{en(\alpha,e)=i \in T_e} \int_{T_e} f \lambda_\alpha^e \mathrm{d}x := \sum_{en(\alpha,e)=i \in T_e} f_\alpha^e
+\]</div>
+<p>我们称 <span class="arithmatex">\(f^e=(f_\alpha^e)\)</span> 为 <strong>单元载荷向量</strong>。</p>
+<p>对于边界条件为</p>
+<div class="arithmatex">\[
+u(x)=u_0(x), \quad x\in \partial \Omega
+\]</div>
+<p>的 Poisson 方程 Dirichlet 边值问题，我们只需将有限元试探函数空间 <span class="arithmatex">\(\mathbb{V}_h(0)\)</span> 改为</p>
+<div class="arithmatex">\[
+\mathbb{V}_h(u_0)=\left\{u\in \mathbb{V}_h:u(A_i)=u_0(A_i),\forall A_i \in \partial \Omega \right\}
+\]</div>
+<p>下面我们介绍有限元的一般定义。有限元方法的关键是构造适当的有限元空间。对于有限元空间的构造有如下三个基本要求：</p>
+<ul>
+<li>对区域 <span class="arithmatex">\(\bar{\Omega}\)</span> 作有限元剖分 <span class="arithmatex">\(\mathfrak{T}_h\)</span>，即将区域 <span class="arithmatex">\(\bar{\Omega}\)</span> 分为有限个称为有限元的子集 <span class="arithmatex">\(K\)</span> 使其满足：<ul>
+<li><span class="arithmatex">\(\bar{\Omega}=\bigcup_{K\in \mathfrak{T}_h} K\)</span>；</li>
+<li>每个有限元 <span class="arithmatex">\(K\in \mathfrak{T}_h\)</span> 都是内点集 <span class="arithmatex">\(K^\circ\)</span> 非空的闭集；</li>
+<li>对于两个不同的有限元 <span class="arithmatex">\(K_1,K_2\in \mathfrak{T}_h\)</span>，有 <span class="arithmatex">\(K_1^\circ \cap K_2^\circ = \emptyset\)</span>；</li>
+<li>每个有限元 <span class="arithmatex">\(K\in \mathfrak{T}_h\)</span> 都是 Lipschitz 连续的曲面边界的区域。</li>
+</ul>
+</li>
+<li>在每个有限元 <span class="arithmatex">\(K\in \mathfrak{T}_h\)</span> 上定义一个由多项式或其他一些具有一定逼近性质又便于分析和计算的函数组成的函数空间 <span class="arithmatex">\(P_K\)</span>；</li>
+<li>有限元函数空间 <span class="arithmatex">\(\mathbb{V}_h\)</span> 有一组容易得到且具有局部支集性质的基底。</li>
+</ul>
+<div class="admonition definition">
+<p class="admonition-title">有限元</p>
+<p>一个三元组 <span class="arithmatex">\((K,P_K,\Sigma_K)\)</span> 称为一个 <strong>有限元</strong>，若：</p>
+<ul>
+<li><span class="arithmatex">\(K\subset \mathbb{R}^n\)</span> 是一个有非空内部和 Lipschitz 连续边界的闭集，称为 <strong>单元</strong>；</li>
+<li><span class="arithmatex">\(P_K\)</span> 是一个由定义在单元 <span class="arithmatex">\(K\)</span> 上的充分光滑实函数组成的有限维函数空间；</li>
+<li><span class="arithmatex">\(\Sigma_K\)</span> 是一组定义在 <span class="arithmatex">\(C^\infty(K)\)</span> 上的线性泛函 <span class="arithmatex">\(\left\{\varphi_i\right\}_{i=1}^{N}\)</span>，称之为有限元的 <strong>自由度集</strong>，并称 <span class="arithmatex">\(\varphi_i\)</span> 为 <strong>自由度</strong>，它们构成了 <span class="arithmatex">\(P_K\)</span> 的一组对偶集，且恰好定义了 <span class="arithmatex">\(P_K\)</span> 上的一组规范化基底，即存在 <span class="arithmatex">\(P_K\)</span> 上唯一的一组基 <span class="arithmatex">\(\left\{p_i\right\}_{i=1}^{N}\)</span>，使得 <span class="arithmatex">\(\varphi_i(p_j)=\delta_{ij}\)</span>。</li>
+</ul>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">插值</p>
+<p>设 <span class="arithmatex">\((K,P_K,\Sigma_K)\)</span> 是给定的有限元，<span class="arithmatex">\(\left\{\varphi_i\right\}\)</span> 是其自由度集，<span class="arithmatex">\(p_i\in P_K\)</span> 是相应的一组对偶基，即 <span class="arithmatex">\(\varphi_i(p_j)=\delta_{ij}\)</span>。定义算子</p>
+<div class="arithmatex">\[
+\Pi_K: C^\infty(K) \to P_K, \quad \Pi_K v = \sum_{i=1}^{N} \varphi_i(v) p_i
+\]</div>
+<p>称 <span class="arithmatex">\(\Pi_K\)</span> 为该有限元的 <strong>插值算子</strong>，称 <span class="arithmatex">\(\Pi_K(v)\)</span> 为 <span class="arithmatex">\(v\)</span> 的 <span class="arithmatex">\(P_K\)</span> <strong>插值函数</strong>。</p>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">等价</p>
+<p>设两个有限元 <span class="arithmatex">\((K,P_K,\Sigma_K)\)</span> 和 <span class="arithmatex">\((L,P_L,\Sigma_L)\)</span>，若</p>
+<div class="arithmatex">\[
+K=L,P_K=P_L,\Sigma_K=\Sigma_L
+\]</div>
+<p>则称两个有限元是 <strong>等价的</strong>。</p>
+</div>
+<p>对于区域 <span class="arithmatex">\(\Omega\)</span> 上的有限元剖分 <span class="arithmatex">\(\mathfrak{T}_h\)</span> 和给定的有限元 <span class="arithmatex">\(\left\{(K,P_K,\Sigma_K)\right\}\)</span>，令 <span class="arithmatex">\(\mathbb{V}_h=\left\{v:\bigcup_{K\in \mathfrak{T}_h} K\to \mathbb{R} : v|_K\in P_K\right\}\)</span>。为了使 <span class="arithmatex">\(\mathbb{V}_h\)</span> 是一个有限元函数空间，我们还希望相邻的有限元函数空间 <span class="arithmatex">\(P_K\)</span> 和自由度集 <span class="arithmatex">\(\Sigma_K\)</span> 之间满足一定的相容性关系。令 <span class="arithmatex">\(\Sigma_h=\bigcup_{K\in \mathfrak{T}_h} \Sigma_K\)</span> 称之为 <span class="arithmatex">\(\mathbb{V}_h\)</span> 的<strong>自由度集</strong>。</p>
+<div class="admonition definition">
+<p class="admonition-title">插值</p>
+<p>定义算子</p>
+<div class="arithmatex">\[
+\Pi_h: C^\infty(\bar{\Omega}) \to \mathbb{V}_h, \quad \Pi_h (v)_K = \Pi_K (v|_K), \forall v\in C^\infty(\bar{\Omega})
+\]</div>
+<p>称 <span class="arithmatex">\(\Pi_h\)</span> 为 <span class="arithmatex">\(\mathbb{V}_h\)</span> 的 <strong>插值算子</strong>，称 <span class="arithmatex">\(\Pi_h(v)\)</span> 为 <span class="arithmatex">\(v\)</span> 在 <span class="arithmatex">\(\mathbb{V}_h\)</span> 中的 <strong>插值函数</strong>。</p>
+</div>
+<div class="admonition definition">
+<p class="admonition-title">等价</p>
+<p>设 <span class="arithmatex">\(\hat{K},K\in \mathbb{R}^n\)</span>，<span class="arithmatex">\((\hat{K},\hat{P},\hat{\Sigma})\)</span> 和 <span class="arithmatex">\((K,P_K,\Sigma_K)\)</span> 分别是两个有限元，若存在充分光滑的可逆映射 <span class="arithmatex">\(F_K:\hat{K}\to K\)</span>，使得</p>
+<div class="arithmatex">\[
+\begin{cases}
+    F_K(\hat{K})=K\\
+    p_i=\hat{p}_i \circ F_K^{-1}, \forall i=1,\cdots,N\\
+    \varphi_i(p) = \hat{\varphi}_i (p\circ F_K), \forall p\in P_K, i=1,\cdots,N
+\end{cases}
+\]</div>
+<p>其中 <span class="arithmatex">\(\left\{\hat{\varphi}_i\right\}_{i=1}^N\)</span> 和 <span class="arithmatex">\(\left\{\varphi_i\right\}_{i=1}^N\)</span> 分别是自由度集 <span class="arithmatex">\(\hat{\Sigma}\)</span> 和 <span class="arithmatex">\(\Sigma_K\)</span>，<span class="arithmatex">\(\left\{\hat{p}_i\right\}_{i=1}^N\)</span> 和 <span class="arithmatex">\(\left\{p_i\right\}_{i=1}^N\)</span> 分别是 <span class="arithmatex">\(\hat{P}\)</span> 和 <span class="arithmatex">\(P_K\)</span> 上的对偶基，则称两个有限元是 <strong>等参等价</strong> 的，特别的，当 <span class="arithmatex">\(F_K\)</span> 是仿射变换时，称两个有限元是 <strong>仿射等价</strong> 的。如果一族有限元都是彼此等参(仿射)等价的，则称他们是一个 <strong>等参(仿射)族</strong>。</p>
+</div>
+<p>我们来看一些常用的有限元的例子。最简单的一类是 <span class="arithmatex">\(n\)</span> 单纯形 Lagrange 有限元。此时 <span class="arithmatex">\(K\subset \mathbb{R}^n\)</span> 是一个 <span class="arithmatex">\(n\)</span> 维单纯形，它有 <span class="arithmatex">\(n+1\)</span> 个部落在同一个超平面上的顶点 <span class="arithmatex">\(a_j=(a_{ij})_{i=1}^n\in \mathbb{R}^n(k=1,\cdots,n+1)\)</span>，即矩阵</p>
+<div class="arithmatex">\[
+A=\begin{pmatrix}
+    a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1,n+1}\\
+    a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2,n+1}\\
+    \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    a_{n1} &amp; a_{n2} &amp; \cdots &amp; a_{n,n+1}\\
+    1 &amp; 1 &amp; \cdots &amp; 1
+\end{pmatrix}
+\]</div>
+<p>是非奇异的，单元 <span class="arithmatex">\(K\)</span> 是这些顶点的凸包，即</p>
+<div class="arithmatex">\[
+K=\left\{x=\sum_{i=1}^{n+1} \lambda_i a_i : \lambda_i \ge 0, \sum_{i=1}^{n+1} \lambda_i =1 \right\}
+\]</div>
+<p>设 <span class="arithmatex">\(\lambda=(\lambda_1,\lambda_2,\cdots,\lambda_{n+1})^T,x=(x_1,x_2,\cdots,x_n,1)^T\)</span>，则有</p>
+<div class="arithmatex">\[
+A\lambda=x \Rightarrow \lambda = A^{-1} x
+\]</div>
+<p><span class="arithmatex">\(\lambda(x)=(\lambda_1(x),\lambda_2(x),\cdots,\lambda_{n+1}(x))^T\)</span> 称为单元 <span class="arithmatex">\(K\)</span> 上的 <strong>重心坐标</strong>。显然 <span class="arithmatex">\(\lambda_i \in \mathbb{P}_1(K)\)</span>，且 <span class="arithmatex">\(\lambda_i(a_j)=\delta_{ij}\)</span>。</p>
+<div class="admonition theorem">
+<p class="admonition-title">Lagrange 有限元</p>
+<p>令</p>
+<div class="arithmatex">\[
+K_0^n=\left\{\frac{1}{n+1}\sum_{i=1}^{n+1} a_i \right\}
+\]</div>
+<div class="arithmatex">\[
+K_k^n=\left\{x=\sum_{i=1}^{n+1} \lambda_i a_i : \lambda_i \ge 0, \sum_{i=1}^{n+1} \lambda_i =1, \lambda_i\in\left\{0,\frac{1}{k},\frac{2}{k},\cdots,1\right\} \right\}
+\]</div>
+<p>则自由度集 <span class="arithmatex">\(\Sigma_k^n=\left\{p(x):x\in K_k^n\right\}\)</span> 构成了 <span class="arithmatex">\(\mathbb{P}_k(K^n)\)</span> 的一组对偶基。</p>
+</div>
+<p>另一类最基本的有限元是正 <span class="arithmatex">\(2n\)</span> 面体 Lagrange 有限元。此时单元 <span class="arithmatex">\(K=[X_{11},X_{12}]\times [X_{21},X_{22}]\times \cdots \times [X_{n1},X_{n2}]\subset \mathbb{R}^n\)</span> 是一个正 <span class="arithmatex">\(2n\)</span> 面体，<span class="arithmatex">\(P_K\)</span> 取为 <span class="arithmatex">\(n\)</span> 个变量 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 的所有关于每个变量的次数不超过 <span class="arithmatex">\(k\)</span> 的多项式的集合 <span class="arithmatex">\(\mathbb{Q}_k(K)\)</span>，即</p>
+<div class="arithmatex">\[
+\mathbb{Q}_k(K)=\left\{p(x):p(x)=\sum_{0\le \alpha_i \le k} p_{\alpha_1\cdots \alpha_n} x_1^{\alpha_1} x_2^{\alpha_2} \cdots x_n^{\alpha_n} \right\}
+\]</div>
+<p>显然 <span class="arithmatex">\(\dim \mathbb{Q}_k(K) = (k+1)^n\)</span>。定义 <span class="arithmatex">\(h_i=X_{i2}-X_{i1}\)</span>，令</p>
+<div class="arithmatex">\[
+\bar{K}_k^n=\left\{x=\left(X_11+\frac{i_1}{k}h_1,\cdots,X_{n1}+\frac{i_n}{k}h_n\right)^T\in \mathbb{R}^n: i_j\in \left\{0,1,\cdots,k\right\}, 1\le j\le n  \right\}
+\]</div>
+<p>称之为正 <span class="arithmatex">\(2n\)</span> 面体 <span class="arithmatex">\(K\)</span> 的 <span class="arithmatex">\(k\)</span> 阶主格点。</p>
+<p>对于给定的椭圆型方程边值问题，选定了适当的变分形式和有限元空间后，就可以直接得到问题相应的有限元解的方法。除了直接的求解，我们依然可以使用前文中介绍的多重网格迭代方法。</p>
+<h2 id="3">3.误差分析</h2>
+<h3 id="31-cea">3.1 Céa 引理与抽象误差估计</h3>
+<p>误差分析的标准做法是，将问题转化为函数逼近论的问题，然后利用插值误差估计来得到有限元解的误差估计。</p>
+<p>我们考虑变分问题</p>
+<div class="arithmatex">\[
+    \text{求 }u\in V,\text{使得 } a(u,v) = F(v), \forall v\in V
+\]</div>
+<div class="admonition theorem">
+<p class="admonition-title">Céa 引理</p>
+<p>设 <span class="arithmatex">\(V\)</span> 是一个 Hilbert 空间，<span class="arithmatex">\(\mathbb{V}_h\)</span> 是 <span class="arithmatex">\(V\)</span> 的一个有限维子空间，双线性泛函 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 和线性泛函 <span class="arithmatex">\(f(\cdot)\)</span> 满足 Lax-Milgram 定理的条件，<span class="arithmatex">\(u\in \mathbb{V}\)</span> 是上述问题的解，<span class="arithmatex">\(u_h\in \mathbb{V}_h\)</span> 满足方程</p>
+<div class="arithmatex">\[
+a(u_h,v_h) = F(v_h), \forall v_h\in \mathbb{V}_h
+\]</div>
+<p>则存在与 <span class="arithmatex">\(\mathbb{V}_h\)</span> 无关的常数 <span class="arithmatex">\(C&gt;0\)</span>，使得</p>
+<div class="arithmatex">\[
+\|u-u_h\|_V \le C \inf_{v_h\in \mathbb{V}_h} \|u-v_h\|_V
+\]</div>
+<p>其中 <span class="arithmatex">\(\|\cdot\|_V\)</span> 是 <span class="arithmatex">\(V\)</span> 上的范数。</p>
+</div>
+<div class="admonition proposition">
+<p class="admonition-title">推论</p>
+<p>在上述定理的假设下，若还有双线性泛函 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 为对称的，则解 <span class="arithmatex">\(u_h\)</span> 是 <span class="arithmatex">\(u\)</span> 在 <span class="arithmatex">\(\mathbb{V}_h\)</span> 上由 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 定义的正交投影，即 <span class="arithmatex">\(u_h=P_hu\)</span>，其中 <span class="arithmatex">\(P_h:V\to \mathbb{V}_h\)</span> 是正交投影算子。这时在 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 诱导的范数意义下，<span class="arithmatex">\(C=1\)</span> 满足 Céa 引理。</p>
+</div>
+<h3 id="32-sobolev">3.2 Sobolev 空间插值理论</h3>
+<p>设变分问题的解 <span class="arithmatex">\(u\)</span> 充分光滑，则 <span class="arithmatex">\(u\)</span> 在有限元空间 <span class="arithmatex">\(\mathbb{V}_h\)</span> 上的插值 <span class="arithmatex">\(\Pi_h u\)</span> 有明确定义，于是由 Céa 引理可知</p>
+<div class="arithmatex">\[
+\|u-u_h\|\le C \inf_{v_h\in \mathbb{V}_h} \|u-v_h\| \le C \|u-\Pi_h u\|
+\]</div>
+<p>因此我们可以通过 <span class="arithmatex">\(u\)</span> 在 <span class="arithmatex">\(\mathbb{V}_h\)</span> 上的插值误差来估计有限元解的误差上界。</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="最后更新">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2025年12月11日 06:26:43 UTC">2025年12月11日</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="创建日期">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2025年12月11日 06:26:43 UTC">2025年12月11日</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+  
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="../../../javascripts/vanilla-tilt.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../javascripts/funny_title.js"></script>
+      
+    
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // 1. 创建进度条容器
+      var progressBar = document.createElement("div");
+      progressBar.id = "reading-progress";
+      // 样式：固定顶部，高度3px，粉色，初始宽度0
+      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
+      document.body.appendChild(progressBar);
+
+      // 2. 监听滚动事件
+      window.addEventListener("scroll", function() {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width = scrolled + "%";
+      });
+  });
+</script>
+  <style>
+    body[data-md-color-scheme="default"]::before {
+        background-image: url('../../../assets/site_bg_light.jpg');
+    }
+    body[data-md-color-scheme="slate"]::after {
+        background-image: url('../../../assets/site_bg_dark.jpg');
+    }
+  </style>
+
+  <script>
+  (function() {
+      var audioPath = "../../../assets/bgm.mp3";
+
+      if (!window.myGlobalAudio) {
+          window.myGlobalAudio = new Audio(audioPath);
+          window.myGlobalAudio.loop = true; 
+          window.myGlobalAudio.volume = 0.5; 
+      }
+
+      var oldBtn = document.getElementById('my-simple-player');
+      if (oldBtn) oldBtn.remove();
+
+      var playerContainer = document.createElement('div');
+      playerContainer.id = 'my-simple-player';
+      playerContainer.className = 'simple-player-floating';
+      playerContainer.innerHTML = `
+          <div class="player-icon" id="player-btn" title="点击播放/暂停">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+          </div>
+      `;
+      document.body.appendChild(playerContainer);
+
+      var btnIcon = document.getElementById('player-btn');
+      var audio = window.myGlobalAudio;
+
+      audio.onerror = function() {
+          console.error("BGM加载失败:", audioPath);
+      };
+
+      if (!audio.paused) {
+          btnIcon.classList.add('playing');
+      }
+
+      btnIcon.onclick = function() {
+          if (audio.paused) {
+              var p = audio.play();
+              if (p !== undefined) {
+                  p.then(_ => btnIcon.classList.add('playing')).catch(e => console.error(e));
+              }
+          } else {
+              audio.pause();
+              btnIcon.classList.remove('playing');
+          }
+      };
+  })();
+  </script>
+
+  <script>
+    document$.subscribe(function() {
+        var h1 = document.querySelector(".md-content__inner h1");
+        var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
+        
+        if (h1 && !document.getElementById("page-pv-container") && !isHomePage) {
+            var pvContainer = document.createElement("div");
+            pvContainer.id = "page-pv-container";
+            pvContainer.style.cssText = "color: var(--md-default-fg-color--light); font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;";
+            pvContainer.innerHTML = `
+                <span id="busuanzi_container_page_pv" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; fill: currentColor; margin-right: 4px;">
+                        <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
+                    </svg>
+                    阅读量：<span id="busuanzi_value_page_pv" style="font-weight: bold;">--</span>
+                </span>
+            `;
+            h1.parentNode.insertBefore(pvContainer, h1.nextSibling);
+        }
+
+        var oldScript = document.getElementById("busuanzi-script-tag");
+        if (oldScript) { oldScript.remove(); }
+        
+        var sitePv = document.getElementById("busuanzi_container_site_pv");
+        if (sitePv) sitePv.style.display = "none";
+
+        var script = document.createElement("script");
+        script.id = "busuanzi-script-tag";
+        script.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+        script.async = true;
+        document.body.appendChild(script);
+    });
+  </script>
+
+  <script>
+    document$.subscribe(function() {
+        var card = document.querySelector(".profile-card");
+        if (!card) return;
+
+        function initTilt() {
+            if (window.VanillaTilt) {
+                if (card.vanillaTilt) card.vanillaTilt.destroy();
+                VanillaTilt.init(card, {
+                    max: 8,
+                    speed: 1000,
+                    glare: true,
+                    "max-glare": 0.2,
+                    scale: 1.05,
+                    gyroscope: false,
+                    perspective: 1000
+                });
+                return true;
+            }
+            return false;
+        }
+
+        if (!initTilt()) {
+            var checkTilt = setInterval(function() {
+                if (initTilt()) {
+                    clearInterval(checkTilt);
+                }
+            }, 100);
+        }
+    });
+  </script>
+
+
+  </body>
+</html>
