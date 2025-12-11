@@ -939,6 +939,6 @@ s.t. $U_{j+\frac{1}{2}}^{m}=\sum_{l}c_{l}U_{l}^{m}$。 -->
 
 [ :octicons-arrow-left-24:  上一章：抛物 PDE 的有限差分法 ](chapter2.md){ .md-button }
 
-[ 下一章：还没写 :octicons-arrow-right-24: ](chapter3.md){ .md-button .md-button--primary }
+[ 下一章：有限元方法 :octicons-arrow-right-24: ](chapter4.md){ .md-button .md-button--primary }
 
 </div>

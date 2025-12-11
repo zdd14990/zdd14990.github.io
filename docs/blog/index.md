@@ -94,6 +94,13 @@ git_revision_date_localized:
 
     [:octicons-arrow-right-24: 阅读笔记](渐进分析/渐进分析.md)
 
+-  **应用数学博资考培训**
+    
+        ---
+        数值线性代数等应用数学方向博资考相关内容。
+    
+        [:octicons-arrow-right-24: 阅读笔记](应用数学博资考/应用数学博资考.md)  
+
 </div>
 
 <br>
