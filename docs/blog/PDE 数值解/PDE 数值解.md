@@ -43,4 +43,10 @@ hide:
     ---
     介绍有限元方法。
     [:octicons-arrow-right-24: 阅读章节](chapter4.md)
+
+-  **习题一**
+    ---
+    习题一。
+    [:octicons-arrow-right-24: 阅读章节](exercise1.md)
+    
 </div>
