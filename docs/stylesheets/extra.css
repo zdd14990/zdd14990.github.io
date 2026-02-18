@@ -163,12 +163,24 @@ code, kbd, pre {
     overflow-y: auto !important;
 }
 
-/* 3. 清除外层轨道的干扰 */
+/* 3. 核心修复：让侧边栏吸附在屏幕上 (Sticky) */
 .md-sidebar {
     background: none !important;
     box-shadow: none !important;
-    /* 让侧边栏容器不要强制撑满 */
+    
+    /* --- 关键修改开始 --- */
+    /* 恢复吸附效果 */
+    position: sticky !important; 
+    
+    /* 距离顶部的距离 (根据你的顶部导航栏高度调整，通常 5rem - 7rem 比较合适) */
+    top: 6.5rem !important; 
+    
+    /* 确保高度自适应，但不要超过视口，否则无法吸附 */
     height: auto !important; 
+    /* --- 关键修改结束 --- */
+    
+    /* 保证它在层级上不被遮挡 */
+    z-index: 10;
 }
 
 /* 4. 隐藏侧边栏滚动条 (美观) */
@@ -763,3 +775,4 @@ mjx-container[display="true"] {
     text-align: center;
     width: 100%;
 }
+

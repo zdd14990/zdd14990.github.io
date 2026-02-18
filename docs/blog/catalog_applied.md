@@ -38,6 +38,13 @@ git_revision_date_localized:
 
     [:octicons-arrow-right-24: 阅读笔记](渐进分析/渐进分析.md)
 
+-  **数据科学专题**
+
+    ---
+    概率论不等式。
+
+    [:octicons-arrow-right-24: 阅读笔记](数据科学专题/数据科学专题.md)
+
 -  **应用数学博资考培训**
   
     ---

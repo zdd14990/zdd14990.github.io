@@ -22,6 +22,6 @@ git_revision_date_localized:
     ---
     消费者理论、生产者理论与一般均衡。
 
-    [:octicons-arrow-right-24: 阅读笔记](中级微观经济学.md)
+    [:octicons-arrow-right-24: 阅读笔记](others/中级微观经济学.md)
 
 </div>

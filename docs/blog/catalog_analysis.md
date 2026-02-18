@@ -22,20 +22,20 @@ git_revision_date_localized:
     ---
     度量空间、Baire 纲定理、测度论基础。
     
-    [:octicons-arrow-right-24: 阅读笔记](实分析.md)
+    [:octicons-arrow-right-24: 阅读笔记](others/实分析.md)
 
 -   **分析 II (H笔记)**
 
     ---
     关于多元微积分与流形的进阶讨论。
     
-    [:octicons-arrow-right-24: 阅读笔记](分析2-H笔记.md)
+    [:octicons-arrow-right-24: 阅读笔记](others/分析2-H笔记.md)
 
 -  **微分几何笔记**
   
     ---
     流形上的分析。
     
-    [:octicons-arrow-right-24: 阅读笔记](微分几何.md)
+    [:octicons-arrow-right-24: 阅读笔记](others/微分几何.md)
 
 </div>

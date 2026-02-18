@@ -39,14 +39,19 @@ hide:
     介绍双曲 PDE 的有限差分方法。
     [:octicons-arrow-right-24: 阅读章节](chapter3.md)
 
--   **第四章：有限元方法**
+-   **第四章：有限元理论与有限元方法**
     ---
     介绍有限元方法。
     [:octicons-arrow-right-24: 阅读章节](chapter4.md)
 
 -  **习题一**
     ---
-    习题一。
+    李书习题一。
     [:octicons-arrow-right-24: 阅读章节](exercise1.md)
+
+-  **习题二**
+    ---
+    李书习题二。
+    [:octicons-arrow-right-24: 阅读章节](exercise2.md)
     
 </div>
