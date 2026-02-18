@@ -2471,6 +2471,31 @@
 
 <h2 id="pde">数值 PDE</h2>
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2024</p>
+<p>For the system</p>
+<div class="arithmatex">\[
+u_{t}=v_{x},
+\]</div>
+<div class="arithmatex">\[
+v_{t}=u_{x},
+\]</div>
+<p>analyze the truncation error and stability of the scheme</p>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(u_{j}^{n+1}-\frac{1}{2}(u_{j+1}^{n}+u_{j-1}^{n})\right)=\frac{1}{2h}(v_{j+1}^{n}-v_{j-1}^{n}),
+\]</div>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(v_{j}^{n+1}-\frac{1}{2}(v_{j+1}^{n}+v_{j-1}^{n})\right)=\frac{1}{2h}(u_{j+1}^{n}-u_{j-1}^{n}).
+\]</div>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2024</p>
+<p>Write and prove the maximum principle of the centered finite difference scheme for discretizing the equation</p>
+<div class="arithmatex">\[
+u_{xx}+u_{yy}+d(x,y)u_{x}+e(x,y)u_{y}+f(x,y)u=0, \quad f&lt;0
+\]</div>
+<p>under some suitable assumptions.</p>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
 <div class="arithmatex">\[
 u_{j}^{n+1}=-\frac{1}{2}\nu(1-\nu)u_{j+1}^{n}+(1-\nu^{2})u_{j}^{n}+\frac{1}{2}\nu(1+\nu)u_{j-1}^{n},
@@ -2482,6 +2507,15 @@ u_{j}^{n+1}=-\frac{1}{2}\nu(1-\nu)u_{j+1}^{n}+(1-\nu^{2})u_{j}^{n}+\frac{1}{2}\n
 <p>where <span class="arithmatex">\(||v||_{2}^{2}=\sum_{j}|v_{j}|^{2}\)</span>, <span class="arithmatex">\(\langle v,w\rangle=\sum_{j}v_{j}w_{j}\)</span>, <span class="arithmatex">\(\delta_{x}^{-}v_{j}=v_{j}-v_{j-1}\)</span>, <span class="arithmatex">\(\delta_{x}^{+}v_{j}=v_{j+1}-v_{j}\)</span>.</p>
 <p>(ii) Suppose <span class="arithmatex">\(a&gt;0\)</span> for the problem imposed on <span class="arithmatex">\((0,1)\)</span> with homogeneous boundary condition at <span class="arithmatex">\(x=0\)</span> (i.e., <span class="arithmatex">\(u_{0}^{n}=0\)</span>), give a simple numerical boundary condition for <span class="arithmatex">\(x=1\)</span> such that the Lax-Wendroff scheme is stable.</p>
 </div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：纯计算。</p>
+<p><span class="arithmatex">\((ii)\)</span>：在边界点 <span class="arithmatex">\(x_N = 1\)</span> 处，放弃中心差分的 Lax-Wendroff 格式，改用一阶迎风格式：</p>
+<div class="arithmatex">\[
+u_N^{n+1} = u_N^n - \nu (u_N^n - u_{N-1}^n)
+\]</div>
+<p>当 <span class="arithmatex">\(a&gt;0\)</span> 时，迎风格式是稳定的（只要 CFL 条件 <span class="arithmatex">\(\nu \le 1\)</span> 满足），且只利用了左侧的信息 <span class="arithmatex">\(u_N, u_{N-1}\)</span>，符合特征线把信息从内部传向边界的物理事实，不会引入错误的反向波。计算量小，易于实现。</p>
+</div>
 <div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
 <p>For the system</p>
@@ -2489,7 +2523,7 @@ u_{j}^{n+1}=-\frac{1}{2}\nu(1-\nu)u_{j+1}^{n}+(1-\nu^{2})u_{j}^{n}+\frac{1}{2}\n
 u_{t}=-v_{x},
 \]</div>
 <div class="arithmatex">\[
-v_{t}=u_{x},
+v_{t}=u_{xx},
 \]</div>
 <p>analyze the truncation error and stability of the scheme</p>
 <div class="arithmatex">\[
@@ -2498,6 +2532,40 @@ v_{t}=u_{x},
 <div class="arithmatex">\[
 \frac{v_{j}^{n+1}-v_{j}^{n}}{\tau}=\frac{1}{2h^{2}}(u_{j+1}^{n}-2u_{j}^{n}+u_{j-1}^{n}+u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}).
 \]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>由 Taylor 展开</p>
+<div class="arithmatex">\[
+\frac{u_{j}^{n+1}-u_{j}^{n}}{\tau}=u_{t}+\frac{\tau}{2}u_{tt}+O(\tau^{2}),
+\]</div>
+<div class="arithmatex">\[
+\frac{v_{j+1}^{n}-2v_{j}^{n}+v_{j-1}^{n}}{2h^2}=\frac{1}{2}v_{xx}+O(h^2),
+\]</div>
+<div class="arithmatex">\[
+\frac{v_{j+1}^{n+1}-2v_{j}^{n+1}+v_{j-1}^{n+1}}{2h^2}=\frac{1}{2}v_{xx}+\frac{\tau}{2}v_{xxt}+O(\tau^2+h^2).
+\]</div>
+<p>因此截断误差为 <span class="arithmatex">\(u_t+ \frac{\tau}{2}u_{tt} +v_{xx} + \frac{\tau}{2}v_{xxt} + O(\tau^2+h^2)\)</span>。由条件有 <span class="arithmatex">\(u_t+v_{xx}=0\)</span>，<span class="arithmatex">\(u_{tt}+v_{xxt}=0\)</span>，因此截断误差为 <span class="arithmatex">\(O(\tau^2+h^2)\)</span>。因此该格式对时间和空间都具有二阶精度。第二个格式同理。</p>
+<p>对于稳定性分析，设 <span class="arithmatex">\(u_j^n = U^n e^{i k j h}\)</span>，<span class="arithmatex">\(v_j^n = V^n e^{i k j h}\)</span>，代入差分方程有</p>
+<div class="arithmatex">\[
+\frac{U^{n+1} - U^n}{\tau} = -\frac{1}{2} (-S) (V^n + V^{n+1}) = \frac{S}{2} (V^n + V^{n+1})
+\]</div>
+<div class="arithmatex">\[
+\frac{V^{n+1} - V^n}{\tau} = \frac{1}{2} (-S) (U^n + U^{n+1}) = -\frac{S}{2} (U^n + U^{n+1})
+\]</div>
+<p>其中 <span class="arithmatex">\(S=\frac{4}{h^2} \sin^2\left(\frac{k h}{2}\right)\)</span>。设 <span class="arithmatex">\(\mu=\frac{\tau S}{2} = \frac{2\tau}{h^2} \sin^2\left(\frac{kh}{2}\right)\)</span>。整理为矩阵形式：</p>
+<div class="arithmatex">\[
+\begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} - \begin{pmatrix} U^n \\ V^n \end{pmatrix} = \mu \begin{pmatrix} 0 &amp; 1 \\ -1 &amp; 0 \end{pmatrix} \left( \begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} + \begin{pmatrix} U^n \\ V^n \end{pmatrix} \right)
+\]</div>
+<p>设 <span class="arithmatex">\(W^n = \begin{pmatrix} U^n \\ V^n \end{pmatrix}\)</span>，则上式可写为</p>
+<div class="arithmatex">\[
+W^{n+1} - W^n = \mu J (W^{n+1} + W^n)
+\]</div>
+<p>也就是</p>
+<div class="arithmatex">\[
+W^{n+1} = (I - \mu J)^{-1} (I + \mu J) W^n
+\]</div>
+<p>由于 <span class="arithmatex">\(J\)</span> 的特征值为 <span class="arithmatex">\(\pm i\)</span>，因此 <span class="arithmatex">\((I - \mu J)^{-1} (I + \mu J)\)</span> 的特征值为 <span class="arithmatex">\(\frac{1 + i \mu}{1 - i \mu}\)</span> 和 <span class="arithmatex">\(\frac{1 - i \mu}{1 + i \mu}\)</span>，它们的模长均为 <span class="arithmatex">\(1\)</span>。因此该方法无条件稳定。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Autumn, 2025</p>

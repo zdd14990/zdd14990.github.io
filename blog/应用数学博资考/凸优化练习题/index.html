@@ -2408,6 +2408,16 @@
 
 <h2 id="_1">凸优化</h2>
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2024</p>
+<p>Let <span class="arithmatex">\(f:\mathbb{R}^{n}\rightarrow\mathbb{R}\)</span> be convex and define <span class="arithmatex">\(\partial f(x)\)</span> to be the subgradient set of <span class="arithmatex">\(f\)</span> at <span class="arithmatex">\(x\)</span>.</p>
+<p>(i) If <span class="arithmatex">\(x \in \text{int dom} f\)</span>, prove that <span class="arithmatex">\(\partial f(x)\)</span> is nonempty and bounded.</p>
+<p>(ii) Assume <span class="arithmatex">\(f(x)=||x||_{1}=\sum_{i=1}^{n}|x_{i}|\)</span>, write down the <span class="arithmatex">\(\partial f(x)\)</span>.</p>
+<p>(iii) Given <span class="arithmatex">\(y\in\mathbb{R}^{n}\)</span> and <span class="arithmatex">\(\lambda&gt;0\)</span>, calculate the closed form solution of the problem:</p>
+<div class="arithmatex">\[
+\min_{x}\frac{1}{2}||x-y||_{2}^{2}+\lambda||x||_{1}.
+\]</div>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
 <p>Let <span class="arithmatex">\(K\)</span> be a nonempty closed convex set in <span class="arithmatex">\(\mathbb{R}^{n}\)</span>. For any <span class="arithmatex">\(z\in\mathbb{R}^{n}\)</span>, define <span class="arithmatex">\(\Pi_{K}(z)\)</span> as the optimal solution of the problem <span class="arithmatex">\(\min \frac{1}{2}||y-z||^2\)</span>, s.t. <span class="arithmatex">\(y\in K\)</span>. Prove the following statements.</p>
 <p>(i) Show that <span class="arithmatex">\(\Pi_{K}(z)\)</span> satisfies</p>
@@ -2419,6 +2429,78 @@
 \Theta(z):=\frac{1}{2}||z-\Pi_{K}(z)||^{2}.
 \]</div>
 <p>Prove that <span class="arithmatex">\(\Theta(\cdot)\)</span> is a continuously differentiable convex function and <span class="arithmatex">\(\nabla\Theta(z)=z-\Pi_{K}(z)\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：对于定义在凸集 <span class="arithmatex">\(K\)</span> 上的可微凸函数 <span class="arithmatex">\(f(y)\)</span>，点 <span class="arithmatex">\(\Pi_{K}(z) \in K\)</span> 是最优解的充要条件是：</p>
+<div class="arithmatex">\[
+\langle \nabla f(\Pi_{K}(z)), d - \Pi_{K}(z) \rangle \ge 0, \quad \forall d \in K
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+\langle \Pi_{K}(z) - z, d - \Pi_{K}(z) \rangle \ge 0, \quad \forall d \in K
+\]</div>
+<p><span class="arithmatex">\((ii)\)</span>：根据定义，<span class="arithmatex">\(\Theta(z)\)</span> 是一个最小化问题的最优值函数：</p>
+<div class="arithmatex">\[
+\Theta(z) = \inf_{y \in K} \frac{1}{2} \|y - z\|^2
+\]</div>
+<p>设 <span class="arithmatex">\(z_1, z_2 \in \mathbb{R}^n\)</span>，<span class="arithmatex">\(\lambda \in [0, 1]\)</span>。令 <span class="arithmatex">\(z_\lambda = \lambda z_1 + (1-\lambda)z_2\)</span>。设 <span class="arithmatex">\(p_1 = \Pi_K(z_1)\)</span>， <span class="arithmatex">\(p_2 = \Pi_K(z_2)\)</span>。由于 <span class="arithmatex">\(p_1, p_2 \in K\)</span> 且 <span class="arithmatex">\(K\)</span> 是凸集，所以它们的凸组合也在 <span class="arithmatex">\(K\)</span> 中：</p>
+<div class="arithmatex">\[
+p_\lambda := \lambda p_1 + (1-\lambda)p_2 \in K
+\]</div>
+<p>由于 <span class="arithmatex">\(\Theta(z_\lambda)\)</span> 是在 <span class="arithmatex">\(K\)</span> 上的最小值，所以代入任意可行点 <span class="arithmatex">\(p_\lambda\)</span> 都会得到一个上界：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Theta(z_\lambda) &amp;= \min_{y \in K} \frac{1}{2} \|y - z_\lambda\|^2 \\
+&amp;\le \frac{1}{2} \|p_\lambda - z_\lambda\|^2 \\
+&amp;= \frac{1}{2} \| (\lambda p_1 + (1-\lambda)p_2) - (\lambda z_1 + (1-\lambda)z_2) \|^2 \\
+&amp;= \frac{1}{2} \| \lambda (p_1 - z_1) + (1-\lambda)(p_2 - z_2) \|^2
+\end{aligned}
+\]</div>
+<p>由于函数 <span class="arithmatex">\(g(v) = \frac{1}{2}\|v\|^2\)</span> 是凸函数，根据 Jensen 不等式：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\frac{1}{2} \| \lambda (p_1 - z_1) + (1-\lambda)(p_2 - z_2) \|^2 &amp;\le \lambda \left( \frac{1}{2} \|p_1 - z_1\|^2 \right) + (1-\lambda) \left( \frac{1}{2} \|p_2 - z_2\|^2 \right) \\
+&amp;= \lambda \Theta(z_1) + (1-\lambda) \Theta(z_2)
+\end{aligned}
+\]</div>
+<p>综上，<span class="arithmatex">\(\Theta(\lambda z_1 + (1-\lambda)z_2) \le \lambda \Theta(z_1) + (1-\lambda) \Theta(z_2)\)</span>，即 <span class="arithmatex">\(\Theta(z)\)</span> 是凸函数。</p>
+<p>对于任意增量 <span class="arithmatex">\(h \in \mathbb{R}^n\)</span>：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Theta(z+h) &amp;= \min_{y \in K} \frac{1}{2} \|y - (z+h)\|^2 \\
+&amp;\le \frac{1}{2} \|\Pi_K(z) - (z+h)\|^2 \\
+&amp;= \frac{1}{2} \| (\Pi_K(z) - z) - h \|^2 \\
+&amp;= \frac{1}{2} \|\Pi_K(z) - z\|^2 - \langle \Pi_K(z) - z, h \rangle + \frac{1}{2} \|h\|^2 \\
+&amp;= \Theta(z) + \langle z - \Pi_K(z), h \rangle + \frac{1}{2} \|h\|^2
+\end{aligned}
+\]</div>
+<p>移项得：</p>
+<div class="arithmatex">\[
+\Theta(z+h) - \Theta(z) \le \langle z - \Pi_K(z), h \rangle + \frac{1}{2} \|h\|^2
+\]</div>
+<p>另一方面</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Theta(z) &amp;\le \frac{1}{2} \|\Pi_K(z+h) - z\|^2 \\
+&amp;= \frac{1}{2} \| (\Pi_K(z+h) - (z+h)) + h \|^2 \\
+&amp;= \frac{1}{2} \|\Pi_K(z+h) - (z+h)\|^2 + \langle \Pi_K(z+h) - (z+h), h \rangle + \frac{1}{2} \|h\|^2 \\
+&amp;= \Theta(z+h) - \langle z+h - \Pi_K(z+h), h \rangle + \frac{1}{2} \|h\|^2
+\end{aligned}
+\]</div>
+<p>移项得：</p>
+<div class="arithmatex">\[
+\Theta(z+h) - \Theta(z) \ge \langle z - \Pi_K(z+h), h \rangle - \frac{1}{2} \|h\|^2=\langle z - \Pi_K(z), h \rangle + \langle h - (\Pi_K(z+h) - \Pi_K(z)), h \rangle- \frac{1}{2} \|h\|^2
+\]</div>
+<p>结合 <span class="arithmatex">\(\|\Pi_K(z+h) - \Pi_K(z)\| \le \|(z+h) - z\| = \|h\|\)</span> 可得</p>
+<div class="arithmatex">\[
+\Theta(z+h) - \Theta(z) = \langle z - \Pi_K(z), h \rangle + o(\|h\|)
+\]</div>
+<p>这表明 <span class="arithmatex">\(\Theta(z)\)</span> 在 <span class="arithmatex">\(z\)</span> 处可微，且梯度为：</p>
+<div class="arithmatex">\[
+\nabla \Theta(z) = z - \Pi_K(z)
+\]</div>
+<p>连续性是显然的。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Autumn, 2025</p>
