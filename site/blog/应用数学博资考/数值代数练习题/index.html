@@ -2418,7 +2418,7 @@
               
                 
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -2471,6 +2471,228 @@
 
 <h2 id="_1">数值代数</h2>
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>Consider the explicit shifted QR method for computing eigenvalues of a matrix <span class="arithmatex">\(A\in\mathbb{C}^{n\times n}\)</span>.</p>
+<p>1: find an upper Hessenberg matrix <span class="arithmatex">\(H_{0}\)</span> and a unitary matrix <span class="arithmatex">\(U_{0}\)</span> such that <span class="arithmatex">\(H_{0}=U_{0}^{H}AU_{0}\)</span>.</p>
+<p>2: for <span class="arithmatex">\(i=0,1,2,\dots\)</span> do</p>
+<p>3: determine a scalar <span class="arithmatex">\(\mu_{k}.\)</span></p>
+<p>4: compute QR factorization <span class="arithmatex">\(Q_{k}R_{k}=H_{k}-\mu_{k}I\)</span></p>
+<p>5: <span class="arithmatex">\(H_{k+1}=R_{k}Q_{k}+\mu_{k}I\)</span>.</p>
+<p>6: end for</p>
+<p>(1). Prove that <span class="arithmatex">\(H_{i}\)</span>, <span class="arithmatex">\(i=1,2,\dots\)</span> are all upper Hessenberg matrices.</p>
+<p>(2). Interpret the purpose to use <span class="arithmatex">\(H_{0}\)</span> rather than <span class="arithmatex">\(A\)</span> in the iteration.</p>
+<p>(3). Suppose that <span class="arithmatex">\(A\)</span> has <span class="arithmatex">\(n\)</span> distinct eigenvalues and none of the shifts <span class="arithmatex">\(\mu_{i}\)</span>, <span class="arithmatex">\(i=1,2,\dots\)</span> is an eigenvalue of <span class="arithmatex">\(A\)</span>. Prove that <span class="arithmatex">\(H_{i}\)</span>, <span class="arithmatex">\(i=0,1,2,\dots\)</span> are unreduced upper Hessenberg matrices. (An upper Hessenberg matrix <span class="arithmatex">\(H\)</span> is called unreduced, if <span class="arithmatex">\(H_{i+1,i}\ne0\)</span> for <span class="arithmatex">\(i=1,\dots,n-1.\)</span>)</p>
+<p>(4). Write <span class="arithmatex">\(H_{k}=\begin{bmatrix}G_{k}&amp;u_{k}\\ \epsilon_{k}e^{T}&amp;\alpha_{k}\end{bmatrix}\)</span> where <span class="arithmatex">\(\alpha_{k}, \epsilon_{k}\in\mathbb{C}\)</span>, <span class="arithmatex">\(u_{k}, e\in\mathbb{C}^{n-1}\)</span> and <span class="arithmatex">\(e=\begin{bmatrix}0\\ \vdots\\ 0\\ 1\end{bmatrix}.\)</span> Suppose <span class="arithmatex">\(A\)</span> has <span class="arithmatex">\(n\)</span> distinct eigenvalues. Prove that</p>
+<div class="arithmatex">\[
+|\epsilon_{k+1}|\le\rho_{k}^{2}||u_{k}||_{2}|\epsilon_{k}|^{2}+\rho_{k}|\alpha_{k}-\mu_{k}||\epsilon_{k}|,
+\]</div>
+<p>where <span class="arithmatex">\(\rho_{k}=||(G_{k}-\mu_{k}I)^{-1}||_{2}\)</span>, provided <span class="arithmatex">\(\mu_{k}\)</span> is not an eigenvalue of <span class="arithmatex">\(G_{k}\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((1)\)</span>：归纳。<span class="arithmatex">\(H_0\)</span> 已经成立。<span class="arithmatex">\(H_k-\mu_k I\)</span> 上 Hessenberg，<span class="arithmatex">\(R_k\)</span> 上三角，<span class="arithmatex">\(Q_k=(H_k-\mu_kI)R_k^{-1}\)</span> 上 Hessenberg，因此 <span class="arithmatex">\(H_{k+1}=R_k Q_k + \mu_k I\)</span> 上 Hessenberg。</p>
+<p><span class="arithmatex">\((2)\)</span>：如果直接对稠密矩阵 <span class="arithmatex">\(A\)</span> 迭代，对一个 <span class="arithmatex">\(n \times n\)</span> 的稠密矩阵进行一次 QR 分解需要 <span class="arithmatex">\(\mathcal{O}(n^3)\)</span> 的浮点运算。如果先化为 <span class="arithmatex">\(H_0\)</span> 再迭代，只需要在初始阶段花费一次 <span class="arithmatex">\(\mathcal{O}(n^3)\)</span> 的代价。在此之后的每一次 QR 迭代单步迭代的代价骤降为 <span class="arithmatex">\(\mathcal{O}(n^2)\)</span>。总复杂度大幅优化为 <span class="arithmatex">\(\mathcal{O}(n^3 + N n^2)\)</span>。</p>
+<p><span class="arithmatex">\((3)\)</span>：假设 <span class="arithmatex">\(H_0\)</span> 是标准的非退化 Hessenberg 矩阵。我们证明如果在第 <span class="arithmatex">\(k\)</span> 步 <span class="arithmatex">\(H_k\)</span> 是非退化的，那么 <span class="arithmatex">\(H_{k+1}\)</span> 也是非退化的。</p>
+<div class="arithmatex">\[
+H_k - \mu_k I = Q_k R_k
+\]</div>
+<p>因为 <span class="arithmatex">\(\mu_k\)</span> 不是 <span class="arithmatex">\(A\)</span> 的特征值，所以 <span class="arithmatex">\(H_k - \mu_k I\)</span> 是非奇异的。因此，其 QR 分解中的上三角矩阵 <span class="arithmatex">\(R_k\)</span> 必定也是非奇异的，即它的对角线元素全不为零：<span class="arithmatex">\((R_k)_{j,j} \ne 0 \quad \forall j\)</span>。写出 <span class="arithmatex">\(Q_k = (H_k - \mu_k I) R_k^{-1}\)</span>。</p>
+<p>观察 <span class="arithmatex">\(Q_k\)</span> 的次对角线元素：</p>
+<div class="arithmatex">\[
+(Q_k)_{j+1, j} = (H_k - \mu_k I)_{j+1, j} \cdot (R_k^{-1})_{j,j}
+\]</div>
+<p>因为 <span class="arithmatex">\(H_k\)</span> 是非退化的，且 <span class="arithmatex">\((R_k^{-1})_{j,j} = 1 / (R_k)_{j,j} \ne 0\)</span>，所以：</p>
+<div class="arithmatex">\[
+(Q_k)_{j+1, j} \ne 0
+\]</div>
+<p>接下来观察 <span class="arithmatex">\(H_{k+1}\)</span> 的次对角线元素，由 <span class="arithmatex">\(H_{k+1} - \mu_k I = R_k Q_k\)</span> 得到：</p>
+<div class="arithmatex">\[
+(H_{k+1})_{j+1, j} = (R_k)_{j+1, j+1} \cdot (Q_k)_{j+1, j}
+\]</div>
+<p>由于 <span class="arithmatex">\(R_k\)</span> 对角线非零，且刚才证了 <span class="arithmatex">\(Q_k\)</span> 次对角线非零，两者的乘积必然非零：</p>
+<div class="arithmatex">\[
+(H_{k+1})_{j+1, j} \ne 0
+\]</div>
+<p>这证明了如果 <span class="arithmatex">\(H_k\)</span> 的次对角线不包含 0，则 <span class="arithmatex">\(H_{k+1}\)</span> 的次对角线也绝不会包含 0。因此所有 <span class="arithmatex">\(H_i\)</span> 都是非退化的。证毕。</p>
+<p><span class="arithmatex">\((4)\)</span>：设 <span class="arithmatex">\(Q_k =\begin{bmatrix}Q_{11}&amp;q_{12}\\ q^T_{21}&amp;q_{22}\end{bmatrix}\)</span> ，<span class="arithmatex">\(R_k = \begin{bmatrix}R_{11}&amp;r_{12}\\ 0&amp;r_{22}\end{bmatrix}\)</span>。
+考虑 <span class="arithmatex">\(Q_k R_k = H_k - \mu_k I\)</span>，</p>
+<div class="arithmatex">\[
+\begin{bmatrix}Q_{11}&amp;q_{12}\\ q^T_{21}&amp;q_{22}\end{bmatrix} \begin{bmatrix}R_{11}&amp;r_{12}\\ 0&amp;r_{22}\end{bmatrix} = \begin{bmatrix}G_k - \mu_k I &amp; u_k \\ \epsilon_k e^T &amp; \alpha_k - \mu_k\end{bmatrix}
+\]</div>
+<p>这给出了</p>
+<div class="arithmatex">\[
+q_{21}^T R_{11} =\epsilon_k e^T, Q_{11}R_{11}=G_k - \mu_k I
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    |q_{21}| =|\epsilon_k e^T R_{11}^{-1}| &amp;\le |\epsilon_k| \cdot ||e||_2 \cdot ||R_{11}^{-1}||_2 \\
+    &amp;= |\epsilon_k| \cdot ||Q_{11}^{-1}||_2||G_k - \mu_k I||_2 \\
+    &amp;\le |\epsilon_k| \cdot \rho_k
+\end{aligned}
+\]</div>
+<p>考虑 <span class="arithmatex">\(R_k = Q_k^* (H_k - \mu_k I)\)</span>，</p>
+<div class="arithmatex">\[
+\begin{bmatrix}R_{11}&amp;r_{12}\\ 0&amp;r_{22}\end{bmatrix} = \begin{bmatrix}Q_{11}^* &amp; q_{21}^* \\ q_{12}^* &amp; q_{22}^*\end{bmatrix} \begin{bmatrix}G_k - \mu_k I &amp; u_k \\ \epsilon_k e^T &amp; \alpha_k - \mu_k\end{bmatrix}
+\]</div>
+<p>这给出了</p>
+<div class="arithmatex">\[
+r_{22}= q_{12}^* u_k + q_{22}^* (\alpha_k - \mu_k)
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+|r_{22}|\le ||q_{12}||_2 ||u_k||_2 + |q_{22}| |\alpha_k - \mu_k| \le \rho_k ||u_k||_2 |\epsilon_k| +  |\alpha_k - \mu_k|
+\]</div>
+<p>考虑 <span class="arithmatex">\(H_{k+1} - \mu_k I = R_k Q_k\)</span>，</p>
+<div class="arithmatex">\[
+\begin{bmatrix}G_{k+1} - \mu_k I &amp; u_{k+1} \\ \epsilon_{k+1} e^T &amp; \alpha_{k+1} - \mu_k\end{bmatrix} = \begin{bmatrix}R_{11}&amp;r_{12}\\ 0&amp;r_{22}\end{bmatrix} \begin{bmatrix}Q_{11}&amp;q_{12}\\ q^T_{21}&amp;q_{22}\end{bmatrix}
+\]</div>
+<p>这给出了</p>
+<div class="arithmatex">\[
+\epsilon_{k+1} e^T = r_{22} q_{21}^T = r_{22} \epsilon_k e^T R_{11}^{-1}
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+|\epsilon_{k+1}| \le |r_{22}| \cdot |\epsilon_k| \cdot ||R_{11}^{-1}||_2 \le \rho_k^2 ||u_k||_2 |\epsilon_k|^2 + \rho_k |\alpha_k - \mu_k| |\epsilon_k|
+\]</div>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Suppose <span class="arithmatex">\(k \le n \le m\)</span> and <span class="arithmatex">\(A \in \mathbb{C}^{m \times n}\)</span>.</p>
+<p>(i) Find a rank-<span class="arithmatex">\(k\)</span> matrix <span class="arithmatex">\(X\)</span> satisfying <span class="arithmatex">\(||A-X||_{2} \le ||A-B||_{2}\)</span> for any rank-<span class="arithmatex">\(k\)</span> matrix <span class="arithmatex">\(B\)</span>. Here <span class="arithmatex">\(|| \cdot ||_{2}\)</span> is the spectral norm.</p>
+<p>(ii) Find a rank-<span class="arithmatex">\(k\)</span> matrix <span class="arithmatex">\(X\)</span> satisfying <span class="arithmatex">\(||A-X||_{F} \le ||A-B||_{F}\)</span> for any rank-<span class="arithmatex">\(k\)</span> matrix <span class="arithmatex">\(B\)</span>. Here <span class="arithmatex">\(|| \cdot ||_{F}\)</span> is the Frobenius norm.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>考虑对 <span class="arithmatex">\(A\)</span> 进行 SVD 分解：</p>
+<div class="arithmatex">\[
+A = U \Sigma V^* = \sum_{i=1}^n \sigma_i u_i v_i^*
+\]</div>
+<p>其中：<span class="arithmatex">\(U = [u_1, u_2, \dots, u_m] \in \mathbb{C}^{m \times m}\)</span> 和 <span class="arithmatex">\(V = [v_1, v_2, \dots, v_n] \in \mathbb{C}^{n \times n}\)</span> 是酉矩阵。<span class="arithmatex">\(\Sigma \in \mathbb{R}^{m \times n}\)</span> 是对角矩阵，其对角线元素为降序排列的奇异值 <span class="arithmatex">\(\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_n \ge 0\)</span>。两问的解均为：</p>
+<div class="arithmatex">\[
+X=\sum_{i=1}^k \sigma_i u_i v_i^*
+\]</div>
+<p>(i)：对于任意 rank-<span class="arithmatex">\(k\)</span> 矩阵 <span class="arithmatex">\(B\)</span>，其零空间维数至少为 <span class="arithmatex">\(n-k\)</span>。考虑由 <span class="arithmatex">\(V\)</span> 的前 <span class="arithmatex">\(k+1\)</span> 列张成的子空间 <span class="arithmatex">\(\mathcal{W} = \text{span}\{v_1, v_2, \dots, v_{k+1}\}\)</span>，其维数为 <span class="arithmatex">\(k+1\)</span>。这两个子空间的交集必然非空。取单位向量 <span class="arithmatex">\(z \in \mathcal{W} \cap \mathcal{N}(B)\)</span>，则有 <span class="arithmatex">\(Bz=0\)</span> 且 <span class="arithmatex">\(z=\sum_{i=1}^{k+1} c_i v_i\)</span>，满足 <span class="arithmatex">\(\sum_{i=1}^{k+1} c_i^2 = 1\)</span>。因此：</p>
+<div class="arithmatex">\[
+||A-B||_2 \ge ||(A - B)z||_2 = ||Az - 0||_2 = \left|\left| \sum_{i=1}^{k+1} \sigma_i c_i u_i \right|\right|_2 = \sqrt{\sum_{i=1}^{k+1} \sigma_i^2 |c_i|^2} \ge \sigma_{k+1} = ||A-X||_2
+\]</div>
+<p>(ii) Frobenius 范数在酉变换下保持不变，因此：</p>
+<div class="arithmatex">\[
+||A - B||_F^2 = ||U^*(A - B)V||_F^2 = ||\Sigma - U^* B V||_F^2
+\]</div>
+<p>设 <span class="arithmatex">\(C = U^* B V\)</span>。因为 <span class="arithmatex">\(B\)</span> 的秩为 <span class="arithmatex">\(k\)</span>，所以矩阵 <span class="arithmatex">\(C\)</span> 的秩也为 <span class="arithmatex">\(k\)</span>。我们要最小化 <span class="arithmatex">\(||\Sigma - C||_F^2 = \sum_{i,j} |\Sigma_{i,j} - C_{i,j}|^2\)</span>。由于 <span class="arithmatex">\(\Sigma\)</span> 是对角阵，对角线外元素为 <span class="arithmatex">\(0\)</span>，要使总平方差最小，最直观的做法就是让 <span class="arithmatex">\(C\)</span> 完全去匹配 <span class="arithmatex">\(\Sigma\)</span> 对角线上最大的 <span class="arithmatex">\(k\)</span> 个元素（即 <span class="arithmatex">\(\sigma_1, \dots, \sigma_k\)</span>），而将其他所有位置置为 <span class="arithmatex">\(0\)</span>。这正好对应于我们构造的截断矩阵 <span class="arithmatex">\(\Sigma_k\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Consider the Gauss-Seidel iteration for solving the linear equation <span class="arithmatex">\(Ax=b\)</span> for <span class="arithmatex">\(A=[a_{ij}] \in \mathbb{R}^{n \times n}\)</span>, <span class="arithmatex">\(b=[b_{i}] \in \mathbb{R}^{n}\)</span> with <span class="arithmatex">\(a_{ii} \ne 0\)</span> for <span class="arithmatex">\(i=1,...,n\)</span>:</p>
+<p>1: determine <span class="arithmatex">\(x^{(0)} \in \mathbb{R}^{n}\)</span></p>
+<p>2: for <span class="arithmatex">\(k=0,1,2,...\)</span> do</p>
+<p>3: <span class="arithmatex">\(x_{i}^{(k+1)} = \frac{1}{a_{ii}}\left(b_{i} - \sum_{j=1}^{i-1}a_{ij}x_{j}^{(k+1)} - \sum_{j=i+1}^{n}a_{ij}x_{j}^{(k)}\right)\)</span> for <span class="arithmatex">\(i=1,2,...,n\)</span></p>
+<p>4: end for</p>
+<p>(i) Write <span class="arithmatex">\(x^{(k)}=[x_{i}^{(k)}]\)</span> and <span class="arithmatex">\(A=D-L-U\)</span> where <span class="arithmatex">\(D, -L, -U\)</span> are the diagonal, strictly lower triangular, strictly upper triangular parts of <span class="arithmatex">\(A\)</span> respectively. Show that <span class="arithmatex">\(x^{(k+1)}=(D-L)^{-1}Ux^{(k)}+(D-L)^{-1}b\)</span>.</p>
+<p>(ii) Prove that if <span class="arithmatex">\(A\)</span> is diagonally dominant, then <span class="arithmatex">\(A\)</span> is invertible, and the Gauss-Seidel iteration converges, namely <span class="arithmatex">\(\lim_{k \rightarrow \infty}x^{(k)}=A^{-1}b\)</span> for any <span class="arithmatex">\(x^{(0)}\)</span>. (A matrix <span class="arithmatex">\(A\)</span> is called diagonally dominant, if <span class="arithmatex">\(|a_{ii}| &gt; \sum_{j \ne i}|a_{ij}|\)</span> for <span class="arithmatex">\(i=1,...,n\)</span>.)</p>
+<p>(iii) Prove that if <span class="arithmatex">\(A\)</span> is symmetric and positive definite, then <span class="arithmatex">\(A\)</span> is invertible, and the Gauss-Seidel iteration converges.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：第三步的更新公式可以重写为：</p>
+<div class="arithmatex">\[
+\sum_{j=1}^{i}a_{ij}x_{j}^{(k+1)} = b_{i} - \sum_{j=i+1}^{n}a_{ij}x_{j}^{(k)}
+\]</div>
+<p>这给出了</p>
+<div class="arithmatex">\[
+(D-L)x^{(k+1)} = Ux^{(k)} + b
+\]</div>
+<p><span class="arithmatex">\((ii)\)</span>：若存在非零向量 <span class="arithmatex">\(x\)</span> 使得 <span class="arithmatex">\(Ax=0\)</span>，则对于某个 <span class="arithmatex">\(i\)</span>，有：</p>
+<div class="arithmatex">\[
+|a_{ii}x_i| = \left|\sum_{j \ne i} a_{ij} x_j\right| \le \sum_{j \ne i} |a_{ij}| |x_j| &lt; |a_{ii}| \max_{j \ne i} |x_j|
+\]</div>
+<p>取 <span class="arithmatex">\(|x_i| = \max_{j} |x_j|\)</span>，则有 <span class="arithmatex">\(|a_{ii}|&lt;\sum_{j \ne i} |a_{ij}|\)</span>，与 <span class="arithmatex">\(A\)</span> 的对角占优矛盾。因此 <span class="arithmatex">\(A\)</span> 是可逆的。</p>
+<p>设精确解 <span class="arithmatex">\(x^* = (D-L)^{-1}Ux^* + (D-L)^{-1}b\)</span>。定义误差向量 <span class="arithmatex">\(e^{(k)} = x^{(k)} - x^*\)</span>。有 </p>
+<div class="arithmatex">\[
+(D-L) e^{(k+1)} = U e^{(k)}
+\]</div>
+<p>展开为分量形式：</p>
+<div class="arithmatex">\[
+e_i^{(k+1)} = \frac{1}{a_{ii}} \left( - \sum_{j=1}^{i-1} a_{ij} e_j^{(k+1)} - \sum_{j=i+1}^n a_{ij} e_j^{(k)} \right)
+\]</div>
+<p><span class="arithmatex">\(\rho_i = \frac{1}{|a_{ii}|} \sum_{j \ne i} |a_{ij}|&lt;1\)</span>。令 <span class="arithmatex">\(\rho = \max_i \rho_i &lt; 1\)</span>。</p>
+<p>利用数学归纳法证明对于所有 <span class="arithmatex">\(i\)</span>，都有 <span class="arithmatex">\(|e_i^{(k+1)}| \le \rho ||e^{(k)}||_\infty\)</span>：</p>
+<p>当 <span class="arithmatex">\(i=1\)</span> 时：<span class="arithmatex">\(|e_1^{(k+1)}| \le \frac{1}{|a_{11}|} \sum_{j=2}^n |a_{1j}| |e_j^{(k)}| \le \rho_1 ||e^{(k)}||_\infty \le \rho ||e^{(k)}||_\infty\)</span>。</p>
+<p>假设对于 <span class="arithmatex">\(j &lt; i\)</span>，有 <span class="arithmatex">\(|e_j^{(k+1)}| \le \rho ||e^{(k)}||_\infty\)</span> 成立。对于第 <span class="arithmatex">\(i\)</span> 项：</p>
+<div class="arithmatex">\[
+|e_i^{(k+1)}| \le \frac{1}{|a_{ii}|} \left( \sum_{j=1}^{i-1} |a_{ij}| \rho ||e^{(k)}||_\infty + \sum_{j=i+1}^n |a_{ij}| ||e^{(k)}||_\infty \right)
+\]</div>
+<p>因为 <span class="arithmatex">\(\rho &lt; 1\)</span>，我们可以将第一项中的 <span class="arithmatex">\(\rho\)</span> 放缩为 1：</p>
+<div class="arithmatex">\[
+|e_i^{(k+1)}| \le \frac{1}{|a_{ii}|} \left( \sum_{j \ne i} |a_{ij}| \right) ||e^{(k)}||_\infty = \rho_i ||e^{(k)}||_\infty \le \rho ||e^{(k)}||_\infty
+\]</div>
+<p>结合 <span class="arithmatex">\(\rho&lt;1\)</span> 可知收敛到0。</p>
+<p><span class="arithmatex">\((iii)\)</span>：由于 <span class="arithmatex">\(A\)</span> 是对称正定矩阵，故特征值均为正，<span class="arithmatex">\(A\)</span> 可逆。</p>
+<p>现在只需证明迭代矩阵 <span class="arithmatex">\(G = (D-L)^{-1}U\)</span> 的谱半径 <span class="arithmatex">\(\rho(G) &lt; 1\)</span>。设 <span class="arithmatex">\(v\)</span> 是 <span class="arithmatex">\(G\)</span> 的特征向量，对应特征值 <span class="arithmatex">\(\lambda\)</span>，则有：</p>
+<div class="arithmatex">\[
+(D-L)^{-1}L^T v = \lambda v\implies L^T v = \lambda (D-L) v
+\]</div>
+<p>等式两边左乘 <span class="arithmatex">\(v^*\)</span>，得到：</p>
+<div class="arithmatex">\[
+v^* L^T v = \lambda v^* D v - \lambda v^* L v
+\]</div>
+<p>设 <span class="arithmatex">\(a=v^* A v&gt;0,d=v^* D v&gt;0,c=v^* L v\)</span>，根据 <span class="arithmatex">\(A=D-L-L^T\)</span>，两边乘上 <span class="arithmatex">\(v^*\)</span> 和 <span class="arithmatex">\(v\)</span>，得到</p>
+<div class="arithmatex">\[
+a=d-c-\bar{c}
+\]</div>
+<p>将其带回上式，得到</p>
+<div class="arithmatex">\[
+\bar{c}=\lambda (a+\bar{c})\implies \bar{c}=\frac{\lambda}{1-\lambda} a
+\]</div>
+<p>带回 <span class="arithmatex">\(a=d-c-\bar{c}\)</span>，得到</p>
+<div class="arithmatex">\[
+d=a+c+\bar{c}=a+\frac{\bar{\lambda}}{1-\bar{\lambda}} a+\frac{\lambda}{1-\lambda} a=a\frac{1-|\lambda|^2}{|1-\lambda|^2}
+\]</div>
+<p>这给出了 <span class="arithmatex">\(|\lambda|&lt;1\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Given the Hilbert matrix <span class="arithmatex">\(H_{n} = \left[\frac{1}{i+j-1}\right]_{i,j=1,...,n}\)</span>,Prove:</p>
+<p>(i) <span class="arithmatex">\(H_{n}\)</span> is positive definite.</p>
+<p>(ii) The spectral radius <span class="arithmatex">\(\rho(H_{n})\)</span> of <span class="arithmatex">\(H_{n}\)</span> is strictly monotonically increasing with respect to <span class="arithmatex">\(n\)</span>.</p>
+<p>(iii) <span class="arithmatex">\(\rho(H_{n}) \rightarrow \pi\)</span> as <span class="arithmatex">\(n \rightarrow \infty\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：对于任意非零向量 <span class="arithmatex">\(x \in \mathbb{R}^n\)</span>，有：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    x^T H_n x &amp;= \sum_{i=1}^n \sum_{j=1}^n x_i \frac{1}{i+j-1} x_j \\
+    &amp;=  \sum_{i=1}^n \sum_{j=1}^n x_i \left( \int_0^1 t^{i+j-2} dt \right) x_j \\
+    &amp;= \int_0^1 \left( \sum_{i=1}^n x_i t^{i-1} \right)^2 dt &gt; 0
+\end{aligned}
+\]</div>
+<p><span class="arithmatex">\((ii)\)</span>：因为 <span class="arithmatex">\(H_n\)</span> 是对称矩阵，其谱半径等于最大特征值：</p>
+<div class="arithmatex">\[
+\rho(H_n) = \max_{x \in \mathbb{R}^n, x \ne 0} \frac{x^T H_n x}{x^T x}
+\]</div>
+<p>设 <span class="arithmatex">\(x^* \in \mathbb{R}^n\)</span> 是对应于 <span class="arithmatex">\(\rho(H_n)\)</span> 的特征向量，且令其模长为 1，即 <span class="arithmatex">\((x^*)^T x^* = 1\)</span>。构造 <span class="arithmatex">\(\tilde{x} = \begin{pmatrix} x^* \\ 0 \end{pmatrix} \in \mathbb{R}^{n+1}\)</span>。</p>
+<div class="arithmatex">\[
+\rho(H_{n+1}) \ge R(\tilde{x}) = \frac{\tilde{x}^T H_{n+1} \tilde{x}}{\tilde{x}^T \tilde{x}} = \frac{(x^*)^T H_n x^*}{(x^*)^T x^*} = \rho(H_n)
+\]</div>
+<p>等号显然不可能被取到。</p>
+<p><span class="arithmatex">\((iii)\)</span>：我们先来证明</p>
+<div class="arithmatex">\[
+\sum _{i=1}^\infty \sum_{j=1}^\infty \frac{x_ix_j}{i+j-1} \le \pi \sum_{i=1}^\infty x_i^2
+\]</div>
+<p>由柯西不等式</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \sum _{i=1}^\infty \sum_{j=1}^\infty  \frac{x_ix_j}{i+j-1} &amp;\le \left( \sum_{i=1}^\infty \sum_{j=1}^\infty \frac{x_i^2}{i+j-1} \sqrt{\frac{i-1/2}{j-1/2}} \right)^{1/2} \left( \sum_{i=1}^\infty \sum_{j=1}^\infty \frac{x_j^2}{i+j-1} \sqrt{\frac{j-1/2}{i-1/2}} \right)^{1/2}\\
+    &amp;=\sum_{i=1}^\infty x_i^2 \left( \sum_{j=1}^\infty \frac{1}{i+j-1} \sqrt{\frac{i-1/2}{j-1/2}} \right)\\
+    &amp;\le \sum_{i=1}^{\infty}x_i^2 \int_0^\infty \frac{1}{u+v} \sqrt{\frac{u}{v}} dv\\
+\end{aligned}
+\]</div>
+<p>最后一个不等号由 <span class="arithmatex">\(\sqrt{u} \cdot v^{-1/2} (u+v)^{-1}\)</span> 的凸性和单调性得到，这里 <span class="arithmatex">\(u=i-1/2,v=j-1/2\)</span>。计算积分得到 <span class="arithmatex">\(\pi\)</span>。</p>
+<p>最后可以取 <span class="arithmatex">\(x_i = \frac{1}{\sqrt{i}}\)</span> 来从下方逼近 <span class="arithmatex">\(\pi\)</span>。</p>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
 <p>Let <span class="arithmatex">\(A\)</span> be a symmetric positive definite matrix. Assume that the conjugate gradient method is applied to solve the linear system <span class="arithmatex">\(Ax=b\)</span> where <span class="arithmatex">\(x^{*}\)</span> is the exact solution.</p>
 <p>(i) Prove the following error estimate:</p>
@@ -2479,6 +2701,40 @@
 \]</div>
 <p>where <span class="arithmatex">\(x_{k}\)</span> is the solution obtained by the <span class="arithmatex">\(k\)</span>-th iteration, <span class="arithmatex">\(||\cdot||_{A}\)</span> denotes the <span class="arithmatex">\(A\)</span>-norm defined by <span class="arithmatex">\(||x||_{A}=\sqrt{x^{T}Ax}\)</span>, and <span class="arithmatex">\(\kappa_{2}(A)=\frac{\max \lambda(A)}{\min \lambda(A)}\)</span> denotes the condition number of <span class="arithmatex">\(A\)</span> under the <span class="arithmatex">\(l_{2}\)</span> norm. (If you apply any theorem from approximation theory, please state the theorem clearly. No need to prove that theorem.)</p>
 <p>(ii) Describe one Krylov subspace method for non-Hermitian matrices (<span class="arithmatex">\(A\ne A^{*}\)</span>). (You can use pseudo-code or words/formulas as long as the steps are clear.)</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：设 <span class="arithmatex">\(e_k = x_k - x^*\)</span> 为第 <span class="arithmatex">\(k\)</span> 步的误差。共轭梯度法即在 Krylov 子空间 <span class="arithmatex">\(\mathcal{K}_k(A, r_0) = \text{span}\{r_0, Ar_0, \dots, A^{k-1}r_0\}\)</span> 中寻找解，使得 <span class="arithmatex">\(A\)</span>-范数误差最小化。这等价于误差可以表示为一个矩阵多项式作用在初始误差上：</p>
+<div class="arithmatex">\[
+e_k = P_k(A) e_0
+\]</div>
+<p>其中 <span class="arithmatex">\(P_k \in \Pi_k^1\)</span> 是所有满足 <span class="arithmatex">\(P_k(0) = 1\)</span> 的 <span class="arithmatex">\(k\)</span> 次多项式的集合。由于 CG 方法最小化 <span class="arithmatex">\(A\)</span>-范数误差，我们有：</p>
+<div class="arithmatex">\[
+||e_k||_A = \min_{P \in \Pi_k^1} ||P(A) e_0||_A
+\]</div>
+<p>因为 <span class="arithmatex">\(A\)</span> 是对称正定矩阵 ，它具有正交的特征向量基 <span class="arithmatex">\(\{v_i\}\)</span> 和正实数特征值 <span class="arithmatex">\(\lambda_i\)</span>，且 <span class="arithmatex">\(\lambda_{\min} = \lambda_1 \le \lambda_2 \le \dots \le \lambda_n = \lambda_{\max}\)</span>。
+将 <span class="arithmatex">\(e_0\)</span> 按特征向量展开：<span class="arithmatex">\(e_0 = \sum c_i v_i\)</span>，那么 <span class="arithmatex">\(||P(A) e_0||_A^2 = \sum c_i^2 \lambda_i (P(\lambda_i))^2\)</span>。
+由此可以得到一个上限界（将离散的特征值放松到连续区间 <span class="arithmatex">\([\lambda_{\min}, \lambda_{\max}]\)</span> 上）：</p>
+<div class="arithmatex">\[
+||e_k||_A \le \left( \min_{P \in \Pi_k^1} \max_{\lambda \in [\lambda_{\min}, \lambda_{\max}]} |P(\lambda)| \right) ||e_0||_A
+\]</div>
+<p>我们将区间 <span class="arithmatex">\([\lambda_{\min}, \lambda_{\max}]\)</span> 线性映射到 <span class="arithmatex">\([-1, 1]\)</span>，并满足 <span class="arithmatex">\(P(0)=1\)</span> 的约束，最优多项式为：</p>
+<div class="arithmatex">\[
+P_k(\lambda) = \frac{T_k\left( \frac{\lambda_{\max} + \lambda_{\min} - 2\lambda}{\lambda_{\max} - \lambda_{\min}} \right)}{T_k\left( \frac{\lambda_{\max} + \lambda_{\min}}{\lambda_{\max} - \lambda_{\min}} \right)}
+\]</div>
+<p>进而有</p>
+<div class="arithmatex">\[
+\max_{\lambda \in [\lambda_{\min}, \lambda_{\max}]} |P_k(\lambda)| = \frac{1}{\left| T_k\left( \frac{\lambda_{\max} + \lambda_{\min}}{\lambda_{\max} - \lambda_{\min}} \right) \right|}
+\]</div>
+<p>而</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    T_k\left( \frac{\lambda_{\max} + \lambda_{\min}}{\lambda_{\max} - \lambda_{\min}} \right)&amp;=T_k\left(\frac{\kappa_2(A)+1}{\kappa_2(A)-1}\right)\\
+    &amp;=\frac{1}{2}\left[\left(\frac{\sqrt{\kappa_2(A)}+1}{\sqrt{\kappa_2(A)}-1}\right)^k+\left(\frac{\sqrt{\kappa_2(A)}-1}{\sqrt{\kappa_2(A)}+1}\right)^k\right]\\
+    &amp;\ge \frac{1}{2}\left(\frac{\sqrt{\kappa_2(A)}+1}{\sqrt{\kappa_2(A)}-1}\right)^k
+\end{aligned}
+\]</div>
+<p>代入即得。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
@@ -3296,7 +3552,7 @@ S = \begin{bmatrix} \sigma &amp; u^T \\ 0 &amp; S_c \end{bmatrix}, \quad T = \be
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月18日 00:53:10 UTC">2026年2月18日</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月20日 08:27:18 UTC">2026年2月20日</span>
   </span>
 
     

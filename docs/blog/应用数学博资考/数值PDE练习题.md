@@ -1,5 +1,8 @@
 ---
 date: 2026-2-7
+hide:
+  - navigation # 隐藏侧边栏，让目录卡片居中显示
+  - toc
 ---
 ## 数值 PDE
 !!! problem "Autumn, 2023"

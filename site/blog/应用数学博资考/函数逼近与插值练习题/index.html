@@ -2418,7 +2418,7 @@
               
                 
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -2472,11 +2472,135 @@
 <h2 id="_1">函数逼近与插值</h2>
 <hr />
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>Consider the Newton's method for finding a solution <span class="arithmatex">\(x_{*}\)</span> to <span class="arithmatex">\(f(x)=0\)</span>, where <span class="arithmatex">\(f\in C^{2}(a,b)\)</span>, <span class="arithmatex">\(x_{*}\in(a,b)\)</span>.</p>
+<p>1: determine <span class="arithmatex">\(x_{0}\in(a,b)\)</span>.</p>
+<p>2: for <span class="arithmatex">\(k=0,1,2,\dots\)</span> do</p>
+<p>3: <span class="arithmatex">\(x_{k+1}=x_{k}-\frac{f(x_{k})}{f^{\prime}(x_{k})}\)</span></p>
+<p>4: end for</p>
+<p>(1). Prove that if <span class="arithmatex">\(x_{0}\)</span> is sufficiently close to <span class="arithmatex">\(x_{*}\)</span> and <span class="arithmatex">\(f^{\prime}(x_{*})\ne0\)</span>, then <span class="arithmatex">\(\lim_{k\rightarrow\infty}x_{k}=x_{*}\)</span> and</p>
+<div class="arithmatex">\[
+\lim_{k\rightarrow\infty}\frac{x_{k+1}-x_{*}}{(x_{k}-x_{*})^{2}}=\frac{f^{\prime\prime}(x_{*})}{2f^{\prime}(x_{*})}.
+\]</div>
+<p>(2). In practice sometimes the derivative is not easy to be obtained. As a result, a difference is used instead:</p>
+<div class="arithmatex">\[
+x_{k+1}=x_{k}-\frac{x_{k}-x_{k-1}}{f(x_{k})-f(x_{k-1})}f(x_{k}).
+\]</div>
+<p>Prove that if <span class="arithmatex">\(x_{0}\)</span> is sufficiently close to <span class="arithmatex">\(x_{*}\)</span>, then <span class="arithmatex">\(x_{k}\rightarrow x_{*}\)</span> and</p>
+<div class="arithmatex">\[
+\lim_{k\rightarrow\infty}\frac{x_{k+1}-x_{*}}{(x_{k}-x_{*})(x_{k-1}-x_{*})}=\frac{f^{\prime\prime}(x_{*})}{2f^{\prime}(x_{*})}.
+\]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：对 <span class="arithmatex">\(f(x_*)\)</span> 在 <span class="arithmatex">\(x_k\)</span> 处作 Taylor 展开，得到</p>
+<div class="arithmatex">\[
+0=f(x_*) = f(x_k) + f'(x_k)(x_* - x_k) + \frac{f''(\xi_k)}{2}(x_* - x_k)^2=f(x_k)-f'(x_k)e_k+\frac{f''(\xi_k)}{2}e_k^2
+\]</div>
+<p>另一方面我们有</p>
+<div class="arithmatex">\[
+e_{k+1}=e_k-\frac{f(x_k)}{f'(x_k)}=e_k-\frac{f'(x_k)e_k-\frac{f''(\xi_k)}{2}e_k^2}{f'(x_k)}=\frac{f''(\xi_k)}{2f'(x_k)}e_k^2
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+\frac{e_{k+1}}{e_k^2}=\frac{f''(\xi_k)}{2f'(x_k)}
+\]</div>
+<p>在 <span class="arithmatex">\(x^*\)</span> 足够小的邻域内，<span class="arithmatex">\(|\frac{f''(x)}{2f'(y)}|\)</span> 有上界 <span class="arithmatex">\(M\)</span>。此时只需 <span class="arithmatex">\(|e_0|&lt;\frac{1}{M}\)</span> 即可保证 <span class="arithmatex">\(|e_k|\)</span> 平方收敛到 0，从而 <span class="arithmatex">\(x_k\)</span> 收敛到 <span class="arithmatex">\(x^*\)</span>。进而</p>
+<div class="arithmatex">\[
+\lim_{k\rightarrow\infty}\frac{e_{k+1}}{e_k^2}=\frac{f''(x_*)}{2f'(x_*)}.
+\]</div>
+<p><span class="arithmatex">\((ii)\)</span>：
+$$
+e_{k+1}=\frac{e_{k-1}f(x_k)-e_kf(x_{k-1})}{f(x_k)-f(x_{k-1})}.
+$$</p>
+<p>考虑 <span class="arithmatex">\(H(x)=\frac{f(x)}{x-x_*}\)</span>，则</p>
+<div class="arithmatex">\[
+\text{分子}=e_{k-1}e_k(H(x_k)-H(x_{k-1}))=e_{k-1}e_kH'(\xi_k)(e_k-e_{k-1}),
+\]</div>
+<p>其中 <span class="arithmatex">\(\xi_k\)</span> 在 <span class="arithmatex">\(x_{k-1}\)</span> 和 <span class="arithmatex">\(x_k\)</span> 之间，且</p>
+<div class="arithmatex">\[
+H'(x)=\frac{f'(x)(x-x_*)-f(x)}{(x-x_*)^2}
+\]</div>
+<p>对 <span class="arithmatex">\(f(x_*)\)</span> 在 <span class="arithmatex">\(x\)</span> 处作 Taylor 展开，得到</p>
+<div class="arithmatex">\[
+0=f(x_*)=f(x)-f'(x)(x-x_*)+\frac{f''(\eta)}{2}(x-x_*)^2
+\]</div>
+<p>故：</p>
+<div class="arithmatex">\[
+H'(x)=\frac{\frac{f''(\eta)}{2}(x-x_*)^2}{(x-x_*)^2}=\frac{f''(\eta)}{2}.
+\]</div>
+<p>因此，在点 <span class="arithmatex">\(\xi_k\)</span> 处，我们有：</p>
+<div class="arithmatex">\[
+H'(\xi_k) = \frac{1}{2}f''(\eta_k)
+\]</div>
+<p>此时 <span class="arithmatex">\(\eta_k\)</span> 严格介于 <span class="arithmatex">\(\xi_k\)</span> 和 <span class="arithmatex">\(x_*\)</span> 之间。对分母直接应用拉格朗日中值定理：</p>
+<div class="arithmatex">\[
+f(x_k) - f(x_{k-1}) = f'(\gamma_k)(x_k - x_{k-1})
+\]</div>
+<p>其中 <span class="arithmatex">\(\gamma_k\)</span> 严格介于 <span class="arithmatex">\(x_k\)</span> 和 <span class="arithmatex">\(x_{k-1}\)</span> 之间。带回原式得到</p>
+<div class="arithmatex">\[
+e_{k+1} = e_k e_{k-1} \frac{f''(\eta_k)}{2 f'(\gamma_k)}
+\]</div>
+<p>因为 <span class="arithmatex">\(f \in C^2\)</span> 且 <span class="arithmatex">\(f'(x_*) \ne 0\)</span>，在 <span class="arithmatex">\(x_*\)</span> 的足够小的邻域内，有 <span class="arithmatex">\(\left| \frac{f''(\eta)}{2f'(\gamma)} \right| \le C\)</span>。进而：</p>
+<div class="arithmatex">\[
+|e_{k+1}| \le C |e_k| |e_{k-1}|
+\]</div>
+<p>同样取 <span class="arithmatex">\(|e_0| ,|e_1|&lt;\frac{1}{C}\)</span> 即可保证 <span class="arithmatex">\(|e_k|\)</span> 超线性收敛到 0，从而 <span class="arithmatex">\(x_k\)</span> 收敛到 <span class="arithmatex">\(x^*\)</span>。进而</p>
+<div class="arithmatex">\[
+\lim_{k\rightarrow\infty}\frac{e_{k+1}}{e_k e_{k-1}}=\frac{f''(x_*)}{2f'(x_*)}.
+\]</div>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>If <span class="arithmatex">\(p\)</span> is a polynomial of degree <span class="arithmatex">\(n\)</span> (on <span class="arithmatex">\([-1,1]\)</span>), it is determined by its values on an <span class="arithmatex">\((n+1)\)</span>-point grid on <span class="arithmatex">\([-1,1]\)</span>. The derivative <span class="arithmatex">\(p^{\prime}\)</span>, a polynomial of degree <span class="arithmatex">\((n-1)\)</span>, is determined on the same grid. The (classical) differentiation matrix is the <span class="arithmatex">\((n+1)\)</span>-by-<span class="arithmatex">\((n+1)\)</span> matrix <span class="arithmatex">\(D=(D_{ij})\in\mathbb{R}^{(n+1)\times(n+1)}\)</span> that represents the linear map from the vector of values of <span class="arithmatex">\(p\)</span> to the vector of values of <span class="arithmatex">\(p^{\prime}\)</span>, namely:</p>
+<div class="arithmatex">\[
+p^{\prime}(x_{i})=\sum_{j=0}^{n}D_{ij}p(x_{j}).
+\]</div>
+<p>(1). Prove that <span class="arithmatex">\(D_{ij}=l_{j}^{\prime}(x_{i})\)</span>, where <span class="arithmatex">\(l_{j}(x)\)</span> is the <span class="arithmatex">\(j\)</span>-th Lagrange basis function.</p>
+<p>(2). If a Chebyshev grid <span class="arithmatex">\((x_{j}=\cos(j\pi/n), 0\le j\le n)\)</span> is adopted, derive explicit formulas for <span class="arithmatex">\(D_{ij}\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((1)\)</span>： 对 <span class="arithmatex">\(p(x)=\sum_{j=0}^n p(x_j) l_j(x)\)</span> 作导数即得。</p>
+<p><span class="arithmatex">\((2)\)</span>：引入节点多项式 <span class="arithmatex">\(W(x) = \prod_{k=0}^n (x - x_k)\)</span>。则</p>
+<div class="arithmatex">\[
+l_j(x) = \frac{W(x)}{W'(x_j)(x - x_j)}
+\]</div>
+<p>定义一个常数序列 <span class="arithmatex">\(c_j\)</span>：</p>
+<div class="arithmatex">\[
+c_j = \begin{cases}
+2, &amp; j = 0 \text{ 或 } n \\
+1, &amp; 1 \le j \le n-1
+\end{cases}
+\]</div>
+<p>当 <span class="arithmatex">\(i\neq j\)</span> 时，</p>
+<div class="arithmatex">\[
+l_j'(x_i) = \left. \frac{W'(x)(x-x_j) - W(x)}{(W'(x_j)(x-x_j)^2} \right|_{x=x_i} = \frac{W'(x_i)(x_i-x_j) - 0}{W'(x_j)(x_i-x_j)^2} = \frac{W'(x_i)}{W'(x_j)(x_i-x_j)}= \frac{c_i}{c_j} \frac{(-1)^{i+j}}{x_i - x_j}, \quad (i \ne j)
+\]</div>
+<p>当 <span class="arithmatex">\(i=j\)</span> 时，</p>
+<div class="arithmatex">\[
+l_j'(x_j) = \frac{W''(x_j)}{2W'(x_j)}
+\]</div>
+<p>后面纯计算，结果为：</p>
+<div class="arithmatex">\[
+D_{ij} = \begin{cases}
+\frac{c_i}{c_j} \frac{(-1)^{i+j}}{x_i - x_j}, &amp; i \ne j \\
+\frac{-x_i}{2(1 - x_i^2)}, &amp; 1 \le i = j \le n-1 \\
+\frac{2n^2 + 1}{6}, &amp; i = j = 0 \\
+-\frac{2n^2 + 1}{6}, &amp; i = j = n
+\end{cases}
+\]</div>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
 <p>The <span class="arithmatex">\(n\)</span>-th Chebyshev polynomial is defined by: <span class="arithmatex">\(T_{n}(x)=\cos(n\cdot \arccos(x))\)</span>. Answer the following questions related to <span class="arithmatex">\(T_{n}(x)\)</span>.</p>
 <p>(i) Prove that <span class="arithmatex">\(T_{n}(x)\)</span> is a polynomial of degree <span class="arithmatex">\(n\)</span>.</p>
 <p>(ii) For any <span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(0&lt;x&lt;1\)</span>, show that <span class="arithmatex">\(T_{n}(2x-1)=T_{2n}(\sqrt{x})\)</span>.</p>
 <p>(iii) Prove that the system of Chebyshev polynomials <span class="arithmatex">\(\{T_{k}:0\le k&lt;n\}\)</span> is orthogonal with respect to the discrete inner product <span class="arithmatex">\((u,v)=\sum_{k=1}^{n}u(x_{k})v(x_{k})\)</span>, where <span class="arithmatex">\(\{x_{k}\}\)</span> are the Chebyshev points <span class="arithmatex">\(x_{k}=\cos(\frac{2k-1}{2n}\pi)\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>简单计算。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
@@ -2492,9 +2616,17 @@ x=\varphi(x), \quad \varphi(x)=\epsilon \sin x+\eta,
 <p>show that the fixed point iteration <span class="arithmatex">\(x_{n+1}=\varphi(x_{n})\)</span> converges for arbitrary starting value <span class="arithmatex">\(x_{0}\)</span>.</p>
 <p>(iii) Let <span class="arithmatex">\(m\)</span> be an integer such that <span class="arithmatex">\(m\pi&lt;\eta&lt;(m+1)\pi\)</span>. Show that Newton's method with starting value</p>
 <div class="arithmatex">\[
-x_{0}=\begin{cases} (m+1)\pi &amp; \text{if } (-1)^{m}\sin(\eta) &gt; 0, \\ m\pi &amp; \text{otherwise}, \end{cases}
+x_{0}=\begin{cases} (m+1)\pi &amp; \text{if } (-1)^{m}\epsilon &gt; 0, \\ m\pi &amp; \text{otherwise}, \end{cases}
 \]</div>
 <p>is guaranteed to converge (monotonically) to <span class="arithmatex">\(\alpha(\epsilon,\eta)\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((ii)\)</span>：</p>
+<div class="arithmatex">\[
+|x_{n+1}-\tilde{x}|=|\epsilon(\sin x_n-\sin \tilde{x})|\le |\epsilon||x_n-\tilde{x}|,
+\]</div>
+<p><span class="arithmatex">\((iii)\)</span>：由于 <span class="arithmatex">\(f(x)\)</span> 单调递增，<span class="arithmatex">\(f(m\pi) &lt; 0\)</span> 且 <span class="arithmatex">\(f((m+1)\pi) &gt; 0\)</span>，唯一的根 <span class="arithmatex">\(\alpha\)</span> 必然严格位于区间 <span class="arithmatex">\((m\pi, (m+1)\pi)\)</span> 内。二阶导数 <span class="arithmatex">\(f''(x) = \epsilon \sin x\)</span> 在区间 <span class="arithmatex">\((m\pi, (m+1)\pi)\)</span> 内，<span class="arithmatex">\(\sin x\)</span> 的符号是恒定的，且与 <span class="arithmatex">\((-1)^m\)</span> 相同。根据牛顿法的收敛性定理：如果在包含根 <span class="arithmatex">\(\alpha\)</span> 的区间内，<span class="arithmatex">\(f'(x)\)</span> 和 <span class="arithmatex">\(f''(x)\)</span> 都不变号，且初始点 <span class="arithmatex">\(x_0\)</span> 满足：<span class="arithmatex">\(<span class="arithmatex">\(f(x_0) f''(x_0) &gt; 0\)</span>\)</span>那么从 <span class="arithmatex">\(x_0\)</span> 出发的牛顿迭代序列将单调且安全地收敛到根 <span class="arithmatex">\(\alpha\)</span>。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
@@ -3055,7 +3187,7 @@ x_k = \cos \left( \frac{k\pi}{n} \right), \quad k=0,1,\ldots,n,
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月18日 00:53:10 UTC">2026年2月18日</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月20日 08:27:18 UTC">2026年2月20日</span>
   </span>
 
     

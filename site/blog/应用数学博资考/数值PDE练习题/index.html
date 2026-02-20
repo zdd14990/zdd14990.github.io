@@ -2418,7 +2418,7 @@
               
                 
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -2471,6 +2471,68 @@
 
 <h2 id="pde">数值 PDE</h2>
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>For the equation <span class="arithmatex">\(u_{t}+au_{xxx}=0\)</span> (<span class="arithmatex">\(a\)</span> is a constant), applying the idea of the Lax-Friedrichs scheme, one can get the scheme</p>
+<div class="arithmatex">\[
+u_{m}^{n+1}=\frac{1}{2}(u_{m+1}^{n}+u_{m-1}^{n})-\frac{1}{2}akh^{-3}(u_{m+2}^{n}-2u_{m+1}^{n}+2u_{m-1}^{n}-u_{m-2}^{n}),
+\]</div>
+<p>where <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(h\)</span> represent the time step and mesh size, respectively.</p>
+<p>(1). Give the leading order term of local truncation error.</p>
+<p>(2). Analyze the stability of this scheme.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((1)\)</span>：由 Taylor 展开可得</p>
+<div class="arithmatex">\[
+T_m^n = \frac{k}{2} u_{tt} - \frac{h^2}{2k} u_{xx} + O(h^2 + k^2 + \frac{h^4}{k})
+\]</div>
+<p><span class="arithmatex">\((2)\)</span>：设 <span class="arithmatex">\(u_m^n = G^n e^{i m kh}\)</span>，代入差分方程得到特征方程</p>
+<div class="arithmatex">\[
+G=\cos(kh)-i a k h^{-3} \sin(kh)(2\cos (kh)-2).
+\]</div>
+<p><span class="arithmatex">\(|G|\le 1\)</span> 等价于 <span class="arithmatex">\(|a| k h^{-3} |2\cos (kh)-2| \le 1\)</span>，进一步给出 <span class="arithmatex">\(|a| k h^{-3}  \le \frac{1}{4}\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Apply the following three-step method with a parameter <span class="arithmatex">\(\theta \ge 0\)</span> for solving the heat equation <span class="arithmatex">\(u_{t}-a^{2}u_{xx}=0\)</span> (Cauchy or periodic problem):</p>
+<div class="arithmatex">\[
+(1+\theta)\frac{u_{j}^{n+1}-u_{j}^{n}}{k} - \theta\frac{u_{j}^{n}-u_{j}^{n-1}}{k} = a^{2}\frac{u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}}{h^{2}}
+\]</div>
+<p>Give its truncation error and stability. Particularly, give the value of <span class="arithmatex">\(\theta\)</span> such that the truncation error attains its highest order.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>计算得截断误差</p>
+<div class="arithmatex">\[
+T_j^n = \left( \theta -\frac{1}{2}\right) k u_{tt}-\frac{h^2}{12a^2}u_{tt}+O(k^2+h^4).
+\]</div>
+<p>该格式的截断误差一般情况下为 <span class="arithmatex">\(O(k + h^2)\)</span>。当 <span class="arithmatex">\(\theta = \frac{1}{2}\)</span> 时，截断误差的 <span class="arithmatex">\(O(k)\)</span> 项被消除，此时截断误差为 <span class="arithmatex">\(O(k^2 + h^2)\)</span>，达到了最高阶。</p>
+<p>对于稳定性分析，设 <span class="arithmatex">\(u_j^n = G^n e^{i j h \xi}\)</span>，代入差分方程得到：</p>
+<div class="arithmatex">\[
+(1+\theta-A)G^2-(1+2\theta)G+\theta=0
+\]</div>
+<p>这里 <span class="arithmatex">\(A = -4 a^2 k \sin^2\left(\frac{h\xi}{2}\right)/h^2\)</span>。容易证明该二次方程的两个根的模长都不大于 <span class="arithmatex">\(1\)</span>，因此该方法无条件稳定。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Denote the grid <span class="arithmatex">\(I_{h}=\{x_{j}\}_{j=0}^{M}\)</span>, <span class="arithmatex">\(x_{0} &lt; x_{1} &lt; ... &lt; x_{M}\)</span>. Set <span class="arithmatex">\(u=\{u_{j}\}_{j=0}^{M}\)</span> as a grid function on <span class="arithmatex">\(I_{h}\)</span>. Suppose:</p>
+<div class="arithmatex">\[
+Lu_{j} = -(a_{j}u_{j-1} - b_{j}u_{j} + c_{j}u_{j+1}) + q_{j}u_{j}, \quad j=1,...,M-1,
+\]</div>
+<p>where <span class="arithmatex">\(a_{j}, b_{j}, c_{j} &gt; 0\)</span>, <span class="arithmatex">\(q_{j} \ge 0\)</span> and <span class="arithmatex">\(a_{j}+c_{j} \le b_{j}\)</span>.</p>
+<p>(i) Assume <span class="arithmatex">\(Lu_{j} \le 0\)</span> for all <span class="arithmatex">\(1 \le j \le M-1\)</span>. Show that <span class="arithmatex">\(u_{j}\)</span> can't attain positive maximum at inner points <span class="arithmatex">\((1 \le j \le M-1)\)</span> unless <span class="arithmatex">\(u_{j} \equiv C\)</span>.</p>
+<p>(ii) Suppose <span class="arithmatex">\(d_{j} = b_{j}-a_{j}-c_{j}+q_{j} &gt; 0\)</span> <span class="arithmatex">\((j=1,...,M-1)\)</span>. Show the solution of the difference equation</p>
+<div class="arithmatex">\[
+Lu_{j} = \varphi_{j}, \quad j=1,...,M-1; \quad u_{0}=u_{M}=0
+\]</div>
+<p>satisfies <span class="arithmatex">\(||u||_{\infty} = \max_{j}|u_{j}| \le \max_{j}\frac{|\varphi_{j}|}{d_{j}}\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：反证法即可。</p>
+<p><span class="arithmatex">\((ii)\)</span>：取 <span class="arithmatex">\(|u_k|=\max_j |u_j|\)</span>，由绝对值不等式易得 <span class="arithmatex">\(|u_k|\le \frac{|\varphi_k|}{d_k}\le \max_j \frac{|\varphi_j|}{d_j}\)</span>。</p>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
 <p>For the system</p>
 <div class="arithmatex">\[
@@ -2487,6 +2549,26 @@ v_{t}=u_{x},
 \frac{1}{\tau}\left(v_{j}^{n+1}-\frac{1}{2}(v_{j+1}^{n}+v_{j-1}^{n})\right)=\frac{1}{2h}(u_{j+1}^{n}-u_{j-1}^{n}).
 \]</div>
 </div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设 <span class="arithmatex">\(U=\begin{pmatrix} u \\ v \end{pmatrix}\)</span>，则条件可写为</p>
+<div class="arithmatex">\[
+U_t=AU_x
+\]</div>
+<p>其中 <span class="arithmatex">\(A=\begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\)</span>。格式可写为</p>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(U_j^{n+1}-\frac{1}{2}(U_{j+1}^n + U_{j-1}^n)\right) = \frac{1}{2h} A (U_{j+1}^n - U_{j-1}^n)
+\]</div>
+<p>计算得到截断误差</p>
+<div class="arithmatex">\[
+T_j^n=(\frac{\tau}{2}-\frac{h^2}{2\tau })U_{xx}+O(\tau^2+h^4/\tau).
+\]</div>
+<p>稳定性：设 <span class="arithmatex">\(U_j^n=\hat{U}^n e^{i k j h}\)</span>，代入差分方程解得</p>
+<div class="arithmatex">\[
+\hat{U}=\cos (kh)+i\sin (kh) \frac{\tau}{h}A
+\]</div>
+<p>故 <span class="arithmatex">\(\hat{U}\)</span> 的特征值为 <span class="arithmatex">\(\cos (kh) \pm i\sin (kh) \frac{\tau}{h}\)</span>，模长为 <span class="arithmatex">\(\sqrt{\cos^2(kh)+\sin^2(kh)\frac{\tau^2}{h^2}}\)</span>。因此该方法稳定的条件是 <span class="arithmatex">\(\frac{\tau}{h} \le 1\)</span>。</p>
+</div>
 <div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
 <p>Write and prove the maximum principle of the centered finite difference scheme for discretizing the equation</p>
@@ -2494,6 +2576,64 @@ v_{t}=u_{x},
 u_{xx}+u_{yy}+d(x,y)u_{x}+e(x,y)u_{y}+f(x,y)u=0, \quad f&lt;0
 \]</div>
 <p>under some suitable assumptions.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设求解区域为 <span class="arithmatex">\(\Omega\)</span>，采用均匀网格进行离散，步长为 <span class="arithmatex">\(h\)</span>。记网格点为 <span class="arithmatex">\((x_i, y_j)\)</span>，其中 <span class="arithmatex">\(x_i = i h, y_j = j h\)</span>。令 <span class="arithmatex">\(U_{i,j}\)</span> 为精确解 <span class="arithmatex">\(u(x_i, y_j)\)</span> 的数值近似，并记 <span class="arithmatex">\(d_{i,j} = d(x_i, y_j)\)</span>，依次类推。对各阶导数使用二阶中心差分进行近似： </p>
+<div class="arithmatex">\[
+u_{xx} \approx \frac{U_{i-1,j} - 2U_{i,j} + U_{i+1,j}}{h^2}, u_{yy} \approx \frac{U_{i,j-1} - 2U_{i,j} + U_{i,j+1}}{h^2}
+\]</div>
+<div class="arithmatex">\[
+u_x \approx \frac{U_{i+1,j} - U_{i-1,j}}{2h}, u_y \approx \frac{U_{i,j+1} - U_{i,j-1}}{2h}
+\]</div>
+<p>将上述近似代入整理后得到：</p>
+<div class="arithmatex">\[
+\left(1 - \frac{h}{2}d_{i,j}\right) U_{i-1,j} + \left(1 + \frac{h}{2}d_{i,j}\right) U_{i+1,j} + \left(1 - \frac{h}{2}e_{i,j}\right) U_{i,j-1} + \left(1 + \frac{h}{2}e_{i,j}\right) U_{i,j+1} + (h^2 f_{i,j} - 4) U_{i,j} = 0
+\]</div>
+<p>为了后续分析方便，我们定义如下系数：</p>
+<div class="arithmatex">\[
+C_W = 1 - \frac{h}{2}d_{i,j}, C_E = 1 + \frac{h}{2}d_{i,j}, C_S = 1 - \frac{h}{2}e_{i,j}, C_N = 1 + \frac{h}{2}e_{i,j}, C_0 = 4 - h^2 f_{i,j}
+\]</div>
+<p>则：</p>
+<div class="arithmatex">\[
+C_0 U_{i,j} = C_W U_{i-1,j} + C_E U_{i+1,j} + C_S U_{i,j-1} + C_N U_{i,j+1}\]</div>
+<p>中心差分格式的系数必须满足非负性条件</p>
+<div class="arithmatex">\[
+C_W,  C_E , C_S,  C_N \ge 0
+\]</div>
+<p>这意味着我们需要满足网格 Péclet 数限制：</p>
+<div class="arithmatex">\[
+\frac{h}{2} |d(x,y)| \le 1 \quad \text{且} \quad \frac{h}{2} |e(x,y)| \le 1
+\]</div>
+<p>即假设步长满足：<span class="arithmatex">\(h \le \min \left( \frac{2}{\|d\|_\infty}, \frac{2}{\|e\|_\infty} \right)\)</span>。 同时，注意到邻居系数之和为常数：</p>
+<div class="arithmatex">\[
+C_W + C_E + C_S + C_N = 4
+\]</div>
+<p>由于题目已知 <span class="arithmatex">\(f &lt; 0\)</span>，因此中心系数 <span class="arithmatex">\(C_0\)</span> 满足： </p>
+<div class="arithmatex">\[
+C_0 = 4 - h^2 f_{i,j} &gt; 4
+\]</div>
+<p>离散极值原理：
+假设上述非负性条件成立，且 <span class="arithmatex">\(f(x,y) &lt; 0\)</span>。如果网格函数 <span class="arithmatex">\(U_{i,j}\)</span> 在内部网格点满足上述离散差分方程，那么 <span class="arithmatex">\(U_{i,j}\)</span> 的最大值必定在边界 <span class="arithmatex">\(\partial \Omega_h\)</span> 上取得：</p>
+<div class="arithmatex">\[
+\max_{\Omega_h \cup \partial \Omega_h} U_{i,j} \le \max \left( 0, \max_{\partial \Omega_h} U_{i,j} \right)
+\]</div>
+<p>采用反证法。假设网格函数 <span class="arithmatex">\(U\)</span> 在区域内部的某一点 <span class="arithmatex">\((i_0, j_0)\)</span> 取得了全局严格正的最大值 <span class="arithmatex">\(M\)</span>。即：</p>
+<div class="arithmatex">\[
+U_{i_0, j_0} = M &gt; 0
+\]</div>
+<p>并且对于所有网格点，都有 <span class="arithmatex">\(U_{i,j} \le M\)</span>。将该点代入我们的离散格式中：</p>
+<div class="arithmatex">\[
+C_0 M = C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1}
+\]</div>
+<div class="arithmatex">\[
+C_0 M=C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1} \le (C_W + C_E + C_S + C_N) M\le 4 M
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+C_0 M \le 4 M
+\]</div>
+<p>由于 <span class="arithmatex">\(C_0 = 4 - h^2 f_{i_0, j_0}\)</span> 且 <span class="arithmatex">\(f_{i_0, j_0} &lt; 0\)</span>，因此 <span class="arithmatex">\(C_0 &gt; 4\)</span>。这与上式矛盾，因此我们的反证假设不成立。即最大值不可能在内部取得，而必须在边界上取得。</p>
 </div>
 <div class="admonition problem">
 <p class="admonition-title">Spring, 2025</p>
@@ -2968,7 +3108,7 @@ u_{t}+Cu_{x} &amp;=0,\quad C=A+B. (17)
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月18日 00:53:10 UTC">2026年2月18日</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月20日 08:27:18 UTC">2026年2月20日</span>
   </span>
 
     
