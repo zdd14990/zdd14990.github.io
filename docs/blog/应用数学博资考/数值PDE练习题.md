@@ -2,6 +2,215 @@
 date: 2026-2-7
 ---
 ## 数值 PDE
+!!! problem "Autumn, 2023"
+    For the equation $u_{t}+au_{xxx}=0$ ($a$ is a constant), applying the idea of the Lax-Friedrichs scheme, one can get the scheme
+    
+    $$
+    u_{m}^{n+1}=\frac{1}{2}(u_{m+1}^{n}+u_{m-1}^{n})-\frac{1}{2}akh^{-3}(u_{m+2}^{n}-2u_{m+1}^{n}+2u_{m-1}^{n}-u_{m-2}^{n}),
+    $$
+    
+    where $k$ and $h$ represent the time step and mesh size, respectively.
+    
+    (1). Give the leading order term of local truncation error.
+    
+    (2). Analyze the stability of this scheme.
+!!! proof "证明"
+    $(1)$：由 Taylor 展开可得
+
+    $$
+    T_m^n = \frac{k}{2} u_{tt} - \frac{h^2}{2k} u_{xx} + O(h^2 + k^2 + \frac{h^4}{k})
+    $$
+
+    $(2)$：设 $u_m^n = G^n e^{i m kh}$，代入差分方程得到特征方程
+
+    $$
+    G=\cos(kh)-i a k h^{-3} \sin(kh)(2\cos (kh)-2).
+    $$
+
+    $|G|\le 1$ 等价于 $|a| k h^{-3} |2\cos (kh)-2| \le 1$，进一步给出 $|a| k h^{-3}  \le \frac{1}{4}$。
+!!! problem "Spring, 2024"
+    Apply the following three-step method with a parameter $\theta \ge 0$ for solving the heat equation $u_{t}-a^{2}u_{xx}=0$ (Cauchy or periodic problem):
+    
+    $$
+    (1+\theta)\frac{u_{j}^{n+1}-u_{j}^{n}}{k} - \theta\frac{u_{j}^{n}-u_{j}^{n-1}}{k} = a^{2}\frac{u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}}{h^{2}}
+    $$
+    
+    Give its truncation error and stability. Particularly, give the value of $\theta$ such that the truncation error attains its highest order.
+!!! proof "证明"
+    计算得截断误差
+
+    $$
+    T_j^n = \left( \theta -\frac{1}{2}\right) k u_{tt}-\frac{h^2}{12a^2}u_{tt}+O(k^2+h^4).
+    $$
+
+    该格式的截断误差一般情况下为 $O(k + h^2)$。当 $\theta = \frac{1}{2}$ 时，截断误差的 $O(k)$ 项被消除，此时截断误差为 $O(k^2 + h^2)$，达到了最高阶。
+
+    对于稳定性分析，设 $u_j^n = G^n e^{i j h \xi}$，代入差分方程得到：
+
+    $$
+    (1+\theta-A)G^2-(1+2\theta)G+\theta=0
+    $$
+
+    这里 $A = -4 a^2 k \sin^2\left(\frac{h\xi}{2}\right)/h^2$。容易证明该二次方程的两个根的模长都不大于 $1$，因此该方法无条件稳定。
+!!! problem "Spring, 2024"
+    Denote the grid $I_{h}=\{x_{j}\}_{j=0}^{M}$, $x_{0} < x_{1} < ... < x_{M}$. Set $u=\{u_{j}\}_{j=0}^{M}$ as a grid function on $I_{h}$. Suppose:
+    
+    $$
+    Lu_{j} = -(a_{j}u_{j-1} - b_{j}u_{j} + c_{j}u_{j+1}) + q_{j}u_{j}, \quad j=1,...,M-1,
+    $$
+    
+    where $a_{j}, b_{j}, c_{j} > 0$, $q_{j} \ge 0$ and $a_{j}+c_{j} \le b_{j}$.
+    
+    (i) Assume $Lu_{j} \le 0$ for all $1 \le j \le M-1$. Show that $u_{j}$ can't attain positive maximum at inner points $(1 \le j \le M-1)$ unless $u_{j} \equiv C$.
+    
+    (ii) Suppose $d_{j} = b_{j}-a_{j}-c_{j}+q_{j} > 0$ $(j=1,...,M-1)$. Show the solution of the difference equation
+    
+    $$
+    Lu_{j} = \varphi_{j}, \quad j=1,...,M-1; \quad u_{0}=u_{M}=0
+    $$
+    
+    satisfies $||u||_{\infty} = \max_{j}|u_{j}| \le \max_{j}\frac{|\varphi_{j}|}{d_{j}}$.
+!!! proof "证明"
+    $(i)$：反证法即可。
+    
+    $(ii)$：取 $|u_k|=\max_j |u_j|$，由绝对值不等式易得 $|u_k|\le \frac{|\varphi_k|}{d_k}\le \max_j \frac{|\varphi_j|}{d_j}$。
+!!! problem "Autumn, 2024"
+    For the system
+    
+    $$
+    u_{t}=v_{x},
+    $$
+    
+    $$
+    v_{t}=u_{x},
+    $$
+    
+    analyze the truncation error and stability of the scheme
+    
+    $$
+    \frac{1}{\tau}\left(u_{j}^{n+1}-\frac{1}{2}(u_{j+1}^{n}+u_{j-1}^{n})\right)=\frac{1}{2h}(v_{j+1}^{n}-v_{j-1}^{n}),
+    $$
+    
+    $$
+    \frac{1}{\tau}\left(v_{j}^{n+1}-\frac{1}{2}(v_{j+1}^{n}+v_{j-1}^{n})\right)=\frac{1}{2h}(u_{j+1}^{n}-u_{j-1}^{n}).
+    $$
+!!! proof "证明"
+    设 $U=\begin{pmatrix} u \\ v \end{pmatrix}$，则条件可写为
+
+    $$
+    U_t=AU_x
+    $$
+
+    其中 $A=\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$。格式可写为
+
+    $$
+    \frac{1}{\tau}\left(U_j^{n+1}-\frac{1}{2}(U_{j+1}^n + U_{j-1}^n)\right) = \frac{1}{2h} A (U_{j+1}^n - U_{j-1}^n)
+    $$
+
+    计算得到截断误差
+
+    $$
+    T_j^n=(\frac{\tau}{2}-\frac{h^2}{2\tau })U_{xx}+O(\tau^2+h^4/\tau).
+    $$
+
+    稳定性：设 $U_j^n=\hat{U}^n e^{i k j h}$，代入差分方程解得
+
+    $$
+    \hat{U}=\cos (kh)+i\sin (kh) \frac{\tau}{h}A
+    $$
+
+    故 $\hat{U}$ 的特征值为 $\cos (kh) \pm i\sin (kh) \frac{\tau}{h}$，模长为 $\sqrt{\cos^2(kh)+\sin^2(kh)\frac{\tau^2}{h^2}}$。因此该方法稳定的条件是 $\frac{\tau}{h} \le 1$。
+!!! problem "Autumn, 2024"
+    Write and prove the maximum principle of the centered finite difference scheme for discretizing the equation
+    
+    $$
+    u_{xx}+u_{yy}+d(x,y)u_{x}+e(x,y)u_{y}+f(x,y)u=0, \quad f<0
+    $$
+    
+    under some suitable assumptions.
+
+!!! proof "证明"
+    设求解区域为 $\Omega$，采用均匀网格进行离散，步长为 $h$。记网格点为 $(x_i, y_j)$，其中 $x_i = i h, y_j = j h$。令 $U_{i,j}$ 为精确解 $u(x_i, y_j)$ 的数值近似，并记 $d_{i,j} = d(x_i, y_j)$，依次类推。对各阶导数使用二阶中心差分进行近似： 
+    
+    $$
+    u_{xx} \approx \frac{U_{i-1,j} - 2U_{i,j} + U_{i+1,j}}{h^2}, u_{yy} \approx \frac{U_{i,j-1} - 2U_{i,j} + U_{i,j+1}}{h^2}
+    $$
+    
+    $$
+    u_x \approx \frac{U_{i+1,j} - U_{i-1,j}}{2h}, u_y \approx \frac{U_{i,j+1} - U_{i,j-1}}{2h}
+    $$
+    
+    将上述近似代入整理后得到：
+    
+    $$
+    \left(1 - \frac{h}{2}d_{i,j}\right) U_{i-1,j} + \left(1 + \frac{h}{2}d_{i,j}\right) U_{i+1,j} + \left(1 - \frac{h}{2}e_{i,j}\right) U_{i,j-1} + \left(1 + \frac{h}{2}e_{i,j}\right) U_{i,j+1} + (h^2 f_{i,j} - 4) U_{i,j} = 0
+    $$
+    
+    为了后续分析方便，我们定义如下系数：
+    
+    $$
+    C_W = 1 - \frac{h}{2}d_{i,j}, C_E = 1 + \frac{h}{2}d_{i,j}, C_S = 1 - \frac{h}{2}e_{i,j}, C_N = 1 + \frac{h}{2}e_{i,j}, C_0 = 4 - h^2 f_{i,j}
+    $$
+    
+    则：
+    
+    $$
+    C_0 U_{i,j} = C_W U_{i-1,j} + C_E U_{i+1,j} + C_S U_{i,j-1} + C_N U_{i,j+1}$$
+    
+    中心差分格式的系数必须满足非负性条件
+    
+    $$
+    C_W,  C_E , C_S,  C_N \ge 0
+    $$
+    
+    这意味着我们需要满足网格 Péclet 数限制：
+    
+    $$
+    \frac{h}{2} |d(x,y)| \le 1 \quad \text{且} \quad \frac{h}{2} |e(x,y)| \le 1
+    $$
+    
+    即假设步长满足：$h \le \min \left( \frac{2}{\|d\|_\infty}, \frac{2}{\|e\|_\infty} \right)$。 同时，注意到邻居系数之和为常数：
+    
+    $$
+    C_W + C_E + C_S + C_N = 4
+    $$
+    
+    由于题目已知 $f < 0$，因此中心系数 $C_0$ 满足： 
+    
+    $$
+    C_0 = 4 - h^2 f_{i,j} > 4
+    $$
+    
+    离散极值原理：
+    假设上述非负性条件成立，且 $f(x,y) < 0$。如果网格函数 $U_{i,j}$ 在内部网格点满足上述离散差分方程，那么 $U_{i,j}$ 的最大值必定在边界 $\partial \Omega_h$ 上取得：
+
+    $$
+    \max_{\Omega_h \cup \partial \Omega_h} U_{i,j} \le \max \left( 0, \max_{\partial \Omega_h} U_{i,j} \right)
+    $$
+    
+    采用反证法。假设网格函数 $U$ 在区域内部的某一点 $(i_0, j_0)$ 取得了全局严格正的最大值 $M$。即：
+    
+    $$
+    U_{i_0, j_0} = M > 0
+    $$
+    
+    并且对于所有网格点，都有 $U_{i,j} \le M$。将该点代入我们的离散格式中：
+    
+    $$
+    C_0 M = C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1}
+    $$
+    
+    $$
+    C_0 M=C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1} \le (C_W + C_E + C_S + C_N) M\le 4 M
+    $$
+    
+    即
+
+    $$
+    C_0 M \le 4 M
+    $$
+    
+    由于 $C_0 = 4 - h^2 f_{i_0, j_0}$ 且 $f_{i_0, j_0} < 0$，因此 $C_0 > 4$。这与上式矛盾，因此我们的反证假设不成立。即最大值不可能在内部取得，而必须在边界上取得。
 !!! problem "Spring, 2025"
     $$
     u_{j}^{n+1}=-\frac{1}{2}\nu(1-\nu)u_{j+1}^{n}+(1-\nu^{2})u_{j}^{n}+\frac{1}{2}\nu(1+\nu)u_{j-1}^{n},
@@ -17,6 +226,16 @@ date: 2026-2-7
     where $||v||_{2}^{2}=\sum_{j}|v_{j}|^{2}$, $\langle v,w\rangle=\sum_{j}v_{j}w_{j}$, $\delta_{x}^{-}v_{j}=v_{j}-v_{j-1}$, $\delta_{x}^{+}v_{j}=v_{j+1}-v_{j}$.
     
     (ii) Suppose $a>0$ for the problem imposed on $(0,1)$ with homogeneous boundary condition at $x=0$ (i.e., $u_{0}^{n}=0$), give a simple numerical boundary condition for $x=1$ such that the Lax-Wendroff scheme is stable.
+!!! proof "证明"
+    $(i)$：纯计算。
+
+    $(ii)$：在边界点 $x_N = 1$ 处，放弃中心差分的 Lax-Wendroff 格式，改用一阶迎风格式：
+    
+    $$
+    u_N^{n+1} = u_N^n - \nu (u_N^n - u_{N-1}^n)
+    $$
+    
+    当 $a>0$ 时，迎风格式是稳定的（只要 CFL 条件 $\nu \le 1$ 满足），且只利用了左侧的信息 $u_N, u_{N-1}$，符合特征线把信息从内部传向边界的物理事实，不会引入错误的反向波。计算量小，易于实现。
 !!! problem "Spring, 2025"
     For the system
     
@@ -25,7 +244,7 @@ date: 2026-2-7
     $$
     
     $$
-    v_{t}=u_{x},
+    v_{t}=u_{xx},
     $$
     
     analyze the truncation error and stability of the scheme
@@ -37,6 +256,53 @@ date: 2026-2-7
     $$
     \frac{v_{j}^{n+1}-v_{j}^{n}}{\tau}=\frac{1}{2h^{2}}(u_{j+1}^{n}-2u_{j}^{n}+u_{j-1}^{n}+u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}).
     $$
+!!! proof "证明"
+    由 Taylor 展开
+
+    $$
+    \frac{u_{j}^{n+1}-u_{j}^{n}}{\tau}=u_{t}+\frac{\tau}{2}u_{tt}+O(\tau^{2}),
+    $$
+
+    $$
+    \frac{v_{j+1}^{n}-2v_{j}^{n}+v_{j-1}^{n}}{2h^2}=\frac{1}{2}v_{xx}+O(h^2),
+    $$
+
+    $$
+    \frac{v_{j+1}^{n+1}-2v_{j}^{n+1}+v_{j-1}^{n+1}}{2h^2}=\frac{1}{2}v_{xx}+\frac{\tau}{2}v_{xxt}+O(\tau^2+h^2).
+    $$
+
+    因此截断误差为 $u_t+ \frac{\tau}{2}u_{tt} +v_{xx} + \frac{\tau}{2}v_{xxt} + O(\tau^2+h^2)$。由条件有 $u_t+v_{xx}=0$，$u_{tt}+v_{xxt}=0$，因此截断误差为 $O(\tau^2+h^2)$。因此该格式对时间和空间都具有二阶精度。第二个格式同理。
+
+    对于稳定性分析，设 $u_j^n = U^n e^{i k j h}$，$v_j^n = V^n e^{i k j h}$，代入差分方程有
+
+    $$
+    \frac{U^{n+1} - U^n}{\tau} = -\frac{1}{2} (-S) (V^n + V^{n+1}) = \frac{S}{2} (V^n + V^{n+1})
+    $$
+    
+    $$
+    \frac{V^{n+1} - V^n}{\tau} = \frac{1}{2} (-S) (U^n + U^{n+1}) = -\frac{S}{2} (U^n + U^{n+1})
+    $$
+
+    其中 $S=\frac{4}{h^2} \sin^2\left(\frac{k h}{2}\right)$。设 $\mu=\frac{\tau S}{2} = \frac{2\tau}{h^2} \sin^2\left(\frac{kh}{2}\right)$。整理为矩阵形式：
+    
+    $$
+    \begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} - \begin{pmatrix} U^n \\ V^n \end{pmatrix} = \mu \begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix} \left( \begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} + \begin{pmatrix} U^n \\ V^n \end{pmatrix} \right)
+    $$
+
+    设 $W^n = \begin{pmatrix} U^n \\ V^n \end{pmatrix}$，则上式可写为
+
+    $$
+    W^{n+1} - W^n = \mu J (W^{n+1} + W^n)
+    $$
+
+    也就是
+
+    $$
+    W^{n+1} = (I - \mu J)^{-1} (I + \mu J) W^n
+    $$
+
+    由于 $J$ 的特征值为 $\pm i$，因此 $(I - \mu J)^{-1} (I + \mu J)$ 的特征值为 $\frac{1 + i \mu}{1 - i \mu}$ 和 $\frac{1 - i \mu}{1 + i \mu}$，它们的模长均为 $1$。因此该方法无条件稳定。
+
 !!! problem "Autumn, 2025"
     Construct the Du Fort-Frankel scheme for the diffusion equation in 2D $u_t = u_{xx} + u_{yy}$ and discuss its consistency and stability.
 
