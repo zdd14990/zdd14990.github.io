@@ -2408,6 +2408,124 @@
 
 <h2 id="_1">凸优化</h2>
 <div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>Consider the following linear programming problem:</p>
+<div class="arithmatex">\[
+\max_{x}\langle c,x\rangle \quad \text{s.t.} \quad Ax=b, \quad x\ge0
+\]</div>
+<p>where <span class="arithmatex">\(x\in\mathbb{R}^{n}\)</span>, <span class="arithmatex">\(0\le b\in\mathbb{R}^{m}\)</span>, <span class="arithmatex">\(A\in\mathbb{R}^{m\times n}\)</span> and <span class="arithmatex">\(c\in\mathbb{R}^{n}\)</span>. <span class="arithmatex">\(A\)</span> is a full rank matrix and <span class="arithmatex">\(m&lt;n\)</span>.</p>
+<p>(1) Prove that the basic feasible solutions are equivalent to the vertices of its feasible region.</p>
+<p>(2) Write down the dual problem, and prove that when the optimal solution exists, the dual problem must also have an optimal solution, and the optimal objective values of these two problems are equal.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((1)\)</span>：对于 <span class="arithmatex">\(x \in \mathcal{P}\)</span>，设其严格正分量的指标集为 <span class="arithmatex">\(I = \{i \mid x_i &gt; 0\}\)</span>。</p>
+<p><span class="arithmatex">\(\text{BFS} \implies \text{Vertex}\)</span>：采用反证法。假设 <span class="arithmatex">\(x\)</span> 是一个 BFS，但它不是顶点。则存在 <span class="arithmatex">\(y, z \in \mathcal{P}\)</span> (<span class="arithmatex">\(y \ne z\)</span>) 且 <span class="arithmatex">\(\lambda \in (0, 1)\)</span>，使得 <span class="arithmatex">\(x = \lambda y + (1-\lambda) z\)</span>。因为 <span class="arithmatex">\(y \ge 0, z \ge 0\)</span> 且 <span class="arithmatex">\(\lambda \in (0, 1)\)</span>，对于任意使得 <span class="arithmatex">\(x_j = 0\)</span> 的指标 <span class="arithmatex">\(j \notin I\)</span>，必须有 <span class="arithmatex">\(\lambda y_j + (1-\lambda) z_j = 0\)</span>。这蕴含着 <span class="arithmatex">\(y_j = 0\)</span> 且 <span class="arithmatex">\(z_j = 0\)</span> (<span class="arithmatex">\(\forall j \notin I\)</span>)。也就是说，<span class="arithmatex">\(y\)</span> 和 <span class="arithmatex">\(z\)</span> 的非零分量也只能出现在指标集 <span class="arithmatex">\(I\)</span> 中。由于 <span class="arithmatex">\(y, z \in \mathcal{P}\)</span>，它们都满足线性约束：</p>
+<div class="arithmatex">\[
+Ay = \sum_{i \in I} y_i A_i = b
+\]</div>
+<div class="arithmatex">\[
+Az = \sum_{i \in I} z_i A_i = b
+\]</div>
+<p>两式相减得到：</p>
+<div class="arithmatex">\[
+\sum_{i \in I} (y_i - z_i) A_i = 0
+\]</div>
+<p>因为 <span class="arithmatex">\(x\)</span> 是 BFS，根据定义，列向量组 <span class="arithmatex">\(\{A_i\}_{i \in I}\)</span> 是线性无关的。因此，必须有 <span class="arithmatex">\(y_i - z_i = 0 \quad (\forall i \in I)\)</span>，即 <span class="arithmatex">\(y = z\)</span>。矛盾！</p>
+<p><span class="arithmatex">\(\text{Vertex} \implies \text{BFS}\)</span>：反证法，假设 <span class="arithmatex">\(\{A_i\}_{i \in I}\)</span> 是线性相关的。于是存在一组不全为零的标量 <span class="arithmatex">\(\{d_i\}_{i \in I}\)</span> 使得 <span class="arithmatex">\(\sum_{i \in I} d_i A_i = 0\)</span>。</p>
+<p>构造一个全空间向量 <span class="arithmatex">\(d \in \mathbb{R}^n\)</span>，使得其在 <span class="arithmatex">\(I\)</span> 上的分量为 <span class="arithmatex">\(d_i\)</span>，其余分量 <span class="arithmatex">\(d_j = 0\)</span> (<span class="arithmatex">\(\forall j \notin I\)</span>)。显然 <span class="arithmatex">\(d \ne 0\)</span> 且 <span class="arithmatex">\(Ad = 0\)</span>。因为对于 <span class="arithmatex">\(i \in I\)</span> 有 <span class="arithmatex">\(x_i &gt; 0\)</span>，我们可以取一个足够小的正数 <span class="arithmatex">\(\epsilon &gt; 0\)</span>，使得：</p>
+<div class="arithmatex">\[
+x + \epsilon d \ge 0 \quad \text{且} \quad x - \epsilon d \ge 0
+\]</div>
+<p>令 <span class="arithmatex">\(y = x + \epsilon d\)</span>，<span class="arithmatex">\(z = x - \epsilon d\)</span>。显然 <span class="arithmatex">\(y \ne z\)</span>（因为 <span class="arithmatex">\(d \ne 0\)</span>）。验证它们是否在可行域 <span class="arithmatex">\(\mathcal{P}\)</span> 中：</p>
+<div class="arithmatex">\[
+Ay = A(x + \epsilon d) = Ax + \epsilon Ad = b + 0 = b \implies y \in \mathcal{P}
+\]</div>
+<div class="arithmatex">\[
+Az = A(x - \epsilon d) = Ax - \epsilon Ad = b - 0 = b \implies z \in \mathcal{P}
+\]</div>
+<p>此时我们发现 <span class="arithmatex">\(x = \frac{1}{2}y + \frac{1}{2}z\)</span>。这意味着 <span class="arithmatex">\(x\)</span> 可以表示为 <span class="arithmatex">\(\mathcal{P}\)</span> 中两个不同点的严格凸组合，这与 <span class="arithmatex">\(x\)</span> 是顶点的条件矛盾！</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Let <span class="arithmatex">\(S \subset \mathbb{R}^{n}\)</span> be a non-empty closed convex set, <span class="arithmatex">\(f \in \mathcal{C}^{2}(S)\)</span> is convex. For any <span class="arithmatex">\(x^{0} \in S\)</span>, define <span class="arithmatex">\(L(f(x^{0})) = \{x \in S | f(x) \le f(x^{0})\}\)</span>. If there exists some <span class="arithmatex">\(m &gt; 0\)</span> such that:</p>
+<div class="arithmatex">\[
+d^{\top}\nabla^{2}f(x)d \ge m||d||^{2} \quad \forall x \in L(f(x^{0})), d \in \mathbb{R}^{n}
+\]</div>
+<p>Prove that <span class="arithmatex">\(L(f(x^{0}))\)</span> is a bounded and closed convex set.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>闭：由 <span class="arithmatex">\(L(f(x^{0}))=f^{-1}((-\infty, f(x^{0})])\cap S\)</span> 可知 <span class="arithmatex">\(L(f(x^{0}))\)</span> 是闭集。</p>
+<p>凸：由于 <span class="arithmatex">\(f\)</span> 是凸函数，<span class="arithmatex">\(f(\lambda x + (1-\lambda) y) \le \lambda f(x) + (1-\lambda) f(y)\)</span> 对任意 <span class="arithmatex">\(x, y \in S\)</span> 和 <span class="arithmatex">\(\lambda \in [0, 1]\)</span> 成立。因此，如果 <span class="arithmatex">\(x, y \in L(f(x^{0}))\)</span>，则 f(\lambda x + (1-\lambda) y) \le \lambda f(x) + (1-\lambda) f(y) \le \lambda f(x^{0}) + (1-\lambda) f(x^{0}) = f(x^{0})$，即 <span class="arithmatex">\(\lambda x + (1-\lambda) y \in L(f(x^{0}))\)</span>。因此 <span class="arithmatex">\(L(f(x^{0}))\)</span> 是凸集。</p>
+<p>有界：取 <span class="arithmatex">\(x\in L(f(x^{0}))\)</span>，对 <span class="arithmatex">\(f\)</span> 进行二阶 Taylor 展开，存在 <span class="arithmatex">\(\xi\)</span> 在 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(x^{0}\)</span> 之间，使得</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    f(x^{0})\ge f(x) &amp;= f(x^{0}) + \nabla f(x^{0})^{\top}(x - x^{0}) + \frac{1}{2}(x - x^{0})^{\top}\nabla^{2}f(\xi)(x - x^{0})\\
+    &amp;= f(x^{0}) + \nabla f(x^{0})^{\top}(x - x^{0}) + \frac{1}{2} m ||x - x^{0}||^{2}\\
+    (Cauchy)&amp;= f(x^{0}) - \|\nabla f(x^{0})\| \cdot \|x - x^{0}\| + \frac{1}{2} m ||x - x^{0}||^{2}
+\end{aligned}
+\]</div>
+<p>这给出了</p>
+<div class="arithmatex">\[
+\frac{1}{2} m ||x - x^{0}||^{2} \le \|\nabla f(x^{0})\| \cdot \|x - x^{0}\|
+\]</div>
+<p>即 <span class="arithmatex">\(||x - x^{0}|| \le \frac{2}{m} \|\nabla f(x^{0})\|\)</span>，因此 <span class="arithmatex">\(L(f(x^{0}))\)</span> 是有界的。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Given a linear programming (LP):</p>
+<div class="arithmatex">\[
+\max 3x_{1} + 2x_{2} + 15x_{3}
+\]</div>
+<div class="arithmatex">\[
+s.t. x_{1} + x_{2} + x_{3} \le 12
+\]</div>
+<div class="arithmatex">\[
+2x_{1} + x_{2} + 5x_{3} \le 18
+\]</div>
+<div class="arithmatex">\[
+x_{1}, x_{2}, x_{3} \ge 0
+\]</div>
+<p>(i) Write down the standard LP form.</p>
+<p>(ii) Compute the optimal solution and optimal value of the problem.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：标准型如下：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \max \quad &amp; Z = 3x_1 + 2x_2 + 15x_3 + 0x_4 + 0x_5 \\
+    \text{s.t.} \quad &amp; x_1 + x_2 + x_3 + x_4 = 12 \\
+    &amp; 2x_1 + x_2 + 5x_3 + x_5 = 18 \\
+    &amp; x_1, x_2, x_3, x_4, x_5 \ge 0
+\end{aligned}
+\]</div>
+<p><span class="arithmatex">\((ii)\)</span>：使用单纯形法，初始基本可行解为 <span class="arithmatex">\(x_4 = 12, x_5 = 18\)</span>，对应的目标函数值为 <span class="arithmatex">\(Z = 0\)</span>。计算检验数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    c_1 - z_1 &amp;= 3 - (0 \cdot 1 + 0 \cdot 2) = 3 &gt; 0\\
+    c_2 - z_2 &amp;= 2 - (0 \cdot 1 + 0 \cdot 1) = 2 &gt; 0\\
+    c_3 - z_3 &amp;= 15 - (0 \cdot 1 + 0 \cdot 5) = 15 &gt; 0
+\end{aligned}
+\]</div>
+<p>选择 <span class="arithmatex">\(x_3\)</span> 进入基，计算离开基变量：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \frac{12}{1} = 12, \quad \frac{18}{5} = 3.6
+\end{aligned}
+\]</div>
+<p>因此 <span class="arithmatex">\(x_5\)</span> 离开基。更新基本可行解为 <span class="arithmatex">\(x_3 = 3.6, x_4 = 12 - 3.6 = 8.4, x_5 = 0\)</span>，对应的目标函数值为 <span class="arithmatex">\(Z = 15 \cdot 3.6 = 54\)</span>。计算新的检验数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    c_1 - z_1 &amp;= 3 - (0.4 \cdot 15) = -3&lt;0\\
+    c_2 - z_2 &amp;= 2 - (0.2 \cdot 15) = -1&lt;0\\
+    c_5 - z_5 &amp;= 0 - (0.2 \cdot 15) = -3&lt;0
+\end{aligned}
+\]</div>
+<p>由于所有检验数均为负数，当前解为最优解。最终的最优解为 <span class="arithmatex">\(x_1 = 0, x_2 = 0, x_3 = 3.6\)</span>，最优值为 <span class="arithmatex">\(Z = 54\)</span>。</p>
+</div>
+<div class="admonition problem">
 <p class="admonition-title">Autumn, 2024</p>
 <p>Let <span class="arithmatex">\(f:\mathbb{R}^{n}\rightarrow\mathbb{R}\)</span> be convex and define <span class="arithmatex">\(\partial f(x)\)</span> to be the subgradient set of <span class="arithmatex">\(f\)</span> at <span class="arithmatex">\(x\)</span>.</p>
 <p>(i) If <span class="arithmatex">\(x \in \text{int dom} f\)</span>, prove that <span class="arithmatex">\(\partial f(x)\)</span> is nonempty and bounded.</p>
@@ -2415,6 +2533,35 @@
 <p>(iii) Given <span class="arithmatex">\(y\in\mathbb{R}^{n}\)</span> and <span class="arithmatex">\(\lambda&gt;0\)</span>, calculate the closed form solution of the problem:</p>
 <div class="arithmatex">\[
 \min_{x}\frac{1}{2}||x-y||_{2}^{2}+\lambda||x||_{1}.
+\]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：非空性：因为 <span class="arithmatex">\(x\)</span> 属于 <span class="arithmatex">\(f\)</span> 定义域的内部，函数 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(x\)</span> 处是局部 Lipschitz 连续的，且在任何方向 <span class="arithmatex">\(d\)</span> 上的方向导数 <span class="arithmatex">\(f'(x; d) = \lim_{t \downarrow 0} \frac{f(x+td) - f(x)}{t}\)</span> 均存在且有限。由凸函数的性质，其上图 <span class="arithmatex">\(\text{epi} f = \{ (y, t) \in \mathbb{R}^{n+1} \mid f(y) \le t \}\)</span> 是一个凸集。点 <span class="arithmatex">\((x, f(x))\)</span> 位于 <span class="arithmatex">\(\text{epi} f\)</span> 的边界上。根据凸集的支撑超平面定理，在边界点处必然存在一个非垂直的支撑超平面。该支撑超平面的法向量在 <span class="arithmatex">\(\mathbb{R}^n\)</span> 上的投影即给出了一个向量 <span class="arithmatex">\(g\)</span>，使得 <span class="arithmatex">\(f(y) \ge f(x) + \langle g, y - x \rangle\)</span> 对所有 <span class="arithmatex">\(y\)</span> 成立。因此，<span class="arithmatex">\(g \in \partial f(x)\)</span>，即次梯度集合非空。</p>
+<p>有界性：采用反证法。假设 <span class="arithmatex">\(\partial f(x)\)</span> 是无界的。则存在一个序列 <span class="arithmatex">\(g_k \in \partial f(x)\)</span>，使得 <span class="arithmatex">\(\|g_k\| \to \infty\)</span>。根据次梯度的定义，对于任意 <span class="arithmatex">\(y\)</span>，有 <span class="arithmatex">\(f(y) \ge f(x) + \langle g_k, y - x \rangle\)</span>。因为 <span class="arithmatex">\(x \in \text{int dom } f\)</span>，我们可以取一个以 <span class="arithmatex">\(x\)</span> 为圆心、半径为 <span class="arithmatex">\(r &gt; 0\)</span> 的小闭球 <span class="arithmatex">\(B(x, r)\)</span>，使得 <span class="arithmatex">\(B(x, r) \subset \text{dom } f\)</span>。在有限维空间中，凸函数在其定义域内部的紧集上是有界的，假设其在该闭球上的最大值为 <span class="arithmatex">\(M\)</span>。令 <span class="arithmatex">\(y_k = x + r \frac{g_k}{\|g_k\|}\)</span>。显然 <span class="arithmatex">\(y_k \in B(x, r)\)</span>，因此 <span class="arithmatex">\(f(y_k) \le M\)</span>。代入次梯度不等式：</p>
+<div class="arithmatex">\[
+f(y_k) \ge f(x) + \left\langle g_k, r \frac{g_k}{\|g_k\|} \right\rangle = f(x) + r \|g_k\|
+\]</div>
+<p>移项得到：<span class="arithmatex">\(r \|g_k\| \le f(y_k) - f(x) \le M - f(x)\)</span>。由于 <span class="arithmatex">\(r &gt; 0\)</span> 且 <span class="arithmatex">\(M - f(x)\)</span> 是一个常数，这要求 <span class="arithmatex">\(\|g_k\|\)</span> 必须是有界的。这与我们假设的 <span class="arithmatex">\(\|g_k\| \to \infty\)</span> 矛盾。因此，<span class="arithmatex">\(\partial f(x)\)</span> 必须是有界的。</p>
+<p><span class="arithmatex">\((ii)\)</span>：对于 <span class="arithmatex">\(f(x) = \|x\|_1 = \sum_{i=1}^n |x_i|\)</span>，次梯度 <span class="arithmatex">\(\partial f(x)\)</span> 的第 <span class="arithmatex">\(i\)</span> 个分量为：</p>
+<div class="arithmatex">\[
+g_i = \begin{cases}
+    1, &amp; \text{if } x_i &gt; 0, \\
+    -1, &amp; \text{if } x_i &lt; 0, \\
+    [-1, 1], &amp; \text{if } x_i = 0.
+\end{cases}
+\]</div>
+<p><span class="arithmatex">\((iii)\)</span>：该问题是一个典型的 Lasso 问题。对于每个分量 <span class="arithmatex">\(x_i\)</span>，我们可以单独求解：</p>
+<div class="arithmatex">\[
+\min_{x_i} \frac{1}{2}(x_i - y_i)^2 + \lambda |x_i|.
+\]</div>
+<p>该问题的解为：</p>
+<div class="arithmatex">\[
+x_i^* = \begin{cases}
+    y_i - \lambda, &amp; \text{if } y_i &gt; \lambda, \\
+    0, &amp; \text{if } |y_i| \le \lambda, \\
+    y_i + \lambda, &amp; \text{if } y_i &lt; -\lambda.
+\end{cases}
 \]</div>
 </div>
 <div class="admonition problem">
@@ -2565,7 +2712,7 @@ g(\nu) = \begin{cases}
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月18日 00:53:10 UTC">2026年2月18日</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2026年2月20日 08:27:18 UTC">2026年2月20日</span>
   </span>
 
     
