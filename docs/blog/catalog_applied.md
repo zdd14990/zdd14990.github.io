@@ -51,4 +51,11 @@ git_revision_date_localized:
     数值线性代数等应用数学方向博资考相关内容。
 
     [:octicons-arrow-right-24: 阅读笔记](应用数学博资考/应用数学博资考.md)
+
+-  **AI博资考速通**
+   
+    ---
+    机器学习、深度学习、优化方法等 AI 方向博资考相关内容。
+
+    [:octicons-arrow-right-24: 阅读笔记](AI博资考/AI博资考速通笔记.md)
 </div>
