@@ -2288,13 +2288,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#adaboost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AdaBoost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        在线学习与感知机错误界
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         真题
@@ -2853,13 +2875,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#adaboost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AdaBoost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        在线学习与感知机错误界
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         真题
@@ -3224,7 +3268,106 @@ w = \sum_{i=1}^m \alpha_i y_i x_i, \quad \sum_{i=1}^m \alpha_i y_i = 0
 我们并没有在损失函数里手动加上 L2 正则化，但随机梯度下降（SGD）算法本身自带一种“寻优偏好”。
 在过度参数化的空间里，经验损失为 0 的全局最优点有无数个。SGD 由于其自带的随机噪声，往往倾向于收敛到那些<strong>“平坦的极小值 (Flat Minima)”</strong>。在平坦区域，即使测试数据有轻微扰动，损失也不会剧烈增加，从而保证了强大的泛化能力。</p>
 <hr />
-<h2 id="_5">真题</h2>
+<h3 id="adaboost">AdaBoost</h3>
+<hr />
+<p>给定 <span class="arithmatex">\(m\)</span> 个训练样本 <span class="arithmatex">\((x_i, y_i)\)</span>，其中 <span class="arithmatex">\(y_i \in \{-1, +1\}\)</span>。</p>
+<p>AdaBoost 在第 <span class="arithmatex">\(t\)</span> 轮维护一个样本权重分布 <span class="arithmatex">\(D_t(i)\)</span>，初始时 <span class="arithmatex">\(D_1(i) = 1/m\)</span>。</p>
+<p><strong>弱分类器错误率</strong>：<span class="arithmatex">\(\epsilon_t = \sum_{i: h_t(x_i) \neq y_i} D_t(i)\)</span>。我们假设它比瞎猜好一点点，令 <span class="arithmatex">\(\epsilon_t = \frac{1}{2} - \gamma_t\)</span>（<span class="arithmatex">\(\gamma_t &gt; 0\)</span> 称为<strong>优势 edge）</strong>。</p>
+<p><strong>权重系数</strong>：<span class="arithmatex">\(\alpha_t = \frac{1}{2} \ln \frac{1-\epsilon_t}{\epsilon_t}\)</span>。</p>
+<p><strong>分布更新公式</strong>：<span class="arithmatex">\(D_{t+1}(i) = \frac{D_t(i) \exp(-\alpha_t y_i h_t(x_i))}{Z_t}\)</span>，其中 <span class="arithmatex">\(Z_t\)</span> 是归一化因子（确保 <span class="arithmatex">\(D_{t+1}\)</span> 依然是个概率分布）。</p>
+<p><strong>最终分类器</strong>：<span class="arithmatex">\(f(x) = \sum_{t=1}^T \alpha_t h_t(x)\)</span>，预测输出为 <span class="arithmatex">\(\text{sign}(f(x))\)</span>。</p>
+<hr />
+<p>我们把 <span class="arithmatex">\(D_{t+1}(i)\)</span> 从第 1 轮一直展开到第 <span class="arithmatex">\(T\)</span> 轮：</p>
+<div class="arithmatex">\[
+D_{T+1}(i) = \frac{D_T(i) \exp(-\alpha_T y_i h_T(x_i))}{Z_T} = \dots = \frac{D_1(i) \exp\left(-y_i \sum_{t=1}^T \alpha_t h_t(x_i)\right)}{\prod_{t=1}^T Z_t}
+\]</div>
+<p>因为初始权重 <span class="arithmatex">\(D_1(i) = 1/m\)</span>，且指数里的求和正是最终分类器 <span class="arithmatex">\(f(x_i)\)</span>：</p>
+<div class="arithmatex">\[
+D_{T+1}(i) = \frac{1}{m} \frac{\exp(-y_i f(x_i))}{\prod_{t=1}^T Z_t}
+\]</div>
+<p>考虑最终分类器的经验误差（即分错的样本比例）：</p>
+<div class="arithmatex">\[
+\hat{R}_S = \frac{1}{m} \sum_{i=1}^m \mathbb{I}(\text{sign}(f(x_i)) \neq y_i)
+\]</div>
+<p>注意到</p>
+<div class="arithmatex">\[
+\mathbb{I}(\text{sign}(f(x_i)) \neq y_i) \le \exp(-y_i f(x_i))
+\]</div>
+<p>代入得</p>
+<div class="arithmatex">\[
+\hat{R}_S \le \frac{1}{m} \sum_{i=1}^m \exp(-y_i f(x_i))=\sum_{i=1}^m \left( D_{T+1}(i) \prod_{t=1}^T Z_t \right) =\prod_{t=1}^T Z_t
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+  Z_t &amp;= \sum_{i=1}^m D_t(i) \exp(-\alpha_t y_i h_t(x_i))\\
+  &amp;= \exp(-\alpha_t) \sum_{\text{correct}} D_t(i) + \exp(\alpha_t) \sum_{\text{incorrect}} D_t(i)\\
+  &amp;= (1-\epsilon_t)e^{-\alpha_t} + \epsilon_te^{\alpha_t}\\
+  &amp;= (1-\epsilon_t)\sqrt{\frac{\epsilon_t}{1-\epsilon_t}} + \epsilon_t\sqrt{\frac{1-\epsilon_t}{\epsilon_t}}= 2\sqrt{\epsilon_t(1-\epsilon_t)}\\
+  &amp;= 2\sqrt{\left(\frac{1}{2} - \gamma_t\right)\left(\frac{1}{2} + \gamma_t\right)} = \sqrt{1 - 4\gamma_t^2}\\
+  &amp;\le (e^{-4\gamma_t^2})^{1/2} = \exp(-2\gamma_t^2)\\
+\end{aligned}
+\]</div>
+<p>代回原式并设 <span class="arithmatex">\(0 &lt; \gamma = \min_{t} \gamma_t\)</span>，得到：</p>
+<div class="arithmatex">\[
+\hat{R}_S \le \prod_{t=1}^T \exp(-2\gamma_t^2) = \exp\left( -2\sum_{t=1}^T \gamma_t^2 \right)\le \exp(-2\gamma^2 T)
+\]</div>
+<hr />
+<p>将经验误差放宽为 <strong>“经验间隔误差 (Empirical Margin Error)”</strong>：</p>
+<div class="arithmatex">\[
+\hat{R}_{S, \rho}(f) = \frac{1}{m} \sum_{i=1}^m \mathbb{I}(y_i f(x_i) \le \rho)
+\]</div>
+<p>我们有定理：</p>
+<div class="arithmatex">\[
+R(f) \le \hat{R}_{S, \rho}(f) + \frac{2}{\rho} \hat{\mathcal{R}}_S(\mathcal{H}) + 3 \sqrt{\frac{\ln(2/\delta)}{2m}}
+\]</div>
+<p><strong>VC 维失效的原因</strong>：传统的理论把 AdaBoost 看作一个巨大的多项式组合，导致第二项的复杂度随 <span class="arithmatex">\(T\)</span> 爆炸。但在这个公式里，集成模型的复杂度被完美降维成了“基分类器（如单层决策树）的复杂度”，它是一个极小的常数，完全不随 <span class="arithmatex">\(T\)</span> 的增加而增长！</p>
+<p><strong>结论</strong>：AdaBoost 在训练误差为 0 之后继续迭代，本质上是在做 <span class="arithmatex">\(L_1\)</span> 空间下的 Margin Maximization（间隔最大化）（类似于 SVM 在做 <span class="arithmatex">\(L_2\)</span> 空间的间隔最大化）。它通过拉大 <span class="arithmatex">\(\rho\)</span> 压低了泛化界限。</p>
+<hr />
+<h3 id="_5">在线学习与感知机错误界</h3>
+<hr />
+<p>在线学习的设定是：数据流一个接一个地到来 <span class="arithmatex">\((x_1, y_1), (x_2, y_2), \dots\)</span>，其中 <span class="arithmatex">\(y_t \in \{-1, +1\}\)</span>。</p>
+<p><strong>算法规则 (Perceptron)</strong>：初始权重 <span class="arithmatex">\(w_0 = \mathbf{0}\)</span>。</p>
+<p>当新样本 <span class="arithmatex">\(x_t\)</span> 到来时，如果预测错误，即 <span class="arithmatex">\(y_t(w_{t-1} \cdot x_t) \le 0\)</span>，就进行更新：</p>
+<div class="arithmatex">\[
+w_t = w_{t-1} + y_t x_t
+\]</div>
+<p>如果预测正确，权重不变（<span class="arithmatex">\(w_t = w_{t-1}\)</span>）。</p>
+<p>我们假设所有的输入特征都在一个有限大小的球体内：<span class="arithmatex">\(||x_t|| \le R\)</span>。且存在一个完美的“上帝权重” <span class="arithmatex">\(w^*\)</span>（为方便，设其范数 <span class="arithmatex">\(||w^*|| = 1\)</span>），它能以至少 <span class="arithmatex">\(\rho &gt; 0\)</span> 的物理间隔完美分开所有数据：</p>
+<div class="arithmatex">\[
+y_t(w^* \cdot x_t) \ge \rho, \quad \forall t
+\]</div>
+<p>我们来证明无论数据流有多长，感知机算法总共犯错的次数 <span class="arithmatex">\(M\)</span>，绝对不会超过 <span class="arithmatex">\((R/\rho)^2\)</span>。</p>
+<hr />
+<p>假设在第 <span class="arithmatex">\(t\)</span> 步发生了错误：</p>
+<div class="arithmatex">\[
+w_t \cdot w^* = (w_{t-1} + y_t x_t) \cdot w^* = w_{t-1} \cdot w^* + y_t(x_t \cdot w^*)
+\]</div>
+<p><span class="arithmatex">\(y_t(x_t \cdot w^*) \ge \rho\)</span>。代入上式：</p>
+<div class="arithmatex">\[
+w_t \cdot w^* \ge w_{t-1} \cdot w^* + \rho
+\]</div>
+<p>如果在整个数据流中，感知机总共犯了 <span class="arithmatex">\(M\)</span> 次错，把这 <span class="arithmatex">\(M\)</span> 次错误累加起来（初始 <span class="arithmatex">\(w_0 = 0\)</span>）：</p>
+<div class="arithmatex">\[
+w_M \cdot w^* \ge M\rho
+\]</div>
+<p>考虑 <span class="arithmatex">\(w_t\)</span> 的范数平方：</p>
+<div class="arithmatex">\[
+||w_t||^2 = ||w_{t-1} + y_t x_t||^2 = ||w_{t-1}||^2 + 2y_t(w_{t-1} \cdot x_t) + ||y_t x_t||^2
+\]</div>
+<p>交叉项 <span class="arithmatex">\(2y_t(w_{t-1} \cdot x_t) \le 0\)</span>：</p>
+<div class="arithmatex">\[
+||w_t||^2 \le ||w_{t-1}||^2 + ||x_t||^2\le ||w_{t-1}||^2 + R^2\le M R^2 \implies ||w_M|| \le \sqrt{M} R
+\]</div>
+<p>由柯西：</p>
+<div class="arithmatex">\[
+w_M \cdot w^* \le ||w_M|| \cdot ||w^*|| = \sqrt{M} R \cdot 1 = \sqrt{M} R
+\]</div>
+<p>于是我们有</p>
+<div class="arithmatex">\[
+M \le \frac{R^2}{\rho^2}
+\]</div>
+<hr />
+<h2 id="_6">真题</h2>
 <hr />
 <p><strong>(Spring, 2025, A1)</strong> Let <span class="arithmatex">\(\mathcal{H}\)</span> be a class of binary classifiers over a domain <span class="arithmatex">\(\mathcal{X}\)</span>. Let <span class="arithmatex">\(\mathcal{D}\)</span> be an unknown distribution over <span class="arithmatex">\(\mathcal{X}\)</span>, and let <span class="arithmatex">\(f\)</span> be the target hypothesis in <span class="arithmatex">\(\mathcal{H}\)</span>. Fix some <span class="arithmatex">\(h \in \mathcal{H}\)</span>. Show that the variance of the empirical loss <span class="arithmatex">\(L_S(h)\)</span>, over all possible samples <span class="arithmatex">\(S\)</span> of size <span class="arithmatex">\(m\)</span> drawn from <span class="arithmatex">\(\mathcal{D}\)</span>, is inversely proportional to <span class="arithmatex">\(m\)</span> .
 That is, show the following relationship:</p>
