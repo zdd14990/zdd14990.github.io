@@ -2289,6 +2289,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#nag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NAG
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2732,6 +2743,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#nag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NAG
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2777,23 +2799,50 @@ f(y) \le f(x) + \langle \nabla f(x), y-x \rangle + \frac{L}{2}||y-x||^2
 <div class="arithmatex">\[
 D_f(x, y) = f(x) - f(y) - \langle \nabla f(y), x - y \rangle
 \]</div>
+<p><span class="arithmatex">\(\mu\)</span>-强凸性 (<span class="arithmatex">\(\mu\)</span>-Strong Convexity) ：提供下界。</p>
+<div class="arithmatex">\[
+\frac{\mu}{2} ||x - y||^2 \le D_f(x, y) \le \frac{1}{2\mu} ||\nabla f(x) - \nabla f(y)||^2
+\]</div>
+<p><span class="arithmatex">\(L\)</span>-平滑性 (<span class="arithmatex">\(L\)</span>-Smoothness) ：提供上界。</p>
+<div class="arithmatex">\[
+D_f(x, y) \le \frac{L}{2} ||x - y||^2
+\]</div>
+<p>同时具备 凸性 与 <span class="arithmatex">\(L\)</span>-平滑性 (极其常用！) ：</p>
+<div class="arithmatex">\[
+\frac{1}{2L} ||\nabla f(x) - \nabla f(y)||^2 \le D_f(x, y)
+\]</div>
+<hr />
+<p>如果 <span class="arithmatex">\(f\)</span> 同时是 <span class="arithmatex">\(\mu\)</span>-强凸 且 <span class="arithmatex">\(L\)</span>-平滑 的，那么梯度差不仅受限于距离，还会被强制加上一个混合界：</p>
+<div class="arithmatex">\[
+\mu ||x - y||^2 + \frac{1}{L} ||\nabla f(x) - \nabla f(y)||^2 \le \left(1 + \frac{\mu}{L}\right) \langle \nabla f(x) - \nabla f(y), x - y \rangle
+\]</div>
 <hr />
 <h3 id="sgd">随机梯度下降 (SGD) 与方差分解</h3>
 <hr />
 <p>当我们处理海量数据时，计算全梯度 <span class="arithmatex">\(\nabla f(x)\)</span> 太慢了，只能用一小批数据算出一个“带噪声”的随机梯度 <span class="arithmatex">\(g(x, \xi)\)</span> 。这个梯度需要满足：</p>
 <ul>
 <li>
-<p><strong>无偏性 (Unbiasedness)</strong>：随机梯度的期望必须等于真实梯度：<span class="arithmatex">\(\mathbb{E}[g(x)] = \nabla f(x)\)</span>。</p>
+<p><strong>无偏性 (Unbiasedness)</strong>：<span class="arithmatex">\(\mathbb{E}[g^k \mid x^k] = \nabla f(x^k)\)</span></p>
 </li>
 <li>
 <p><strong>有界方差 (Bounded Variance)</strong> ：噪声必须是被控制的：<span class="arithmatex">\(\mathbb{E}[||\xi||^2] \le \sigma^2\)</span>。</p>
 </li>
-<li>
-<p><strong>方差分解 (Variance Decomposition)</strong> ：这是推导 SGD 误差的核心技巧。由于随机变量的性质 <span class="arithmatex">\(\mathbb{E}[X^2] = (\mathbb{E}[X])^2 + \text{Var}(X)\)</span>，我们可以把带有噪声的迭代距离拆成两部分：</p>
-</li>
 </ul>
+<hr />
+<p>把单步距离的平方展开并取条件期望：</p>
 <div class="arithmatex">\[
-\mathbb{E}[||\text{随机更新}||^2] = ||\text{真实梯度更新}||^2 + \text{纯噪声的方差}(\gamma^2 \sigma^2)
+\mathbb{E}[||x^{k+1} - x^*||^2 \mid x^k] \le ||x^k - x^* - \gamma \nabla f(x^k)||^2 + \gamma^2 \mathbb{E}[||\xi^k||^2 \mid x^k]
+\]</div>
+<hr />
+<p><strong>The AC Assumption</strong>：</p>
+<p>存在常数 <span class="arithmatex">\(A \ge 0\)</span> 和 <span class="arithmatex">\(C \ge 0\)</span>，使得对于所有 <span class="arithmatex">\(k \ge 0\)</span>：</p>
+<div class="arithmatex">\[
+\mathbb{E}[||g^k - \nabla f(x^*)||^2 \mid x^k] \le 2A D_f(x^k, x^*) + C
+\]</div>
+<p><strong>The Convergence Theorem of SGD</strong>：</p>
+<p>如果步长满足 <span class="arithmatex">\(0 &lt; \gamma \le 1/A\)</span>，那么：</p>
+<div class="arithmatex">\[
+\mathbb{E}||x^k - x^*||^2 \le (1 - \gamma\mu)^k ||x^0 - x^*||^2 + \frac{\gamma C}{\mu}
 \]</div>
 <hr />
 <h3 id="_3">近端算子与非扩张性</h3>
@@ -2808,6 +2857,103 @@ D_f(x, y) = f(x) - f(y) - \langle \nabla f(y), x - y \rangle
 0\in \partial R(z) + \frac{1}{\gamma}(z - v) \Longleftrightarrow v\in  z + \gamma \partial R(z) 
 \]</div>
 <p>反过来若 <span class="arithmatex">\(v\in  z - \gamma \partial R(z)\)</span>，则 <span class="arithmatex">\(z=\text{prox}_{\gamma R}(v)\)</span>。</p>
+<hr />
+<p>解决复合优化问题：<span class="arithmatex">\(\min_{x \in \mathbb{R}^d} F(x) = f(x) + R(x)\)</span> 。</p>
+<p>公式：<span class="arithmatex">\(x^{k+1} = \text{prox}_{\gamma R}(x^k - \gamma \nabla f(x^k))\)</span> 。</p>
+<p>利用 <span class="arithmatex">\(L\)</span>-平滑和 <span class="arithmatex">\(\mu\)</span>-强凸的常规性质：</p>
+<div class="arithmatex">\[
+||x^{k+1} - x^*||^2 \le (1 - \gamma\mu)||x^k - x^*||^2 - 2\gamma(1 - \gamma L)D_f(x^k, x^*)
+\]</div>
+<p>由 Spring, 2025, C2 有：</p>
+<div class="arithmatex">\[
+||x^{k+1} - x^*||^2 \le \left(1 - \frac{2\gamma\mu L}{L + \mu}\right)||x^k - x^*||^2 - \gamma\left(\frac{2L + \mu}{L} - \gamma\right)||\nabla f(x^k) - \nabla f(x^*)||^2
+\]</div>
+<hr />
+<h3 id="nag">NAG</h3>
+<hr />
+<p>目标：求解 <span class="arithmatex">\(\min_{x} F(x) = f(x) + R(x)\)</span>，其中 <span class="arithmatex">\(f\)</span> 是凸且 <span class="arithmatex">\(L\)</span>-平滑的，<span class="arithmatex">\(R\)</span> 是闭凸的。</p>
+<p>NAG 的核心特征是 <strong>“预判未来位置 (Anticipates future position)”</strong> 。它先顺着惯性方向超前看一步，在 <span class="arithmatex">\(x_k + \beta(x_k - x_{k-1})\)</span> 这个未来的位置上去计算梯度。</p>
+<p>具体的迭代公式为 ：</p>
+<div class="arithmatex">\[
+v_{k+1} = \beta(x_k - x_{k-1}) - \gamma \nabla f(x_k + \beta(x_k - x_{k-1}))
+\]</div>
+<div class="arithmatex">\[
+x_{k+1} = \text{prox}_{\gamma R}(x_k + v_{k+1})
+\]</div>
+<p>NAG 等价写成以下三步更新 ：</p>
+<p><strong>插值步</strong>：<span class="arithmatex">\(y_k = (1 - \alpha_{k+1})x_k + \alpha_{k+1}z_k\)</span></p>
+<p><strong>梯度步</strong>：<span class="arithmatex">\(x_{k+1} = \text{prox}_{\gamma R}(y_k - \gamma \nabla f(y_k))\)</span></p>
+<p><strong>辅助步</strong>：<span class="arithmatex">\(z_{k+1} = x_k + \frac{1}{\alpha_{k+1}}(x_{k+1} - x_k)\)</span></p>
+<p>这里的 <span class="arithmatex">\(\alpha_{k}\)</span> 定义为 <span class="arithmatex">\(\beta_k = \frac{\alpha_{k+1}(1-\alpha_k)}{\alpha_k}\)</span> 。</p>
+<hr />
+<p>由 <span class="arithmatex">\(x_{k+1}\)</span> 的 Proximal 定义，我们有 <span class="arithmatex">\(y_k-\gamma \nabla f(y_k) \in x_{k+1} + \gamma \partial R(x_{k+1})\)</span>。结合 <span class="arithmatex">\(R\)</span> 的凸性，我们可以得到以下不等式：</p>
+<div class="arithmatex">\[
+\gamma R(x) \ge \gamma R(x_{k+1}) + \langle y_k - \gamma \nabla f(y_k) - x_{k+1}, x - x_{k+1} \rangle 
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+R(x_{k+1}) \le R(x) - \frac{1}{\gamma} \langle y_k - \gamma \nabla f(y_k) - x_{k+1}, x - x_{k+1} \rangle
+\]</div>
+<p>同时，因为 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(L\)</span>-平滑的，令步长 <span class="arithmatex">\(\gamma \le 1/L\)</span>：</p>
+<div class="arithmatex">\[
+f(x_{k+1}) \le f(y_k) + \langle \nabla f(y_k), x_{k+1} - y_k \rangle + \frac{1}{2\gamma}||x_{k+1} - y_k||^2 
+\]</div>
+<p>两式相加得：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    F(x_{k+1}) \le&amp; f(y_k) + \left(\langle \nabla f(y_k), x_{k+1} - y_k \rangle+ \langle \nabla f(y_k), x - x_{k+1} \rangle\right) + \frac{1}{2\gamma} ||x_{k+1} - y_k||^2 \\
+    &amp; + R(x) - \frac{1}{\gamma} \langle y_k - x_{k+1}, x - x_{k+1} \rangle \\
+    =&amp; \left[ f(y_k) + \langle \nabla f(y_k), x - y_k \rangle \right] + R(x) + \frac{1}{2\gamma} ||x_{k+1} - y_k||^2 - \frac{1}{\gamma} \langle y_k - x_{k+1}, x - x_{k+1} \rangle\\
+    \le &amp; f(x)+ R(x) + \frac{1}{2\gamma} ||x_{k+1} - y_k||^2 - \frac{1}{\gamma} \langle y_k - x_{k+1}, x - x_{k+1} \rangle\\
+        =&amp; F(x) + \frac{1}{2\gamma} ||x_{k+1} - y_k||^2 - \frac{1}{\gamma} \langle y_k - x_{k+1}, x - x_{k+1} \rangle
+\end{aligned}
+\]</div>
+<p>对向量 <span class="arithmatex">\(a = y_k - x_{k+1}\)</span> 和  <span class="arithmatex">\(b = x - x_{k+1}\)</span> 用等式：</p>
+<div class="arithmatex">\[
+2\langle a, b \rangle = ||a||^2 + ||b||^2 - ||a - b||^2
+\]</div>
+<p>可以得到：</p>
+<div class="arithmatex">\[
+-\frac{1}{\gamma} \langle y_k - x_{k+1}, x - x_{k+1} \rangle = -\frac{1}{2\gamma} \left( ||y_k - x_{k+1}||^2 + ||x - x_{k+1}||^2 - ||y_k - x||^2 \right)
+\]</div>
+<p>代回原式有：</p>
+<div class="arithmatex">\[
+F(x_{k+1}) \le F(x) + \frac{1}{2\gamma} ||y_k - x||^2 - \frac{1}{2\gamma} ||x_{k+1} - x||^2
+\]</div>
+<p>再代入 <span class="arithmatex">\(x = (1 - \alpha_{k+1})x_k + \alpha_{k+1}x^\star\)</span>。由凸性我们有</p>
+<div class="arithmatex">\[
+F(x) = F((1 - \alpha_{k+1})x_k + \alpha_{k+1}x^\star) \le (1 - \alpha_{k+1})F(x_k) + \alpha_{k+1}F(x^\star)
+\]</div>
+<div class="arithmatex">\[
+y_k - x = \alpha_{k+1}(z_k - x^\star)
+\]</div>
+<div class="arithmatex">\[
+x_{k+1} - x = \alpha_{k+1}(z_{k+1} - x^\star)
+\]</div>
+<p>全部代回有：</p>
+<div class="arithmatex">\[
+F(x_{k+1}) - F(x^\star) \le (1 - \alpha_{k+1})(F(x_k) - F(x^\star)) + \frac{\alpha_{k+1}^2}{2\gamma} (||z_k - x^\star||^2 - ||z_{k+1} - x^\star||^2)
+\]</div>
+<p>两边除以 <span class="arithmatex">\(\alpha_{k+1}^2\)</span> 并令 <span class="arithmatex">\(\frac{1-\alpha_{k+1}}{\alpha_{k+1}^2} = \frac{1}{\alpha_k^2}\)</span>，得到：</p>
+<div class="arithmatex">\[
+\frac{F(x_{k+1}) - F(x^\star)}{\alpha_{k+1}^2} \le \frac{F(x_k) - F(x^\star)}{\alpha_k^2} + \frac{1}{2\gamma} ||z_k - x^\star||^2 - \frac{1}{2\gamma} ||z_{k+1} - x^\star||^2
+\]</div>
+<p>对上式求和即得</p>
+<div class="arithmatex">\[
+\frac{F(x_K) - F^\star}{\alpha_K^2} \le \frac{1 - \alpha_1}{\alpha_1^2}(F(x_0) - F^\star) + \frac{1}{2\gamma} ||z_0 - x^\star||^2 - \frac{1}{2\gamma} ||z_K - x^\star||^2
+\]</div>
+<p>再令 <span class="arithmatex">\(\alpha_1 = 1\)</span>，得到：</p>
+<div class="arithmatex">\[
+F(x_K) - F(x^\star) \le \frac{\alpha_K^2}{2\gamma} ||x_0 - x^\star||^2
+\]</div>
+<p>另一方面归纳易证 </p>
+<div class="arithmatex">\[
+\alpha_K \le \frac{2}{K+1}
+\]</div>
+<p>最后我们得到：</p>
+<div class="arithmatex">\[
+F(x_K) - F(x^\star) \le \frac{2}{\gamma(K+1)^2} ||x_0 - x^\star||^2
+\]</div>
 <hr />
 <p><strong>例题(Spring, 2025, C2)</strong> 假设 <span class="arithmatex">\(f(x)\)</span> 是连续可导的 <span class="arithmatex">\(L\)</span>-平滑且 <span class="arithmatex">\(\mu\)</span>-强凸函数。</p>
 <ul>
