@@ -2253,6 +2253,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="优化方法速通">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        函数的平滑性和强凸性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sgd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        随机梯度下降 (SGD) 与方差分解
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        近端算子与非扩张性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -2657,6 +2696,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="优化方法速通">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        函数的平滑性和强凸性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sgd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        随机梯度下降 (SGD) 与方差分解
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        近端算子与非扩张性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -2685,6 +2763,41 @@
 
 <h2 id="_1">优化方法速通</h2>
 <hr />
+<h3 id="_2">函数的平滑性和强凸性</h3>
+<hr />
+<p>如果函数 <span class="arithmatex">\(f(x)\)</span> 是 <strong><span class="arithmatex">\(L\)</span>-smoothness</strong> 的，意味着它的梯度是 <span class="arithmatex">\(L\)</span>-Lipschitz 连续的。对于定义域内的任意 <span class="arithmatex">\(x, y\)</span>，满足：<span class="arithmatex">\(<span class="arithmatex">\(||\nabla f(x) - \nabla f(y)|| \le L ||x - y||\)</span>\)</span>等价的二阶泰勒展开上限形式：</p>
+<div class="arithmatex">\[
+f(y) \le f(x) + \langle \nabla f(x), y-x \rangle + \frac{L}{2}||y-x||^2
+\]</div>
+<p>还有一个等价条件是 <span class="arithmatex">\(\frac{L}{2}||x||^2 - f(x)\)</span> 是凸函数</p>
+<hr />
+<p>如果函数 <span class="arithmatex">\(f(x)\)</span> 是 <strong><span class="arithmatex">\(\mu\)</span>-strong convexity</strong> 的，说明它不仅是一个凸函数，而且至少和一个二次函数一样“凸”。对于任意 <span class="arithmatex">\(x, y\)</span>，满足：<span class="arithmatex">\(<span class="arithmatex">\(f(y) \ge f(x) + \langle \nabla f(x), y-x \rangle + \frac{\mu}{2}||y-x||^2\)</span>\)</span>或者用梯度的单调性表示：<span class="arithmatex">\(<span class="arithmatex">\(\langle \nabla f(x) - \nabla f(y), x - y \rangle \ge \mu ||x - y||^2\)</span>\)</span></p>
+<hr />
+<p><strong>Bregman 散度</strong>是衡量两个点 <span class="arithmatex">\(x, y\)</span> 之间“距离”的泛化表达：</p>
+<div class="arithmatex">\[
+D_f(x, y) = f(x) - f(y) - \langle \nabla f(y), x - y \rangle
+\]</div>
+<hr />
+<h3 id="sgd">随机梯度下降 (SGD) 与方差分解</h3>
+<hr />
+<p>当我们处理海量数据时，计算全梯度 <span class="arithmatex">\(\nabla f(x)\)</span> 太慢了，只能用一小批数据算出一个“带噪声”的随机梯度 <span class="arithmatex">\(g(x, \xi)\)</span> 。这个梯度需要满足：</p>
+<ul>
+<li>
+<p><strong>无偏性 (Unbiasedness)</strong>：随机梯度的期望必须等于真实梯度：<span class="arithmatex">\(\mathbb{E}[g(x)] = \nabla f(x)\)</span>。</p>
+</li>
+<li>
+<p><strong>有界方差 (Bounded Variance)</strong> ：噪声必须是被控制的：<span class="arithmatex">\(\mathbb{E}[||\xi||^2] \le \sigma^2\)</span>。</p>
+</li>
+<li>
+<p><strong>方差分解 (Variance Decomposition)</strong> ：这是推导 SGD 误差的核心技巧。由于随机变量的性质 <span class="arithmatex">\(\mathbb{E}[X^2] = (\mathbb{E}[X])^2 + \text{Var}(X)\)</span>，我们可以把带有噪声的迭代距离拆成两部分：</p>
+</li>
+</ul>
+<div class="arithmatex">\[
+\mathbb{E}[||\text{随机更新}||^2] = ||\text{真实梯度更新}||^2 + \text{纯噪声的方差}(\gamma^2 \sigma^2)
+\]</div>
+<hr />
+<h3 id="_3">近端算子与非扩张性</h3>
+<hr />
 <p><strong>近端算子(Proximal Operator)</strong> 是一种用来处理非平滑凸函数的极佳工具。标准数学定义为：对于一个凸函数 <span class="arithmatex">\(R(x)\)</span> 和一个参数 <span class="arithmatex">\(\gamma &gt; 0\)</span>，点 <span class="arithmatex">\(v\)</span> 的近端算子定义为：</p>
 <div class="arithmatex">\[
 \text{prox}_{\gamma R}(v) = \arg\min_x \left( R(x) + \frac{1}{2\gamma} ||x - v||^2 \right)
@@ -2708,6 +2821,7 @@
 <div class="arithmatex">\[
 \mu||x-y||^2 + \frac{1}{L}||\nabla f(x)-\nabla f(y)||^2 \le (1+\frac{\mu}{L})\langle \nabla f(x)-\nabla f(y), x-y \rangle
 \]</div>
+<hr />
 <p><strong>解答：</strong> <span class="arithmatex">\((1)\)</span>： 首先，计算 <span class="arithmatex">\(g(x)\)</span> 的梯度：</p>
 <div class="arithmatex">\[
 \nabla g(x) = \nabla f(x) - \mu x
@@ -2736,6 +2850,7 @@
 <div class="arithmatex">\[
 ||x^{k+1}-x^*||^2 \le ||x^k - x^* - \gamma(\nabla f(x^k) - \nabla f(x^*) + \xi^k)||^2
 \]</div>
+<hr />
 <p><strong>解答：</strong> 对于最优解 <span class="arithmatex">\(x^*\)</span>，它满足原问题 <span class="arithmatex">\(\min_x f(x) + R(x)\)</span>  的一阶最优性条件：</p>
 <div class="arithmatex">\[
 0 \in \nabla f(x^*) + \partial R(x^*)\implies x^* - \gamma \nabla f(x^*) \in x^* + \gamma \partial R(x^*)
@@ -2754,6 +2869,7 @@
 \mathbb{E}_k[||x^{k+1}-x^*||^2] \le ||x^k - x^* - \gamma(\nabla f(x^k) - \nabla f(x^*))||^2 + \gamma^2\sigma^2
 \]</div>
 <p>其中 <span class="arithmatex">\(\mathbb{E}_k[\cdot]\)</span> 表示给定 <span class="arithmatex">\(\xi^k, ..., \xi^0\)</span> 的条件期望 。</p>
+<hr />
 <p><strong>解答：</strong> 方差分解是概率论中的基本恒等式。对于任意随机向量 <span class="arithmatex">\(Z\)</span>，它的二阶矩可以分解为：</p>
 <div class="arithmatex">\[
 \mathbb{E}[||Z||^2] = ||\mathbb{E}[Z]||^2 + \mathbb{E}[||Z - \mathbb{E}[Z]||^2]
@@ -2773,6 +2889,7 @@
 \mathbb{E}[||x^{k+1}-x^*||^2] \le (1-\rho)\mathbb{E}[||x^k-x^*||^2] + \gamma^2\sigma^2
 \]</div>
 <p>其中 <span class="arithmatex">\(\rho=\frac{4\mu L}{(\mu+L)^2}\)</span> 。</p>
+<hr />
 <p><strong>解答：</strong> 由 <span class="arithmatex">\(C4\)</span> 我们有 <span class="arithmatex">\(LHS\le ||x^k - x^* - \gamma(\nabla f(x^k) - \nabla f(x^*))||^2 + \gamma^2\sigma^2\)</span>。而</p>
 <div class="arithmatex">\[
 \begin{aligned}
@@ -2794,6 +2911,7 @@ k \ge \frac{L/\mu+3}{4}\log\frac{1}{\epsilon}
 <div class="arithmatex">\[
 \mathbb{E}[||x^k-x^*||^2] \le \epsilon||x^0-x^*||^2 + \frac{\gamma\sigma^2}{\mu}
 \]</div>
+<hr />
 <p><strong>解答：</strong> 由 <span class="arithmatex">\(C5\)</span> 递推可得：</p>
 <div class="arithmatex">\[
 \begin{aligned}
@@ -2802,6 +2920,162 @@ k \ge \frac{L/\mu+3}{4}\log\frac{1}{\epsilon}
 \end{aligned}
 \]</div>
 <p>一方面 <span class="arithmatex">\(\frac{\gamma^2\sigma^2}{\rho} = \frac{4\sigma^2}{\mu L}\cdot \frac{1}{(\mu + L)^2} \le \frac{\gamma\sigma^2}{\mu}\)</span>，另一方面要让 <span class="arithmatex">\((1-\rho)^k \le \epsilon\)</span>，只需 <span class="arithmatex">\(k \ge \frac{\log(1/\epsilon)}{\log(1/(1-\rho))}\)</span>，又 <span class="arithmatex">\(\frac{\log(1/\epsilon)}{\log(1/(1-\rho))} \le \frac{1}{\rho}\log\frac{1}{\epsilon}\)</span>，而 <span class="arithmatex">\(\frac{1}{\rho} = \frac{(\mu + L)^2}{4\mu L} = \frac{1}{4}(\frac{L}{\mu} + 2 + \frac{\mu}{L}) \le \frac{L/\mu + 3}{4}\)</span>。</p>
+<hr />
+<p><strong>(Autumn, 2025, C1)</strong> Consider the regularized finite-sum problem</p>
+<div class="arithmatex">\[
+\min_{x\in\mathbb{R}^{d}}F(x) := f(x) + R(x)
+\]</div>
+<div class="arithmatex">\[
+f(x) := \frac{1}{n}\sum_{i=1}^{n}f_{i}(x)
+\]</div>
+<p>where each <span class="arithmatex">\(f_{i}:\mathbb{R}^{d}\rightarrow\mathbb{R}\)</span> is convex and <span class="arithmatex">\(L_{i}\)</span>-smooth, the aggregate <span class="arithmatex">\(f\)</span> is <span class="arithmatex">\(L\)</span>-smooth and <span class="arithmatex">\(\mu\)</span>-strongly convex (<span class="arithmatex">\(\mu&gt;0\)</span>), and <span class="arithmatex">\(R:\mathbb{R}^{d}\rightarrow(-\infty,+\infty]\)</span> is proper, closed, and convex. For a probability vector <span class="arithmatex">\(q=(q_{1},...,q_{n})\)</span> with <span class="arithmatex">\(q_{i}&gt;0\)</span> and <span class="arithmatex">\(\sum_{i}q_{i}=1\)</span>, define a categorical random variable <span class="arithmatex">\(s\in\{1,...,n\}\)</span> with <span class="arithmatex">\(\mathbb{P}(s=i)=q_{i}\)</span>. Fix a minibatch size <span class="arithmatex">\(\tau\in\{1,2,...\}\)</span> and draw i.i.d. copies <span class="arithmatex">\(s_{1},...,s_{\tau}\)</span> of <span class="arithmatex">\(s\)</span>. Define the multisampling gradient estimator</p>
+<div class="arithmatex">\[
+g(x) := \frac{1}{\tau}\sum_{t=1}^{\tau}\frac{1}{n q_{s_{t}}}\nabla f_{s_{t}}(x)
+\]</div>
+<p>and the proximal SGD iteration</p>
+<div class="arithmatex">\[
+x^{k+1} = \text{prox}_{\gamma R}(x^{k} - \gamma g^{k}) \quad \text{, } g^{k} := g(x^{k})
+\]</div>
+<p>We denote the Bregman divergence of <span class="arithmatex">\(f\)</span> by</p>
+<div class="arithmatex">\[
+D_{f}(x,y) := f(x) - f(y) - \langle\nabla f(y), x - y\rangle
+\]</div>
+<p>[3 pts.] Basic Definitions: Give the definitions of <span class="arithmatex">\(L\)</span>-smoothness and <span class="arithmatex">\(\mu\)</span>-strong convexity.</p>
+<hr />
+<p><strong>(Autumn, 2025, C2)</strong> [2 pts.] Uniqueness of the Minimizer: Show that <span class="arithmatex">\(F\)</span> admits a unique minimizer <span class="arithmatex">\(x^{*}\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：由于 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(\mu\)</span>-强凸的，且 <span class="arithmatex">\(R\)</span> 是凸的，所以 <span class="arithmatex">\(F(x) = f(x) + R(x)\)</span> 也是 <span class="arithmatex">\(\mu\)</span>-强凸的。</p>
+<p>存在性：<span class="arithmatex">\(F\)</span> 在闭集上连续且趋于无穷大，因此存在最小值。</p>
+<p>唯一性：假设存在两个不同的最小值 <span class="arithmatex">\(x_1^*\)</span> 和 <span class="arithmatex">\(x_2^*\)</span>，则：</p>
+<div class="arithmatex">\[
+F\left(\frac{x_1^* + x_2^*}{2}\right) \le \frac{F(x_1^*) + F(x_2^*)}{2} - \frac{\mu}{8}||x_1^* - x_2^*||^2 &lt; F(x_1^*) = F(x_2^*)
+\]</div>
+<p>矛盾。</p>
+<hr />
+<p><strong>(Autumn, 2025, C3)</strong> [5 pts.] Unbiasedness of the Gradient Estimator: Prove that <span class="arithmatex">\(g(x)\)</span> is unbiased, i.e., <span class="arithmatex">\(\mathbb{E}[g(x)] = \nabla f(x)\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \mathbb{E}[g(x)] &amp;= \mathbb{E}\left[\frac{1}{\tau}\sum_{t=1}^{\tau}\frac{1}{n q_{s_{t}}}\nabla f_{s_{t}}(x)\right]\\
+    &amp;= \frac{1}{\tau}\sum_{t=1}^{\tau}\mathbb{E}_{s_t}\left[\frac{1}{n q_{s_{t}}}\nabla f_{s_{t}}(x)\right]\\
+    &amp;= \frac{1}{\tau}\sum_{t=1}^{\tau}\sum_{i=1}^{n} q_i \cdot \frac{1}{n q_i} \nabla f_i(x)\\
+    &amp;= \frac{1}{\tau}\sum_{t=1}^{\tau}\frac{1}{n}\sum_{i=1}^{n} \nabla f_i(x)\\
+    &amp;= \nabla f(x)
+\end{aligned}
+\]</div>
+<hr />
+<p><strong>(Autumn, 2025, C4)</strong> [8 pts.] Expected Smoothness Bound: Assuming each <span class="arithmatex">\(f_{i}\)</span> is <span class="arithmatex">\(L_{i}\)</span> smooth and convex, and <span class="arithmatex">\(f\)</span> is <span class="arithmatex">\(L\)</span>-smooth, show that for all <span class="arithmatex">\(x, y \in \mathbb{R}^{d}\)</span>,<span class="arithmatex">\(<span class="arithmatex">\(\mathbb{E}[||g(x)-g(y)||^{2}] \le 2A''(\tau,q)D_{f}(x,y)\)</span>\)</span>
+where the expected-smoothness constant <span class="arithmatex">\(A''\)</span> (depending on <span class="arithmatex">\(\tau\)</span> and <span class="arithmatex">\(q\)</span>) is</p>
+<div class="arithmatex">\[
+A''(\tau,q) := \frac{1}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + (1-\frac{1}{\tau})L
+\]</div>
+<p>Hint: Expand the square, separate diagonal and cross terms using independence, and use smoothness to bound gradient differences via Bregman divergences. </p>
+<hr />
+<p><strong>解答</strong>：我们先来证明 <span class="arithmatex">\(\| \nabla f(x)-\nabla f(y) \|^2 \le 2L D_f(x,y)\)</span>。</p>
+<p>设 <span class="arithmatex">\(h(z)=f(z)-f(y)-\langle \nabla f(y), z-y \rangle\)</span>，则 <span class="arithmatex">\(h(z)\ge 0\)</span> 且 <span class="arithmatex">\(h(y)=0\)</span>。又 <span class="arithmatex">\(h(z)\)</span> 是 <span class="arithmatex">\(L\)</span>-平滑的，故</p>
+<div class="arithmatex">\[
+h(z)\le h(x)+\langle \nabla h(x), z-x \rangle + \frac{L}{2}||z-x||^2
+\]</div>
+<p>取 <span class="arithmatex">\(z^*=x-\frac{1}{L}\nabla h(x)\)</span>(使右边最小)，得</p>
+<div class="arithmatex">\[
+0\le h(z^*)\le h(x) - \frac{1}{2L}||\nabla h(x)||^2
+\]</div>
+<p>因此 <span class="arithmatex">\(||\nabla f(x)-\nabla f(y)||^2 = ||\nabla h(x)||^2 \le 2L h(x) = 2L D_f(x,y)\)</span>。</p>
+<p>回到原题。设 <span class="arithmatex">\(Z_t = \frac{1}{n q_{s_{t}}}\nabla f_{s_{t}}(x) - \frac{1}{n q_{s_{t}}}\nabla f_{s_{t}}(y)\)</span>，则 <span class="arithmatex">\(g(x)-g(y)=\frac{1}{\tau}\sum_{t=1}^{\tau} Z_t\)</span>。由于 <span class="arithmatex">\(Z_t\)</span> 是独立同分布的，我们有：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \mathbb{E}[||g(x)-g(y)||^2] &amp;= \mathbb{E}\left[||\frac{1}{\tau}\sum_{t=1}^{\tau} Z_t||^2\right]\\
+    &amp;= \frac{1}{\tau^2}\sum_{t=1}^{\tau} \mathbb{E}[||Z_t||^2] + \frac{1}{\tau^2}\sum_{t\neq t'} \mathbb{E}[\langle Z_t, Z_{t'} \rangle]\\
+    &amp;= \frac{1}{\tau} \mathbb{E}[||Z_1||^2] + \frac{\tau(\tau-1)}{\tau^2} ||\mathbb{E}[Z_1]||^2\\
+    &amp;= \frac{1}{\tau} \sum_{i=1}^{n} q_i \cdot \left\|\frac{1}{n q_i}\nabla f_i(x) - \frac{1}{n q_i}\nabla f_i(y)\right\|^2 + (1-\frac{1}{\tau}) ||\nabla f(x)-\nabla f(y)||^2\\
+    &amp;\le \frac{1}{\tau} \sum_{i=1}^{n} q_i \cdot \frac{L_i}{n q_i} 2 D_f(x,y) + (1-\frac{1}{\tau}) 2L D_f(x,y)\\
+    &amp;= 2\left(\frac{1}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + (1-\frac{1}{\tau})L\right) D_f(x,y)\\
+    &amp;= 2A''(\tau,q) D_f(x,y)
+\end{aligned}
+\]</div>
+<hr />
+<p><strong>(Autumn, 2025, C5)</strong> [4 pts.] Extremes, Monotonicity, and Interpolation: </p>
+<p>(a) Evaluate <span class="arithmatex">\(A''(\tau,q)\)</span> at <span class="arithmatex">\(\tau=1\)</span> and as <span class="arithmatex">\(\tau\rightarrow+\infty\)</span>. Identify the limiting algorithms (SGD-NS vs. GD) and the corresponding constants .</p>
+<p>(b) Show that <span class="arithmatex">\(A''(\tau,q)\)</span> is nonincreasing in <span class="arithmatex">\(\tau\)</span>, and interpret how the minibatch size interpolates between SGD-NS and GD .</p>
+<p>Hint: Use <span class="arithmatex">\(\frac{1}{n}\sum_{i=1}^{n}L_{i} \ge L\)</span>.</p>
+<hr />
+<p><strong>解答</strong>： <span class="arithmatex">\((a)\)</span> 当 <span class="arithmatex">\(\tau=1\)</span> 时，<span class="arithmatex">\(A''(1,q) = \max_{i}\frac{L_{i}}{nq_{i}} + (1-1)L = \max_{i}\frac{L_{i}}{nq_{i}}\)</span>，对应 SGD-NS（非均匀采样的随机梯度下降）。当 <span class="arithmatex">\(\tau\rightarrow+\infty\)</span> 时，<span class="arithmatex">\(A''(\tau,q) \rightarrow L\)</span>，对应 GD（全批梯度下降）。</p>
+<p><span class="arithmatex">\((b)\)</span>：只需证明 <span class="arithmatex">\(\frac{1}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + (1-\frac{1}{\tau})L\)</span> 是 <span class="arithmatex">\(\tau\)</span> 的非增函数。计算导数：</p>
+<div class="arithmatex">\[
+\frac{d}{d\tau} \left( \frac{1}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + (1-\frac{1}{\tau})L \right) = \frac{1}{\tau^2}(L - \max_{i}\frac{L_{i}}{nq_{i}})
+\]</div>
+<p>而</p>
+<div class="arithmatex">\[
+\max_{i}\frac{L_{i}}{nq_{i}} \ge \frac{1}{n}\sum_{i=1}^{n} \frac{L_i}{n q_i} = \frac{1}{n}\sum_{i=1}^{n} L_i \ge L
+\]</div>
+<p>因此导数非正，<span class="arithmatex">\(A''(\tau,q)\)</span> 是 <span class="arithmatex">\(\tau\)</span> 的非增函数。随着 <span class="arithmatex">\(\tau\)</span> 从 <span class="arithmatex">\(1\)</span> 增加到无穷大，算法从 SGD-NS 逐渐过渡到 GD，期望平滑常数也从 <span class="arithmatex">\(\max_{i}\frac{L_{i}}{nq_{i}}\)</span> 逐渐降低到 <span class="arithmatex">\(L\)</span>。</p>
+<hr />
+<p><strong>(Autumn, 2025, C6)</strong> [4 pts.] Design of Importance Sampling <span class="arithmatex">\(q\)</span>: For a fixed <span class="arithmatex">\(\tau\)</span>, minimize the first term of <span class="arithmatex">\(A''(\tau,q)\)</span>, i.e.,</p>
+<div class="arithmatex">\[
+\min_{q\in\Delta_{n}}\max_{i}\frac{L_{i}}{nq_{i}} \quad \text{where } \Delta_{n}=\{q\in\mathbb{R}_{++}^{n}:\sum_{i}q_{i}=1\}
+\]</div>
+<p>Derive the optimal <span class="arithmatex">\(q^{*}\)</span> and the attained value of <span class="arithmatex">\(\max\)</span>. Compare with uniform sampling <span class="arithmatex">\(q_{i}^{uni}=\frac{1}{n}\)</span> .</p>
+<p>Hint: Use <span class="arithmatex">\(\frac{1}{n}\sum_{i=1}^{n}L_{i} \le \max_{i}L_{i}\)</span>. </p>
+<hr />
+<p><strong>解答</strong>：显然在 <span class="arithmatex">\(\frac{L_i}{n q_i}=C\)</span> 时达到最小值。由 <span class="arithmatex">\(\sum_{i=1}^{n} q_i = 1\)</span> 可得 <span class="arithmatex">\(q_i = \frac{L_i}{nC}\)</span>，代入求解 <span class="arithmatex">\(C\)</span>：</p>
+<div class="arithmatex">\[
+\sum_{i=1}^{n} q_i = \sum_{i=1}^{n} \frac{L_i}{nC} = \frac{1}{nC} \sum_{i=1}^{n} L_i = 1 \implies C = \frac{1}{n}\sum_{i=1}^{n} L_i
+\]</div>
+<p>因此最优采样分布为 <span class="arithmatex">\(q_i^* = \frac{L_i}{\sum_{j=1}^{n} L_j}\)</span>，此时 <span class="arithmatex">\(\max_{i}\frac{L_{i}}{nq_{i}^*} = \frac{1}{n}\sum_{i=1}^{n} L_i\)</span>。相比于均匀采样 <span class="arithmatex">\(q_i^{uni} = \frac{1}{n}\)</span>，其对应的常数为 <span class="arithmatex">\(\max_{i}\frac{L_i}{n q_i^{uni}} = \max_{i} L_i\)</span>。由于 <span class="arithmatex">\(\frac{1}{n}\sum_{i=1}^{n} L_i \le \max_{i} L_i\)</span>，重要性采样的期望平滑常数更小，从而有潜力加速收敛。</p>
+<hr />
+<p><strong>(Autumn, 2025, C7)</strong> [3 pts.] Variance at the Optimum and Minibatch Scaling: Let <span class="arithmatex">\(\xi(x) := g(x) - \nabla f(x)\)</span>. Show that</p>
+<div class="arithmatex">\[
+\mathbb{E}[||\xi(x^{*})||^{2}] = \frac{1}{\tau}\text{Var}\left(\frac{1}{nq_{s}}\nabla f_{s}(x^{*})\right)
+\]</div>
+<p>i.e., the variance at the optimum scales as <span class="arithmatex">\(1/\tau\)</span>. Express your answer in terms of <span class="arithmatex">\(q\)</span> and <span class="arithmatex">\(\{\nabla f_{i}(x^{*})\}_{i=1}^{n}\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：注意到 <span class="arithmatex">\(\text{Var}(\xi(x^*))=\mathbb{E}[||\xi(x^*)||^2]-||\mathbb{E}[\xi(x^*)]||^2=\mathbb{E}[||\xi(x^*)||^2]\)</span>，因为 <span class="arithmatex">\(\xi(x^*)\)</span> 是零均值的。又 <span class="arithmatex">\(\xi(x^*) = g(x^*) - \nabla f(x^*) = \frac{1}{\tau}\sum_{t=1}^{\tau} \left( \frac{1}{n q_{s_t}} \nabla f_{s_t}(x^*) - \nabla f(x^*) \right)\)</span>，由于 <span class="arithmatex">\(s_t\)</span> 是独立同分布的，我们有：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb{E}[||\xi(x^*)||^2] &amp;= \text{Var}\left(\frac{1}{\tau}\sum_{t=1}^{\tau} \left( \frac{1}{n q_{s_t}} \nabla f_{s_t}(x^*) - \nabla f(x^*) \right)\right)\\
+&amp;= \frac{1}{\tau^2} \sum_{t=1}^{\tau} \text{Var}\left( \frac{1}{n q_{s_t}} \nabla f_{s_t}(x^*) - \nabla f(x^*) \right)\\
+&amp;= \frac{1}{\tau} \text{Var}\left( \frac{1}{n q_{s}} \nabla f_{s}(x^*) - \nabla f(x^*) \right)\\
+&amp;= \frac{1}{\tau} \text{Var}\left( \frac{1}{n q_{s}} \nabla f_{s}(x^*) \right)\\
+&amp;= \mathbb{E}_s \left[ \left|\left| \frac{1}{n q_s}\nabla f_s(x^*) \right|\right|^2 \right] \\
+&amp;= \sum_{i=1}^n q_i \left|\left| \frac{1}{n q_i}\nabla f_i(x^*) \right|\right|^2\\
+&amp;= \frac{1}{\tau} \sum_{i=1}^n \frac{1}{n^2 q_i} ||\nabla f_i(x^*)||^2
+\end{aligned}
+\]</div>
+<hr />
+<p><strong>(Autumn, 2025, C8)</strong> [2 pts.] AC inequality and computing (A, C): Consider the following classical results:AC inequality: There exist constants <span class="arithmatex">\(A \ge 0\)</span> and <span class="arithmatex">\(C \ge 0\)</span> such that for all <span class="arithmatex">\(k \ge 0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb{E}[||g^{k}-\nabla f(x^{*})||^{2}|x^{k}] \le 2AD_{f}(x^{k},x^{*}) + C
+\]</div>
+<p>Implication from expected smoothness: If <span class="arithmatex">\(g(x)\)</span> is an unbiased estimator of <span class="arithmatex">\(\nabla f(x)\)</span> and, for all <span class="arithmatex">\(x, y\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb{E}[||g(x)-g(y)||^{2}] \le 2A''D_{f}(x,y) + C''(y)
+\]</div>
+<p>then for <span class="arithmatex">\(G(x,y) := \mathbb{E}||g(x)-\nabla f(y)||^{2}\)</span> one has the AC inequality <span class="arithmatex">\(G(x,y) \le 2AD_{f}(x,y) + C\)</span>, where <span class="arithmatex">\(A=2A''\)</span> and <span class="arithmatex">\(C=2(\text{Var}[g(y)] + C''(y))\)</span> .
+Specialize the above implication to obtain the AC constants <span class="arithmatex">\((A, C)\)</span>, and write an explicit formula for <span class="arithmatex">\(\text{Var}[g(x^{*})]\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：在 C4 中我们证明了 <span class="arithmatex">\(\mathbb{e}[||g(x)-g(y)||^2] \le 2A'' D_f(x,y)\)</span>，其中 <span class="arithmatex">\(A'' = A''(\tau,q)\)</span>。又在 C7 中我们证明了 <span class="arithmatex">\(\text{Var}[g(x^*)] = \frac{1}{\tau}\sum_{i=1}^n \frac{1}{n^2 q_i} ||\nabla f_i(x^*)||^2\)</span>。因此根据 AC 不等式的推导，我们有：</p>
+<div class="arithmatex">\[
+A = 2A''(\tau,q) = 2\left(\frac{1}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + (1-\frac{1}{\tau})L\right)
+\]</div>
+<div class="arithmatex">\[
+C = 2 \text{Var}[g(x^*)] = \frac{2}{\tau} \sum_{i=1}^n \frac{1}{n^2 q_i} ||\nabla f_i(x^*)||^2
+\]</div>
+<hr />
+<p><strong>(Autumn, 2025, C9)</strong> [2 pts.] Stepsize and convergence: Given the classical convergence theorem of SGD:Assume <span class="arithmatex">\(f\)</span> is <span class="arithmatex">\(\mu\)</span>-convex, <span class="arithmatex">\(g^{k}\)</span> is unbiased, and the AC inequality holds with constants <span class="arithmatex">\((A,C)\)</span>. Then for any stepsize <span class="arithmatex">\(0 &lt; \gamma \le \frac{1}{A}\)</span> the iterates satisfy</p>
+<div class="arithmatex">\[
+\mathbb{E}||x^{k}-x^{*}||^{2} \le (1-\gamma\mu)^{k}||x^{0}-x^{*}||^{2} + \frac{\gamma C}{\mu}
+\]</div>
+<p>Using the <span class="arithmatex">\((A, C)\)</span> obtained in question 8 to compute:the admissible stepsize range;the explicit convergence bound with the noise floor written in closed form .</p>
+<hr />
+<p><strong>解答</strong>：定理要求 <span class="arithmatex">\(\gamma \le \frac{1}{A}\)</span>，我们有：</p>
+<div class="arithmatex">\[
+\gamma \le \frac{1}{\frac{2}{\tau}(\max_{i}\frac{L_{i}}{nq_{i}}) + 2(1-\frac{1}{\tau})L}
+\]</div>
+<p>将算出的 <span class="arithmatex">\(C\)</span> 代入定公式 <span class="arithmatex">\(\mathbb{E}||x^{k}-x^{*}||^{2} \le (1-\gamma\mu)^{k}||x^{0}-x^{*}||^{2} + \frac{\gamma C}{\mu}\)</span> ：</p>
+<div class="arithmatex">\[
+\mathbb{E}||x^{k}-x^{*}||^{2} \le (1-\gamma\mu)^{k}||x^{0}-x^{*}||^{2} + \frac{2\gamma}{\mu \tau} \sum_{i=1}^n \frac{1}{n^2 q_i} ||\nabla f_i(x^*)||^2
+\]</div>
 
 
 

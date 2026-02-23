@@ -2248,18 +2248,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        决策树模型
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#k-nearest-neighbors-knn" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        最近邻算法 (K-Nearest Neighbors, KNN)
+        一致收敛与拉德马赫复杂度
       
     </span>
   </a>
@@ -2278,10 +2267,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#compressed-sensing" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        压缩感知 (Compressed Sensing)
+        表示定理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        神经网络理论与泛化谜题
       
     </span>
   </a>
@@ -2294,7 +2294,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         真题
@@ -2813,18 +2813,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        决策树模型
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#k-nearest-neighbors-knn" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        最近邻算法 (K-Nearest Neighbors, KNN)
+        一致收敛与拉德马赫复杂度
       
     </span>
   </a>
@@ -2843,10 +2832,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#compressed-sensing" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        压缩感知 (Compressed Sensing)
+        表示定理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        神经网络理论与泛化谜题
       
     </span>
   </a>
@@ -2859,7 +2859,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         真题
@@ -3063,83 +3063,54 @@ L(w) = - \frac{1}{m} \sum_{i=1}^m \left[ y_i \log(\sigma(w^T x_i)) + (1-y_i) \lo
 \nabla_w L(w) = \frac{1}{m} \sum_{i=1}^m (\sigma(w^T x_i) - y_i) x_i
 \]</div>
 <hr />
-<h3 id="_2">决策树模型</h3>
+<h3 id="_2">一致收敛与拉德马赫复杂度</h3>
 <hr />
-<p>决策树是一种典型的非参数 (Non-parametric) 模型。它不预设数据的整体分布（比如不假设数据是线性可分的），而是采用分而治之的策略，通过一系列的“如果-那么 (If-Then)”规则，将高维特征空间正交地切割成一个个互不相交的矩形子区域（叶子节点）。</p>
-<ul>
-<li>
-<p><strong>分类树 (Classification Tree)</strong>：在每个子区域内，采用多数表决（输出该区域内样本数最多的类别）。</p>
-</li>
-<li>
-<p><strong>回归树 (Regression Tree)</strong>：在每个子区域内，输出该区域所有样本标签的平均值（即分段常数逼近）。</p>
-</li>
-</ul>
-<p>决策树生长的核心问题是：在当前节点，应该选择哪个特征、哪个切分点来划分子区域？大纲中的三种常用指标分别是：</p>
-<hr />
-<p><strong>ID3 算法与信息熵 (Information Entropy)</strong></p>
-<p>假设当前数据集 <span class="arithmatex">\(D\)</span> 中第 <span class="arithmatex">\(k\)</span> 类样本的比例为 <span class="arithmatex">\(p_k\)</span>，则 <span class="arithmatex">\(D\)</span> 的信息熵定义为：</p>
+<p>如果对于任意 <span class="arithmatex">\(\epsilon &gt; 0\)</span> 和 <span class="arithmatex">\(\delta &gt; 0\)</span>，当样本量 <span class="arithmatex">\(m\)</span> 足够大时，满足：</p>
 <div class="arithmatex">\[
-H(D) = -\sum_{k=1}^K p_k \log_2 p_k
+\mathbb{P} \left[ \sup_{h \in \mathcal{H}} |L_S(h) - L_{\mathcal{D}}(h)| &gt; \epsilon \right] \le \delta
 \]</div>
-<p>我们计算按特征 <span class="arithmatex">\(A\)</span> 划分前后，系统信息熵的减少量。我们总是选择让信息熵下降最快的那个特征：</p>
-<div class="arithmatex">\[
-IG(D, A) = H(D) - \sum_{v=1}^V \frac{|D^v|}{|D|} H(D^v)
-\]</div>
-<p>其中 <span class="arithmatex">\(D^v\)</span> 是根据特征 <span class="arithmatex">\(A\)</span> 的第 <span class="arithmatex">\(v\)</span> 个取值划分出的子集。</p>
+<p>我们就称假设空间 <span class="arithmatex">\(\mathcal{H}\)</span> 满足 <strong>一致收敛</strong>。</p>
+<p><strong>一致收敛 <span class="arithmatex">\(\Longleftrightarrow\)</span> 假设空间是不可知 PAC 可学习的。</strong></p>
 <hr />
-<p><strong>C4.5 算法与信息增益率 (Information Gain Ratio)</strong></p>
-<p>信息增益天生偏好那些取值非常多的特征（比如把每个样本的“身份证号”作为一个特征，划分后每个子节点只有一个样本，纯度极高，但毫无泛化能力）。故引入特征 <span class="arithmatex">\(A\)</span> 本身的固有熵 <span class="arithmatex">\(IV(A)\)</span> 作为惩罚项：</p>
+<p><strong>拉德马赫复杂度</strong></p>
+<p>引入一个随机变量序列 <span class="arithmatex">\(\sigma = (\sigma_1, \dots, \sigma_m)\)</span>，其中每个 <span class="arithmatex">\(\sigma_i\)</span> 以 <span class="arithmatex">\(50\%\)</span> 的概率取 <span class="arithmatex">\(+1\)</span>，以 <span class="arithmatex">\(50\%\)</span> 的概率取 <span class="arithmatex">\(-1\)</span>。给定一个具体的样本集 <span class="arithmatex">\(S = \{x_1, \dots, x_m\}\)</span>，空间 <span class="arithmatex">\(\mathcal{H}\)</span> 的<strong>经验拉德马赫复杂度</strong>定义为：</p>
 <div class="arithmatex">\[
-GainRatio(D, A) = \frac{IG(D, A)}{-\sum_{v=1}^V \frac{|D^v|}{|D|} \log_2 \frac{|D^v|}{|D|}}
+\hat{\mathcal{R}}_S(\mathcal{H}) = \mathbb{E}_{\sigma} \left[ \sup_{h \in \mathcal{H}} \frac{1}{m} \sum_{i=1}^m \sigma_i h(x_i) \right]
+\]</div>
+<p><strong>真实拉德马赫复杂度</strong>为对外层的样本集 <span class="arithmatex">\(S\)</span> 再求一次期望：</p>
+<div class="arithmatex">\[
+\mathcal{R}_m(\mathcal{H}) = \mathbb{E}_{S \sim \mathcal{D}^m} [\hat{\mathcal{R}}_S(\mathcal{H})]
 \]</div>
 <hr />
-<p><strong>CART 算法与基尼指数 (Gini Index)CART (Classification and Regression Trees)</strong></p>
-<p>永远只做二叉划分。它为了计算效率，放弃了对数运算，采用泰勒展开的一阶近似（因为 <span class="arithmatex">\(\ln(p) \approx p - 1\)</span>），得到了基尼指数：</p>
+<p>对于任意 <span class="arithmatex">\(h \in \mathcal{H}\)</span>，以至少 <span class="arithmatex">\(1-\delta\)</span> 的概率，以下不等式成立：</p>
 <div class="arithmatex">\[
-\text{Gini}(D) = 1 - \sum_{k=1}^K p_k^2
+L_{\mathcal{D}}(h) \le L_S(h) + 2\mathcal{R}_m(\mathcal{H}) + 3 \sqrt{\frac{\ln(2/\delta)}{2m}}
 \]</div>
 <hr />
-<p>如果任由决策树生长，直到每个叶子节点里都只有一个样本（纯度 100%），这就相当于在训练集上实现了 0 误差。此时它的 VC 维度极高，方差极大，会把所有的噪声都死记硬背下来。</p>
-<p>为了落实<strong>结构风险最小化 (SRM)</strong>，我们必须限制树的复杂度。</p>
-<ul>
-<li>
-<p><strong>预剪枝 (Pre-pruning)</strong>：在分裂过程中，如果节点样本数少于阈值，或者纯度提升达不到阈值，就提前停止生长。</p>
-</li>
-<li>
-<p><strong>后剪枝 (Post-pruning)</strong>：先让树长到极大，然后从底向上评估。如果剪掉某个子树并将其替换为叶子节点后，在验证集上的代价复杂度（Cost-Complexity，即 误差 + <span class="arithmatex">\(\alpha \times\)</span> 叶子节点数）降低了，就果断剪掉。这就完美呼应了我们之前总结的模型选择理论。</p>
-</li>
-</ul>
-<hr />
-<h3 id="k-nearest-neighbors-knn">最近邻算法 (K-Nearest Neighbors, KNN)</h3>
-<hr />
-<p>KNN 是一种典型的非参数 (Non-parametric) 和基于实例 (Instance-based) 的学习方法。它不做任何关于数据分布的底层假设（不像线性回归假设了高斯噪声和线性关系），完全依赖训练集中已有的样本来决定新样本的类别或数值。</p>
-<ul>
-<li>
-<p><strong>分类 (Classification)</strong>：对于一个未知的测试样本 <span class="arithmatex">\(x_{test}\)</span>，在训练集中找到离它最近的 <span class="arithmatex">\(K\)</span> 个样本。这 <span class="arithmatex">\(K\)</span> 个邻居中，哪个类别出现的次数最多（多数表决），<span class="arithmatex">\(x_{test}\)</span> 就被判定为哪个类别。</p>
-</li>
-<li>
-<p><strong>回归 (Regression)</strong>：找到最近的 <span class="arithmatex">\(K\)</span> 个邻居，将这 <span class="arithmatex">\(K\)</span> 个邻居的目标值取平均，作为 <span class="arithmatex">\(x_{test}\)</span> 的预测值。</p>
-</li>
-</ul>
-<hr />
-<p>KNN 的核心是如何定义两点之间的“距离”。最常用的泛化形式是 <strong>闵可夫斯基距离 (Minkowski Distance)</strong>：给定两个 <span class="arithmatex">\(n\)</span> 维向量 <span class="arithmatex">\(x = (x_1, \dots, x_n)\)</span> 和 <span class="arithmatex">\(y = (y_1, \dots, y_n)\)</span>：</p>
+<p>假设我们的输入特征空间是 <span class="arithmatex">\(\mathbb{R}^d\)</span>，且每个样本特征向量的 L2 范数都被常数 <span class="arithmatex">\(B\)</span> 限制（即不越界）：对于任意 <span class="arithmatex">\(x_i \in S\)</span>，<span class="arithmatex">\(||x_i||_2 \le B\)</span>。我们的假设空间 <span class="arithmatex">\(\mathcal{H}\)</span> 是所有 L2 权重范数不超过 <span class="arithmatex">\(R\)</span> 的线性模型：</p>
 <div class="arithmatex">\[
-L_p(x, y) = \left( \sum_{i=1}^n |x_i - y_i|^p \right)^{\frac{1}{p}}
+\mathcal{H} = \{x \mapsto w^T x \mid ||w||_2 \le R\}
 \]</div>
-<hr />
-<p><span class="arithmatex">\(K\)</span> 值的选择直接决定了 KNN 模型的复杂度，容易作为考点。</p>
-<hr />
-<p><strong>Cover-Hart 定理</strong>：当训练样本量 <span class="arithmatex">\(N \to \infty\)</span> 时，<span class="arithmatex">\(1\)</span>-NN的渐进错误率最坏不会超过贝叶斯最优错误率（理论上的绝对极限）的两倍。</p>
-<hr />
-<p>当特征维度 <span class="arithmatex">\(d\)</span> 变大时：</p>
-<ul>
-<li>
-<p>数据稀疏性：为了维持相同的点密度，所需的样本量必须随维度呈指数级增长。在实际有限的样本下，高维空间显得极度空旷。</p>
-</li>
-<li>
-<p>距离失效：随着维度升高，在高维空间中，任意两个随机点之间的距离差会趋近于零（即最短距离和最长距离变得几乎一样）。这意味着“最近邻”的概念在数学上失去了区分度，KNN 的有效性会遭受毁灭性打击。</p>
-</li>
-</ul>
+<p>我们要计算的是给定样本集 <span class="arithmatex">\(S = \{x_1, \dots, x_m\}\)</span> 时，这个假设空间的经验拉德马赫复杂度 <span class="arithmatex">\(\hat{\mathcal{R}}_S(\mathcal{H})\)</span>。把线性假设 <span class="arithmatex">\(h(x) = w^T x\)</span> 代入经验拉德马赫复杂度的标准公式：</p>
+<div class="arithmatex">\[
+\hat{\mathcal{R}}_S(\mathcal{H}) = \mathbb{E}_{\sigma} \left[ \sup_{||w||_2 \le R} \frac{1}{m} \sum_{i=1}^m \sigma_i (w^T x_i) \right]= \frac{1}{m} \mathbb{E}_{\sigma} \left[ \sup_{||w||_2 \le R} w^T \left( \sum_{i=1}^m \sigma_i x_i \right) \right]
+\]</div>
+<p>由柯西</p>
+<div class="arithmatex">\[
+\sup_{||w||_2 \le R} w^T \left( \sum_{i=1}^m \sigma_i x_i \right) = R \left\| \sum_{i=1}^m \sigma_i x_i \right\|_2
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+\hat{\mathcal{R}}_S(\mathcal{H}) = \frac{R}{m} \mathbb{E}_{\sigma} \left[ \left\| \sum_{i=1}^m \sigma_i x_i \right\|_2 \right]\le  \frac{R}{m} \sqrt{ \mathbb{E}_{\sigma} \left[ \left\| \sum_{i=1}^m \sigma_i x_i \right\|_2^2 \right] }
+\]</div>
+<p>最后一个不等式是 Jensen。</p>
+<div class="arithmatex">\[
+\mathbb{E}_{\sigma} \left[ \left\| \sum_{i=1}^m \sigma_i x_i \right\|_2^2 \right] = \mathbb{E}_{\sigma} \left[ \sum_{i=1}^m \sum_{j=1}^m \sigma_i \sigma_j (x_i^T x_j) \right]= \sum_{i=1}^m \mathbb{E}[\sigma_i^2] (x_i^T x_i) = \sum_{i=1}^m ||x_i||_2^2\sum_{i=1}^m ||x_i||_2^2 \le m \cdot B^2
+\]</div>
+<p>代回得到：</p>
+<div class="arithmatex">\[
+\hat{\mathcal{R}}_S(\mathcal{H}) \le \frac{R}{m} \sqrt{m B^2} = \frac{R \cdot B \cdot \sqrt{m}}{m} = \frac{R \cdot B}{\sqrt{m}}
+\]</div>
 <hr />
 <h3 id="svm-kernel-methods">支持向量机模型与核方法 (SVM &amp; Kernel Methods)</h3>
 <hr />
@@ -3198,36 +3169,50 @@ w = \sum_{i=1}^m \alpha_i y_i x_i, \quad \sum_{i=1}^m \alpha_i y_i = 0
 <li><strong>高斯径向基核 (RBF/Gaussian)</strong>：<span class="arithmatex">\(K(x, z) = \exp(-\gamma ||x - z||^2)\)</span> </li>
 </ul>
 <hr />
-<h3 id="compressed-sensing">压缩感知 (Compressed Sensing)</h3>
+<h3 id="_3">表示定理</h3>
 <hr />
-<p>传统的信号处理遵循奈奎斯特采样定理：为了无失真地恢复一个信号，采样频率必须至少是信号最高频率的两倍。这导致我们在处理高分辨率图像或宽带信号时，需要采集海量的数据，然后再进行压缩（比如 JPEG），丢弃掉大部分无用的信息。</p>
-<p>既然绝大部分采集到的信息最终都要被丢弃（因为信号在某种变换域下是稀疏的），我们为什么不能<strong>在采样的同时直接获取被压缩的信号</strong>？</p>
-<p><strong>核心前提</strong>：信号 <span class="arithmatex">\(x \in \mathbb{R}^N\)</span> 本身，或者它在某个正交变换基 <span class="arithmatex">\(\Psi\)</span>（如傅里叶变换、小波变换）下的表示 <span class="arithmatex">\(s = \Psi^T x\)</span>，只有极少数 <span class="arithmatex">\(K\)</span> 个非零元素（<span class="arithmatex">\(K \ll N\)</span>）。</p>
-<hr />
-<p>假设我们要测量一个极高维的稀疏信号 <span class="arithmatex">\(x \in \mathbb{R}^N\)</span>。我们用一个非常扁的测量矩阵 <span class="arithmatex">\(\Phi \in \mathbb{R}^{M \times N}\)</span>（其中测量次数 <span class="arithmatex">\(M \ll N\)</span>）对信号进行线性投影，得到极其简短的测量向量 <span class="arithmatex">\(y \in \mathbb{R}^M\)</span>：</p>
+<p>我们的目标是最小化带有 L2 正则化的经验风险：</p>
 <div class="arithmatex">\[
-y = \Phi x
+\min_{w} J(w) = \frac{1}{m} \sum_{i=1}^m L(w^T \phi(x_i), y_i) + \lambda ||w||^2
 \]</div>
-<p>因为 <span class="arithmatex">\(M \ll N\)</span>，方程的个数远少于未知数的个数，这是一个严重的欠定方程组，存在无穷多个解。不过既然我们提前知道 <span class="arithmatex">\(x\)</span> 是稀疏的，我们只需要在无穷多个解中，挑出那个非零元素最少的解。这在数学上表达为最小化 <span class="arithmatex">\(L_0\)</span> 范数：</p>
-<div class="arithmatex">\[
-\min_x ||x||_0 \quad \text{s.t.} \quad y = \Phi x
-\]</div>
-<p>但求解 <span class="arithmatex">\(L_0\)</span> 最小化是一个经典的 NP-Hard 问题，无法求解。</p>
+<p><strong>表示定理</strong>指出，无论这个高维空间有多少维，上述优化问题的全局最优解 <span class="arithmatex">\(w^*\)</span>，永远可以表示为训练样本特征向量的线性组合：<span class="arithmatex">\(<span class="arithmatex">\(w^* = \sum_{i=1}^m \alpha_i \phi(x_i)\)</span>\)</span></p>
 <hr />
-<p><strong>凸松弛 (Convex Relaxation) 与 <span class="arithmatex">\(L_1\)</span></strong></p>
-<p>人们证明了，在一定条件下，我们可以将极其棘手的 <span class="arithmatex">\(L_0\)</span> 最小化，完美等价地松弛为极其友好的 <span class="arithmatex">\(L_1\)</span> 最小化问题：</p>
+<p>有了表示定理，我们就可以把一个原本无法求解的无限维问题，转化为求解 <span class="arithmatex">\(m\)</span> 个未知数 <span class="arithmatex">\(\alpha = [\alpha_1, \dots, \alpha_m]^T\)</span> 的问题。最经典的例子就是<strong>核岭回归 (Kernel Ridge Regression, KRR)</strong>：</p>
 <div class="arithmatex">\[
-\min_x ||x||_1 \quad \text{s.t.} \quad y = \Phi x
+\min_{w} \frac{1}{m} ||\Phi w - Y||^2 + \lambda ||w||^2
 \]</div>
-<p><strong>基追踪 (Basis Pursuit, BP)</strong>：上述的 <span class="arithmatex">\(L_1\)</span> 最小化问题是一个标准的凸优化问题（甚至可以转化为线性规划 Linear Programming），可以用极其高效的内点法或近端梯度下降法 (Proximal Gradient Descent) 来快速求解。</p>
-<hr />
-<p>这要求我们的测量矩阵 <span class="arithmatex">\(\Phi\)</span> 必须满足 <strong>约束等距性 (Restricted Isometry Property, RIP)</strong>：如果对于任意一个 <span class="arithmatex">\(K\)</span>-稀疏的向量 <span class="arithmatex">\(x\)</span>，测量矩阵 <span class="arithmatex">\(\Phi\)</span> 都能极其稳定地保持它的欧氏长度使得下式成立：</p>
+<p>令 <span class="arithmatex">\(w = \Phi^T \alpha\)</span>，其中 <span class="arithmatex">\(\Phi\)</span> 是特征矩阵。此时预测值为 <span class="arithmatex">\(\Phi w = \Phi \Phi^T \alpha\)</span>。定义核矩阵 <span class="arithmatex">\(K = \Phi \Phi^T\)</span>，其元素 <span class="arithmatex">\(K_{ij} = \phi(x_i)^T \phi(x_j) = k(x_i, x_j)\)</span>。</p>
 <div class="arithmatex">\[
-(1 - \delta_K) ||x||_2^2 \le ||\Phi x||_2^2 \le (1 + \delta_K) ||x||_2^2
+||w||^2 = w^T w = (\Phi^T \alpha)^T (\Phi^T \alpha) = \alpha^T \Phi \Phi^T \alpha = \alpha^T K \alpha
 \]</div>
-<p>其中常数 <span class="arithmatex">\(\delta_K \in (0, 1)\)</span> 足够小，我们就说 <span class="arithmatex">\(\Phi\)</span> 满足 RIP 条件。</p>
+<p>代回目标函数：</p>
+<div class="arithmatex">\[
+\min_{\alpha} \frac{1}{m} ||K\alpha - Y||^2 + \lambda \alpha^T K \alpha
+\]</div>
+<p>对 <span class="arithmatex">\(\alpha\)</span> 求导并令为零得：</p>
+<div class="arithmatex">\[
+\alpha^* = (K + \lambda m I)^{-1} Y
+\]</div>
 <hr />
-<h2 id="_3">真题</h2>
+<h3 id="_4">神经网络理论与泛化谜题</h3>
+<hr />
+<p><strong>万能逼近定理</strong> ：对于任意一个定义在紧致集（比如闭区间 <span class="arithmatex">\([-1, 1]^n\)</span>）上的连续函数 <span class="arithmatex">\(f(x)\)</span>，以及任意一个误差容忍度 <span class="arithmatex">\(\epsilon &gt; 0\)</span>，只要隐藏层的神经元数量足够多，哪怕只有一个隐藏层，使用任何非多项式的激活函数（如 Sigmoid、ReLU），都存在一个神经网络 <span class="arithmatex">\(N(x)\)</span>，使得对所有的 <span class="arithmatex">\(x\)</span>，都有：</p>
+<div class="arithmatex">\[
+|f(x) - N(x)| \le \epsilon
+\]</div>
+<hr />
+<p>既然一层隐藏层就能逼近所有函数，我们为什么还需要“深度学习 (Deep Learning)”？事实上万能逼近定理虽然保证了浅层网络的能力，但它往往需要指数级爆炸的神经元数量。深度网络通过层级结构，能够以更少的参数实现同样的函数逼近能力，从而更高效地学习复杂的模式。</p>
+<hr />
+<p>模型的参数量 <span class="arithmatex">\(W\)</span> 越大，VC 维就越大（通常 <span class="arithmatex">\(\text{VCdim} = \mathcal{O}(W \log W)\)</span>）。在现代深度学习中，模型通常处于过度参数化体制 (Over-parameterized Regime)，即参数量远远大于训练样本量（<span class="arithmatex">\(W \gg m\)</span>）。
+按照 VC 维和结构风险最小化 (SRM) 的观点，这种模型应该具有极高的方差，在训练集上死记硬背（经验风险为 0），在测试集上表现极差（严重过拟合）。但实际情况却是，深度神经网络在过度参数化的情况下，反而表现得更好，这就是所谓的 <strong>深度学习的泛化谜题 (Generalization Puzzle)</strong>。</p>
+<hr />
+<p><strong>解释一：双重下降现象 (Double Descent)</strong>：研究发现，随着模型参数量的增加，测试误差呈现出一个“U 型”后接着“下降”的奇特曲线：欠参数化区域：参数较少时，符合传统的偏差-方差权衡，误差先降后升，在 <span class="arithmatex">\(W \approx m\)</span>（参数量刚够死记硬背训练集，即插值阈值）时达到顶峰。过度参数化区域：当参数量越过阈值继续增加（<span class="arithmatex">\(W \gg m\)</span>），测试误差竟然再次开始下降！因为极其庞大的参数空间给了模型足够的自由度去寻找不仅能穿过所有训练点，而且极其平滑的函数曲线。</p>
+<hr />
+<p><strong>解释二：SGD 的隐式正则化 (Implicit Regularization of SGD)</strong>：
+我们并没有在损失函数里手动加上 L2 正则化，但随机梯度下降（SGD）算法本身自带一种“寻优偏好”。
+在过度参数化的空间里，经验损失为 0 的全局最优点有无数个。SGD 由于其自带的随机噪声，往往倾向于收敛到那些<strong>“平坦的极小值 (Flat Minima)”</strong>。在平坦区域，即使测试数据有轻微扰动，损失也不会剧烈增加，从而保证了强大的泛化能力。</p>
+<hr />
+<h2 id="_5">真题</h2>
 <hr />
 <p><strong>(Spring, 2025, A1)</strong> Let <span class="arithmatex">\(\mathcal{H}\)</span> be a class of binary classifiers over a domain <span class="arithmatex">\(\mathcal{X}\)</span>. Let <span class="arithmatex">\(\mathcal{D}\)</span> be an unknown distribution over <span class="arithmatex">\(\mathcal{X}\)</span>, and let <span class="arithmatex">\(f\)</span> be the target hypothesis in <span class="arithmatex">\(\mathcal{H}\)</span>. Fix some <span class="arithmatex">\(h \in \mathcal{H}\)</span>. Show that the variance of the empirical loss <span class="arithmatex">\(L_S(h)\)</span>, over all possible samples <span class="arithmatex">\(S\)</span> of size <span class="arithmatex">\(m\)</span> drawn from <span class="arithmatex">\(\mathcal{D}\)</span>, is inversely proportional to <span class="arithmatex">\(m\)</span> .
 That is, show the following relationship:</p>
