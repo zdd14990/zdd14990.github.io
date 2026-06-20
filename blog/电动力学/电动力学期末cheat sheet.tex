@@ -36,65 +36,60 @@
 \begin{multicols*}{3} % 开始三栏排版
 
 % ==========================================
-\section*{1. 辐射与推迟势 (Retarded Potentials)}
 % ==========================================
-\subsection*{推迟势与因果律}
 \begin{itemize}
     \item \textbf{推迟时间:} $t_r = t - \frac{|\mbf{r} - \mbf{r}'|}{c}$
     \item \textbf{矢量势:} $\mbf{A}(\mbf{r}, t) = \frac{\mu_0}{4\pi} \int \frac{\mbf{J}(\mbf{r}', t_r)}{|\mbf{r} - \mbf{r}'|} \diff^3r'$
     \item \textbf{开关闭合极限:} 从 $t=0$ 通电，距离导线 $s$ 处，积分上限受限于 $t_r > 0$，即有效导线长度截断为 $z_{max} = \sqrt{(ct)^2 - s^2}$
 \end{itemize}
 
-\subsection*{李纳-维谢尔势 (Liénard-Wiechert)}
 运动点电荷 $\mbf{\beta} = \mbf{v}/c, \gamma = (1-\beta^2)^{-1/2}$:
 \begin{itemize}
     \item \textbf{相对论分母:} $[R - \mbf{R}\cdot\mbf{\beta}]_{ret} = \sqrt{(x-vt)^2 + (y^2+z^2)/\gamma^2}$
     \item \textbf{标量/矢量势:} $\phi = \frac{q}{4\pi\epsilon_0} \frac{1}{[R - \mbf{R}\cdot\mbf{\beta}]_{ret}}$, $\mbf{A} = \frac{\mbf{v}}{c^2} \phi$
 \end{itemize}
 
-\subsection*{偶极辐射 (Dipole Radiation)}
 \begin{itemize}
     \item \textbf{坡印廷矢量:} $\mbf{S} = \frac{\mu_0}{16\pi^2 c} \frac{\sin^2\theta}{r^2} [\ddot{p}(t_r)]^2 \hat{\mbf{r}}$
     \item \textbf{Larmor辐射功率:} $P(t) = \frac{\mu_0 [\ddot{p}(t_r)]^2}{6\pi c}$
 \end{itemize}
 
 \vspace{1ex}\hrule\vspace{1ex}
-
-\noindent\textbf{[例题 1] 阶跃通电直导线推迟场 (HW4.1c)} \\
-\textbf{原题:} 无限长导线 $t=0$ 突然通电 $I_0$，求场。\\
+\noindent\textbf{HW4.1:} 无限长导线通电 $I=kt(t>0)$，求场。\\
 \textbf{解答:} 仅有满足 $t_r = t - \frac{\sqrt{s^2+z^2}}{c} > 0$ 的导线对场点有贡献，积分限截断为 $\pm z_{max} = \pm \sqrt{(ct)^2 - s^2}$：
-$$ A_z = \frac{\mu_0 I_0}{4\pi} \int_{-z_{max}}^{z_{max}} \frac{\diff z}{\sqrt{s^2 + z^2}} = \frac{\mu_0 I_0}{2\pi} \ln\left( \frac{\sqrt{(ct)^2 - s^2} + ct}{s} \right) $$
+$$ A_z = \frac{\mu_0 k}{4\pi} \int_{-z_{max}}^{z_{max}} \frac{t - \frac{\sqrt{s^2+z^2}}{c}}{\sqrt{s^2 + z^2}} \diff z $$
+$$= \frac{\mu_0 k}{2\pi} \left[ t \ln\left( \frac{\sqrt{(ct)^2 - s^2} + ct}{s} \right) - \frac{1}{c}\sqrt{(ct)^2 - s^2} \right] $$
 由 $\mbf{E} = -\p_t \mbf{A}$ 且 $\mbf{B} = -\p_s A_z \hat{\phi}$ 求导：
-$$ \mbf{E} = - \frac{\mu_0 I_0 c}{2\pi \sqrt{(ct)^2 - s^2}} \hat{z}, \quad \mbf{B} = \frac{\mu_0 I_0 ct}{2\pi s \sqrt{(ct)^2 - s^2}} \hat{\phi} $$
+$$ \mbf{E} = - \frac{\mu_0 k}{2\pi} \ln\left( \frac{\sqrt{(ct)^2 - s^2} + ct}{s} \right) \hat{z}$$
+$$\mbf{B} = \frac{\mu_0 k}{2\pi s} \left[ t - \frac{1}{c}\sqrt{(ct)^2 - s^2} \right] \hat{\phi} $$
+\textbf{HW4.1:} 无限长导线 $t=0$ 突然通电 $I_0$，求场。\\
+\textbf{解答:} 同上
+$$ A_z =  \frac{\mu_0 I_0}{2\pi} \ln\left( \frac{\sqrt{(ct)^2 - s^2} + ct}{s} \right)$$
 
 \vspace{0.5ex}
-\noindent\textbf{[例题 2] 电容放电的电偶极辐射 (HW4.2)} \\
-\textbf{原题:} 电容 $C$ 极板间距 $d$，初电荷 $Q_0$，接入电阻 $R$ 放电 $Q(t)=Q_0 e^{-t/RC}$。求辐射功率。\\
-\textbf{解答:} 电偶极矩 $p(t) = Q_0 d e^{-t/RC}$。辐射功率由推迟时间的二阶导数决定：
+\noindent\textbf{HW4.2:} 电容 $C$ 极板间距 $d$，初电荷 $Q_0$，接入电阻 $R$ 放电 $Q(t)=Q_0 e^{-t/RC}$。求辐射功率。\\
+\textbf{解答:} 电偶极矩 $p(t) = Q_0 d e^{-t/RC}$，
 $$ \ddot{p}(t_r) = \frac{Q_0 d}{(RC)^2} e^{-(t - r/c)/RC} $$
 代入 Larmor 公式：$P(t) = \frac{\mu_0}{6\pi c} \left[ \frac{Q_0 d}{(RC)^2} e^{-(t - r/c)/RC} \right]^2$
 
 \vspace{0.5ex}
-\noindent\textbf{[例题 3] 匀速运动电荷的 LW 势与电场 (HW4.3)} \\
-\textbf{原题:} 电荷 $q$ 常速 $v\hat{x}$ 运动，求 LW 势及电场。\\
-\textbf{解答:} 由 $|\mbf{r} - \mbf{\zeta}(t')| = c(t-t')$ 解得推迟时间。\\
-\textbf{核心化简 (推迟量转为当前时刻 $t$ 坐标):} 
-$$ \left[ \frac{1}{\gamma^2(R - \mbf{R}\cdot\mbf{\beta})^3} \right]_{ret} = \frac{\gamma}{\left( \gamma^2(x-vt)^2 + y^2 + z^2 \right)^{3/2}} $$
-$$ \left[ \mbf{R} - \mbf{\beta}R \right]_{ret} = \{x-vt, y, z\} \equiv \mbf{r}_{current} $$
-代入电场公式得：$\mbf{E} = \frac{q}{4\pi\epsilon_0} \frac{\gamma \mbf{r}_{current}}{\left( \gamma^2(x-vt)^2 + y^2 + z^2 \right)^{3/2}}$。\\
-非相对论极限($v\ll c$): $\gamma \to 1$退化为瞬时库仑定律。
-
+\noindent\textbf{HW4.3:} 点电荷 $q$ 沿 $x$ 轴以匀速 $\mathbf{v}=v\hat{x}$ 运动，求推迟时间、LW势、电场及其非相对论极限。\\
+\textbf{解答:} 由推迟条件 $\sqrt{(x-vt')^2+y^2+z^2}=c(t-t')$ 展开求解，取 $t'<t$ 的根：
+$$t' = \gamma^2\left(t - \frac{xv}{c^2}\right) - \frac{\gamma}{c}\sqrt{\gamma^2(x - vt)^2 + y^2 + z^2}$$
+相对距离矢量 $\mathbf{R}_{pres} = \{x-vt, y, z\}$，距离 $R_{pres} = |\mathbf{R}_{pres}|$。推迟分母：
+$[R - \mathbf{R}\cdot\vec{\beta}]_{ret} = \frac{1}{\gamma}\sqrt{\gamma^2(x-vt)^2 + y^2 + z^2}$
+Lienard-Wiechert 势：$\phi = \frac{q}{4\pi\epsilon_0} \frac{\gamma}{\sqrt{\gamma^2(x-vt)^2 + y^2 + z^2}}, \quad \mathbf{A} = \frac{\mathbf{v}}{c^2}\phi$。LW电场分子化简为 $[\mathbf{R}-\vec{\beta}R]_{ret} = \mathbf{R}_{pres}$，代入得：
+$$\mathbf{E} = \frac{q}{4\pi\epsilon_0} \frac{1-\beta^2}{\left[(x-vt)^2 + (1-\beta^2)(y^2+z^2)\right]^{3/2}} \mathbf{R}_{pres}$$
+对$v \ll c$：$\phi \approx \frac{q}{4\pi\epsilon_0 R_{pres}}, \quad \mathbf{A} \approx \frac{\mu_0 q \mathbf{v}}{4\pi R_{pres}}, \quad \mathbf{E} \approx \frac{q}{4\pi\epsilon_0}\frac{\mathbf{R}_{pres}}{R_{pres}^3}$
 
 % ==========================================
-\section*{2. 微分形式字典 (Differential Forms)}
+\vspace{1ex}\hrule\vspace{1ex}
 % ==========================================
 \begin{itemize}
     \item \textbf{$\diff_3$ (外微分):} 升阶 $p \to p+1$。
     \item \textbf{$*_3$ (Hodge星):} 降/升阶 $p \to 3-p$。$\mathbf{*_3 *_3 = 1}$。
     \item \textbf{伴随算子:} $d_3^* \alpha = (-1)^p *_3 \diff_3 *_3 \alpha$ (降阶 $p \to p-1$)。
 \end{itemize}
-
-\subsection*{三维欧氏空间 $\mathbb{R}^3$}
 设 0-form $f$, 1-form $\tilde{F} \leftrightarrow \mbf{F}$, 2-form $\alpha \leftrightarrow \mbf{B}$:
 \begin{itemize}
     \item \textbf{外微分 $\diff_3$:} $\diff_3 f \iff \nabla f$, \ $\diff_3 \tilde{F} \iff \nabla \times \mbf{F}$, \ $\diff_3 \alpha \iff \nabla \cdot \mbf{B}$
@@ -113,21 +108,22 @@ $$ \left[ \mbf{R} - \mbf{\beta}R \right]_{ret} = \{x-vt, y, z\} \equiv \mbf{r}_{
 \end{itemize}
 
 \vspace{1ex}\hrule\vspace{1ex}
-
-\noindent\textbf{[例题 1] 三维微分形式与矢量等价性 (HW5.1)} \\
-\textbf{原题:} 证明 $\nabla \times \mbf{F} \leftrightarrow *_3 \diff_3 \tilde{F}$，及 $\nabla \cdot \mbf{B} \leftrightarrow *_3\diff_3*_3\tilde{B}$。\\
-\textbf{解答:} 1) \textbf{旋度}: $\diff_3 \tilde{F} = (\p_x F_y - \p_y F_x)\diff x \wedge \diff y + \dots$ 作用 $*_3$ 取对偶得 $(\p_x F_y - \p_y F_x)\diff z + \dots$ 完美对应 $\nabla \times \mbf{F}$ 各分量。\\
-2) \textbf{散度}: $\tilde{B}$ 对应 2-form $*_3\tilde{B} = B_x \diff y \wedge \diff z + \dots$。求外微分得 3-form $\diff_3(*_3\tilde{B}) = (\p_x B_x + \p_y B_y + \p_z B_z)\diff x \wedge \diff y \wedge \diff z$。再作用 $*_3$ 得标量 $\nabla \cdot \mbf{B}$。(对应 $\diff_3^* \tilde{B} = -*_3\diff_3*_3 \tilde{B} \iff -\nabla\cdot\mbf{B}$)。
-
-\vspace{0.5ex}
-\noindent\textbf{[例题 2] 四维核心恒等式与达朗贝尔 (HW5.2ab)} \\
-\textbf{原题:} 证明 $*(\alpha \wedge c\diff t) = *_3\alpha$ 及 $\Delta = -\Box$。\\
-\textbf{解答:} 1) 内积检验: $(\alpha \wedge c\diff t) \wedge *_3\alpha = (-1)^p c\diff t \wedge \alpha \wedge *_3\alpha = \langle\alpha\wedge c\diff t,\alpha\wedge c\diff t\rangle_4\text{vol}_4$，成立。\\
-2) \textbf{算子等价}: $\omega = \alpha + \beta \wedge c\diff t$。展开 $(\diff\diff^* + \diff^*\diff)\alpha$，含 $c\diff t$ 交叉项符号相反完全抵消，剩 $-(d_3 d_3^* + d_3^* d_3)\alpha - \frac{1}{c^2}\p_t^2\alpha = (\nabla^2 - \frac{1}{c^2}\p_t^2)\alpha = -\Box\alpha$。
+\noindent\textbf{HW5.1:} 证明三维算子等价性 $\nabla \times \mbf{F} \leftrightarrow *_3 \diff_3 \tilde{F}$、$\nabla \cdot \mbf{B} \leftrightarrow *_3\diff_3*_3\tilde{B}$ ，写出面积分 与 Maxwell 方程 的微分形式，并推导静磁泊松方程 。\\
+\textbf{解答:} a) \textbf{旋度}: $\diff_3 \tilde{F} = (\p_x F_y - \p_y F_x)\diff x \wedge \diff y + \dots$ 作用 $*_3$ 取对偶得 $(\p_x F_y - \p_y F_x)\diff z + \dots$ 完美对应 $\nabla \times \mbf{F}$ 各分量。\\
+\textbf{散度}: $\tilde{B}$ 对应 2-form $*_3\tilde{B} = B_x \diff y \wedge \diff z + \dots$。求外微分得 3-form $\diff_3(*_3\tilde{B}) = (\p_x B_x + \p_y B_y + \p_z B_z)\diff x \wedge \diff y \wedge \diff z$。再作用 $*_3$ 得标量 $\nabla \cdot \mbf{B}$。\\
+b) \textbf{面积分}: 有向面元 $\diff\mbf{S} = (\diff y\wedge\diff z, \diff z\wedge\diff x, \diff x\wedge\diff y)$，被积函数 $\mbf{F}\cdot\diff\mbf{S} = F_x \diff y\wedge\diff z + \dots = *_3 \tilde{F}$ ，故 $\int_{S}\mbf{F}\cdot \diff\mbf{S}=\int_{S}*_3 \tilde{F}$ 。\\
+c) \textbf{Maxwell方程} ($\tilde{E}, \tilde{B}, \tilde{J}$ 均为 1-form )：
+$$*_3\diff_3*_3\tilde{E} = \frac{\rho}{\epsilon_0}, \quad *_3\diff_3*_3\tilde{B} = 0$$
+$$ \diff_3 \tilde{E} = -*_3 \p_t \tilde{B}, \quad \diff_3 \tilde{B} = \mu_0 *_3 \tilde{J} + \mu_0\epsilon_0 *_3 \p_t \tilde{E}$$
+d) \textbf{泊松方程}: 磁矢势满足 $\tilde{B} = *_3 \diff_3 \tilde{A}$。库仑规范 $\nabla\cdot\mbf{A}=0 \implies *_3\diff_3*_3\tilde{A} = 0 \implies \diff_3^* \tilde{A} = 0 \implies \diff_3\diff_3^* \tilde{A} = 0$ 。代入稳恒安培定律 $*_3\diff_3\tilde{B} = \mu_0\tilde{J} \implies *_3\diff_3*_3\diff_3\tilde{A} = \mu_0\tilde{J}$，由 $\diff_3^* = -*_3\diff_3*_3$ 知 $-\diff_3^* \diff_3\tilde{A} = \mu_0\tilde{J}$ ，补上零项即得 $(\diff_3\diff_3^* + \diff_3^*\diff_3)\tilde{A} = -\mu_0\tilde{J}$ 。
 
 \vspace{0.5ex}
-\noindent\textbf{[例题 3] 麦克斯韦方程的几何推导 (HW5.2cd)} \\
-\textbf{原题:} 证 $\diff F=0$, $\diff^*F=J$ 等价于 Maxwell，推波动方程。\\
+\noindent\textbf{HW5.2ab:} 证明 $*(\alpha \wedge c\diff t) = *_3\alpha$ 及 $\Delta = -\Box$。\\
+\textbf{解答:} 1) $(\alpha \wedge c\diff t) \wedge *_3\alpha = (-1)^p c\diff t \wedge \alpha \wedge *_3\alpha = \langle\alpha\wedge c\diff t,\alpha\wedge c\diff t\rangle_4\text{vol}_4$，成立。\\
+2) : $\omega = \alpha + \beta \wedge c\diff t$。展开 $(\diff\diff^* + \diff^*\diff)\alpha$，含 $c\diff t$ 交叉项符号相反完全抵消，剩 $-(d_3 d_3^* + d_3^* d_3)\alpha - \frac{1}{c^2}\p_t^2\alpha = (\nabla^2 - \frac{1}{c^2}\p_t^2)\alpha = -\Box\alpha$。
+
+\vspace{0.5ex}
+\noindent\textbf{HW5.2cd:} 证 $\diff F=0$, $\diff^*F=J$ 等价于 Maxwell，推波动方程。\\
 \textbf{解答:} 场 $F = \frac{1}{c}\tilde{E} \wedge c\diff t + *_3 \tilde{B}$。\\
 1) \textbf{齐次}: $\diff F = \diff_3*_3\tilde{B} + \frac{1}{c}(\diff_3\tilde{E} + *_3\p_t\tilde{B})\wedge c\diff t = 0$。基底分离即得 $\nabla\cdot\mbf{B}=0$ 及 $\nabla\times\mbf{E}=-\p_t\mbf{B}$。\\
 2) \textbf{非齐次}: $*F = \frac{1}{c}*_3\tilde{E} - \tilde{B}\wedge c\diff t$。求 $\diff*F$ 并再作用 $*$ 得 $d^*F = (\nabla\cdot\mbf{E})\diff t - \nabla\times\mbf{B} + \mu_0\epsilon_0\p_t\mbf{E}$。对比 $J$ 基底即得两定律。\\
@@ -135,9 +131,8 @@ $$ \left[ \mbf{R} - \mbf{\beta}R \right]_{ret} = \{x-vt, y, z\} \equiv \mbf{r}_{
 
 
 % ==========================================
-\section*{3. 协变电动力学 (Covariant E\&M)}
+\vspace{1ex}\hrule\vspace{1ex}
 % ==========================================
-\subsection*{场张量与麦克斯韦方程}
 \begin{itemize}
     \item \textbf{场张量:} $F_{\mu\nu} = \p_\mu A_\nu - \p_\nu A_\mu$。分量 $F_{0i} = -E_i/c, F_{ij} = \epsilon_{ijk}B_k$。
     \item \textbf{对偶张量:} $\tilde{F}_{\mu\nu} = \frac{1}{2}\epsilon_{\mu\nu\rho\sigma} F^{\rho\sigma}$。
@@ -159,8 +154,7 @@ $$ \left[ \mbf{R} - \mbf{\beta}R \right]_{ret} = \{x-vt, y, z\} \equiv \mbf{r}_{
 
 \vspace{1ex}\hrule\vspace{1ex}
 
-\noindent\textbf{[例题 1] 相对论势与场张量变换 (HW6.1)} \\
-\textbf{原题:} $\tilde{S}$ 系点电荷静止，求运动系 $S$ 中的势与场。\\
+\noindent\textbf{HW6.1:} $\tilde{S}$ 系点电荷静止，求运动系 $S$ 中的势与场。\\
 \textbf{解答:} 1) \textbf{势的变换}: $\tilde{S}$ 中四维势 $\tilde{A}_\nu = (-\tilde{\phi}/c, \mbf{0})$。由 $A_\mu = \Lambda^\nu_\mu \tilde{A}_\nu$ 矩阵乘法：\\
 $A_0 = \gamma(-\tilde{\phi}/c) \implies \phi = \gamma\tilde{\phi}$ \\
 $A_1 = -\gamma \frac{v}{c}(-\frac{\tilde{\phi}}{c}) \implies A_x = \frac{v}{c^2}\phi$ \\
@@ -169,21 +163,18 @@ $A_1 = -\gamma \frac{v}{c}(-\frac{\tilde{\phi}}{c}) \implies A_x = \frac{v}{c^2}
 $F_{01} = \Lambda^0_0 \Lambda^1_1 \tilde{F}_{01} + \Lambda^0_1 \Lambda^1_0 \tilde{F}_{10} = \gamma^2(1 - \frac{v^2}{c^2})\tilde{F}_{01} \implies E_x = \tilde{E}_x$。\\
 $F_{02} = \Lambda^0_0 \Lambda^2_2 \tilde{F}_{02} = \gamma \tilde{F}_{02} \implies E_y = \gamma\tilde{E}_y$。\\
 $F_{12} = \Lambda^0_1 \Lambda^2_2 \tilde{F}_{02} = -\gamma\frac{v}{c}(-\tilde{E}_y/c) \implies B_z = \gamma\frac{v}{c^2}E_y$。
-
 \vspace{0.5ex}
-\noindent\textbf{[例题 2] 运动线电荷的场与安培定律 (HW6.2)} \\
-\textbf{原题:} 线电荷密度 $\eta$ 沿 x 轴，观察者以 $v$ 沿 x 运动。\\
+\noindent\textbf{HW6.2:} 线电荷密度 $\eta$ 沿 x 轴，观察者以 $v$ 沿 x 运动。\\
 \textbf{解答:} 1) \textbf{静止系场}: $\mbf{E} = \frac{\eta\hat{r}_\perp}{2\pi\epsilon_0 r_\perp}$，$\mbf{B}=0$。\\
 2) \textbf{相对论变换}: $\bar{E}_\perp = \gamma E_\perp$, $\bar{B}_\phi = -\gamma\frac{v}{c^2}E_\perp = -\frac{\gamma v \eta r_\perp}{2\pi\epsilon_0 c^2 r_\perp^2}$。\\
-3) \textbf{安培定律验证}: 运动系导线收缩，电荷密度 $\bar{\eta}=\gamma\eta$。形成反向电流 $\bar{I} = -\gamma\eta v$。代入长直导线磁场 $\bar{\mbf{B}} = \frac{\mu_0 \bar{I}}{2\pi r_\perp}\hat{\phi}$，由于 $\mu_0\epsilon_0 = 1/c^2$，两种计算结果完全一致。
+3) \textbf{安培定律验证}: 运动系导线收缩，电荷密度 $\bar{\eta}=\gamma\eta$。形成反向电流 $\bar{I} = -\gamma\eta v$。代入长直导线磁场 $\bar{\mbf{B}} = \frac{\mu_0 \bar{I}}{2\pi r_\perp}\hat{\phi}$，由于 $\mu_0\epsilon_0 = 1/c^2$，两种结果一致。
 
-\vspace{0.5ex}
-\noindent\textbf{[例题 3] U(1) 作用量与麦克斯韦方程组重构 (HW6.3)} \\
-\textbf{原题:} 从 $F=dA$ 到作用量变分 $\delta S=0$ 推导全过程。\\
+
+\noindent\textbf{HW6.3:} 从 $F=dA$ 到作用量变分 $\delta S=0$ 推导全过程。\\
 \textbf{解答:} 
 \textbf{(a) 证 $\mathbf{F_{\mu\nu}}$:} $F = d(A_\nu dx^\nu) = \p_\mu A_\nu dx^\mu \wedge dx^\nu$。利用反对称化 $dx^\mu \wedge dx^\nu = \frac{1}{2}(dx^\mu \wedge dx^\nu - dx^\nu \wedge dx^\mu)$，得 $F = \frac{1}{2}(\p_\mu A_\nu - \p_\nu A_\mu)dx^\mu \wedge dx^\nu \implies F_{\mu\nu} = \p_\mu A_\nu - \p_\nu A_\mu$。\\
 \textbf{(b) 验证分量:} 
-$F_{0i} = \p_0 A_i - \p_i A_0 = \frac{1}{c}\p_t A_i - \p_i(-\frac{\phi}{c}) = -E_i/c$。\\
+$F_{0i} = \p_0 A_i - \p_i A_0 = \frac{1}{c}\p_t A_i - \p_i(-\frac{\phi}{c}) = -E_i/c$。
 $F_{ij} = \p_i A_j - \p_j A_i = \epsilon_{ijk}B_k$。\\
 \textbf{(c) 证 $\mathbf{\tilde{F}_{\mu\nu}}$:} 对偶 $*F = \frac{1}{2} F_{\rho\sigma} *(dx^\rho \wedge dx^\sigma)$。\\
 代入星算子展开 $= \frac{1}{4} F_{\rho\sigma} \epsilon_{\mu\nu\alpha\beta}\eta^{\alpha\rho}\eta^{\beta\sigma} dx^\mu \wedge dx^\nu$。升指标得 $\frac{1}{4}\epsilon_{\mu\nu\rho\sigma}F^{\rho\sigma} dx^\mu\wedge dx^\nu$，提取系数得 $\tilde{F}_{\mu\nu} = \frac{1}{2}\epsilon_{\mu\nu\rho\sigma}F^{\rho\sigma}$。\\
@@ -196,9 +187,8 @@ $\nu=0$时: $\p_i \tilde{F}^{i0} = \p_i B_i = 0 \implies \nabla\cdot\mbf{B}=0$�
 $\nu=j$时: $\p_0 \tilde{F}^{0j} + \p_i \tilde{F}^{ij} = \frac{1}{c}\p_t(-B_j) + \p_i(-\epsilon_{ijk}E_k/c) = 0$，提负号即得 $\p_t\mbf{B} + \nabla\times\mbf{E}=0$。
 
 % ==========================================
-\section*{4. 纤维丛与磁单极子 (Fiber Bundles)}
+\vspace{1ex}\hrule\vspace{1ex}
 % ==========================================
-\subsection*{纤维丛与规范几何 (Fiber Bundles \& Gauge)}
 设主丛在重叠区 $U_{\alpha\beta}$ 的转移函数为 $\varphi_\alpha \circ \varphi_\beta^{-1} = e^\chi$：
 \begin{itemize}
     \item \textbf{局部截面 (波函数变换):} $\sigma_\beta(x) = \sigma_\alpha(x)e^{\chi(x)}$
@@ -207,16 +197,14 @@ $\nu=j$时: $\p_0 \tilde{F}^{0j} + \p_i \tilde{F}^{ij} = \frac{1}{c}\p_t(-B_j) +
 
 \vspace{1ex}\hrule\vspace{1ex}
 
-\noindent\textbf{[例题 1] 纤维丛标架与主丛右作用 (HW7.1)} \\
-\textbf{原题:} (a) 求余切丛 $T^*X$ 局部截面的变换法则。(b) 证主丛右 $G$-作用不依赖于局部平凡化选取。\\
+\noindent\textbf{HW7.1:} (a) 求余切丛 $T^*X$ 局部截面的变换法则。(b) 证主丛右 $G$-作用不依赖于局部平凡化选取。\\
 \textbf{解答:} 
-\textbf{(a) 截面变换:} $T^*X$ 在 $U_\alpha$ 的局部标架为 $\{dx^i\}$。局部截面 $s_\alpha = \omega_i^{(\alpha)}dx^i$。在重叠区用链式法则展开基底 $dx^i = \frac{\p x^i}{\p y^j}dy^j$，对比系数得 $\omega_j^{(\beta)} = \omega_i^{(\alpha)}\frac{\p x^i}{\p y^j}$ (协变矢量变换)。\\
+\textbf{(a) 截面变换:} $T^*X$ 在 $U_\alpha$ 的局部标架为 $\{dx^i\}$。局部截面 $s_\alpha = \omega_i^{(\alpha)}dx^i$。在重叠区用链式法则展开基底 $dx^i = \frac{\p x^i}{\p y^j}dy^j$，对比系数得 $\omega_j^{(\beta)} = \omega_i^{(\alpha)}\frac{\p x^i}{\p y^j}$ 。\\
 \textbf{(b) 右作用良定义:} 设平凡化 $\varphi_\alpha(p)=(x,h)$ 及 $\varphi_\beta(p)=(x,h')$，转移函数关系 $h'=t_{\beta\alpha}(x)h$。在 $\alpha$ 中定义右作用 $p \cdot_\alpha g = \varphi_\alpha^{-1}(x,hg)$。用 $\varphi_\beta$ 观察该点：\\
 $\varphi_\beta(p \cdot_\alpha g) = \varphi_\beta(\varphi_\alpha^{-1}(x,hg)) = (x, t_{\beta\alpha}(hg))$。由李群结合律，$(t_{\beta\alpha}h)g = h'g$。故等于 $\varphi_\beta(p \cdot_\beta g)$。因 $\varphi_\beta$ 为双射，必有 $p \cdot_\alpha g = p \cdot_\beta g$。
 
 \vspace{0.5ex}
-\noindent\textbf{[例题 2] 规范势的局部截面拉回证明 (HW7.2)} \\
-\textbf{原题:} (a) 证 $A_\alpha = \sigma_\alpha^* A$。(b) 证截面变换导致 $A_\beta = A_\alpha + \diff\chi$。\\
+\noindent\textbf{HW7.2:} (a) 证 $A_\alpha = \sigma_\alpha^* A$。(b) 证截面变换导致 $A_\beta = A_\alpha + \diff\chi$。\\
 \textbf{解答:} 
 \textbf{(a) 截面拉回:} $A = \varphi_\alpha^*(d\theta + A_i^{(\alpha)}dx^i)$。拉回 $A_\alpha = \sigma_\alpha^* A = (\varphi_\alpha \circ \sigma_\alpha)^*(d\theta + A_i^{(\alpha)}dx^i)$。由于 $\sigma_\alpha(x) = \varphi_\alpha^{-1}(x,1)$，复合映射 $(\varphi_\alpha \circ \sigma_\alpha)(x) = (x,1)$ 使得纤维角坐标恒为 $\theta=0$。故 $d\theta \to 0$，只剩 $A_i^{(\alpha)}dx^i$。\\
 \textbf{(b) 几何本质:} 截面定义 $\sigma_\alpha(x) = \varphi_\alpha^{-1}(x,1)$。代入转移函数 $\varphi_\alpha \circ \varphi_\beta^{-1} = e^\chi$ 得 $\sigma_\beta(x) = \varphi_\alpha^{-1}(x, e^\chi) = \sigma_\alpha(x)e^\chi$。\\
@@ -225,8 +213,7 @@ $\varphi_\beta(p \cdot_\alpha g) = \varphi_\beta(\varphi_\alpha^{-1}(x,hg)) = (x
 代入上式消去 $\diff\theta_\beta$ 得 $\pi^*(A_\alpha + \diff\chi) = \pi^* A_\beta$。因投影 $\pi$ 为淹没，在底流形上必须严格成立 $A_\beta = A_\alpha + \diff\chi$。
 
 \vspace{0.5ex}
-\noindent\textbf{[例题 3] 狄拉克磁单极子全解析 (HW7.3)} \\
-\textbf{原题:} 证明无全局势、写出南北半球势与规范变换、验证磁通量。\\
+\noindent\textbf{HW7.3:} 证明无全局势、写出南北半球势与规范变换、验证磁通量。\\
 \textbf{解答:} 
 \textbf{(a) 拓扑矛盾:} 磁场高斯定律 $\diff_3^* \tilde{B} = -g\delta^3(\mbf{r})$ 意味着包围原点球面 $S^2$ 的通量为 $\oint_{S^2} *_3 \tilde{B} = g$。若存在全局单值 $\tilde{A}$ 满足 $\diff_3\tilde{A} = *_3\tilde{B}$，代入并使用 Stokes 定理：$g = \oint_{S^2} \diff_3 \tilde{A} = \int_{\p S^2} \tilde{A}$。由于球面闭合无界，边界 $\p S^2 = \emptyset$，线积分为 0，导出 $g=0$。与电荷 $g\neq0$ 矛盾，故不存在全局 $\tilde{A}$。\\
 \textbf{(b) 双图册:} 去除南极线构建北半球 $U_+ (\theta \in [0,\pi))$；去除北极线构建南半球 $U_- (\theta \in (0,\pi])$。重叠区 $U_+ \cap U_-$ 转移关系为 $\varphi_+ = \varphi_- \pmod{2\pi}$。\\
