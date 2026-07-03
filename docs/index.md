@@ -333,8 +333,9 @@ git_revision_date_localized:
 [:material-math-integral: 分析](blog/catalog_analysis.md){ .md-button .md-button--primary }
 [:material-sigma: 代数](blog/catalog_algebra.md){ .md-button .md-button--primary }
 [:material-vector-curve: 应用](blog/catalog_applied.md){ .md-button .md-button--primary }
+[:material-chart-bell-curve-cumulative: 概统](blog/catalog_statistics.md){ .md-button .md-button--primary }
 [:material-atom: 物理](blog/catalog_phy.md){ .md-button .md-button--primary }
-[:material-chart-bell-curve-cumulative: 经济](blog/catalog_econ.md){.md-button  .md-button--primary }
+[:material-chart-bar: 经济](blog/catalog_econ.md){.md-button  .md-button--primary }
 [:material-link-variant: 友链](友链/友链.md){ .md-button }
 
 </div>

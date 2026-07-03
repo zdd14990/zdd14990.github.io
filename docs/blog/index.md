@@ -119,7 +119,31 @@ git_revision_date_localized:
 
 <br>
 
-## :material-chart-bell-curve-cumulative: 经济
+## :material-chart-bell-curve-cumulative: 概统
+
+<div class="grid cards" markdown>
+
+-   **统计**
+
+    ---
+    
+
+    [:octicons-arrow-right-24: 阅读笔记](统计\统计.md)
+
+-   **概率论**
+
+    ---
+    
+
+    [:octicons-arrow-right-24: 阅读笔记](概率论\概率论.md)
+
+
+
+</div>
+
+<br>
+
+## :material-chart-bar: 经济
 
 <div class="grid cards" markdown>
 
