@@ -738,15 +738,17 @@
     
   <script>
   (function() {
-      var path = window.location.pathname.replace(/^\/+/, "");
+      var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
+      var parts = path.split("/").filter(Boolean);
+      var blogIndex = parts.lastIndexOf("blog");
       document.body.classList.add("zdd-minimal-layout");
-      if (path === "" || path === "index.html") {
+      if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
           document.body.classList.add("home-layout");
-      } else if (path === "blog" || path === "blog/" || path === "blog/index.html") {
+      } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
           document.body.classList.add("blog-index-layout");
-      } else if (path === "tags" || path === "tags/" || path.indexOf("tags/") === 0) {
+      } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {
           document.body.classList.add("tag-layout");
-      } else if (path.indexOf("blog/") === 0) {
+      } else if (blogIndex !== -1) {
           document.body.classList.add("article-layout");
       }
   })();
