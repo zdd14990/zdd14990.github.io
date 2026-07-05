@@ -1,0 +1,1370 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/applied-math-exam/numerical-pde-exercises/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Numerical Pde Exercises - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+   <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="author" content="zdd">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/applied-math-exam/numerical-pde-exercises/">
+  <meta property="og:title" content="Numerical Pde Exercises - zdd14990">
+  <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/applied-math-exam/numerical-pde-exercises/">
+  <meta name="twitter:title" content="Numerical Pde Exercises - zdd14990">
+  <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pde" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Numerical Pde Exercises
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zdd14990/zdd14990.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zdd14990
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  博文
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../tags/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  标签
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../friends/friends/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  友链
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zdd14990/zdd14990.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zdd14990
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    博文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    标签
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    友链
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        数值 PDE
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+  
+  
+
+
+  <h1>Numerical Pde Exercises</h1>
+
+<h2 id="pde">数值 PDE</h2>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2023</p>
+<p>For the equation <span class="arithmatex">\(u_{t}+au_{xxx}=0\)</span> (<span class="arithmatex">\(a\)</span> is a constant), applying the idea of the Lax-Friedrichs scheme, one can get the scheme</p>
+<div class="arithmatex">\[
+u_{m}^{n+1}=\frac{1}{2}(u_{m+1}^{n}+u_{m-1}^{n})-\frac{1}{2}akh^{-3}(u_{m+2}^{n}-2u_{m+1}^{n}+2u_{m-1}^{n}-u_{m-2}^{n}),
+\]</div>
+<p>where <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(h\)</span> represent the time step and mesh size, respectively.</p>
+<p>(1). Give the leading order term of local truncation error.</p>
+<p>(2). Analyze the stability of this scheme.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((1)\)</span>：由 Taylor 展开可得</p>
+<div class="arithmatex">\[
+T_m^n = \frac{k}{2} u_{tt} - \frac{h^2}{2k} u_{xx} + O(h^2 + k^2 + \frac{h^4}{k})
+\]</div>
+<p><span class="arithmatex">\((2)\)</span>：设 <span class="arithmatex">\(u_m^n = G^n e^{i m kh}\)</span>，代入差分方程得到特征方程</p>
+<div class="arithmatex">\[
+G=\cos(kh)-i a k h^{-3} \sin(kh)(2\cos (kh)-2).
+\]</div>
+<p><span class="arithmatex">\(|G|\le 1\)</span> 等价于 <span class="arithmatex">\(|a| k h^{-3} |2\cos (kh)-2| \le 1\)</span>，进一步给出 <span class="arithmatex">\(|a| k h^{-3}  \le \frac{1}{4}\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Apply the following three-step method with a parameter <span class="arithmatex">\(\theta \ge 0\)</span> for solving the heat equation <span class="arithmatex">\(u_{t}-a^{2}u_{xx}=0\)</span> (Cauchy or periodic problem):</p>
+<div class="arithmatex">\[
+(1+\theta)\frac{u_{j}^{n+1}-u_{j}^{n}}{k} - \theta\frac{u_{j}^{n}-u_{j}^{n-1}}{k} = a^{2}\frac{u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}}{h^{2}}
+\]</div>
+<p>Give its truncation error and stability. Particularly, give the value of <span class="arithmatex">\(\theta\)</span> such that the truncation error attains its highest order.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>计算得截断误差</p>
+<div class="arithmatex">\[
+T_j^n = \left( \theta -\frac{1}{2}\right) k u_{tt}-\frac{h^2}{12a^2}u_{tt}+O(k^2+h^4).
+\]</div>
+<p>该格式的截断误差一般情况下为 <span class="arithmatex">\(O(k + h^2)\)</span>。当 <span class="arithmatex">\(\theta = \frac{1}{2}\)</span> 时，截断误差的 <span class="arithmatex">\(O(k)\)</span> 项被消除，此时截断误差为 <span class="arithmatex">\(O(k^2 + h^2)\)</span>，达到了最高阶。</p>
+<p>对于稳定性分析，设 <span class="arithmatex">\(u_j^n = G^n e^{i j h \xi}\)</span>，代入差分方程得到：</p>
+<div class="arithmatex">\[
+(1+\theta-A)G^2-(1+2\theta)G+\theta=0
+\]</div>
+<p>这里 <span class="arithmatex">\(A = -4 a^2 k \sin^2\left(\frac{h\xi}{2}\right)/h^2\)</span>。容易证明该二次方程的两个根的模长都不大于 <span class="arithmatex">\(1\)</span>，因此该方法无条件稳定。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2024</p>
+<p>Denote the grid <span class="arithmatex">\(I_{h}=\{x_{j}\}_{j=0}^{M}\)</span>, <span class="arithmatex">\(x_{0} &lt; x_{1} &lt; ... &lt; x_{M}\)</span>. Set <span class="arithmatex">\(u=\{u_{j}\}_{j=0}^{M}\)</span> as a grid function on <span class="arithmatex">\(I_{h}\)</span>. Suppose:</p>
+<div class="arithmatex">\[
+Lu_{j} = -(a_{j}u_{j-1} - b_{j}u_{j} + c_{j}u_{j+1}) + q_{j}u_{j}, \quad j=1,...,M-1,
+\]</div>
+<p>where <span class="arithmatex">\(a_{j}, b_{j}, c_{j} &gt; 0\)</span>, <span class="arithmatex">\(q_{j} \ge 0\)</span> and <span class="arithmatex">\(a_{j}+c_{j} \le b_{j}\)</span>.</p>
+<p>(i) Assume <span class="arithmatex">\(Lu_{j} \le 0\)</span> for all <span class="arithmatex">\(1 \le j \le M-1\)</span>. Show that <span class="arithmatex">\(u_{j}\)</span> can't attain positive maximum at inner points <span class="arithmatex">\((1 \le j \le M-1)\)</span> unless <span class="arithmatex">\(u_{j} \equiv C\)</span>.</p>
+<p>(ii) Suppose <span class="arithmatex">\(d_{j} = b_{j}-a_{j}-c_{j}+q_{j} &gt; 0\)</span> <span class="arithmatex">\((j=1,...,M-1)\)</span>. Show the solution of the difference equation</p>
+<div class="arithmatex">\[
+Lu_{j} = \varphi_{j}, \quad j=1,...,M-1; \quad u_{0}=u_{M}=0
+\]</div>
+<p>satisfies <span class="arithmatex">\(||u||_{\infty} = \max_{j}|u_{j}| \le \max_{j}\frac{|\varphi_{j}|}{d_{j}}\)</span>.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：反证法即可。</p>
+<p><span class="arithmatex">\((ii)\)</span>：取 <span class="arithmatex">\(|u_k|=\max_j |u_j|\)</span>，由绝对值不等式易得 <span class="arithmatex">\(|u_k|\le \frac{|\varphi_k|}{d_k}\le \max_j \frac{|\varphi_j|}{d_j}\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2024</p>
+<p>For the system</p>
+<div class="arithmatex">\[
+u_{t}=v_{x},
+\]</div>
+<div class="arithmatex">\[
+v_{t}=u_{x},
+\]</div>
+<p>analyze the truncation error and stability of the scheme</p>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(u_{j}^{n+1}-\frac{1}{2}(u_{j+1}^{n}+u_{j-1}^{n})\right)=\frac{1}{2h}(v_{j+1}^{n}-v_{j-1}^{n}),
+\]</div>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(v_{j}^{n+1}-\frac{1}{2}(v_{j+1}^{n}+v_{j-1}^{n})\right)=\frac{1}{2h}(u_{j+1}^{n}-u_{j-1}^{n}).
+\]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设 <span class="arithmatex">\(U=\begin{pmatrix} u \\ v \end{pmatrix}\)</span>，则条件可写为</p>
+<div class="arithmatex">\[
+U_t=AU_x
+\]</div>
+<p>其中 <span class="arithmatex">\(A=\begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\)</span>。格式可写为</p>
+<div class="arithmatex">\[
+\frac{1}{\tau}\left(U_j^{n+1}-\frac{1}{2}(U_{j+1}^n + U_{j-1}^n)\right) = \frac{1}{2h} A (U_{j+1}^n - U_{j-1}^n)
+\]</div>
+<p>计算得到截断误差</p>
+<div class="arithmatex">\[
+T_j^n=(\frac{\tau}{2}-\frac{h^2}{2\tau })U_{xx}+O(\tau^2+h^4/\tau).
+\]</div>
+<p>稳定性：设 <span class="arithmatex">\(U_j^n=\hat{U}^n e^{i k j h}\)</span>，代入差分方程解得</p>
+<div class="arithmatex">\[
+\hat{U}=\cos (kh)+i\sin (kh) \frac{\tau}{h}A
+\]</div>
+<p>故 <span class="arithmatex">\(\hat{U}\)</span> 的特征值为 <span class="arithmatex">\(\cos (kh) \pm i\sin (kh) \frac{\tau}{h}\)</span>，模长为 <span class="arithmatex">\(\sqrt{\cos^2(kh)+\sin^2(kh)\frac{\tau^2}{h^2}}\)</span>。因此该方法稳定的条件是 <span class="arithmatex">\(\frac{\tau}{h} \le 1\)</span>。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2024</p>
+<p>Write and prove the maximum principle of the centered finite difference scheme for discretizing the equation</p>
+<div class="arithmatex">\[
+u_{xx}+u_{yy}+d(x,y)u_{x}+e(x,y)u_{y}+f(x,y)u=0, \quad f&lt;0
+\]</div>
+<p>under some suitable assumptions.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>设求解区域为 <span class="arithmatex">\(\Omega\)</span>，采用均匀网格进行离散，步长为 <span class="arithmatex">\(h\)</span>。记网格点为 <span class="arithmatex">\((x_i, y_j)\)</span>，其中 <span class="arithmatex">\(x_i = i h, y_j = j h\)</span>。令 <span class="arithmatex">\(U_{i,j}\)</span> 为精确解 <span class="arithmatex">\(u(x_i, y_j)\)</span> 的数值近似，并记 <span class="arithmatex">\(d_{i,j} = d(x_i, y_j)\)</span>，依次类推。对各阶导数使用二阶中心差分进行近似： </p>
+<div class="arithmatex">\[
+u_{xx} \approx \frac{U_{i-1,j} - 2U_{i,j} + U_{i+1,j}}{h^2}, u_{yy} \approx \frac{U_{i,j-1} - 2U_{i,j} + U_{i,j+1}}{h^2}
+\]</div>
+<div class="arithmatex">\[
+u_x \approx \frac{U_{i+1,j} - U_{i-1,j}}{2h}, u_y \approx \frac{U_{i,j+1} - U_{i,j-1}}{2h}
+\]</div>
+<p>将上述近似代入整理后得到：</p>
+<div class="arithmatex">\[
+\left(1 - \frac{h}{2}d_{i,j}\right) U_{i-1,j} + \left(1 + \frac{h}{2}d_{i,j}\right) U_{i+1,j} + \left(1 - \frac{h}{2}e_{i,j}\right) U_{i,j-1} + \left(1 + \frac{h}{2}e_{i,j}\right) U_{i,j+1} + (h^2 f_{i,j} - 4) U_{i,j} = 0
+\]</div>
+<p>为了后续分析方便，我们定义如下系数：</p>
+<div class="arithmatex">\[
+C_W = 1 - \frac{h}{2}d_{i,j}, C_E = 1 + \frac{h}{2}d_{i,j}, C_S = 1 - \frac{h}{2}e_{i,j}, C_N = 1 + \frac{h}{2}e_{i,j}, C_0 = 4 - h^2 f_{i,j}
+\]</div>
+<p>则：</p>
+<div class="arithmatex">\[
+C_0 U_{i,j} = C_W U_{i-1,j} + C_E U_{i+1,j} + C_S U_{i,j-1} + C_N U_{i,j+1}\]</div>
+<p>中心差分格式的系数必须满足非负性条件</p>
+<div class="arithmatex">\[
+C_W,  C_E , C_S,  C_N \ge 0
+\]</div>
+<p>这意味着我们需要满足网格 Péclet 数限制：</p>
+<div class="arithmatex">\[
+\frac{h}{2} |d(x,y)| \le 1 \quad \text{且} \quad \frac{h}{2} |e(x,y)| \le 1
+\]</div>
+<p>即假设步长满足：<span class="arithmatex">\(h \le \min \left( \frac{2}{\|d\|_\infty}, \frac{2}{\|e\|_\infty} \right)\)</span>。 同时，注意到邻居系数之和为常数：</p>
+<div class="arithmatex">\[
+C_W + C_E + C_S + C_N = 4
+\]</div>
+<p>由于题目已知 <span class="arithmatex">\(f &lt; 0\)</span>，因此中心系数 <span class="arithmatex">\(C_0\)</span> 满足： </p>
+<div class="arithmatex">\[
+C_0 = 4 - h^2 f_{i,j} &gt; 4
+\]</div>
+<p>离散极值原理：
+假设上述非负性条件成立，且 <span class="arithmatex">\(f(x,y) &lt; 0\)</span>。如果网格函数 <span class="arithmatex">\(U_{i,j}\)</span> 在内部网格点满足上述离散差分方程，那么 <span class="arithmatex">\(U_{i,j}\)</span> 的最大值必定在边界 <span class="arithmatex">\(\partial \Omega_h\)</span> 上取得：</p>
+<div class="arithmatex">\[
+\max_{\Omega_h \cup \partial \Omega_h} U_{i,j} \le \max \left( 0, \max_{\partial \Omega_h} U_{i,j} \right)
+\]</div>
+<p>采用反证法。假设网格函数 <span class="arithmatex">\(U\)</span> 在区域内部的某一点 <span class="arithmatex">\((i_0, j_0)\)</span> 取得了全局严格正的最大值 <span class="arithmatex">\(M\)</span>。即：</p>
+<div class="arithmatex">\[
+U_{i_0, j_0} = M &gt; 0
+\]</div>
+<p>并且对于所有网格点，都有 <span class="arithmatex">\(U_{i,j} \le M\)</span>。将该点代入我们的离散格式中：</p>
+<div class="arithmatex">\[
+C_0 M = C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1}
+\]</div>
+<div class="arithmatex">\[
+C_0 M=C_W U_{i_0-1, j_0} + C_E U_{i_0+1, j_0} + C_S U_{i_0, j_0-1} + C_N U_{i_0, j_0+1} \le (C_W + C_E + C_S + C_N) M\le 4 M
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+C_0 M \le 4 M
+\]</div>
+<p>由于 <span class="arithmatex">\(C_0 = 4 - h^2 f_{i_0, j_0}\)</span> 且 <span class="arithmatex">\(f_{i_0, j_0} &lt; 0\)</span>，因此 <span class="arithmatex">\(C_0 &gt; 4\)</span>。这与上式矛盾，因此我们的反证假设不成立。即最大值不可能在内部取得，而必须在边界上取得。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2025</p>
+<div class="arithmatex">\[
+u_{j}^{n+1}=-\frac{1}{2}\nu(1-\nu)u_{j+1}^{n}+(1-\nu^{2})u_{j}^{n}+\frac{1}{2}\nu(1+\nu)u_{j-1}^{n},
+\]</div>
+<p>where <span class="arithmatex">\(\nu=a\tau/h\)</span>.</p>
+<p>(i) For the Cauchy problem imposed on the real line, show that</p>
+<div class="arithmatex">\[
+||u^{n+1}||_{2}^{2}=||u^{n}||_{2}^{2}-\frac{1}{2}\nu^{2}(1-\nu^{2})(||\delta_{x}^{+}u^{n}||_{2}^{2}-\langle\delta_{x}^{+}u^{n},\delta_{x}^{-}u^{n}\rangle),\]</div>
+<p>where <span class="arithmatex">\(||v||_{2}^{2}=\sum_{j}|v_{j}|^{2}\)</span>, <span class="arithmatex">\(\langle v,w\rangle=\sum_{j}v_{j}w_{j}\)</span>, <span class="arithmatex">\(\delta_{x}^{-}v_{j}=v_{j}-v_{j-1}\)</span>, <span class="arithmatex">\(\delta_{x}^{+}v_{j}=v_{j+1}-v_{j}\)</span>.</p>
+<p>(ii) Suppose <span class="arithmatex">\(a&gt;0\)</span> for the problem imposed on <span class="arithmatex">\((0,1)\)</span> with homogeneous boundary condition at <span class="arithmatex">\(x=0\)</span> (i.e., <span class="arithmatex">\(u_{0}^{n}=0\)</span>), give a simple numerical boundary condition for <span class="arithmatex">\(x=1\)</span> such that the Lax-Wendroff scheme is stable.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span>：纯计算。</p>
+<p><span class="arithmatex">\((ii)\)</span>：在边界点 <span class="arithmatex">\(x_N = 1\)</span> 处，放弃中心差分的 Lax-Wendroff 格式，改用一阶迎风格式：</p>
+<div class="arithmatex">\[
+u_N^{n+1} = u_N^n - \nu (u_N^n - u_{N-1}^n)
+\]</div>
+<p>当 <span class="arithmatex">\(a&gt;0\)</span> 时，迎风格式是稳定的（只要 CFL 条件 <span class="arithmatex">\(\nu \le 1\)</span> 满足），且只利用了左侧的信息 <span class="arithmatex">\(u_N, u_{N-1}\)</span>，符合特征线把信息从内部传向边界的物理事实，不会引入错误的反向波。计算量小，易于实现。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Spring, 2025</p>
+<p>For the system</p>
+<div class="arithmatex">\[
+u_{t}=-v_{x},
+\]</div>
+<div class="arithmatex">\[
+v_{t}=u_{xx},
+\]</div>
+<p>analyze the truncation error and stability of the scheme</p>
+<div class="arithmatex">\[
+\frac{u_{j}^{n+1}-u_{j}^{n}}{\tau}=-\frac{1}{2h^{2}}(v_{j+1}^{n}-2v_{j}^{n}+v_{j-1}^{n}+v_{j+1}^{n+1}-2v_{j}^{n+1}+v_{j-1}^{n+1}),
+\]</div>
+<div class="arithmatex">\[
+\frac{v_{j}^{n+1}-v_{j}^{n}}{\tau}=\frac{1}{2h^{2}}(u_{j+1}^{n}-2u_{j}^{n}+u_{j-1}^{n}+u_{j+1}^{n+1}-2u_{j}^{n+1}+u_{j-1}^{n+1}).
+\]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>由 Taylor 展开</p>
+<div class="arithmatex">\[
+\frac{u_{j}^{n+1}-u_{j}^{n}}{\tau}=u_{t}+\frac{\tau}{2}u_{tt}+O(\tau^{2}),
+\]</div>
+<div class="arithmatex">\[
+\frac{v_{j+1}^{n}-2v_{j}^{n}+v_{j-1}^{n}}{2h^2}=\frac{1}{2}v_{xx}+O(h^2),
+\]</div>
+<div class="arithmatex">\[
+\frac{v_{j+1}^{n+1}-2v_{j}^{n+1}+v_{j-1}^{n+1}}{2h^2}=\frac{1}{2}v_{xx}+\frac{\tau}{2}v_{xxt}+O(\tau^2+h^2).
+\]</div>
+<p>因此截断误差为 <span class="arithmatex">\(u_t+ \frac{\tau}{2}u_{tt} +v_{xx} + \frac{\tau}{2}v_{xxt} + O(\tau^2+h^2)\)</span>。由条件有 <span class="arithmatex">\(u_t+v_{xx}=0\)</span>，<span class="arithmatex">\(u_{tt}+v_{xxt}=0\)</span>，因此截断误差为 <span class="arithmatex">\(O(\tau^2+h^2)\)</span>。因此该格式对时间和空间都具有二阶精度。第二个格式同理。</p>
+<p>对于稳定性分析，设 <span class="arithmatex">\(u_j^n = U^n e^{i k j h}\)</span>，<span class="arithmatex">\(v_j^n = V^n e^{i k j h}\)</span>，代入差分方程有</p>
+<div class="arithmatex">\[
+\frac{U^{n+1} - U^n}{\tau} = -\frac{1}{2} (-S) (V^n + V^{n+1}) = \frac{S}{2} (V^n + V^{n+1})
+\]</div>
+<div class="arithmatex">\[
+\frac{V^{n+1} - V^n}{\tau} = \frac{1}{2} (-S) (U^n + U^{n+1}) = -\frac{S}{2} (U^n + U^{n+1})
+\]</div>
+<p>其中 <span class="arithmatex">\(S=\frac{4}{h^2} \sin^2\left(\frac{k h}{2}\right)\)</span>。设 <span class="arithmatex">\(\mu=\frac{\tau S}{2} = \frac{2\tau}{h^2} \sin^2\left(\frac{kh}{2}\right)\)</span>。整理为矩阵形式：</p>
+<div class="arithmatex">\[
+\begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} - \begin{pmatrix} U^n \\ V^n \end{pmatrix} = \mu \begin{pmatrix} 0 &amp; 1 \\ -1 &amp; 0 \end{pmatrix} \left( \begin{pmatrix} U^{n+1} \\ V^{n+1} \end{pmatrix} + \begin{pmatrix} U^n \\ V^n \end{pmatrix} \right)
+\]</div>
+<p>设 <span class="arithmatex">\(W^n = \begin{pmatrix} U^n \\ V^n \end{pmatrix}\)</span>，则上式可写为</p>
+<div class="arithmatex">\[
+W^{n+1} - W^n = \mu J (W^{n+1} + W^n)
+\]</div>
+<p>也就是</p>
+<div class="arithmatex">\[
+W^{n+1} = (I - \mu J)^{-1} (I + \mu J) W^n
+\]</div>
+<p>由于 <span class="arithmatex">\(J\)</span> 的特征值为 <span class="arithmatex">\(\pm i\)</span>，因此 <span class="arithmatex">\((I - \mu J)^{-1} (I + \mu J)\)</span> 的特征值为 <span class="arithmatex">\(\frac{1 + i \mu}{1 - i \mu}\)</span> 和 <span class="arithmatex">\(\frac{1 - i \mu}{1 + i \mu}\)</span>，它们的模长均为 <span class="arithmatex">\(1\)</span>。因此该方法无条件稳定。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2025</p>
+<p>Construct the Du Fort-Frankel scheme for the diffusion equation in 2D <span class="arithmatex">\(u_t = u_{xx} + u_{yy}\)</span> and discuss its consistency and stability.</p>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<div class="arithmatex">\[
+\frac{u_{i,j}^{n+1} - u_{i,j}^{n-1}}{2\tau} = \frac{u_{i+1,j}^n - \left(u_{i,j}^{n+1} + u_{i,j}^{n-1}\right) + u_{i-1,j}^n}{h^2} + \frac{u_{i,j+1}^n - \left(u_{i,j}^{n+1} + u_{i,j}^{n-1}\right) + u_{i,j-1}^n}{h^2}\]</div>
+<p>设 <span class="arithmatex">\(\Delta x = \Delta y = h\)</span>，网格比 <span class="arithmatex">\(r = \frac{\tau}{h^2}\)</span>：</p>
+<div class="arithmatex">\[
+u_{i,j}^{n+1} = \frac{1 - 4r}{1 + 4r} u_{i,j}^{n-1} + \frac{2r}{1 + 4r} (u_{i+1,j}^n + u_{i-1,j}^n + u_{i,j+1}^n + u_{i,j-1}^n)
+\]</div>
+<p>相容性：由 Taylor 展开可得</p>
+<div class="arithmatex">\[
+LHS=u_t+\frac{\tau^2}{6}u_{ttt}+O(\tau^4)
+\]</div>
+<div class="arithmatex">\[
+RHS=u_{xx}+u_{yy}-\frac{\tau^2}{h^2}u_{tt}\cdot 2+O(h^2)
+\]</div>
+<p>故截断误差</p>
+<div class="arithmatex">\[
+LHS-RHS=O(\tau^2+h^2+\frac{\tau^2}{h^2}).
+\]</div>
+<p>若 <span class="arithmatex">\(\frac{\tau^2}{h^2}\to 0\)</span>，则该方法相容。否则，该方法不相容。</p>
+<p>稳定性：设 <span class="arithmatex">\(u_{i,j}^n = \xi^n e^{i(k_x i h + k_y j h)}\)</span>，代入差分方程，得到特征方程</p>
+<div class="arithmatex">\[
+(1 + 4r) \xi^2 - 4r\alpha \xi - (1 - 4r) = 0
+\]</div>
+<p>其中 <span class="arithmatex">\(r=\frac{\tau}{h^2}\)</span>，<span class="arithmatex">\(\alpha = \cos(k_x h) + \cos(k_y h)\)</span>。我们需要两根 <span class="arithmatex">\(\|\xi_{1,2}\|\leq 1\)</span>。容易验证这是无条件稳定的。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">Autumn, 2025</p>
+<p>For the wave equation <span class="arithmatex">\(u_{tt} = u_{xx}\)</span>, analyze the stability of the scheme</p>
+<div class="arithmatex">\[
+\frac{u_j^{n+1} - 2u_j^n + u_j^{n-1}}{\tau^2} = \frac{u_{j+1}^{n+1} - 2u_j^{n+1} + u_{j-1}^{n+1}}{4h^2} + \frac{u_{j+1}^n - 2u_j^n + u_{j-1}^n}{2h^2} + \frac{u_{j+1}^{n-1} - 2u_j^{n-1} + u_{j-1}^{n-1}}{4h^2}.
+\]</div>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p>由 von Neumann 分析，设 <span class="arithmatex">\(u_j^n = \xi^n e^{i k j h}\)</span>，代入上式得到特征方程</p>
+<div class="arithmatex">\[
+\xi+\frac{1}{\xi}-2=\frac{a^2}{4}\xi (e^{i k h}+e^{-i k h}-2)+\frac{a^2}{2}(e^{i k h}+e^{-i k h}-2)+\frac{a^2}{4}\frac{1}{\xi}(e^{i k h}+e^{-i k h}-2),
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+\frac{(\xi-1)^2}{(\xi+1)^2}=\frac{a^2}{4}(e^{i k h}+e^{-i k h}-2)=-a^2 \sin^2\left(\frac{k h}{2}\right).
+\]</div>
+<p>解得 <span class="arithmatex">\(\xi =\frac{1 \pm i I}{1 \mp i I}\)</span>，其中 <span class="arithmatex">\(I = a \sin\left(\frac{k h}{2}\right)\)</span>。由于 <span class="arithmatex">\(\|\xi\|=1\)</span>，所以该方法无条件稳定。</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">2019T</p>
+<p><strong>Problem 1.</strong> Consider the following problems.
+* (i) Determine the order of Störmer's method,</p>
+<div class="highlight"><pre><span></span><code>$$
+y_{n+2}-2y_{n+1}+y_{n}=h^{2}f(t_{n+1},y_{n+1}),\quad n\geq 0,
+$$
+
+for solving the second order system of ODE&#39;s
+
+$$
+y^{\prime\prime}=f(t,y),\quad t\geq 0,
+$$
+
+with the initial conditions $y(0)=y_{0}$ and $y^{\prime}(0)=y_{0}^{\prime}$.
+</code></pre></div>
+<ul>
+<li>
+<p>(ii) Using the second order central differences in space and Störmer's method in time, construct a scheme to solve the wave equation,</p>
+<div class="arithmatex">\[
+u_{tt}=u_{xx}.
+\]</div>
+</li>
+<li>
+<p>(iii) Determine the condition for its stability.</p>
+</li>
+</ul>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+</div>
+<div class="admonition problem">
+<p class="admonition-title">2019I</p>
+<p><strong>Problem 2.</strong> Consider Richardson's difference scheme for the heat equation <span class="arithmatex">\(u_t = u_{xx}\)</span>:</p>
+<div class="arithmatex">\[
+\frac{1}{2k}(u(x,t+k)-u(x,t-k))=\frac{1}{h^{2}}(u(x-h,t)-2u(x,t)+u(x+h,t)).
+\]</div>
+<ul>
+<li>(i) Show that this scheme has second-order truncation error.</li>
+<li>(ii) Use either ODE principles or von Neumann analysis to show that this scheme is unconditionally unstable.</li>
+<li>(iii) Demonstrate a minor modification of the left-side of Richardson's scheme that yields a familiar unconditionally stable scheme and prove it.</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2018T</p>
+<p><strong>Problem 3.</strong> For the one-way wave equation</p>
+<div class="arithmatex">\[
+u_{t}+au_{x}=f,
+\]</div>
+<p>consider the multistep scheme given by</p>
+<div class="arithmatex">\[
+\frac{3u_{m}^{n+1}-4u_{m}^{n}+u_{m}^{n-1}}{2k}+a\frac{u_{m+1}^{n+1}-u_{m-1}^{n+1}}{2h}=f_{m}^{n+1}.
+\]</div>
+<ul>
+<li>(i) Show that the scheme is second order accurate.</li>
+<li>(ii) Show that the scheme is unconditionally stable.</li>
+</ul>
+<p><strong>Hint:</strong> (1) apply von Neumann analysis to the scheme with <span class="arithmatex">\(f\equiv 0\)</span> and find the characteristic polynomial. (2) show that for all <span class="arithmatex">\(k,h\)</span>, the characteristic polynomial satisfies the root condition: all roots reside in the unit disk, and all roots on the unit circle are simple. (3) for a root <span class="arithmatex">\(r\)</span> of the characteristic polynomial, it would be more convenient to study the form <span class="arithmatex">\(\frac{1}{r}=X+iY\)</span> and prove that <span class="arithmatex">\(X^{2}+Y^{2}\geq 1\)</span>.</p>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2018I</p>
+<p><strong>Problem 4.</strong> We consider the following convection-diffusion equation</p>
+<div class="arithmatex">\[
+u_{t}+au_{x}=bu_{xx},\quad 0\leq x&lt;1
+\]</div>
+<p>with an initial condition <span class="arithmatex">\(u(x,0)=f(x)\)</span> and periodic boundary condition, where <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b&gt;0\)</span> are constants. The first order IMEX (implicit-explicit) time discretization and second order central spatial discretization are used to give the following scheme:</p>
+<div class="arithmatex">\[
+\frac{u_j^{n+1}-u_j^n}{\Delta t}+a\frac{u_{j+1}^n-u_{j-1}^n}{2\Delta x}=b\frac{u_{j+1}^{n+1}-2u_j^{n+1}+u_{j-1}^{n+1}}{\Delta x^2}
+\]</div>
+<p>with a uniform mesh <span class="arithmatex">\(x_j=j\Delta x\)</span> with spatial mesh size <span class="arithmatex">\(\Delta x\)</span> and time step <span class="arithmatex">\(\Delta t\)</span>. Here <span class="arithmatex">\(u_j^n\)</span> is the numerical solution approximating the exact solution at <span class="arithmatex">\(x=x_j\)</span> and <span class="arithmatex">\(t=n\Delta t\)</span>. Prove that the scheme is <span class="arithmatex">\(L^2\)</span> stable under the very mild time step restriction</p>
+<div class="arithmatex">\[
+\Delta t \leq c,
+\]</div>
+<p>with a constant <span class="arithmatex">\(c\)</span> which is independent of <span class="arithmatex">\(\Delta x\)</span>. Can you determine the dependency of <span class="arithmatex">\(c\)</span> on the two constants <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>?</p>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2017T</p>
+<p><strong>Problem 5.</strong> We have the following partial differential equation</p>
+<div class="arithmatex">\[
+u_{t}=H(u)_{xx},\quad 0\leq x&lt;1
+\]</div>
+<p>with an initial condition <span class="arithmatex">\(u(x,0)=f(x)\)</span> and periodic boundary condition. Here <span class="arithmatex">\(0\leq H^{\prime}(u)\leq d\)</span>. Consider the following one-step, three-point scheme on a uniform mesh <span class="arithmatex">\(x_j=j\Delta x\)</span> with spatial mesh size <span class="arithmatex">\(\Delta x\)</span>:</p>
+<div class="arithmatex">\[
+u^{n+1}_{j}=u^{n}_{j}+aH(u^{n}_{j-1})+bH(u^{n}_{j})+cH(u^{n}_{j+1}),
+\]</div>
+<p>where <span class="arithmatex">\(a,b,c\)</span> are constants which may depend on the mesh ratio <span class="arithmatex">\(\mu=\Delta t/\Delta x^{2}\)</span>, <span class="arithmatex">\(\Delta t\)</span> is the time step, and <span class="arithmatex">\(u^{n}_{j}\)</span> approximates the exact solution at <span class="arithmatex">\(u(x_j,t^n)\)</span> with <span class="arithmatex">\(t^{n}=n\Delta t\)</span>.</p>
+<ul>
+<li>(i) Find the constants <span class="arithmatex">\(a,b,c\)</span> such that the scheme is second order accurate.</li>
+<li>(ii) Find the CFL number <span class="arithmatex">\(\mu_0\)</span> such that the scheme (with the constants determined by (i)) is stable under the time step restriction <span class="arithmatex">\(\mu\leq\mu_0\)</span>. Please specify which norm you are using for stability, and prove this stability result.</li>
+</ul>
+</div>
+<div class="admonition proof">
+<p class="admonition-title">证明</p>
+<p><span class="arithmatex">\((i)\)</span> 由 Taylor 展开，</p>
+<div class="arithmatex">\[
+H(u_{j-1}^n)=H(u_j^n-\Delta x u_x+\frac{\Delta x^2}{2}u_{xx}+O(\Delta x^3))=H(u_j^n)+(-\Delta x u_x+\frac{\Delta x^2}{2}u_{xx})H'(u_j^n)+\frac{(-\Delta x u_x)^2}{2}H''(u_j^n)+O(\Delta x^3),
+\]</div>
+<div class="arithmatex">\[
+H(u_{j+1}^n)=H(u_j^n+\Delta x u_x+\frac{\Delta x^2}{2}u_{xx}+O(\Delta x^3))=H(u_j^n)+(\Delta x u_x+\frac{\Delta x^2}{2}u_{xx})H'(u_j^n)+\frac{(\Delta x u_x)^2}{2}H''(u_j^n)+O(\Delta x^3).
+\]</div>
+<div class="arithmatex">\[
+H(u_{j-1}^n)+H(u_{j+1}^n)-2H(u_j^n)=\Delta x^2 u_{xx} H'(u_j^n)+(\Delta x u_x)^2 H''(u_j^n)+O(\Delta x^3).
+\]</div>
+<div class="arithmatex">\[
+u_j^{n+1}-u_j^n=\Delta t u_t+\frac{\Delta t^2}{2}u_{tt}+O(\Delta t^3)=\mu \Delta x^2 H(u)_{xx}+O(\Delta x^4)=\mu \Delta x^2 (H'(u_j^n) u_{xx}+H''(u_j^n) (u_x)^2)+O(\Delta x^4).
+\]</div>
+<p>比较上面两式的系数，得到</p>
+<div class="arithmatex">\[
+a=c=\mu, \quad b=-2\mu.
+\]</div>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2017I, 2014I</p>
+<p><strong>Problem 6.</strong> For solving the following partial differential equation</p>
+<div class="arithmatex">\[
+u_{t}+f(u)_{x}=0,\quad 0\leq x\leq 1
+\]</div>
+<p>where <span class="arithmatex">\(f^{\prime}(u)\geq 0\)</span>, with periodic boundary condition, we can use the following semidiscrete upwind scheme</p>
+<div class="arithmatex">\[
+\frac{d}{dt}u_{j}+\frac{f(u_{j})-f(u_{j-1})}{\Delta x}=0,\quad j=1,2,\ldots,N,
+\]</div>
+<p>with periodic boundary condition <span class="arithmatex">\(u_{0}=u_{N}\)</span>, where <span class="arithmatex">\(u_{j}=u_{j}(t)\)</span> approximates <span class="arithmatex">\(u(x_j,t)\)</span> at the grid point <span class="arithmatex">\(x=x_j=j\Delta x\)</span>, with <span class="arithmatex">\(\Delta x=1/N\)</span>.</p>
+<ul>
+<li>
+<p>(i) Prove the following <span class="arithmatex">\(L^{2}\)</span> stability of the scheme</p>
+<div class="arithmatex">\[
+\frac{d}{dt}E(t)\leq 0 \quad \text{where} \quad E(t)=\sum_{j=1}^{N}|u_{j}|^{2}\Delta x.
+\]</div>
+</li>
+<li>
+<p>(ii) Do you believe the above inequality is true for <span class="arithmatex">\(E(t)=\sum_{j=1}^{N}|u_{j}|^{2p}\Delta x\)</span> for arbitrary integer <span class="arithmatex">\(p\geq 1\)</span>? If yes, prove the result. If not, give a counterexample.</p>
+</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2016T</p>
+<p><strong>Problem 7.</strong> For solving the following partial differential equation</p>
+<div class="arithmatex">\[
+u_{t}+u_{x}=0,\quad -\infty\leq x\leq\infty
+\]</div>
+<p>with compactly supported initial condition, we consider the following one-step, three-point scheme on a uniform mesh <span class="arithmatex">\(x_{j}=j\Delta x\)</span> with spatial mesh size <span class="arithmatex">\(\Delta x\)</span>:</p>
+<div class="arithmatex">\[
+u^{n+1}_{j}=au^{n}_{j}+bu^{n}_{j-1}+cu^{n}_{j-2},\quad j=\ldots,-1,0,1,\ldots
+\]</div>
+<p>where <span class="arithmatex">\(a,b,c\)</span> are constants which may depend on the mesh ratio <span class="arithmatex">\(\lambda=\Delta t/\Delta x\)</span>. Here <span class="arithmatex">\(\Delta t\)</span> is the time step, and <span class="arithmatex">\(u^{n}_{j}\)</span> approximates the exact solution at <span class="arithmatex">\(u(x_{j},t^{n})\)</span> with <span class="arithmatex">\(t^{n}=n\Delta t\)</span>.</p>
+<ul>
+<li>(i) Find the constants <span class="arithmatex">\(a,b,c\)</span> such that the scheme is second order accurate.</li>
+<li>(ii) Find the CFL number <span class="arithmatex">\(\lambda_0\)</span> such that the scheme (with the constants determined by (i)) is stable in <span class="arithmatex">\(L^{2}\)</span> under the time step restriction <span class="arithmatex">\(\lambda\leq\lambda_0\)</span>.</li>
+<li>(iii) If the PDE is defined on <span class="arithmatex">\((0,\infty)\)</span> with an initial condition compactly supported in <span class="arithmatex">\((0,\infty)\)</span> and a boundary condition <span class="arithmatex">\(u(0,t)=g(t)\)</span>, how would you modify the scheme so that it can be applied? Can you prove the stability and accuracy of your modified scheme?</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2016I</p>
+<p><strong>Problem 8.</strong> Consider the implicit leapfrog scheme</p>
+<div class="arithmatex">\[
+\frac{u_{m}^{n+1}-u_{m}^{n-1}}{2k}+a\left(1+\frac{h^{2}}{6}\delta^{2}\right)^{-1}\delta_{0}u_{m}^{n}=f_{m}^{n}
+\]</div>
+<p>for the one-way wave equation <span class="arithmatex">\(u_{t}+au_{x}=f\)</span>. Here <span class="arithmatex">\(\delta^{2}\)</span> is the central second difference operator, and <span class="arithmatex">\(\delta_{0}\)</span> is the central first difference operator.</p>
+<ul>
+<li>(1) Show that the scheme is of order <span class="arithmatex">\((2,4)\)</span> (second order in time, fourth order in space).</li>
+<li>(2) Show that the scheme is stable if and only if <span class="arithmatex">\(|\frac{ak}{h}|&lt;\frac{1}{\sqrt{3}}\)</span>.</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2015I</p>
+<p><strong>Problem 9.</strong> Solve the following linear hyperbolic partial differential equation</p>
+<div class="arithmatex">\[
+u_{t}+au_{x}=0,\quad t\geq 0,
+\]</div>
+<p>where <span class="arithmatex">\(a\)</span> is a constant. Using the finite difference approximation, we can obtain the forward-time central-space scheme as follows,</p>
+<div class="arithmatex">\[
+\frac{u_{m}^{n+1}-u_{m}^{n}}{k}+a\frac{u_{m+1}^{n}-u_{m-1}^{n}}{2h}=0,
+\]</div>
+<p>where <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(h\)</span> are temporal and spatial mesh sizes.</p>
+<ul>
+<li>(i) Show that when we fix <span class="arithmatex">\(\lambda=k/h\)</span> as a positive constant, the forward-time central-space scheme is consistent with equation <span class="arithmatex">\(u_t + a u_x = 0\)</span>.</li>
+<li>(ii) Analyze the stability of this method. Is the method stable with <span class="arithmatex">\(\lambda=k/h\)</span> being fixed as a constant?</li>
+<li>(iii) How would the answer change if you are allowed to make <span class="arithmatex">\(\lambda=k/h\)</span> small?</li>
+<li>(iv) Would this be a good scheme to use even if you can make it stable by making <span class="arithmatex">\(\lambda\)</span> small? If not, please provide a simple modification to make this scheme stable by keeping <span class="arithmatex">\(\lambda\)</span> fixed.</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2014I</p>
+<p><strong>Problem 10.</strong> For solving the following heat equation on interval</p>
+<div class="arithmatex">\[
+u_{t}=u_{xx},\quad 0\leq x\leq 1
+\]</div>
+<p>with boundary condition <span class="arithmatex">\(u(0)=u_{0},\ u(1)=u_{1}\)</span>, we first discretize the interval <span class="arithmatex">\([0,1]\)</span> into <span class="arithmatex">\(N\)</span> subintervals uniformly, that is, the mesh size <span class="arithmatex">\(h=1/N\)</span>. We choose a temporal step size <span class="arithmatex">\(k\)</span> and approximate the solution <span class="arithmatex">\(u(jh,nk)\)</span> by <span class="arithmatex">\(U_{j}^{n}\)</span>, <span class="arithmatex">\(j=1,\ldots,N-1,n=0,1,2,\ldots\)</span>. Using the backward Euler method in time and central finite difference in space, the discrete function <span class="arithmatex">\(U_{j}^{n}\)</span> satisfies:</p>
+<div class="arithmatex">\[
+U_{j}^{n+1}-U_{j}^{n}=\lambda(U_{j-1}^{n+1}-2U_{j}^{n+1}+U_{j+1}^{n+1}),\quad j =1,\ldots,N-1,
+\]</div>
+<p>where <span class="arithmatex">\(\lambda=k/h^{2}\)</span>, and <span class="arithmatex">\(U_0^{n+1}=u_0\)</span>, <span class="arithmatex">\(U_N^{n+1}=u_1\)</span>.</p>
+<p>Show that</p>
+<div class="arithmatex">\[
+\frac{1}{2}\sum_{j=1}^{N-1}((U^{n+1}_{j})^{2}-(U^{n}_{j})^{2}) \leq-\lambda\sum_{j=1}^{N-2}(U^{n+1}_{j+1}-U^{n+1}_{j})^{2} -\frac{\lambda}{2}((U^{n+1}_{1})^{2}+(U^{n+1}_{N-1})^{2})+\frac{\lambda}{2}(u_{0}^{2}+u_{1}^{2}).
+\]</div>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2013T</p>
+<p><strong>Problem 11.</strong> The wave guide problem is defined as</p>
+<div class="arithmatex">\[
+u_{t}+u_{x}=0,\quad v_{t}-v_{x}=0
+\]</div>
+<p>with the boundary condition</p>
+<div class="arithmatex">\[
+u(-1,t)=v(-1,t),\quad v(1,t)=u(1,t)
+\]</div>
+<p>and the initial condition</p>
+<div class="arithmatex">\[
+u(x,0)=f(x),\quad v(x,0)=g(x).
+\]</div>
+<p>The upwind scheme for the guide problem is defined as</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\frac{u^{n+1}_{j}-u^{n}_{j}}{\Delta t}+\frac{u^{n}_{j}-u^{n}_{j-1}}{\Delta x}&amp;=0,\quad j=-N+1,\ldots,N;\\[5pt]
+\frac{v^{n+1}_{j}-v^{n}_{j}}{\Delta t}-\frac{v^{n}_{j+1}-v^{n}_{j}}{\Delta x}&amp;=0,\quad j=-N,\ldots,N-1;
+\end{aligned}
+\]</div>
+<p>with the boundary condition</p>
+<div class="arithmatex">\[
+u^{n+1}_{-N}=v^{n+1}_{-N},\quad v^{n+1}_{N}=u^{n+1}_{N}
+\]</div>
+<p>where <span class="arithmatex">\(u^{n}_{j}\)</span> and <span class="arithmatex">\(v^{n}_{j}\)</span> approximate <span class="arithmatex">\(u(x_{j},t^{n})\)</span> and <span class="arithmatex">\(v(x_{j},t_{n})\)</span> respectively at the grid point <span class="arithmatex">\((x_{j},t_{n})\)</span>, with <span class="arithmatex">\(x_{j}=j\Delta x\)</span>, <span class="arithmatex">\(t^{n}=n\Delta t\)</span>, <span class="arithmatex">\(\Delta x=\frac{1}{N}\)</span>.</p>
+<ul>
+<li>
+<p>(i) For the solution to the wave guide problem with the above boundary condition, prove the energy conservation</p>
+<div class="arithmatex">\[
+\frac{d}{dt}\int_{-1}^{1}(u^{2}+v^{2})dx=0.
+\]</div>
+</li>
+<li>
+<p>(ii) For the numerical solution of the the upwind scheme, if we define the discrete energy as</p>
+<div class="arithmatex">\[
+E^{n}=\sum_{j=-N+1}^{N}(u^{n}_{j})^{2}+\sum_{j=-N}^{N-1}(v^{n}_{j})^{2},
+\]</div>
+<p>prove the discrete energy stability <span class="arithmatex">\(E^{n+1}\leq E^{n}\)</span> under a suitable time step restriction <span class="arithmatex">\(\frac{\Delta t}{\Delta x}\leq\lambda_{0}\)</span>. You should first find <span class="arithmatex">\(\lambda_{0}\)</span>.</p>
+</li>
+<li>
+<p>(iii) Under the same time step restriction, is the numerical solution stable in the maximum norm? That is, can you prove</p>
+<div class="arithmatex">\[
+\max_{-N\leq j\leq N}\max(|u^{n+1}_{j}|,|v^{n+1}_{j}|)\leq\max_{-N\leq j\leq N}\max(|u^{n}_{j}|,|v^{n}_{j}|)?
+\]</div>
+</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2012I</p>
+<p><strong>Problem 12.</strong> Describe the forward-in-time and center-in-space finite difference scheme for the one-way wave equation:</p>
+<div class="arithmatex">\[
+u_{t}+u_{x}=0.
+\]</div>
+<ul>
+<li>(i) Conduct the von Neumann stability analysis and comment on their stability property.</li>
+<li>(ii) Under what condition on <span class="arithmatex">\(\Delta t\)</span> and <span class="arithmatex">\(\Delta x\)</span> would this scheme be stable and convergent?</li>
+<li>(iii) How many ways you can modify this scheme to make it stable when the CFL condition is satisfied?</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2011T</p>
+<p><strong>Problem 13.</strong> We use the following scheme to solve the PDE <span class="arithmatex">\(u_{t}+u_{x}=0\)</span>:</p>
+<div class="arithmatex">\[
+u^{n+1}_{j}=au^{n}_{j-2}+bu^{n}_{j-1}+cu^{n}_{j}
+\]</div>
+<p>where <span class="arithmatex">\(a,b,c\)</span> are constants which may depend on the CFL number <span class="arithmatex">\(\lambda=\frac{\Delta t}{\Delta x}\)</span>. Here <span class="arithmatex">\(x_{j}=j\Delta x\)</span>, <span class="arithmatex">\(t^{n}=n\Delta t\)</span> and <span class="arithmatex">\(u^{n}_{j}\)</span> is the numerical approximation to the exact solution <span class="arithmatex">\(u(x_{j},t^{n})\)</span> with periodic boundary conditions.</p>
+<ul>
+<li>(i) Find <span class="arithmatex">\(a,b,c\)</span> so that the scheme is second order accurate.</li>
+<li>(ii) Verify that the scheme you derived in Part (i) is exact (i.e. <span class="arithmatex">\(u^{n}_{j}=u(x_{j},t^{n})\)</span>) if <span class="arithmatex">\(\lambda=1\)</span> or <span class="arithmatex">\(\lambda=2\)</span>. Does this imply that the scheme is stable for <span class="arithmatex">\(\lambda\leq 2\)</span>? If not, find <span class="arithmatex">\(\lambda_{0}\)</span> such that the scheme is stable for <span class="arithmatex">\(\lambda\leq\lambda_{0}\)</span>.</li>
+</ul>
+<p>Recall that a scheme is stable if there exist constants <span class="arithmatex">\(M\)</span> and <span class="arithmatex">\(C\)</span>, which are independent of the mesh sizes <span class="arithmatex">\(\Delta x\)</span> and <span class="arithmatex">\(\Delta t\)</span>, such that <span class="arithmatex">\(\|u^{n}\|\leq Me^{CT}\|u^{0}\|\)</span> for all <span class="arithmatex">\(\Delta x\)</span>, <span class="arithmatex">\(\Delta t\)</span> and <span class="arithmatex">\(n\)</span> such that <span class="arithmatex">\(t^{n}\leq T\)</span>. You can use either the <span class="arithmatex">\(L^{\infty}\)</span> norm or the <span class="arithmatex">\(L^{2}\)</span> norm to prove stability.</p>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2010T</p>
+<p><strong>Problem 14.</strong> When considering finite difference schemes approximating partial differential equations (PDEs), for example, the scheme</p>
+<div class="arithmatex">\[
+u^{n+1}_{j}=u^{n}_{j}-\lambda(u^{n}_{j}-u^{n}_{j-1})
+\]</div>
+<p>where <span class="arithmatex">\(\lambda=\frac{\Delta t}{\Delta x}\)</span>, approximating the PDE <span class="arithmatex">\(u_{t}+u_{x}=0\)</span>, we are often interested in stability, namely</p>
+<div class="arithmatex">\[
+\|u^{n}\|\leq C\|u^{0}\|,\quad n\Delta t\leq T
+\]</div>
+<p>for a constant <span class="arithmatex">\(C=C(T)\)</span> independent of the time step <span class="arithmatex">\(\Delta t\)</span> and the spatial mesh size <span class="arithmatex">\(\Delta x\)</span>. Here <span class="arithmatex">\(\|\cdot\|\)</span> is a given norm, for example the <span class="arithmatex">\(L^{2}\)</span> norm or the <span class="arithmatex">\(L^{\infty}\)</span> norm, of the numerical solution vector <span class="arithmatex">\(u^{n}=(u^{n}_{1},u^{n}_{2},\ldots,u^{n}_{N})\)</span>. The mesh points are <span class="arithmatex">\(x_{j}=j\Delta x\)</span>, <span class="arithmatex">\(t^{n}=n\Delta t\)</span>, and the numerical solution <span class="arithmatex">\(u^{n}_{j}\)</span> approximates the exact solution <span class="arithmatex">\(u(x_{j},t^{n})\)</span> of the PDE with a periodic boundary condition.</p>
+<ul>
+<li>(i) Prove that the scheme <span class="arithmatex">\(u^{n+1}_{j}=u^{n}_{j}-\lambda(u^{n}_{j}-u^{n}_{j-1})\)</span> is stable in the sense of (14) for both the <span class="arithmatex">\(L^{2}\)</span> norm and the <span class="arithmatex">\(L^{\infty}\)</span> norm under the time step restriction <span class="arithmatex">\(\lambda\leq 1\)</span>.</li>
+<li>
+<p>(ii) Since the numerical solution <span class="arithmatex">\(u^{n}\)</span> is in a finite dimensional space, Student A argues that the stability (14), once proved for a specific norm <span class="arithmatex">\(\|\cdot\|_{a}\)</span>, would also automatically hold for any other norm <span class="arithmatex">\(\|\cdot\|_{b}\)</span>. His argument is based on the equivalency of all norms in a finite dimensional space, namely for any two norms <span class="arithmatex">\(\|\cdot\|_{a}\)</span> and <span class="arithmatex">\(\|\cdot\|_{b}\)</span> on a finite dimensional space <span class="arithmatex">\(W\)</span>, there exists a constant <span class="arithmatex">\(\delta&gt;0\)</span> such that</p>
+<div class="arithmatex">\[
+\delta\|u\|_{b}\leq\|u\|_{a}\leq\frac{1}{\delta}\|u\|_{b}.
+\]</div>
+<p>Do you agree with his argument? If yes, please give a detailed proof of the following theorem: If a scheme is stable, namely (14) holds for one particular norm (e.g. the <span class="arithmatex">\(L^{2}\)</span> norm), then it is also stable for any other norm. If not, please explain the mistake made by Student A.</p>
+</li>
+</ul>
+</div>
+<hr />
+<div class="admonition problem">
+<p class="admonition-title">2010T</p>
+<p><strong>Problem 15.</strong> We have the following 3 PDEs</p>
+<div class="arithmatex">\[
+\begin{aligned}
+u_{t}+Au_{x} &amp;=0, (15)\\
+u_{t}+Bu_{x} &amp;=0, (16)\\
+u_{t}+Cu_{x} &amp;=0,\quad C=A+B. (17)
+\end{aligned}
+\]</div>
+<p>Here <span class="arithmatex">\(u\)</span> is a vector of size <span class="arithmatex">\(m\)</span> and <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> are <span class="arithmatex">\(m\times m\)</span> real matrices. We assume <span class="arithmatex">\(m\geq 2\)</span> and both <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> are diagonalizable with only real eigenvalues. We also assume periodic initial condition for these PDEs.</p>
+<ul>
+<li>
+<p>(i) Prove that (15) and (16) are both well-posed in the <span class="arithmatex">\(L^{2}\)</span>-norm. Recall that a PDE is well-posed if its solution satisfies</p>
+<div class="arithmatex">\[
+\|u(\cdot,t)\|\leq C(T)\|u(\cdot,0)\|,\quad 0\leq t\leq T
+\]</div>
+<p>for a constant <span class="arithmatex">\(C(T)\)</span> which depends only on <span class="arithmatex">\(T\)</span>.</p>
+</li>
+<li>
+<p>(ii) Is (17) guaranteed to be well-posed as well? If yes, give a proof; if not, give a counter example.</p>
+</li>
+<li>(iii) Suppose we have a finite difference scheme <span class="arithmatex">\(u^{n+1}=A_{h}u^{n}\)</span> for approximating (15) and another scheme <span class="arithmatex">\(u^{n+1}=B_{h}u^{n}\)</span> for approximating (16). Suppose both schemes are stable in the <span class="arithmatex">\(L^{2}\)</span>-norm. If we now form the splitting scheme <span class="arithmatex">\(u^{n+1}=B_{h}A_{h}u^{n}\)</span> which is a consistent scheme for solving (17), is this scheme guaranteed to be <span class="arithmatex">\(L^{2}\)</span> stable as well? If yes, give a proof; if not, give a counter example.</li>
+</ul>
+</div>
+<div class="zdd-article-taxonomy">
+  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#应用数学博资考</span></div>
+  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=applied-math">#applied-math</a><a class="zdd-tag-chip" href="../../../../tags/?tag=applied-math-exam">#applied-math-exam</a><a class="zdd-tag-chip" href="../../../../tags/?tag=numerical-pde-exercises">#numerical-pde-exercises</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+    
+  <script>
+  (function() {
+      var path = window.location.pathname.replace(/^\/+/, "");
+      document.body.classList.add("zdd-minimal-layout");
+      if (path === "" || path === "index.html") {
+          document.body.classList.add("home-layout");
+      } else if (path === "blog" || path === "blog/" || path === "blog/index.html") {
+          document.body.classList.add("blog-index-layout");
+      } else if (path === "tags" || path === "tags/" || path.indexOf("tags/") === 0) {
+          document.body.classList.add("tag-layout");
+      } else if (path.indexOf("blog/") === 0) {
+          document.body.classList.add("article-layout");
+      }
+  })();
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // 1. 创建进度条容器
+      var progressBar = document.createElement("div");
+      progressBar.id = "reading-progress";
+      // 样式：固定顶部，高度3px，粉色，初始宽度0
+      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
+      document.body.appendChild(progressBar);
+
+      // 2. 监听滚动事件
+      window.addEventListener("scroll", function() {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width = scrolled + "%";
+      });
+  });
+</script>
+  <style>
+    body[data-md-color-scheme="default"]::before {
+        background-image: url('../../../../assets/site_bg_light.jpg');
+    }
+    body[data-md-color-scheme="slate"]::after {
+        background-image: url('../../../../assets/site_bg_dark.jpg');
+    }
+  </style>
+
+  <script>
+  (function() {
+      var previousScheme = document.body.getAttribute("data-md-color-scheme");
+      var dimmerTimer = 0;
+
+      function softenLightSwitch() {
+          var oldDimmer = document.querySelector(".theme-switch-dimmer");
+          if (oldDimmer) oldDimmer.remove();
+
+          var dimmer = document.createElement("div");
+          dimmer.className = "theme-switch-dimmer";
+          document.body.appendChild(dimmer);
+
+          window.clearTimeout(dimmerTimer);
+          dimmerTimer = window.setTimeout(function() {
+              dimmer.remove();
+          }, 780);
+      }
+
+      document.addEventListener("pointerdown", function(event) {
+          var target = event.target.closest && event.target.closest("label[for='__palette_0']");
+          if (target && document.body.getAttribute("data-md-color-scheme") === "slate") {
+              softenLightSwitch();
+          }
+      }, true);
+
+      document.addEventListener("keydown", function(event) {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          var active = document.activeElement;
+          if (active && active.matches && active.matches("label[for='__palette_0']") &&
+              document.body.getAttribute("data-md-color-scheme") === "slate") {
+              softenLightSwitch();
+          }
+      }, true);
+
+      new MutationObserver(function() {
+          var currentScheme = document.body.getAttribute("data-md-color-scheme");
+          if (previousScheme === "slate" && currentScheme === "default") {
+              softenLightSwitch();
+          }
+          previousScheme = currentScheme;
+      }).observe(document.body, {
+          attributes: true,
+          attributeFilter: ["data-md-color-scheme"]
+      });
+  })();
+  </script>
+  <script>
+    document$.subscribe(function() {
+        var h1 = document.querySelector(".md-content__inner h1");
+        var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
+        
+        if (h1 && !document.getElementById("page-pv-container") && !isHomePage) {
+            var pvContainer = document.createElement("div");
+            pvContainer.id = "page-pv-container";
+            pvContainer.style.cssText = "color: var(--md-default-fg-color--light); font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;";
+            pvContainer.innerHTML = `
+                <span id="busuanzi_container_page_pv" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; fill: currentColor; margin-right: 4px;">
+                        <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
+                    </svg>
+                    阅读量：<span id="busuanzi_value_page_pv" style="font-weight: bold;">--</span>
+                </span>
+            `;
+            h1.parentNode.insertBefore(pvContainer, h1.nextSibling);
+        }
+
+        var oldScript = document.getElementById("busuanzi-script-tag");
+        if (oldScript) { oldScript.remove(); }
+        
+        var sitePv = document.getElementById("busuanzi_container_site_pv");
+        if (sitePv) sitePv.style.display = "none";
+
+        var script = document.createElement("script");
+        script.id = "busuanzi-script-tag";
+        script.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+        script.async = true;
+        document.body.appendChild(script);
+    });
+  </script>
+
+  </body>
+</html>
