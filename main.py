@@ -4,12 +4,45 @@ import re
 import html
 from datetime import datetime
 
+DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
+
 # =================================================================
 # 1. 核心工具：强力清洗 + 安全转义
 # =================================================================
+def extract_date(content):
+    date_match = DATE_RE.search(content)
+    if not date_match:
+        return None, None
+
+    date_str = date_match.group(1)
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d"), date_str
+    except ValueError:
+        return None, None
+
+
+def page_has_date(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+    except OSError:
+        return False
+
+    date_obj, _ = extract_date(content)
+    return date_obj is not None
+
+
+def is_blog_article(page):
+    if not page.title:
+        return False
+
+    path = page.file.src_path.replace('\\', '/')
+    return ("blog" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name)
+
+
 def parse_file_content(file_path, length=120):
     preview_text = "(暂无预览)"
-    date_obj = datetime.min
+    date_obj = None
     date_str = "Unknown"
     
     try:
@@ -20,20 +53,9 @@ def parse_file_content(file_path, length=120):
             content = f.read()
 
         # --- A. 提取日期 ---
-        date_match = re.search(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', content, re.MULTILINE)
-        if date_match:
-            date_str = date_match.group(1)
-            try:
-                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-            except:
-                pass
-        else:
-            try:
-                ts = os.path.getmtime(file_path)
-                date_obj = datetime.fromtimestamp(ts)
-                date_str = date_obj.strftime("%Y-%m-%d")
-            except:
-                pass
+        date_obj, date_str = extract_date(content)
+        if date_obj is None:
+            return None, "Unknown", preview_text
 
         # --- B. 预览内容深度清洗 ---
         content = re.sub(r'^---[\s\S]+?---\s*', '', content)
@@ -83,11 +105,8 @@ def define_env(env):
         
         valid_pages = []
         for page in nav.pages:
-            if not page.title: continue
-            path = page.file.src_path.replace('\\', '/')
-            
             # 统一过滤条件：在博文目录下，且不是索引页、目录页、概览页
-            if ("blog" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
+            if is_blog_article(page):
                 valid_pages.append(page)
         return valid_pages
 
@@ -113,32 +132,31 @@ def define_env(env):
     # --- 宏 3: 最新文章列表 (保持原有逻辑) ---
     @env.macro
     def recent_posts(max_items=6):
-        nav = getattr(sys, '_mkdocs_global_nav_bridge', None)
-        if not nav: return ""
-        
         posts = []
-        for page in nav.pages:
-            if not page.title: continue
-            path = page.file.src_path.replace('\\', '/')
-            
-            if ("blog" in path) and (not path.endswith("index.md")) and (page.title != "概览") and ("catalog" not in page.file.name):
-                
-                sort_key, date_str, preview = parse_file_content(page.file.abs_src_path)
-                safe_title = html.escape(page.title).replace('{', '&#123;').replace('}', '&#125;')
-                
-                # 提取分类
-                path_parts = path.split('/')
-                category = path_parts[-2] if len(path_parts) >= 2 else "默认"
-                safe_category = html.escape(category)
+        for page in get_valid_pages():
+            if not page_has_date(page.file.abs_src_path):
+                continue
 
-                posts.append({
-                    'title': safe_title, 
-                    'url': page.url, 
-                    'date': date_str, 
-                    'sort_key': sort_key, 
-                    'preview': preview,
-                    'category': safe_category
-                })
+            path = page.file.src_path.replace('\\', '/')
+            sort_key, date_str, preview = parse_file_content(page.file.abs_src_path)
+            if sort_key is None:
+                continue
+
+            safe_title = html.escape(page.title).replace('{', '&#123;').replace('}', '&#125;')
+
+            # 提取分类
+            path_parts = path.split('/')
+            category = path_parts[-2] if len(path_parts) >= 2 else "默认"
+            safe_category = html.escape(category)
+
+            posts.append({
+                'title': safe_title,
+                'url': page.url,
+                'date': date_str,
+                'sort_key': sort_key,
+                'preview': preview,
+                'category': safe_category
+            })
 
         posts.sort(key=lambda x: x['sort_key'], reverse=True)
         posts = posts[:max_items]
