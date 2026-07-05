@@ -3491,6 +3491,54 @@
 
   <script>
   (function() {
+      var previousScheme = document.body.getAttribute("data-md-color-scheme");
+      var dimmerTimer = 0;
+
+      function softenLightSwitch() {
+          var oldDimmer = document.querySelector(".theme-switch-dimmer");
+          if (oldDimmer) oldDimmer.remove();
+
+          var dimmer = document.createElement("div");
+          dimmer.className = "theme-switch-dimmer";
+          document.body.appendChild(dimmer);
+
+          window.clearTimeout(dimmerTimer);
+          dimmerTimer = window.setTimeout(function() {
+              dimmer.remove();
+          }, 780);
+      }
+
+      document.addEventListener("pointerdown", function(event) {
+          var target = event.target.closest && event.target.closest("label[for='__palette_0']");
+          if (target && document.body.getAttribute("data-md-color-scheme") === "slate") {
+              softenLightSwitch();
+          }
+      }, true);
+
+      document.addEventListener("keydown", function(event) {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          var active = document.activeElement;
+          if (active && active.matches && active.matches("label[for='__palette_0']") &&
+              document.body.getAttribute("data-md-color-scheme") === "slate") {
+              softenLightSwitch();
+          }
+      }, true);
+
+      new MutationObserver(function() {
+          var currentScheme = document.body.getAttribute("data-md-color-scheme");
+          if (previousScheme === "slate" && currentScheme === "default") {
+              softenLightSwitch();
+          }
+          previousScheme = currentScheme;
+      }).observe(document.body, {
+          attributes: true,
+          attributeFilter: ["data-md-color-scheme"]
+      });
+  })();
+  </script>
+
+  <script>
+  (function() {
       var audioPath = "../../../../assets/bgm.mp3";
 
       if (!window.myGlobalAudio) {
