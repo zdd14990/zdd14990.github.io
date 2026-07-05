@@ -167,20 +167,16 @@ code, kbd, pre {
 .md-sidebar {
     background: none !important;
     box-shadow: none !important;
-    
-    /* --- 关键修改开始 --- */
-    /* 恢复吸附效果 */
-    position: sticky !important; 
-    
-    /* 距离顶部的距离 (根据你的顶部导航栏高度调整，通常 5rem - 7rem 比较合适) */
-    top: 6.5rem !important; 
-    
-    /* 确保高度自适应，但不要超过视口，否则无法吸附 */
-    height: auto !important; 
-    /* --- 关键修改结束 --- */
-    
-    /* 保证它在层级上不被遮挡 */
     z-index: 10;
+}
+
+/* 只在桌面宽度调整侧边栏吸附位置，避免覆盖窄屏抽屉菜单 */
+@media screen and (min-width: 76.25em) {
+    .md-sidebar {
+        position: sticky !important;
+        top: 6.5rem !important;
+        height: auto !important;
+    }
 }
 
 /* 4. 隐藏侧边栏滚动条 (美观) */
@@ -196,6 +192,31 @@ code, kbd, pre {
 [data-md-color-scheme="slate"] .md-sidebar__scrollwrap {
     background-color: rgba(30, 32, 48, 0.85) !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* 窄屏时恢复 Material 主题的侧边栏折叠行为，避免左上角露出半截卡片 */
+@media screen and (max-width: 76.234375em) {
+    .md-sidebar__scrollwrap {
+        background: transparent !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .md-sidebar--primary .md-sidebar__scrollwrap {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        height: auto !important;
+        overflow: hidden !important;
+    }
 }
 /* ==========================================================================
    4. 首页名片卡 (保留左侧介绍，去除了右侧文章列表样式)

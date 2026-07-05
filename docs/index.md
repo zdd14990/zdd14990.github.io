@@ -330,12 +330,12 @@ git_revision_date_localized:
 
 <div align="center" style="margin-bottom: 30px;" markdown="1">
 
-[:material-math-integral: 分析](blog/catalog_analysis.md){ .md-button .md-button--primary }
-[:material-sigma: 代数](blog/catalog_algebra.md){ .md-button .md-button--primary }
-[:material-vector-curve: 应用](blog/catalog_applied.md){ .md-button .md-button--primary }
-[:material-chart-bell-curve-cumulative: 概统](blog/catalog_statistics.md){ .md-button .md-button--primary }
-[:material-atom: 物理](blog/catalog_phy.md){ .md-button .md-button--primary }
-[:material-chart-bar: 经济](blog/catalog_econ.md){.md-button  .md-button--primary }
+[:material-math-integral: 分析](blog/分析/index.md){ .md-button .md-button--primary }
+[:material-sigma: 代数](blog/代数/index.md){ .md-button .md-button--primary }
+[:material-vector-curve: 应用](blog/应用数学/index.md){ .md-button .md-button--primary }
+[:material-chart-bell-curve-cumulative: 概统](blog/概统/index.md){ .md-button .md-button--primary }
+[:material-atom: 物理](blog/物理/index.md){ .md-button .md-button--primary }
+[:material-chart-bar: 经济](blog/经济学/index.md){.md-button  .md-button--primary }
 [:material-link-variant: 友链](友链/友链.md){ .md-button }
 
 </div>
