@@ -514,14 +514,26 @@ body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav
     margin-top: 0.55rem !important;
 }
 
+/* Back to top button: center top */
 .md-top,
 [dir="ltr"] .md-top,
 [dir="rtl"] .md-top {
     position: fixed !important;
+
+    /* 先清掉主题默认的物理/逻辑定位 */
+    inset: auto !important;
+    inset-inline-start: auto !important;
+    inset-inline-end: auto !important;
+
+    /* 再重新指定位置 */
     top: 3.15rem !important;
-    left: 50vw !important;
+    left: 50% !important;
     right: auto !important;
     bottom: auto !important;
+
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
+
     width: max-content !important;
     min-width: 0 !important;
     max-width: calc(100vw - 2rem) !important;
@@ -529,11 +541,12 @@ body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav
     min-height: 0 !important;
     padding: 0.42rem 0.9rem !important;
     border-radius: 999px !important;
+
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.35rem !important;
-    transform: translateX(-50%) !important;
+
     white-space: nowrap !important;
     writing-mode: horizontal-tb !important;
     text-orientation: mixed !important;
