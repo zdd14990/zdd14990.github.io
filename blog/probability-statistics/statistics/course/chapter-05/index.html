@@ -1,0 +1,868 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/probability-statistics/statistics/course/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Properties of a Random Sample - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/solid-background.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+   <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="author" content="zdd">
+  <script>
+    window.zddSearchDataUrl = "../../../../../assets/zdd-search-data.json";
+  </script>
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/statistics/course/chapter-05/">
+  <meta property="og:title" content="Properties of a Random Sample - zdd14990">
+  <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/statistics/course/chapter-05/">
+  <meta name="twitter:title" content="Properties of a Random Sample - zdd14990">
+  <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#properties-of-a-random-sample" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../../tags/">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="properties-of-a-random-sample">Properties of a Random Sample</h1>
+<hr />
+<p>The random variables <span class="arithmatex">\(X_1,\cdots,X_n\)</span> are called a <strong>random sample of size <span class="arithmatex">\(n\)</span> from the population <span class="arithmatex">\(f(x)\)</span></strong> if <span class="arithmatex">\(X_1,\cdots,X_n\)</span> are mutually independent and the marginal pdf or pmf of each <span class="arithmatex">\(X_i\)</span> is <span class="arithmatex">\(f(x)\)</span>. Alternatively, <span class="arithmatex">\(X_1,\cdots,X_n\)</span> are called <strong>independent and identically distributed random variables with pdf or pmf <span class="arithmatex">\(f(x)\)</span></strong>.</p>
+<p>Let <span class="arithmatex">\(X_1,\cdots,X_n\)</span> be a random sample of size <span class="arithmatex">\(n\)</span> from a population and let <span class="arithmatex">\(T(x_1,\cdots,x_n)\)</span> be a real-valued or vector-valued function whose domain includes the sample space of <span class="arithmatex">\((X_1,\cdots,X_n)\)</span>. Then the random variable or random vector <span class="arithmatex">\(Y=T(X_1,\cdots,X_n)\)</span> is called a <strong>statistic</strong>. The probability distribution of <span class="arithmatex">\(Y\)</span> is called the <strong>sampling distribution of <span class="arithmatex">\(Y\)</span></strong>.</p>
+<p>The <strong>sample mean</strong> is the arithmetic average of the values in a random sample. It is usually denoted by</p>
+<div class="arithmatex">\[
+\bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i
+\]</div>
+<p>The <strong>sample variance</strong> is the statistic defined by</p>
+<div class="arithmatex">\[
+S^2 = \frac{1}{n-1}\sum_{i=1}^{n} (X_i-\bar{X})^2
+\]</div>
+<p>The <strong>sample standard deviation</strong> is the statistic defined by <span class="arithmatex">\(S=\sqrt{S^2}\)</span>.</p>
+<p><strong>Lemma 5.2.5</strong> Let <span class="arithmatex">\(X_1,\cdots,X_n\)</span> be a random sample from a population and let <span class="arithmatex">\(g(x)\)</span> be a function such that <span class="arithmatex">\(\mathrm{E}g(X_1)\)</span> and <span class="arithmatex">\(\mathrm{Var}g(X_1)\)</span> exist. Then</p>
+<div class="arithmatex">\[
+\mathrm{E}\left[\frac{1}{n}\sum_{i=1}^{n} g(X_i)\right] = \mathrm{E}g(X_1), \quad \mathrm{Var}\left[\frac{1}{n}\sum_{i=1}^{n} g(X_i)\right] = \frac{\mathrm{Var}g(X_1)}{n}
+\]</div>
+<div class="arithmatex">\[
+M_{\bar{X}}(t)=[M_X(t/n)]^n
+\]</div>
+<p><strong>Theorem 5.2.9</strong> If <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent continuous random variables with pdfs <span class="arithmatex">\(f_X(x)\)</span> and <span class="arithmatex">\(f_Y(y)\)</span>, then the pdf of <span class="arithmatex">\(Z=X+Y\)</span> is given by</p>
+<div class="arithmatex">\[
+f_Z(z) = \int_{-\infty}^{\infty} f_X(w) f_Y(z-w) dw
+\]</div>
+<p><strong>Theorem 5.2.11</strong> Sippose <span class="arithmatex">\(X_1,\cdots,X_n\)</span> is  a random sample from a pdf or pmf <span class="arithmatex">\(f(x|\theta)\)</span>, where</p>
+<div class="arithmatex">\[
+f(x|\theta) = h(x)c(\theta)\exp\left\{\sum_{i=1}^{k} w_i(\theta)t_i(x)\right\}
+\]</div>
+<p>is a member of an exponential family. Define statistics <span class="arithmatex">\(T_1,\cdots,T_k\)</span> by</p>
+<div class="arithmatex">\[
+T_i = \sum_{j=1}^{n} t_i(X_j), \quad i=1,\cdots,k
+\]</div>
+<p>If the set <span class="arithmatex">\(\left\{(w_1(\theta),\cdots,w_k(\theta)):\theta\in \Theta\right\}\)</span> contains an open subset of <span class="arithmatex">\(\mathbb{R}^k\)</span>, then the distribution of <span class="arithmatex">\((T_1,\cdots,T_k)\)</span> is an exponential family of the form</p>
+<div class="arithmatex">\[
+f_T(u_1,\cdots,u_k|\theta) =H(u_1,\cdots,u_k)[c(\theta)]^n\exp\left\{\sum_{i=1}^{k} w_i(\theta)u_i\right\}
+\]</div>
+<p><strong>Theorem 5.3.1</strong> Let <span class="arithmatex">\(X_1,\cdots,X_n\)</span> be a random sample from a <span class="arithmatex">\(n(\mu,\sigma^2)\)</span> distribution, and let <span class="arithmatex">\(X=(1/n)\sum_{i=1}^{n} X_i\)</span> and <span class="arithmatex">\(S^2=[1/(n-1)]\sum_{i=1}^{n} (X_i-\bar{X})^2\)</span>. Then</p>
+<ol>
+<li>
+<p><span class="arithmatex">\(\bar{X}\)</span> and <span class="arithmatex">\(S^2\)</span> are independent random variables.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\bar{X}\)</span> has a <span class="arithmatex">\(n(\mu,\sigma^2/n)\)</span> distribution.</p>
+</li>
+<li>
+<p><span class="arithmatex">\((n-1)S^2/\sigma^2\)</span> has a chi squared distribution with <span class="arithmatex">\(n-1\)</span> degrees of freedom.</p>
+</li>
+</ol>
+<hr />
+<p>If <span class="arithmatex">\(X_1,\cdots,X_n\)</span> are a random sample from a <span class="arithmatex">\(n(\mu,\sigma^2)\)</span>, we know that the quantity</p>
+<div class="arithmatex">\[
+\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}
+\]</div>
+<p>has a <span class="arithmatex">\(n(0,1)\)</span> distribution. If <span class="arithmatex">\(\sigma^2\)</span> is unknown, we can replace <span class="arithmatex">\(\sigma\)</span> by <span class="arithmatex">\(S\)</span>, the sample standard deviation. Then the quantity</p>
+<div class="arithmatex">\[
+T=\frac{\bar{X}-\mu}{S/\sqrt{n}}=\frac{(\bar{X}-\mu)/(\sigma/\sqrt{n})}{\sqrt{S^2/\sigma^2}}
+\]</div>
+<p>The numerator is a <span class="arithmatex">\(n(0,1)\)</span> random variable and the denominator is <span class="arithmatex">\(\sqrt{\chi^2_{n-1}/(n-1)}\)</span>, independent of the numerator. Thus, the distribution of <span class="arithmatex">\(T\)</span> can be found by solving the simplified problem of finding the distribution of <span class="arithmatex">\(U/\sqrt{V/p}\)</span>, where <span class="arithmatex">\(U\sim n(0,1)\)</span> and <span class="arithmatex">\(V\sim \chi^2_p\)</span>, and <span class="arithmatex">\(U\)</span> and <span class="arithmatex">\(V\)</span> are independent. This gives us <strong>Student's <span class="arithmatex">\(t\)</span> distribution</strong>. Equivalently, a random variable <span class="arithmatex">\(T\)</span> has a Student's <span class="arithmatex">\(t\)</span> distribution with <span class="arithmatex">\(p\)</span> degrees of freedom, and we write <span class="arithmatex">\(T\sim t_p\)</span>, if it has pdf</p>
+<div class="arithmatex">\[
+f_T(t)=\frac{\Gamma(\frac{p+1}{2})}{\sqrt{p\pi}\Gamma(\frac{p}{2})}\left(1+\frac{t^2}{p}\right)^{-\frac{p+1}{2}}, \quad -\infty&lt;t&lt;\infty
+\]</div>
+<p>Let <span class="arithmatex">\(X_1,\cdots,X_n\)</span> be a random sample from a <span class="arithmatex">\(n(\mu_X,\sigma_X^2)\)</span>  population, and let <span class="arithmatex">\(Y_1,\cdots,Y_m\)</span> be a random sample from an independent <span class="arithmatex">\(n(\mu_Y,\sigma_Y^2)\)</span> population. The random variable <span class="arithmatex">\(F=\frac{S_X^2/\sigma_X^2}{S_Y^2/\sigma_Y^2}\)</span> has <strong>Snedecor's <span class="arithmatex">\(F\)</span> distribution with <span class="arithmatex">\(n-1\)</span> and <span class="arithmatex">\(m-1\)</span> degrees of freedom</strong>. Equivalently, the random variable <span class="arithmatex">\(F\)</span> has the <span class="arithmatex">\(F\)</span> distribution with <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> degrees of freedom if it has pdf</p>
+<div class="arithmatex">\[
+f_F(x)=\frac{\Gamma(\frac{p+q}{2})}{\Gamma(\frac{p}{2})\Gamma(\frac{q}{2})}\left(\frac{p}{q}\right)^{p/2} \frac{x^{p/2-1}}{\left(1+\frac{px}{q}\right)^{(p+q)/2}}, \quad x&gt;0
+\]</div>
+<p><strong>Theorem 5.3.8</strong></p>
+<ol>
+<li>
+<p>If <span class="arithmatex">\(X~F_{p,q}\)</span>, then <span class="arithmatex">\(1/X~F_{q,p}\)</span>.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X~t_q\)</span>, then <span class="arithmatex">\(X^2~F_{1,q}\)</span>.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X~F_{p,q}\)</span>, then <span class="arithmatex">\((p/q)X/(1+(p/q)X)~Beta(p/2,q/2)\)</span>.</p>
+</li>
+</ol>
+<hr />
+<p>The <strong>order statistics</strong> of a random sample <span class="arithmatex">\(X_1,\cdots,X_n\)</span> are the sample values placed in ascending order. They are denoted by <span class="arithmatex">\(X_{(1)},\cdots,X_{(n)}\)</span>.</p>
+<p>The order statistics are random variables that stisfy <span class="arithmatex">\(X_{(1)}\le \cdots \le X_{(n)}\)</span>. In particular, </p>
+<div class="arithmatex">\[
+\begin{aligned}
+X_{(1)} &amp;= \min(X_1,\cdots,X_n) \\
+X_{(2)} &amp;= \text{second smallest} X_i \\
+\vdots\\
+X_{(n)} &amp;= \max(X_1,\cdots,X_n)
+\end{aligned}
+\]</div>
+<p>The <strong>sample range</strong> is the statistic defined by <span class="arithmatex">\(R=X_{(n)}-X_{(1)}\)</span>. The <strong>sample median</strong> is the statistic defined by</p>
+<div class="arithmatex">\[
+M=\begin{cases}
+(X_{(n/2)}+X_{(n/2+1)})/2, &amp; \text{if $n$ is even} \\
+X_{((n+1)/2)}, &amp; \text{if $n$ is odd}
+\end{cases}
+\]</div>
+<p>The notation <span class="arithmatex">\(\left\{b\right\}\)</span> is defined to be the number <span class="arithmatex">\(b\)</span> rounded to the nearest integer in the usual way. More precisely, if <span class="arithmatex">\(i\)</span> is an integer and <span class="arithmatex">\(i-.5\le b&lt;i+.5\)</span>, then <span class="arithmatex">\(\left\{b\right\}=i\)</span>. </p>
+<p><strong>Theorem 5.4.3</strong> Let <span class="arithmatex">\(X_1,\cdots,X_n\)</span> be a random sample from a discrete distribution with pmf <span class="arithmatex">\(f_X(x_i)=p_i\)</span>, where <span class="arithmatex">\(x_1&lt;x_2&lt;\cdots\)</span> are the possible values of <span class="arithmatex">\(X\)</span> in ascending order. Define</p>
+<div class="arithmatex">\[
+\begin{aligned}
+P_0 &amp;=0 \\
+P_1 &amp;=p_1 \\
+P_2 &amp;=p_1+p_2 \\
+\vdots \\
+P_n &amp;=p_1+\cdots+p_n
+\end{aligned}
+\]</div>
+<p>Let <span class="arithmatex">\(X_{(1)},\cdots,X_{(n)}\)</span> denote the order statistics from the sample. Then</p>
+<div class="arithmatex">\[
+P(X_{(j)}\le x_i)=\sum_{k=j}^{n} \binom{n}{k} P_i^k (1-P_i)^{n-k}
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+P(X_{(j)}=x_i)=\sum_{k=j}^{n} \binom{n}{k} [P_i^k (1-P_i)^{n-k} - P_{i-1}^k (1-P_{i-1})^{n-k}]
+\]</div>
+<p><strong>Theorem 5.4.4</strong> Let <span class="arithmatex">\(X_{(1)},\cdots,X_{(n)}\)</span> denote the order statistics of a random sample, <span class="arithmatex">\(X_1,\cdots,X_n\)</span>, from a continuous population with cdf <span class="arithmatex">\(F_X(x)\)</span> and pdf <span class="arithmatex">\(f_X(x)\)</span>. Then the pdf of <span class="arithmatex">\(X_{(j)}\)</span> is</p>
+<div class="arithmatex">\[
+f_{X_{(j)}}(x) = \frac{n!}{(j-1)!(n-j)!} [F_X(x)]^{j-1} [1-F_X(x)]^{n-j} f_X(x)
+\]</div>
+<p><strong>Theorem 5.4.6</strong> Let <span class="arithmatex">\(X_{(1)},\cdots,X_{(n)}\)</span> denote the order statistics of a random sample, <span class="arithmatex">\(X_1,\cdots,X_n\)</span>, from a continuous population with cdf <span class="arithmatex">\(F_X(x)\)</span> and pdf <span class="arithmatex">\(f_X(x)\)</span>. Then the joint pdf of <span class="arithmatex">\(X_{(i)}\)</span> and <span class="arithmatex">\(X_{(j)}\)</span>, where <span class="arithmatex">\(1\le i&lt;j\le n\)</span>, is</p>
+<div class="arithmatex">\[
+f_{X_{(i)},X_{(j)}}(u,v) = \frac{n!}{(i-1)!(j-i-1)!(n-j)!} [F_X(u)]^{i-1} [F_X(v)-F_X(u)]^{j-i-1} [1-F_X(v)]^{n-j} f_X(u)f_X(v)
+\]</div>
+<hr />
+<p>A sequence of random variables <span class="arithmatex">\(X_1,X_2,\cdots\)</span> <strong>converges in probability</strong> to a random variable <span class="arithmatex">\(X\)</span> if, for every <span class="arithmatex">\(\epsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} P(|X_n-X|\ge\epsilon)=0
+\]</div>
+<p>or equivalently</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} P(|X_n-X|&lt;\epsilon)=1
+\]</div>
+<p><strong>Weak Law of Large Numbers</strong> Let <span class="arithmatex">\(X_1,X_2,\cdots\)</span> be iid random variables with <span class="arithmatex">\(\mathrm{E}X_i=\mu\)</span> and <span class="arithmatex">\(\mathrm{Var}X_i=\sigma^2&lt;\infty\)</span>. Define <span class="arithmatex">\(\bar{X}_n=(1/n)\sum_{i=1}^{n} X_i\)</span>. Then, for every <span class="arithmatex">\(\epsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} P(|\bar{X}_n-\mu|&lt;\epsilon)=1
+\]</div>
+<p>that is, <span class="arithmatex">\(\bar{X}_n\)</span> converges in probability to <span class="arithmatex">\(\mu\)</span>.</p>
+<p><strong>Theorem 5.5.4</strong> Suppose that <span class="arithmatex">\(X_1,X_2,\cdots\)</span> converges in probability to <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(h\)</span> is a continuous function. Then <span class="arithmatex">\(h(X_1),h(X_2),\cdots\)</span> converges in probability to <span class="arithmatex">\(h(X)\)</span>.</p>
+<p>A sequence of random variables, <span class="arithmatex">\(X_1,X_2,\cdots\)</span>, converges <strong>almost surely</strong> to a random variable <span class="arithmatex">\(X\)</span> if, for every <span class="arithmatex">\(\epsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+P\left(\lim_{n\to \infty}|X_n-X|&lt;\epsilon\right) = 1
+\]</div>
+<p><strong>Strong Law of Large Numbers</strong> Let <span class="arithmatex">\(X_1,X_2,\cdots\)</span> be iid random variables with <span class="arithmatex">\(\mathrm{E}X_i=\mu\)</span> and <span class="arithmatex">\(\mathrm{Var}X_i=\sigma^2&lt;\infty\)</span>. Define <span class="arithmatex">\(\bar{X}_n=(1/n)\sum_{i=1}^{n} X_i\)</span>. Then for every <span class="arithmatex">\(\epsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+P(\lim_{n\to \infty} |\bar{X}_n-\mu|&lt;\epsilon)=1
+\]</div>
+<p>that is, <span class="arithmatex">\(\bar{X}_n\)</span> converges almost surely to <span class="arithmatex">\(\mu\)</span>.</p>
+<p>A sequence of random variables <span class="arithmatex">\(X_1,X_2,\cdots\)</span> <strong>converges in distribution</strong> to a random variable <span class="arithmatex">\(X\)</span> if</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} F_{X_n}(x) = F_X(x)
+\]</div>
+<p>at all points <span class="arithmatex">\(x\)</span> where <span class="arithmatex">\(F_X(x)\)</span> is continuous. </p>
+<p><strong>Theorem 5.5.12</strong> If the sequence of random variables, <span class="arithmatex">\(X_1,X_2,\cdots\)</span>, converges in probability to a random variable <span class="arithmatex">\(X\)</span>, then it also converges in distribution to <span class="arithmatex">\(X\)</span>.</p>
+<p><strong>Theorem 5.5.13</strong> The sequence of random variables, <span class="arithmatex">\(X_1,X_2,\cdots\)</span>, converges in probability to a constant <span class="arithmatex">\(\mu\)</span> iff the sequence also converges in distribution to <span class="arithmatex">\(\mu\)</span>. That is the statement</p>
+<div class="arithmatex">\[
+P(|X_n-\mu|&gt;\epsilon)\to 0 \quad\text{ for every} \epsilon&gt;0
+\]</div>
+<p>is equivalent to</p>
+<div class="arithmatex">\[
+P(X_n\le x)\to \begin{cases}
+0, &amp; x&lt;\mu \\ 1, &amp; x&gt;\mu \end{cases}
+\]</div>
+<p><strong>Central Limit Theorem</strong> Let <span class="arithmatex">\(X_1,X_2,\cdots\)</span> be a sequence of iid random variables whose mgfs exist in a neighborhood of <span class="arithmatex">\(0\)</span>. Let <span class="arithmatex">\(\mu=\mathrm{E}X_i\)</span> and <span class="arithmatex">\(\sigma^2=\mathrm{Var}X_i&gt;0\)</span>. Define <span class="arithmatex">\(\bar{X}_n=(1/n)\sum_{i=1}^{n} X_i\)</span>. Let <span class="arithmatex">\(G_n(x)\)</span> denote the cdf of <span class="arithmatex">\(\sqrt{n}(\bar{X}_n-\mu)/\sigma\)</span>. Then, for every <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(-\infty&lt;x&lt;\infty\)</span>,</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} G_n(x) = \int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}} e^{-t^2/2} dt
+\]</div>
+<p>that is, <span class="arithmatex">\(\sqrt{n}(\bar{X}_n-\mu)/\sigma\)</span> has a limiting standard normal distribution.</p>
+<p><strong>Stronger form of the Central Limit Theorem</strong> Let <span class="arithmatex">\(X_1,X_2,\cdots\)</span> be a sequence of iid random variables with <span class="arithmatex">\(\mathrm{E}X_i=\mu\)</span> and <span class="arithmatex">\(0&lt;\mathrm{Var}X_i=\sigma^2&lt;\infty\)</span>. Define <span class="arithmatex">\(\bar{X}_n=(1/n)\sum_{i=1}^{n} X_i\)</span>. Let <span class="arithmatex">\(G_n(x)\)</span> denote the cdf of <span class="arithmatex">\(\sqrt{n}(\bar{X}_n-\mu)/\sigma\)</span>. Then, for every <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(-\infty&lt;x&lt;\infty\)</span>,</p>
+<div class="arithmatex">\[
+\lim_{n\to \infty} G_n(x) = \int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}} e^{-t^2/2} dt
+\]</div>
+<p>that is, <span class="arithmatex">\(\sqrt{n}(\bar{X}_n-\mu)/\sigma\)</span> has a limiting standard normal distribution.</p>
+<p><strong>Slutsky's Theorem</strong> If <span class="arithmatex">\(X_n\to X\)</span> in distribution and <span class="arithmatex">\(Y_n\to a\)</span>, a constant, in probability, then </p>
+<ol>
+<li>
+<p><span class="arithmatex">\(Y_nX_n\to aX\)</span> in distribution.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(X_n+Y_n\to X+a\)</span> in distribution.</p>
+</li>
+</ol>
+<hr />
+<p>If a function <span class="arithmatex">\(g(x)\)</span> has derivatives of order <span class="arithmatex">\(r\)</span>, that is, <span class="arithmatex">\(g^{(r)}(x)=\frac{d^r }{dx^r}g(x)\)</span> exists, then for any constant <span class="arithmatex">\(a\)</span>, the <strong>Taylor polynomial of order <span class="arithmatex">\(r\)</span> about <span class="arithmatex">\(a\)</span></strong> is defined by</p>
+<div class="arithmatex">\[
+T_r(x)=\sum_{i=0}^{r} \frac{g^{(i)}(a)}{i!}(x-a)^i
+\]</div>
+<p><strong>Taylor</strong> If <span class="arithmatex">\(g^{(r)}(a)\)</span> exists, then</p>
+<div class="arithmatex">\[
+\lim_{x\to a} \frac{g(x)-T_r(x)}{(x-a)^r} = 0
+\]</div>
+<p><strong>Delta Method</strong> Let <span class="arithmatex">\(Y_n\)</span> be a sequence of random variables that satisfies <span class="arithmatex">\(\sqrt{n}(Y_n-\theta)\to n(0,\sigma^2)\)</span> in distribution. For a given function <span class="arithmatex">\(g\)</span> and a specific value of <span class="arithmatex">\(\theta\)</span>, suppose that <span class="arithmatex">\(g'(\theta)\)</span> exists and is not <span class="arithmatex">\(0\)</span>. Then </p>
+<div class="arithmatex">\[
+\sqrt{n}|g(Y_n)-g(\theta)|\to n(0,|g'(\theta)|^2\sigma^2) \text{ in distribution}
+\]</div>
+<p><div class="zdd-article-taxonomy">
+<br />
+<div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#统计</span></div></p>
+<div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=statistics">#statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=course">#course</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+  
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-command-search.js"></script>
+      
+    
+  <script>
+  (function() {
+      var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
+      var parts = path.split("/").filter(Boolean);
+      var blogIndex = parts.lastIndexOf("blog");
+      document.body.classList.add("zdd-minimal-layout");
+      if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
+          document.body.classList.add("home-layout");
+      } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
+          document.body.classList.add("blog-index-layout");
+      } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {
+          document.body.classList.add("tag-layout");
+      } else if (blogIndex !== -1) {
+          document.body.classList.add("article-layout");
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      var historyKey = "zdd.articleHistory";
+      var presetKey = "zdd.themePreset";
+      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
+
+      function readJson(key, fallback) {
+          try {
+              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+          } catch (e) {
+              return fallback;
+          }
+      }
+
+      function applyPreset() {
+          presetClasses.forEach(function(name) {
+              document.body.classList.remove(name);
+          });
+          var preset = localStorage.getItem(presetKey);
+          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
+              document.body.classList.add("zdd-theme-" + preset);
+          }
+      }
+
+      function rememberArticle() {
+          if (!document.body.classList.contains("article-layout")) return;
+          var titleNode = document.querySelector(".md-content__inner h1");
+          var item = {
+              url: window.location.pathname,
+              title: titleNode ? titleNode.textContent.trim() : document.title,
+              time: Date.now()
+          };
+          var history = readJson(historyKey, []).filter(function(entry) {
+              return entry && entry.url && entry.url !== item.url;
+          });
+          history.push(item);
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+      }
+
+      window.zddReadArticleHistory = function() {
+          return readJson(historyKey, []);
+      };
+
+      window.zddSetThemePreset = function(preset) {
+          if (preset) {
+              localStorage.setItem(presetKey, preset);
+          } else {
+              localStorage.removeItem(presetKey);
+          }
+          applyPreset();
+      };
+
+      function refresh() {
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
+          applyPreset();
+          rememberArticle();
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(refresh);
+      } else {
+          document.addEventListener("DOMContentLoaded", refresh);
+      }
+  })();
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // 1. 创建进度条容器
+      var progressBar = document.createElement("div");
+      progressBar.id = "reading-progress";
+      // 样式：固定顶部，高度3px，粉色，初始宽度0
+      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
+      document.body.appendChild(progressBar);
+
+      // 2. 监听滚动事件
+      window.addEventListener("scroll", function() {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width = scrolled + "%";
+      });
+  });
+</script>
+  <script>
+  (function() {
+      function attachCatalogAnimations(root) {
+          var folders = (root || document).querySelectorAll(".zdd-catalog-folder");
+          folders.forEach(function(folder) {
+              if (folder.dataset.zddAnimated === "1") return;
+              var summary = folder.querySelector(":scope > summary");
+              var content = folder.querySelector(":scope > .zdd-folder-content");
+              if (!summary || !content) return;
+              folder.dataset.zddAnimated = "1";
+
+              summary.addEventListener("click", function(event) {
+                  event.preventDefault();
+                  if (folder.dataset.zddAnimating === "1") return;
+                  folder.dataset.zddAnimating = "1";
+
+                  if (folder.open) {
+                      content.style.height = content.scrollHeight + "px";
+                      content.offsetHeight;
+                      requestAnimationFrame(function() {
+                          content.style.height = "0px";
+                      });
+                      content.addEventListener("transitionend", function done(e) {
+                          if (e.propertyName !== "height") return;
+                          content.removeEventListener("transitionend", done);
+                          folder.open = false;
+                          folder.dataset.zddAnimating = "0";
+                      });
+                  } else {
+                      folder.open = true;
+                      content.style.height = "0px";
+                      content.offsetHeight;
+                      requestAnimationFrame(function() {
+                          content.style.height = content.scrollHeight + "px";
+                      });
+                      content.addEventListener("transitionend", function done(e) {
+                          if (e.propertyName !== "height") return;
+                          content.removeEventListener("transitionend", done);
+                          content.style.height = "auto";
+                          folder.dataset.zddAnimating = "0";
+                      });
+                  }
+              });
+          });
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(function() {
+              attachCatalogAnimations(document);
+          });
+      } else {
+          document.addEventListener("DOMContentLoaded", function() {
+              attachCatalogAnimations(document);
+          });
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      function samePageAnchor(anchor) {
+          var raw = anchor.getAttribute("href") || "";
+          if (raw === "#") return "";
+          if (!raw || raw.charAt(0) !== "#") {
+              try {
+                  var url = new URL(anchor.href, window.location.href);
+                  if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return null;
+                  return url.hash ? url.hash.slice(1) : null;
+              } catch (e) {
+                  return null;
+              }
+          }
+          return raw.slice(1);
+      }
+
+      function findAnchorTarget(id) {
+          if (!id) return null;
+          try {
+              return document.getElementById(decodeURIComponent(id)) || document.getElementById(id);
+          } catch (e) {
+              return document.getElementById(id);
+          }
+      }
+
+      function smoothScrollTo(target, id) {
+          var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var behavior = reduceMotion ? "auto" : "smooth";
+          if (target) {
+              target.scrollIntoView({ behavior: behavior, block: "start" });
+          } else {
+              window.scrollTo({ top: 0, behavior: behavior });
+          }
+          if (history.pushState) {
+              history.pushState(null, "", id ? "#" + id : window.location.pathname + window.location.search);
+          }
+      }
+
+      document.addEventListener("click", function(event) {
+          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          var anchor = event.target.closest && event.target.closest("a[href]");
+          if (!anchor) return;
+          var id = samePageAnchor(anchor);
+          if (id === null) return;
+          event.preventDefault();
+          event.stopPropagation();
+          smoothScrollTo(findAnchorTarget(id), id);
+      }, true);
+  })();
+  </script>
+
+  </body>
+</html>

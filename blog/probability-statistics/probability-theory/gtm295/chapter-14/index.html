@@ -1,0 +1,897 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/probability-statistics/probability-theory/gtm295/chapter-14/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>GTM295 Chapter 14 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/solid-background.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+   <meta name="description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="author" content="zdd">
+  <script>
+    window.zddSearchDataUrl = "../../../../../assets/zdd-search-data.json";
+  </script>
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/gtm295/chapter-14/">
+  <meta property="og:title" content="GTM295 Chapter 14 - zdd14990">
+  <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/gtm295/chapter-14/">
+  <meta name="twitter:title" content="GTM295 Chapter 14 - zdd14990">
+  <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gtm295-chapter-14" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../../tags/">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+<h1 id="gtm295-chapter-14">GTM295 Chapter 14</h1>
+<p><strong>Exercise 14.1</strong> For every a ≥ 0, set Ta = inf{t ≥ 0 : Bt = a}.
+(1) Prove that, for every 0 ≤ a &lt; b, the random variable Tb - Ta is independent of
+    σ (Tc , 0 ≤ c ≤ a) and has the same distribution as Tb-a .</p>
+<p>(2) Prove that, for every a1 , . . . , an ∈ R+ and λ &gt; 0, the vector (Tλa1 , . . . , Tλan )
+    has the same law as (λ2 Ta1 , . . . , λ2 Tan ).
+(3) Let n ∈ N and let T (1) , T (2), . . . , T (n) be n independent random variables
+    distributed as T1 . Verify that T (1) + · · · + T (n) has the same distribution as
+    n2 T1 . Comment on the relation between this result and the strong law of large
+    numbers.
+<strong>Exercise 14.2</strong> Let a &gt; 0 and Ta = inf{t ≥ 0 : Bt = a}. Prove that we have almost
+surely</p>
+<div class="highlight"><pre><span></span><code>                           Ta = inf{t ≥ 0 : Bt &gt; a}.
+</code></pre></div>
+<p><strong>Exercise 14.3</strong> Prove that
+                               t            1/√t    (d)
+                                     eBs ds           -→ e|N| ,
+                                 0                    t →∞</p>
+<p>where N is a Gaussian N (0, 1) random variable.
+<strong>Exercise 14.4</strong>
+(1) Prove that a.s.,</p>
+<div class="highlight"><pre><span></span><code>                            Bt                            Bt
+                    lim sup √ = +∞ ,              lim inf √ = -∞.
+                      t ↓0   t                      t ↓0   t
+</code></pre></div>
+<p>(2) Let s &gt; 0. Prove that a.s. the function t → Bt is not differentiable at s.
+<strong>Exercise 14.5</strong>
+(1) For every integer n ≥ 1, set</p>
+<div class="highlight"><pre><span></span><code>                              2 
+                              
+                                   n
+                                                  2
+                         Σn =    Bk2-n - B(k-1)2-n .
+                                 k=1
+
+Compute E[Σn ] and var(Σn ), and prove that Σn converges in L2 and a.s. to a
+constant as n → ∞.
+</code></pre></div>
+<p>(2) Prove that a.s. the function t → Bt (ω) is not of bounded variation on the
+    interval [0, 1] (see Exercise 6.1 for the definition of functions of bounded
+    variation).
+<strong>Exercise 14.6</strong>
+(1) For every t ∈ [0, 1], set Bt' = B1-t - B1 . Prove that the two random processes
+    (Bt )t ∈[0,1] and (Bt' )t ∈[0,1] have the same law (as in the definition of the Wiener
+    measure, this law is a probability measure on the space C([0, 1], R)).
+(2) Let t &gt; 0. Prove that St - Bt and St have the same law without using
+    Corollary 14.17.
+<strong>Exercise 14.7</strong> Let τ = inf{t ≥ 0 : Bt = S1 }.
+(1) Prove that 0 &lt; τ &lt; 1 a.s. (one may use the preceding exercise) and then that τ
+    is not a stopping time.
+(2) Using question (2) of the preceding exercise, verify (without making any
+    calculation) that, for every a ∈ (0, 1),
+                                       √          √
+                          P(τ &gt; a) = P( 1 - a|N| &gt; a|N ' |)</p>
+<div class="highlight"><pre><span></span><code>where N and N &#39; are two independent Gaussian N (0, 1) random variables.
+</code></pre></div>
+<p>(3) Conclude that the law of τ is the arcsine distribution of Exercise 9.3.
+<strong>Exercise 14.8</strong> Show the local maxima of B are almost surely distinct. In other
+words, a.s. for any rationals 0 ≤ a &lt; b &lt; c &lt; d, we have</p>
+<div class="highlight"><pre><span></span><code>                              sup Bt
+</code></pre></div>
+<p>= sup Bt .
+                                 a≤t ≤b       c≤t ≤d
+<strong>Exercise 14.9</strong> Let H = {t ∈ [0, 1] : Bt = 0}. Using Corollary 14.10 and the
+strong Markov property, prove that H is a.s. a compact subset of [0, 1] with no
+isolated points and zero Lebesgue measure.
+<strong>Exercise 14.10</strong>
+(1) For every a &gt; 0, set σa = inf{t ≥ 0 : |Bt | ≥ a}. Show that there is a constant
+    γ ∈ (0, 1) depending on a such that, for every integer N ≥ 1,</p>
+<div class="highlight"><pre><span></span><code>                                 P(σa &gt; N) ≤ γ N .
+</code></pre></div>
+<p>(2) For every n ≥ 1, define a sequence T0n , T1n , . . . by induction by setting</p>
+<div class="highlight"><pre><span></span><code>        T0n = 0, T1n = σ2-n , Tk+1
+                                n
+                                   = inf{t &gt; Tkn : |Bt - BTkn | = 2-n }.
+
+Verify that the random times Tkn are almost surely finite and are stopping times.
+Prove that the random variables Tkn - Tk-1   n , k = 1, 2, . . ., are independent
+
+and identically distributed, and similarly the random variables BTkn - BTk-1  n ,
+
+k = 1, 2, . . ., are independent and identically distributed.
+</code></pre></div>
+<p>(3) We set Xkn = 2n BTkn for every k ∈ Z+ . Verify that (Xkn )k∈Z+ is a simple random
+    walk on Z.
+(4) Show that there exists a constant c &gt; 0 such that, for every t ≥ 0,</p>
+<div class="highlight"><pre><span></span><code>                                lim T n 2n = c t ,     a.s.
+                               n→∞ 2 t 
+</code></pre></div>
+<p>(5) Infer that, for every t &gt; 0,
+                                   ℓ1                  ℓ
+                                   ℓ                   ℓ
+                                           2n s - Bcs ℓ = 0 ,
+                                        n
+                           lim sup ℓ n X2                          a.s.
+                          n→∞ 0≤s≤t 2</p>
+<div class="highlight"><pre><span></span><code>  and finally that c = 1.
+</code></pre></div>
+<p><strong>Exercise 14.11</strong> For α ∈ (0, 1], a continuous function f : [0, 1] -→ R is said to be
+α-Hölder if there exists a constant C such that |f (s) - f (t)| ≤ C |s - t|α for every
+s, t ∈ [0, 1].
+(1) Prove that the function [0, 1] % t → Bt (ω) is a.s. not 12 -Hölder.
+(2) Let δ ∈ (0, 12 ). Prove that a.s. there exists an integer n0 (ω) such the bound
+    |Bk2-n - B(k-1)2-n | ≤ 2-nδ holds for every n ≥ n0 (ω) and every k ∈
+    {1, . . . , 2n }.
+(3) Prove that the function [0, 1] % t → Bt (ω) is a.s. δ-Hölder.
+<strong>Exercise 14.12</strong> Let d ≥ 3 and let B be a d-dimensional Brownian motion started
+from 0. Fix A &gt; 1 and δ ∈ (0, 1), and set</p>
+<div class="highlight"><pre><span></span><code>                        Rδ,A = {x ∈ Rd : δ ≤ |x| ≤ A}.
+</code></pre></div>
+<p>For every n ≥ 1 and every k1 , . . . , kd ∈ Z, define the cube</p>
+<p>Ck(n)
+   1 ,...,kd
+             = [k1 2-n , (k1 +1)2-n ]×[k2 2-n , (k2 +1)2-n ]×· · ·×[kd 2-n , (kd +1)2-n ].</p>
+<p>Set
+                                              (n)
+         Nn = card{(k1 , . . . , kd ) ∈ Zd : Ck1 ,...,kd ∩ Rδ,A ∩ {Bt , t ≥ 0}
+= ∅}.</p>
+<p>(1) Prove that there is a constant K depending on δ and A such that, for every
+    n ≥ 1,</p>
+<div class="highlight"><pre><span></span><code>                                    E[Nn ] ≤ K 22n .
+</code></pre></div>
+<p>(2) Recall from Exercise 3.4 the definition of the Hausdorff dimension dim(A) of
+    a subset A of Rd . Prove that dim({Bt , t ≥ 0}) ≤ 2 a.s.
+<strong>Exercise 14.13</strong> Let D be a bounded domain in Rd , d ≥ 2, and let g be a
+continuous function on ∂D. Suppose that h solves the Dirichlet problem with
+boundary condition g. Show that, for every x ∈ D,</p>
+<div class="highlight"><pre><span></span><code>                               h(x) = Ex [g(BT )],
+</code></pre></div>
+<p>with the notation of Theorem 14.23 (in particular T = inf{t ≥ 0 : Bt ∈
+                                                                     / D}).
+<strong>Exercise 14.14</strong> Let d ≥ 2, and let D = {x ∈ Rd : 0 &lt; |x| &lt; 1} be the punctured
+open unit ball. Define g : ∂D -→ R by setting g(x) = 1 if |x| = 1 and g(0) = 0.
+Prove that the Dirichlet problem in D with boundary condition g has no solution.
+(Hint: Use the result of the preceding exercise).
+<strong>Exercise 14.15</strong> Let d ≥ 3. Let K be a compact subset of the closed unit ball,
+and D = Rd \K. We assume that D is connected and satisfies the exterior cone
+condition. Let g : ∂D -→ R be a continuous function. We consider a function u
+that satisfies the Dirichlet problem in D with boundary condition g, and assume that
+u is bounded.
+   We use the canonical representation of Brownian motion in Rd , and set TK =
+inf{t ≥ 0 : Bt ∈ K} ∈ [0, ∞].
+(1) Let (Rn )n∈N be a sequence of real numbers in (1, ∞) such that Rn ↑ ∞ as
+    n → ∞. For every n, set T(n) = inf{t ≥ 0 : |Bt | ≥ R(n) }. Prove that, for every
+    n ≥ 1 and every x ∈ D such that |x| &lt; R(n) ,</p>
+<div class="highlight"><pre><span></span><code>             u(x) = Ex [g(BTK ) 1{TK &lt;T(n) } ] + Ex [u(BT(n) ) 1{T(n) &lt;TK } ].
+</code></pre></div>
+<p>(2) Prove that, up to replacing the sequence (Rn )n∈N by a subsequence, we can
+    assume that there exists a constant α ∈ R such that, for every x ∈ R,</p>
+<div class="highlight"><pre><span></span><code>                                 lim Ex [u(BT(n) )] = α.
+                                n→∞
+</code></pre></div>
+<p>(3) Deduce from questions (1) and (2) that</p>
+<div class="highlight"><pre><span></span><code>                                      lim u(x) = α
+                                    |x|→∞
+
+and then prove that, for every x ∈ D,
+
+                  u(x) = Ex [g(BTK ) 1{TK &lt;∞} ] + α Px (TK = ∞).
+</code></pre></div>
+<p>(4) Conversely, verify that, for any α ∈ R, the right-hand side of the last display
+    gives a solution of the Dirichlet problem in D with boundary condition g.</p>
+<p>Appendix A
+A Few Facts from Functional Analysis</p>
+<p>In this appendix, we recall some basic results about Hilbert spaces and Banach
+spaces, which are used in the text. Proofs of these results can be found in [22] or in
+most textbooks on functional analysis.</p>
+<p>Normed Linear Spaces and Banach Spaces</p>
+<p>Let E be a linear space over the field R. A norm on E is a mapping x → x from
+E into R+ that satisfies the following properties:
+• x + y ≤ x + y for every x, y ∈ E (triangle inequality);
+• ax = |a| x for every x ∈ E and a ∈ R;
+• x = 0 if and only if x = 0.
+   One says that (E,  · ) is a normed linear space. The norm induces a distance d
+on E, which is defined by the formula</p>
+<div class="highlight"><pre><span></span><code>                               d(x, y) = x - y.
+</code></pre></div>
+<p>The normed linear space (E,  · ) is called a Banach space if it is complete for the
+distance induced by the norm. In other words, if (xn )n∈N is a Cauchy sequence in
+E, meaning that</p>
+<div class="highlight"><pre><span></span><code>                               lim xm - xn  = 0,
+                             m,n→∞
+</code></pre></div>
+<p>there exists x ∈ E such that the sequence (xn )n∈N converges to x.</p>
+<p>© The Author(s), under exclusive license to Springer Nature Switzerland AG 2022   395
+J.-F. Le Gall, Measure Theory, Probability, and Stochastic Processes,
+Graduate Texts in Mathematics 295, https://doi.org/10.1007/978-3-031-14205-5</p>
+<p>396                                                 A A Few Facts from Functional Analysis</p>
+<p>A linear form on E is a linear mapping from E into R. A linear form Φ is
+continuous if and only if</p>
+<div class="highlight"><pre><span></span><code>                         |||Φ||| := sup |Φ(x)| &lt; ∞,
+                                    x≤1
+</code></pre></div>
+<p>and we have then</p>
+<div class="highlight"><pre><span></span><code>                              |Φ(x)| ≤ |||Φ||| x
+</code></pre></div>
+<p>for every x ∈ E. The space of all continuous linear forms on E is denoted by E ' , and
+(E ' , ||| · |||) is a normed linear space called the (topological) dual of E. The quantity
+|||Φ||| is called the operator norm of Φ.
+    The dual space (E ' , ||| · |||) of a normed linear space (E,  · ) is always a Banach
+space (even if (E,  · ) is not a Banach space).
+    The following special case of the Hahn-Banach theorem is used in this book only
+to construct certain counterexamples.
+Theorem A.1 (Hahn-Banach) Let (E,  · ) be a normed linear space, and let
+F be a linear subspace of E. Let φ be a linear mapping from F into R such that
+|φ(y)| ≤ y for every y ∈ F . Then, there exists a continuous linear form Φ on E
+such that we have both Φ(y) = φ(y) for every y ∈ F and |||Φ||| ≤ 1.</p>
+<p>Hilbert Spaces</p>
+<p>Let H be a linear space over the field R. A scalar product on H is a mapping
+(x, y) → #x, y$ from H × H into R which satisfies the following properties:
+• #x, y$ = #y, x$ for every x, y ∈ H ;
+• #x, y + z$ = #x, y$ + #x, z$ and #ax, y$ = a#x, y$ for every x, y, z ∈ H and
+  a ∈ R;
+• #x, x$ ≥ 0 for every x ∈ H , and #x, x$ = 0 if and only x = 0.
+   Given a scalar product on H , the formula</p>
+<div class="highlight"><pre><span></span><code>                                x :=       #x, x$
+</code></pre></div>
+<p>defines a norm on H . The triangle inequality for this norm is deduced from the
+Cauchy-Schwarz inequality</p>
+<div class="highlight"><pre><span></span><code>                               |#x, y$| ≤ x y
+</code></pre></div>
+<p>for every x, y ∈ H .</p>
+<p><div class="zdd-article-taxonomy">
+<br />
+<div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div></p>
+<div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=gtm295">#gtm295</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=exercises">#exercises</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+  
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-command-search.js"></script>
+      
+    
+  <script>
+  (function() {
+      var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
+      var parts = path.split("/").filter(Boolean);
+      var blogIndex = parts.lastIndexOf("blog");
+      document.body.classList.add("zdd-minimal-layout");
+      if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
+          document.body.classList.add("home-layout");
+      } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
+          document.body.classList.add("blog-index-layout");
+      } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {
+          document.body.classList.add("tag-layout");
+      } else if (blogIndex !== -1) {
+          document.body.classList.add("article-layout");
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      var historyKey = "zdd.articleHistory";
+      var presetKey = "zdd.themePreset";
+      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
+
+      function readJson(key, fallback) {
+          try {
+              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+          } catch (e) {
+              return fallback;
+          }
+      }
+
+      function applyPreset() {
+          presetClasses.forEach(function(name) {
+              document.body.classList.remove(name);
+          });
+          var preset = localStorage.getItem(presetKey);
+          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
+              document.body.classList.add("zdd-theme-" + preset);
+          }
+      }
+
+      function rememberArticle() {
+          if (!document.body.classList.contains("article-layout")) return;
+          var titleNode = document.querySelector(".md-content__inner h1");
+          var item = {
+              url: window.location.pathname,
+              title: titleNode ? titleNode.textContent.trim() : document.title,
+              time: Date.now()
+          };
+          var history = readJson(historyKey, []).filter(function(entry) {
+              return entry && entry.url && entry.url !== item.url;
+          });
+          history.push(item);
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+      }
+
+      window.zddReadArticleHistory = function() {
+          return readJson(historyKey, []);
+      };
+
+      window.zddSetThemePreset = function(preset) {
+          if (preset) {
+              localStorage.setItem(presetKey, preset);
+          } else {
+              localStorage.removeItem(presetKey);
+          }
+          applyPreset();
+      };
+
+      function refresh() {
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
+          applyPreset();
+          rememberArticle();
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(refresh);
+      } else {
+          document.addEventListener("DOMContentLoaded", refresh);
+      }
+  })();
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // 1. 创建进度条容器
+      var progressBar = document.createElement("div");
+      progressBar.id = "reading-progress";
+      // 样式：固定顶部，高度3px，粉色，初始宽度0
+      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
+      document.body.appendChild(progressBar);
+
+      // 2. 监听滚动事件
+      window.addEventListener("scroll", function() {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width = scrolled + "%";
+      });
+  });
+</script>
+  <script>
+  (function() {
+      function attachCatalogAnimations(root) {
+          var folders = (root || document).querySelectorAll(".zdd-catalog-folder");
+          folders.forEach(function(folder) {
+              if (folder.dataset.zddAnimated === "1") return;
+              var summary = folder.querySelector(":scope > summary");
+              var content = folder.querySelector(":scope > .zdd-folder-content");
+              if (!summary || !content) return;
+              folder.dataset.zddAnimated = "1";
+
+              summary.addEventListener("click", function(event) {
+                  event.preventDefault();
+                  if (folder.dataset.zddAnimating === "1") return;
+                  folder.dataset.zddAnimating = "1";
+
+                  if (folder.open) {
+                      content.style.height = content.scrollHeight + "px";
+                      content.offsetHeight;
+                      requestAnimationFrame(function() {
+                          content.style.height = "0px";
+                      });
+                      content.addEventListener("transitionend", function done(e) {
+                          if (e.propertyName !== "height") return;
+                          content.removeEventListener("transitionend", done);
+                          folder.open = false;
+                          folder.dataset.zddAnimating = "0";
+                      });
+                  } else {
+                      folder.open = true;
+                      content.style.height = "0px";
+                      content.offsetHeight;
+                      requestAnimationFrame(function() {
+                          content.style.height = content.scrollHeight + "px";
+                      });
+                      content.addEventListener("transitionend", function done(e) {
+                          if (e.propertyName !== "height") return;
+                          content.removeEventListener("transitionend", done);
+                          content.style.height = "auto";
+                          folder.dataset.zddAnimating = "0";
+                      });
+                  }
+              });
+          });
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(function() {
+              attachCatalogAnimations(document);
+          });
+      } else {
+          document.addEventListener("DOMContentLoaded", function() {
+              attachCatalogAnimations(document);
+          });
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      function samePageAnchor(anchor) {
+          var raw = anchor.getAttribute("href") || "";
+          if (raw === "#") return "";
+          if (!raw || raw.charAt(0) !== "#") {
+              try {
+                  var url = new URL(anchor.href, window.location.href);
+                  if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return null;
+                  return url.hash ? url.hash.slice(1) : null;
+              } catch (e) {
+                  return null;
+              }
+          }
+          return raw.slice(1);
+      }
+
+      function findAnchorTarget(id) {
+          if (!id) return null;
+          try {
+              return document.getElementById(decodeURIComponent(id)) || document.getElementById(id);
+          } catch (e) {
+              return document.getElementById(id);
+          }
+      }
+
+      function smoothScrollTo(target, id) {
+          var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var behavior = reduceMotion ? "auto" : "smooth";
+          if (target) {
+              target.scrollIntoView({ behavior: behavior, block: "start" });
+          } else {
+              window.scrollTo({ top: 0, behavior: behavior });
+          }
+          if (history.pushState) {
+              history.pushState(null, "", id ? "#" + id : window.location.pathname + window.location.search);
+          }
+      }
+
+      document.addEventListener("click", function(event) {
+          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          var anchor = event.target.closest && event.target.closest("a[href]");
+          if (!anchor) return;
+          var id = samePageAnchor(anchor);
+          if (id === null) return;
+          event.preventDefault();
+          event.stopPropagation();
+          smoothScrollTo(findAnchorTarget(id), id);
+      }, true);
+  })();
+  </script>
+
+  </body>
+</html>
