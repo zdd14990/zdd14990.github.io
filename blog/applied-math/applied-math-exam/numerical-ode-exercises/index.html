@@ -839,6 +839,57 @@ u(0) = u'(0) = u''(1) = u'''(1) = 0.
   })();
   </script>
   <script>
+  (function() {
+      function samePageAnchor(anchor) {
+          var raw = anchor.getAttribute("href") || "";
+          if (raw === "#") return "";
+          if (!raw || raw.charAt(0) !== "#") {
+              try {
+                  var url = new URL(anchor.href, window.location.href);
+                  if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return null;
+                  return url.hash ? url.hash.slice(1) : null;
+              } catch (e) {
+                  return null;
+              }
+          }
+          return raw.slice(1);
+      }
+
+      function findAnchorTarget(id) {
+          if (!id) return null;
+          try {
+              return document.getElementById(decodeURIComponent(id)) || document.getElementById(id);
+          } catch (e) {
+              return document.getElementById(id);
+          }
+      }
+
+      function smoothScrollTo(target, id) {
+          var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          var behavior = reduceMotion ? "auto" : "smooth";
+          if (target) {
+              target.scrollIntoView({ behavior: behavior, block: "start" });
+          } else {
+              window.scrollTo({ top: 0, behavior: behavior });
+          }
+          if (history.pushState) {
+              history.pushState(null, "", id ? "#" + id : window.location.pathname + window.location.search);
+          }
+      }
+
+      document.addEventListener("click", function(event) {
+          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          var anchor = event.target.closest && event.target.closest("a[href]");
+          if (!anchor) return;
+          var id = samePageAnchor(anchor);
+          if (id === null) return;
+          event.preventDefault();
+          event.stopPropagation();
+          smoothScrollTo(findAnchorTarget(id), id);
+      }, true);
+  })();
+  </script>
+  <script>
     document$.subscribe(function() {
         var h1 = document.querySelector(".md-content__inner h1");
         var isHomePage = location.pathname === "/" || location.pathname.endsWith("index.html");
