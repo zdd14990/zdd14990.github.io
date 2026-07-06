@@ -454,7 +454,10 @@
   var modes = ["Content Mode", "Tag Mode", "Command Mode"];
   var modeIndex = 0;
   var selectedCommandIndex = 0;
+  var selectedTagIndex = 0;
   var commandRows = [];
+  var tagRows = [];
+  var tagCompletionBase = "";
   var commands = [
     {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", fill: "/random ", desc: "Open a random article, optionally limited by tag or category."},
     {name: "/tag", syntax: "/tag <tag>", kind: "jump", fill: "/tag ", desc: "Open the result page for a tag."},
@@ -529,20 +532,93 @@
       + '</button>';
   }
 
+  function tagButton(tag, index) {
+    var active = index === selectedTagIndex ? " is-active" : "";
+    return '<button class="zdd-command-row zdd-tag-suggestion' + active + '" type="button" data-tag-index="' + index + '">'
+      + '<span class="zdd-command-main">'
+      + '<span class="zdd-command-name">#' + escapeHtml(tag) + '</span>'
+      + '<span class="zdd-command-desc">Complete tag · press Tab</span>'
+      + '</span>'
+      + '<span class="zdd-command-side">'
+      + '<span class="zdd-command-kind">tag</span>'
+      + '<span class="zdd-command-syntax">' + escapeHtml(tagCompletionBase + tag) + '</span>'
+      + '</span>'
+      + '</button>';
+  }
+
+  function matchingTags(prefix, mode) {
+    var needle = normalize(prefix || "");
+    return allTags().filter(function(tag) {
+      var value = normalize(tag);
+      if (!needle) return mode !== "contains";
+      return mode === "prefix" ? value.indexOf(needle) === 0 : value.indexOf(needle) >= 0;
+    }).slice(0, 12);
+  }
+
+  function renderTagCompletionPanel(base, prefix, prompt) {
+    if (!resultBox) return;
+    tagCompletionBase = base;
+    tagRows = matchingTags(prefix, "prefix");
+    commandRows = [];
+    selectedTagIndex = Math.max(0, Math.min(selectedTagIndex, tagRows.length - 1));
+    resultBox.innerHTML = '<div class="zdd-command-panel">'
+      + '<div class="zdd-command-prompt">' + escapeHtml(prompt || "Tag completion") + ' · press <code>Tab</code> to complete</div>'
+      + (tagRows.length ? tagRows.map(tagButton).join("") : '<div class="zdd-command-empty">No matching tag found.</div>')
+      + '</div>';
+    resultBox.hidden = false;
+  }
+
+  function renderTagSearchPanel(query) {
+    if (!resultBox) return;
+    var raw = String(query || "").trim();
+    if (!raw) {
+      resultBox.innerHTML = "";
+      resultBox.hidden = true;
+      tagRows = [];
+      return;
+    }
+    tagCompletionBase = "";
+    tagRows = matchingTags(raw, "contains");
+    commandRows = [];
+    selectedTagIndex = Math.max(0, Math.min(selectedTagIndex, tagRows.length - 1));
+    resultBox.innerHTML = '<div class="zdd-command-panel">'
+      + '<div class="zdd-command-prompt">Tag Mode · press <code>Tab</code> to complete the selected tag</div>'
+      + (tagRows.length ? tagRows.map(tagButton).join("") : '<div class="zdd-command-empty">No matching tag found.</div>')
+      + '</div>';
+    resultBox.hidden = false;
+  }
+
+  function renderCommandTagParameters(raw) {
+    var randomTag = raw.match(/^\/random\s+tag:([^\s]*)$/i);
+    if (randomTag) {
+      renderTagCompletionPanel("/random tag:", randomTag[1], "/random tag:<tag>");
+      return true;
+    }
+    var tagCommand = raw.match(/^\/tag\s+([^\s]*)$/i);
+    if (tagCommand) {
+      renderTagCompletionPanel("/tag ", tagCommand[1], "/tag <tag>");
+      return true;
+    }
+    return false;
+  }
+
   function renderCommandPanel(query, showAll) {
     if (!resultBox) return;
     var raw = String(query || "").trim();
+    if (!showAll && renderCommandTagParameters(raw)) return;
     var needle = normalize(raw.replace(/^\//, ""));
     if (!showAll && (!raw || raw === "/" || !needle)) {
       resultBox.innerHTML = "";
       resultBox.hidden = true;
       commandRows = [];
+      tagRows = [];
       return;
     }
     commandRows = commands.filter(function(command) {
       if (showAll && !needle) return true;
       return normalize(command.name).replace(/^\//, "").indexOf(needle) === 0;
     });
+    tagRows = [];
     selectedCommandIndex = Math.max(0, Math.min(selectedCommandIndex, commandRows.length - 1));
     resultBox.innerHTML = '<div class="zdd-command-panel">'
       + '<div class="zdd-command-prompt">Command Mode · type <code>/help</code> for all commands</div>'
@@ -569,16 +645,22 @@
     renderCommandOutput(command, title, body);
   }
 
-  function activateCommand(command) {
+  function completeCommand(command) {
     if (!command || !input) return;
-    if (command.fill) {
-      input.value = command.fill;
-      input.focus();
+    input.value = command.fill || command.name;
+    input.focus();
+    renderCommandPanel(input.value);
+  }
+
+  function completeTag() {
+    if (!input || !tagRows.length) return;
+    input.value = tagCompletionBase + tagRows[selectedTagIndex];
+    input.focus();
+    if (modes[modeIndex] === "Tag Mode") {
+      renderTagSearchPanel(input.value);
+    } else {
       renderCommandPanel(input.value);
-      return;
     }
-    input.value = command.name;
-    runCommand(command.name);
   }
 
   function randomPost(items) {
@@ -615,10 +697,7 @@
 
     if (name === "/tag") {
       if (!arg) {
-        var tags = allTags().slice(0, 24).map(function(tag) {
-          return '<a class="zdd-command-chip" href="tags/?tag=' + encodeURIComponent(tag) + '">#' + escapeHtml(tag) + '</a>';
-        }).join("");
-        renderCommandOutput(commandLine, "Tags", '<div class="zdd-command-chips">' + tags + '</div>');
+        renderTagCompletionPanel("/tag ", "", "/tag <tag>");
         return;
       }
       navigate("tags/?tag=" + encodeURIComponent(arg.replace(/^#/, "")));
@@ -707,27 +786,7 @@
       return;
     }
     if (mode === "Tag Mode") {
-      if (!query) {
-        resultBox.innerHTML = "";
-        resultBox.hidden = true;
-        return;
-      }
-      var seen = {};
-      var tags = [];
-      posts.forEach(function(post) {
-        (post.tags || []).forEach(function(tag) {
-          if (seen[tag] || normalize(tag).indexOf(query) < 0) return;
-          seen[tag] = true;
-          tags.push(tag);
-        });
-      });
-      tags = tags.sort().slice(0, 12);
-      resultBox.innerHTML = tags.map(function(tag) {
-        return '<a class="zdd-search-result zdd-tag-result" href="tags/?tag=' + encodeURIComponent(tag) + '">'
-          + '<span class="zdd-search-title">#' + escapeHtml(tag) + '</span>'
-          + '</a>';
-      }).join("");
-      resultBox.hidden = tags.length === 0;
+      renderTagSearchPanel(input.value);
       return;
     }
     var matches = posts.filter(function(post) {
@@ -736,6 +795,14 @@
     });
     resultBox.innerHTML = matches.slice(0, 8).map(postResult).join("");
     resultBox.hidden = matches.length === 0;
+  }
+
+  function moveSelection(rows, selected, direction) {
+    if (!rows.length) return selected;
+    selected += direction;
+    if (selected < 0) selected = rows.length - 1;
+    if (selected >= rows.length) selected = 0;
+    return selected;
   }
 
   if (form && input) {
@@ -752,22 +819,41 @@
 
     input.addEventListener("keydown", function(event) {
       if (modes[modeIndex] !== "Command Mode") {
+        if (modes[modeIndex] === "Tag Mode") {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            selectedTagIndex = moveSelection(tagRows, selectedTagIndex, event.key === "ArrowDown" ? 1 : -1);
+            renderTagSearchPanel(input.value);
+            return;
+          }
+          if (event.key === "Tab") {
+            event.preventDefault();
+            completeTag();
+            return;
+          }
+        }
         if (event.key === "Enter") {
           event.preventDefault();
           renderResults();
         }
         return;
       }
+
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
-        if (!commandRows.length) return;
-        selectedCommandIndex += event.key === "ArrowDown" ? 1 : -1;
-        if (selectedCommandIndex < 0) selectedCommandIndex = commandRows.length - 1;
-        if (selectedCommandIndex >= commandRows.length) selectedCommandIndex = 0;
+        if (tagRows.length) {
+          selectedTagIndex = moveSelection(tagRows, selectedTagIndex, event.key === "ArrowDown" ? 1 : -1);
+        } else {
+          selectedCommandIndex = moveSelection(commandRows, selectedCommandIndex, event.key === "ArrowDown" ? 1 : -1);
+        }
         renderCommandPanel(input.value);
       } else if (event.key === "Tab") {
         event.preventDefault();
-        activateCommand(commandRows[selectedCommandIndex]);
+        if (tagRows.length) {
+          completeTag();
+        } else {
+          completeCommand(commandRows[selectedCommandIndex]);
+        }
       } else if (event.key === "Escape") {
         resultBox.innerHTML = "";
         resultBox.hidden = true;
@@ -778,9 +864,15 @@
     });
 
     resultBox.addEventListener("click", function(event) {
+      var tagButton = event.target.closest(".zdd-tag-suggestion");
+      if (tagButton) {
+        selectedTagIndex = Number(tagButton.getAttribute("data-tag-index"));
+        completeTag();
+        return;
+      }
       var button = event.target.closest(".zdd-command-row");
       if (!button) return;
-      activateCommand(commandRows[Number(button.getAttribute("data-command-index"))]);
+      completeCommand(commandRows[Number(button.getAttribute("data-command-index"))]);
     });
 
     document.addEventListener("keydown", function(event) {
@@ -790,6 +882,7 @@
       if (modeIndex < 0) modeIndex = modes.length - 1;
       if (modeIndex >= modes.length) modeIndex = 0;
       selectedCommandIndex = 0;
+      selectedTagIndex = 0;
       updateMode();
       if (modes[modeIndex] === "Command Mode") {
         renderCommandPanel(input.value);
