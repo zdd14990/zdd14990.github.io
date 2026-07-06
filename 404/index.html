@@ -404,7 +404,14 @@ $$\nexists \ x \in \text{Server} \text{ s.t. } x = \text{YourRequest}$$
 <strong>Proof：</strong><br>
 这里本来有一些东西，可惜页面太小我写不下。
 </div>
-<p><a class="md-button md-button--primary" href="/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span> 返回首页</a></p>
+<div class="zdd-404-console">
+你主动来到了一片不存在的地方。
+</div>
+<div class="zdd-404-exits">
+<p><a class="md-button md-button--primary" href="/" onclick="event.preventDefault(); location.href='/?q=/random';"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17 3 5.25 4.5L17 12l5.25 4.5L17 21v-3h-2.74l-2.82-2.82 2.12-2.12L15.5 15H17V9h-1.5l-9 9H2v-3h3.26l9-9H17zM2 6h4.5l2.82 2.82-2.12 2.12L5.26 9H2z"/></svg></span> Random</a>
+<a class="md-button" href="/blog/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 5v14H5V5zm2-2H3v18h18zm-4 14H7v-1h10zm0-2H7v-1h10zm0-3H7V7h10z"/></svg></span> Blog</a>
+<a class="md-button" href="/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span> Home</a></p>
+</div>
 </div>
 
 
@@ -515,6 +522,85 @@ $$\nexists \ x \in \text{Server} \text{ s.t. } x = \text{YourRequest}$$
           document.body.classList.add("tag-layout");
       } else if (blogIndex !== -1) {
           document.body.classList.add("article-layout");
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      var historyKey = "zdd.articleHistory";
+      var zenKey = "zdd.zen";
+      var presetKey = "zdd.themePreset";
+      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
+
+      function readJson(key, fallback) {
+          try {
+              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+          } catch (e) {
+              return fallback;
+          }
+      }
+
+      function applyZen() {
+          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
+      }
+
+      function applyPreset() {
+          presetClasses.forEach(function(name) {
+              document.body.classList.remove(name);
+          });
+          var preset = localStorage.getItem(presetKey);
+          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
+              document.body.classList.add("zdd-theme-" + preset);
+          }
+      }
+
+      function rememberArticle() {
+          if (!document.body.classList.contains("article-layout")) return;
+          var titleNode = document.querySelector(".md-content__inner h1");
+          var item = {
+              url: window.location.pathname,
+              title: titleNode ? titleNode.textContent.trim() : document.title,
+              time: Date.now()
+          };
+          var history = readJson(historyKey, []).filter(function(entry) {
+              return entry && entry.url && entry.url !== item.url;
+          });
+          history.push(item);
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+      }
+
+      window.zddSetZen = function(enabled) {
+          if (enabled) {
+              localStorage.setItem(zenKey, "1");
+          } else {
+              localStorage.removeItem(zenKey);
+          }
+          applyZen();
+      };
+
+      window.zddReadArticleHistory = function() {
+          return readJson(historyKey, []);
+      };
+
+      window.zddSetThemePreset = function(preset) {
+          if (preset) {
+              localStorage.setItem(presetKey, preset);
+          } else {
+              localStorage.removeItem(presetKey);
+          }
+          applyPreset();
+      };
+
+      function refresh() {
+          applyZen();
+          applyPreset();
+          rememberArticle();
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(refresh);
+      } else {
+          document.addEventListener("DOMContentLoaded", refresh);
       }
   })();
   </script>

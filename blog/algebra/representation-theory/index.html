@@ -473,6 +473,85 @@
   })();
   </script>
   <script>
+  (function() {
+      var historyKey = "zdd.articleHistory";
+      var zenKey = "zdd.zen";
+      var presetKey = "zdd.themePreset";
+      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
+
+      function readJson(key, fallback) {
+          try {
+              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+          } catch (e) {
+              return fallback;
+          }
+      }
+
+      function applyZen() {
+          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
+      }
+
+      function applyPreset() {
+          presetClasses.forEach(function(name) {
+              document.body.classList.remove(name);
+          });
+          var preset = localStorage.getItem(presetKey);
+          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
+              document.body.classList.add("zdd-theme-" + preset);
+          }
+      }
+
+      function rememberArticle() {
+          if (!document.body.classList.contains("article-layout")) return;
+          var titleNode = document.querySelector(".md-content__inner h1");
+          var item = {
+              url: window.location.pathname,
+              title: titleNode ? titleNode.textContent.trim() : document.title,
+              time: Date.now()
+          };
+          var history = readJson(historyKey, []).filter(function(entry) {
+              return entry && entry.url && entry.url !== item.url;
+          });
+          history.push(item);
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+      }
+
+      window.zddSetZen = function(enabled) {
+          if (enabled) {
+              localStorage.setItem(zenKey, "1");
+          } else {
+              localStorage.removeItem(zenKey);
+          }
+          applyZen();
+      };
+
+      window.zddReadArticleHistory = function() {
+          return readJson(historyKey, []);
+      };
+
+      window.zddSetThemePreset = function(preset) {
+          if (preset) {
+              localStorage.setItem(presetKey, preset);
+          } else {
+              localStorage.removeItem(presetKey);
+          }
+          applyPreset();
+      };
+
+      function refresh() {
+          applyZen();
+          applyPreset();
+          rememberArticle();
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(refresh);
+      } else {
+          document.addEventListener("DOMContentLoaded", refresh);
+      }
+  })();
+  </script>
+  <script>
   document.addEventListener("DOMContentLoaded", function() {
       // 1. 创建进度条容器
       var progressBar = document.createElement("div");

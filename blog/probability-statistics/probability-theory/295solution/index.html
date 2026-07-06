@@ -376,7 +376,20 @@
 <ol>
 <li>Show that, when <span class="arithmatex">\(n,n_1,n_2 \to \infty\)</span> in such a way that <span class="arithmatex">\(n_1/n\)</span> tends to <span class="arithmatex">\(p \in (0,1)\)</span>, and <span class="arithmatex">\(r\)</span> remains fixed, the law of <span class="arithmatex">\(X\)</span> becomes close to the binomial <span class="arithmatex">\(\mathcal{B}(r,p)\)</span> distribution. Interpret this result.</li>
 </ol>
-<p><strong>Solution</strong> (3). Use </p>
+<p><strong>Solution.</strong> (3). Use Stirling's formula, we have</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\binom{n_1}{k}&amp;\sim \frac{\sqrt{2\pi n_1}(\frac{n_1}{e})^{n_1}}{k!\sqrt{2\pi (n_1-k)}(\frac{n_1-k}{e})^{n_1-k}}=\frac{n_1^k}{k!}\sqrt{\frac{n_1}{n_1-k}}\left(1-\frac{k}{n_1}\right)^{n_1-k}\sim \frac{n_1^k}{k!}e^{-k}\\
+\binom{n_2}{r-k}&amp;\sim \frac{n_2^{r-k}}{(r-k)!}e^{-(r-k)},\quad \binom{n}{r}\sim \frac{n^r}{r!}e^{-r}.
+\end{aligned}
+\]</div>
+<p>so that</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \mathbb{P}(X=k)&amp;\sim \frac{n_1^k}{k!}e^{-k}\frac{n_2^{r-k}}{(r-k)!}e^{-(r-k)}\frac{r!}{n^r}e^r\\
+    &amp;=\frac{r!}{k!(r-k)!}\left(\frac{n_1}{n}\right)^k\left(\frac{n_2}{n}\right)^{r-k}\sim \binom{r}{k}p^k(1-p)^{r-k}.
+\end{aligned}
+\]</div>
 <hr />
 <p><strong>Exercise 8.2</strong> Let <span class="arithmatex">\(n \geq 1\)</span> and <span class="arithmatex">\(r \geq 1\)</span> be integers. Suppose that we have <span class="arithmatex">\(n\)</span> balls and <span class="arithmatex">\(r\)</span> compartments numbered <span class="arithmatex">\(1,2,\ldots,r\)</span>.</p>
 <ol>
@@ -387,6 +400,92 @@
 <p>Show that, when <span class="arithmatex">\(r,n \to \infty\)</span> in such a way that <span class="arithmatex">\(r/n \to \lambda \in (0,\infty)\)</span>, the law <span class="arithmatex">\(\mu_{r,n}\)</span> becomes close to the Poisson distribution with parameter <span class="arithmatex">\(\lambda\)</span>.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> Let</p>
+<div class="arithmatex">\[
+\Omega=\{1,2,\ldots,r\}^n,
+\]</div>
+<p>where <span class="arithmatex">\(\omega=(\omega_1,\ldots,\omega_n)\in\Omega\)</span> means that the <span class="arithmatex">\(i\)</span>-th ball is placed in compartment <span class="arithmatex">\(\omega_i\)</span>. Take</p>
+<div class="arithmatex">\[
+\mathcal A=\mathcal P(\Omega),
+\qquad
+\mathbb P(\{\omega\})=\frac{1}{r^n},
+\quad \omega\in\Omega.
+\]</div>
+<p>Let <span class="arithmatex">\(X\)</span> be the number of balls placed in the first compartment. Then</p>
+<div class="arithmatex">\[
+X(\omega)=\sum_{i=1}^n \mathbf 1_{\{\omega_i=1\}}.
+\]</div>
+<p>For <span class="arithmatex">\(k=0,1,\ldots,n\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mu_{r,n}(\{k\})
+&amp;=
+\mathbb P(X=k) \\[4pt]
+&amp;=
+\frac{\binom nk (r-1)^{n-k}}{r^n} \\[4pt]
+&amp;=
+\binom nk
+\left(\frac1r\right)^k
+\left(1-\frac1r\right)^{n-k}=\mathcal B\left(n,\frac1r\right).
+\end{aligned}
+\]</div>
+<p>For the limiting distribution, fix <span class="arithmatex">\(k\in\mathbb N\)</span>. If</p>
+<div class="arithmatex">\[
+\frac rn\to \lambda\in(0,\infty),
+\]</div>
+<p>then</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mu_{r,n}(\{k\})
+&amp;=
+\binom nk
+\left(\frac1r\right)^k
+\left(1-\frac1r\right)^{n-k} \\[4pt]
+&amp;=
+\frac{n(n-1)\cdots(n-k+1)}{k!r^k}
+\left(1-\frac1r\right)^{n-k} \\[4pt]
+&amp;=
+\frac{1}{k!}
+\frac{n}{r}
+\frac{n-1}{r}
+\cdots
+\frac{n-k+1}{r}
+\left(1-\frac1r\right)^{n-k}.
+\end{aligned}
+\]</div>
+<p>Since <span class="arithmatex">\(k\)</span> is fixed,</p>
+<div class="arithmatex">\[
+\frac{n-j}{r}
+=
+\frac nr-\frac jr
+\to
+\frac1\lambda,
+\qquad j=0,1,\ldots,k-1,
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\left(1-\frac1r\right)^{n-k}
+=
+\exp\left((n-k)\log\left(1-\frac1r\right)\right)
+\to
+\exp\left(-\frac1\lambda\right).
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mu_{r,n}(\{k\})
+&amp;\to
+\frac1{k!}
+\left(\frac1\lambda\right)^k
+e^{-1/\lambda}.
+\end{aligned}
+\]</div>
+<p>So, under the condition <span class="arithmatex">\(r/n\to\lambda\)</span>,</p>
+<div class="arithmatex">\[
+\mu_{r,n}
+\to
+\operatorname{Poisson}\left(\frac1\lambda\right).
+\]</div>
 <hr />
 <p><strong>Exercise 8.3</strong></p>
 <ol>
@@ -692,6 +791,85 @@ Y_m=a+\rho^m(X_0-a).
           document.body.classList.add("tag-layout");
       } else if (blogIndex !== -1) {
           document.body.classList.add("article-layout");
+      }
+  })();
+  </script>
+  <script>
+  (function() {
+      var historyKey = "zdd.articleHistory";
+      var zenKey = "zdd.zen";
+      var presetKey = "zdd.themePreset";
+      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
+
+      function readJson(key, fallback) {
+          try {
+              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+          } catch (e) {
+              return fallback;
+          }
+      }
+
+      function applyZen() {
+          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
+      }
+
+      function applyPreset() {
+          presetClasses.forEach(function(name) {
+              document.body.classList.remove(name);
+          });
+          var preset = localStorage.getItem(presetKey);
+          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
+              document.body.classList.add("zdd-theme-" + preset);
+          }
+      }
+
+      function rememberArticle() {
+          if (!document.body.classList.contains("article-layout")) return;
+          var titleNode = document.querySelector(".md-content__inner h1");
+          var item = {
+              url: window.location.pathname,
+              title: titleNode ? titleNode.textContent.trim() : document.title,
+              time: Date.now()
+          };
+          var history = readJson(historyKey, []).filter(function(entry) {
+              return entry && entry.url && entry.url !== item.url;
+          });
+          history.push(item);
+          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+      }
+
+      window.zddSetZen = function(enabled) {
+          if (enabled) {
+              localStorage.setItem(zenKey, "1");
+          } else {
+              localStorage.removeItem(zenKey);
+          }
+          applyZen();
+      };
+
+      window.zddReadArticleHistory = function() {
+          return readJson(historyKey, []);
+      };
+
+      window.zddSetThemePreset = function(preset) {
+          if (preset) {
+              localStorage.setItem(presetKey, preset);
+          } else {
+              localStorage.removeItem(presetKey);
+          }
+          applyPreset();
+      };
+
+      function refresh() {
+          applyZen();
+          applyPreset();
+          rememberArticle();
+      }
+
+      if (window.document$ && document$.subscribe) {
+          document$.subscribe(refresh);
+      } else {
+          document.addEventListener("DOMContentLoaded", refresh);
       }
   })();
   </script>
