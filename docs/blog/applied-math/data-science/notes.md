@@ -1,0 +1,1382 @@
+---
+title: Notes
+date: 2025-11-27
+hide:
+  - navigation
+categories:
+  - 应用数学
+  - 数据科学专题
+tags:
+  - applied-math
+  - data-science
+  - notes
+---
+## 回顾
+!!! theorem "马尔可夫不等式"
+    对于任意非负随机变量 $X$ 和任意 $t>0$，有
+
+    $$
+    \mathbb{P}(X\geqslant t)\leqslant \frac{\mathbb{E} X}{t}
+    $$
+
+!!! definition "凸集"
+    设 $C\subseteq \mathbb{R}^n$。如果对于任意 $x,y\in C$ 和任意 $\theta\in[0,1]$，都有 $\theta x+(1-\theta)y\in C$，则称 $C$ 为凸集。
+
+!!! definition "凸函数"
+    设 $f:\mathbb{R}^n\to\mathbb{R}$。如果对于任意 $x,y\in \mathbb{R}^n$ 和任意 $\theta\in[0,1]$，都有
+
+    $$
+    f(\theta x+(1-\theta)y)\leqslant \theta f(x)+(1-\theta)f(y)
+    $$
+
+    则称 $f$ 为凸函数。
+
+!!! theorem "琴生不等式"
+    设 $X$ 为实值随机变量，$f:\mathbb{R}\to\mathbb{R}$ 为凸函数，且 $\mathbb{E}|X|<\infty$。则有
+
+    $$
+    f(\mathbb{E} X)\leqslant \mathbb{E} f(X)
+    $$
+
+!!! definition "凸共轭"
+    设 $f:\mathbb{R}^n\to\mathbb{R}\cup\{+\infty\}$。则 $f$ 的凸共轭 $f^*:\mathbb{R}^n\to\mathbb{R}\cup\{+\infty\}$ 定义为
+
+    $$
+    f^*(y) = \sup_{x\in\mathbb{R}^n} \langle y,x\rangle - f(x)
+    $$
+
+
+---
+
+## 累积量生成函数 (CGF)
+!!! definition "CGF"
+    设 $X$ 为实值随机变量，且对于所有 $\lambda$，$\mathbb{E} e^{\lambda X}$ 存在（可能为 $\infty$）。则 $X$ 的累积量生成函数定义为
+
+    $$
+    \psi_X(\lambda) = \log \mathbb{E} e^{\lambda X}
+    $$
+
+!!! lemma "CGF 模板引理"
+    设 $X$ 为实值随机变量，且 $\psi_X(\lambda)$ 为其 CGF。则对于所有 $t\in\mathbb{R}$，都有 
+    $$\mathbb{P}(X>t)\leqslant e^{-\psi_X^*(t)}$$，其中 $\psi^*(t) = \sup_{\lambda\geqslant 0}\lambda t - \psi(\lambda)$。
+
+??? proof "证明"
+    对于任意 $\lambda\geqslant 0$，由马尔可夫不等式有
+
+    $$
+    \begin{align*}
+    \mathbb{P}(X>t) &= \mathbb{P}(e^{\lambda X} > e^{\lambda t})\\
+    &\leqslant \frac{\mathbb{E} e^{\lambda X}}{e^{\lambda t}}\\
+    &= e^{-\lambda t + \psi_X(\lambda)}
+    \end{align*}
+    $$
+
+    对上式两边取 $\inf_{\lambda\geqslant 0}$ 即得所需结论。
+
+* 注意：不需要假设 $\mathbb{E} X=0$
+* “$\psi$ 的上界 $\implies \psi^*$ 的下界 $\implies$ 尾部概率的上界”
+
+!!! collary "CGF 模板引理的独立同分布版本"
+    设 $X_1,\ldots,X_n$ 为独立同分布的实值随机变量，且 $\psi_X(\lambda)$ 为其 CGF。则对于所有 $t\in\mathbb{R}$，都有
+
+    $$\mathbb{P}(X_1+\cdots+X_n>nt)\leqslant e^{-(n\psi)^*(nt)}=e^{-n\psi^*(t)}$$
+
+---
+
+### CGF 的性质
+
+* 除 0 以外可能为 $\infty$
+* 总是凸的
+* **练习 1.1**: 直接证明它，即使用凸性的原始定义。
+
+??? proof "证明"
+    设 $\lambda_1,\lambda_2\in\mathbb{R}$，$\theta\in[0,1]$。则
+
+    $$
+    \begin{align*}
+    \psi_X(\theta \lambda_1 + (1-\theta)\lambda_2) &= \log \mathbb{E} e^{(\theta \lambda_1 + (1-\theta)\lambda_2) X} \\
+    &= \log \mathbb{E} \left( e^{\lambda_1 X} \right)^\theta \left( e^{\lambda_2 X} \right)^{1-\theta} \\
+    &\leqslant \log \left( (\mathbb{E} e^{\lambda_1 X})^\theta (\mathbb{E} e^{\lambda_2 X})^{1-\theta} \right) \quad \text{（由琴生不等式）} \\
+    &= \theta \log \mathbb{E} e^{\lambda_1 X} + (1-\theta) \log \mathbb{E} e^{\lambda_2 X} \\
+    &= \theta \psi_X(\lambda_1) + (1-\theta) \psi_X(\lambda_2)
+    \end{align*}
+    $$
+
+    因此，$\psi_X$ 是凸函数。
+
+* **练习 1.2**: 通过证明 $\psi_X''(\lambda) = \text{Var}[Y]$ 来证明，其中 $Y$ 是“指数倾斜”的 $X$：$dF_Y(x)\propto e^{\lambda x}dF_X(x)$。
+
+??? proof "证明"
+    设 $M_X(\lambda) = \mathbb{E} e^{\lambda X}$，则 $\psi_X(\lambda) = \log M_X(\lambda)$。计算其一阶和二阶导数：
+
+    $$
+    \begin{align*}
+    \psi_X'(\lambda) &= \frac{M_X'(\lambda)}{M_X(\lambda)} = \frac{\mathbb{E}[X e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]} = \mathbb{E}[Y] \\
+    \psi_X''(\lambda) &= \frac{M_X''(\lambda) M_X(\lambda) - (M_X'(\lambda))^2}{(M_X(\lambda))^2} = \frac{\mathbb{E}[X^2 e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]} - \left( \frac{\mathbb{E}[X e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]} \right)^2 = \text{Var}[Y]
+    \end{align*}
+    $$
+
+    因此，$\psi_X''(\lambda) = \text{Var}[Y]$。
+* **练习 1.3 (选做)**: 通过证明 $\psi_X = u^*$ 来证明，其中 $u(a)$ 是以下规划的值：
+* 
+    $$
+    \begin{align*}
+    \text{min}&\,\,\text{KL}(Y\|X)\\
+    s.t.&\,\,\mathbb{E} Y =a
+    \end{align*}
+    $$
+
+??? proof "证明"
+    设 $u(a)$ 为上述规划的值。我们需要证明 $\psi_X(\lambda) = u^*(\lambda)$。首先，计算 $u(a)$ 的拉格朗日对偶函数：
+
+    $$
+    \begin{align*}
+    L(Y, \lambda) &= \text{KL}(Y\|X) + \lambda (\mathbb{E} Y - a) \\
+    &= \mathbb{E}_Y \left[ \log \frac{dY}{dX} \right] + \lambda (\mathbb{E}_Y[X] - a)
+    \end{align*}
+    $$
+
+    对 $Y$ 进行优化，得到：
+    
+    $$
+    \begin{align*}
+    u(a) &= \sup_{\lambda} \inf_Y L(Y, \lambda) \\
+    &= \sup_{\lambda} \left( -\lambda a + \inf_Y \mathbb{E}_Y \left[ \log \frac{dY}{dX} + \lambda X \right] \right)
+    \end{align*}
+    $$
+
+    通过计算内层的 $\inf_Y$，我们发现它等于 $-\log \mathbb{E}_X[e^{\lambda X}]$。因此，
+
+    $$
+    u(a) = \sup_{\lambda} (-\lambda a - \log \mathbb{E}_X[e^{\lambda X}]) = -\inf_{\lambda} (\lambda a + \psi_X(\lambda))
+    $$
+
+    这表明 $u(a) = -\psi_X^*(-a)$，从而得到 $\psi_X(\lambda) = u^*(\lambda)$。
+* 如果 $X,Y$ 独立，则 $\psi_{X+Y} = \psi_X + \psi_Y$
+* $\psi_{X+a}(\lambda) = \psi_X(\lambda)+a\lambda$
+* 注意，这解释了为什么模板引理中不需要假设 $\mathbb{E} X=0$。$\psi_X^*$ 会为我们处理这个问题。要看到这一点，请注意 $\psi_{X+a}(\lambda) = \psi_X(\lambda)+a\lambda$ 且 $\psi_{X+a}^*(t)=\psi_X^*(t-a)$，所以
+  
+    $$
+    \begin{align*}
+        \mathbb{P}(X+a>t)&\leqslant e^{-\psi_{X+a}^*(t)}\\
+        \mathbb{P}(X>t-a)&\leqslant e^{-\psi_{X}^*(t-a)}
+    \end{align*}
+    $$
+
+    两个左边相等，两个右边也相等。
+
+* $$
+    \begin{align*}
+    \psi_X(0) &= 0\\
+    \psi_X'(0) &= \mathbb{E} X\\
+    \psi_X''(0) &= \text{Var} X\\
+    \psi_X'''(0) &= \mathbb{E}[(X-\mathbb{E} X)^3]\\
+    \psi_X''''(0) &\neq \mathbb{E}[(X-\mathbb{E} X)^4]
+    \end{align*}
+    $$
+
+---
+
+### CGF 的例子
+
+!!! example "正态分布 (Normal)"
+    考虑标准正态分布 $N(0,1)$，其密度为 $\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}$。则其 CGF 为
+
+    $$
+    \psi_X(\lambda) = \frac{1}{2}\lambda^2, \quad \psi_X^*(t) = \frac{1}{2}t^2
+    $$
+
+!!! example "泊松分布 (Poisson)"
+    考虑参数为 $\lambda$ 的泊松分布 $\text{Po}(\lambda)$，其概率质量函数为 $\mathbb{P}(X=k) = e^{-\lambda}\frac{\lambda^k}{k!}$。则其 CGF 为
+
+    $$
+    \psi_{X-\mathbb{E} X}(\lambda) = e^\lambda - 1 - \lambda, \quad \psi^*(t)=h^*(t) = (1+t)\log(1+t) - t
+    $$
+
+!!! example "指数分布 (Exponential) 和拉普拉斯分布 (Laplace)"
+    考虑参数为 $1$ 的指数分布 $\text{Exp}(1)$，其密度为 $e^{-x}$（当 $x>0$ 时）。则其 CGF 为
+
+    $$
+    \psi_{X-\mathbb{E} X}(\lambda) = -\lambda - \log(1-\lambda), \quad \psi^*(t) = g^*(t) = g(-t)
+    $$
+
+    另外，考虑参数为 $(0,1)$ 的拉普拉斯分布 $\text{Lap}(0,1)$，其密度为 $\frac{1}{2}e^{-|x|}$。则其 CGF 为
+
+    $$
+    \psi_X(\lambda) = \log\frac{1}{1-\lambda^2} =: g^\pm(\lambda)
+    $$
+
+!!! example "伽马分布 (Gamma)"
+    考虑参数为 $(k,\theta)$ 的伽马分布 $\Gamma(k,\theta)$，其密度为 $\frac{1}{\Gamma(k)\theta^k}x^{k-1}e^{-x/\theta}$（当 $x>0$ 时）。则其 CGF 为
+
+    $$
+    \psi_{X-\mathbb{E} X}(\lambda) = k\left( -\lambda\theta - \log(1-\theta\lambda) \right) =: k g(\theta\lambda)
+    $$
+
+    若 $k$ 为自然数，则 $X_1+\cdots+X_k\sim \Gamma(k,\theta)$，其中 $X_i\sim\text{Exp}(1/\theta)$ 独立同分布。
+
+    $\chi_k^2=\Gamma(k/2,2)$，这里 $\chi_k^2$ 表示自由度为 $k$ 的卡方分布。
+
+!!! example "对称伽马分布 (Symmetric Gamma)"
+    考虑参数为 $(k,\theta)$ 的对称伽马分布 $\Gamma^\pm(k,\theta)$，其定义为 $Z-Z'$ 其中 $Z,Z'\sim\Gamma(k,\theta)$ 独立。则其 CGF 为
+
+    $$
+    \psi_{X}(\lambda) = k\log\frac{1}{1-\theta^2\lambda^2} =: k g^\pm(\theta\lambda)
+    $$
+
+    若 $k$ 为自然数，则 $X_1+\cdots+X_k\sim \Gamma^\pm(k,\theta)$，其中 $X_i\sim\text{Lap}(0,1/\theta)$ 独立同分布。
+
+!!! example "伯努利分布 (Bernoulli)"
+    考虑 参数为 $p$ 的伯努利分布 $\text{Ber}(p)$，其概率质量函数为 $\mathbb{P}(X=1)=p$，$\mathbb{P}(X=0)=1-p$。则其 CGF 为
+
+    $$
+    \psi_{X-\mathbb{E} X}(\lambda) = \log (1-p+pe^\lambda)-p\lambda, \quad \psi^*(t)=d(p+t\|p)
+    $$
+
+    其中 $d(q\|p) = \text{KL}\left(\text{Ber}(q)\|\text{Ber}(p)\right) = q\log \frac{q}{p}+(1-q)\log\frac{1-q}{1-p}$。
+
+!!! theorem "加法切诺夫界"
+    设 $X_1,\ldots,X_n$ 独立同分布，且均服从 $\text{Ber}(p)$。则对于所有 $\mathbb{E}psilon >0$，都有
+    $$\mathbb{P}\left(\frac{1}{n}\sum_{i=1}^n X_i \geqslant p+\mathbb{E}psilon\right) \leqslant \left[ \left(\frac{p}{p+\mathbb{E}psilon}\right)^{p+\mathbb{E}psilon} \left(\frac{1-p}{1-p-\mathbb{E}psilon}\right)^{1-p-\mathbb{E}psilon} \right]^n=e^{-n d(p+\mathbb{E}psilon\|p)}$$
+
+    $$\mathbb{P}\left(\frac{1}{n}\sum_{i=1}^n X_i \leqslant p-\mathbb{E}psilon\right) \leqslant \left[ \left(\frac{p}{p-\mathbb{E}psilon}\right)^{p-\mathbb{E}psilon} \left(\frac{1-p}{1-p+\mathbb{E}psilon}\right)^{1-p+\mathbb{E}psilon} \right]^n=e^{-n d(p-\mathbb{E}psilon\|p)}$$
+
+??? proof "证明"
+    由 CGF 模板引理的独立同分布版本，有
+
+    $$
+    \mathbb{P}\left(\frac{1}{n}\sum_{i=1}^n X_i \geqslant p+\mathbb{E}psilon\right) \leqslant e^{-n \psi^*(p+\mathbb{E}psilon)} = e^{-n d(p+\mathbb{E}psilon\|p)}
+    $$
+
+    同理可得下界。
+
+---
+
+假设 $\mathbb{E} X=0$
+
+| $X$ | $\psi_X$ | $\psi_X^*$ | $X^*$? |
+|:--------:|:--------:|:--------:|:--------:|
+|对于大 $t$, $\mathbb{P}(X>t)\approx e^{-ct}$| 极点在 $c$ | 在 $\infty$ 处 $\approx ct$ |
+|$\mathrm{esssup\,} X=c$| 在 $\infty$ 处 $\approx ct$  | 极点在 $c$ |
+| $\text{Var} X =$ | $\psi''(0)=$ | $\frac{1}{(\psi^*)''(0)}$ |
+
+这里 $\psi$ 在 $c$ 处是指 $\psi'(c-0)=\infty$。
+
+!!! property "断言"
+    $\sup\psi'=c$ 当且仅当 $\psi^*$ 在 $c$ 处有极点。
+
+证明这个断言需要如下两个引理：
+
+!!! lemma "引理"
+    设 $\psi$ 为一个 CGF。则 $\psi'$ 和 $(\psi^*)'$ 互为反函数。
+
+!!! lemma "引理 (包络)"
+    设 $g(x) = \sup_t f_t(x)$，则 $\nabla g(x) = \nabla f_{t^*}(x)$，其中 $t^*$（依赖于 $x$）是使得 $g(x) = \sup_t f_t(x) = f_{t^*}(x)$ 的指标。
+
+!!! definition "缩放 CGF"
+    令 $\psi$ 为一个 CGF，可以缩放输入/输出：
+
+    $$
+    \psi^{\sigma^2,b}(\lambda) = \frac{\sigma^2}{b^2}\psi(b\lambda)
+    $$
+
+一个自然的问题是从一个 CGF 开始，这两个缩放是否会给出另一个 CGF？事实上这当且仅当**无限可分 (infinitely divisible)**
+
+!!! definition "无限可分"
+    实值随机变量 $X$ 被称为无限可分的，如果对于所有 $n\in\mathbb{N}$，存在随机变量 $Y$ 使得 $X\stackrel{d}{=}Y_1+\cdots+Y_n$，其中 $Y_i$ 是 $Y$ 的独立同分布副本。
+
+
+!!! property "断言"
+    当 $X=$ 标准 G, P, $\Gamma$, $\Gamma^\pm$ 时，$\psi_{X}^{\sigma^2,b}$ 仍然是一个 CGF。
+
+* $X^{\sigma^2,b}$ 看起来像 $X$，但将其方差缩放了 $\sigma^2$，极点位置缩放了 $1/b$。
+    * $\psi_{\sigma^2,b}''(0) = \sigma^2\cdot \psi''(0)$
+    * 如果 $\psi$ 在 $c$ 处有极点，则 $\psi_{\sigma^2,b}$ 在 $c/b$ 处有极点
+
+---
+
+例子：
+
+$$
+\begin{align*}
+    N(0,1)^{\sigma^2,b} &= N(0,\sigma^2)\\
+    \Gamma(1,1)^{\sigma^2,b} &= \Gamma(\sigma^2/b^2,b)\\
+    \Gamma^\pm(1,1)^{\sigma^2,b} &= \Gamma^\pm(\sigma^2/b^2,b)\\
+    \mathrm{Po}(1)^{\sigma^2,b} &= b\cdot \mathrm{Po}(\sigma^2/b^2) 
+\end{align*}
+$$
+
+---
+
+* $\frac{\sigma^2}{b^2}\psi(b\lambda)$ 随 $\sigma>0$ 增加
+* 对于来自标准 P, $\Gamma$, $\Gamma^\pm$ 的 $\psi$，当 $\lambda\geqslant0$ 时，$\frac{\sigma^2}{b^2}\psi(b\lambda)$ 随 $b>0$ 增加。当 $\lambda\leqslant0$ 时，它随 $b>0$ 减小
+* $\psi_{\sigma^2,b}^*(t) = \frac{\sigma^2}{b^2}\psi^* \left(\frac{b t}{\sigma^2}\right)$
+
+---
+
+## subX
+
+!!! definition "subX"
+    设 $X$ 为标准 G, P, $\Gamma$, $\Gamma^\pm$ 之一。实值随机变量 $Z$ 被称为 subX，如果满足 $Z$ 的 CGF 被 $X$ 的 CGF 所控制，即 $\psi_Z(\lambda)\leqslant \psi_X(\lambda)$ 对于所有 $\lambda\in\mathbb{R}$ 成立。
+
+* 如果 $\psi_{Z}\leqslant \psi_{X-\mathbb{E} X}$，则 $Z$ 是 $(1,1)$-subX
+* 如果 $\psi_{Z}\leqslant \psi_{X^{\sigma^2,b}-\mathbb{E} X^{\sigma^2,b}}$，则 $Z$ 是 $(\sigma^2,b)$-subX
+* subG 要求对所有 $\lambda\in\mathbb{R}$，sub$P/\Gamma$ 仅要求对 $\lambda\geqslant0$。因此，$Z$ 是 subG $\implies\mathbb{E} Z=0$，但 $Z$ 是 sub$P/\Gamma$ 则不一定
+
+---
+
+| X | 标准 $X$| $\psi_{X-\mathbb{E} X}(\lambda)$ |  $Z$ 是 $(1,1)$-subX | 
+| -------- | -------- | -------- |-------- |
+| G | $N(0,1)$ |  $\frac{1}{2}\lambda^2$ |  $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \frac{1}{2}\lambda^2$ |
+| P | $\mathrm{Po}(1)$ |  $h(\lambda)=e^\lambda-1-\lambda$ |  $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant h(\lambda)$ |
+| $\Gamma$ | $\Gamma(1,1)$ | $g(\lambda) = -\lambda-\log(1-\lambda)$ |$\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant g(\lambda)$ |
+| $\Gamma^\pm$ | $\Gamma^\pm(1,1)$ | $g^\pm(\lambda) = -\log(1-\lambda^2)$ |$\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant g^\pm(\lambda)$ |
+
+---
+
+| X | $X^{\sigma^2,b}$| $\psi_{X^{\sigma^2,b}-\mathbb{E} X^{\sigma^2,b}}(\lambda)$ |  $Z$ 是 $(\sigma^2,b)$-subX | 
+| -------- | -------- | -------- |-------- |
+| G | $N(0,\sigma^2)$ |  $\frac{1}{2}\sigma^2\lambda^2$ |  $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \frac{1}{2}\sigma^2\lambda^2$ |
+| P | $b\cdot \mathrm{Po}(\sigma^2/b^2)$ |  $\frac{\sigma^2}{b^2}h(b\lambda)$ |  $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \frac{\sigma^2}{b^2}h(b\lambda)$ |
+|  $\Gamma$  | $\Gamma(\sigma^2/b^2,b)$ | $\frac{\sigma^2}{b^2}g(b\lambda)$ |$\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \frac{\sigma^2}{b^2}g(b\lambda)$ |
+| $\Gamma^\pm$ | $\Gamma^\pm(\sigma^2/b^2,b)$ | $\frac{\sigma^2}{b^2}g^\pm(b\lambda)$ |$\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \frac{\sigma^2}{b^2}g^\pm(b\lambda)$ |
+
+---
+
+### subX 的关键性质
+对于 X = G/P/$\Gamma$/$\Gamma^\pm$
+* 令 $c>0$。如果 $X$ 是 $(\sigma^2,b)$-subX，那么 $cX$ 是 $(c^2\sigma^2,cb)$-subX
+    (对于 subG，即使 $c<0$ 也成立)
+* **引理**: 如果 $\sigma_1<\sigma_2, b_1<b_2$，则 $(\sigma^2_1,b_1)$-subX 蕴含 $(\sigma_2^2,b_2)$-subX
+
+* **引理**: 如果 $X,Y$ 独立，且 $X$ 是 $(\sigma_1^2,b_1)$-subX, $Y$ 是 $(\sigma_2^2,b_2)$-subX,那么 $X+Y$ 是 $(\sigma_1^2+\sigma_2^2,b_1\vee b_2)$-subX
+
+* $X_i$ 是 $(1,1)$-subX, $a_i\geqslant 0\implies$ $\sum a_i X_i$ 是 $(|a|_2^2, |a|_\infty)$-subX
+* $X_i$ 是 1-subG $\implies$ $\sum a_i X_i$ 是 $|a|_2^2$-subG
+
+---
+
+### 关于威布尔 (Weibull) 分布的备注
+
+Weibull 分布 = Exp$(1)^{1/k}$，其尾部为 $\mathbb{P}(X>t)=e^{-x^{k}}$。这似乎是重尾分布的一个流行模型。我们不涉及它，因为它在 $k\geqslant 1$ 时有 CGF，但仅在 $k\leqslant 1$ 时是无限可分的。
+
+!!! theorem "定理"
+    以下命题等价 (TFAE)
+
+    * $\{k\psi:k>0\}\subseteq$ CGF
+    * $\{\frac{1}{n}\psi:n\in \mathbb{N}\}\subseteq$ CGF
+    * $\psi = \psi_X$ 对于某个无限可分的 $X$
+
+---
+
+### 关于其他 subX 的备注：subE(xponential)
+* $Z$ 是 $(\sigma^2,b)$-subE(xponential) (亚指数) 如果 $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant\frac{\sigma^2}{b^2}E(b\lambda)$
+* 这里 $E(x)=
+    \left\{
+    \begin{array}{ll}
+    \frac{1}{2}x^2, & \text{如果 } x \in[0,1],\\
+    +\infty, & \text{如果 } x > 1.
+    \end{array} \right.$
+* 当 $\lambda<1/b$ 时，$\frac{\sigma^2}{b^2}E(b\lambda)=\frac{1}{2}\sigma^2\lambda^2$，否则为 $\infty$。
+* $\sigma^2$ 再次是方差代理，而 $b$ 是极点参数。
+* 问题：$E$ 是某种分布的 CGF 吗？
+* $E^*(x)=\frac{1}{2}x^2\land (x-\frac{1}{2})$ 是 Huber 函数
+---
+
+### 关于其他 subX 的备注：subGamma
+* $Z$ 是 $(\sigma^2,\theta)$-subGamma 如果当 $\lambda<1/\theta$ 时，$\psi(\lambda)\leqslant\frac{\sigma^2}{\theta^2}g_1(\theta\lambda)=\frac{1}{2}\sigma^2\lambda^2\cdot\frac{1}{1-\theta\lambda}$。这里 $g_1(x)=\frac{x^2}{2(1-x)}$。$\sigma^2$ 再次是方差代理，$\theta$ 是极点参数。
+* 当 $x>0$ 时，$g_1^*(x)= 1+x-\sqrt{1+2x}$。
+
+---
+
+**引理**: 只要有意义，$\frac{1}{2}t^2\leqslant \substack{E(t)\\ h(t)}\leqslant g(t)\leqslant g_1(t)$。 
+由此可得 $\sigma^2$-subG$\implies\substack{ (\sigma^2, b )\text{-subP}\\(\sigma^2, b )\text{-subE}}\implies$ $(\sigma^2, b )$-sub$\Gamma\implies (\sigma^2, b )$-subGamma。subP 蕴含具有更大参数的 subE。它们在相同参数下不可比较。
+
+---
+## 一些定理
+### 极限定理
+
+* **中心极限定理 (CLT)**: 假设 $X$ 具有定义在 $\mathbb{R}$ 上的光滑 CGF，$\mathbb{E} X=0,\text{Var} X=\sigma^2$。那么 $\frac{X_1+\cdots +X_n}{\sqrt{n}}\implies N(0,\sigma^2)$
+* **泊松极限定理 (Poisson limit theorem)**: 假设 $X^{(n)}\in\{0,b\}$ 具有 $\text{Var} X^{(n)} = \frac{\sigma^2}{n}$ 且 $\mathbb{P}(X^{(n)}=0)>1/2$。那么 $X_1^{(n)}+\cdots+X_n^{(n)}\implies Y$，其中 $Y\sim b\cdot\mathrm{Poisson}(\frac{\sigma^2}{b^2})$。
+
+??? proof "证明"
+    设 $X^{(n)}$ 的分布为 $\mathbb{P}(X^{(n)}=b)=p_n$，$\mathbb{P}(X^{(n)}=0)=1-p_n$。由于 $\text{Var} X^{(n)} = b^2 p_n (1-p_n) = \frac{\sigma^2}{n}$，我们有 $p_n (1-p_n) = \frac{\sigma^2}{b^2 n}$。由于 $\mathbb{P}(X^{(n)}=0)>1/2$，我们可以解出 $p_n$，得到 $p_n \approx \frac{\sigma^2}{b^2 n}$ 当 $n$ 足够大时。
+
+    现在考虑 $X_1^{(n)}, \ldots, X_n^{(n)}$ 的和：
+    $$
+    S_n^{(n)} = X_1^{(n)} + \cdots + X_n^{(n)}
+    $$
+    由于每个 $X_i^{(n)}$ 独立同分布，我们有
+    $$
+    \mathbb{E}[S_n^{(n)}] = n p_n b \approx \frac{\sigma^2}{b}
+    $$
+    并且
+    $$
+    \text{Var}[S_n^{(n)}] = n p_n (1-p_n) b^2 = \sigma^2
+    $$
+
+    通过计算 CGF，我们可以看到当 $n \to \infty$ 时，$S_n^{(n)}$ 的分布趋近于 $b\cdot\mathrm{Poisson}(\frac{\sigma^2}{b^2})$ 的分布。
+
+---
+
+### Hoeffding
+
+!!! theorem "Hoeffding"
+   
+    $X\in [a,b], \mathbb{E} X = 0$ 则 $X$ 是 $\sigma^2 = \left(\frac{b-a}{2}\right)^2$-subG 
+
+??? proof "证明"
+    设 $m=\frac{a+b}{2}$，则 $X-m\in \left[-\frac{b-a}{2}, \frac{b-a}{2}\right]$ 且 $\mathbb{E}[X-m]=0$。因此，
+
+    $$
+    \text{Var} X = \text{Var}(X-m) = \mathbb{E}[(X-m)^2] \leqslant \left(\frac{b-a}{2}\right)^2
+    $$
+
+    设 $X$ 的分布为 $\mathbb{P}(X=x)=p(x)$，定义指数倾斜分布 $Y$，其概率密度函数为
+
+    $$
+    q(x) = \frac{e^{\lambda x} p(x)}{\mathbb{E}[e^{\lambda X}]}
+    $$
+
+    则 $Y$ 的期望为
+
+    $$
+    \mathbb{E}[Y] = \frac{\mathbb{E}[X e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]}
+    $$
+
+    通过计算，我们可以得到
+
+    $$
+    \psi_X(\lambda) = \log \mathbb{E}[e^{\lambda X}] = \int_0^\lambda \mathbb{E}[Y] d\lambda
+    $$
+
+    进一步计算可得
+
+    $$
+    \psi_X(\lambda) \leqslant \frac{(b-a)^2}{8} \lambda^2
+    $$
+
+    因此，$X$ 是 $\left(\frac{b-a}{2}\right)^2$-subG。
+
+---
+
+### Bennett 和 Bernstein
+
+!!! theorem "Bennett"
+    $X\in [-b,b], \mathbb{E} X = 0, \text{Var} X\leqslant \sigma^2$ 则 $X$ 是 $(\sigma^2,b)$-subP。
+
+??? proof "证明"
+    设 $X$ 的分布为 $\mathbb{P}(X=x)=p(x)$，定义指数倾斜分布 $Y$，其概率密度函数为
+
+    $$
+    q(x) = \frac{e^{\lambda x} p(x)}{\mathbb{E}[e^{\lambda X}]}
+    $$
+
+    则 $Y$ 的期望为
+
+    $$
+    \mathbb{E}[Y] = \frac{\mathbb{E}[X e^{\lambda X}]}{\mathbb{E}[e^{\lambda X}]}
+    $$
+
+    通过计算，我们可以得到
+
+    $$
+    \psi_X(\lambda) = \log \mathbb{E}[e^{\lambda X}] = \int_0^\lambda \mathbb{E}[Y] d\lambda
+    $$
+
+    进一步计算可得
+
+    $$
+    \psi_X(\lambda) \leqslant \frac{\sigma^2}{b^2} h(b\lambda)
+    $$
+
+    因此，$X$ 是 $(\sigma^2,b)$-subP。
+
+!!! theorem "Bernstein"
+    设 $X_1,\cdots,X_n$ 独立中心有界随机变量，即 $|X_i|\leqslant a$ 且 $\mathbb{E} X_i=0$，且满足 $\text{Var}X_i\leqslant \sigma^2$。则对于所有 $t>0$，都有
+
+    $$
+    \mathbb{P}\left( \sum_{i=1}^n X_i \geqslant t \right) \leqslant \mathbb{E}xp\left( -\frac{t^2}{2n\sigma^2 + \frac{2bt}{3}} \right)
+    $$
+
+??? proof "证明"
+    
+
+    $$
+    \sum_{k=2}^{\infty} \frac{x^k}{k!} = \frac{x^2}{2} + \frac{x^2}{2} \cdot \frac{x}{3} + \frac{x^2}{2} \cdot \frac{x}{3} \cdot \frac{x}{4} + \cdots
+    $$
+
+    $$
+    \le \frac{x^2}{2} + \frac{x^2}{2} \cdot \frac{x}{3} + \frac{x^2}{2} \left(\frac{x}{3}\right)^2 + \cdots = \frac{x^2}{2} \frac{1}{1 - x/3}
+    $$
+
+    $$
+    \Rightarrow e^{\lambda a} - 1 - \lambda a \le \frac{(\lambda a)^2}{2} \frac{1}{1 - \lambda a / 3}
+    $$
+
+    $$
+    \psi_X(\lambda) = \log \mathbb{E}[e^{\lambda X}] \le \log \left( 1 + (e^{\lambda a}-1-\lambda a)\frac{\sigma^2}{a^2} \right)\le (e^{\lambda a}-1-\lambda a)\frac{\sigma^2}{a^2} 
+    $$
+    
+    $$
+    \le \frac{\sigma^2}{a^2} \frac{(\lambda a)^2}{2} \frac{1}{1 - \lambda a / 3} = \frac{\lambda^2 \sigma^2}{2(1 - \lambda a / 3)}
+    $$
+
+    $$
+    \mathbb{P}(X_1 + \cdots + X_n > t) \le e^{-\lambda t} \prod \mathbb{E}[e^{\lambda X_i}]
+    $$
+
+    $$
+    \Rightarrow \log \mathbb{P}(X_1 + \cdots + X_n > t) \le -\lambda t + \sum \log \mathbb{E}[e^{\lambda X_i}] \le -\lambda t + n \cdot \frac{\lambda^2 \sigma^2}{2(1 - \lambda a / 3)}
+    $$
+
+    取 $\lambda = \frac{t}{n\sigma^2 + at/3}$ 得上式:
+
+    $$
+    = -\lambda t + \frac{n \lambda \sigma^2}{2} \frac{\lambda}{1 - \lambda a / 3}= -\lambda t + \frac{n \lambda \sigma^2}{2} \frac{t}{n \sigma^2} = -\frac{1}{2}\lambda t = -\frac{t^2}{2n\sigma^2 + 2at/3} 
+    $$
+
+!!! corollary "推论"
+    Bernoulli($p$) 是 $(\sigma^2 = p(1-p), b = p\vee(1-p))$-subP。
+
+??? proof "证明"
+    设 $X\sim \text{Bernoulli}(p)$，则 $\mathbb{E}[X] = p$，$\text{Var}[X] = p(1-p)$，且 $X$ 的取值范围为 $[0,1]$。因此，$X - \mathbb{E}[X]$ 的取值范围为 $[-p, 1-p]$。
+
+    根据 Bennett 定理，我们有
+    $$
+    \psi_{X - \mathbb{E}[X]}(\lambda) \leqslant \frac{p(1-p)}{(p \vee (1-p))^2} h((p \vee (1-p)) \lambda)
+    $$
+    因此，$X$ 是 $(\sigma^2 = p(1-p), b = p\vee(1-p))$-subP。
+
+!!! theorem "乘法 Chernoff 界"
+    设 $X_1,\ldots,X_n$ 独立变量取值为 $\left\{0,1 \right\}$，且均服从 $\text{Ber}(p)$，令 $\mu =\mathbb{E}\sum X_i $，则对于所有 $\delta >0$，都有
+
+    $$
+    \mathbb{P}\left(\sum_{i=1}^n X_i \geqslant (1+\delta)\mu\right) \leqslant \left(\frac{e^\delta}{(1+\delta)^{1+\delta}}\right)^\mu
+    $$
+
+    $$
+    \mathbb{P}\left(\sum_{i=1}^n X_i \leqslant (1-\delta)\mu\right) \leqslant \left(\frac{e^{-\delta}}{(1-\delta)^{1-\delta}}\right)^\mu
+    $$
+
+??? proof "证明"
+    
+    记 $S_n = \sum X_i$, $\mathbb{P}(X_i=1)=p_i$
+
+    $$
+    \mathbb{P}[S_n \ge (1+\delta)\mu] \le e^{-\lambda(1+\delta)\mu} \mathbb{E}[e^{\lambda S_n}]
+    $$
+
+    $$
+    \mathbb{E}[e^{\lambda S_n}] = \prod_i \mathbb{E}[e^{\lambda X_i}] = \prod_i (1 + p_i(e^\lambda - 1)) \le \prod_i e^{p_i(e^\lambda - 1)}= e^{\mu(e^\lambda - 1)}
+    $$
+
+    $$
+    \Rightarrow \mathbb{P}[S_n \ge (1+\delta)\mu] \le e^{-\lambda(1+\delta)\mu} e^{\mu(e^\lambda - 1)}= \mathbb{E}xp(\mu(e^\lambda - 1 - \lambda(1+\delta)))
+    $$
+
+    取 $\lambda = \log(1+\delta)$:
+
+    $$
+    = \mathbb{E}xp(-\mu((1+\delta)\log(1+\delta) - \delta))= \left( \frac{e^\delta}{(1+\delta)^{1+\delta}} \right)^\mu
+    $$
+
+    另一部分同理。
+
+<!-- 
+* CLT: 独立同分布和 $\approx$ 高斯 (Gaussian)
+* subG 的独立同分布和是 subG
+* Hoeffding: 有界随机变量的独立同分布和是 subG
+* 泊松极限: 独立同分布和 $\approx$ 泊松 (Poisson)
+* subP 的独立同分布和是 subP
+* Bennett: 有界随机变量的独立同分布和是 subP
+
+---
+
+### “Z 是 subX” 的结果
+* $N(0,\sigma^2)$ 是 $\sigma^2$-subG
+* Bernoulli($p$) 是 $(\sigma^2 = p(1-p), b = p\vee(1-p))$-subP 和 $1/4$-subG
+* $\mathrm{Po}(\lambda)$ 是 $(\sigma^2 = \lambda, b = 1)$-subP。
+* $\Gamma(k,\theta)$ 是 $(\sigma^2 = k\theta^2, b = \theta)$-sub$\Gamma$。
+* $X\sim N(0,1)\implies X^2\sim \Gamma(\frac{1}{2},2)$
+* $X$ 1-subG $\implies X^2 (2,2)$-sub$\Gamma$
+
+---
+
+* $X-\mathbb{E} X\leqslant b, \text{Var} X=\sigma^2\implies X$ 是 $(\sigma^2,b)$-subP
+* $X\in [\mu-\sigma,\mu+\sigma]\implies X$ 是 $\sigma^2$-subG
+
+---
+
+$X_1,\ldots,X_n$ 独立同分布 $\text{Var} X=\sigma^2$
+
+| 泊松 (Poisson) | 高斯 (Gauss) |
+| :--------: | :--------: |
+| $X\in\{0,b\}\implies \sum X_i\approx(n\sigma^2,b)$-P      | $\sum X_i\approx n\sigma^2$-G      |
+| $X-\mathbb{E} X\leqslant b\implies \sum X_i\leqslant_\psi(n\sigma^2,b)$-P      | $X\in [\mu-\sigma,\mu+\sigma]\implies \sum X_i\leqslant_\psi n\sigma^2$-G|
+| $X\sim\mathrm{Ber}(p)\implies \sum X_i\leqslant_\psi(np,1)$-P      | $X\sim\mathrm{Ber}(p)\implies \sum X_i\leqslant_\psi n/4$-G|
+
+---
+
+$\mathrm{Ber}(p)$ 是 $1/4$-subG $\implies d(p+t\|p)\geqslant 2t^2$
+
+---
+
+**备份材料**
+
+**引理 (Wick 公式)** $X,Y,Z,W$ 为零均值高斯随机变量，则
+$$\mathbb{E}[XYZW] = \mathbb{E}[XY]\mathbb{E}[ZW]+\mathbb{E}[XZ]\mathbb{E}[YW]+\mathbb{E}[XW]\mathbb{E}[YZ]$$
+
+**subG**
+* $G\sim N(0,1)^{\sigma^2,b} = N(0,\sigma^2)$
+* $Z$ 是 $\sigma^2$-subG 如果 $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \psi_G(\lambda)=\frac{1}{2}\sigma^2\lambda^2$
+
+**subP**
+* $X\sim\mathrm{Po}(1)^{\sigma^2,b} = b\cdot \mathrm{Po}(\sigma^2/b^2)$
+* $Z$ 是 $(\sigma^2,b)$-subP 如果 $\psi_{Z-\mathbb{E} Z}(\lambda)\leqslant \psi_{X-\mathbb{E} X}(\lambda)=\frac{\sigma^2}{b^2}h(b\lambda)$
+* 回忆 $h(t)=e^t-1-t$。在这种情况下，$\sigma^2=\text{Var}\,X$ 是方差，$b$ 是粒度（而不是极点）。
+
+**sub$\Gamma$**
+* $X\sim\Gamma(1,1)^{\sigma^2,b} = \Gamma(\sigma^2/b^2,b)$
+* $Z$ 是 $(\sigma^2,b)$-sub$\Gamma$ 如果 $\psi_{Z-\mathbb{E} Z}\leqslant \psi_{G-\mathbb{E} G}=\frac{\sigma^2}{b^2}g(b\lambda)$ 其中 $G\sim \Gamma(\frac{\sigma^2}{b^2},b)$。
+* $\Gamma(k,\theta)$ 是 $(k\theta^2,\theta)$-sub$\Gamma$
+
+**sub$\Gamma^\pm$**
+* $\Gamma^\pm(1,1)^{\sigma^2,b} = \Gamma^\pm(\sigma^2/b^2,b)$
+* $Z$ 是 $(\sigma^2,b)$-**sub$\Gamma^\pm$** 如果 $\psi_{Z-\mathbb{E} Z}\leqslant \psi_{G-\mathbb{E} G}=\frac{\sigma^2}{b^2}g^\pm(b\lambda)$ 其中 $G\sim \Gamma^\pm(\frac{\sigma^2}{b^2},b)$。
+* $\Gamma^\pm(k,\theta)$ 是 $(k\theta^2,\theta)$-sub$\Gamma^\pm$ -->
+
+## 二次型 (Quadratic form)
+
+---
+我们希望将 subG 性质推广到二次型 $X^T A X$。首先，我们回顾一维随机变量的性质：
+
+* 对于标准正态变量 $g \sim N(0,1)$，其平方 $g^2$ 服从卡方分布 $\chi^2(1)$，也就是 $\Gamma(\frac{1}{2}, 2)$，这对应于 $(2,2)$-sub$\Gamma$。
+* 推广来看，如果 $X$ 是 1-subG，那么其“中心化”平方 $X^2 - 1$ 也服从 $(2,2)$-sub$\Gamma$。
+
+注意到如果 $A$ 不是对称矩阵，则 $X^T A X = X^T \left(\frac{A + A^T}{2}\right) X$。因此，我们只需考虑对称矩阵 $A$。假设 $g$ 由相互独立的标准正态分量 $g_i \sim N(0,1)$ 组成，基于一维结果我们可以得到以下结论：
+
+* $g^T A g - \mathbb{E}[g^T A g]$ 满足 $(2\sum \lambda_i^2, \quad 2(\lambda_{\max} \vee 0))$-sub$\Gamma$。其中 $\lambda_i$ 是矩阵 $A$ 的特征值，$\lambda_{\max}$ 是其最大特征值。
+* 通过考虑 $-A$，可得 $g^T (-A) g - \mathbb{E}[g^T (-A) g]$ 满足 $(2\sum \lambda_i^2, \quad 2(-\lambda_{\min} \vee 0))$-sub$\Gamma$。
+
+在文献中，人们常粗略地使用谱半径 $\rho(A)$ 来代替上式中的 $\lambda_{\max} \vee 0$。虽然 $\rho(A)$ 书写简便，但它往往**不够精确**。考虑二次型 $Q = X^2 - 100Y^2$。该二次型的 **上尾部（upper tail）** 概率主要由 $X$（系数为 1）主导，因为 $-100Y^2$ 只会减小数值，不会导致正向的大偏差。如果我们使用 $\rho(A)$，它会取系数绝对值的最大值（即 100）。这将错误地暗示上尾部是由 $Y$ 主导的，从而给出一个过于宽松的界。
+
+??? proof "证明"
+    设 $g_i\sim N(0,1)$ 相互独立，$A$ 的特征值为 $\lambda_1,\ldots,\lambda_n$。则
+
+    $$
+    g^T A g = \sum_{i=1}^n \lambda_i g_i^2
+    $$
+
+    因此，
+
+    $$
+    g^T A g - \mathbb{E}[g^T A g] = \sum_{i=1}^n \lambda_i (g_i^2 - 1)
+    $$
+
+    根据一维结果，$g_i^2 - 1$ 是 $(2,2)$-sub$\Gamma$。由于 $g_i$ 独立，应用 sub$\Gamma$ 的性质可得
+
+    $$
+    g^T A g - \mathbb{E}[g^T A g] \text{ 是 } \left(2\sum_{i=1}^n \lambda_i^2, 2(\lambda_{\max} \vee 0)\right)\text{-sub}\Gamma
+    $$
+
+考虑 $X_i$ 是 1-subG，相互独立，均值为 0，那么 $X^T A X - \mathbb{E}[X^T A X]$ 是否也是 $(2\sum \lambda_i^2, 2(\lambda_{\max} \vee 0))$-sub$\Gamma$？如果 $X^T A X - \mathbb{E}[X^T A X] \leqslant_\psi g^T A g - \mathbb{E}[g^T A g]$，则该结论成立。然而，这个不等式并不总是成立。我们在这里主要关注 $X^T A X \leqslant_\psi g^T A g$ 的情况。
+
+当 $A\succ 0$ 为对角矩阵时，该不等式成立。此外，当 $A=\begin{bmatrix} 0 & B \\ B^{\mathsf T} & 0 \end{bmatrix}$（在排列变换下）时也成立。主要的难点在于，如果 $O$ 是正交矩阵，则 $Og$ 的分量是独立的，但 $OX$ 的分量通常不是独立的。
+
+* 若 $A$ 是带有 $\pm$ 元素的对角矩阵，则 $X^T A X - \text{tr} A$ 也是 $(2\|A\|_F^2, 2\rho(A))$-sub$\Gamma^\pm$。
+* 若 $X$ 是 $(\sigma^2,b)$-sub$\Gamma$，则 $-X$ 是 $(\sigma^2,b)$-sub$\Gamma^\pm$
+
+!!! theorem "Hanson-Wright 不等式"
+    假设 $X_i$ 是 1-subG，相互独立，均值为 0，那么 $X^TAX-\mathrm{tr} A$ 是 $(6\|A\|_F^2,6\rho(A))$-sub$\Gamma^\pm$
+
+!!! lemma "引理"
+    如果 $A$ 是对角矩阵，且元素为 $\pm$ 符号，$X_i$ 是 1-subG，相互独立，均值为 0。那么 $X^TAX - \mathrm{tr} A$ 是 $(2\|A\|_F^2, 2\rho(A))$-sub$\Gamma^\pm$
+
+### 解耦 (Decoupling)
+- 这种形式的 $A=\bigl[\begin{smallmatrix} 0 & B \\ B^{\mathsf T} & 0 \end{smallmatrix}\bigr]$ 可以“解耦”依赖关系
+
+!!! lemma "引理"
+    若 $f:\mathbb{R}\to\mathbb{R}$ 是凸函数，且 $A$ 是对称矩阵，且对角线元素为 0，那么 $\mathbb{E} f(X^TAX)\leqslant \text{max}_{I\subseteq[n]} f(X^T2A^IX)$，其中 $A^I$ 是通过将 $A$ 的 $I\times I$ 和 $I^c\times I^c$ 块置零而获得的
+
+!!! lemma "引理"
+    设 $A=\left[\begin{smallmatrix} 0 & B \\ B^{\mathsf T} & 0 \end{smallmatrix}\right]$ 是对称矩阵，$g_i\sim N(0,1)$ 相互独立，则 $g^TAg$ 是 $(\|A\|_F^2,2\rho(A))$-sub$\Gamma^\pm$
+
+- $(\sigma^2,b)$-sub$\Gamma^\pm\implies(2\sigma^2,b)$-sub$\Gamma$
+
+---
+
+回忆一些线性代数基础：
+
+- $\bigl[\begin{smallmatrix} 0 & B \\ B^{\mathsf T} & 0 \end{smallmatrix}\bigr]$ 的特征值为 $\pm s_1(B),\ldots,\pm s_{k}(B)$，其中 $s_i(B)$ 是 $B$ 的第 $i$ 个奇异值
+- 令 $M=\bigl[\begin{smallmatrix} A & B \\ B^{\mathsf T} & C \end{smallmatrix}\bigr]$ 为对称矩阵，且 $M_0 = \bigl[\begin{smallmatrix} 0 & B \\ B^{\mathsf T} & 0 \end{smallmatrix}\bigr]$。则 $\|M_0\|_2\leqslant \|M\|_2$
+
+---
+
+$X_i$ 是 1-subG，相互独立，均值为 0
+
+!!! theorem "Hanson-Wright"
+    $X^TAX-\mathrm{tr} A$ 是 $(6\|A\|_F^2,6\rho(A))$-sub$\Gamma^\pm$
+
+!!! lemma "引理"
+    设 $X_i$ 是 $(\sigma_i^2,b_i)$-subX，则
+
+    - $X_1+X_2$ 对于所有 $p\in[0,1]$ 都是 $(\sigma_p^2,b_p)$-subX，其中 $\sigma_p^2 = \frac{\sigma_1^2}{p}+\frac{\sigma_2^2}{1-p}, b_p = \frac{b_1}p\vee \frac{b_2}{1-p}$
+    - 如果 $X_1,X_2$ 相互独立，则 $X_1+X_2$ 是 $(\sigma_1^2+\sigma_2^2,b_1\vee b_2)$-subX
+    - $\sum X_i$ 是 $(n\sum\sigma_i^2,n\text{max} b_i)$-subX
+    - 如果 $X_i$ 相互独立，则 $\sum X_i$ 是 $(\sum \sigma_i^2,\text{max} b_i)$-subX
+    
+注：
+- 严格优于联合界
+- $X$ 是 $(\sigma^2,b)$-subX $\implies nX$ 是 $(n^2\sigma^2,nb)$-subX
+- $\sum X_i$ 的 subX 性质至少与 $nX$ 相当
+
+---
+## Lipschitz 函数
+### 强 Rayleigh 性质
+
+我们有若 $X_i$ 相互独立且服从伯努利分布 $\implies \sum X_i$ 是 $n/4$-subG 分布。
+
+!!! theorem "McDiarmid 不等式"
+    $X_i$ 相互独立且服从伯努利分布，$f:\{0,1\}^n\to\mathbb{R}$ 是 $1$-Lipschitz 函数 
+
+若 $X_i$ 服从具有负柱面性质 (Negative Cylinder Property, NCP) 的伯努利分布 $\implies \sum X_i$ 是 $n/4$-subG。这里负柱面性质是指 $\mathbb{E}\prod_{i\in I} X_i\leqslant \prod_{i\in I} \mathbb{E} X_i$。同时也要求对 $1-X_i$ 成立。
+
+一个重要的问题是 NCP 是否能推出某个 Lipschitz 函数的 subG？这是一个[未解决的问题](https://arxiv.org/abs/1108.0687)。
+
+我们下面将介绍一个更强的性质——强 Rayleigh 性质 (Strong Rayleigh Property)，它能推出 Lipschitz 函数的 subG。在此之前，先做一个比较。
+
+若 $X_i$ 相互独立且服从伯努利分布 $\implies \sum a_i X_i$ 是 $|a|_2^2/4$-subG。我们之后会得到$X_i\sim N(0,1)$ 相互独立 $\implies f(X_1,\ldots,X_n)$ 是 $\mathrm{Lip}(f)^2$-subG。两者之间的联系由对 $f:\mathbb{R}^n\to\mathbb{R}$ 有 $\mathrm{Lip}(f)^2=\sup_x\sum_i|\partial_i f(x)|^2$ 给出。
+
+!!! theorem "McDiarmid 不等式"
+    $X_i$ 相互独立且服从伯努利分布 $\implies f(X_1,\ldots,X_n)$ 是 $n\cdot\mathrm{Lip}(f)^2/4$-subG。
+
+注意这里对于 $f:\{0,1\}^n\to\mathbb{R}$，$\mathrm{Lip}(f)^2=\sup_x \sup_i|D_i f(x)|^2$，其中 $D_i f(x) = f(\ldots,x_i=1,\ldots)-f(\ldots,x_i=0,\ldots)$。因此 $Lip(f)^2$ 实际上是 $\ell_\infty$ 范数。
+
+给定一组取值为 $\mathbb{Z}^+$ 的随机变量 $X_1, \ldots, X_n$，相关的生成函数是定义如下的 $n$ 元多项式：
+
+$$
+F(x_1, \ldots, x_n) = \sum_{a_1, \ldots, a_n} \mathbb{P}(X_1 = a_1, \ldots, X_n = a_n) x_1^{a_1} \cdots x_n^{a_n}
+$$
+
+当变量 $\{X_n\}$ 是布尔型（Boolean）时，对应的生成函数是**多重仿射 (multi-affine)** 的：即没有任何变量的幂次高于 1。
+
+有一个计算集合 $A$ 中全为 1 的概率的有用恒等式：
+
+$$
+\mathbb{E} \prod_{k \in A} X_k = \frac{\partial}{\partial x_{k_1}} \cdots \frac{\partial}{\partial x_{k_r}} F(1, \ldots, 1)
+$$
+
+其中 $k_1, \ldots, k_r$ 枚举了集合 $A$ 中的元素。
+
+就生成函数而言，负相关 (NC) 可以表示为：
+
+$$
+\mathbb{E}X_i X_j \leq (\mathbb{E}X_i)(\mathbb{E}X_j) \iff F(1) \frac{\partial^2 F}{\partial x_i x_j}(1) \leq \frac{\partial F}{\partial x_i}(1) \frac{\partial F}{\partial x_j}(1) \quad (1)
+$$
+
+$\text{NC}^+$ 不仅要求上述不等式在 $(1, \ldots, 1)$ 处成立，还要求对于正卦限（positive orthant）内的所有点 $\mathbf{x}$ 都成立；这被称为 **Rayleigh 性质**。
+
+$$
+\mathbb{E}_{\mathbf{x}}X_i X_j \leq (\mathbb{E}_{\mathbf{x}}X_i)(\mathbb{E}_{\mathbf{x}}X_j) \iff F(\mathbf{x}) \frac{\partial^2 F}{\partial x_i x_j}(\mathbf{x}) \leq \frac{\partial F}{\partial x_i}(1) \frac{\partial F}{\partial x_j}(\mathbf{x}) \quad (2)
+$$
+
+!!! definition "强 Rayleigh"
+    如果 (2) 式对于所有的 $\mathbf{x} \in \mathbb{R}^n$ 都成立，而不仅仅是正卦限内的 $\mathbf{x}$，则具有生成函数 $F$ 的分布律 $\mathbb{P}$ 被称为 **强 Rayleigh (strong Rayleigh)**。换句话说，NC 在正或**负**外场下依然保持。
+
+事实上，理解 SR 不仅需要允许 $\mathbf{x}$ 为负数，还需要允许生成函数的变元为复数！
+
+如果函数 $F: \mathbb{C}^n \to \mathbb{C}$ 在 $\mathbb{H}^n$ 上非零，则称 $F$ 是**稳定 (stable)** 的，其中 $\mathbb{H}$ 是开上半平面。
+
+$\mathcal{B}_n$ 上概率测度的生成函数是**多重仿射 (multi-affine)** 的，意味着每个单项式中每个变量的次数为 0 或 1。强 Rayleigh 性质发展中的一个关键结果是：
+
+!!! theorem "(Borcea, Branden and Liggett, 2009, Lemma 4.1)"
+    $\mathbb{P}$ 是 SR 当且仅当其生成函数 $F$ 是稳定的。
+
+---
+假设 $X_i$ 相互独立
+- $X_i$ 是 1-subG $\small\implies \sum a_i X_i$ 是 $\small|a|_2^2$-subG
+- $X_i$ 是 $\small(1,1)$-subX $\small\implies \sum a_i X_i$ 是 $\small(|a|_2^2, |a|_\infty)$-subX，其中 X 可以是 Gauss/Poisson/Gamma分布
+- $X_i$ 是 1-subG $\small\implies X^TAX$ 是 $\small(\|4A\|_F^2, \|4A\|_{\mathrm{op}})$-sub$\Gamma$
+
+定义 $\small\mathrm{Lip}_p(f):=\sup_{x}|\nabla f(x)|_p$
+- $X_i$ 是 1-subG$\implies f(X)$ 是 $\small\mathrm{Lip}_2^2(f)$-subG
+- $X_i$ 是 $(1,1)$-$\Gamma\implies$ $f(X)$ 是 $\small(\mathrm{Lip}_2^2(f),\mathrm{Lip}_\infty(f))$-sub$\Gamma$
+
+---
+
+条件累积生成函数 (Conditional CGF) 的推论
+
+- Hoeffding：独立有界变量之和是 subG
+- Azuma：条件有界 MDS (鞅差序列) 之和是 subG
+- Bennett/Bernstein：独立有界/方差受控变量之和是 subP (亚泊松)
+- Freedman：条件有界/方差受控 MDS 之和是 subP
+- McDiarmid：应用于 Doob MDS 的 Azuma 不等式
+
+---
+
+!!! lemma "条件 CGF 引理"
+    设 $X\in\mathcal{F}$，$Y$ 为任意随机变量，则
+
+    $$
+    \psi_{X+Y}(t) \leqslant \psi_X(t) + \|\psi_{Y|\mathcal{F}}\|_\infty
+    $$
+    
+    其中 $\psi_{Y|\mathcal{F}}(t) = \log \mathbb{E}[e^{tY} | \mathcal{F}]$。
+
+对比来看：
+
+-
+
+$$
+\begin{align*}
+	\psi_{X+Y}&\leqslant \psi_X +\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_\infty\\
+	\psi_{X+Y}&= \psi_X +\underbrace{\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_1}_{\psi_Y}\text{ 若 } Y \text{ 独立于 }\mathcal{F}
+\end{align*}
+$$
+
+- 若 $Y$ 独立于 $\mathcal{F}$，则 $\|e^{\psi_{Y\mid\mathcal{F}}}\|_\infty = \|e^{\psi_{Y\mid\mathcal{F}}}\|_1$
+
+---
+
+$X_1,\ldots,X_n$ 相互独立，$\sigma^2=\sum\sigma_k^2$
+
+- Hoeffding：
+    - $X_k\in[\mu_k-\sigma_k,\mu_k+\sigma_k], \mu_k\in\mathbb{R},\sigma_k\in\mathbb{R}$
+    - $\implies \sum X_k$ 是 $\sigma^2$-subG
+- Bennett/Bernstein：
+    - $X_k\leqslant b,b\in\mathbb{R}$
+    - $\mathrm{Var}[X_k]\leqslant \sigma_k^2$
+    - $\implies \sum X_k$ 是 $(\sigma^2,b)$-subP
+
+---
+
+$X_1,\ldots,X_n$ 是关于 $\{\mathcal{F}_k\}_{k\leqslant n}$ 的鞅差序列 (MDS)，$\sigma^2=\sum\sigma_k^2$
+
+- Azuma：
+    - $X_k\in[\mu_k-\sigma_k,\mu_k+\sigma_k], \mu_k\in\mathcal{F}_{k-1},\sigma_k\in\mathbb{R}$
+    - $\implies \sum X_k$ 是 $\sigma^2$-subG
+- (弱) Freedman：
+    - $X_k\leqslant b,b\in\mathbb{R}$
+    - $\mathrm{Var}\big[X_k\mid\mathcal{F}_{k-1}\big]\leqslant \sigma_k^2$
+    - $\implies \sum X_k$ 是 $(\sigma^2,b)$-subP
+
+---
+
+McDiarmid 不等式
+
+- $X_i$ 独立 $\implies f(X_1,\ldots,X_n)$ 是 $\sum_i\sup_x|D_if(x)|^2$-subG
+- 其中 $|D_i f(x)| = \frac12(\sup_z-\inf_z)\,f(\ldots,x_{i-1},z,x_{i+1},\ldots)$
+
+---
+
+我们是否真的用到了独立性？
+
+---
+
+定义 $\mathbb{R}^n$ 上的加权汉明度量：$\mathrm{d}_w(x,y) = \sum w_i \mathbf{1}_{x_i\neq y_i}$
+
+定义 $f:\mathbb{R}^n\supseteq\Omega\to\mathbb{R}$。其关于 $\mathrm{d}_w$ 的 Lip 常数为
+
+$$
+\mathrm{Lip}_{\mathrm{d}_w}(f) = \sup_i \frac{\sup_x |D_i f(x)|}{w_i}
+$$
+
+其中 $|D_i f(x)| = \frac12(\sup_z-\inf_z)\,f(\ldots,x_{i-1},z,x_{i+1},\ldots)$
+
+!!! theorem "McDiarmid 不等式"
+    $X_i$ 独立 $\implies f(X_1,\ldots,X_n)$ 是 $|w|_2^2\cdot\mathrm{Lip}_{\mathrm{d}_w}(f)^2$-subG
+
+!!! claim "断言"
+    $\sum_i\sup_x|D_if(x)|^2=\min_w |w|_2^2\cdot\mathrm{Lip}_{\mathrm{d}_w}(f)^2$
+
+
+---
+## 熵方法 (Entropy Method)
+
+  - 什么是 Log-Sobolev (对数索伯列夫) / Poincaré (庞加莱) 不等式？
+  - 什么是 Sobolev 不等式？
+  - 熵 (entropy) 在哪里？
+
+-----
+
+### 广义 LSI 
+
+!!! definition "熵"
+    $\mathrm{Ent}^\Phi_\mu[f] = \mathbb{E}[\Phi\circ f] - \Phi(\mathbb{E} f)$
+
+!!! definition "广义 LSI (gLSI)"
+    对于所有 Lipschitz 函数 $f$，$\mathrm{Ent}^\Phi_\mu[\phi^{-1}\circ f]\leqslant \tfrac C2\cdot\mathbb{E}|\nabla f|^2$，其中 $(\phi')^2=\Phi''$
+
+- 若 $\Phi(x)=\frac12x^2$，则 $\phi(x)=x,\phi^{-1}\circ f = f$，左边变为 $\mathrm{Ent}^{x\mapsto \frac12x^2}_\mu[f] = \frac12 \mathrm{Var}_\mu [f]$ (Poincaré)
+- 若 $\Phi(x)=x\log x$，则 $(\phi')^2=x\mapsto 1/x, \phi(x)=2\sqrt x, \phi^{-1}\circ f = f^2/4$，左边变为 $\mathrm{Ent}^{x\mapsto x\log x}_\mu[f^2/4]$ (标准 LSI)
+- $\mathrm{Ent}^\Phi[1+\varepsilon f] = \frac12 \varepsilon^2\cdot\Phi''(1)\mathrm{Var}[f]+o(\varepsilon^2)$
+
+-----
+
+### $\Phi$-熵即 $\Phi$-散度 ($\Phi$-divergence)
+
+  - 回顾 KL 散度也被称为相对熵 (relative entropy)
+   
+    $$
+    D_\mathrm{KL}(P\|Q)=\mathbb{E}_P [\log \frac{\mathrm{d} P}{\mathrm{d} Q}]=\mathbb{E}_Q [\frac{\mathrm{d} P}{\mathrm{d} Q}\log \frac{\mathrm{d} P}{\mathrm{d} Q}]
+    $$
+
+  - 更一般地，$f$-散度定义为：
+    
+    $$
+    D_f(P\|Q)=\mathbb{E}_Q [f \frac{\mathrm{d} P}{\mathrm{d} Q}]
+    $$
+  
+    - $D_{x\mapsto x\log x}(P\|Q) = D_\mathrm{KL}(P\|Q)$
+  - 假设 $\mathbb{E}_\mu f =1, f\geqslant 0$，则
+   
+    $$
+    D_\Phi(f\mathrm{d}\mu\|\mathrm{d}\mu)=\mathrm{Ent}_\mu^\Phi(f)
+    $$
+
+-----
+
+### 例子
+
+  - $\mu=N(0,1)$ 满足 LSI(1) (因此也满足 Poincaré(1))
+  - $\mu=\mathrm{Lap}(0,1)$ (拉普拉斯分布) 满足 Poincaré(4)
+
+-----
+
+### 定理
+
+  - [Herbst] LSI 测度上的 1-Lipschitz 函数是 1-subG (1-亚高斯)
+  - [Aida-Stroock] Poincaré 测度上的 1-Lipschitz 函数是 $(1,\frac12)$-sub$\Gamma$ (亚伽马)
+  - $C$-LSI 测度上的 $L$-Lipschitz 函数是 $\sigma^2=CL^2$-subG
+  - $C$-Poincaré 测度上的 $L$-Lipschitz 函数是 $\sigma^2=CL^2, \frac12 \sqrt{C}L$-sub$\Gamma$
+
+-----
+
+### 另一种推广
+
+  - 在 gLSI/LSI/Poincaré 中使用 $\Gamma(f,g)=\langle \nabla f,\nabla g\rangle$：
+    对于所有 Lipschitz 函数 $f$，$\mathrm{Ent}^\Phi_\mu[\phi^{-1}\circ f]\leqslant \tfrac C2\cdot\mathbb{E}\Gamma(f,f)$
+  - $\Gamma(\cdot,\cdot)$ 被称为 **Carre du champ**，意为“梯度的平方” (square of gradient)
+
+我们还有链式法则：
+
+$$
+    \begin{align*}
+    \Gamma(f,\phi\circ g) &= \langle \nabla f, \nabla(\phi\circ g) \rangle \\
+    &= \langle \nabla f, (\phi'\circ g) \nabla g \rangle \\
+    &= (\phi'\circ g) \langle \nabla f, \nabla g \rangle \\
+    &= \Gamma(f,g) \cdot (\phi'\circ g)
+    \end{align*}
+$$
+
+-----
+
+!!! theorem "Efron-Stein(-Steele) 不等式"
+    对于 $X_{1:n}$ 相互独立的随机元素，$\mathrm{Var} f(X_{1:n})\leqslant \mathbb{E} \sum_{i=1}^n \mathrm{Var}_i\, f(X_{1:n})$，其中
+
+    - $f(X_{1:n}):=f(X_1,\ldots, X_n)$
+    - $\mathbb{E}_i f(X_{1:n}) = \mathbb{E}[f(X_{1:n})\mid\text{除了 } X_i \text{ 以外的所有变量}]$
+    - $\mathrm{Var}_i\,f(X_{1:n}) = \mathbb{E}_i\big(\,f(X_{1:n})-\mathbb{E}_i f(X_{1:n})\,\big)^2$
+
+
+  <!-- - **证明计划**:
+      - $n=2$ 时：$\mathrm{Var} f(X,Y)\leqslant \mathbb{E}_Y \mathrm{Var}_X \,f + \mathbb{E}_X \mathrm{Var}_Y \,f$
+      - 对一般 $n$ 使用归纳法 ($X\leftarrow X_1, Y\leftarrow X_{2:n}$)。 -->
+
+
+---
+
+### 张量化 (Tensorization)
+
+!!! definition "张量化"
+    如果对于任意两个概率测度 $\mu_1$ 和 $\mu_2$，满足下式，则称 $\mathrm{Ent}^\Phi$ 是**次可加的 (sub-additive) / 可张量化的 (tensorizes)**：
+
+    $$
+    \mathrm{Ent}^\Phi_{\mu_1\times \mu_2} (f)\leqslant \mathbb{E}_{\mu_1}[\mathrm{Ent}^\Phi_{\mu_2}(f)]+\mathbb{E}_{\mu_2}[\mathrm{Ent}^\Phi_{\mu_1}(f)]
+    $$
+
+因此，对于任意 $\mu_1,\ldots,\mu_n$，$\mathrm{Ent}^\Phi_{\prod\mu_i} (f)\leqslant \sum\mathbb{E}[\mathrm{Ent}^\Phi_{\mu_i}(f)]$。而由 Efron-Stein 不等式可知，$\mathrm{Var}=\mathrm{Ent}^{x\mapsto x^2}$ 是可张量化的。进而有个很自然的问题：对于什么样的 $\Phi$，$\mathrm{Ent}^\Phi$ 是可张量化的？
+
+!!! proposition "命题"
+    当且仅当 $1/\Phi''$ 为凹函数时，$\mathrm{Ent}^\Phi$ 可张量化
+
+<!-- 1.  $\mathrm{Ent}_{\mu_1\times\cdots\times\mu_n}[f] = \sum_{i=1}^n \mathbb{E}_1\circ\cdots\circ\mathrm{Ent}_i\circ\cdots\circ\mathbb{E}_n\circ f$
+2.  $\mathrm{Ent}^\Phi$ 可张量化当且仅当它是一个凸泛函 (convex functional)
+3.  $\mathrm{Ent}^\Phi$ 是凸的当且仅当 Bregman 散度 $D_{\mathrm{Ent}^\Phi}(f,g)\geqslant0$
+4.  $D_{\mathrm{Ent}^\Phi}(f,g)=\mathbb{E} D_\Phi(f,g)-D_\Phi(\mathbb{E} f,\mathbb{E} g)$
+5.  $D_\Phi$ 是联合凸的当且仅当 $1/\Phi''$ 是凹函数
+6.  $\det\textrm{Hess } D_\Phi(x,y) = \Phi''(x)\Phi''(y)^2\cdot D_{-1/\Phi''}(x,y)$
+ -->
+
+??? proof "证明"
+
+    $$
+    \begin{align*}
+    \text{Ent}^\Phi \text{tensorizes} &\iff \text{Ent}^\Phi(f) \text{凸}\\
+    &\iff \forall f, g, \quad D_{\text{Ent}^\Phi}(f, g) \ge 0\\
+    &\iff \forall f, g, \quad \mathbb{E} D_\Phi(f, g) \ge D_\Phi(\mathbb{E}f, \mathbb{E}g) \quad \tag{1}
+    \end{align*}
+    $$
+
+    此即 Jensen 应用于 $(x, y) \mapsto D_\Phi(x, y)$
+
+    而 $\det \text{Hess } D_\Phi = \Phi''(x)\Phi''(y) \left[ \frac{1}{\Phi''(y)} - \frac{1}{\Phi''(x)} - (\frac{1}{\Phi''})'(y)(x-y) \right]$
+
+    故
+
+    $$
+    \begin{align*}
+        (1)&\iff \frac{1}{\Phi''(y)} - \frac{1}{\Phi''(x)} - (\frac{1}{\Phi''})'(y)(x-y) \ge 0\\
+        &\iff D_{-\frac{1}{\Phi''}}(x, y) \ge 0\\
+        &\iff -\frac{1}{\Phi''} \text{ 是凸的} \iff \frac{1}{\Phi''} \text{ 是凹的}
+    \end{align*}
+    $$
+<!-- -----
+
+### 类型分析 (Type analysis) (Haskell/Agda/Lean...)
+
+  - $\mathrm{Ent}_{\mu_1\times\mu_2}[f] = \mathbb{E}_1 \circ \mathrm{Ent}_2\circ f + \mathrm{Ent}_1\circ \mathbb{E}_2\circ f$
+  - 这甚至是什么意思？$\mathbb{E}_2$ 将什么映射到了什么？
+  - **柯里化 (Currying)**:
+      - $f:X\times Y\to Z$，同时将 $f$ 应用于两个参数
+      - $f(x,\cdot): Y\to Z$
+      - 应用于第一个参数产生一个类型为 $W=(Y\to Z)$ 的对象
+      - 所以 $f: X\to W$ 即 $f: X\to (Y\to Z)$
+      - 按照右结合的约定，$f: X\to Y\to Z$ -->
+<!-- 
+-----
+
+### 类型的详细分析
+
+$\mathrm{Ent}_{\mu_1\times\mu_2}[f] = \mathbb{E}_1 \circ \mathrm{Ent}_2\circ f + \mathrm{Ent}_1\circ \mathbb{E}_2\circ f$
+
+$$
+\begin{align*}
+\mathrm{Ent}_{\mu_1\times\mu_2}&: (\Omega_1\times\Omega_2\to\mathbb{R})\to\mathbb{R}\\ 
+f&: \Omega_1\times\Omega_2\to\mathbb{R}\\
+\mathbb{E}_i, \mathrm{Ent}_{\mu_i}&: (\Omega_i\to\mathbb{R})\to\mathbb{R}\\
+\mathrm{Ent}_2\circ f&: \Omega_1\to\mathbb{R}\\
+\mathbb{E}_1 (\mathrm{Ent}_2\circ f)&: \mathbb{R}\\
+\mathrm{Ent}_2\circ f&: ,,?\to\Omega_1\to\mathbb{R}\\
+\mathbb{E}_1 \circ\mathrm{Ent}_2\circ f&: ,,?\to\mathbb{R}\\
+&:\mathbb{R}\\ 
+\mathbb{E}_1 \circ\mathrm{Ent}_2\circ \cdot&: (\Omega_1\times\Omega_2\to\mathbb{R})\to\mathbb{R}
+\end{align*}
+$$
+
+所以左边 (LHS) 和右边 (RHS) 是相同的类型！ -->
+
+-----
+
+我们的最终目标是在高斯空间中建立 $\Phi$-对数索伯列夫不等式（Gaussian $\Phi$-LSI）。寻找一个凸函数 $\Phi$，使得对于标准正态分布 $X \sim N(0,1)$ 和任意光滑函数 $f$，满足以下不等式（常数 $C=1$）：
+
+$$
+\mathrm{Ent}^\Phi [\phi^{-1}\circ f(X)] \leqslant \frac12\mathbb{E}\big(f'(X)\big)^2
+$$
+
+其中 $\mathrm{Ent}^\Phi$ 是基于 Bregman 散度定义的熵泛函。
+
+### Bregman 散度与 $\Phi$-熵
+
+* **Bregman 散度**：
+    给定凸函数 $F$，点 $x$ 和 $y$ 之间的 Bregman 散度定义为：
+
+    $$
+    D_F(x,y) = F(x) - F(y) - \langle\nabla F(y),x-y\rangle
+    $$
+
+    直观上，这是函数 $F$ 在 $x$ 处的值与其在 $y$ 处的一阶泰勒展开值之间的差。
+
+* **$\Phi$-熵泛函 ($\mathrm{Ent}^\Phi$)**：
+    基于 Bregman 散度，我们可以定义随机变量函数的 $\Phi$-熵。其一般的类型分析形式为：
+    
+    $$
+    D_{\mathrm{Ent}^\Phi}(f,g)=\mathbb{E} D_\Phi(f,g)-D_\Phi(\mathbb{E} f,\mathbb{E} g)
+    $$
+
+    在 $\Phi$-LSI 的语境下，我们关注的是特定的 $\Phi$-熵形式 $\mathrm{Ent}^\Phi[Z]$。
+
+---
+
+### Rademacher $\Phi$-LSI
+
+我们在最简单的概率空间上考虑这个问题：$\Omega = \{-1, +1\}$，且 $P(+1)=P(-1)=1/2$。令 $\varepsilon$ 为该空间上的随机变量。在连续空间 $\mathbb{R}$ 中，能量通常由导数的平方 $f'(x)^2$ 描述。在离散空间或一般空间中，我们需要推广这一概念，称为 **Carré du Champ** 算子 $\Gamma(f,f)$。
+
+* **$\mathbb{R}$ (连续)**: $\Gamma(f,g)(x) = f'(x)g'(x)$
+* **$\mathbb{R}^n$ (高维连续)**: $\Gamma(f,g)(x) = \langle \nabla f(x), \nabla g(x) \rangle$
+* **$\{\pm 1\}$ (离散)**:
+ 
+    $$
+    \Gamma(f,g)(\varepsilon) = \frac{f(\varepsilon)-f(-\varepsilon)}{2} \cdot \frac{g(\varepsilon)-g(-\varepsilon)}{2}
+    $$
+
+    特别地，对于方差（即 $L^2$ 能量），我们有：
+
+    $$
+    \Gamma(f,f) = \left(\frac{f(+1)-f(-1)}{2}\right)^2 \implies \mathbb{E}[\Gamma(f,f)] = \mathrm{Var}(f)
+    $$
+
+对于 $\varepsilon \sim \pm 1$，Rademacher $\Phi$-LSI 不等式形式为：
+
+$$
+\mathrm{Ent}^\Phi [\phi^{-1}\circ f(\varepsilon)] \leqslant \frac12\mathbb{E} \left(\frac{f(+1)-f(-1)}2\right)^2
+$$
+
+这可以显式地写成：
+
+$$
+\frac{1}{2}\Big[\Phi\big(\phi^{-1}(a)\big)+\Phi\big(\phi^{-1}(b)\big)\Big]-\Phi\left(\frac{\phi^{-1}(a)+\phi^{-1}(b)}{2}\right) \leqslant \frac{1}{2}\left(\frac{a-b}{2}\right)^2
+$$
+
+其中 $a, b$ 分别代表 $f$ 在两点上的取值。
+
+* **猜想与条件**：对于使得 $\mathrm{Ent}^\Phi$ 具有**张量化性质**的 $\Phi$，上述不等式成立。这通常要求 $\Phi$ 是凸的，且 $1/\Phi''$ 是凹的。
+* **已知成立的函数**：
+    1.  $\Phi(x) = x \log x$ （对应经典的熵）
+    2.  $\Phi(x) = x^p, \quad p \in [1, 2]$ （对应 Beckner 不等式）
+    注：$x \log x$ 可以看作是 $x^p$ 在 $p \to 1$ 时的极限。
+
+!!! theorem "Beckner 不等式"
+    当 $p\in[1,2]$ 时，
+    
+    $$
+    \|f\|_2^2 - \|f\|_p^2\leqslant (2-p)\big\|\,|\nabla f| \big\|_2^2
+    $$
+
+    其中 $\|f\|_p:= \big(\mathbb{E} |f(X)|^p\big)^{1/p}, X\sim N(0,I)$。参见 [Ewain Gwynne 本科论文](https://nuwildcat.sharepoint.com/:b:/r/sites/WNB-MMSS-Library/Thesis%20Library%20Public/Shared/Gwynne2013.pdf?csf=1&web=1&e=jUTQrm) 。
+
+
+### 统一 $\Phi$-LSI
+
+$$
+\mathrm{Ent}^\Phi_\mu[\phi^{-1}\circ f] \leqslant \frac{C}{2} \cdot \mathbb{E}\Gamma(f,f)
+$$
+
+其中：
+
+$$
+(\phi')^2 = \Phi''
+$$
+
+我们有如下性质：
+
+1.  **线性平移不变性**：
+    如果 $\Phi$ 与 $\tilde{\Phi}$ 仅相差一个线性函数（即 $\Phi(x) - \tilde{\Phi}(x) = ax+b$），则它们的 Bregman 散度相同，从而定义的熵也相同：
+
+    $$
+    \mathrm{Ent}^\Phi = \mathrm{Ent}^{\tilde{\Phi}} \quad \text{且} \quad \phi = \tilde{\phi}
+    $$
+
+2.  **缩放等价性**：
+    如果 $\tilde{\Phi} = \alpha \Phi$（其中 $\alpha > 0$），则常数为 $C$ 的 $\tilde{\Phi}$-LSI 等价于常数为 $C$ 的 $\Phi$-LSI。
+    
+
+基于上述定义，两个著名的泛函不等式可以看作是 $\Phi$-LSI 的特例：
+
+* **庞加莱不等式 (Poincaré Inequality)**:
+    对应于：
+
+    $$
+    \Phi(x) = \frac{1}{2}x^2 \implies \Phi''(x)=1
+    $$
+
+* **对数索伯列夫不等式 (Log-Sobolev Inequality)**:
+    对应于：
+   
+    $$
+    \Phi(x) = x \log x \implies \Phi''(x)=\frac{1}{x}
+    $$
+
+
+为了连接上述特例并导出 Beckner 不等式，我们引入参数化的函数族 $\Phi_p$。
+
+定义函数族 $(p \in [1, 2])$：
+
+$$
+\Phi_p(x) = \frac{x^p - x}{p(p-1)}
+$$
+
+* **极限情况**：当 $p \to 1$ 时，由洛必达法则可知 $\Phi_{1+}(x) = x \log x$，即 Log-Sobolev 情形。
+* **二阶导数与 $\phi$**：
+* 
+    $$
+    \Phi''_p(x) = x^{p-2}
+    $$
+
+    根据 $(\phi')^2 = \Phi''$，解得：
+
+    $$
+    \phi'(x) = x^{p/2 - 1} \implies \phi(x) = \frac{2}{p}x^{p/2}
+    $$
+
+    其反函数与其复合形式为：
+
+    $$
+    \phi^{-1} \circ f = \left( \frac{p}{2}f \right)^{2/p}
+    $$
+
+令 $p = 2/q$。注意 $p \in [1, 2]$ 当且仅当 $q \in [1, 2]$。此时，$\Phi_p$-熵项可以推导为：
+
+$$
+\begin{aligned}
+\mathrm{Ent}^{\Phi_p}(\phi^{-1}\circ f) &= \frac{1}{p(p-1)} \mathbb{E}\left[ (\phi^{-1}\circ f)^p - \dots \right] \\
+&= \frac{1}{2(2-q)} \left( \mathbb{E}(f^2) - (\mathbb{E} f^q)^{2/q} \right) \\
+&= \frac{1}{2} \cdot \frac{\|f\|_2^2 - \|f\|_q^2}{2-q}
+\end{aligned}
+$$
+
+这表明 Beckner 不等式本质上就是**高斯测度下的 $\Phi_p$-LSI**。它描述了从 $L_2$ 范数到 $L_q$ 范数的收缩性质，平滑地连接了庞加莱不等式和对数索伯列夫不等式。
+
+---
+
+## 矩阵集中不等式
+
+<!-- 
+| 性质 / 操作 | 标量 (Scalar) $f: \mathbb{R} \to \mathbb{R}$ | (埃尔米特) 矩阵 (Hermitian Matrix) $f(A)$ (通过特征分解或幂级数定义) |
+| :--- | :--- | :--- |
+| **绝对值不等式** | $x^2 \leqslant a^2 \iff \|x\| \leqslant a \iff -a \leqslant x \leqslant a$ | $X^2 \preccurlyeq A^2 \implies \|X\| \preccurlyeq A \implies -A \preccurlyeq X \preccurlyeq A$|
+| **平方函数的单调性** | $0 \leqslant x \mapsto x^2$ 是递增的，凸函数 | $0 \preccurlyeq A \mapsto A^2$ 是凸函数，但**不是**单调的 |
+| **幂函数的性质** ($0 \leqslant x \mapsto x^p$) | $\searrow$ 凸 ($ -1 \leqslant p \leqslant 0$)<br>$\nearrow$ 凹 ($ 0 \leqslant p \leqslant 1$)<br>$\nearrow$ 凸 ($ 1 \leqslant p \leqslant 2$) | $\searrow$ 凸 ($ -1 \leqslant p \leqslant 0$)<br>$\nearrow$ 凹 ($ 0 \leqslant p \leqslant 1$)<br>凸但非单调 ($ 1 \leqslant p \leqslant 2$) |
+| **对数函数** | $x \mapsto \log x$ 递增，凹函数 | $A \mapsto \log A$ 递增，凹函数|
+| **马尔可夫不等式 (Markov)** | $a > 0, X \geqslant 0 \implies \mathbb{P}(X > a) \leqslant a^{-1}\mathbb{E}X$ | $A \succ 0, \mathbf{X} \succcurlyeq 0 \implies \mathbb{P}(\mathbf{X} \npreceq A) \leqslant \text{tr}(A^{-1}\mathbb{E}\mathbf{X})$ |
+| **切比雪夫不等式 (Chebyshev)** | $\mathbb{P}(\|X\| > a) \leqslant a^{-2}\mathbb{E}X^2$ | $\mathbb{P}(|\mathbf{X}| \npreceq A) \leqslant \text{tr}(A^{-2}\mathbb{E}\mathbf{X}^2)$ |
+| **矩不等式** ($p \geqslant 1$) | $\mathbb{P}(\|X\| > a) \leqslant a^{-p}\mathbb{E}\|X\|^p$ | $\mathbb{P}(|\mathbf{X}| \npreceq A) \leqslant \text{tr}(A^{-p}\mathbb{E}|\mathbf{X}|^p)$ |
+| **切诺夫界 (Chernoff Bound)** | $\mathbb{P}(X > a) \leqslant e^{-\psi_X^*(a)}$ | $\mathbb{P}(\mathbf{X} \npreceq A) \leqslant e^{-\Psi_{\mathbf{X}}^*(A)}$ |
+| **累积量生成函数 (CGF)** | $\psi_X(\lambda) := \log \mathbb{E}e^{\lambda X}$ | $\Psi_{\mathbf{X}}(\lambda) := \log \mathbb{E}e^{\lambda \mathbf{X}}$ |
+| **平移性质** | $\psi_{X+a}(\lambda) = \psi_X(\lambda) + a\lambda$ | $\Psi_{\mathbf{X}+A}(\lambda) \neq \Psi_{\mathbf{X}}(\lambda) + \lambda A$ (除非 $A\mathbf{X} = \mathbf{X}A$)<br>\<span style="color:blue"\>[Jinshuo: 需要手动处理 $\mathbb{E}\mathbf{X}$\!]\</span\> |
+| **导数性质** ($0$ 处) | $\psi_X(0) = 0$<br>$\psi'_X(0) = \mathbb{E}X$<br>$\psi''_X(0) = \mathbb{E}X^2 - (\mathbb{E}X)^2$ | $\Psi_{\mathbf{X}}(0) = 0$<br>$\Psi'_{\mathbf{X}}(0) = \mathbb{E}\mathbf{X}$<br>$\Psi''_{\mathbf{X}}(0) = \mathbb{E}\mathbf{X}^2 - (\mathbb{E}\mathbf{X})^2$ |
+| **凸性** | $\psi_X$ 是凸函数 | $\Psi_{\mathbf{X}}$ 是凸函数 (无证明，仅有数值证据)<br>$\text{LSE} \circ \Psi_{\mathbf{X}}$ 是凸函数 |
+| **独立和性质** | $\psi_{X+Y} = \psi_X + \psi_Y$ ($X, Y$ 独立) | $\Psi_{\mathbf{X}+\mathbf{Y}} \leqslant_{\text{LSE}} \Psi_{\mathbf{X}} + \Psi_{\mathbf{Y}}$ ($\mathbf{X}, \mathbf{Y}$ 独立) |
+| **Hoeffding 类型的界** | $\mathbb{E}X=0, a \leqslant X \leqslant b \implies \psi_X(\lambda) \leqslant \frac{1}{2}(\frac{b-a}{2})^2\lambda^2$ | $\mathbb{E}\mathbf{X}=0, aI \preccurlyeq \mathbf{X} \preccurlyeq bI \implies \Psi_{\mathbf{X}}(\lambda) \preccurlyeq \frac{1}{2}(\frac{b-a}{2})^2\lambda^2 \cdot I$ |
+| **Bennett/Bernstein 类型的界** | $\mathbb{E}X=0, X \leqslant b, \mathbb{E}X^2=\sigma^2 \implies \psi_X(\lambda) \leqslant \frac{\sigma^2}{b^2}h(b\lambda)$ | $\mathbb{E}\mathbf{X}=0, \mathbf{X} \preccurlyeq bI, \mathbb{E}\mathbf{X}^2=\Sigma \implies \Psi_{\mathbf{X}}(\lambda) \preccurlyeq \frac{1}{b^2}h(b\lambda) \cdot \Sigma$ | -->
+
+
+我们现在考虑将标量集中不等式推广到矩阵情形。这里我们会有一定的困难，因为矩阵的乘法通常不满足交换律。因此，许多标量性质在矩阵情形下并不成立。当然这里我们只考虑 Hermitian 矩阵。
+
+对于 $f: I \to \mathbb{R}$，其中 $I \subseteq \mathbb{R}$ 是区间，且 $A$ 是埃尔米特矩阵，我们可以通过谱分解或幂级数来定义 $f(A)$。具体来说，如果 $A$ 的谱（特征值集合）包含在 $I$ 中，那么我们可以将 $f$ 应用于 $A$ 的每个特征值，并保持相应的特征向量不变。
+
+!!! definition "矩阵序 (Matrix Order)"
+    对于两个埃尔米特矩阵 $A$ 和 $B$，我们说 $A \preccurlyeq B$ 当且仅当 $B - A$ 是半正定矩阵。这定义了矩阵之间的偏序关系。
+
+基于此定义我们有以下结论：
+
+* $A \nsucc B$ 并不等价于 $A \prec B$，因为矩阵序是偏序而非全序。
+* 对于一般的 $A$ 和 $B$，通常不成立 $e^{A+B} = e^A e^B$，除非 $A$ 和 $B$ 可交换。
+* 如果 $f \leqslant g$，那么有 $f(A) \preccurlyeq g(A)$。
+* 尽管对于标量函数 $f(x) = x^2$ 是单调递增的，但在矩阵情形下，$A \prec B$ 并不蕴含 $f(A) \prec f(B)$。只有当 $f$ 是**算子单调 (Operator Monotone)** 函数时（如 $\sqrt{x}$ 和 $\log x$），该性质才成立。
+
+回忆如下线性代数知识：
+
+*  **共轭性质**：$X \prec A \implies B^*XB \prec B^*AB$。
+* **酉不变性**：$U$ 是酉矩阵，则 $f(U^*AU) = U^*f(A)U$。
+* **幂级数**：如果在 $x \in I$ 上 $f(x) = \sum a_n x^n$ 且 $\text{Spec}(A) \subseteq I$，那么 $f(A) = \sum a_n A^n$。
+* **最大特征值与序的关系**：$\lambda_{\max}(X) \leqslant t \iff X \preccurlyeq tI$。
+
+
+---
+|  | 标量| Hermitian 矩阵|
+| :--- | :--- | :--- |
+| **Markov** | $a > 0, X \geqslant 0 \implies \mathbb{P}(X > a) \leqslant a^{-1}\mathbb{E}X$ | $A \succ 0, \mathbf{X} \succcurlyeq 0 \implies \mathbb{P}(\mathbf{X} \npreceq A) \leqslant \text{tr}(A^{-1}\mathbb{E}\mathbf{X})$ |
+| **Chebyshev** | $\mathbb{P}(\|X\| > a) \leqslant a^{-2}\mathbb{E}X^2$ | $\mathbb{P}(\|\mathbf{X}\| \npreceq A) \leqslant \text{tr}(A^{-2}\mathbb{E}\mathbf{X}^2)$ |
+| **矩不等式** ($p \geqslant 1$) | $\mathbb{P}(\|X\| > a) \leqslant a^{-p}\mathbb{E}\|X\|^p$ | $\mathbb{P}(\|\mathbf{X}\| \npreceq A) \leqslant \text{tr}(A^{-p}\mathbb{E}\|\mathbf{X}\|^p)$ |
+| **Chernoff Bound** | $\mathbb{P}(X > a) \leqslant e^{-\psi_X^*(a)}$ | $\mathbb{P}(\mathbf{X} \npreceq A) \leqslant e^{-\Psi_{\mathbf{X}}^*(A)}$ |
+| **CGF** | $\psi_X(\lambda) := \log \mathbb{E}e^{\lambda X}$ | $\Psi_{\mathbf{X}}(\lambda) := \log \mathbb{E}e^{\lambda \mathbf{X}}$ |
+
+-----
+
+### Chebyshev 成立条件
+ Chebyshev 不等式成立需要用到如下性质：
+
+  * $X^2 \preccurlyeq A^2 \implies |X| \preccurlyeq A$。
+  * $A$ 不一定是正规矩阵 (normal)，$\rho(A) \leqslant \sigma_{\max}(A) = \sqrt{\lambda_{\max}(A^*A)}$。
+
+然而事实上
+
+  * $0 \prec X \prec A$ **并不蕴含** $X^2 \prec A^2$。
+  
+  **反例：**
+    考虑 $AB+BA$ 含有负的特征值，则 $(A+\epsilon B)^2= A^2 + \epsilon(AB+BA) + \epsilon^2 B^2 \nprec A^2$ 对于足够小的 $\epsilon > 0$ 会使得 $A+\epsilon B \prec A$ 但 $(A+\epsilon B)^2 \nprec A^2$。这里可以取 $A = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}, B = \begin{pmatrix} 1 & 0\\ 0 & 0 \end{pmatrix},AB+BA=\begin{pmatrix}2 & 1 \\ 1 & 0\end{pmatrix}$。
+  
+  
+  * $-A \prec X \prec A$ **并不蕴含** $|X| \prec A$。
+
+**反例：**
+
+$$
+X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad A = \begin{pmatrix} \sqrt{2}+1 & 0 \\ 0 & \sqrt{2}-1 \end{pmatrix}
+$$
+
+-----
+
+### Template 成立条件
+
+  * **记号**：
+      * $\text{LSE}(A) := \log \text{tr } e^A$ 。
+      * 定义 $A \leqslant_{\text{LSE}} B$ 当且仅当 $\text{LSE}(A) \leqslant \text{LSE}(B)$。
+      * **注意**：$A \leqslant_{\text{LSE}} B$ **并不蕴含** $A+C \leqslant_{\text{LSE}} B+C$。
+
+!!! theorem "Lieb 凹性定理"
+    设 $A$ 是埃尔米特矩阵，$B \succ 0$，则映射 $B \mapsto \text{tr } e^{A + \log B}$ 是**凹**的。
+  
+这是一个非常不平凡的定理。它被用于推导：当 $\mathbf{X}, \mathbf{Y}$ 独立时，$\Psi_{\mathbf{X}+\mathbf{Y}} \leqslant_{\text{LSE}} \Psi_{\mathbf{X}} + \Psi_{\mathbf{Y}}$。
+
+-----
+
+| 标量| Hermitian 矩阵|
+| :--- | :--- |
+ $\psi_X(\lambda) := \log \mathbb{E}e^{\lambda X}$ | $\Psi_{\mathbf{X}}(\lambda) := \log \mathbb{E}e^{\lambda \mathbf{X}}$ |
+| $\psi_{X+a}(\lambda) = \psi_X(\lambda) + a\lambda$ | $\Psi_{\mathbf{X}+A}(\lambda) \neq \Psi_{\mathbf{X}}(\lambda) + \lambda A$ (除非 $A\mathbf{X} = \mathbf{X}A$) |
+ | $\psi_X(0) = 0$<br>$\psi'_X(0) = \mathbb{E}X$<br>$\psi''_X(0) = \mathbb{E}X^2 - (\mathbb{E}X)^2$ | $\Psi_{\mathbf{X}}(0) = 0$<br>$\Psi'_{\mathbf{X}}(0) = \mathbb{E}\mathbf{X}$<br>$\Psi''_{\mathbf{X}}(0) = \mathbb{E}\mathbf{X}^2 - (\mathbb{E}\mathbf{X})^2$ |
+| $\psi_X$ 是凸函数 | $\Psi_{\mathbf{X}}$ 是凸函数 (无证明，仅有数值证据)<br>$\text{LSE} \circ \Psi_{\mathbf{X}}$ 是凸函数但 $0\mapsto \log d$ |
+| $\psi_{X\cdot a}(\lambda) = \psi_X(\lambda a)$ | $\Psi_{\mathbf{X}\cdot A}(\lambda) = \Psi_{\mathbf{X}}(\lambda A)$ |
+| $\psi_{X+Y} = \psi_X + \psi_Y$ ($X, Y$ 独立) | $\Psi_{\mathbf{X}+\mathbf{Y}} \leqslant_{\text{LSE}} \Psi_{\mathbf{X}} + \Psi_{\mathbf{Y}}$ ($\mathbf{X}, \mathbf{Y}$ 独立) |
+
+
+-----
+
+### 矩阵 KL 散度 vs 向量 KL 散度
+
+定义 $H:\mathbb{R}_+ \to \mathbb{R}, x \mapsto -x \log x$ 为凹函数。容易验证 $\nabla \text{tr } H(A) = H'(A) = -\log A - I$。
+
+| Vector | Hermitian 矩阵 |
+| :--- | :--- |
+| $H_{Shannon}: \mathbb{R}_+^n \to \mathbb{R},x \mapsto \sum H(x_i)$ | $H_{vonN}: \text{PSD} \to \mathbb{R},X \mapsto \text{tr } H(X)$ |
+| | $H_{\text{vonN}}(\text{diag } x) = H_{\text{Shannon}}(x)$ |
+|  $KL(p\|\|q) = D_{-H_{\text{Shannon}}}(p\|\|q)= \sum p_i \log \frac{p_i}{q_i} - p_i + q_i$ |  $D(A\|\|B) = D_{-H_{\text{vonN}}}(A\|\|B)= \text{tr}(A \log A - A \log B - A + B)$ |
+| **Claim**: $KL(\cdot\|\|\cdot)$ 是 (联合) 凸的 | **Theorem**: $D(\cdot\|\|\cdot)$ 是 (联合) 凸的 |
+
+-----
+
+如何从矩阵 KL 散度的联合凸性推出 Lieb 凹性定理？这个问题是困难的。
+
+-----
+
+### 张量积
+
+回忆一下张量积的基本知识：
+
+  * $V \otimes W = \text{span}\{u_i \otimes v_j\}$，其中 $\{u_i\}$ 生成 $V$，$\{v_j\}$ 生成 $W$。
+  * 内积：$\langle u_1 \otimes v_1, u_2 \otimes v_2 \rangle = \langle u_1, u_2 \rangle \cdot \langle v_1, v_2 \rangle$。
+  * $\{u_i \otimes v_j\}$ 构成 $V \otimes W$ 的一组标准正交基。
+  * 算子作用：$A \otimes B$ 将 $u \otimes v$ 映射为 $Au \otimes Bv$。
+  * 函数性质：对于一般函数 $f$，有 $f(A \otimes I) = f(A) \otimes I$ 和 $f(I \otimes B) = I \otimes f(B)$。
+  * **对数特例**：当 $f(x) = \log x$ 时，有
+    
+    $$
+    f(A \otimes B) = f(A) \otimes I + I \otimes f(B) \quad (\text{即 } \log(A \otimes B) = \log A \otimes I + I \otimes \log B)
+    $$
+
+-----
+
+| vector| matrix |
+| :--- | :--- |
+| $a \times x = ax$ | $A \times X = \sqrt{A} X \sqrt{A}$ |
+|$a \times (x, y) = (ax, ay)$|$A \times (X, Y) = (\sqrt{A}X\sqrt{A}, \sqrt{A}Y\sqrt{A})$|
+| $E \subseteq \mathbb{R}^k$<br>cone $E = \{(a, ax) : a \geqslant 0, x \in E\}$ | $E \subseteq \mathbf{S}^k$ (对称矩阵)<br>cone $E = \{(A, A \times \vec{X}) : A \succcurlyeq 0, \vec{X} \in E\}$ |
+| $E$ 凸 $\implies$ cone $E$ 凸 | $E$ 具有矩阵系数凸性 $\implies$ cone $E$ 凸 |
+| $f: \mathbb{R}^k \supseteq E\to \mathbb{R}$ | $f: \mathbf{S}^k\supseteq E \to \mathbf{S}^k$ |
+| $\text{epi } f = \{(x, t) : f(x) \leqslant t\}$ | $\text{epi } f = \{(\vec{X}, T) : f(\vec{X}) \preccurlyeq T\}$ |
+| $f$ (联合) 凸 $\iff$ epi $f$ 凸 | $f$ (联合) 算子凸 $\iff$ epi $f$ 凸 |
+| $Pf(a, x) = a f(\frac{x}{a})$ | $Pf(A, X) = A \times f(A^{-1} \times X) = \sqrt{A} f(\sqrt{A}^{-1} X \sqrt{A}^{-1}) \sqrt{A}$ |
+|$f$ 凸 $\implies Pf$ (联合) 凸 | $f$ 具有矩阵系数算子凸性 $\implies Pf$ (联合) 算子凸 |

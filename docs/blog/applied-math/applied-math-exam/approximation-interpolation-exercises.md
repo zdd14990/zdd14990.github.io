@@ -1,0 +1,887 @@
+---
+title: Approximation Interpolation Exercises
+date: 2026-01-07
+hide:
+  - navigation
+categories:
+  - 应用数学
+  - 应用数学博资考
+tags:
+  - applied-math
+  - applied-math-exam
+  - approximation-interpolation-exercises
+---
+## 函数逼近与插值
+
+
+!!! problem "Autumn, 2023"
+    Consider the Newton's method for finding a solution $x_{*}$ to $f(x)=0$, where $f\in C^{2}(a,b)$, $x_{*}\in(a,b)$.
+    
+    1: determine $x_{0}\in(a,b)$.
+    
+    2: for $k=0,1,2,\dots$ do
+    
+    3: $x_{k+1}=x_{k}-\frac{f(x_{k})}{f^{\prime}(x_{k})}$
+    
+    4: end for
+    
+    (1). Prove that if $x_{0}$ is sufficiently close to $x_{*}$ and $f^{\prime}(x_{*})\ne0$, then $\lim_{k\rightarrow\infty}x_{k}=x_{*}$ and
+    
+    $$
+    \lim_{k\rightarrow\infty}\frac{x_{k+1}-x_{*}}{(x_{k}-x_{*})^{2}}=\frac{f^{\prime\prime}(x_{*})}{2f^{\prime}(x_{*})}.
+    $$
+    
+    (2). In practice sometimes the derivative is not easy to be obtained. As a result, a difference is used instead:
+    
+    $$
+    x_{k+1}=x_{k}-\frac{x_{k}-x_{k-1}}{f(x_{k})-f(x_{k-1})}f(x_{k}).
+    $$
+    
+    Prove that if $x_{0}$ is sufficiently close to $x_{*}$, then $x_{k}\rightarrow x_{*}$ and
+    
+    $$
+    \lim_{k\rightarrow\infty}\frac{x_{k+1}-x_{*}}{(x_{k}-x_{*})(x_{k-1}-x_{*})}=\frac{f^{\prime\prime}(x_{*})}{2f^{\prime}(x_{*})}.
+    $$
+!!! proof "证明"
+    $(i)$：对 $f(x_*)$ 在 $x_k$ 处作 Taylor 展开，得到
+
+    $$
+    0=f(x_*) = f(x_k) + f'(x_k)(x_* - x_k) + \frac{f''(\xi_k)}{2}(x_* - x_k)^2=f(x_k)-f'(x_k)e_k+\frac{f''(\xi_k)}{2}e_k^2
+    $$
+
+    另一方面我们有
+
+    $$
+    e_{k+1}=e_k-\frac{f(x_k)}{f'(x_k)}=e_k-\frac{f'(x_k)e_k-\frac{f''(\xi_k)}{2}e_k^2}{f'(x_k)}=\frac{f''(\xi_k)}{2f'(x_k)}e_k^2
+    $$
+
+    即
+
+    $$
+    \frac{e_{k+1}}{e_k^2}=\frac{f''(\xi_k)}{2f'(x_k)}
+    $$
+
+    在 $x^*$ 足够小的邻域内，$|\frac{f''(x)}{2f'(y)}|$ 有上界 $M$。此时只需 $|e_0|<\frac{1}{M}$ 即可保证 $|e_k|$ 平方收敛到 0，从而 $x_k$ 收敛到 $x^*$。进而
+
+    $$
+    \lim_{k\rightarrow\infty}\frac{e_{k+1}}{e_k^2}=\frac{f''(x_*)}{2f'(x_*)}.
+    $$
+
+    $(ii)$：
+    $$
+    e_{k+1}=\frac{e_{k-1}f(x_k)-e_kf(x_{k-1})}{f(x_k)-f(x_{k-1})}.
+    $$
+
+    考虑 $H(x)=\frac{f(x)}{x-x_*}$，则
+
+    $$
+    \text{分子}=e_{k-1}e_k(H(x_k)-H(x_{k-1}))=e_{k-1}e_kH'(\xi_k)(e_k-e_{k-1}),
+    $$
+
+    其中 $\xi_k$ 在 $x_{k-1}$ 和 $x_k$ 之间，且
+
+    $$
+    H'(x)=\frac{f'(x)(x-x_*)-f(x)}{(x-x_*)^2}
+    $$
+
+    对 $f(x_*)$ 在 $x$ 处作 Taylor 展开，得到
+
+    $$
+    0=f(x_*)=f(x)-f'(x)(x-x_*)+\frac{f''(\eta)}{2}(x-x_*)^2
+    $$
+
+    故：
+
+    $$
+    H'(x)=\frac{\frac{f''(\eta)}{2}(x-x_*)^2}{(x-x_*)^2}=\frac{f''(\eta)}{2}.
+    $$
+
+    因此，在点 $\xi_k$ 处，我们有：
+    
+    $$
+    H'(\xi_k) = \frac{1}{2}f''(\eta_k)
+    $$
+    
+    此时 $\eta_k$ 严格介于 $\xi_k$ 和 $x_*$ 之间。对分母直接应用拉格朗日中值定理：
+    
+    $$
+    f(x_k) - f(x_{k-1}) = f'(\gamma_k)(x_k - x_{k-1})
+    $$
+    
+    其中 $\gamma_k$ 严格介于 $x_k$ 和 $x_{k-1}$ 之间。带回原式得到
+
+    $$
+    e_{k+1} = e_k e_{k-1} \frac{f''(\eta_k)}{2 f'(\gamma_k)}
+    $$
+
+    因为 $f \in C^2$ 且 $f'(x_*) \ne 0$，在 $x_*$ 的足够小的邻域内，有 $\left| \frac{f''(\eta)}{2f'(\gamma)} \right| \le C$。进而：
+
+    $$
+    |e_{k+1}| \le C |e_k| |e_{k-1}|
+    $$
+
+    同样取 $|e_0| ,|e_1|<\frac{1}{C}$ 即可保证 $|e_k|$ 超线性收敛到 0，从而 $x_k$ 收敛到 $x^*$。进而
+
+    $$
+    \lim_{k\rightarrow\infty}\frac{e_{k+1}}{e_k e_{k-1}}=\frac{f''(x_*)}{2f'(x_*)}.
+    $$
+
+!!! problem "Autumn, 2023"
+    If $p$ is a polynomial of degree $n$ (on $[-1,1]$), it is determined by its values on an $(n+1)$-point grid on $[-1,1]$. The derivative $p^{\prime}$, a polynomial of degree $(n-1)$, is determined on the same grid. The (classical) differentiation matrix is the $(n+1)$-by-$(n+1)$ matrix $D=(D_{ij})\in\mathbb{R}^{(n+1)\times(n+1)}$ that represents the linear map from the vector of values of $p$ to the vector of values of $p^{\prime}$, namely:
+    
+    $$
+    p^{\prime}(x_{i})=\sum_{j=0}^{n}D_{ij}p(x_{j}).
+    $$
+    
+    (1). Prove that $D_{ij}=l_{j}^{\prime}(x_{i})$, where $l_{j}(x)$ is the $j$-th Lagrange basis function.
+    
+    (2). If a Chebyshev grid $(x_{j}=\cos(j\pi/n), 0\le j\le n)$ is adopted, derive explicit formulas for $D_{ij}$.
+!!! proof "证明"
+    $(1)$： 对 $p(x)=\sum_{j=0}^n p(x_j) l_j(x)$ 作导数即得。
+
+    $(2)$：引入节点多项式 $W(x) = \prod_{k=0}^n (x - x_k)$。则
+    
+    $$
+    l_j(x) = \frac{W(x)}{W'(x_j)(x - x_j)}
+    $$
+
+    定义一个常数序列 $c_j$：
+    
+    $$
+    c_j = \begin{cases}
+    2, & j = 0 \text{ 或 } n \\
+    1, & 1 \le j \le n-1
+    \end{cases}
+    $$
+
+    当 $i\neq j$ 时，
+
+    $$
+    l_j'(x_i) = \left. \frac{W'(x)(x-x_j) - W(x)}{(W'(x_j)(x-x_j)^2} \right|_{x=x_i} = \frac{W'(x_i)(x_i-x_j) - 0}{W'(x_j)(x_i-x_j)^2} = \frac{W'(x_i)}{W'(x_j)(x_i-x_j)}= \frac{c_i}{c_j} \frac{(-1)^{i+j}}{x_i - x_j}, \quad (i \ne j)
+    $$
+
+    当 $i=j$ 时，
+
+    $$
+    l_j'(x_j) = \frac{W''(x_j)}{2W'(x_j)}
+    $$
+
+    后面纯计算，结果为：
+    
+    $$
+    D_{ij} = \begin{cases}
+    \frac{c_i}{c_j} \frac{(-1)^{i+j}}{x_i - x_j}, & i \ne j \\
+    \frac{-x_i}{2(1 - x_i^2)}, & 1 \le i = j \le n-1 \\
+    \frac{2n^2 + 1}{6}, & i = j = 0 \\
+    -\frac{2n^2 + 1}{6}, & i = j = n
+    \end{cases}
+    $$
+!!! problem "Autumn, 2024"
+    The $n$-th Chebyshev polynomial is defined by: $T_{n}(x)=\cos(n\cdot \arccos(x))$. Answer the following questions related to $T_{n}(x)$.
+    
+    (i) Prove that $T_{n}(x)$ is a polynomial of degree $n$.
+    
+    (ii) For any $x$ with $0<x<1$, show that $T_{n}(2x-1)=T_{2n}(\sqrt{x})$.
+    
+    (iii) Prove that the system of Chebyshev polynomials $\{T_{k}:0\le k<n\}$ is orthogonal with respect to the discrete inner product $(u,v)=\sum_{k=1}^{n}u(x_{k})v(x_{k})$, where $\{x_{k}\}$ are the Chebyshev points $x_{k}=\cos(\frac{2k-1}{2n}\pi)$.
+!!! proof "证明"
+    简单计算。
+
+!!! problem "Autumn, 2024"
+    Consider Kepler's equation
+    
+    $$
+    f(x)=x-\epsilon \sin x-\eta, \quad (0<|\epsilon|<1), \quad \eta\in\mathbb{R}.
+    $$
+    
+    (i) Show that for each $\epsilon, \eta$, there is exactly one real root $\alpha=\alpha(\epsilon,\eta)$. Furthermore, $\eta-|\epsilon|\le\alpha\le\eta+|\epsilon|$.
+    
+    (ii) Writing the equation in fixed point form:
+    
+    $$
+    x=\varphi(x), \quad \varphi(x)=\epsilon \sin x+\eta,
+    $$
+    
+    show that the fixed point iteration $x_{n+1}=\varphi(x_{n})$ converges for arbitrary starting value $x_{0}$.
+    
+    (iii) Let $m$ be an integer such that $m\pi<\eta<(m+1)\pi$. Show that Newton's method with starting value
+    
+    $$
+    x_{0}=\begin{cases} (m+1)\pi & \text{if } (-1)^{m}\epsilon > 0, \\ m\pi & \text{otherwise}, \end{cases}
+    $$
+    
+    is guaranteed to converge (monotonically) to $\alpha(\epsilon,\eta)$.
+!!! proof "证明"
+    $(ii)$：
+
+    $$
+    |x_{n+1}-\tilde{x}|=|\epsilon(\sin x_n-\sin \tilde{x})|\le |\epsilon||x_n-\tilde{x}|,
+    $$
+
+    $(iii)$：由于 $f(x)$ 单调递增，$f(m\pi) < 0$ 且 $f((m+1)\pi) > 0$，唯一的根 $\alpha$ 必然严格位于区间 $(m\pi, (m+1)\pi)$ 内。二阶导数 $f''(x) = \epsilon \sin x$ 在区间 $(m\pi, (m+1)\pi)$ 内，$\sin x$ 的符号是恒定的，且与 $(-1)^m$ 相同。根据牛顿法的收敛性定理：如果在包含根 $\alpha$ 的区间内，$f'(x)$ 和 $f''(x)$ 都不变号，且初始点 $x_0$ 满足：$$f(x_0) f''(x_0) > 0$$那么从 $x_0$ 出发的牛顿迭代序列将单调且安全地收敛到根 $\alpha$。
+!!! problem "Spring, 2025"
+    Let $f$ be a continuous function that is $C^{m}(m\ge1)$, such that $f(\alpha)=f^{(1)}(\alpha)=\cdots=f^{(m-1)}(\alpha)=0$ and $f^{(m)}(\alpha)\ne0$. Answer the following questions:
+    
+    (i) If $m=1$, i.e. $\alpha$ is a simple zero of the function $f$, prove that there exists a neighborhood of $\alpha$: $D(\alpha,\delta)=\{x:|x-\alpha|\le\delta\}$ s.t. $\forall x_{0}\in D(\alpha,\delta)$, the sequence generated by Newton's iteration converges to $\alpha$, and the rate of convergence is quadratic.
+    
+    (ii) If $m>1$, i.e. $\alpha$ is a zero with multiplicity greater than 1, what is the rate of convergence of Newton's iteration? How about the modified Newton's iteration:
+    
+    $$
+    x_{k+1}=x_{k}-m\frac{f(x_{k})}{f^{\prime}(x_{k})}?
+    $$
+    
+    Please prove your results.
+    
+    (iii) If the multiplicity $m$ is greater than 1 in general but the value is unknown, can you propose an iteration method that achieves superlinear convergence? (You don't need to prove the result.)
+!!! proof "证明"
+    $(i)$：Newton iteration 的迭代函数为 $g(x)=x-\frac{f(x)}{f'(x)}$，由 $f(\alpha)=0$，$g(\alpha)=\alpha$，又由 $f'(\alpha)\ne0$，$g'(\alpha)=0$，在 $\alpha$ 处对 $g$ 作 Taylor 展开，得到
+
+    $$
+    x_{k+1}=g(x_k)=\alpha + \frac{g''(\xi)}{2}(x_k-\alpha)^2,
+    $$
+
+    于是对 $e_k=x_k-\alpha$，有
+
+    $$
+    e_{k+1} = \frac{g''(\xi)}{2} e_k^2,
+    $$
+
+    由不动点定理存在 $\alpha$ 的邻域满足 $|g'(x)|<1$ 使得迭代收敛。结合误差关系有收敛阶为二次。
+
+    $(ii)$：设 $f(x)=(x-\alpha)^m h(x)$，其中 $h(\alpha)\ne0$，则 Newton iteration 的迭代函数为
+
+    $$
+    g(x) = x - \frac{f(x)}{f'(x)} = x - \frac{(x-\alpha)^m h(x)}{m(x-\alpha)^{m-1}h(x)+(x-\alpha)^m h'(x)}.
+    $$
+
+    由 $g(\alpha)=\alpha$，又由 $g'(\alpha)=\frac{m-1}{m}$，在 $\alpha$ 处对 $g$ 作 Taylor 展开，得到
+
+    $$
+    x_{k+1} = g(x_k) = \alpha + \frac{m-1}{m}(x_k-\alpha) + \frac{g''(\xi)}{2}(x_k-\alpha)^2,
+    $$
+
+    于是对 $e_k=x_k-\alpha$，有
+
+    $$
+    e_{k+1} = \frac{m-1}{m} e_k + \frac{g''(\xi)}{2} e_k^2,
+    $$
+
+    为线性收敛。
+
+    再考虑 $x_{k+1} = x_k - m \frac{f(x_k)}{f'(x_k)}$ 的迭代函数为 $\tilde{g}(x) = x - m \frac{f(x)}{f'(x)}$，由 $\tilde{g}(\alpha)=\alpha$，又由 $\tilde{g}'(\alpha)=0$，在 $\alpha$ 处对 $\tilde{g}$ 作 Taylor 展开，得到
+
+    $$
+    x_{k+1} = \tilde{g}(x_k) = \alpha + \frac{\tilde{g}''(\xi)}{2}(x_k-\alpha)^2,
+    $$
+
+    于是对 $e_k=x_k-\alpha$，有
+
+    $$
+    e_{k+1} = \frac{\tilde{g}''(\xi)}{2} e_k^2,
+    $$
+
+    由不动点定理存在 $\alpha$ 的邻域满足 $|\tilde{g}'(x)|<1$ 使得迭代收敛。结合误差关系有收敛阶为二次。
+
+    $(iii)$：可以考虑函数 $\frac{f(x)}{f'(x)}$ 的 Newton iteration，无论 $m$ 的值如何，该函数零点的重数都为 1，因此该迭代方法都能达到二次收敛。
+    
+!!! problem "Autumn, 2025"
+    For any continuous function $f$, define $\|f\|_\infty = \max_{x \in [-1, 1]} |f(x)|$. Define the $n$-th Chebyshev polynomial by: $T_0(x)=1, T_1(x)=x, T_{n+1}(x)=2xT_n(x)-T_{n-1}(x)$.
+    
+    (a) Show that
+    
+    $$
+    T_n(x) = \begin{cases} \cos(n \arccos x), & |x| \le 1 \\ \cosh(n \operatorname{arccosh} x), & |x| > 1 \end{cases}
+    $$
+    
+    (b) Prove that $\min_{\deg p \le n, p(1)=1} \|p\|_\infty = 1$ which is attained at $p = T_n$.
+    
+    (c) For $f \in C^{n+1}[-1, 1]$, choose the interpolation nodes $x_0, x_1, \dots, x_n$ as the $n+1$ zeros of $T_{n+1}(x)$, and denote its degree-$n$ interpolation polynomial by $L_n$. Prove
+    
+    $$
+    \|f - L_n\|_\infty \le \frac{\|f^{(n+1)}\|_\infty}{(n+1)! 2^n}.
+    $$
+    
+    (d) For $f \in C^{2n+2}[-1, 1]$, derive the Gauss quadrature formula of $I(f) = \int_{-1}^1 \frac{f(x)}{\sqrt{1-x^2}} dx$ for $n+1$ quadrature nodes, written by $I_{n+1}(f)$, and prove
+    
+    $$
+    |I(f) - I_{n+1}(f)| \le \frac{\pi \|f^{(2n+2)}\|_\infty}{(2n+2)! 2^{2n+1}}.
+    $$
+!!! proof "证明"
+    $(a)$：归纳即证。
+
+    $(b)$： 设 $p(x) = \sum_{k=0}^n a_k T_k(x)$，则 $1 = p(1) = \sum_{k=0}^n a_k$。又因为 $|T_k(x)| \le 1$，所以 $\|p\|_\infty \ge \sum_{k=0}^n a_k = 1$。 
+
+    $(c)$： 设 $f(x)$ 在 $[-1,1]$ 上的 Taylor 展开为
+
+    $$
+    f(x) = \sum_{k=0}^n \frac{f^{(k)}(-1)}{k!} (x+1)^k + R_{n+1}(x),
+    $$
+
+    因此
+
+    $$
+    \begin{aligned}
+    f(x) - L_n(x) &= \sum_{k=0}^n \frac{f^{(k)}(-1)}{k!} (x+1)^k + R_{n+1}(x) - \sum_{k=0}^n \frac{f^{(k)}(-1)}{k!} (x+1)^k\\
+    &= R_{n+1}(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!} \prod_{k=0}^n (x - x_k).
+    \end{aligned}
+    $$
+
+    故
+
+    $$
+    \|f - L_n\|_\infty \le \frac{\|f^{(n+1)}\|_\infty}{(n+1)!} \max_{x \in [-1, 1]} \left| \prod_{k=0}^n (x - x_k) \right| = \frac{\|f^{(n+1)}\|_\infty}{(n+1)! 2^n}.
+    $$
+
+    $(d)$： $n+1$ 点 Gauss-Chebyshev 求积公式为：
+    
+    $$
+    I_{n+1}(f) = \frac{\pi}{n+1} \sum_{k=0}^n f\left(\cos\left(\frac{2k+1}{2n+2}\pi\right)\right)
+    $$
+    
+    故误差
+
+    $$
+    \begin{aligned}
+    E_{n+1}(f) = I(f) - I_{n+1}(f) &= \frac{f^{(2n+2)}(\eta)}{(2n+2)!} \int_{-1}^1 \frac{1}{\sqrt{1-x^2}} \left[ \frac{T_{n+1}(x)}{2^n} \right]^2 dx\\
+    &\le  \frac{\pi \|f^{(2n+2)}\|_\infty}{(2n+2)! 2^{2n+1}}.
+    \end{aligned}
+    $$
+
+
+
+
+!!! problem "."
+    For distinct points $\left\{x_j\right\}_{j=0}^n$, denote $l_j(x)$ by the Lagrange basis function. Show that it holds
+
+    $$
+    \sum_{j=0}^n (x_j-x)^k l_j(x) = 0, \quad k=1,\ldots,n.
+    $$
+
+!!! proof "证明"
+    设 $p(x) = \sum_{j=0}^n (x_j-x)^k l_j(x)$，则 $p(x_j) = 0$ 对 $j=0,1,\ldots,n$ 成立，因此 $p(x)$ 有 $n+1$ 个不同的根。又因为 $p(x)$ 的次数不超过 $n$，所以 $p(x)$ 必须是零多项式，即得。
+
+!!! problem "."
+    If $a > 0$, then $\alpha = \sqrt{a}$ is a root of either equation
+    
+    $$
+    x^2 - a = 0, \quad \frac{a}{x^2} - 1 = 0.
+    $$
+    
+    (i)Explain why Newton's method applied to the first equation converges for arbitrary starting value $x_0 > 0$, whereas the same method applied to the second equation produces positive iterates $x_n$ converging to $\alpha$ only if $x_0$ is in some interval $0 < x_0 < b$. Determine $b$.
+    
+    (ii)Do the same as (i), but for the cube root $\sqrt[3]{a}$ and the equations
+    
+    $$
+    x^3 - a = 0, \quad \frac{a}{x^3} - 1 = 0.
+    $$
+!!! proof "证明"
+    $(i)$： 对于方程 $x^2 - a = 0$，Newton's method 的迭代公式为
+
+    $$
+    x_{n+1} = x_n - \frac{x_n^2 - a}{2 x_n} = \frac{1}{2} \left( x_n + \frac{a}{x_n} \right).
+    $$
+
+    若 $x_n\ge 2\alpha$，则 $x_{n+1}\le \frac{1}{2}x_n+\frac{1}{2}\frac{x_n^2/4}{x_n} = \frac{5}{8}x_n$，因此 $x_{n+1}$ 会逐渐减小，最终收敛到小于 $2\alpha$。
+
+    $$
+    e_{n+1} = \frac{e_n^2}{2 x_n} \leq \frac{e_n^2}{2 \alpha},
+    $$
+
+    进而有
+
+    $$
+    \frac{e_{n+1}}{2\alpha}\le \left( \frac{e_n}{2\alpha} \right)^2\le \cdots \le \left( \frac{e_0}{2\alpha} \right)^{2^n}.
+    $$
+
+    也收敛到零。
+
+    其余类似。
+
+!!! problem "2011 Individual"
+    **Problem 1.** Given a weight function $\rho(x)>0$, let the inner-product corresponding to $\rho(x)$ be defined as follows:
+
+    $$
+    (f,g):=\int_a^b \rho(x) f(x) g(x) dx,
+    $$
+
+    and let $\|f\| := \sqrt{(f,f)}$.
+
+    * (a) Define a sequence of polynomials as follows:
+
+        $$
+        \begin{aligned}
+        &p_0(x)=1,\quad p_1(x)=x-a_1,\\
+        &p_n(x)=(x-a_n)p_{n-1}(x)-b_n p_{n-2}(x),\quad n=2,3,\ldots
+        \end{aligned}
+        $$
+
+        where
+
+        $$
+        \begin{aligned}
+        a_n &= \frac{(x p_{n-1}, p_{n-1})}{(p_{n-1}, p_{n-1})}, \quad n=1,2,\ldots,\\
+        b_n &= \frac{(x p_{n-1}, p_{n-2})}{(p_{n-2}, p_{n-2})}, \quad n=2,3,\ldots.
+        \end{aligned}
+        $$
+
+        Show that $\{p_n(x)\}$ is an orthogonal sequence of monic polynomials.
+
+    * (b) Let $\{q_n(x)\}$ be an orthogonal sequence of monic polynomials corresponding to the inner product defined by $\rho$. (A polynomial is called monic if its leading coefficient is 1.) Show that $\{q_n(x)\}$ is unique and it minimizes $\|q_n\|$ amongst all monic polynomials of degree $n$.
+
+    * (c) Hence or otherwise, show that if $\rho(x)=\frac{1}{\sqrt{1-x^2}}$ and $[a,b]=[-1,1]$, then the corresponding orthogonal sequence is the Chebyshev polynomials:
+
+        $$
+        T_n(x)=\cos(n \arccos x), \quad n=0,1,2,\ldots
+        $$
+
+        and the following recurrent formula holds:
+
+        $$
+        T_{n+1}(x)=2x T_n(x)-T_{n-1}(x), \quad n=1,2,\ldots.
+        $$
+
+    * (d) Find the best quadratic approximation to $f(x)=x^3$ on $[-1,1]$ using $\rho(x)=\frac{1}{\sqrt{1-x^2}}$.
+
+!!! proof "证明"
+    $(a)$： 结合归纳法注意到
+
+    $$
+    \begin{aligned}
+        (p_n,p_{n-1})&=(x p_{n-1}, p_{n-1}) - a_n (p_{n-1}, p_{n-1}) - b_n (p_{n-2}, p_{n-1}) = (x p_{n-1}, p_{n-1}) - a_n (p_{n-1}, p_{n-1}) = 0.\\
+        (p_n,p_{n-2})&=(x p_{n-1}, p_{n-2}) - a_n (p_{n-1}, p_{n-2}) - b_n (p_{n-2}, p_{n-2}) = (x p_{n-1}, p_{n-2}) - b_n (p_{n-2}, p_{n-2}) = 0.\\
+    \end{aligned}
+    $$
+    
+    即得。
+
+    $(b)$： 唯一性：我们归纳证明对每个 $n$，$q_n$ 唯一。对于 $n=0$，显然 $q_0(x)=1$ 唯一。假设 $q_0,\cdots,q_{k-1}$ 唯一。若存在两个不同的多项式 $q_k(x)$ 和 $\tilde{q}_k(x)$，则它们的差 $r_k(x)=q_k(x)-\tilde{q}_k(x)$ 是一个次数不超过 $k-1$ 的多项式，并且满足 $(r_k, q_i)=0,i=0,\cdots,k-1$。由归纳假设，$q_i$ 是唯一的，因此 $r_k(x)$ 必须是零多项式，从而 $q_k(x)=\tilde{q}_k(x)$。
+
+    最小性：设 $p(x)$ 是任意一个次数为 $n$ 的首一多项式，则 $p(x)-q_n(x)$ 是一个次数不超过 $n-1$ 的多项式，因此 $(p-q_n, q_n)=0$。于是
+
+    $$
+    \|p\|^2 = \|q_n\|^2 + \|p-q_n\|^2 \geq \|q_n\|^2,
+    $$
+
+    $(c)$： 结合 $(a)$ 的递推和 $(b)$ 的唯一性可知，所求正交多项式序列满足要求。
+
+    $(d)$：设最佳二次近似为 $p(x)=c_0 T_0(x)+c_1 T_1(x)+c_2 T_2(x)$，则由正交性条件
+
+    $$
+    \begin{aligned}
+    c_0 &= \frac{(f,T_0)}{(T_0,T_0)} = \frac{\int_{-1}^1 \frac{x^3}{\sqrt{1-x^2}} dx}{\int_{-1}^1 \frac{1}{\sqrt{1-x^2}} dx} = 0,\\
+    c_1 &= \frac{(f,T_1)}{(T_1,T_1)} = \frac{\int_{-1}^1 \frac{x^4}{\sqrt{1-x^2}} dx}{\int_{-1}^1 \frac{x^2}{\sqrt{1-x^2}} dx} =  \frac{3}{4}\\
+    c_2 &= \frac{(f,T_2)}{(T_2,T_2)} = \frac{\int_{-1}^1 \frac{x^3(2x^2-1)}{\sqrt{1-x^2}} dx}{\int_{-1}^1 \frac{(2x^2-1)^2}{\sqrt{1-x^2}} dx} = 0
+    \end{aligned}
+    $$
+
+    因此最佳二次近似为
+
+    $$
+    p(x)=\frac{3}{4} T_1(x)=\frac{3}{4} x.
+    $$
+
+
+
+---
+
+!!! problem "2011 Individual"
+    **Problem 2.** If two polynomials $p(x)$ and $q(x)$, both of fifth degree, satisfy
+
+    $$
+    p(i)=q(i)=\frac{1}{i}, \quad i=2,3,4,5,6,
+    $$
+
+    and $p(1)=1$, $q(1)=2$. Find $p(0)-q(0)$.
+
+!!! proof "解"
+    注意到 $p(x)-q(x)$ 有五个不同的根 $2,3,4,5,6$，因此
+
+    $$
+    p(x)-q(x)=k(x-2)(x-3)(x-4)(x-5)(x-6)
+    $$
+
+    带入 $x=1$ 可得 $k=\frac{1-2}{(1-2)(1-3)(1-4)(1-5)(1-6)}=\frac{1}{5!}$，因此 $p(0)-q(0)=k(0-2)(0-3)(0-4)(0-5)(0-6)=6$。
+---
+
+!!! problem "2012 Individual"
+    **Problem 2.** Here is the definition of a moving least square approximation of a function $f(x)$ near a point $\overline{x}$ given $K$ points $x_k$ around $\overline{x}$ in $\mathbb{R}, k=1,\ldots,K$:
+
+    $$
+    \min_{P_{\overline{x}} \in \Pi_m} \sum_{k=1}^{K} |P_{\overline{x}}(x_k)-f_k|^2,
+    $$
+
+    where $f_k = f(x_k)$, $\Pi_m$ is the space of polynomials of degree less or equal to $m$, i.e.
+
+    $$
+    P_{\overline{x}}(x) = b_{\overline{x}}(x)^T c(\overline{x}),
+    $$
+
+    $c(\overline{x}) = [c_0, c_1, \ldots, c_m]^T$ is the coefficient vector to be determined by the minimization, $b_{\overline{x}}(x)$ is the polynomial basis vector, $b_{\overline{x}}(x) = [1, x-\overline{x}, (x-\overline{x})^2, \ldots, (x-\overline{x})^m]^T$. Assume that there are $K > m$ different points $x_k$ and $f(x)$ is smooth.
+
+    * (a) Prove that there is a unique solution $P_{\overline{x}}(x)$ to the minimization problem.
+    * (b) Denote $h = \max_k |x_k - \overline{x}|$, prove
+
+        $$
+        \left| c_i - \frac{1}{i!} f^{(i)}(\overline{x}) \right| = C(f,i) h^{m+1-i}, \quad i=0,1,\ldots,m,
+        $$
+
+        where $f^{(i)}(\cdot)$ is the $i$-th derivative of $f$ and $C(f,i)$ denotes some constant depending on $f$ and $i$.
+    * (c) If $S = \{x_k \mid k=1,2,\ldots,K\}$ are symmetrically distributed around $\overline{x}$, that is, if $x_k \in S$ then $2\overline{x}-x_k \in S$, prove that
+
+        $$
+        \left| c_i - \frac{1}{i!} f^{(i)}(\overline{x}) \right| = C(f,i) h^{m+2-i}, \quad i=0,1,\ldots,m,
+        $$
+
+        for $i$ (in $\{0,1,\ldots,m\}$) with the same parity as $m$.
+
+
+!!! proof "证明"
+    $(a)$：即找 $c_i$ 使得
+
+    $$
+    \min_{c_i} \sum_{k=1}^{K} \left|\sum_{i=0}^m c_i b_i(x_k) - f_k\right|^2.
+    $$
+
+    对 $c_j$ 求导并令其为零，得到线性方程组
+
+    $$
+    \mathbf{b}^T \mathbf{b} \mathbf{c} = \sum_{k=1}^{K} f_k \mathbf{b}(x_k),
+    $$
+
+    容易得到 $\mathbf{b}^T \mathbf{b}$ 是正定矩阵，因此该方程组有唯一解 $\mathbf{c}=(\mathbf{b}^T \mathbf{b})^{-1} \sum_{k=1}^{K} f_k \mathbf{b}(x_k)$。
+
+    $(b)$：设 $f(x)$ 在 $\overline{x}$ 处的 Taylor 展开为
+
+    $$
+    f(x) = \sum_{i=0}^{m} \frac{f^{(i)}(\overline{x})}{i!}b_i(x) + R_{m+1}(x),
+    $$
+
+    故
+
+    $$
+    f_k = \sum_{i=0}^{m} \frac{f^{(i)}(\bar{x})}{i!} b_i(x_k) + R_{m+1}(x_k).
+    $$
+
+    $$
+    \begin{aligned}
+        \mathbf{c} &= (\mathbf{b}^T \mathbf{b})^{-1} \sum_{k=1}^{K} \left( \sum_{j=0}^{m} \frac{f^{(j)}(\bar{x})}{j!} b_j(x_k) + R_{m+1}(x_k) \right) \mathbf{b}(x_k) \\
+        &= \sum_{j=0}^{m} \frac{f^{(j)}(\bar{x})}{j!} \mathbf{e}_i+ (\mathbf{b}^T \mathbf{b})^{-1}\sum_{k=1}^{K} R_{m+1}(x_k) \mathbf{b}(x_k) \\
+    \end{aligned}
+    $$
+
+    其中 $\mathbf{e}_i=(\mathbf{b}^T \mathbf{b})^{-1} \sum_{k=1}^{K} b_j(x_k) \mathbf{b}(x_k)$ 是单位向量，因此
+
+    $$
+    \begin{aligned}
+        \left| c_i - \frac{1}{i!} f^{(i)}(\overline{x}) \right| &\leq \sum_k\sum_j |(\mathbf{b}^T \mathbf{b})^{-1}_{ij}| |R_{m+1}(x_k)| |b_j(x_k)|\\
+        &=\sum_k\sum_j O(h^{-i-j})\cdot O(h^{m+1})\cdot O(h^j)=C(f,i) h^{m+1-i}.
+    \end{aligned}
+    $$
+
+    $(c)$：设 $f(x)$ 在 $\overline{x}$ 处的 Taylor 展开为
+
+    $$
+    f(x) = \sum_{i=0}^{m} \frac{f^{(i)}(\overline{x})}{i!}b_i(x) + \frac{f^{(m+1)}(\overline{x})}{i!}+ R_{m+2}(x),
+    $$
+
+    同理可得
+
+    $$
+    \begin{aligned}
+        \left| c_i - \frac{1}{i!} f^{(i)}(\overline{x}) \right| &\leq \sum_k\sum_j |(\mathbf{b}^T \mathbf{b})^{-1}_{ij}| |R_{m+2}(x_k)| |b_j(x_k)|\\
+    \end{aligned}
+    $$
+
+---
+
+!!! problem "2014 Team"
+    **Problem 4.** Let
+
+    $$
+    V_h = \{ v : v|_{I_j} \in P^k(I_j), \quad 1 \leq j \leq N \},
+    $$
+
+    where
+
+    $$
+    I_j = (x_{j-1}, x_j), \quad 1 \leq j \leq N
+    $$
+
+    with
+
+    $$
+    x_j = jh, \quad h = \frac{1}{N}.
+    $$
+
+    Here $P^k(I_j)$ denotes the set of polynomials of degree at most $k$ in the interval $I_j$. Recall the $L^2$ projection of a function $u(x)$ into the space $V_h$ is defined by the unique function $u_h \in V_h$ which satisfies
+
+    $$
+    \|u - u_h\| \leq \|u - v\|, \quad \forall v \in V_h,
+    $$
+
+    where the norm is the usual $L^2$ norm. We assume $u(x)$ has at least $k+2$ continuous derivatives.
+
+    * (a) Prove the error estimate
+
+        $$
+        \|u - u_h\| \leq C h^{k+1}.
+        $$
+
+        Explain how the constant $C$ depends on the derivatives of $u(x)$.
+    * (b) If another function $\varphi(x)$ also has at least $k+2$ continuous derivatives, prove
+
+        $$
+        \left| \int_0^1 (u(x) - u_h(x)) \varphi(x) dx \right| \leq C h^{2k+2}.
+        $$
+
+        Explain how the constant $C$ depends on the derivatives of $u(x)$ and $\varphi(x)$.
+
+!!! proof "证明"
+    $(a)$： 对每个子区间 $I_j$，我们将 $u(x)$ 在 $I_j$ 上用 $k$ 次泰勒多项式 $p_j(x)$ 近似，则由泰勒公式可知
+
+    $$
+    u - p_j= \frac{u^{(k+1)}(\xi_j)}{(k+1)!} (x - x_{j-1})^{k+1}, \quad x \in I_j,
+    $$
+
+    故
+
+    $$
+    \|u-p_j\|_{L^2(I_j)} \leq \frac{h^{k+1}}{(k+1)!} \max_{x \in I_j} |u^{(k+1)}(x)|.
+    $$
+
+    由于 $u_h$ 是 $u$ 在 $V_h$ 上的最佳 $L^2$ 近似多项式，因此
+
+    $$
+    \|u - u_h\|\leq \sum_{j=1}^N \|u - p_j\|_{L^2(I_j)} \leq N \frac{h^{k+1}}{(k+1)!} \max_{x \in [0,1]} |u^{(k+1)}(x)|.
+    $$
+
+    $(b)$： 设 $\pi_h \varphi$ 是 $\varphi$ 在 $V_h$ 上的最佳 $L^2$ 近似多项式，则
+
+    $$
+    \begin{aligned}
+        \left| \int_0^1 (u(x) - u_h(x)) \varphi(x) dx \right| &= \left| \int_0^1 (u(x) - u_h(x)) (\varphi(x) - \pi_h \varphi(x)) dx \right|\\
+        &\leq \|u - u_h\| \cdot \|\varphi - \pi_h \varphi\|\\
+        &\leq C h^{k+1} \max_{x \in [0,1]} |u^{(k+1)}(x)| \cdot C h^{k+1} \max_{x \in [0,1]} |\varphi^{(k+1)}(x)|
+    \end{aligned}
+    $$
+
+---
+!!! problem "2014 Team"
+    For the interval \([0, \pi]\), we divide it into \(N + 1\) equally spaced subintervals by using the nodal points:
+
+    \[0 = x_0 < x_1 < \cdots < x_{N+1} = \pi,\]
+
+    with
+
+    \[
+    \begin{align*}
+    &x_i = i \, h, \quad h = \pi / (N + 1).
+    \end{align*}
+    \]
+
+    For any continuous function \(w\) on \([0, \pi]\), we define \(\Pi_h w\) to be the piecewise linear interpolation of \(w\), namely \(\Pi_h w\) is linear on each subinterval \((x_i, x_{i+1})\) for \(i = 0, 1, \cdots, N\), and it takes the same values as \(w\) at all nodal points \(x_i, i = 0, 1, \cdots, N + 1\). For any function \(w\), we define
+
+    \[
+    \|w\| = \left( \int_0^\pi w^2(x) dx \right)^{1/2}.
+    \]
+
+    Prove the following estimates for any function \(u \in C^2[0, \pi]\):
+
+    \[
+    \|u - \Pi_h u\| \leq \frac{1}{\pi^2} h^2 \|u''\|, \quad \|u' - (\Pi_h u)'\| \leq \frac{1}{\pi} h \|u''\|.
+    \]
+
+!!! proof "证明"
+    设 $f=u-\Pi_h u$，由柯西不等式我们对 $x\in [x_i,x_{i+1}]$ 有
+
+    $$
+    |f(x)|\le \int_{x_i}^x |f'(t)|dt \le \sqrt{x - x_i} \left( \int_{x_i}^{x_{i+1}} |f'(t)|^2 dt \right)^{1/2} \le \sqrt{h} \|f'\|_{L^2(x_i,x_{i+1})}
+    $$
+
+    故
+
+    $$
+    \|f\|_{L^2(x_i,x_{i+1})}^2 \le h^2 \|f'\|_{L^2(x_i,x_{i+1})}^2
+    $$
+
+    又
+
+    $$
+    0=\int_{x_i}^{x_{i+1}} (ff')' dx =\int_{x_i}^{x_{i+1}} (f')^2 dx + \int_{x_i}^{x_{i+1}} f f'' dx,
+    $$
+
+    因此
+
+    $$
+    \|f'\|_{L^2(x_i,x_{i+1})}^2 \le \int_{x_i}^{x_{i+1}} |f f''| dx \le \|f\|_{L^2(x_i,x_{i+1})} \|f''\|_{L^2(x_i,x_{i+1})}
+    $$
+
+    综上我们有
+
+    $$
+    \|f\|_{L^2(x_i,x_{i+1})}^2 \le h^4 \|f''\|_{L^2(x_i,x_{i+1})}^2
+    $$
+
+    $$
+    \|f'\|_{L^2(x_i,x_{i+1})}^2 \le h^2 \|f''\|_{L^2(x_i,x_{i+1})}^2
+    $$
+
+    求和得
+
+    $$
+    \|f\|^2 = \sum_{i=0}^{N} \|f\|_{L^2(x_i,x_{i+1})}^2 \le h^4 \|f''\|^2
+    $$
+
+    $$
+    \|f'\|^2 = \sum_{i=0}^{N} \|f'\|_{L^2(x_i,x_{i+1})}^2 \le h^2 \|f''\|^2
+    $$
+---
+
+!!! problem "2012 Team"
+    **Problem 1.** If the function $u(x)$ is in $C^{k+1}$ (has continuous $(k+1)$-th derivative) on the interval $[0,2]$, and a sequence of polynomials $p_n(x)$ ($n=1,2,3,\ldots$) of degree at most $k$ satisfies
+
+    $$
+    |u(x) - p_n(x)| \leq \frac{C}{n^{k+1}}, \quad \forall 0 \leq x \leq \frac{1}{n},
+    $$
+
+    where the constant $C$ is independent of $n$, prove
+
+    $$
+    |u(x) - p_n(x)| \leq \frac{\tilde{C}}{n^{k+1}}, \quad \forall \frac{1}{n} \leq x \leq \frac{2}{n},
+    $$
+
+    with another constant $\tilde{C}$ which is also independent of $n$.
+
+!!! proof "证明"
+    取 $u(x)$ 在区间 $[0,\frac{1}{n}]$ 上的 $k$ 次插值多项式 $q_n(x)$，记 $x_j^n=\frac{j}{nk}$，则
+
+    $$
+    q_n(x) = \sum_{i=0}^{k} u(x_i^n) l_i^n(x), l_j^n(x) = \prod_{\substack{0 \leq i \leq k \\ i \neq j}} \frac{x - x_m^n}{x_j^n - x_m^n}.
+    $$
+
+    则对 $\frac{1}{n}\le x\le \frac{2}{n}$，有
+
+    $$
+    |u(x)-q_n(x)|=\left| \frac{u^{(k+1)}(\xi_x)}{(k+1)!} (x - x_0^n)(x - x_1^n) \cdots (x - x_k^n) \right| \leq \frac{C_1}{(k+1)!} \left(\frac{2}{n}\right)^{k+1}\le \frac{C_2}{n^{k+1}}.
+    $$
+
+    而对 $\frac{1}{n}\le x\le \frac{2}{n}$，有
+
+    $$
+    |q_n(x)-p_n(x)| = \left| \sum_{i=0}^{k} (u(x_i^n) - p_n(x_i^n)) l_i^n(x) \right| \leq \frac{C}{n^{k+1}} \sum_{i=0}^{k} |l_i^n(x)| \leq \frac{C_3}{n^{k+1}}.
+    $$
+
+    其中
+
+    $$
+    C_3 = C \sum_{j=0}^{k}\prod_{0\le i\le k,i\ne j}\frac{2k-i}{|j-i|}
+    $$
+
+    最后我们有
+
+    $$
+    |u(x)-p_n(x)| \le |u(x)-q_n(x)| + |q_n(x)-p_n(x)| \le \frac{C_2+C_3}{n^{k+1}}.
+    $$
+---
+
+!!! problem "2017 Individual"
+    **Problem 3.** Consider a piecewise smooth function
+
+    $$
+    f(x) =
+    \begin{cases}
+    f_1(x), & x \leq 0, \\
+    f_2(x), & x > 0
+    \end{cases}
+    $$
+
+    where $f_1(x)$ is a $C^\infty$ function on $(-\infty,0]$ and $f_2(x)$ is a $C^\infty$ function on $[0,\infty)$, but $f_1(0) \neq f_2(0)$. Suppose $p(x)$ is a $k$-th degree polynomial ($k \geq 1$) interpolating $f(x)$ at $k+1$ equally-spaced grid points $x_j, j=0,1,2,\ldots,k$ with $x_i < 0 < x_{i+1}$ for some $i$ between $0$ and $k-1$. Prove that, when the grid size $h = x_{j+1} - x_j$ is small enough, $p'(x) \neq 0$ for $x_i \leq x \leq x_{i+1}$, that is, $p(x)$ is monotone in the interval $[x_i, x_{i+1}]$. (Hint: first prove the case when $f_1(x) = c_1, f_2(x) = c_2$ and $c_1 \neq c_2$ are two constants.)
+
+---
+
+!!! problem "2018 Individual"
+    **Problem (Hermite Polynomials).** Define the Hermite polynomials as
+
+    $$
+    H_n(x) = (-1)^n \exp\left( \frac{x^2}{2} \right) \frac{d^n}{dx^n} \left[ \exp\left( -\frac{x^2}{2} \right) \right], \quad x \in (-\infty, +\infty), \quad n=0,1,2,\ldots
+    $$
+
+    * (a) Prove the weighted orthogonality of the Hermite polynomials:
+
+        $$
+        \int_{-\infty}^{+\infty} \rho(x) H_n(x) H_m(x) dx = n! \sqrt{2\pi} \delta_{n,m},
+        $$
+
+        where $\rho(x) = \exp\left( -\frac{x^2}{2} \right)$.
+    * (b) Prove the three-term recurrence formula:
+
+        $$
+        H_{n+1}(x) = x H_n(x) - n H_{n-1}(x), \quad n \geq 1,
+        $$
+
+        and then show that for all $n \geq 1$, $H_n(x)$ and $H_{n-1}(x)$ share no common roots.
+    * (c) Use the recurrence formula and induction to prove the differential relation:
+
+        $$
+        \frac{d}{dx} H_n(x) = n H_{n-1}(x), \quad n \geq 1,
+        $$
+
+        and then prove that $H_n$ is an eigenfunction of the following eigenvalue problem
+
+        $$
+        x u'(x) - u''(x) = \lambda u.
+        $$
+
+        You need to find the eigenvalue $\lambda_n$ corresponding to $H_n(x)$.
+---
+
+
+!!! problem "2019 Team"
+    Let $x=(x_0,\cdots,x_{N-1})\in \mathbb{R}^N$,$x\neq 0$ and $\hat{x}$ be its discrete Fourier transform, i.e.,
+
+    $$
+    \hat{x}_\omega = \frac{1}{\sqrt{N}}\sum_{t=0}^{N-1} x_t \exp (- 2\pi i \omega t/N),\omega=0,1,\cdots,N-1.
+    $$
+
+    Prove that $\|x\|_0\|\hat{x}\|_0 \geq N$, where $\|x\|_0$ is the number of nonzero entries of $x$.(Hint: show that $\hat{x}$ can not have $\|x\|_0$ conescutive zeros.)
+---
+!!! problem "."
+    **Problem 1.** Let $f\in C^{k+1}[-1,1]$ and $[-1,1]$ be partitioned into subintervals $I_j=[(j-1)h,jh]$ of width $h$. Assume $p$ is a polynomial of degree $k$ which approximates $f$ in $I_j$ with
+
+    $$
+    \max_{x\in I_j} |f(x)-p(x)| \leq C_0 h^{k+1}.
+    $$
+
+    where $C_0$ is a constant indepentent of $j$. Show that there exists an another constant $C$, independent of $j$, such that 
+
+    $$
+    \max_{x\in I_{j\pm 1}}|p_j(x)-f(x)|\le C h^{k+1}.
+    $$
+
+    (as long as $I_{j\pm 1}$ \subset [-1,1], of course).
+---
+!!! problem "."
+    **Problem 1.** $(a)$ Show that 
+    
+    $$
+    T_n(x) = \cos (n \arccos x), \quad x \in [-1,1]
+    $$
+
+    is a polynomial of degree $n$ with extrema at 
+
+    $$
+    x_k = \cos \left( \frac{k\pi}{n} \right), \quad k=0,1,\ldots,n,
+    $$
+
+    and leading coefficient $2^{n-1}$.
+
+    $(b)$ Show that if $f\in C^{n+1}[-1,1]$ and if $P(x)$ is the polynomial with degree at most $n$ that interpolates $f$ at $x_k,k=0,1,\ldots,n$, then 
+
+    $$
+    \|f(x)-P(x)\|_\infty \leq \frac{1}{2^n (n+1)!} \|f^{(n+1)}\|_\infty.
+    $$
+
+
+---
+!!! problem "2012 Team"
+    **Problem 2.** Let $S(x)$ be a cubic spline with knots $\{t_i\}_{i=0}^n$. If it is determined that $S(x)$ is linear over $[t_1, t_2]$ and $[t_3, t_4]$, prove that $S(x)$ is also linear over $[t_2, t_3]$.

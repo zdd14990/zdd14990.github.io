@@ -1,0 +1,130 @@
+---
+title: Friends
+hide:
+  - navigation
+  - toc
+---
+
+<h1 style="display: none;">Friends</h1>
+
+<div class="friend-links-grid">
+
+  <a href="https://murasaki010.github.io/" target="_blank" class="friend-card">
+    <div class="friend-avatar">
+      <img src="https://murasaki010.github.io/friends/avata1r.jpg" alt="murasaki010">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">murasaki010</div>
+      <div class="friend-desc">浪漫与理想是我的同义词。</div>
+    </div>
+  </a>
+
+  <a href="https://tbl0x7d6.github.io" target="_blank" class="friend-card">
+    <div class="friend-avatar">
+      <img src="https://avatars.githubusercontent.com/u/43849725?v=4" alt="浅草袋鼠鸡">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">浅草袋鼠鸡</div>
+      <div class="friend-desc">你喜欢我，我喜欢你。</div>
+    </div>
+  </a>
+
+  <a href="https://blog.xiaoaojianghu.fun" target="_blank" class="friend-card">
+    <div class="friend-avatar">
+      <img src="https://blog.xiaoaojianghu.fun/img/icon.jpeg" alt="校奥浆糊">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">校奥浆糊</div>
+      <div class="friend-desc"></div> 
+    </div>
+  </a>
+
+  <a href="https://blog.konpoku.top" target="_blank" class="friend-card">
+    <div class="friend-avatar">
+      <img src="https://blog.konpoku.top/img/avatar.png" alt="zirno81">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">zirno81</div>
+      <div class="friend-desc">电子系大神</div>
+    </div>
+  </a>
+
+  <a href="https://yyhmuke.com/" target="_blank" class="friend-card">
+    <div class="friend-avatar">
+      <img src="https://yyhmuke.com/document/avatar.jpeg" alt="Muke_慕可">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">Muke_慕可</div>
+      <div class="friend-desc">南开大神</div>
+    </div>
+  </a>
+
+</div>
+
+<style>
+  .md-typeset h1, h1 {
+    display: none !important;
+  }
+
+  /* 网格容器设置 */
+  .friend-links-grid {
+    display: grid;
+    /* 自动适应宽度：电脑端两列，手机端一列 */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; /* 卡片间距 */
+    padding: 10px;
+  }
+
+  /* 卡片样式 */
+  .friend-card {
+    background-color: #f7f7f7; /* 参考图的浅灰底色 */
+    border-radius: 12px;       /* 大圆角 */
+    padding: 20px;
+    display: flex;
+    align-items: center;       /* 垂直居中 */
+    text-decoration: none !important; /* 去掉下划线 */
+    color: #333;
+    transition: transform 0.2s ease, background-color 0.2s;
+    border: none;
+  }
+
+  /* 鼠标悬停效果 */
+  .friend-card:hover {
+    background-color: #eeeeee;
+    transform: translateY(-3px); /* 微微上浮 */
+  }
+
+  /* 头像区域 */
+  .friend-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;        /* 圆形 */
+    object-fit: cover;
+    margin-right: 15px;        /* 头像和文字的间距 */
+    background-color: #ddd;    /* 图片未加载时的占位色 */
+    margin-bottom: 0 !important; /* 强制清除默认外边距 */
+  }
+
+  /* 文字区域 */
+  .friend-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 名字样式 */
+  .friend-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #444;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+
+  /* 简介样式 */
+  .friend-desc {
+    font-size: 14px;
+    color: #777;
+    line-height: 1.4;
+  }
+</style>

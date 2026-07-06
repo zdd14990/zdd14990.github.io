@@ -1,0 +1,332 @@
+---
+title: 统计力学复习笔记
+date: 2026-01-01
+hide:
+  - navigation
+categories:
+  - 物理
+tags:
+  - physics
+  - statistical-mechanics
+---
+
+# 统计力学复习笔记
+
+## 1. 三大系综与基本原理 (Ensembles & Fundamentals)
+
+### 1.1 系综分类
+根据系统与环境的交换量（能量 $E$、粒子数 $N$），定义三种主要系综：
+
+* **微正则系综 (Microcanonical Ensemble, E.V.N)**
+    * 系统孤立，能量 $E$、体积 $V$、粒子数 $N$ 固定。
+    * **玻尔兹曼熵公式**：
+  
+        $$S = k_B \ln \Omega(N, E, V)$$
+
+        其中 $\Omega$ 为微观状态数。
+
+* **正则系综 (Canonical Ensemble, T.V.N)**
+    * 系统与热库交换能量，温度 $T$ 固定。
+    * 概率分布：$p_n \propto e^{-\beta E_n}$。
+
+* **巨正则系综 (Grand Canonical Ensemble, T.V. $\mu$)**
+    * 系统与环境交换能量和粒子，温度 $T$ 和化学势 $\mu$ 固定。
+    * **巨配分函数** ：
+  
+        $$\Xi = \sum_{N} \sum_{n} e^{-\beta (E_n - \mu N)}$$
+
+         这里 $\beta \equiv \frac{1}{k_B T}$。
+
+### 1.2 熵与热力学关系
+* **Gibbs 熵公式**：
+    
+    $$S = -k_B \sum p(n) \ln p(n)$$
+
+* **热力学基本方程**：
+    
+    $$dE = TdS - p dV + \mu dN$$
+
+* **偏导数关系**（由 $S$ 全微分给出）：
+    
+    $$
+    \begin{cases}
+    \frac{1}{T} = \left(\frac{\partial S}{\partial E}\right)_{V, N} \\
+    \frac{p}{T} = \left(\frac{\partial S}{\partial V}\right)_{E, N} \\
+    -\frac{\mu}{T} = \left(\frac{\partial S}{\partial N}\right)_{E, V}
+    \end{cases}
+    $$
+
+---
+
+## 2. 正则系综 (Canonical Ensemble)
+
+### 2.1 配分函数与热力学量
+核心在于计算配分函数 $Z$：
+
+$$Z = \sum_n e^{-\beta E_n}$$
+
+* **自由能 (Helmholtz Free Energy)**:
+    
+    $$F = E - TS = -k_B T \ln Z = -\frac{1}{\beta} \ln Z$$
+    
+    $$dF = -S dT - p dV + \mu dN$$
+
+* **内能 (平均能量)**:
+    
+    $$\langle E \rangle = -\frac{\partial}{\partial \beta} \ln Z$$
+
+* **热容**:
+    
+    $$C_V = \frac{\partial \langle E \rangle}{\partial T}$$
+
+* **能量涨落**:
+    
+    $$\Delta E^2 = \langle E^2 \rangle - \langle E \rangle^2 = \frac{\partial^2}{\partial \beta^2} \ln Z$$
+
+    相对涨落 $\frac{\Delta E}{E} \sim \frac{1}{\sqrt{N}}$，说明宏观系统能量极其确定。
+
+### 2.2 经典理想气体应用
+对于 $N$ 个不可分辨粒子：
+
+$$Z_{ideal} = \frac{1}{N!} (Z_1)^N = \frac{V^N}{N! \lambda^{3N}}$$
+
+其中热波长 $\lambda = \sqrt{\frac{2\pi \hbar^2}{m k_B T}}$。
+
+* **压强**: $p = -\frac{\partial F}{\partial V} = \frac{N k_B T}{V} \Rightarrow pV = N k_B T$。
+* **内能**: $\langle E \rangle = \frac{3}{2} N k_B T$。
+* **Sackur-Tetrode 熵公式**:
+    
+    $$S = -\frac{\partial F}{\partial T} = N k_B \left[ \ln \left( \frac{V}{N \lambda^3} \right) + \frac{5}{2} \right]$$
+
+---
+
+## 3. 巨正则系综 (Grand Canonical Ensemble)
+
+### 3.1 巨配分函数与巨热力学势
+巨配分函数 $\Xi$ 将不同粒子数 $N$ 的正则配分函数加权求和：
+
+$$\Xi(\mu, V, T) = \sum_{N=0}^{\infty} e^{\beta \mu N} Z(N, V, T)$$
+
+* **巨热力学势 (Grand Potential, $\Phi$)**:
+    
+    $$\Phi = F - \mu N = -k_B T \ln \Xi$$
+    
+    $$d\Phi = -S dT - p dV - N d\mu$$
+    
+    由此可得压强关系：$\Phi = -pV$ (即 $pV = k_B T \ln \Xi$)。
+
+### 3.2 理想气体的巨正则处理
+利用理想气体的 $Z_{ideal}$ 代入求和：
+
+$$\Xi = \sum_{N=0}^{\infty} e^{\beta \mu N} \frac{V^N}{N! \lambda^{3N}} = \sum_{N=0}^{\infty} \frac{1}{N!} \left( \frac{e^{\beta \mu} V}{\lambda^3} \right)^N = \exp \left( \frac{e^{\beta \mu} V}{\lambda^3} \right)$$
+
+* **推导粒子数**:
+    
+    $$\langle N \rangle = -\frac{\partial \Phi}{\partial \mu} = \frac{1}{\beta} \frac{\partial \ln \Xi}{\partial \mu} = \frac{e^{\beta \mu} V}{\lambda^3}$$
+
+* **化学势**:
+    
+    $$\mu = k_B T \ln \left( \frac{\lambda^3 N}{V} \right)$$
+
+* **粒子数涨落**:
+    
+    $$\Delta N^2 = \frac{1}{\beta^2} \frac{\partial^2 \ln \Xi}{\partial \mu^2} = \langle N \rangle$$
+
+    相对涨落 $\frac{\Delta N}{\langle N \rangle} = \frac{1}{\sqrt{\langle N \rangle}}$。
+
+---
+
+## 4.量子气体
+
+### 4.1 基础工具：态密度 (Density of States)
+
+在宏观系统中，能级是离散的但间隔极小，统计力学的核心是将**求和**转化为**积分**。
+
+* **量子化 (Quantization):** 被限制在体积 $V=L^3$ 中的粒子，波矢量 $\vec{k}$ 是离散的。
+* **求和转积分 (Sum to Integral):**
+
+$$
+\sum_{\vec{k}} \to \frac{V}{(2\pi)^3} \int d^3k
+$$
+
+* **态密度 g(E):** 定义为在能量 $E$ 到 $E+dE$ 范围内的状态数。
+
+$$
+\int d^3k (\cdots )= \int g(E) dE (\cdots)
+$$
+
+态密度的形式取决于粒子的**色散关系 (Dispersion Relation)**，即能量 $E$ 与动量 $k$ 的关系。
+
+1. **非相对论粒子 (Non-relativistic):**
+   
+* 色散关系：$E = \frac{\hbar^2 k^2}{2m}$
+* 态密度：$g(E) \propto E^{1/2}$ (3D)
+* 应用：理想气体、电子气
+
+
+2. **极端相对论/无质量粒子 (Ultra-relativistic / Massless):**
+
+* 色散关系：$E = \hbar k c$
+* 态密度：$g(E) \propto E^2$ (3D)
+* 应用：光子、声子(线性近似)
+
+---
+
+### 4.2 光子：黑体辐射 (Photons & Blackbody Radiation)
+
+将光看作由无质量玻色子（光子）组成的气体。
+
+1. **化学势 $\mu = 0$:** 光子数不守恒，系统自动调节粒子数以达到平衡，导致 $\mu=0$。
+2. **偏振 (Polarization):** 光子有 2 个偏振方向，计算态密度时需乘以 2。
+3. **分布函数:** 普朗克分布 (Planck Distribution)。
+
+$$
+n(\omega) = \frac{1}{e^{\beta \hbar \omega} - 1}
+$$
+
+* **能量密度:** $E(\omega) \propto \frac{\omega^3}{e^{\beta\hbar\omega}-1}$
+* 低频极限 ($\hbar\omega \ll k_BT$): **Rayleigh-Jeans Law**，经典预测，导致紫外灾难。
+* 高频极限 ($\hbar\omega \gg k_BT$): 指数衰减，量子效应主导。
+
+
+* **Stefan-Boltzmann Law:** 总能量密度 $\frac{E}{V} \propto T^4$。
+* **辐射压 (Radiation Pressure):** $p = \frac{1}{3} \frac{E}{V}$。
+
+---
+
+### 4.3 声子：固体的热容 (Phonons & Debye Model)
+
+将固体中原子的集体振动模式量子化，称为声子。
+
+德拜模型是对真实固体的简化，假设声波是连续介质中的波。
+
+1. **类比光子:** 色散关系线性 $E = \hbar k c_s$ ($c_s$ 为声速)，有 3 个偏振方向（1纵+2横）。
+2. **关键区别 (Cutoff):** 晶格不是连续的，波长不能小于原子间距。
+
+* **德拜频率 ($\omega_D$):** 积分上限。
+* **自由度守恒:** 总模式数必须等于 3N（N为原子数）。
+
+$$
+\int_0^{\omega_D} g(\omega) d\omega = 3N
+$$
+
+* **高温 ($T \gg T_D$):** $C_V \to 3Nk_B$。符合经典的 **杜隆-珀蒂定律 (Dulong-Petit Law)**。
+* **低温 ($T \ll T_D$):** $C_V \propto T^3$。这就是著名的 **德拜 T^3 定律**。
+
+---
+
+### 4.4 双原子气体 (Diatomic Gas)
+
+解释为什么常温下双原子气体的热容低于经典预测值 $7/2 Nk_B$。
+
+量子能级是离散的。如果热能 $k_B T$ 远小于能级间隔 $\Delta E$，该自由度就无法被激发（对配分函数贡献为1，对能量贡献为0）。
+
+1. **平动 (Translation):** 能级间隔极小，始终是经典的。$C_V = 3/2$。
+2. **转动 (Rotation):** 特征温度 $\Theta_{rot}$ 较低。
+
+* $T < \Theta_{rot}$: 转动冻结。
+* $T > \Theta_{rot}$: 转动“解冻”，贡献 $2/2 = 1$ 个 $k_B$。
+
+
+3. **振动 (Vibration):** 特征温度 $\Theta_{vib}$ 很高（通常几千K）。
+
+* 常温下通常是冻结的。
+* 高温下贡献 $2/2 = 1$ 个 $k_B$（动能+势能）。
+
+---
+
+### 4.5 玻色子 (Bosons)
+
+研究全同玻色粒子系统（自旋为整数，波函数对称）。
+
+* **化学势 (Chemical Potential):** 必须 $\mu < 0$（对于自由粒子），因为占据数 $n = \frac{1}{e^{\beta(E-\mu)}-1}$ 必须为正。
+* **高温极限:** $e^{\beta\mu} \ll 1$，回退到玻尔兹曼分布。量子效应表现为降低了压强（有效吸引）。
+
+$$
+p = N k_B T \left( 1 - \text{Correction} \right)
+$$
+
+**玻色-爱因斯坦凝聚 (Bose-Einstein Condensation, BEC)**：当温度极低时，宏观数量的粒子“凝聚”到最低能级（基态 $E=0$）。
+
+* **原因 (Mathematical Origin):** 积分公式 $\int g(E) n(E) dE$ 只能计算激发态粒子数。在低温下，这个积分有上限 $N_{excited}^{max} < N_{total}$。多余的粒子 $N - N_{excited}$ 必须处于积分无法覆盖的 $E=0$ 态。
+
+$$
+N = N_0 + \int_0^{\infty} g(E) n(E) dE
+$$
+
+
+* **临界温度 (T_c):**
+
+$$
+T_c \propto \frac{\hbar^2}{m} n^{2/3}
+$$
+
+
+当 $T < T_c$ 时，BEC 发生。
+* **凝聚分数 (Condensate Fraction):** 
+
+  $$
+  \frac{N_0}{N} = 1 - \left( \frac{T}{T_c} \right)^{3/2}
+  $$
+
+
+* **热容特征 (Heat Capacity):**
+在 $T=T_c$ 处，$C_V$ 曲线出现尖峰（Cusp，导数不连续），类似于液氦的 \lambda 相变。
+
+---
+
+### 4.6 费米子 (Fermions)
+
+研究全同费米粒子系统（自旋为半整数，波函数反对称）。
+
+**泡利不相容原理 (Pauli Exclusion Principle)**：每个量子态最多只能容纳 1 个费米子。
+
+* **分布函数:** 费米-狄拉克分布 (Fermi-Dirac Distribution)。
+
+$$
+n(E) = \frac{1}{e^{\beta (E - \mu)} + 1}
+$$
+
+
+* **符号差异:** 分母是 +1（玻色子是 -1）。
+
+在绝对零度，粒子从低能级往高能级填，直到填满 N 个。
+
+* **费米能量 (E_F):** 填到的最高能级。
+
+$$
+E_F = \frac{\hbar^2 k_F^2}{2m} \propto n^{2/3}
+$$
+
+在 $T=0$ 时，$\mu = E_F$。
+* **费米面 (Fermi Surface):** 动量空间中被占据球体的表面。
+* **简并压 (Degeneracy Pressure):** 即使在 T=0，由于泡利不相容原理，粒子具有巨大的动能，产生压强。
+
+$$
+p = \frac{2}{5} n E_F\propto n^{5/3}
+$$
+
+在低温下 ($T \ll T_F$)，只有费米面附近 $\sim k_BT$ 范围内的电子能被热激发。
+
+* **结论:** 热容与温度成正比。
+
+$$
+C_V=\gamma T
+$$
+
+
+
+**天体物理应用：白矮星 (White Dwarfs)**
+
+* **抗衡机制:** 电子简并压对抗万有引力。
+* **质量-半径关系:** 质量越大，半径越小 ($R \propto M^{-1/3}$)。
+* **钱德拉塞卡极限 (Chandrasekhar Limit):**
+当 $M > 1.4 M_{\odot}$ 时，电子变成超相对论性 ($E \propto p$)，简并压无法抵抗引力，恒星坍缩。
+
+**磁性 (Magnetism)**
+
+* **泡利顺磁性 (Pauli Paramagnetism):** 自旋与磁场作用。只有费米面附近的电子能翻转自旋，导致 $\chi$ 为正常数（与 $T$ 无关）。
+* **朗道抗磁性 (Landau Diamagnetism):** 轨道运动量子化（朗道能级）。产生抗磁性，大小为顺磁性的 1/3。
+
+
+---

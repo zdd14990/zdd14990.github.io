@@ -1,0 +1,451 @@
+---
+title: Numerical Linear Algebra
+date: 2025-12-11
+hide:
+  - navigation
+categories:
+  - 应用数学
+  - 应用数学博资考
+tags:
+  - applied-math
+  - applied-math-exam
+  - numerical-linear-algebra
+---
+# Numerical Linear Algebra
+
+---
+
+## Chapter 1: Norms & Metrics Theory
+
+### 1.1 The Hierarchy of Spaces
+我们在向量空间 $V$ 上定义以下结构：
+
+1.  **Metric (度量) $d(x, y)$:**
+    定义集合上的距离。映射 $d: X \times X \to \mathbb{R}_{\ge 0}$ 满足：
+    * $d(x, y) \ge 0$ 且 $d(x, y) = 0 \iff x = y$ (非负性 & 唯一性)
+    * $d(x, y) = d(y, x)$ (对称性)
+    * $d(x, z) \le d(x, y) + d(y, z)$ (三角不等式)
+
+2.  **Norm (范数) $\|x\|$:**
+    定义向量的长度。映射 $\|\cdot\|: V \to \mathbb{R}_{\ge 0}$ 满足：
+    * $\|x\| = 0 \iff x = 0$
+    * $\|\alpha x\| = |\alpha| \|x\|$ (齐次性)
+    * $\|x + y\| \le \|x\| + \|y\|$ (三角不等式)
+
+3.  **Inner Product (内积) $\langle x, y \rangle$:**
+    定义角度和正交性。
+
+> **Logic Reconstruction:**
+> **Inner product $\xrightarrow{\text{induces}}$ Norm $\xrightarrow{\text{induces}}$ Metric**。
+> 
+> * 由内积导出范数：$\|x\| = \sqrt{\langle x, x \rangle}$
+> * 由范数导出度量：$d(x, y) = \|x - y\|$
+
+### 1.2 Matrix Norms
+
+对于矩阵 $A \in \mathbb{C}^{m \times n}$，我们关注两类范数：
+
+#### A. Induced Norms
+定义为向量范数的极大值：
+
+$$\|A\|_p = \sup_{x \ne 0} \frac{\|Ax\|_p}{\|x\|_p} = \max_{\|x\|_p=1} \|Ax\|_p$$
+
+* **$\ell_1$-norm (Column Sum):** $\|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}|$
+* **$\ell_\infty$-norm (Row Sum):** $\|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}|$
+* **Spectral norm ($\ell_2$-norm):** $\|A\|_2 = \sigma_{\max}(A) = \sqrt{\lambda_{\max}(A^H A)}$
+
+#### B. Entry-wise Norms
+* **Frobenius Norm:**
+  
+    $$\|A\|_F = \left( \sum_{i,j} |a_{ij}|^2 \right)^{1/2} = \sqrt{\text{tr}(A^H A)}$$
+
+#### C. Schatten $p$-Norms
+基于奇异值 $\sigma(A) = (\sigma_1, \dots, \sigma_{\min(m,n)})$ 定义：
+
+$$\|A\|_{S_p} = \|\sigma(A)\|_p = \left( \sum \sigma_i^p \right)^{1/p}$$
+
+* $p=2 \implies$ Frobenius Norm.
+* $p=\infty \implies$ Spectral Norm ($=\sigma_1$).
+* $p=1 \implies$ Nuclear Norm (Trace Norm, $\sum \sigma_i$).
+
+---
+
+### 1.3 Spectral Radius & Convergence
+
+**Definition:** 矩阵 $A$ 的谱半径为 $\rho(A) = \max \{|\lambda| : \lambda \in \lambda(A)\}$。
+
+**Theorem (Gelfand's Formula):**
+
+$$\lim_{k \to \infty} \|A^k\|^{1/k} = \rho(A)$$
+
+**Properties & Proof Supplements:**
+
+1.  **Relation to Norm:** $\forall \|\cdot\|$ (induced norm), $\rho(A) \le \|A\|$。
+    * 设 $Ax = \lambda x$，则 $|\lambda| \|x\| = \|\lambda x\| = \|Ax\| \le \|A\| \|x\| \implies |\lambda| \le \|A\|$。
+2.  **Perturbation Property:** 对任意 $\epsilon > 0$，存在某种算子范数 $\|\cdot\|_*$ 使得：
+  
+    $$\|A\|_* \le \rho(A) + \epsilon$$
+
+3.  **Fundamental Convergence Theorem:**
+  
+    $$\lim_{k \to \infty} A^k = 0 \iff \rho(A) < 1$$
+
+    * 这是后续所有不动点迭代法收敛的理论基石。
+
+---
+
+## Chapter 2: Matrix Factorizations
+
+在讨论迭代法之前，理解经典的三大分解是至关重要的。它们是将一般矩阵问题转化为易于求解的形式（对角、三角、正交）的核心手段。
+
+### 2.1 LU Decomposition (Gaussian Elimination)
+**Motivation:**
+求解 $Ax=b$。如果我们需要对同一个 $A$ 求解多个不同的 $b$，每次都进行完整的高斯消元 ($\frac{2}{3}n^3$) 是极其浪费的。LU 分解将消元过程“存储”起来。
+
+**Theorem:**
+对于方阵 $A$，如果其顺序主子式均非奇异，则存在唯一的单位下三角矩阵 $L$ 和上三角矩阵 $U$，使得 $A = LU$。(若考虑数值稳定性，需引入置换矩阵 $P$，即 $PA = LU$)。
+
+**Derivation (Gaussian Elimination View):**
+高斯消元的每一步是将第 $k$ 列对角线以下的元素消为 0。这等价于左乘一个初等矩阵 $M_k$（Frobenius Matrix）：
+
+$$M_{n-1} \dots M_2 M_1 A = U$$
+
+其中 $M_k = I - \alpha_k e_k^T$。
+由于 $M_k$ 是下三角且可逆，其逆 $M_k^{-1}$ 也是下三角，且 $L = M_1^{-1} \dots M_{n-1}^{-1}$ 结构非常简单（直接填入乘数）。
+
+$$\implies A = LU$$
+
+**Application:** 求解 $Ax=b \iff LUx=b$。
+
+1.  Forward Substitution: 解 $Ly = b$ ($O(n^2)$)。
+2.  Backward Substitution: 解 $Ux = y$ ($O(n^2)$)。
+
+---
+
+### 2.2 QR Decomposition (Orthogonalization)
+**Motivation:**
+LU 分解中的 $L, U$ 可能条件数很差，导致数值不稳定。正交矩阵 $Q$ ($Q^H Q = I$) 具有完美的条件数 ($\kappa_2(Q)=1$) 且保持向量长度 ($\|Qx\|_2 = \|x\|_2$)。QR 分解是解决**最小二乘问题**和**特征值计算**的关键。
+
+**Theorem:**
+任意 $A \in \mathbb{C}^{m \times n} (m \ge n)$ 可分解为 $A = QR$，其中 $Q \in \mathbb{C}^{m \times m}$ 是酉矩阵 (Unitary)，$R \in \mathbb{C}^{m \times n}$ 是上三角矩阵。
+
+**Derivation (Gram-Schmidt Intuition):**
+考虑 $A$ 的列向量 $a_1, \dots, a_n$。我们希望找到一组标准正交基 $q_1, \dots, q_n$ 生成相同的空间。
+由 Gram-Schmidt 正交化：
+
+$$q_1 = \frac{a_1}{\|a_1\|}$$
+
+$$q_2 = \frac{a_2 - \langle q_1, a_2 \rangle q_1}{\|a_2 - \langle q_1, a_2 \rangle q_1\|}$$
+
+$$\vdots$$
+
+反之，我们可以将 $a_k$ 写为 $q_1, \dots, q_k$ 的线性组合：
+
+$$a_k = \sum_{i=1}^k r_{ik} q_i$$
+
+写成矩阵形式即为 $A = \hat{Q} \hat{R}$ (Reduced QR)。
+
+* **Numerical Implementation:** 实际计算通常使用 **Householder Reflectors** 或 **Givens Rotations**，因为经典的 Gram-Schmidt 在数值上不稳定（正交性丢失）。
+
+---
+
+### 2.3 Singular Value Decomposition (SVD)
+**Motivation:**
+LU 和 QR 甚至特征值分解 (EVD) 都有局限性（例如 EVD 要求方阵且可能无解）。SVD 被誉为线性代数的“瑞士军刀”，它适用于**任何** $m \times n$ 矩阵，揭示了矩阵本质的几何意义（将球映射为椭球）。
+
+**Theorem:**
+任意 $A \in \mathbb{C}^{m \times n}$ 可分解为：
+
+$$A = U \Sigma V^H$$
+
+其中：
+
+* $U \in \mathbb{C}^{m \times m}$ 是酉矩阵 (左奇异向量)。
+* $V \in \mathbb{C}^{n \times n}$ 是酉矩阵 (右奇异向量)。
+* $\Sigma \in \mathbb{R}^{m \times n}$ 对角矩阵，对角元 $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$ (奇异值)。
+
+**Derivation:**
+考虑 Hermitian 矩阵 $A^H A$（半正定）。
+
+1.  $A^H A$ 有实特征值 $\lambda_i \ge 0$ 和正交特征向量 $v_i$。
+2.  定义奇异值 $\sigma_i = \sqrt{\lambda_i}$。
+3.  构造 $V = [v_1, \dots, v_n]$。
+4.  对于 $\sigma_i > 0$，定义 $u_i = \frac{A v_i}{\sigma_i}$。容易验证 $u_i$ 也是正交的：
+  
+    $$\langle u_i, u_j \rangle = \frac{v_i^H A^H A v_j}{\sigma_i \sigma_j} = \frac{v_i^H (\sigma_j^2 v_j)}{\sigma_i \sigma_j} = \delta_{ij}$$
+
+5.  扩充 $U$ 使其成为酉矩阵，即得 $A = U \Sigma V^H$。
+
+---
+
+## Chapter 3: Iterative Methods for Linear Systems
+
+求解 $Ax=b$。当 $A$ 稀疏且维数极高时，直接法 ($O(n^3)$) 代价过高，需使用分裂迭代法。
+
+### 3.1 Matrix Splitting Framework
+将 $A$ 分解为 $A = A_1 + A_2$（或者常记为 $M - N$），其中 $A_1$ 易求逆。
+
+**Iteration Scheme:**
+
+$$A_1 x_{k+1} = b - A_2 x_k$$
+
+$$\implies x_{k+1} = A_1^{-1}(b - A_2 x_k)$$
+
+**Error Analysis:**
+设精确解为 $x_*$，误差为 $e_k = x_* - x_k$。
+
+$$A_1 x_* = b - A_2 x_*$$
+
+$$\quad A_1 x_{k+1} = b - A_2 x_k$$
+
+$$\implies A_1 (x_* - x_{k+1}) = -A_2 (x_* - x_k)$$
+
+$$\implies e_{k+1} = -A_1^{-1} A_2 e_k$$
+
+令迭代矩阵 $G = -A_1^{-1} A_2$ (或 $I - A_1^{-1}A$)。
+**Convergence Criterion:** 迭代收敛 $\iff \rho(G) < 1$。
+
+---
+
+### 3.2 Classical Splitting Methods
+记 $A = L + D + U$ （$L$: 下三角, $D$: 对角, $U$: 上三角）。
+
+#### A. Jacobi Iteration
+* **Splitting:** $A_1 = D$, $A_2 = L+U$.
+* **Matrix Form:** $x_{k+1} = D^{-1}(b - (L+U)x_k)$.
+* **Component-wise Form (Board Detail):**
+ 
+    $$x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j \ne i} a_{ij} x_j^{(k)} \right)$$
+
+* **Convergence:** 收敛若 $A$ 是严格对角占优 (Strictly Diagonally Dominant) 或 $2D - A$ 正定 (对于 SPD 矩阵)。
+
+#### B. Gauss-Seidel Iteration (G-S)
+
+* **Splitting:** $A_1 = D+L$, $A_2 = U$.
+* **Idea:** 最新计算出的分量 $x_j^{(k+1)}$ 立即用于计算后续分量。
+* **Matrix Form:** $x_{k+1} = (D+L)^{-1}(b - U x_k)$.
+* **Component-wise Form (Board Detail):**
+    
+    $$x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j < i} a_{ij} x_j^{(k+1)} - \sum_{j > i} a_{ij} x_j^{(k)} \right)$$
+
+* **Convergence:** 若 $A$ 是对称正定 (SPD) 的，G-S 必收敛。
+
+#### C. Successive Over-Relaxation (SOR)
+
+在 G-S 基础上引入松弛因子 $\omega$ 进行加权：
+
+$$x_{k+1} = (1-\omega)x_k + \omega x_{GS}^{(k+1)}$$
+
+* **Splitting:** $A_1 = \frac{1}{\omega}D + L$。
+* **Convergence:**
+    * 必要条件 (Necessary Condition): $0 < \omega < 2$。
+    * 对于 SPD 矩阵，该区间是充分的。
+
+---
+
+## Chapter 4: Nonlinear Equations
+
+问题：求解 $f(x) = 0$ 或不动点 $x = \varphi(x)$。
+
+### 4.1 Bisection Method
+* **Conditions:** $f \in C[a, b]$ 且 $f(a)f(b) < 0$。
+* **Geometry:** 利用介值定理 (IVT)。
+* **Convergence:**
+    * **Global Linear Convergence** (全局线性收敛)。
+    * 误差界：$|x_k - x_*| \le \frac{b-a}{2^k}$。
+
+### 4.2 Fixed Point Iteration
+将方程重写为 $x = \varphi(x)$。
+迭代格式：$x_{k+1} = \varphi(x_k)$。
+
+**Theorem (Banach Contraction Mapping):**
+若 $\varphi: [a, b] \to [a, b]$ 且满足 Lipschitz 条件 $|\varphi(x) - \varphi(y)| \le L |x-y|$ 其中 $L < 1$ (Contraction)，则：
+
+1.  存在唯一不动点 $x_*$。
+2.  迭代全收敛 (Global Convergence)。
+3.  **Local Convergence:** 若 $\varphi$ 连续可微，且 $|\varphi'(x_*)| < 1$，则局部收敛。
+    * $|\varphi'(x_*)| = 0 \implies$ 超线性收敛 (Superlinear)。
+
+### 4.3 Newton's Method
+
+利用 Taylor 展开线性化 $f(x) \approx f(x_k) + f'(x_k)(x - x_k) = 0$。
+
+**Algorithm:**
+
+$$x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}$$
+
+或写成不动点形式 $\varphi(x) = x - \frac{f(x)}{f'(x)}$。
+
+**Convergence Rate Analysis:**
+计算 $\varphi'(x)$:
+
+$$\varphi'(x) = 1 - \frac{(f'(x))^2 - f(x)f''(x)}{(f'(x))^2} = \frac{f(x)f''(x)}{(f'(x))^2}$$
+
+在根 $x_*$ 处，$f(x_*) = 0$。若 $f'(x_*) \ne 0$，则 $\varphi'(x_*) = 0$。
+根据不动点理论，导数为 0 意味着 **至少是二次收敛 (Quadratic Convergence)**。
+
+### 4.4 Acceleration Methods
+
+针对线性收敛序列 ($x_{k+1} = \varphi(x_k)$) 的加速。
+
+#### A. Aitken's $\Delta^2$ Process (Extrapolation)
+假设 $\frac{x_{k+1} - x_*}{x_k - x_*} \approx C$ (常数)：
+
+$$\frac{x_{k+1} - x_*}{x_k - x_*} \approx \frac{x_{k+2} - x_{k+1}}{x_{k+1} - x_k}$$
+
+解出 $x_*$ 近似值：
+
+$$\hat{x}_k = x_k - \frac{(x_{k+1}-x_k)^2}{x_{k+2} - 2x_{k+1} + x_k}$$
+
+#### B. Steffensen's Method
+将 Aitken 加速结合回迭代过程中：
+
+$$y_k = \varphi(x_k), \quad z_k = \varphi(y_k)$$
+
+$$x_{k+1} = x_k - \frac{(y_k - x_k)^2}{z_k - 2y_k + x_k}$$
+
+* **Board Theorem:** 若 $\varphi'(x_*) \ne 1$，则 Steffensen 方法将线性收敛提升为 **二次收敛 (Quadratic)**。
+* **Limit Property:** $\lim_{k \to \infty} \left| \frac{y_k - x_*}{x_k - x_*} \right| = 0$ (Superlinear condition).
+
+---
+
+## Chapter 5: Eigenvalue Problems
+
+由于 $n \ge 5$ 时不存在有限步求根公式（Abel-Ruffini 定理），特征值算法均为迭代法。
+
+### 5.1 Computational Complexity Overview
+
+* **Linear System ($Ax=b$):**
+    * LU Decomposition: $\frac{2}{3}n^3$ (Reference Ch 2.1)
+    * QR Decomposition: $\frac{4}{3}n^3$ (Reference Ch 2.2)
+* **Eigenvalue Decomposition:**
+    * Symmetric QR Algorithm: $\approx 10n^3$
+    * General Non-symmetric QR: $\approx 25n^3 \sim 28n^3$
+    * **Note:** 特征值计算比求解线性方程组昂贵得多。
+
+### 5.2 The Power Method
+
+**Goal:** 寻找模最大的特征值 $\lambda_1$ 及其对应的特征向量 $x_1$。
+假设 $|\lambda_1| > |\lambda_2| \ge \dots \ge |\lambda_n|$。
+
+**Algorithm:**
+
+1.  Initialize $u_0$ with $\|u_0\|=1$.
+2.  Iterate: $\tilde{u}_{k+1} = A u_k$, $u_{k+1} = \tilde{u}_{k+1} / \|\tilde{u}_{k+1}\|$.
+3.  Rayleigh Quotient: $\rho_k = u_k^H A u_k \to \lambda_1$.
+
+**Convergence Proof (Detailed Expansion):**
+设 $u_0 = \sum_{i=1}^n c_i x_i$（特征向量基展开）。
+
+$$A^k u_0 = c_1 \lambda_1^k x_1 + \sum_{i=2}^n c_i \lambda_i^k x_i = \lambda_1^k \left[ c_1 x_1 + \sum_{i=2}^n c_i \left( \frac{\lambda_i}{\lambda_1} \right)^k x_i \right]$$
+
+由于 $|\lambda_i / \lambda_1| < 1$，当 $k \to \infty$ 时，括号内项趋于 $c_1 x_1$。
+
+* **Convergence Rate:** $\mathcal{O}\left( \left| \frac{\lambda_2}{\lambda_1} \right|^k \right)$ (Linear Convergence)。
+* **Defective Case:** 若 $\lambda_1$ 亏损（对应的 Jordan 块大小 $>1$），则收敛速度降为 $\mathcal{O}(1/k)$。
+
+### 5.3 Inverse Iteration
+
+**Idea:** 对 $(A - \mu I)^{-1}$ 应用幂法。
+利用了 LU 分解求解线性方程组的能力。
+
+* $(A - \mu I)^{-1}$ 的特征值为 $(\lambda_i - \mu)^{-1}$。
+* 模最大的特征值对应于距离 $\mu$ 最近的 $\lambda_i$。
+
+**Convergence Rate:** $\mathcal{O}\left( \left| \frac{\lambda_{closest} - \mu}{\lambda_{second} - \mu} \right|^k \right)$。
+> **Insight:** 当 $\mu$ 非常接近特征值时，比值极小，收敛极快（这也是 Rayleigh Quotient Iteration 具有三次收敛性的原因）。
+
+---
+
+## Chapter 6: The QR Algorithm
+
+这是计算所有特征值的标准算法，直接利用了 Chapter 2 中的 QR 分解。
+
+### 6.1 Naive QR Iteration & Schur Form
+**Algorithm:** $A_0 = A$. For $k=0,1,\dots$:
+
+$$A_k = Q_k R_k \quad (\text{QR Factorization})$$
+
+$$A_{k+1} = R_k Q_k$$
+
+**Equivalence:** $A_{k+1} = Q_k^H A_k Q_k$（相似变换，保持特征值不变）。
+
+**Limit:** 若特征值模不同，$\{A_k\}$ 收敛于上三角矩阵 $T$ (**Schur Form**)，对角元即为特征值。
+
+### 6.2 Practical Enhancements
+
+#### A. Hessenberg Reduction
+
+直接做 QR 复杂度为 $\mathcal{O}(n^3)$/步。
+
+* **Step 1:** 预先用 Householder 变换将 $A$ 化为 **Upper Hessenberg** 形式 $H$（次对角线下方全为 0）。
+* **Step 2:** 对 $H$ 进行 QR 迭代。
+    * **Benefit:** QR 分解保持 Hessenberg 结构，单步复杂度降为 $\mathcal{O}(n^2)$。
+
+#### B. Shift Strategies
+
+为了加速收敛（破坏 $|\lambda_i| = |\lambda_j|$ 的情况并利用反幂法性质）：
+
+$$A_k - \mu_k I = Q_k R_k$$
+
+$$A_{k+1} = R_k Q_k + \mu_k I$$
+
+* **Rayleigh Quotient Shift:** $\mu_k = (A_k)_{nn}$。对于对称矩阵，**Cubic Convergence**。
+* **Wilkinson Shift:** 取 $A_k$ 右下角 $2 \times 2$ 子矩阵的特征值中靠近 $(A_k)_{nn}$ 的那个。保证收敛。
+
+### 6.3 Implicit Q Theorem & Subspace Iteration
+
+**Theorem (Implicit Q Theorem):**
+若 $Q$ 是正交矩阵，且 $Q^T A Q = H$ 是不可约 Hessenberg 矩阵，则 $Q$ 的第一列 $q_1$ 唯一决定了 $H$ 和 $Q$ 的其余列（相差一个符号因子）。
+
+**Connection to Subspace Iteration:**
+QR 迭代本质上等价于对单位矩阵 $I$ 的列进行 **Subspace Iteration (子空间迭代)**：
+
+* QR 迭代的第 $k$ 步产生的 $Q$ 矩阵，其前 $j$ 列张成的子空间，收敛于 $A$ 的前 $j$ 个主特征向量张成的空间。
+* $\mathcal{R}(A^k) \to$ Invariant Subspace。
+
+---
+
+## Chapter 7: Matrix Approximation & Applications
+
+### 7.1 Low-Rank Approximation
+
+**Problem:** 给定矩阵 $A$，寻找秩为 $k$ 的矩阵 $X$ 最小化误差 $\|A-X\|$。
+
+**Theorem (Eckart-Young-Mirsky):**
+基于 **Chapter 2.3** 中的 SVD 分解，设 $A = \sum_{i=1}^r \sigma_i u_i v_i^H$。
+最优解为截断 SVD：$A_k = \sum_{i=1}^k \sigma_i u_i v_i^H$。
+
+**Error Bounds:**
+
+1.  **Spectral Norm ($\ell_2$):**
+
+    $$\min_{\text{rank}(X) \le k} \|A - X\|_2 = \sigma_{k+1}$$
+
+    如果 $k \ge r$，误差为 0
+
+2.  **Frobenius Norm ($F$):**
+    
+    $$\min_{\text{rank}(X) \le k} \|A - X\|_F = \sqrt{\sum_{j=k+1}^r \sigma_j^2}$$
+
+### 7.2 Matrix Exponential & ODEs
+
+考虑常微分方程组 (Initial Value Problem):
+
+$$\frac{dx}{dt} = Ax, \quad x(0) = x_0$$
+
+**Exact Solution:** $x(t) = e^{At} x_0$.
+
+* Matrix Exponential: $e^{At} = I + At + \frac{(At)^2}{2!} + \dots$
+
+**Numerical Stability:**
+使用 Euler 方法离散化 ($t_{k+1} = t_k + h$)：
+
+$$\frac{x_{k+1} - x_k}{h} = A x_k \implies x_{k+1} = (I + hA) x_k$$
+
+**Stability Condition:**
+为了保证数值解不发散（即 $x_k \to 0$ 当真实解衰减时），我们需要迭代矩阵 $G = I + hA$ 的谱半径小于 1：
+
+$$\rho(I + hA) \le 1$$
+
+$$\implies |1 + h\lambda_i(A)| \le 1 \quad \forall i$$

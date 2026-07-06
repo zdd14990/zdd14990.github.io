@@ -1,494 +1,770 @@
 ---
-title: 首页
+title: Home
 hide:
   - navigation
   - toc
-git_revision_date_localized:
-  enable: false
+  - footer
 ---
 
 <style>
-  /* =========================================================
-     1. 基础全局设置与清理
-     ========================================================= */
-  /* 隐藏默认标题和源文件链接 */
-  .md-typeset h1, .md-content__inner h1 { display: none !important; }
-  .md-source-file { display: none !important; }
-
-  /* 清除 MkDocs 默认内容区域的背景和阴影 */
-  .md-content, .md-content__inner, .md-main__inner {
-    background: transparent !important;       
-    background-color: transparent !important; 
-    box-shadow: none !important;              
-    border: none !important;                  
-    backdrop-filter: none !important;         
-    -webkit-backdrop-filter: none !important; 
-    padding-top: 0 !important;
+  body.home-layout .md-footer,
+  body.zdd-minimal-layout.home-layout .md-footer {
+    display: none !important;
   }
 
-  /* 暗色模式下的背景清理 */
-  [data-md-color-scheme="slate"] .md-content,
-  [data-md-color-scheme="slate"] .md-main__inner,
-  [data-md-color-scheme="slate"] .md-grid {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    backdrop-filter: none !important;
+  body.home-layout .md-main__inner,
+  body.home-layout .md-content,
+  body.home-layout .md-content__inner,
+  body.zdd-minimal-layout.home-layout .md-main__inner,
+  body.zdd-minimal-layout.home-layout .md-content,
+  body.zdd-minimal-layout.home-layout .md-content__inner {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
   }
 
-  /* =========================================================
-     2. 首页大标题区域样式
-     ========================================================= */
-  .home-hero-title {
-    font-size: 3.2rem;
-    font-weight: 800;
-    text-align: center;
-    margin-top: 60px;   
-    margin-bottom: 20px;
-    line-height: 1.2;
-    background: linear-gradient(to right, #e67e96, #5e72e4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  body.home-layout .md-content__inner::before,
+  body.home-layout .md-content__inner::after,
+  body.zdd-minimal-layout.home-layout .md-content__inner::before,
+  body.zdd-minimal-layout.home-layout .md-content__inner::after {
+    display: none !important;
+    content: none !important;
   }
 
-  .home-hero-subtitle {
-    font-size: 1.5rem;
-    font-style: italic;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
-    opacity: 0.95;
-    min-height: 1.5em; 
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
-  }
+  body.home-layout .minimal-home,
+  body.zdd-minimal-layout.home-layout .minimal-home {
+    position: relative;
+    box-sizing: border-box;
 
-  #typing-text::after {
-      content: '|';
-      color: currentColor;
-      animation: blink 1s infinite;
-      margin-left: 4px;
-      font-weight: 400;
-      opacity: 1;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-  
-  [data-md-color-scheme="default"] .home-hero-subtitle {
-      color: #333;
-      text-shadow: 0 2px 10px rgba(255,255,255,0.8);
-  }
+    min-height: calc(100svh - 3rem);
+    padding: 0 1rem 3.6rem;
 
-  /* =========================================================
-     3. 核心容器与布局
-     ========================================================= */
-  .home-glass-wrapper {
-    margin-top: 100px !important; 
-    margin-left: auto; margin-right: auto; margin-bottom: 60px;
-    max-width: 1100px; 
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 24px;
-    padding: 40px;
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s backwards;
-  }
-
-  [data-md-color-scheme="slate"] .home-glass-wrapper {
-    background-color: rgba(30, 32, 48, 0.85); 
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-  }
-  
-  @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 40px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-
-  .hero-layout { 
-    display: flex; 
-    gap: 40px; 
-    align-items: flex-start; 
-    justify-content: center; 
-  }
-
-  .left-column {
-    flex: 0 0 280px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
   }
 
-  .intro-area { 
-    flex: 1; 
-    padding-left: 20px; 
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
-    animation-fill-mode: both; 
-    animation-delay: 0.3s; 
-  }
-
-  /* =========================================================
-     4. 个人名片样式
-     ========================================================= */
-  .profile-card { 
+  body.home-layout .minimal-home-hero,
+  body.zdd-minimal-layout.home-layout .minimal-home-hero {
     width: 100%;
-    background-color: var(--md-default-bg-color); 
-    border-radius: 20px; 
-    padding: 30px 20px; 
-    text-align: center; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    border: 1px solid rgba(0,0,0,0.05); 
-    margin-bottom: 20px; 
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
-    animation-fill-mode: both; 
-    animation-delay: 0.1s; 
-    transform-style: preserve-3d; 
-    will-change: transform; 
-    transition: box-shadow 0.3s ease; 
-  }
-  
-  .profile-card:hover {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+    transform: translateY(-2.2rem);
   }
 
-  [data-md-color-scheme="slate"] .profile-card { 
-    background-color: #2e303e; 
-    border: none; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-  }
-  
-  .avatar-wrapper { transform: translateZ(50px); }
-  .profile-info { transform: translateZ(30px); }
-  .visitor-badge, .stats-row, .action-buttons { transform: translateZ(20px); }
+  .zdd-home-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1.05rem;
 
-  /* --- 关键修复：强制头像为圆形 --- */
-  .avatar { 
-      width: 150px !important; 
-      height: 150px !important; 
-      
-      /* 强制 50% 圆角 */
-      border-radius: 50% !important; 
-      
-      object-fit: cover !important; 
-      margin-bottom: 15px !important; 
-      border: 4px solid var(--md-default-bg-color) !important; 
-      animation: breathe 3s infinite ease-in-out !important;
-      display: inline-block !important;
+    text-align: center;
+    font-size: 0.62rem;
+    line-height: 1.4;
+    color: var(--zdd-surface-muted, #4a6a78);
+    opacity: 0.72;
+    user-select: none;
   }
 
-  @keyframes breathe {
-      0% { box-shadow: 0 0 0 0px rgba(230, 126, 150, 0.6); }
-      50% { box-shadow: 0 0 0 12px rgba(230, 126, 150, 0); }
-      100% { box-shadow: 0 0 0 0px rgba(230, 126, 150, 0); }
-  }
-  
-/* 1. 昵称 (zdd) */
-.profile-name { 
-    margin-top: 0px;    /* 增加与上方头像的距离 */
-    margin-bottom: 8px;  /* 与下方签名保持适度距离 */
-    font-size: 1.5rem;   /* 稍微加大一点字号，更突出 */
-    font-weight: 800; 
-    color: var(--md-default-fg-color); 
-    line-height: 1.2;
-}
-
-/* 2. 个性签名 (家里蹲是绝对正义) */
-.typing-container { 
-    margin-top: 0; 
-    margin-bottom: 18px; /* 【关键】拉开与下方访客徽章的距离，不再拥挤 */
-    font-size: 0.9rem;   /* 字号微调 */
-    color: var(--md-default-fg-color--light); 
-    opacity: 0.85;
-    min-height: 1.4em;   /* 防止文字跳动 */
-}
-
-/* 3. 访客量徽章 */
-.visitor-badge { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    
-    /* 背景色稍微淡一点，显精致 */
-    background: rgba(0, 0, 0, 0.04); 
-    
-    padding: 6px 16px;   /* 增加内边距，胶囊变得更饱满 */
-    border-radius: 50px; /* 变成完全圆润的胶囊 */
-    
-    margin-bottom: 25px; /* 【关键】拉开与下方“文章/分类”统计行的距离 */
-    
-    font-size: 0.75rem; 
-    color: var(--md-default-fg-color--light); 
-    font-family: "Roboto Mono", monospace; 
-    border: 1px solid rgba(0,0,0,0.02); /* 加个极淡的边框增加质感 */
-}
-
-/* 暗色模式适配 (保持不变，或者微调背景) */
-[data-md-color-scheme="slate"] .visitor-badge { 
-    background: rgba(255, 255, 255, 0.08); 
-    border-color: rgba(255, 255, 255, 0.05);
-}
-  .pv-container { display: flex !important; align-items: center; gap: 6px; }
-  .visitor-badge .icon { display: flex; align-items: center; opacity: 0.8; }
-  #busuanzi_value_site_pv { font-weight: bold; color: #e67e96; margin-top: 1px; }
-  
-  .stats-row { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
-  .stat-item { padding: 0 12px; }
-  .stat-num { display: block; font-size: 1.1rem; font-weight: bold; color: var(--md-default-fg-color); }
-  .stat-label { font-size: 0.7rem; font-weight: normal; color: var(--md-default-fg-color--light); }
-  .stat-divider { width: 1px; height: 20px; background-color: var(--md-default-fg-color--light); opacity: 0.2; }
-  
-  .decoration-icon { 
-    margin: 10px 0; color: var(--md-default-fg-color--light); opacity: 0.3; 
-    animation: spin 8s linear infinite; 
-  }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
-  
-  /* --- 按钮样式 --- */
-  .btn-main { 
-    display: flex; align-items: center; justify-content: center;
-    width: 100%; padding: 10px 0; margin-bottom: 10px; 
-    border-radius: 10px; 
-    background: linear-gradient(135deg, #a16b83, #8f5c70); 
-    color: #fff !important; font-weight: bold; text-decoration: none; 
-    transition: transform 0.2s; 
-  }
-  .btn-main:hover { transform: translateY(-2px); opacity: 0.9; }
-  
-  .sub-actions { display: flex; justify-content: space-between; gap: 10px; }
-
-  .btn-secondary { 
-    display: flex; align-items: center; justify-content: center;
-    flex: 1; padding: 10px 0; border-radius: 10px; 
-    background: rgba(0, 0, 0, 0.05); color: var(--md-default-fg-color) !important; 
-    font-weight: bold; text-decoration: none; font-size: 0.9rem;
-    transition: all 0.2s ease; 
-  }
-  .btn-secondary:hover { background: rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-
-  [data-md-color-scheme="slate"] .btn-secondary { background: rgba(255, 255, 255, 0.1); color: #fff !important; }
-  [data-md-color-scheme="slate"] .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-  
-  /* =========================================================
-     5. 公告栏样式
-     ========================================================= */
-  .announcement-section {
-    width: 100%;
-    background: rgba(255, 255, 255, 1);
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    animation-fill-mode: both;
-    animation-delay: 0.5s;
-  }
-  [data-md-color-scheme="slate"] .announcement-section {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  .zdd-home-footer a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
   }
 
-  .announcement-header {
-    display: flex; align-items: center; margin-bottom: 12px; 
-    padding-bottom: 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-  [data-md-color-scheme="slate"] .announcement-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  .zdd-home-footer a:hover {
+    border-bottom-color: currentColor;
   }
 
-  .announcement-icon { font-size: 1rem; margin-right: 8px; }
-  .announcement-title { font-size: 0.9rem; font-weight: 600; color: var(--md-default-fg-color); }
-  .announcement-content { display: flex; flex-direction: column; gap: 8px; }
-  .announcement-item { display: flex; align-items: flex-start; gap: 10px; padding: 4px 0; }
-  .announcement-date {
-    font-size: 0.75rem; color: var(--md-default-fg-color--light);
-    min-width: 70px; flex-shrink: 0; font-family: "Roboto Mono", monospace;
+  body[data-md-color-scheme="slate"] .zdd-home-footer {
+    color: var(--zdd-surface-muted, #9fb8c4);
   }
-  .announcement-text { font-size: 0.8rem; color: var(--md-default-fg-color); line-height: 1.4; flex: 1; }
 
-  /* =========================================================
-     6. 移动端适配
-     ========================================================= */
-  @media (max-width: 768px) { 
-    .md-header__inner { padding-left: 15px !important; padding-right: 15px !important; }
-    .home-hero-title { font-size: 2.2rem; margin-top: 40px; }
-    .home-glass-wrapper { margin-top: 50px !important; padding: 20px; margin-left: 15px; margin-right: 15px; }
-
-    .hero-layout { flex-direction: column; align-items: center; } 
-    .left-column { width: 100%; max-width: 350px; flex: none; }
-    .intro-area { width: 100%; padding-left: 0; margin-top: 30px; } 
+  body.home-layout .minimal-home:has(.minimal-search-results:not([hidden])) .zdd-home-footer,
+  body.zdd-minimal-layout.home-layout .minimal-home:has(.minimal-search-results:not([hidden])) .zdd-home-footer {
+    display: none;
   }
-  
-  #page-pv-container { display: none !important; }
 </style>
 
-<div class="home-hero-title">
-  ZDD的数理秘密花园
-</div>
-
-<div class="home-hero-subtitle">
-  <span id="typing-text"></span>
-</div>
-
-<div class="home-glass-wrapper" markdown="1">
-
-<div align="center" style="margin-bottom: 30px;" markdown="1">
-
-[:material-math-integral: 分析](blog/分析/index.md){ .md-button .md-button--primary }
-[:material-sigma: 代数](blog/代数/index.md){ .md-button .md-button--primary }
-[:material-vector-curve: 应用](blog/应用数学/index.md){ .md-button .md-button--primary }
-[:material-chart-bell-curve-cumulative: 概统](blog/概统/index.md){ .md-button .md-button--primary }
-[:material-atom: 物理](blog/物理/index.md){ .md-button .md-button--primary }
-[:material-chart-bar: 经济](blog/经济学/index.md){.md-button  .md-button--primary }
-[:material-link-variant: 友链](友链/友链.md){ .md-button }
-
-</div>
-
-<hr style="border-top: 1px solid var(--md-default-fg-color--light); opacity: 0.2; margin: 0 auto 40px auto; max-width: 800px;">
-
-<div class="hero-layout" markdown="1">
-
-<div class="left-column">
-
-<div class="profile-card" data-tilt data-tilt-glare data-tilt-max-glare="0.3" data-tilt-max="10" data-tilt-speed="400" markdown="1">
-
-<div class="avatar-wrapper">
-<img src="assets/avatar.jpg" alt="Avatar" class="avatar">
-</div>
-
-<div class="profile-info">
-<h2 class="profile-name">zdd</h2>
-<div class="typing-container">
-  家里蹲是绝对正义
-</div>
-</div>
-
-<div class="visitor-badge">
-  <span id="busuanzi_container_site_pv" class="pv-container" style="display:none">
-    <span class="icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="fill: currentColor;">
-        <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/>
-      </svg>
-    </span>
-    <span id="busuanzi_value_site_pv">--</span>
-  </span>
-</div>
-
-<div class="stats-row">
-<div class="stat-item">
-  <span class="stat-num">{{ article_count() }}</span>
-  <span class="stat-label">文章</span>
-</div>
-<div class="stat-divider"></div>
-<div class="stat-item">
-  <span class="stat-num">{{ category_count() }}</span>
-  <span class="stat-label">分类</span>
-</div>
-</div>
-
-<div class="decoration-icon">
-🐱
-</div>
-
-<div class="action-buttons">
-
-  <a href="." class="btn-main">
-    首页
-  </a>
-
-  <div class="sub-actions">
-    <a href="blog/" class="btn-secondary">文章</a>
-    <a href="友链/友链/" class="btn-secondary">友链</a>
+<section class="minimal-home">
+  <div class="minimal-home-hero">
+    <h1 class="minimal-home-line"><span id="typing-text">“ 去过和没去过的地方 哪里更远 ”</span></h1>
+    <form class="minimal-search" id="home-search-form">
+      <input id="home-search-input" type="search" placeholder="Search or type /help" autocomplete="off" aria-label="搜索文章或输入命令">
+    </form>
+    <div class="minimal-search-ghost" id="home-search-ghost" aria-hidden="true"></div>
+    <div class="minimal-search-results" id="home-search-results"></div>
   </div>
 
-</div>
-
-</div>
-<div class="announcement-section">
-<div class="announcement-header">
-  <span class="announcement-icon">📢</span>
-  <span class="announcement-title">公告</span>
-</div>
-<div class="announcement-content">
-  <div class="announcement-item">
-    <span class="announcement-date">2025-11-22</span>
-    <span class="announcement-text">完成了首页美化</span>
+  <div class="zdd-home-footer">
+    © 2026 zdd14990's Blog
   </div>
-  <div class="announcement-item">
-    <span class="announcement-date">2025-11-19</span>
-    <span class="announcement-text">上传了建站前笔记的pdf版本</span>
-  </div>
-  <div class="announcement-item">
-    <span class="announcement-date">2025-11-18</span>
-    <span class="announcement-text">建站</span>
-  </div>
-</div>
-</div>
+</section>
 
-</div>
-<div class="intro-area" markdown="1">
-
-### :material-hand-wave: 欢迎光临
-
-!!! quote " "
-    若还想与我相见 就来我的梦里边
-
-数学专业大三学生，这里是我整理笔记的数字花园。你可以通过上方的按钮快速跳转到不同学科的笔记。
-
-本学期主修应用方向，因此近期会专心更新应用数学板块。
-
-建站前的笔记实在是懒得将tex转成md直接传了pdf见谅_(:3 」∠ )_
-
-之后有空也许会慢慢在ai帮助下换成md方便在网站上阅读。
-
-#### :material-history: 最新文章
-
-{{ recent_posts(6) }}
-
-</div>
-</div>
-
-</div>
-
+<script id="zdd-search-data" type="application/json">{{ search_index_data() }}</script>
 <script>
-  (function() {
-    const textLight = "“ 去过和没去过的地方 哪里更远 ”";
-    const textDark  = "“ 抓住和抓不住的照片 哪张更美 ”";
-    
-    const container = document.getElementById('typing-text');
-    if (!container) return;
-    
-    let currentTimer = null;
-    let currentIndex = 0;
+(function() {
+  var textLight = "“ 去过和没去过的地方 哪里更远 ”";
+  var textDark = "“ 抓住和抓不住的照片 哪张更美 ”";
+  var target = document.getElementById("typing-text");
+  var timer = 0;
 
-    function typeWriter(text) {
-      if (currentTimer) clearTimeout(currentTimer);
-      container.innerHTML = "";
-      currentIndex = 0;
-      function nextChar() {
-        if (currentIndex < text.length) {
-          container.innerHTML += text.charAt(currentIndex);
-          currentIndex++;
-          currentTimer = setTimeout(nextChar, 150); 
-        } else {
-          currentTimer = null;
+  function type(text) {
+    if (!target) return;
+    window.clearTimeout(timer);
+    target.textContent = "";
+    var i = 0;
+    function next() {
+      target.textContent += text.charAt(i++);
+      if (i < text.length) timer = window.setTimeout(next, 90);
+    }
+    next();
+  }
+
+  function refreshTitle() {
+    type(document.body.getAttribute("data-md-color-scheme") === "slate" ? textDark : textLight);
+  }
+
+  window.setTimeout(refreshTitle, 300);
+  new MutationObserver(refreshTitle).observe(document.body, {
+    attributes: true,
+    attributeFilter: ["data-md-color-scheme"]
+  });
+
+  var form = document.getElementById("home-search-form");
+  var input = document.getElementById("home-search-input");
+  var resultBox = document.getElementById("home-search-results");
+  var ghost = document.getElementById("home-search-ghost");
+  var dataNode = document.getElementById("zdd-search-data");
+  var posts = dataNode ? JSON.parse(dataNode.textContent || "[]") : [];
+  var selectedCommandIndex = 0;
+  var selectedSuggestionIndex = 0;
+  var commandRows = [];
+  var suggestionRows = [];
+  var suggestionBase = "";
+  var commands = [
+    {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", fill: "/random ", desc: "Open a random article."},
+    {name: "/rewind", syntax: "/rewind", kind: "jump", desc: "Return to the last article you opened."},
+    {name: "/tag", syntax: "/tag <tag>", kind: "jump", fill: "/tag ", desc: "Open the result page for a tag."},
+    {name: "/tags", syntax: "/tags", kind: "jump", desc: "Open the Tags page."},
+    {name: "/blog", syntax: "/blog", kind: "jump", desc: "Open the Blog page."},
+    {name: "/home", syntax: "/home", kind: "jump", desc: "Return to the homepage."},
+    {name: "/404", syntax: "/404", kind: "jump", desc: "Enter the 404 page on purpose."},
+    {name: "/latest", syntax: "/latest", kind: "query", desc: "Show the latest updated articles."},
+    {name: "/count", syntax: "/count", kind: "stats", desc: "Show article, category, tag, word and PDF counts."},
+    {name: "/summon", syntax: "/summon <math|note|life|cat|keyword>", kind: "query", fill: "/summon ", desc: "Summon a group of articles."},
+    {name: "/math", syntax: "/math <keyword>", kind: "search", fill: "/math ", desc: "Search LaTeX source snippets such as \\bm or \\Omega."},
+    {name: "/pdf", syntax: "/pdf", kind: "query", desc: "List articles with PDF readers or downloads."},
+    {name: "/zen", syntax: "/zen", kind: "view", desc: "Enable quiet reading mode."},
+    {name: "/unzen", syntax: "/unzen", kind: "view", desc: "Leave quiet reading mode."},
+    {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", fill: "/theme ", desc: "Switch the color theme."},
+    {name: "/clear", syntax: "/clear", kind: "system", desc: "Clear the console result."},
+    {name: "/kill", syntax: "/kill", kind: "system", desc: "Crash the page, politely."},
+    {name: "/help", syntax: "/help", kind: "system", desc: "Show all available commands and examples."}
+  ];
+
+  function normalize(text) {
+    return String(text || "").toLowerCase();
+  }
+
+  function escapeHtml(text) {
+    return String(text || "").replace(/[&<>"']/g, function(ch) {
+      return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch];
+    });
+  }
+
+  function unique(values) {
+    var seen = {};
+    var out = [];
+    values.forEach(function(value) {
+      if (!value || seen[value]) return;
+      seen[value] = true;
+      out.push(value);
+    });
+    return out;
+  }
+
+  function allTags() {
+    var tags = [];
+    posts.forEach(function(post) {
+      tags = tags.concat(post.tags || []);
+    });
+    return unique(tags).sort();
+  }
+
+  function allCategories() {
+    var categories = [];
+    posts.forEach(function(post) {
+      categories = categories.concat(post.categories || []);
+    });
+    return unique(categories).sort();
+  }
+
+  function navigate(url) {
+    window.location.href = url;
+  }
+
+  function hideResults() {
+    if (resultBox) {
+      resultBox.innerHTML = "";
+      resultBox.hidden = true;
+    }
+    commandRows = [];
+    suggestionRows = [];
+    updateGhost("");
+  }
+
+  function updateGhost(text) {
+    if (!ghost) return;
+    var current = input ? input.value : "";
+    var value = String(text || "");
+    if (!value || value === current) {
+      ghost.textContent = "";
+      ghost.hidden = true;
+      return;
+    }
+    ghost.textContent = "Tab → " + value.replace(/\s+$/, " ");
+    ghost.hidden = false;
+  }
+
+  function firstCompletion() {
+    if (suggestionRows.length) return suggestionBase + suggestionRows[selectedSuggestionIndex || 0].value;
+    if (commandRows.length) return commandRows[selectedCommandIndex || 0].fill || commandRows[selectedCommandIndex || 0].name;
+    return "";
+  }
+
+  function postResult(post) {
+    return '<a class="zdd-search-result" href="' + post.url + '">'
+      + '<span class="zdd-search-title">' + escapeHtml(post.title) + '</span>'
+      + '<span class="zdd-search-meta">' + escapeHtml((post.categories || []).join(" / ")) + ' · ' + Number(post.words || 0).toLocaleString() + ' words</span>'
+      + '</a>';
+  }
+
+  function commandButton(command, index) {
+    var active = index === selectedCommandIndex ? " is-active" : "";
+    return '<button class="zdd-command-row' + active + '" type="button" data-command-index="' + index + '">'
+      + '<span class="zdd-command-main">'
+      + '<span class="zdd-command-name">' + escapeHtml(command.name) + '</span>'
+      + '<span class="zdd-command-desc">' + escapeHtml(command.desc) + '</span>'
+      + '</span>'
+      + '<span class="zdd-command-side">'
+      + '<span class="zdd-command-kind">' + escapeHtml(command.kind) + '</span>'
+      + '<span class="zdd-command-syntax">' + escapeHtml(command.syntax) + '</span>'
+      + '</span>'
+      + '</button>';
+  }
+
+  function suggestionButton(item, index) {
+    var active = index === selectedSuggestionIndex ? " is-active" : "";
+    return '<button class="zdd-command-row zdd-command-suggestion' + active + '" type="button" data-suggestion-index="' + index + '">'
+      + '<span class="zdd-command-main">'
+      + '<span class="zdd-command-name">' + escapeHtml(item.label) + '</span>'
+      + '<span class="zdd-command-desc">' + escapeHtml(item.desc || "Complete with Tab") + '</span>'
+      + '</span>'
+      + '<span class="zdd-command-side">'
+      + '<span class="zdd-command-kind">' + escapeHtml(item.kind || "arg") + '</span>'
+      + '<span class="zdd-command-syntax">' + escapeHtml(suggestionBase + item.value) + '</span>'
+      + '</span>'
+      + '</button>';
+  }
+
+  function matchingOptions(prefix, values, prefixSymbol, kind) {
+    var needle = normalize(prefix || "");
+    if (!needle) return [];
+    return values.filter(function(value) {
+      return normalize(value).indexOf(needle) === 0;
+    }).slice(0, 12).map(function(value) {
+      return {
+        value: value,
+        label: (prefixSymbol || "") + value,
+        kind: kind || "arg"
+      };
+    });
+  }
+
+  function renderSuggestionPanel(base, prefix, prompt, values, prefixSymbol, kind) {
+    if (!resultBox) return;
+    suggestionBase = base;
+    suggestionRows = matchingOptions(prefix, values, prefixSymbol, kind);
+    commandRows = [];
+    selectedSuggestionIndex = Math.max(0, Math.min(selectedSuggestionIndex, suggestionRows.length - 1));
+    if (!prefix) {
+      resultBox.innerHTML = "";
+      resultBox.hidden = true;
+      updateGhost("");
+      return;
+    }
+    resultBox.innerHTML = '<div class="zdd-command-panel">'
+      + '<div class="zdd-command-prompt">' + escapeHtml(prompt || "Completion") + '</div>'
+      + (suggestionRows.length ? suggestionRows.map(suggestionButton).join("") : '<div class="zdd-command-empty">No matching option found.</div>')
+      + '</div>';
+    resultBox.hidden = false;
+    updateGhost(firstCompletion());
+  }
+
+  function renderCommandParameters(raw) {
+    var randomTag = raw.match(/^\/random\s+tag:([^\s]*)$/i);
+    if (randomTag) {
+      renderSuggestionPanel("/random tag:", randomTag[1], "/random tag:<tag>", allTags(), "#", "tag");
+      return true;
+    }
+    var tagCommand = raw.match(/^\/tag\s+([^\s]*)$/i);
+    if (tagCommand) {
+      renderSuggestionPanel("/tag ", tagCommand[1], "/tag <tag>", allTags(), "#", "tag");
+      return true;
+    }
+    var themeCommand = raw.match(/^\/theme\s+([^\s]*)$/i);
+    if (themeCommand) {
+      renderSuggestionPanel("/theme ", themeCommand[1], "/theme <preset>", ["light", "dark", "ocean", "terminal", "cat"], "", "theme");
+      return true;
+    }
+    var summonCommand = raw.match(/^\/summon\s+([^\s]*)$/i);
+    if (summonCommand) {
+      renderSuggestionPanel("/summon ", summonCommand[1], "/summon <type>", ["math", "note", "life", "cat"], "", "type");
+      return true;
+    }
+    return false;
+  }
+
+  function renderCommandPanel(query, showAll) {
+    if (!resultBox) return;
+    var raw = String(query || "").trim();
+    if (!showAll && renderCommandParameters(raw)) return;
+    var needle = normalize(raw.replace(/^\//, ""));
+    if (!showAll && (!raw || raw === "/" || !needle)) {
+      hideResults();
+      return;
+    }
+    commandRows = commands.filter(function(command) {
+      if (showAll && !needle) return true;
+      return normalize(command.name).replace(/^\//, "").indexOf(needle) === 0;
+    });
+    suggestionRows = [];
+    selectedCommandIndex = Math.max(0, Math.min(selectedCommandIndex, commandRows.length - 1));
+    resultBox.innerHTML = '<div class="zdd-command-panel">'
+      + (commandRows.length ? commandRows.map(commandButton).join("") : '<div class="zdd-command-empty">No command found.</div>')
+      + '</div>';
+    resultBox.hidden = false;
+    updateGhost(firstCompletion());
+  }
+
+  function renderCommandOutput(command, title, body) {
+    if (!resultBox) return;
+    commandRows = [];
+    suggestionRows = [];
+    updateGhost("");
+    resultBox.innerHTML = '<div class="zdd-command-panel zdd-command-output">'
+      + '<div class="zdd-command-prompt">&gt; ' + escapeHtml(command) + '</div>'
+      + '<div class="zdd-command-output-title">' + escapeHtml(title) + '</div>'
+      + '<div class="zdd-command-output-body">' + body + '</div>'
+      + '<div class="zdd-command-hint">Enter: rerun · Esc: close</div>'
+      + '</div>';
+    resultBox.hidden = false;
+  }
+
+  function renderPostOutput(command, title, matches, emptyText) {
+    var body = matches.length
+      ? '<div class="zdd-command-posts">' + matches.map(postResult).join("") + '</div>'
+      : '<div class="zdd-command-empty">' + escapeHtml(emptyText || "No result.") + '</div>';
+    renderCommandOutput(command, title, body);
+  }
+
+  function completeCommand(command) {
+    if (!command || !input) return;
+    input.value = command.fill || command.name;
+    input.focus();
+    renderCommandPanel(input.value);
+  }
+
+  function completeSuggestion() {
+    if (!input || !suggestionRows.length) return;
+    input.value = suggestionBase + suggestionRows[selectedSuggestionIndex || 0].value;
+    input.focus();
+    renderCommandPanel(input.value);
+  }
+
+  function randomPost(items) {
+    if (!items.length) return null;
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function setMaterialTheme(mode) {
+    var normalized = normalize(mode || "");
+    var current = document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark" : "light";
+    if (!normalized) normalized = current === "dark" ? "light" : "dark";
+    var preset = "";
+    if (normalized === "ocean" || normalized === "terminal" || normalized === "cat") {
+      preset = normalized;
+      normalized = normalized === "terminal" ? "dark" : "light";
+    }
+    var scheme = normalized === "dark" ? "slate" : "default";
+    var primary = normalized === "dark" ? "black" : "blue";
+    var media = normalized === "dark" ? "(prefers-color-scheme: dark)" : "(prefers-color-scheme: light)";
+    document.documentElement.classList.add("zdd-theme-fading");
+    window.setTimeout(function() {
+      document.documentElement.classList.remove("zdd-theme-fading");
+    }, 260);
+    document.body.setAttribute("data-md-color-scheme", scheme);
+    document.body.setAttribute("data-md-color-primary", primary);
+    document.body.setAttribute("data-md-color-accent", "indigo");
+    if (window.__md_set) {
+      window.__md_set("__palette", {
+        color: {media: media, scheme: scheme, primary: primary, accent: "indigo"}
+      });
+    }
+    var palette = document.querySelector('input[name="__palette"][data-md-color-scheme="' + scheme + '"]');
+    if (palette) {
+      palette.checked = true;
+      palette.dispatchEvent(new Event("change", {bubbles: true}));
+    }
+    if (window.zddSetThemePreset) window.zddSetThemePreset(preset);
+    return preset || normalized;
+  }
+
+  function killPage() {
+    var old = document.querySelector(".zdd-kill-screen");
+    if (old) old.remove();
+    var overlay = document.createElement("div");
+    overlay.className = "zdd-kill-screen";
+    overlay.innerHTML = '<div class="zdd-kill-box">'
+      + '<div>zdd14990.exe has stopped.</div>'
+      + '<div>exit code: 0</div>'
+      + '<div>press any key to reboot</div>'
+      + '</div>';
+    document.body.appendChild(overlay);
+    document.body.classList.add("zdd-kill-active");
+    window.setTimeout(function() {
+      function reboot() {
+        document.body.classList.remove("zdd-kill-active");
+        overlay.remove();
+        window.removeEventListener("keydown", reboot);
+        overlay.removeEventListener("click", reboot);
+        if (input) input.value = "";
+        hideResults();
+      }
+      window.addEventListener("keydown", reboot);
+      overlay.addEventListener("click", reboot);
+    }, 120);
+  }
+
+  function articleText(post) {
+    return normalize([
+      post.title,
+      post.content,
+      (post.categories || []).join(" "),
+      (post.tags || []).join(" ")
+    ].join(" "));
+  }
+
+  function summonPosts(arg) {
+    var key = normalize(arg || "");
+    if (!key) return [];
+    if (key === "math") {
+      return posts.filter(function(post) {
+        var text = articleText(post);
+        return /(math|数学|分析|代数|概率|统计|概统|pde|数值|优化|物理|algebra|analysis|probability|statistics|physics)/i.test(text);
+      });
+    }
+    if (key === "note") {
+      return posts.filter(function(post) {
+        return post.has_pdf || /笔记|notes?/i.test(articleText(post));
+      });
+    }
+    if (key === "life") {
+      return posts.filter(function(post) {
+        return /life|生活|随笔|misc|其他|russian/i.test(articleText(post));
+      });
+    }
+    if (key === "cat") {
+      return posts.filter(function(post) {
+        return /cat|猫/i.test(articleText(post));
+      });
+    }
+    return posts.filter(function(post) {
+      return articleText(post).indexOf(key) >= 0;
+    });
+  }
+
+  function rewindArticle(commandLine) {
+    var history = window.zddReadArticleHistory ? window.zddReadArticleHistory() : [];
+    if (!history.length) {
+      renderCommandOutput(commandLine, "No previous article", '<div class="zdd-command-empty">还没有记录到读过的文章。先打开一篇文章，再回来试试 <code>/rewind</code>。</div>');
+      return;
+    }
+    var currentPath = window.location.pathname;
+    for (var i = history.length - 1; i >= 0; i--) {
+      if (history[i].url && history[i].url !== currentPath) {
+        navigate(history[i].url);
+        return;
+      }
+    }
+    renderCommandOutput(commandLine, "No previous article", '<div class="zdd-command-empty">目前只有这一篇文章记录。</div>');
+  }
+
+  function runCommand(line) {
+    var commandLine = String(line || "").trim();
+    var parts = commandLine.split(/\s+/);
+    var name = normalize(parts[0]);
+    var arg = commandLine.slice(parts[0].length).trim();
+
+    if (!commandLine || commandLine === "/") {
+      renderCommandPanel(commandLine);
+      return;
+    }
+
+    if (name === "/help") {
+      selectedCommandIndex = 0;
+      renderCommandPanel("", true);
+      return;
+    }
+
+    if (name === "/clear") {
+      if (input) input.value = "";
+      hideResults();
+      return;
+    }
+
+    if (name === "/home") {
+      navigate("./");
+      return;
+    }
+
+    if (name === "/tags") {
+      navigate("tags/");
+      return;
+    }
+
+    if (name === "/blog") {
+      navigate("blog/");
+      return;
+    }
+
+    if (name === "/404") {
+      navigate("404/");
+      return;
+    }
+
+    if (name === "/rewind") {
+      rewindArticle(commandLine);
+      return;
+    }
+
+    if (name === "/tag") {
+      if (!arg) {
+        renderSuggestionPanel("/tag ", "", "/tag <tag>", allTags(), "#", "tag");
+        return;
+      }
+      navigate("tags/?tag=" + encodeURIComponent(arg.replace(/^#/, "")));
+      return;
+    }
+
+    if (name === "/latest") {
+      renderPostOutput(commandLine, "Latest articles", posts.slice(0, 6), "No articles found.");
+      return;
+    }
+
+    if (name === "/count") {
+      var words = posts.reduce(function(sum, post) { return sum + (Number(post.words) || 0); }, 0);
+      var pdfCount = posts.filter(function(post) { return post.has_pdf; }).length;
+      var latest = posts.reduce(function(max, post) { return post.date > max ? post.date : max; }, "");
+      var stats = [
+        ["Articles", posts.length.toLocaleString()],
+        ["Categories", allCategories().length.toLocaleString()],
+        ["Tags", allTags().length.toLocaleString()],
+        ["Words", words.toLocaleString()],
+        ["PDF notes", pdfCount.toLocaleString()],
+        ["Last update", latest || "-"]
+      ].map(function(row) {
+        return '<span class="zdd-command-stat"><b>' + escapeHtml(row[1]) + '</b><small>' + escapeHtml(row[0]) + '</small></span>';
+      }).join("");
+      renderCommandOutput(commandLine, "Site statistics", '<div class="zdd-command-stats">' + stats + '</div>');
+      return;
+    }
+
+    if (name === "/pdf") {
+      renderPostOutput(commandLine, "PDF articles", posts.filter(function(post) { return post.has_pdf; }).slice(0, 10), "No PDF articles found.");
+      return;
+    }
+
+    if (name === "/math") {
+      if (!arg) {
+        renderCommandOutput(commandLine, "Missing keyword", '<div class="zdd-command-empty">Usage: <code>/math &lt;keyword&gt;</code>, for example <code>/math \\bm</code>.</div>');
+        return;
+      }
+      var mathMatches = posts.filter(function(post) {
+        return normalize((post.source || "") + " " + (post.content || "")).indexOf(normalize(arg)) >= 0;
+      }).slice(0, 10);
+      renderPostOutput(commandLine, "Math source search", mathMatches, "No matching formula source found.");
+      return;
+    }
+
+    if (name === "/summon") {
+      if (!arg) {
+        renderCommandOutput(commandLine, "Summon what?", '<div class="zdd-command-empty">Try <code>/summon math</code>, <code>/summon note</code>, <code>/summon life</code>, or any keyword.</div>');
+        return;
+      }
+      renderPostOutput(commandLine, "Summoned articles", summonPosts(arg).slice(0, 10), "Nothing answered the summon.");
+      return;
+    }
+
+    if (name === "/zen") {
+      if (window.zddSetZen) window.zddSetZen(true);
+      renderCommandOutput(commandLine, "Zen mode enabled", '<div class="zdd-command-empty">Header and sidebars are softened away. Use <code>/unzen</code> to restore.</div>');
+      return;
+    }
+
+    if (name === "/unzen") {
+      if (window.zddSetZen) window.zddSetZen(false);
+      renderCommandOutput(commandLine, "Zen mode disabled", '<div class="zdd-command-empty">Layout restored.</div>');
+      return;
+    }
+
+    if (name === "/theme") {
+      var selected = setMaterialTheme(arg);
+      renderCommandOutput(commandLine, "Theme switched", '<div class="zdd-command-empty">Current theme: <code>' + escapeHtml(selected) + '</code>.</div>');
+      return;
+    }
+
+    if (name === "/kill") {
+      killPage();
+      return;
+    }
+
+    if (name === "/random") {
+      var pool = posts.slice();
+      if (arg) {
+        var pair = arg.split(":");
+        var key = normalize(pair[0]);
+        var value = normalize(pair.slice(1).join(":").trim());
+        if (key === "tag" && value) {
+          pool = posts.filter(function(post) {
+            return (post.tags || []).some(function(tag) { return normalize(tag) === value; });
+          });
+        } else if (key === "category" && value) {
+          pool = posts.filter(function(post) {
+            return (post.categories || []).some(function(category) { return normalize(category) === value; });
+          });
         }
       }
-      nextChar();
+      var picked = randomPost(pool);
+      if (picked) {
+        navigate(picked.url);
+      } else {
+        renderCommandOutput(commandLine, "No article found", '<div class="zdd-command-empty">Try <code>/random</code> or check the tag/category name.</div>');
+      }
+      return;
     }
 
-    function updateTextBasedOnScheme() {
-      const scheme = document.body.getAttribute('data-md-color-scheme');
-      const targetText = (scheme === 'slate') ? textDark : textLight;
-      typeWriter(targetText);
+    renderCommandOutput(commandLine, "Unknown command", '<div class="zdd-command-empty">Command not found. Try <code>/help</code>.</div>');
+  }
+
+  function renderContentResults() {
+    if (!input || !resultBox) return;
+    var query = normalize(input.value.trim());
+    if (!query) {
+      hideResults();
+      return;
     }
+    commandRows = [];
+    suggestionRows = [];
+    updateGhost("");
+    var matches = posts.filter(function(post) {
+      return articleText(post).indexOf(query) >= 0;
+    });
+    resultBox.innerHTML = matches.slice(0, 8).map(postResult).join("");
+    resultBox.hidden = matches.length === 0;
+  }
 
-    setTimeout(updateTextBasedOnScheme, 1000);
+  function renderResults() {
+    if (!input) return;
+    selectedCommandIndex = 0;
+    selectedSuggestionIndex = 0;
+    if (input.value.trim().charAt(0) === "/") {
+      renderCommandPanel(input.value);
+    } else {
+      renderContentResults();
+    }
+  }
 
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.type === "attributes" && mutation.attributeName === "data-md-color-scheme") {
-           updateTextBasedOnScheme();
-        }
-      });
+  function moveSelection(rows, selected, direction) {
+    if (!rows.length) return selected;
+    selected += direction;
+    if (selected < 0) selected = rows.length - 1;
+    if (selected >= rows.length) selected = 0;
+    return selected;
+  }
+
+  if (form && input) {
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (input.value.trim().charAt(0) === "/") {
+        runCommand(input.value);
+      } else {
+        renderContentResults();
+      }
     });
 
-    observer.observe(document.body, { attributes: true });
-  })();
+    input.addEventListener("input", renderResults);
+
+    input.addEventListener("keydown", function(event) {
+      var isCommand = input.value.trim().charAt(0) === "/";
+      if (event.key === "Escape") {
+        hideResults();
+        return;
+      }
+      if (!isCommand) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          renderContentResults();
+        }
+        return;
+      }
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (suggestionRows.length) {
+          selectedSuggestionIndex = moveSelection(suggestionRows, selectedSuggestionIndex, event.key === "ArrowDown" ? 1 : -1);
+        } else {
+          selectedCommandIndex = moveSelection(commandRows, selectedCommandIndex, event.key === "ArrowDown" ? 1 : -1);
+        }
+        renderCommandPanel(input.value);
+      } else if (event.key === "Tab") {
+        event.preventDefault();
+        if (suggestionRows.length) {
+          completeSuggestion();
+        } else {
+          completeCommand(commandRows[selectedCommandIndex]);
+        }
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        runCommand(input.value);
+      }
+    });
+
+    resultBox.addEventListener("click", function(event) {
+      var suggestionButton = event.target.closest(".zdd-command-suggestion");
+      if (suggestionButton) {
+        selectedSuggestionIndex = Number(suggestionButton.getAttribute("data-suggestion-index"));
+        completeSuggestion();
+        return;
+      }
+      var button = event.target.closest(".zdd-command-row");
+      if (!button) return;
+      completeCommand(commandRows[Number(button.getAttribute("data-command-index"))]);
+    });
+
+    hideResults();
+    var initialQuery = new URLSearchParams(window.location.search).get("q");
+    if (initialQuery) {
+      input.value = initialQuery;
+      if (history.replaceState) {
+        history.replaceState(null, "", window.location.pathname + window.location.hash);
+      }
+      if (initialQuery.trim().charAt(0) === "/") {
+        runCommand(initialQuery);
+      } else {
+        renderContentResults();
+      }
+    }
+  }
+})();
 </script>

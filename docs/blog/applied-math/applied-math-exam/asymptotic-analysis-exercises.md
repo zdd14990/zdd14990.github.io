@@ -1,0 +1,199 @@
+---
+title: Asymptotic Analysis Exercises
+date: 2026-02-17
+hide:
+  - navigation
+categories:
+  - 应用数学
+  - 应用数学博资考
+tags:
+  - applied-math
+  - applied-math-exam
+  - asymptotic-analysis-exercises
+---
+## 渐进分析
+!!! problem "Autumn, 2023"
+    Consider the eigenvalue problem with $0<\epsilon\ll1$:
+    
+    $$
+    u^{\prime\prime}+(\lambda+\epsilon f(x))u=0, \quad 0<x<1
+    $$
+    
+    $$
+    u(0)=0, \quad u^{\prime}(1)=0.
+    $$
+    
+    where $f$ is a given smooth function. Give the asymptotic expansion of $\lambda$ such that the accuracy is $O(\epsilon)$.
+!!! proof "证明"
+    设 $\lambda=\lambda_0+\epsilon \lambda_1 + O(\epsilon^2)$，$u=u_0+\epsilon u_1 + O(\epsilon^2)$，代入方程并比较各阶项：
+
+    $$
+    u_0'' + \lambda_0 u_0 = 0,
+    $$
+
+    $$
+    u_1'' + \lambda_0 u_1 = -\lambda_1 u_0 - f(x) u_0.
+    $$
+
+    由边界条件 $u(0)=0$ 和 $u'(1)=0$ 可得 $u_0(0)=0$ 和 $u_0'(1)=0$。解第一个方程得到 $\lambda_0 = \left( n - \frac{1}{2} \right)^2 \pi^2$，其中 $n=1,2,3,\ldots$，对应取 $u_0(x) = \sin\left( \left( n - \frac{1}{2} \right) \pi x \right)$。
+
+    对第二个方程两边乘 $u_0$ 并积分，得到
+
+    $$
+    \int_0^1 u_0 u_1''  + \lambda_0 u_0 u_1 dx = -\lambda_1 \int_0^1 u_0^2 dx - \int_0^1 f(x) u_0^2 dx.
+    $$  
+
+    上式左边通过分部积分可化简为
+
+    $$
+    \int_0^1 u_0'' u_1+ \lambda_0 u_0 u_1 dx = 0.
+    $$
+
+    故
+
+    $$
+    \lambda_1 = -\frac{\int_0^1 f(x) u_0^2 dx}{\int_0^1 u_0^2 dx}= -2 \int_0^1 f(x) \sin^2\left( \left( n - \frac{1}{2} \right) \pi x \right) dx.
+    $$
+
+    因此
+
+    $$
+    \lambda_n=\left( n - \frac{1}{2} \right)^2 \pi^2 - 2 \epsilon \int_0^1 f(x) \sin^2\left( \left( n - \frac{1}{2} \right) \pi x \right) dx + O(\epsilon^2).
+    $$
+    
+!!! problem "Autumn, 2024"
+    Consider the following boundary value problem for $y=y(x)$ on $[0, 1]$ as $0<\epsilon\ll1$:
+    
+    $$
+    \epsilon y^{\prime\prime}+\epsilon(1+x)^{2}y^{\prime}-y=x-1, \quad y(0)=\alpha, \quad y(1)=-1.
+    $$
+    
+    (i) Suppose $\alpha=1$. Construct a composite expansion of the above problem and sketch the solution.
+    
+    (ii) Construct a composite expansion of the above problem for $\alpha=0$.
+    
+    (iii) What is the accuracy of your solution in $\epsilon$? Formally explain your conclusion. Consider the first case only.
+
+!!! proof "证明"
+    $(i)$：当 $\epsilon \to 0$ 时，$y=1-x$ 不满足 $y(1)=-1$ 的边界条件，因此在 $x=1$ 处存在一个边界层。考虑原方程的齐次部分 $\epsilon \lambda^2 + \epsilon(1+x)^2 \lambda - 1 \approx 0$。其特征根约为 $\lambda \approx \pm 1/\sqrt{\epsilon}$。这说明边界层的厚度尺度为 $\mathcal{O}(\sqrt{\epsilon})$。设 $\eta = \frac{1-x}{\sqrt{\epsilon}}$，$y(x)=1-x+v(\eta)$，则 $y_x=-\frac{1}{\sqrt{\epsilon}} v_\eta$，$y_{xx}=\frac{1}{\epsilon} v_{\eta\eta}$，代入保留 $O(1)$ 项得到：
+
+    $$
+    v_{\eta\eta} - v_\eta = 0
+    $$
+
+    解得 $v(\eta)=A e^{\eta}+B e^{-\eta}$。由于 $v(\eta)$ 在 $\eta \to \infty$ 时必须有界，故 $A=0$。边界条件 $y(1)=-1$ 即 $v(0)=-1$，解得 $B=-1$。因此
+
+    $$
+    y(x) \approx 1-x - e^{-\frac{1-x}{\sqrt{\epsilon}}}.
+    $$ 
+
+    $(ii)$：当 $\epsilon \to 0$ 时，$y=1-x$ 不满足 $y(0)=0$ 的边界条件，因此在 $x=0$ 处也存在一个边界层。同上考虑 $\xi = \frac{x}{\sqrt{\epsilon}}$，$y(x)=1-x+u(\xi)+v(\eta)$，代入保留 $O(1)$ 项得到：
+
+    $$
+    u_{\xi\xi} - u = 0
+    $$
+
+    解得 $u(\xi)=C e^{\xi}+D e^{-\xi}$。进一步有 $D=0,C=-1$，故
+
+    $$
+    y(x) \approx 1-x - e^{-\frac{x}{\sqrt{\epsilon}}}- e^{-\frac{1-x}{\sqrt{\epsilon}}}.
+    $$
+
+    $(iii)$：
+
+    $$
+    \begin{aligned}
+        \text{误差}&=\epsilon (1-x - e^{-\frac{1-x}{\sqrt{\epsilon}}})''+\epsilon(1+x)^2 (1-x - e^{-\frac{1-x}{\sqrt{\epsilon}}})'-(1-x - e^{-\frac{1-x}{\sqrt{\epsilon}}})-(x-1)\\
+        &=-e^{-\frac{1-x}{\sqrt{\epsilon}}} + \epsilon(1+x)^2(-1-\frac{1}{\sqrt{\epsilon}} e^{-\frac{1-x}{\sqrt{\epsilon}}})+e^{-\frac{1-x}{\sqrt{\epsilon}}} \\
+        &=O(\sqrt{\epsilon})
+    \end{aligned}
+    $$
+
+!!! problem "Spring, 2025"
+    Consider a harmonic oscillator with a cubic damping term
+    
+    $$
+    y^{\prime\prime}+y+\epsilon(y^{\prime})^{3}=0,
+    $$
+    
+    where $y=y(t)$, $t\ge0$, $\epsilon>0$, $y(0)=1$, $y^{\prime}(0)=0$.
+    
+    (i) For small $\epsilon$, use the multiple-scale method to study the behavior of $y(t)$ for large $t$, i.e., construct a proper asymptotic solution.
+    
+    (ii) Make a conclusion on the validity of your asymptotic solution. Briefly justify your conclusion.
+
+!!! proof "证明"
+    $(a)$：
+    
+    $$
+    y(t) \approx \frac{1}{\sqrt{1 - \frac{3}{4} \epsilon t}} \cos t
+    $$
+
+    $(b)$：该近似解在 $t< \frac{4}{3\epsilon}$ 的时间尺度上保持有效，且误差为 $O(\epsilon)$。当 $t$ 接近 $\frac{4}{3\epsilon}$ 时，近似解的振幅趋于无穷大，因此该近似解在 $t \geq \frac{4}{3\epsilon}$ 的时间尺度上失效。
+!!! problem "Autumn, 2025"
+    Consider the so-called Rayleigh oscillator
+    
+    $$
+    y'' + y + \epsilon \left[ \frac{1}{3}(y')^3 - y' \right] = 0, \quad \epsilon > 0
+    $$
+    
+    with initial condition $y(0)=0, y'(0)=2a$ where $y=y(t)$, $a>0$.
+    
+    (a) For a small $\epsilon$, construct an approximation of the solution to the above problem which is valid for large $t$.
+    
+    (b) What is the accuracy of this approximation? State a conclusion and briefly explain it.
+    
+    (c) Plot the approximated orbits in the phase plane, i.e., $y-y'$ plane for several different $a$. And explain what you observe.
+!!! proof "证明"
+    $(a)$：
+    设 $y(t,\epsilon)=y_0(t^+,\tau)+\epsilon y_1(t^+,\tau)+\cdots$，其中快时间尺度 $t^+=t$，慢时间尺度 $\tau=\epsilon t$。
+
+    关于时间的导数：
+
+    $$
+    \frac{d}{dt}=\frac{\partial}{\partial t^+} + \epsilon \frac{\partial}{\partial \tau}
+    $$
+
+    下简记 $t^+$ 为 $t$，则
+
+    $$
+    0=(\partial_t + \epsilon \partial_\tau)^2 (y_0+\epsilon y_1) + (y_0+\epsilon y_1) + \epsilon \left[ \frac{1}{3}((\partial_t + \epsilon \partial_\tau)(y_0+\epsilon y_1))^3 -(\partial_t + \epsilon \partial_\tau)(y_0+\epsilon y_1) \right]+O(\epsilon^2).
+    $$
+
+    由 $O(1)$ 项可得
+
+    $$
+    \partial_{tt} y_0 + y_0 = 0,
+    $$
+
+    解得 $y_0(t,\tau)=R(\tau)\cos(t+\phi(\tau))$。
+
+    由 $O(\epsilon)$ 项可得
+
+    $$
+    \begin{aligned}
+    \partial_{tt} y_1 + y_1 &= -2 \partial_{t\tau} y_0- \frac{1}{3} (\partial_t y_0)^3 + \partial_t y_0\\
+    &= 2 R' \sin\psi + 2 R \phi' \cos\psi +\frac{1}{3} R^3 \sin^3\psi - R \sin\psi\\
+    &= 2 R' \sin\psi + 2 R \phi' \cos\psi + \frac{1}{4} R^3 \sin\psi - \frac{1}{12} R^3 \sin(3\psi) - R \sin\psi\\
+    &= (2R' -R + \frac{1}{4} R^3) \sin\psi + 2 R \phi' \cos\psi - \frac{1}{12} R^3 \sin(3\psi),
+    \end{aligned}
+    $$
+
+    为了保证 $y_1$ 的有界性，必须消除 $\sin\psi$ 和 $\cos\psi$ 的共振项，即
+
+    $$
+    \begin{aligned}
+    2R' -R + \frac{1}{4} R^3 &= 0,\\
+    2 R \phi' &= 0.
+    \end{aligned}
+    $$
+
+    解得 $R(\tau)=\frac{2}{\sqrt{1-C e^{-\tau}}}$，$\phi(\tau)=\phi_0$，其中 $C$ 和 $\phi_0$ 由初值条件确定。最终得到近似解
+
+    $$
+    y(t) \approx \frac{2a}{\sqrt{a^2 + (1-a^2)e^{-\epsilon t}}} \sin t
+    $$
+
+    $(b)$： 该近似解的误差为 $O(\epsilon)$，且在 $t=O(\epsilon^{-1})$ 的时间尺度上保持有效。
+
+    $(c)$：在相平面上，$t\rightarrow \infty$ 时，振幅 $R(\tau)$ 收敛到 $2$，因此所有轨道最终都会趋近于一个半径为 $2$ 的圆周。
