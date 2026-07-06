@@ -807,7 +807,6 @@ E(U_h^1) \approx -\frac{1}{4} C_4 h^4 \approx \frac{16}{15} (U_h^1 - U_{h/2}^1)=
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -817,10 +816,6 @@ E(U_h^1) \approx -\frac{1}{4} C_4 h^4 \approx \frac{16}{15} (U_h^1 - U_{h/2}^1)=
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -848,15 +843,6 @@ E(U_h^1) \approx -\frac{1}{4} C_4 h^4 \approx \frac{16}{15} (U_h^1 - U_{h/2}^1)=
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -871,7 +857,8 @@ E(U_h^1) \approx -\frac{1}{4} C_4 h^4 \approx \frac{16}{15} (U_h^1 - U_{h/2}^1)=
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

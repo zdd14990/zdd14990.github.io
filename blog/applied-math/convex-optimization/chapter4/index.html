@@ -602,7 +602,6 @@ $$q(\mu)=\inf_{(u,w)\in M} (w+\mu'u)\le \inf_{(0,w)\in M} w=w^<em>,\forall \mu\i
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -612,10 +611,6 @@ $$q(\mu)=\inf_{(u,w)\in M} (w+\mu'u)\le \inf_{(0,w)\in M} w=w^<em>,\forall \mu\i
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -643,15 +638,6 @@ $$q(\mu)=\inf_{(u,w)\in M} (w+\mu'u)\le \inf_{(0,w)\in M} w=w^<em>,\forall \mu\i
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -666,7 +652,8 @@ $$q(\mu)=\inf_{(u,w)\in M} (w+\mu'u)\le \inf_{(0,w)\in M} w=w^<em>,\forall \mu\i
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

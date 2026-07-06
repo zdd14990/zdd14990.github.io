@@ -833,7 +833,6 @@ T_j^m = \left( \frac{\tau^2}{h^2} - \frac{h^2}{12} \right) u_{tt}
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -843,10 +842,6 @@ T_j^m = \left( \frac{\tau^2}{h^2} - \frac{h^2}{12} \right) u_{tt}
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -874,15 +869,6 @@ T_j^m = \left( \frac{\tau^2}{h^2} - \frac{h^2}{12} \right) u_{tt}
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -897,7 +883,8 @@ T_j^m = \left( \frac{\tau^2}{h^2} - \frac{h^2}{12} \right) u_{tt}
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

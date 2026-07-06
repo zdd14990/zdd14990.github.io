@@ -589,7 +589,6 @@ f\left(\sum_{i=1}^{n}\lambda_i x_i\right)\le \sum_{i=1}^{n}\lambda_i f(x_i)
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -599,10 +598,6 @@ f\left(\sum_{i=1}^{n}\lambda_i x_i\right)\le \sum_{i=1}^{n}\lambda_i f(x_i)
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -630,15 +625,6 @@ f\left(\sum_{i=1}^{n}\lambda_i x_i\right)\le \sum_{i=1}^{n}\lambda_i f(x_i)
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -653,7 +639,8 @@ f\left(\sum_{i=1}^{n}\lambda_i x_i\right)\le \sum_{i=1}^{n}\lambda_i f(x_i)
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

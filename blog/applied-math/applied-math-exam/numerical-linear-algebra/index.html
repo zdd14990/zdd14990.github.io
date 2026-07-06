@@ -1325,7 +1325,6 @@ QR 迭代本质上等价于对单位矩阵 <span class="arithmatex">\(I\)</span>
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -1335,10 +1334,6 @@ QR 迭代本质上等价于对单位矩阵 <span class="arithmatex">\(I\)</span>
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -1366,15 +1361,6 @@ QR 迭代本质上等价于对单位矩阵 <span class="arithmatex">\(I\)</span>
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -1389,7 +1375,8 @@ QR 迭代本质上等价于对单位矩阵 <span class="arithmatex">\(I\)</span>
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

@@ -639,7 +639,6 @@ y(t) \approx \frac{2a}{\sqrt{a^2 + (1-a^2)e^{-\epsilon t}}} \sin t
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -649,10 +648,6 @@ y(t) \approx \frac{2a}{\sqrt{a^2 + (1-a^2)e^{-\epsilon t}}} \sin t
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -680,15 +675,6 @@ y(t) \approx \frac{2a}{\sqrt{a^2 + (1-a^2)e^{-\epsilon t}}} \sin t
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -703,7 +689,8 @@ y(t) \approx \frac{2a}{\sqrt{a^2 + (1-a^2)e^{-\epsilon t}}} \sin t
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

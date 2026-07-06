@@ -1555,7 +1555,6 @@ S = \begin{bmatrix} \sigma &amp; u^T \\ 0 &amp; S_c \end{bmatrix}, \quad T = \be
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -1565,10 +1564,6 @@ S = \begin{bmatrix} \sigma &amp; u^T \\ 0 &amp; S_c \end{bmatrix}, \quad T = \be
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -1596,15 +1591,6 @@ S = \begin{bmatrix} \sigma &amp; u^T \\ 0 &amp; S_c \end{bmatrix}, \quad T = \be
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -1619,7 +1605,8 @@ S = \begin{bmatrix} \sigma &amp; u^T \\ 0 &amp; S_c \end{bmatrix}, \quad T = \be
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

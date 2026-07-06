@@ -510,10 +510,33 @@ e^{-1/\lambda}.
 <p>Hint: Represent the difference between votes for A and votes for B during the counting process by a discrete function from <span class="arithmatex">\(\{0,1,\ldots,a+b\}\)</span> into <span class="arithmatex">\(\mathbb{Z}\)</span> that starts from <span class="arithmatex">\(0\)</span>, has jumps of size <span class="arithmatex">\(+1\)</span> or <span class="arithmatex">\(-1\)</span> and terminates at <span class="arithmatex">\(a-b\)</span>. Then note that the probability of occurrence of any such function is the same, so that the problem reduces to enumerating those among these functions that stay positive on <span class="arithmatex">\(\{1,\ldots,a+b\}\)</span>.</p>
 <hr />
 <p><strong>Exercise 8.5</strong> Following the description of Bertrand’s paradox in Section 8.1.4, treat the third method that had been proposed by Bertrand: one first chooses the ray carrying the center of the chord, and then a point uniformly distributed on this ray to be the center of the chord. Give the probability space corresponding to this method and compute the law of the length of the chord.</p>
+<p><strong>Solution.</strong> </p>
+<div class="arithmatex">\[
+F_X(x)=\begin{cases}
+    0, &amp;x&lt;0, \\
+    1-\sqrt{1-\frac{x^2}{4}}, &amp;0\le x\le 2, \\
+    1, &amp;x&gt;2.
+\end{cases}
+\]</div>
 <hr />
 <p><strong>Exercise 8.6</strong> Let <span class="arithmatex">\(X=(X_1,X_2,\ldots,X_d)\)</span> be a random vector with values in <span class="arithmatex">\(\mathbb{R}^d\)</span>. Assume that the law of <span class="arithmatex">\(X\)</span> has a density <span class="arithmatex">\(p_X(x_1,\ldots,x_d)\)</span>. Compute the density of the random variable <span class="arithmatex">\(X_1+X_2\)</span> in terms of the function <span class="arithmatex">\(p_X\)</span>.</p>
+<p><strong>Solution.</strong> </p>
+<div class="arithmatex">\[
+p_{X_1+X_2}(x)=\int_{\mathbb{R}}\left(\int_{\mathbb{R}^{d-2}}p_X(x-y,y,x_3,\ldots,x_d)\,dx_3\cdots dx_d\right)dy.
+\]</div>
 <hr />
 <p><strong>Exercise 8.7</strong> Let <span class="arithmatex">\(N\)</span> be a Gaussian <span class="arithmatex">\(\mathcal{N}(0,1)\)</span> random variable. Compute the law of <span class="arithmatex">\(1/N^2\)</span>. This is the so-called stable <span class="arithmatex">\((1/2)\)</span> distribution, which we shall encounter in Chapter 14.</p>
+<p><strong>Solution.</strong> Set <span class="arithmatex">\(Y=1/N^2\)</span>. Then</p>
+<div class="arithmatex">\[
+F_Y(y)=\mathbb{P}(Y\le y)=\mathbb{P}\left(\frac1{N^2}\le y\right)=\mathbb{P}\left(|N|\ge \frac1{\sqrt y}\right)=2\mathbb{P}\left(N\ge \frac1{\sqrt y}\right).
+\]</div>
+<p>Set <span class="arithmatex">\(\Phi(x)=\mathbb{P}(N\le x)\)</span>. Then</p>
+<div class="arithmatex">\[
+F_Y(y)=2(1-\Phi(1/\sqrt y)),\quad y&gt;0.
+\]</div>
+<div class="arithmatex">\[
+f_Y(y)=\frac{d}{dy}F_Y(y)=\frac{1}{y^{3/2}\sqrt{2\pi}}e^{-1/(2y)},\quad y&gt;0.
+\]</div>
 <hr />
 <p><strong>Exercise 8.8</strong> Let <span class="arithmatex">\((X,Y)\)</span> be a random variable with values in <span class="arithmatex">\(\mathbb{R}^2\)</span> whose law has a density given by</p>
 <div class="arithmatex">\[
@@ -528,14 +551,47 @@ U=\max(X,Y),
 V=\min(X,Y),
 \]</div>
 <p>and of the pair <span class="arithmatex">\((U,V)\)</span>.</p>
+<p><strong>Solution.</strong> </p>
+<div class="arithmatex">\[
+\begin{aligned}
+    F_U(a)&amp;=\mathbb{P}(U\le a)=\mathbb{P}(X\le a,Y\le a)=\int_0^a\int_0^a \lambda\mu e^{-\lambda x-\mu y}\,dxdy\\
+    &amp;=\left(1-e^{-\lambda a}\right)\left(1-e^{-\mu a}\right),\quad a&gt;0.\\
+    \Longrightarrow f_U(u)&amp;=\lambda e^{-\lambda u}\left(1-e^{-\mu u}\right)+\mu e^{-\mu u}\left(1-e^{-\lambda u}\right),\quad u&gt;0.
+\end{aligned}
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+    F_V(a)&amp;=\mathbb{P}(V\le a)=1-\mathbb{P}(V&gt;a)=1-\mathbb{P}(X&gt;a,Y&gt;a)\\
+    &amp;=1-\int_a^{\infty}\int_a^{\infty}\lambda\mu e^{-\lambda x-\mu y}\,dxdy\\
+    &amp;=1-e^{-(\lambda+\mu)a},\quad a&gt;0\\
+    \Longrightarrow f_V(v)&amp;=(\lambda+\mu)e^{-(\lambda+\mu)v},\quad v&gt;0.
+\end{aligned}
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+    f_{U,V}(u,v)&amp;=f_{X,Y}(u,v)\mathbf{1}_{\{u&gt;v\}}+f_{X,Y}(v,u)\mathbf{1}_{\{v&gt;u\}}\\
+    &amp;=\lambda\mu \left(e^{-\lambda u-\mu v}+e^{-\lambda v-\mu u}\right),\quad u&gt;v&gt;0.
+\end{aligned}
+\]</div>
 <hr />
 <p><strong>Exercise 8.9</strong> Suppose that a light source is located at the point <span class="arithmatex">\((-1,0)\)</span> of the plane. Let <span class="arithmatex">\(\theta\)</span> be uniformly distributed over the interval <span class="arithmatex">\((-\pi/2,\pi/2)\)</span>. The light source emits a ray in the direction of the vertical coordinate axis making an angle <span class="arithmatex">\(\theta\)</span> with the horizontal axis. Determine the law of the point of the vertical axis that is hit by the ray.</p>
+<p><strong>Solution.</strong> Set <span class="arithmatex">\(Y=\tan \theta\)</span>. Then</p>
+<div class="arithmatex">\[
+F_Y(y)=\mathbb{P}(Y\le y)=\mathbb{P}(\tan \theta\le y)=\mathbb{P}(\theta\le \arctan y)=\frac{\arctan y+\pi/2}{\pi},
+\]</div>
+<div class="arithmatex">\[
+f_Y(y)=\frac{d}{dy}F_Y(y)=\frac{1}{\pi(1+y^2)},\quad y\in\mathbb{R}.
+\]</div>
 <hr />
 <p><strong>Exercise 8.10</strong> Let <span class="arithmatex">\(X\)</span> be a real random variable, and let <span class="arithmatex">\(F=F_X\)</span> be its distribution function. Assume that the law of <span class="arithmatex">\(X\)</span> has no atoms. What is the distribution of the random variable</p>
 <div class="arithmatex">\[
 Y=F(X)?
 \]</div>
 <p>Compare with Lemma 8.7.</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(y\in(0,1)\)</span>. Then</p>
+<div class="arithmatex">\[
+F_Y(y)=\mathbb{P}(Y\le y)=\mathbb{P}(F(X)\le y)=\mathbb{P}(X\le F^{-1}(y))=F(F^{-1}(y))=y.
+\]</div>
 <hr />
 <p><strong>Exercise 8.11</strong> Determine the <span class="arithmatex">\(\sigma\)</span>-field generated by <span class="arithmatex">\(X\)</span> in the following two cases:</p>
 <ol>
@@ -797,7 +853,6 @@ Y_m=a+\rho^m(X_0-a).
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -807,10 +862,6 @@ Y_m=a+\rho^m(X_0-a).
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -838,15 +889,6 @@ Y_m=a+\rho^m(X_0-a).
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -861,7 +903,8 @@ Y_m=a+\rho^m(X_0-a).
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }

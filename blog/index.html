@@ -465,14 +465,14 @@
 <details class="zdd-catalog-folder" data-level="0">
   <summary>
     <span class="zdd-folder-name">概统</span>
-    <span class="zdd-folder-meta">5 篇 · 2026-07-01 - 2026-07-06 · 10,104 字</span>
+    <span class="zdd-folder-meta">5 篇 · 2026-07-01 - 2026-07-06 · 10,495 字</span>
   </summary>
   <div class="zdd-folder-content"><div>
 
 <details class="zdd-catalog-folder" data-level="1">
   <summary>
     <span class="zdd-folder-name">概率论</span>
-    <span class="zdd-folder-meta">3 篇 · 2026-07-05 - 2026-07-06 · 3,300 字</span>
+    <span class="zdd-folder-meta">3 篇 · 2026-07-05 - 2026-07-06 · 3,691 字</span>
   </summary>
   <div class="zdd-folder-content"><div>
     <div class="zdd-catalog-posts">
@@ -482,7 +482,7 @@
   <span class="zdd-post-meta">
     <span>概统 / 概率论</span>
     <span>2026-07-06</span>
-    <span>1,313 字</span>
+    <span>1,704 字</span>
   </span>
 </a>
 
@@ -1102,7 +1102,6 @@
   <script>
   (function() {
       var historyKey = "zdd.articleHistory";
-      var zenKey = "zdd.zen";
       var presetKey = "zdd.themePreset";
       var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
@@ -1112,10 +1111,6 @@
           } catch (e) {
               return fallback;
           }
-      }
-
-      function applyZen() {
-          document.body.classList.toggle("zdd-zen", localStorage.getItem(zenKey) === "1");
       }
 
       function applyPreset() {
@@ -1143,15 +1138,6 @@
           localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
       }
 
-      window.zddSetZen = function(enabled) {
-          if (enabled) {
-              localStorage.setItem(zenKey, "1");
-          } else {
-              localStorage.removeItem(zenKey);
-          }
-          applyZen();
-      };
-
       window.zddReadArticleHistory = function() {
           return readJson(historyKey, []);
       };
@@ -1166,7 +1152,8 @@
       };
 
       function refresh() {
-          applyZen();
+          document.body.classList.remove("zdd-zen");
+          localStorage.removeItem("zdd.zen");
           applyPreset();
           rememberArticle();
       }
