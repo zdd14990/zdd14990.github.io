@@ -541,7 +541,7 @@
     }
     commandRows = commands.filter(function(command) {
       if (showAll && !needle) return true;
-      return normalize(command.name + " " + command.syntax + " " + command.desc + " " + command.kind).indexOf(needle) >= 0;
+      return normalize(command.name).replace(/^\//, "").indexOf(needle) === 0;
     });
     selectedCommandIndex = Math.max(0, Math.min(selectedCommandIndex, commandRows.length - 1));
     resultBox.innerHTML = '<div class="zdd-command-panel">'
