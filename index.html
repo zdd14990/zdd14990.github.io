@@ -365,7 +365,7 @@
     <form class="minimal-search" id="home-search-form">
       <input id="home-search-input" type="search" placeholder="Search..." autocomplete="off" aria-label="搜索文章">
     </form>
-    <div class="minimal-search-mode" id="home-search-mode">CTRL + ← → : Command Mode</div>
+    <div class="minimal-search-mode" id="home-search-mode">CTRL + ← → : Content Mode</div>
     <div class="minimal-search-results" id="home-search-results"></div>
   </div>
 
@@ -452,7 +452,7 @@
   var dataNode = document.getElementById("zdd-search-data");
   var posts = dataNode ? JSON.parse(dataNode.textContent || "[]") : [];
   var modes = ["Content Mode", "Tag Mode", "Command Mode"];
-  var modeIndex = 2;
+  var modeIndex = 0;
   var selectedCommandIndex = 0;
   var commandRows = [];
   var commands = [
@@ -785,11 +785,16 @@
       if (modeIndex >= modes.length) modeIndex = 0;
       selectedCommandIndex = 0;
       updateMode();
-      renderResults();
+      if (modes[modeIndex] === "Command Mode") {
+        renderCommandPanel(input.value);
+      } else {
+        renderResults();
+      }
     });
 
     updateMode();
-    renderCommandPanel("");
+    resultBox.innerHTML = "";
+    resultBox.hidden = true;
   }
 })();
 </script>
