@@ -27,12 +27,38 @@
     {name: "/tex", syntax: "/tex <formula>", kind: "render", fill: "/tex ", desc: "Preview a LaTeX formula."},
     {name: "/ip", syntax: "/ip", kind: "query", desc: "Show your visitor IP address."},
     {name: "/404", syntax: "/404", kind: "jump", desc: "Enter the 404 page on purpose."},
-    {name: "/math", syntax: "/math <keyword>", kind: "search", fill: "/math ", desc: "Search LaTeX source snippets such as \\bm or \\Omega."},
     {name: "/pdf", syntax: "/pdf", kind: "query", desc: "List articles with PDF readers or downloads."},
     {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", fill: "/theme ", desc: "Switch the color theme."},
     {name: "/clear", syntax: "/clear", kind: "system", desc: "Clear the console result."},
     {name: "/kill", syntax: "/kill", kind: "system", desc: "Crash the page, politely."},
     {name: "/help", syntax: "/help [advanced]", kind: "system", fill: "/help ", desc: "Show command help."}
+  ];
+  var updateLogs = [
+    {
+      date: "2026-07-06",
+      title: "Global command console",
+      detail: "Moved the homepage search console into a reusable site-wide overlay with command completion, Ctrl+Enter launch, and shared search data."
+    },
+    {
+      date: "2026-07-06",
+      title: "Command set cleanup",
+      detail: "Reduced /help to common commands, moved power tools to /help advanced, and added /next, /prev, /log, /tex and /ip."
+    },
+    {
+      date: "2026-07-06",
+      title: "Navigation simplification",
+      detail: "Kept Friends on the homepage only and replaced it elsewhere with a lightweight Search entry."
+    },
+    {
+      date: "2026-07-05",
+      title: "Blog catalog redesign",
+      detail: "Rebuilt the Blog page as an expandable catalog with category cards, article cards, and smoother folder transitions."
+    },
+    {
+      date: "2026-07-05",
+      title: "Theme polish",
+      detail: "Switched the old image background to solid color themes and unified card colors across Home, Blog, Tags and article pages."
+    }
   ];
 
   function normalize(text) {
@@ -123,6 +149,12 @@
     state.commandRows = [];
     state.suggestionRows = [];
     updateGhost("");
+  }
+
+  function updateHomeSearchState() {
+    var homeInput = document.getElementById("home-search-input");
+    if (!homeInput) return;
+    document.body.classList.toggle("home-search-active", !!homeInput.value.trim());
   }
 
   function updateGhost(text) {
@@ -432,15 +464,24 @@
     }
   }
 
+  function renderTexInput(raw) {
+    var formula = String(raw || "").replace(/^\/tex\s*/i, "");
+    if (!formula.trim()) {
+      hideResults();
+      return;
+    }
+    renderTex("/tex", formula);
+  }
+
   function renderLog(commandLine) {
-    var rows = state.posts.slice(0, 8).map(function(post) {
-      return '<a class="zdd-log-row" href="' + escapeHtml(post.url) + '">'
-        + '<span>' + escapeHtml(post.date || "-") + '</span>'
-        + '<b>' + escapeHtml(post.title) + '</b>'
-        + '<small>' + escapeHtml((post.categories || []).join(" / ")) + '</small>'
-        + '</a>';
+    var rows = updateLogs.map(function(item) {
+      return '<div class="zdd-log-row">'
+        + '<span>' + escapeHtml(item.date) + '</span>'
+        + '<b>' + escapeHtml(item.title) + '</b>'
+        + '<small>' + escapeHtml(item.detail) + '</small>'
+        + '</div>';
     }).join("");
-    renderCommandOutput(commandLine, "Recent changes", '<div class="zdd-log-list">' + rows + '</div>');
+    renderCommandOutput(commandLine, "Recent front-end changes", '<div class="zdd-log-list">' + rows + '</div>');
   }
 
   function renderIp(commandLine) {
@@ -475,6 +516,7 @@
     if (name === "/clear") {
       if (state.input) state.input.value = "";
       hideResults();
+      updateHomeSearchState();
       return;
     }
 
@@ -537,18 +579,6 @@
 
     if (name === "/pdf") {
       renderPostOutput(commandLine, "PDF articles", state.posts.filter(function(post) { return post.has_pdf; }).slice(0, 10), "No PDF articles found.");
-      return;
-    }
-
-    if (name === "/math") {
-      if (!arg) {
-        renderCommandOutput(commandLine, "Missing keyword", '<div class="zdd-command-empty">Usage: <code>/math &lt;keyword&gt;</code>, for example <code>/math \\bm</code>.</div>');
-        return;
-      }
-      var mathMatches = state.posts.filter(function(post) {
-        return normalize((post.source || "") + " " + (post.content || "")).indexOf(normalize(arg)) >= 0;
-      }).slice(0, 10);
-      renderPostOutput(commandLine, "Math source search", mathMatches, "No matching formula source found.");
       return;
     }
 
@@ -620,11 +650,15 @@
 
   function renderResults() {
     if (!state.input) return;
+    updateHomeSearchState();
     loadPosts().then(function() {
       state.selectedCommandIndex = 0;
       state.selectedSuggestionIndex = 0;
-      if (state.input.value.trim().charAt(0) === "/") {
-        renderCommandPanel(state.input.value);
+      var value = state.input.value.trim();
+      if (/^\/tex\s+/i.test(value)) {
+        renderTexInput(value);
+      } else if (value.charAt(0) === "/") {
+        renderCommandPanel(value);
       } else {
         renderContentResults();
       }
@@ -662,6 +696,7 @@
       state.input = input;
       state.resultBox = resultBox;
       state.ghost = ghost;
+      updateHomeSearchState();
     });
 
     input.addEventListener("input", renderResults);
@@ -670,7 +705,10 @@
       var isCommand = input.value.trim().charAt(0) === "/";
       if (event.key === "Escape") {
         if (scope === "modal") closeModal();
-        else hideResults();
+        else {
+          hideResults();
+          updateHomeSearchState();
+        }
         return;
       }
       if (!isCommand) {
