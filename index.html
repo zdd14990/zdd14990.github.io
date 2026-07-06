@@ -529,12 +529,18 @@
       + '</button>';
   }
 
-  function renderCommandPanel(query) {
+  function renderCommandPanel(query, showAll) {
     if (!resultBox) return;
     var raw = String(query || "").trim();
     var needle = normalize(raw.replace(/^\//, ""));
+    if (!showAll && (!raw || raw === "/" || !needle)) {
+      resultBox.innerHTML = "";
+      resultBox.hidden = true;
+      commandRows = [];
+      return;
+    }
     commandRows = commands.filter(function(command) {
-      if (!needle) return true;
+      if (showAll && !needle) return true;
       return normalize(command.name + " " + command.syntax + " " + command.desc + " " + command.kind).indexOf(needle) >= 0;
     });
     selectedCommandIndex = Math.max(0, Math.min(selectedCommandIndex, commandRows.length - 1));
@@ -593,7 +599,7 @@
 
     if (name === "/help") {
       selectedCommandIndex = 0;
-      renderCommandPanel("");
+      renderCommandPanel("", true);
       return;
     }
 
