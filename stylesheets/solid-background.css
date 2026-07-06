@@ -73,16 +73,16 @@ body[data-md-color-scheme="slate"].article-layout {
 
 body.article-layout .md-content,
 body.zdd-minimal-layout.article-layout .md-content {
-    background: rgba(255, 255, 255, 0.94) !important;
+    background-color: rgba(255, 255, 255, 0.94) !important;
     background-image: none !important;
 }
 
 body.article-layout[data-md-color-scheme="slate"] .md-content,
-[data-md-color-scheme="slate"] body.article-layout .md-content {
-    background: rgba(30, 32, 48, 0.92) !important;
+[data-md-color-scheme="slate"] body.article-layout .md-content,
+body[data-md-color-scheme="slate"].article-layout .md-content {
+    background-color: rgba(30, 32, 48, 0.92) !important;
     background-image: none !important;
 }
-
 /* Compact, unified cards and navigation */
 :root {
     --zdd-surface: rgba(247, 252, 255, 0.96);
@@ -560,26 +560,26 @@ body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav
     display: none !important;
 }
 
+/* Disable heavy theme transitions */
 html,
 body,
 .md-container,
 .md-main,
 .md-main__inner,
 .md-content,
+.md-content__inner,
 .md-header,
+.md-tabs,
 .md-typeset,
-.minimal-search input,
+.md-sidebar,
+.md-nav,
+.md-nav__link,
 .zdd-post-card,
 .zdd-catalog-folder,
-.zdd-tag-cloud a,
 .zdd-search-result,
+.minimal-search input,
 .md-sidebar--secondary .md-nav--secondary {
-    transition:
-        background-color 260ms ease,
-        background 260ms ease,
-        color 260ms ease,
-        border-color 260ms ease,
-        box-shadow 260ms ease !important;
+    transition: none !important;
 }
 
 html {
@@ -589,5 +589,26 @@ html {
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+}
+
+/* Smooth visual fade for theme switching */
+html.zdd-theme-fading::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    pointer-events: none;
+    background: var(--zdd-theme-fade-bg, #eaf5fb);
+    opacity: 1;
+    animation: zdd-theme-fade-out 220ms ease forwards;
+}
+
+@keyframes zdd-theme-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
     }
 }
