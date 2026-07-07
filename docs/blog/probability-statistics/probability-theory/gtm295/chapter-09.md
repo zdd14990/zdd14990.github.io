@@ -97,8 +97,6 @@ $$
 set $p_n=p$, $\mathbb{P}(T=n)=p(1-p)^n$, $T$ is geometric distribution, $\mathbb{E}[T]=\frac{1-p}{p}$, $\operatorname{var}(T)=\frac{1-p}{p^2}$.
 
 
-
-
 ---
 
 **Exercise 9.6** A real random variable $X$ is called symmetric if $X$ and $-X$ have the same law.
@@ -110,6 +108,30 @@ set $p_n=p$, $\mathbb{P}(T=n)=p(1-p)^n$, $T$ is geometric distribution, $\mathbb
 3. Let $Y$ and $Y'$ be two independent real random variables with the same distribution. Show that $Y-Y'$ is symmetric. Does this still hold without the independence assumption?
 
 4. Let $\varepsilon$ be a random variable with values in $\{-1,1\}$ such that $\mathbb{P}(\varepsilon=1)=\mathbb{P}(\varepsilon=-1)=1/2$. Show that, if $X$ is a symmetric random variable and $X$ is independent of $\varepsilon$, then $\varepsilon|X|$ has the same distribution as $X$.
+
+**Solution.** (1).Define
+
+$$
+f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
+$$
+
+(2)
+
+$$
+\varphi_X(\xi)=\overline{\varphi_X(\xi)}\Longleftrightarrow X = -X \text{ in law}
+$$
+
+(3)
+
+$$
+\varphi_{Y-Y'}(\xi)=\mathbb{E}[e^{i\xi(Y-Y')}]=\mathbb{E}[e^{i\xi Y}]\mathbb{E}[e^{-i\xi Y'}]=|\varphi(\xi)|^2\in\mathbb{R}
+$$
+
+(4) For any bounded continuous function $g$,
+
+$$
+\mathbb{E}[g(\varepsilon|X|)]=\mathbb{E}[\mathbb{E}[g(\varepsilon|X|)|X]]=\frac{1}{2}\mathbb{E}[g(|X|)]+\frac{1}{2}\mathbb{E}[g(-|X|)]=\mathbb{E}[g(X)].
+$$
 
 ---
 
@@ -161,6 +183,84 @@ $$
     \frac{S_n-\mathbb{E}[S_n]}{n}\xrightarrow[n\to\infty]{}0,\qquad \text{a.s.}
     $$
 
+**Solution.** (1) 
+
+$$
+\mathbb{P}\left(\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|>\varepsilon\right)\le \frac{\operatorname{var}(S_{n^2})}{\varepsilon^2 n^4}\le \frac{C}{\varepsilon^2 n^2}\Longrightarrow \sum_n \mathbb{P}\left(\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|>\varepsilon\right)<\infty
+$$
+
+By Borel-Cantelli lemma, we have $\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|\to0$ a.s.
+
+(2)
+
+Let $\widetilde S_n=S_n-\mathbb E[S_n].$ For each \(m\), choose \(k\) such that $k^2\le m<(k+1)^2.$ Then
+
+$$
+\frac{|\widetilde S_m|}{m}
+\le
+\frac{|\widetilde S_{k^2}|}{m}
++
+\frac{|\widetilde S_m-\widetilde S_{k^2}|}{m}
+\le
+\frac{|\widetilde S_{k^2}|}{k^2}
++
+\frac{D_k}{k^2},
+$$
+
+where $D_k=\max_{k^2\le m<(k+1)^2}|\widetilde S_m-\widetilde S_{k^2}|.$ By part (1),
+
+$$
+\frac{|\widetilde S_{k^2}|}{k^2}\to0
+\qquad \text{a.s.}
+$$
+
+It remains to prove
+
+$$
+\frac{D_k}{k^2}\to0
+\qquad \text{a.s.}
+$$
+
+Let $Y_j=X_j-\mathbb E[X_j].$ Then
+
+$$
+D_k
+\le
+\sum_{j=k^2+1}^{(k+1)^2}|Y_j|.
+$$
+
+Hence, by Cauchy-Schwarz and \(\mathbb E[Y_j^2]\le C\),
+
+$$
+\begin{aligned}
+\mathbb P\left(\frac{D_k}{k^2}>\varepsilon\right)
+&\le
+\mathbb P\left(\sum_{j=k^2+1}^{(k+1)^2}|Y_j|>\varepsilon k^2\right)\\
+&\le
+\frac{1}{\varepsilon^2 k^4}
+\mathbb E\left[\left(\sum_{j=k^2+1}^{(k+1)^2}|Y_j|\right)^2\right]\\
+&\le
+\frac{1}{\varepsilon^2 k^4}
+(2k+1)\sum_{j=k^2+1}^{(k+1)^2}\mathbb E[Y_j^2]\\
+&\le
+\frac{C(2k+1)^2}{\varepsilon^2 k^4}.
+\end{aligned}
+$$
+
+Since
+
+$$
+\sum_k
+\mathbb P\left(\frac{D_k}{k^2}>\varepsilon\right)\le \sum_k \frac{C(2k+1)^2}{\varepsilon^2 k^4}<\infty,
+$$
+
+By Borel-Cantelli lemma,
+
+$$
+\frac{D_k}{k^2}\to0
+\qquad \text{a.s.}
+$$
+
 ---
 
 **Exercise 9.10** Let $(X_n)_{n\in\mathbb{N}}$ be a sequence of independent random variables distributed according to the exponential distribution with parameter $1$.
@@ -185,6 +285,30 @@ $$
 
     Then show that $\lim_{n\to\infty}(\log n)^{-1}Z_n=1$, a.s.
 
+**Solution.** (1). Consider $A_n^\epsilon=\{X_n>(1+\epsilon)\log n\}$ and $B_n^\epsilon=\{X_n>(1-\epsilon)\log n\}$, use Borel-Cantelli .
+
+(2). Consider event $\left\{Z_n\le(1-\epsilon)\log n\right\}$, it is equivalent to
+
+$$
+X_1,\cdots,X_n\le(1-\epsilon)\log n
+$$
+
+so,
+
+$$
+\begin{aligned}
+    \mathbb{P}\left(Z_n\le(1-\epsilon)\log n\right)&=\mathbb{P}\left(X_1\le(1-\epsilon)\log n\right)^n\\
+    &=\left(1-\frac{1}{n^{1-\epsilon}}\right)^n\\
+    &\le \exp\left(-n^{\epsilon}\right).
+\end{aligned}
+$$
+
+use Borel-Cantelli lemma.
+
+(3). The otherside is easy by (1).
+
+
+
 ---
 
 **Exercise 9.11**
@@ -203,6 +327,18 @@ $$
 3. Let $X_1,\ldots,X_n$ be $n$ independent random variables with the same distribution as $X$. Show that $\frac1n(X_1+\cdots+X_n)$ also has the same distribution as $X$. Why does this not contradict the weak law of large numbers?
 
 4. Let $(Y_n)_{n\in\mathbb{N}}$ be a sequence of independent and identically distributed real random variables with a symmetric distribution ($Y_n$ has the same law as $-Y_n$). Assume that $\frac1n(Y_1+\cdots+Y_n)$ has the same distribution as $Y_1$, for every $n\in\mathbb{N}$. Show that $Y_n$ follows a Cauchy distribution.
+
+**Solution.** (1)(2)(3) Purely computation.
+
+(4) Let $\varphi$ be the characteristic function of $Y_1$. Then, for every $n\in\mathbb{N}$,
+
+$$
+\varphi (\xi)=\mathbb{E}\left[e^{i\xi Y_1}\right]
+=\mathbb{E}\left[e^{i\xi \frac{Y_1+\cdots+Y_n}{n}}\right]
+=\varphi\left(\frac{\xi}{n}\right)^n.
+$$
+
+use Cauchy functional equation, we have $\varphi(\xi)=e^{-c|\xi|}$ for some $c>0$, so $Y_1$ follows a Cauchy distribution.
 
 ---
 
@@ -228,6 +364,16 @@ $$
 
 This is known as *Hoeffding's inequality*.
 
+**Solution.** (1)
+
+$$
+\mathrm{var}(Y)=\inf_{c\in\mathbb{R}}\mathbb{E}[(Y-c)^2]\le \mathbb{E}\left[\left(Y-\frac{a+b}{2}\right)^2\right]\le \frac{(b-a)^2}{4}.
+$$
+
+(2)
+
+
+
 ---
 
 **Exercise 9.13** Let $U_1,\ldots,U_n$ be independent random variables with values in $\{-1,1\}$ such that $\mathbb{P}(U_j=1)=\mathbb{P}(U_j=-1)=1/2$ for every $j\in\{1,\ldots,n\}$. Let $a_1,\ldots,a_n\in\mathbb{R}$. Prove that
@@ -243,3 +389,5 @@ This is a particular case of the *Khintchine inequality* (the constant $1/3$ can
 $$
 \mathbb{E}[|X|]\ge\frac{\mathbb{E}[X^2]^{3/2}}{\mathbb{E}[X^4]^{1/2}}.
 $$
+
+**Solution.** Easy to check.

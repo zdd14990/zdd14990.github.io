@@ -8,9 +8,31 @@ from mkdocs.utils import get_relative_url
 
 PDF_EMBED_RE = re.compile(r'(<embed\s+[^>]*?src=")([^"]+\.pdf)("[^>]*>)', re.IGNORECASE)
 MEANINGLESS_TAG_RE = re.compile(
-    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection)$",
+    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection|course|exercises|notes)$",
     re.I,
 )
+
+TOPIC_INFERENCE = {
+    "probability-statistics": ["probability"],
+    "applied-math/convex-optimization": ["optimization"],
+    "applied-math/numerical-pde": ["numerical-methods", "pde"],
+    "applied-math/applied-math-exam": ["numerical-methods"],
+    "applied-math/ai-exam": ["machine-learning"],
+    "applied-math/data-science": ["machine-learning"],
+    "physics/electrodynamics": ["electromagnetism"],
+    "physics/quantum-mechanics": ["quantum"],
+    "physics/statistical-mechanics": ["statistical-physics"],
+}
+
+
+def _infer_topic_tags(page):
+    src = page.file.src_path.replace("\\", "/")
+    inferred = set()
+    for prefix, topics in TOPIC_INFERENCE.items():
+        if src.startswith("blog/" + prefix + "/"):
+            inferred.update(topics)
+    return sorted(inferred)
+
 
 
 def _fix_pdf_embed_paths(markdown, page, config):
@@ -51,7 +73,7 @@ def _append_taxonomy(markdown, page):
         return markdown
 
     categories = _as_list(page.meta.get("categories"))
-    tags = _clean_tags(_as_list(page.meta.get("tags")))
+    tags = list(dict.fromkeys(_clean_tags(_as_list(page.meta.get("tags"))) + _infer_topic_tags(page)))
     if not categories and not tags:
         return markdown
 

@@ -2,6 +2,8 @@ import html
 import json
 import os
 import re
+import ssl
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -11,9 +13,30 @@ CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
 )
 MEANINGLESS_TAG_RE = re.compile(
-    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection)$",
+    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection|course|exercises|notes)$",
     re.I,
 )
+
+TOPIC_INFERENCE = {
+    "probability-statistics": ["probability"],
+    "applied-math/convex-optimization": ["optimization"],
+    "applied-math/numerical-pde": ["numerical-methods", "pde"],
+    "applied-math/applied-math-exam": ["numerical-methods"],
+    "applied-math/ai-exam": ["machine-learning"],
+    "applied-math/data-science": ["machine-learning"],
+    "physics/electrodynamics": ["electromagnetism"],
+    "physics/quantum-mechanics": ["quantum"],
+    "physics/statistical-mechanics": ["statistical-physics"],
+}
+
+
+def _infer_topic_tags(src_path):
+    inferred = set()
+    for prefix, topics in TOPIC_INFERENCE.items():
+        if src_path.startswith("blog/" + prefix + "/"):
+            inferred.update(topics)
+    return sorted(inferred)
+
 SEARCH_TEXT_LIMIT = 12000
 DISPLAY_NAMES = {
     "analysis": "分析",
@@ -218,8 +241,8 @@ def _article_data():
         src_path = rel
         title = _parse_scalar_meta(meta, "title") or path.stem.replace("-", " ").title()
         date = _parse_scalar_meta(meta, "date") or datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d")
+        tags = list(dict.fromkeys(_clean_tags(_parse_list_meta(meta, "tags")) + _infer_topic_tags(src_path)))
         categories = _parse_list_meta(meta, "categories")
-        tags = _clean_tags(_parse_list_meta(meta, "tags"))
         content = _read_text(path)
         search_text = _plain_markdown(body)
         parts = rel.split("/")
@@ -242,6 +265,12 @@ def _article_data():
             "search_text": search_text[:SEARCH_TEXT_LIMIT],
             "folder_parts": folder_parts,
         })
+    tag_freq = {}
+    for a in articles:
+        for t in a["tags"]:
+            tag_freq[t] = tag_freq.get(t, 0) + 1
+    for a in articles:
+        a["tags"] = [t for t in a["tags"] if tag_freq[t] >= 3]
     return articles
 
 
@@ -348,6 +377,60 @@ def _search_index_items():
     return items
 
 
+
+
+def _load_pixiv_session():
+    env_path = Path(".env")
+    if not env_path.exists():
+        return ""
+    content = env_path.read_text(encoding="utf-8", errors="ignore")
+    for line in content.splitlines():
+        line = line.strip()
+        if line.startswith("PIXIV_SESSION="):
+            return line.split("=", 1)[1].strip().strip("\"'")
+    return ""
+
+
+def _fetch_pixiv_ranking(mode="daily"):
+    session = _load_pixiv_session()
+    label = f"pixiv:{mode}"
+    if not session:
+        print(f"[{label}] No PIXIV_SESSION found — skipping")
+        return []
+
+    url = f"https://www.pixiv.net/ranking.php?format=json&mode={mode}"
+    req = urllib.request.Request(url, headers={
+        "Cookie": f"PHPSESSID={session}",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Referer": "https://www.pixiv.net/",
+        "Accept": "application/json",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+    })
+
+    try:
+        ctx = ssl.create_default_context()
+        with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f"[{label}] Failed: {e}")
+        return []
+
+    contents = data.get("contents", [])
+    if not isinstance(contents, list):
+        return []
+
+    results = []
+    for item in contents:
+        illust_id = item.get("illust_id")
+        if illust_id:
+            results.append({
+                "id": illust_id,
+                "title": item.get("title", ""),
+                "url": item.get("url", ""),
+            })
+
+    print(f"[{label}] Fetched {len(results)} entries")
+    return results
 def on_post_build(env=None, config=None, **kwargs):
     config = config or getattr(env, "_conf", None) or getattr(env, "config", env)
     try:
@@ -357,6 +440,11 @@ def on_post_build(env=None, config=None, **kwargs):
     output = Path(site_dir) / "assets" / "zdd-search-data.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(_search_index_items(), ensure_ascii=False), encoding="utf-8")
+
+    for file_name, mode in [("pixiv-ranking.json", "daily"), ("pixiv-r18-ranking.json", "daily_r18")]:
+        data = _fetch_pixiv_ranking(mode)
+        if data:
+            (Path(site_dir) / "assets" / file_name).write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
 
 def define_env(env):
@@ -401,6 +489,7 @@ def define_env(env):
   var params = new URLSearchParams(window.location.search);
   var tag = params.get("tag");
   var heading = document.getElementById("zdd-tag-heading");
+  var list = document.querySelector(".zdd-tag-results");
   var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
   if (tag) {{
     heading.textContent = "#" + tag;
@@ -408,6 +497,8 @@ def define_env(env):
       var tags = (card.getAttribute("data-tags") || "").split(/\\s+/);
       card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
     }});
+  }} else {{
+    list.style.display = "none";
   }}
 }})();
 </script>
