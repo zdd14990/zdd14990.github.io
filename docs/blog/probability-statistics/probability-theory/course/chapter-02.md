@@ -1,5 +1,5 @@
-﻿---
-title: 概率论part2
+---
+title: Convergences
 date: 2026-07-05
 hide:
   - navigation
@@ -9,8 +9,10 @@ categories:
 tags:
   - probability-statistics
   - probability-theory
+  - course
 ---
-# 概率论part2
+
+# Convergences
 
 ---
 

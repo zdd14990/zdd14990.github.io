@@ -1,5 +1,5 @@
-﻿---
-title: 概率论part1
+---
+title: Probability Space and Random Variables
 date: 2026-07-05
 hide:
   - navigation
@@ -9,19 +9,10 @@ categories:
 tags:
   - probability-statistics
   - probability-theory
+  - course
 ---
 
-# 概率论part1
-
----
-
-**参考书：吴昊老师的讲义**
-
----
-
-## Probability Space
-
----
+# Probability Space and Random Variables
 
 A probability space is a triplet $(\Omega, \mathcal{F}, \mathbb{P})$ consisting of:
 
@@ -110,6 +101,8 @@ A function $F: \mathbb{R} \to [0,1]$ is a **distribution function** if it is inc
 A probability space is complete if any subset of a set in $\mathcal{F}$ with $\mathbb{P}[F]=0$ also belongs to $\mathcal{F}$.
 
 **Theorem**: Given any probability space $(\Omega, \mathcal{F}, \mathbb{P})$, there exists a unique complete probability space $(\Omega, \overline{\mathcal{F}}, \overline{\mathbb{P}})$ such that $\mathcal{F} \subset \overline{\mathcal{F}}$ and $\overline{\mathbb{P}}|_{\mathcal{F}} = \mathbb{P}$.
+
+---
 
 ---
 

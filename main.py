@@ -7,16 +7,22 @@ from pathlib import Path
 
 DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
+CHAPTER_RE = re.compile(
+    r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
+)
 MEANINGLESS_TAG_RE = re.compile(
     r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection)$",
     re.I,
 )
+SEARCH_TEXT_LIMIT = 12000
 DISPLAY_NAMES = {
     "analysis": "分析",
     "algebra": "代数",
     "probability-statistics": "概统",
     "statistics": "统计",
     "probability-theory": "概率论",
+    "course": "课程",
+    "gtm295": "GTM295",
     "applied-math": "应用数学",
     "numerical-pde": "PDE 数值解",
     "convex-optimization": "凸优化",
@@ -33,6 +39,8 @@ TOP_ORDER = [
     "analysis",
     "algebra",
     "probability-statistics",
+    "course",
+    "gtm295",
     "ai-exam",
     "numerical-pde",
     "convex-optimization",
@@ -103,6 +111,39 @@ def _date_obj(date_str):
         return datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError:
         return None
+
+
+def _chapter_order_key(article):
+    source = " ".join([
+        article["path"].stem,
+        article["title"],
+        "/".join(article.get("folder_parts", [])),
+    ])
+    match = CHAPTER_RE.search(source)
+    if match:
+        return (0, int(match.group(1)), int(match.group(2) or 0), article["title"].casefold())
+
+    leading = re.match(r"^(\d+)(?:[-_.\s]*(\d+))?", article["path"].stem)
+    if leading:
+        return (0, int(leading.group(1)), int(leading.group(2) or 0), article["title"].casefold())
+
+    return (1, article["title"].casefold(), article["src_path"].casefold())
+
+
+def _chapter_neighbors(articles):
+    groups = {}
+    for article in articles:
+        groups.setdefault(tuple(article["folder_parts"]), []).append(article)
+
+    neighbors = {}
+    for group in groups.values():
+        ordered = sorted(group, key=_chapter_order_key)
+        for index, article in enumerate(ordered):
+            neighbors[article["src_path"]] = {
+                "prev_url": ordered[index - 1]["url"] if index > 0 else "",
+                "next_url": ordered[index + 1]["url"] if index + 1 < len(ordered) else "",
+            }
+    return neighbors
 
 
 def _article_url(src_path):
@@ -198,7 +239,7 @@ def _article_data():
             "tags": tags,
             "words": _word_count(content),
             "preview": _render_math_text(_first_content_block(body)),
-            "search_text": search_text[:1200],
+            "search_text": search_text[:SEARCH_TEXT_LIMIT],
             "folder_parts": folder_parts,
         })
     return articles
@@ -276,12 +317,46 @@ def _render_tree(node, level=0):
 </details>
 """)
 
-    articles = sorted(node.get("_articles", {}).values(), key=lambda a: a["sort_key"], reverse=True)
+    articles = sorted(node.get("_articles", {}).values(), key=_chapter_order_key)
     if articles:
         html_parts.append('<div class="zdd-catalog-posts">')
         html_parts.extend(_post_card(article, "catalog") for article in articles)
         html_parts.append("</div>")
     return "".join(html_parts)
+
+
+def _search_index_items():
+    items = []
+    articles = _article_data()
+    neighbors = _chapter_neighbors(articles)
+    for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True):
+        adjacent = neighbors.get(article["src_path"], {})
+        items.append({
+            "title": article["title"],
+            "url": article["url"],
+            "prev_url": adjacent.get("prev_url", ""),
+            "next_url": adjacent.get("next_url", ""),
+            "preview": re.sub(r"<[^>]+>", " ", article["preview"]),
+            "date": article["date"],
+            "words": article["words"],
+            "categories": article["categories"],
+            "tags": article["tags"],
+            "content": article["search_text"],
+            "source": _strip_frontmatter(_read_text(article["path"]))[:3000],
+            "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", _read_text(article["path"]), re.I)),
+        })
+    return items
+
+
+def on_post_build(env=None, config=None, **kwargs):
+    config = config or getattr(env, "_conf", None) or getattr(env, "config", env)
+    try:
+        site_dir = config["site_dir"]
+    except (KeyError, TypeError):
+        site_dir = config.site_dir
+    output = Path(site_dir) / "assets" / "zdd-search-data.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(_search_index_items(), ensure_ascii=False), encoding="utf-8")
 
 
 def define_env(env):
@@ -300,21 +375,7 @@ def define_env(env):
 
     @env.macro
     def search_index_data():
-        items = []
-        for article in sorted(_article_data(), key=lambda x: x["sort_key"], reverse=True):
-            items.append({
-                "title": article["title"],
-                "url": article["url"],
-                "preview": re.sub(r"<[^>]+>", " ", article["preview"]),
-                "date": article["date"],
-                "words": article["words"],
-                "categories": article["categories"],
-                "tags": article["tags"],
-                "content": article["search_text"],
-                "source": _strip_frontmatter(_read_text(article["path"]))[:3000],
-                "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", _read_text(article["path"]), re.I)),
-            })
-        return json.dumps(items, ensure_ascii=False)
+        return json.dumps(_search_index_items(), ensure_ascii=False)
 
     @env.macro
     def blog_catalog():

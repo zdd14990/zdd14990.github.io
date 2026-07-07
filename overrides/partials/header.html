@@ -37,8 +37,10 @@
       {% if not current_url.startswith('tags/') %}
         <a href="{{ 'tags/' | url }}">Tags</a>
       {% endif %}
-      {% if not current_url.startswith('friends/') %}
+      {% if page and page.is_homepage %}
         <a href="{{ 'friends/friends/' | url }}">Friends</a>
+      {% else %}
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
       {% endif %}
     </div>
   </nav>
