@@ -93,7 +93,7 @@
       } catch (e) {}
     }
     var url = window.zddSearchDataUrl || "/assets/zdd-search-data.json";
-    return fetch(url, {credentials: "same-origin"})
+    return fetch(url, {credentials: "same-origin", cache: "no-store"})
       .then(function(response) {
         if (!response.ok) throw new Error("Search data unavailable");
         return response.json();
