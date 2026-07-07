@@ -634,8 +634,11 @@
     }
 
     if (name === "/pixiv") {
-      renderCommandOutput(commandLine, "Pixiv 排行榜", '<div class="zdd-command-empty">Fetching...</div>');
-      fetch(siteUrl("assets/pixiv-ranking.json"), {credentials: "same-origin", cache: "no-store"})
+      var r18 = normalize(arg) === "r18";
+      var label = r18 ? "Pixiv R18 排行榜" : "Pixiv 排行榜";
+      var dataUrl = r18 ? "assets/pixiv-r18-ranking.json" : "assets/pixiv-ranking.json";
+      renderCommandOutput(commandLine, label, '<div class="zdd-command-empty">Fetching...</div>');
+      fetch(siteUrl(dataUrl), {credentials: "same-origin", cache: "no-store"})
         .then(function(response) {
           if (!response.ok) throw new Error("No ranking data");
           return response.json();
@@ -646,16 +649,15 @@
           var imgSrc = "https://pixiv.cat/" + picked.id + ".jpg";
           var title = escapeHtml(picked.title || "Untitled");
           var link = picked.url || ("https://www.pixiv.net/artworks/" + picked.id);
-          renderCommandOutput(commandLine, "Pixiv 排行榜",
+          renderCommandOutput(commandLine, label,
             '<a class="zdd-pixiv-card" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">'
-            + '<img src="' + escapeHtml(imgSrc) + '" alt="' + title + '" loading="lazy" '
-            + 'onerror="this.onerror=null;this.src=\'' + escapeHtml(imgSrc).replace(/'/g, "\\'") + '\';this.style.opacity=\'1\';">'
+            + '<img src="' + escapeHtml(imgSrc) + '" alt="' + title + '" loading="lazy">'
             + '<span class="zdd-pixiv-title">' + title + '</span>'
             + '</a>'
           );
         })
         .catch(function(err) {
-          renderCommandOutput(commandLine, "Pixiv 排行榜", '<div class="zdd-command-empty">No ranking data available. Try building locally with a PIXIV_SESSION.</div>');
+          renderCommandOutput(commandLine, label, '<div class="zdd-command-empty">No ranking data available. Try building locally with a PIXIV_SESSION.</div>');
         });
       return;
     }
