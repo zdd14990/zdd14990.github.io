@@ -485,6 +485,66 @@ f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
 \]</div>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1) </p>
+<div class="arithmatex">\[
+\mathbb{P}\left(\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|&gt;\varepsilon\right)\le \frac{\operatorname{var}(S_{n^2})}{\varepsilon^2 n^4}\le \frac{C}{\varepsilon^2 n^2}\Longrightarrow \sum_n \mathbb{P}\left(\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|&gt;\varepsilon\right)&lt;\infty
+\]</div>
+<p>By Borel-Cantelli lemma, we have <span class="arithmatex">\(\left|\frac{S_{n^2}-\mathbb{E}[S_{n^2}]}{n^2}\right|\to0\)</span> a.s.</p>
+<p>(2)</p>
+<p>Let <span class="arithmatex">\(\widetilde S_n=S_n-\mathbb E[S_n].\)</span> For each <span class="arithmatex">\(m\)</span>, choose <span class="arithmatex">\(k\)</span> such that <span class="arithmatex">\(k^2\le m&lt;(k+1)^2.\)</span> Then</p>
+<div class="arithmatex">\[
+\frac{|\widetilde S_m|}{m}
+\le
+\frac{|\widetilde S_{k^2}|}{m}
++
+\frac{|\widetilde S_m-\widetilde S_{k^2}|}{m}
+\le
+\frac{|\widetilde S_{k^2}|}{k^2}
++
+\frac{D_k}{k^2},
+\]</div>
+<p>where <span class="arithmatex">\(D_k=\max_{k^2\le m&lt;(k+1)^2}|\widetilde S_m-\widetilde S_{k^2}|.\)</span> By part (1),</p>
+<div class="arithmatex">\[
+\frac{|\widetilde S_{k^2}|}{k^2}\to0
+\qquad \text{a.s.}
+\]</div>
+<p>It remains to prove</p>
+<div class="arithmatex">\[
+\frac{D_k}{k^2}\to0
+\qquad \text{a.s.}
+\]</div>
+<p>Let <span class="arithmatex">\(Y_j=X_j-\mathbb E[X_j].\)</span> Then</p>
+<div class="arithmatex">\[
+D_k
+\le
+\sum_{j=k^2+1}^{(k+1)^2}|Y_j|.
+\]</div>
+<p>Hence, by Cauchy-Schwarz and <span class="arithmatex">\(\mathbb E[Y_j^2]\le C\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb P\left(\frac{D_k}{k^2}&gt;\varepsilon\right)
+&amp;\le
+\mathbb P\left(\sum_{j=k^2+1}^{(k+1)^2}|Y_j|&gt;\varepsilon k^2\right)\\
+&amp;\le
+\frac{1}{\varepsilon^2 k^4}
+\mathbb E\left[\left(\sum_{j=k^2+1}^{(k+1)^2}|Y_j|\right)^2\right]\\
+&amp;\le
+\frac{1}{\varepsilon^2 k^4}
+(2k+1)\sum_{j=k^2+1}^{(k+1)^2}\mathbb E[Y_j^2]\\
+&amp;\le
+\frac{C(2k+1)^2}{\varepsilon^2 k^4}.
+\end{aligned}
+\]</div>
+<p>Since</p>
+<div class="arithmatex">\[
+\sum_k
+\mathbb P\left(\frac{D_k}{k^2}&gt;\varepsilon\right)\le \sum_k \frac{C(2k+1)^2}{\varepsilon^2 k^4}&lt;\infty,
+\]</div>
+<p>By Borel-Cantelli lemma,</p>
+<div class="arithmatex">\[
+\frac{D_k}{k^2}\to0
+\qquad \text{a.s.}
+\]</div>
 <hr />
 <p><strong>Exercise 9.10</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent random variables distributed according to the exponential distribution with parameter <span class="arithmatex">\(1\)</span>.</p>
 <ol>
@@ -508,6 +568,21 @@ f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
 <p>Then show that <span class="arithmatex">\(\lim_{n\to\infty}(\log n)^{-1}Z_n=1\)</span>, a.s.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1). Consider <span class="arithmatex">\(A_n^\epsilon=\{X_n&gt;(1+\epsilon)\log n\}\)</span> and <span class="arithmatex">\(B_n^\epsilon=\{X_n&gt;(1-\epsilon)\log n\}\)</span>, use Borel-Cantelli .</p>
+<p>(2). Consider event <span class="arithmatex">\(\left\{Z_n\le(1-\epsilon)\log n\right\}\)</span>, it is equivalent to</p>
+<div class="arithmatex">\[
+X_1,\cdots,X_n\le(1-\epsilon)\log n
+\]</div>
+<p>so,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \mathbb{P}\left(Z_n\le(1-\epsilon)\log n\right)&amp;=\mathbb{P}\left(X_1\le(1-\epsilon)\log n\right)^n\\
+    &amp;=\left(1-\frac{1}{n^{1-\epsilon}}\right)^n\\
+    &amp;\le \exp\left(-n^{\epsilon}\right).
+\end{aligned}
+\]</div>
+<p>use Borel-Cantelli lemma.</p>
+<p>(3). The otherside is easy by (1).</p>
 <hr />
 <p><strong>Exercise 9.11</strong></p>
 <ol>
@@ -529,6 +604,14 @@ f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
 <p>Let <span class="arithmatex">\((Y_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent and identically distributed real random variables with a symmetric distribution (<span class="arithmatex">\(Y_n\)</span> has the same law as <span class="arithmatex">\(-Y_n\)</span>). Assume that <span class="arithmatex">\(\frac1n(Y_1+\cdots+Y_n)\)</span> has the same distribution as <span class="arithmatex">\(Y_1\)</span>, for every <span class="arithmatex">\(n\in\mathbb{N}\)</span>. Show that <span class="arithmatex">\(Y_n\)</span> follows a Cauchy distribution.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1)(2)(3) Purely computation.</p>
+<p>(4) Let <span class="arithmatex">\(\varphi\)</span> be the characteristic function of <span class="arithmatex">\(Y_1\)</span>. Then, for every <span class="arithmatex">\(n\in\mathbb{N}\)</span>,</p>
+<div class="arithmatex">\[
+\varphi (\xi)=\mathbb{E}\left[e^{i\xi Y_1}\right]
+=\mathbb{E}\left[e^{i\xi \frac{Y_1+\cdots+Y_n}{n}}\right]
+=\varphi\left(\frac{\xi}{n}\right)^n.
+\]</div>
+<p>use Cauchy functional equation, we have <span class="arithmatex">\(\varphi(\xi)=e^{-c|\xi|}\)</span> for some <span class="arithmatex">\(c&gt;0\)</span>, so <span class="arithmatex">\(Y_1\)</span> follows a Cauchy distribution.</p>
 <hr />
 <p><strong>Exercise 9.12</strong></p>
 <ol>
@@ -552,6 +635,11 @@ f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
 </li>
 </ol>
 <p>This is known as <em>Hoeffding's inequality</em>.</p>
+<p><strong>Solution.</strong> (1)</p>
+<div class="arithmatex">\[
+\mathrm{var}(Y)=\inf_{c\in\mathbb{R}}\mathbb{E}[(Y-c)^2]\le \mathbb{E}\left[\left(Y-\frac{a+b}{2}\right)^2\right]\le \frac{(b-a)^2}{4}.
+\]</div>
+<p>(2)</p>
 <hr />
 <p><strong>Exercise 9.13</strong> Let <span class="arithmatex">\(U_1,\ldots,U_n\)</span> be independent random variables with values in <span class="arithmatex">\(\{-1,1\}\)</span> such that <span class="arithmatex">\(\mathbb{P}(U_j=1)=\mathbb{P}(U_j=-1)=1/2\)</span> for every <span class="arithmatex">\(j\in\{1,\ldots,n\}\)</span>. Let <span class="arithmatex">\(a_1,\ldots,a_n\in\mathbb{R}\)</span>. Prove that</p>
 <div class="arithmatex">\[
@@ -563,6 +651,7 @@ f(x)=\frac{1}{2}(f_0(x)+f_0(-x)),\quad x\in\mathbb{R},
 <div class="arithmatex">\[
 \mathbb{E}[|X|]\ge\frac{\mathbb{E}[X^2]^{3/2}}{\mathbb{E}[X^4]^{1/2}}.
 \]</div>
+<p><strong>Solution.</strong> Easy to check.</p>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=gtm295">#gtm295</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability">#probability</a></div>
