@@ -25,7 +25,7 @@
     
     
       
-        <title>Central Limit Theorem - zdd14990</title>
+        <title>Conditional Expectation - zdd14990</title>
       
     
     
@@ -69,14 +69,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-05/">
-  <meta property="og:title" content="Central Limit Theorem - zdd14990">
+  <meta property="og:title" content="Conditional Expectation - zdd14990">
   <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
   <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-05/">
-  <meta name="twitter:title" content="Central Limit Theorem - zdd14990">
+  <meta name="twitter:title" content="Conditional Expectation - zdd14990">
   <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
@@ -99,7 +99,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#central-limit-theorem" class="md-skip">
+        <a href="#conditional-expectation" class="md-skip">
           跳转至
         </a>
       
@@ -349,10 +349,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#characteristic-functions" class="md-nav__link">
+  <a href="#definition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Characteristic Functions
+        Definition
       
     </span>
   </a>
@@ -360,10 +360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#basic-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
+        Basic Properties
       
     </span>
   </a>
@@ -371,10 +371,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inversion-and-uniqueness" class="md-nav__link">
+  <a href="#tower-property" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inversion and Uniqueness
+        Tower Property
       
     </span>
   </a>
@@ -382,10 +382,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#levy-continuity-theorem" class="md-nav__link">
+  <a href="#conditioning-by-a-random-variable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Levy Continuity Theorem
+        Conditioning by a Random Variable
       
     </span>
   </a>
@@ -393,10 +393,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#central-limit-theorem_1" class="md-nav__link">
+  <a href="#jensen-inequality" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Central Limit Theorem
+        Jensen Inequality
       
     </span>
   </a>
@@ -404,10 +404,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lindeberg-form" class="md-nav__link">
+  <a href="#conditional-probability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lindeberg Form
+        Conditional Probability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regular-conditional-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regular Conditional Distribution
       
     </span>
   </a>
@@ -433,124 +444,114 @@
 
 
 
-<h1 id="central-limit-theorem">Central Limit Theorem</h1>
+<h1 id="conditional-expectation">Conditional Expectation</h1>
 <hr />
-<h2 id="characteristic-functions">Characteristic Functions</h2>
-<p>For a real random variable <span class="arithmatex">\(X\)</span> with law <span class="arithmatex">\(\mu\)</span>, its <strong>characteristic function</strong> is</p>
-<div class="arithmatex">\[
-\varphi_X(t)=\mathbb{E}[e^{itX}]
-=\int_{\mathbb{R}}e^{itx}\,\mu(dx),
-\qquad t\in\mathbb{R}.
-\]</div>
-<p>It is the Fourier transform of the probability measure <span class="arithmatex">\(\mu\)</span>.</p>
-<p>Basic properties:</p>
+<h2 id="definition">Definition</h2>
+<p>Let <span class="arithmatex">\(X\in L^1(\Omega,\mathcal{A},\mathbb{P})\)</span> and let <span class="arithmatex">\(\mathcal{G}\subset\mathcal{A}\)</span> be a sub-<span class="arithmatex">\(\sigma\)</span>-field.</p>
+<p>The <strong>conditional expectation</strong> of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(\mathcal{G}\)</span> is the random variable <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> such that:</p>
 <ol>
 <li>
-<p><span class="arithmatex">\(\varphi_X(0)=1\)</span> and <span class="arithmatex">\(|\varphi_X(t)|\le 1\)</span>.</p>
+<p><span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> is <span class="arithmatex">\(\mathcal{G}\)</span>-measurable.</p>
 </li>
 <li>
-<p><span class="arithmatex">\(\varphi_X\)</span> is uniformly continuous.</p>
-</li>
-<li>
-<p>For <span class="arithmatex">\(a,b\in\mathbb{R}\)</span>,</p>
+<p>For every <span class="arithmatex">\(G\in\mathcal{G}\)</span>,</p>
 <div class="arithmatex">\[
-\varphi_{aX+b}(t)=e^{ibt}\varphi_X(at).
-\]</div>
-</li>
-<li>
-<p>If <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent, then</p>
-<div class="arithmatex">\[
-\varphi_{X+Y}(t)=\varphi_X(t)\varphi_Y(t).
+\int_G \mathbb{E}[X\mid\mathcal{G}]\,d\mathbb{P}
+=
+\int_G X\,d\mathbb{P}.
 \]</div>
 </li>
 </ol>
+<p>It is unique up to almost sure equality.</p>
 <hr />
-<h2 id="examples">Examples</h2>
-<ul>
-<li>
-<p>If <span class="arithmatex">\(X=a\)</span> almost surely, then <span class="arithmatex">\(\varphi_X(t)=e^{iat}\)</span>.</p>
-</li>
-<li>
-<p>If <span class="arithmatex">\(\mathbb{P}(X=1)=\mathbb{P}(X=-1)=1/2\)</span>, then</p>
+<h2 id="basic-properties">Basic Properties</h2>
+<p>For integrable random variables <span class="arithmatex">\(X,Y\)</span> and constants <span class="arithmatex">\(a,b\)</span>,</p>
 <div class="arithmatex">\[
-\varphi_X(t)=\cos t.
+\mathbb{E}[aX+bY\mid\mathcal{G}]
+=a\mathbb{E}[X\mid\mathcal{G}]
++b\mathbb{E}[Y\mid\mathcal{G}].
 \]</div>
-</li>
-<li>
-<p>If <span class="arithmatex">\(X\sim N(m,\sigma^2)\)</span>, then</p>
+<p>If <span class="arithmatex">\(X\ge 0\)</span>, then</p>
 <div class="arithmatex">\[
-\varphi_X(t)=\exp\left(imt-\frac{\sigma^2t^2}{2}\right).
+\mathbb{E}[X\mid\mathcal{G}]\ge 0.
 \]</div>
-</li>
-<li>
-<p>If <span class="arithmatex">\(X\sim \mathrm{Poisson}(\lambda)\)</span>, then</p>
+<p>If <span class="arithmatex">\(Y\)</span> is bounded and <span class="arithmatex">\(\mathcal{G}\)</span>-measurable, then</p>
 <div class="arithmatex">\[
-\varphi_X(t)=\exp\{\lambda(e^{it}-1)\}.
-\]</div>
-</li>
-</ul>
-<hr />
-<h2 id="inversion-and-uniqueness">Inversion and Uniqueness</h2>
-<p>The characteristic function determines the law. More precisely, if two probability measures have the same characteristic function, then they are equal.</p>
-<p>If <span class="arithmatex">\(\varphi\in L^1(\mathbb{R})\)</span>, then the corresponding law has density</p>
-<div class="arithmatex">\[
-p(x)=\frac{1}{2\pi}\int_{\mathbb{R}}e^{-itx}\varphi(t)\,dt.
-\]</div>
-<p>The atoms are recovered by</p>
-<div class="arithmatex">\[
-\mu(\{x\})=
-\lim_{T\to\infty}
-\frac{1}{2T}\int_{-T}^{T}e^{-itx}\varphi(t)\,dt.
+\mathbb{E}[YX\mid\mathcal{G}]
+=Y\mathbb{E}[X\mid\mathcal{G}].
 \]</div>
 <hr />
-<h2 id="levy-continuity-theorem">Levy Continuity Theorem</h2>
-<p>Let <span class="arithmatex">\((X_n)\)</span> be real random variables with characteristic functions <span class="arithmatex">\(\varphi_n\)</span>.</p>
-<p>If <span class="arithmatex">\(X_n\Rightarrow X\)</span>, then</p>
+<h2 id="tower-property">Tower Property</h2>
+<p>If <span class="arithmatex">\(\mathcal{H}\subset\mathcal{G}\subset\mathcal{A}\)</span>, then</p>
 <div class="arithmatex">\[
-\varphi_n(t)\longrightarrow \varphi_X(t)
-\qquad\text{for every }t\in\mathbb{R}.
+\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\mid\mathcal{H}\right]
+=
+\mathbb{E}[X\mid\mathcal{H}].
 \]</div>
-<p>Conversely, if <span class="arithmatex">\(\varphi_n(t)\to \varphi(t)\)</span> pointwise and <span class="arithmatex">\(\varphi\)</span> is continuous at <span class="arithmatex">\(0\)</span>, then <span class="arithmatex">\(\varphi\)</span> is the characteristic function of some law <span class="arithmatex">\(\mu\)</span>, and</p>
+<p>In particular,</p>
 <div class="arithmatex">\[
-X_n\Rightarrow \mu.
-\]</div>
-<hr />
-<h2 id="central-limit-theorem_1">Central Limit Theorem</h2>
-<p>Let <span class="arithmatex">\((X_n)\)</span> be i.i.d. with</p>
-<div class="arithmatex">\[
-\mathbb{E}[X_1]=m,
-\qquad
-\operatorname{Var}(X_1)=\sigma^2\in(0,\infty).
-\]</div>
-<p>Then</p>
-<div class="arithmatex">\[
-\frac{S_n-nm}{\sigma\sqrt n}
-\Rightarrow N(0,1).
-\]</div>
-<p>Equivalently, for every <span class="arithmatex">\(x\in\mathbb{R}\)</span>,</p>
-<div class="arithmatex">\[
-\mathbb{P}\left(\frac{S_n-nm}{\sigma\sqrt n}\le x\right)
-\longrightarrow
-\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{-u^2/2}\,du.
+\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\right]
+=
+\mathbb{E}[X].
 \]</div>
 <hr />
-<h2 id="lindeberg-form">Lindeberg Form</h2>
-<p>For independent centered variables <span class="arithmatex">\((X_{n,k})\)</span>, set</p>
+<h2 id="conditioning-by-a-random-variable">Conditioning by a Random Variable</h2>
+<p>For a random variable <span class="arithmatex">\(Y\)</span>, write</p>
 <div class="arithmatex">\[
-s_n^2=\sum_k \operatorname{Var}(X_{n,k}).
+\mathbb{E}[X\mid Y]
+=
+\mathbb{E}[X\mid\sigma(Y)].
 \]</div>
-<p>The Lindeberg condition is</p>
+<p>This is the best approximation of <span class="arithmatex">\(X\)</span> by a measurable function of <span class="arithmatex">\(Y\)</span> in the <span class="arithmatex">\(L^2\)</span> sense when <span class="arithmatex">\(X\in L^2\)</span>.</p>
+<p>If <span class="arithmatex">\(X\)</span> is independent of <span class="arithmatex">\(\mathcal{G}\)</span>, then</p>
 <div class="arithmatex">\[
-\frac{1}{s_n^2}
-\sum_k
-\mathbb{E}\left[
-X_{n,k}^2\mathbf{1}_{\{|X_{n,k}|&gt;\varepsilon s_n\}}
-\right]
-\longrightarrow 0
+\mathbb{E}[X\mid\mathcal{G}]=\mathbb{E}[X].
 \]</div>
-<p>for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>. Under this condition,</p>
+<hr />
+<h2 id="jensen-inequality">Jensen Inequality</h2>
+<p>If <span class="arithmatex">\(\varphi\)</span> is convex and <span class="arithmatex">\(\varphi(X)\in L^1\)</span>, then</p>
 <div class="arithmatex">\[
-\frac{\sum_k X_{n,k}}{s_n}\Rightarrow N(0,1).
+\varphi\left(\mathbb{E}[X\mid\mathcal{G}]\right)
+\le
+\mathbb{E}[\varphi(X)\mid\mathcal{G}]
+\]</div>
+<p>almost surely.</p>
+<p>As a consequence, for <span class="arithmatex">\(p\ge 1\)</span>,</p>
+<div class="arithmatex">\[
+\left|\mathbb{E}[X\mid\mathcal{G}]\right|^p
+\le
+\mathbb{E}[|X|^p\mid\mathcal{G}].
+\]</div>
+<hr />
+<h2 id="conditional-probability">Conditional Probability</h2>
+<p>For an event <span class="arithmatex">\(A\in\mathcal{A}\)</span>, define</p>
+<div class="arithmatex">\[
+\mathbb{P}(A\mid\mathcal{G})
+=
+\mathbb{E}[\mathbf{1}_A\mid\mathcal{G}].
+\]</div>
+<p>This is a <span class="arithmatex">\(\mathcal{G}\)</span>-measurable random variable. It satisfies the same integration identity:</p>
+<div class="arithmatex">\[
+\int_G \mathbb{P}(A\mid\mathcal{G})\,d\mathbb{P}
+=
+\mathbb{P}(A\cap G),
+\qquad G\in\mathcal{G}.
+\]</div>
+<hr />
+<h2 id="regular-conditional-distribution">Regular Conditional Distribution</h2>
+<p>For random variables <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span>, a regular conditional distribution of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(Y\)</span> is a transition kernel</p>
+<div class="arithmatex">\[
+K(y,B)
+\]</div>
+<p>such that</p>
+<div class="arithmatex">\[
+K(Y,B)=\mathbb{P}(X\in B\mid Y)
+\]</div>
+<p>for every Borel set <span class="arithmatex">\(B\)</span>. It lets us write conditional expectations as</p>
+<div class="arithmatex">\[
+\mathbb{E}[f(X)\mid Y]
+=
+\int f(x)K(Y,dx).
 \]</div>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>

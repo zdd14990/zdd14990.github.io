@@ -25,7 +25,7 @@
     
     
       
-        <title>Conditional Expectation - zdd14990</title>
+        <title>Markov Chains - zdd14990</title>
       
     
     
@@ -69,14 +69,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/">
-  <meta property="og:title" content="Conditional Expectation - zdd14990">
+  <meta property="og:title" content="Markov Chains - zdd14990">
   <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
   <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/">
-  <meta name="twitter:title" content="Conditional Expectation - zdd14990">
+  <meta name="twitter:title" content="Markov Chains - zdd14990">
   <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
@@ -99,7 +99,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#conditional-expectation" class="md-skip">
+        <a href="#markov-chains" class="md-skip">
           跳转至
         </a>
       
@@ -349,10 +349,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#definition" class="md-nav__link">
+  <a href="#markov-property" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definition
+        Markov Property
       
     </span>
   </a>
@@ -360,10 +360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-properties" class="md-nav__link">
+  <a href="#finite-dimensional-distributions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Properties
+        Finite-Dimensional Distributions
       
     </span>
   </a>
@@ -371,10 +371,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tower-property" class="md-nav__link">
+  <a href="#stopping-times-and-strong-markov-property" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tower Property
+        Stopping Times and Strong Markov Property
       
     </span>
   </a>
@@ -382,10 +382,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#conditioning-by-a-random-variable" class="md-nav__link">
+  <a href="#recurrence-and-transience" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditioning by a Random Variable
+        Recurrence and Transience
       
     </span>
   </a>
@@ -393,10 +393,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#jensen-inequality" class="md-nav__link">
+  <a href="#irreducibility" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Jensen Inequality
+        Irreducibility
       
     </span>
   </a>
@@ -404,10 +404,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#conditional-probability" class="md-nav__link">
+  <a href="#invariant-measures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditional Probability
+        Invariant Measures
       
     </span>
   </a>
@@ -415,10 +415,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#regular-conditional-distribution" class="md-nav__link">
+  <a href="#reversibility" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Regular Conditional Distribution
+        Reversibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convergence-to-equilibrium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence to Equilibrium
       
     </span>
   </a>
@@ -444,115 +455,109 @@
 
 
 
-<h1 id="conditional-expectation">Conditional Expectation</h1>
+<h1 id="markov-chains">Markov Chains</h1>
 <hr />
-<h2 id="definition">Definition</h2>
-<p>Let <span class="arithmatex">\(X\in L^1(\Omega,\mathcal{A},\mathbb{P})\)</span> and let <span class="arithmatex">\(\mathcal{G}\subset\mathcal{A}\)</span> be a sub-<span class="arithmatex">\(\sigma\)</span>-field.</p>
-<p>The <strong>conditional expectation</strong> of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(\mathcal{G}\)</span> is the random variable <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> such that:</p>
-<ol>
-<li>
-<p><span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> is <span class="arithmatex">\(\mathcal{G}\)</span>-measurable.</p>
-</li>
-<li>
-<p>For every <span class="arithmatex">\(G\in\mathcal{G}\)</span>,</p>
+<h2 id="markov-property">Markov Property</h2>
+<p>Let <span class="arithmatex">\(E\)</span> be a countable state space. A sequence <span class="arithmatex">\((X_n)_{n\ge 0}\)</span> is a <strong>Markov chain</strong> if</p>
 <div class="arithmatex">\[
-\int_G \mathbb{E}[X\mid\mathcal{G}]\,d\mathbb{P}
+\mathbb{P}(X_{n+1}=y\mid X_0,\ldots,X_n)
 =
-\int_G X\,d\mathbb{P}.
+\mathbb{P}(X_{n+1}=y\mid X_n)
 \]</div>
-</li>
-</ol>
-<p>It is unique up to almost sure equality.</p>
-<hr />
-<h2 id="basic-properties">Basic Properties</h2>
-<p>For integrable random variables <span class="arithmatex">\(X,Y\)</span> and constants <span class="arithmatex">\(a,b\)</span>,</p>
+<p>for all states <span class="arithmatex">\(y\in E\)</span>.</p>
+<p>The transition probabilities are</p>
 <div class="arithmatex">\[
-\mathbb{E}[aX+bY\mid\mathcal{G}]
-=a\mathbb{E}[X\mid\mathcal{G}]
-+b\mathbb{E}[Y\mid\mathcal{G}].
+Q(x,y)=\mathbb{P}(X_{n+1}=y\mid X_n=x).
 \]</div>
-<p>If <span class="arithmatex">\(X\ge 0\)</span>, then</p>
+<p>The matrix <span class="arithmatex">\(Q=(Q(x,y))_{x,y\in E}\)</span> satisfies</p>
 <div class="arithmatex">\[
-\mathbb{E}[X\mid\mathcal{G}]\ge 0.
-\]</div>
-<p>If <span class="arithmatex">\(Y\)</span> is bounded and <span class="arithmatex">\(\mathcal{G}\)</span>-measurable, then</p>
-<div class="arithmatex">\[
-\mathbb{E}[YX\mid\mathcal{G}]
-=Y\mathbb{E}[X\mid\mathcal{G}].
+Q(x,y)\ge 0,
+\qquad
+\sum_{y\in E}Q(x,y)=1.
 \]</div>
 <hr />
-<h2 id="tower-property">Tower Property</h2>
-<p>If <span class="arithmatex">\(\mathcal{H}\subset\mathcal{G}\subset\mathcal{A}\)</span>, then</p>
+<h2 id="finite-dimensional-distributions">Finite-Dimensional Distributions</h2>
+<p>If <span class="arithmatex">\(X_0\)</span> has law <span class="arithmatex">\(\mu\)</span>, then</p>
 <div class="arithmatex">\[
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\mid\mathcal{H}\right]
+\mathbb{P}(X_0=x_0,\ldots,X_n=x_n)
 =
-\mathbb{E}[X\mid\mathcal{H}].
+\mu(x_0)Q(x_0,x_1)\cdots Q(x_{n-1},x_n).
 \]</div>
-<p>In particular,</p>
+<p>The <span class="arithmatex">\(n\)</span>-step transition matrix is</p>
 <div class="arithmatex">\[
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\right]
-=
-\mathbb{E}[X].
+Q^n(x,y)=\mathbb{P}_x(X_n=y).
+\]</div>
+<p>It satisfies the Chapman-Kolmogorov identity</p>
+<div class="arithmatex">\[
+Q^{m+n}(x,y)=\sum_{z\in E}Q^m(x,z)Q^n(z,y).
 \]</div>
 <hr />
-<h2 id="conditioning-by-a-random-variable">Conditioning by a Random Variable</h2>
-<p>For a random variable <span class="arithmatex">\(Y\)</span>, write</p>
+<h2 id="stopping-times-and-strong-markov-property">Stopping Times and Strong Markov Property</h2>
+<p>A random time <span class="arithmatex">\(T\)</span> is a stopping time if</p>
 <div class="arithmatex">\[
-\mathbb{E}[X\mid Y]
-=
-\mathbb{E}[X\mid\sigma(Y)].
+\{T\le n\}\in\sigma(X_0,\ldots,X_n)
 \]</div>
-<p>This is the best approximation of <span class="arithmatex">\(X\)</span> by a measurable function of <span class="arithmatex">\(Y\)</span> in the <span class="arithmatex">\(L^2\)</span> sense when <span class="arithmatex">\(X\in L^2\)</span>.</p>
-<p>If <span class="arithmatex">\(X\)</span> is independent of <span class="arithmatex">\(\mathcal{G}\)</span>, then</p>
+<p>for every <span class="arithmatex">\(n\)</span>.</p>
+<p>The <strong>strong Markov property</strong> says that, conditionally on <span class="arithmatex">\(\{T&lt;\infty\}\)</span> and <span class="arithmatex">\(X_T=x\)</span>, the shifted process</p>
 <div class="arithmatex">\[
-\mathbb{E}[X\mid\mathcal{G}]=\mathbb{E}[X].
+(X_{T+n})_{n\ge 0}
 \]</div>
+<p>is a Markov chain started from <span class="arithmatex">\(x\)</span> with the same transition matrix.</p>
 <hr />
-<h2 id="jensen-inequality">Jensen Inequality</h2>
-<p>If <span class="arithmatex">\(\varphi\)</span> is convex and <span class="arithmatex">\(\varphi(X)\in L^1\)</span>, then</p>
+<h2 id="recurrence-and-transience">Recurrence and Transience</h2>
+<p>For <span class="arithmatex">\(x\in E\)</span>, define the return time</p>
 <div class="arithmatex">\[
-\varphi\left(\mathbb{E}[X\mid\mathcal{G}]\right)
-\le
-\mathbb{E}[\varphi(X)\mid\mathcal{G}]
+T_x^+=\inf\{n\ge 1:X_n=x\}.
 \]</div>
-<p>almost surely.</p>
-<p>As a consequence, for <span class="arithmatex">\(p\ge 1\)</span>,</p>
+<p>The state <span class="arithmatex">\(x\)</span> is <strong>recurrent</strong> if</p>
 <div class="arithmatex">\[
-\left|\mathbb{E}[X\mid\mathcal{G}]\right|^p
-\le
-\mathbb{E}[|X|^p\mid\mathcal{G}].
+\mathbb{P}_x(T_x^+&lt;\infty)=1,
 \]</div>
+<p>and <strong>transient</strong> otherwise.</p>
+<p>The Green function is</p>
+<div class="arithmatex">\[
+G(x,y)=\sum_{n=0}^{\infty}Q^n(x,y),
+\]</div>
+<p>the expected number of visits to <span class="arithmatex">\(y\)</span> when the chain starts from <span class="arithmatex">\(x\)</span>.</p>
 <hr />
-<h2 id="conditional-probability">Conditional Probability</h2>
-<p>For an event <span class="arithmatex">\(A\in\mathcal{A}\)</span>, define</p>
+<h2 id="irreducibility">Irreducibility</h2>
+<p>We write <span class="arithmatex">\(x\to y\)</span> if <span class="arithmatex">\(Q^n(x,y)&gt;0\)</span> for some <span class="arithmatex">\(n\ge 0\)</span>.</p>
+<p>The chain is <strong>irreducible</strong> if every state communicates with every other state:</p>
 <div class="arithmatex">\[
-\mathbb{P}(A\mid\mathcal{G})
-=
-\mathbb{E}[\mathbf{1}_A\mid\mathcal{G}].
+x\to y
+\qquad\text{and}\qquad
+y\to x
 \]</div>
-<p>This is a <span class="arithmatex">\(\mathcal{G}\)</span>-measurable random variable. It satisfies the same integration identity:</p>
-<div class="arithmatex">\[
-\int_G \mathbb{P}(A\mid\mathcal{G})\,d\mathbb{P}
-=
-\mathbb{P}(A\cap G),
-\qquad G\in\mathcal{G}.
-\]</div>
+<p>for all <span class="arithmatex">\(x,y\in E\)</span>.</p>
+<p>In an irreducible chain, recurrence and transience are class properties.</p>
 <hr />
-<h2 id="regular-conditional-distribution">Regular Conditional Distribution</h2>
-<p>For random variables <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span>, a regular conditional distribution of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(Y\)</span> is a transition kernel</p>
+<h2 id="invariant-measures">Invariant Measures</h2>
+<p>A measure <span class="arithmatex">\(\pi\)</span> on <span class="arithmatex">\(E\)</span> is invariant if</p>
 <div class="arithmatex">\[
-K(y,B)
+\pi Q=\pi,
 \]</div>
-<p>such that</p>
+<p>or equivalently</p>
 <div class="arithmatex">\[
-K(Y,B)=\mathbb{P}(X\in B\mid Y)
+\pi(y)=\sum_{x\in E}\pi(x)Q(x,y).
 \]</div>
-<p>for every Borel set <span class="arithmatex">\(B\)</span>. It lets us write conditional expectations as</p>
+<p>If <span class="arithmatex">\(\pi\)</span> is a probability measure, it is called a <strong>stationary distribution</strong>.</p>
+<p>When <span class="arithmatex">\(X_0\sim\pi\)</span>, all <span class="arithmatex">\(X_n\)</span> have law <span class="arithmatex">\(\pi\)</span>.</p>
+<hr />
+<h2 id="reversibility">Reversibility</h2>
+<p>A probability measure <span class="arithmatex">\(\pi\)</span> is reversible for <span class="arithmatex">\(Q\)</span> if</p>
 <div class="arithmatex">\[
-\mathbb{E}[f(X)\mid Y]
-=
-\int f(x)K(Y,dx).
+\pi(x)Q(x,y)=\pi(y)Q(y,x)
 \]</div>
+<p>for all <span class="arithmatex">\(x,y\in E\)</span>.</p>
+<p>The detailed balance condition implies invariance.</p>
+<hr />
+<h2 id="convergence-to-equilibrium">Convergence to Equilibrium</h2>
+<p>For finite irreducible aperiodic Markov chains, there is a unique stationary distribution <span class="arithmatex">\(\pi\)</span>, and</p>
+<div class="arithmatex">\[
+Q^n(x,y)\longrightarrow \pi(y)
+\]</div>
+<p>as <span class="arithmatex">\(n\to\infty\)</span>.</p>
+<p>This is the basic ergodic theorem for finite Markov chains.</p>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=course">#course</a></div>

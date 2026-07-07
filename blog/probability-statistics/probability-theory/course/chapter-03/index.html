@@ -25,7 +25,7 @@
     
     
       
-        <title>Convergences - zdd14990</title>
+        <title>Law of Large Numbers - zdd14990</title>
       
     
     
@@ -69,14 +69,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/">
-  <meta property="og:title" content="Convergences - zdd14990">
+  <meta property="og:title" content="Law of Large Numbers - zdd14990">
   <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
   <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/">
-  <meta name="twitter:title" content="Convergences - zdd14990">
+  <meta name="twitter:title" content="Law of Large Numbers - zdd14990">
   <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
@@ -99,7 +99,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#convergences" class="md-skip">
+        <a href="#law-of-large-numbers" class="md-skip">
           跳转至
         </a>
       
@@ -349,38 +349,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#convergences_1" class="md-nav__link">
+  <a href="#weak-law-of-large-numbers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convergences
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Convergences">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#hellys-extraction-principle" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Helly's extraction principle
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#criterion-for-weak-convergence" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Criterion for weak convergence
+        Weak Law of Large Numbers
       
     </span>
   </a>
@@ -388,10 +360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#convergence-in-distribution" class="md-nav__link">
+  <a href="#strong-law-of-large-numbers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convergence in distribution
+        Strong Law of Large Numbers
       
     </span>
   </a>
@@ -399,10 +371,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#uniform-integrable" class="md-nav__link">
+  <a href="#truncation-method" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Uniform Integrable
+        Truncation Method
       
     </span>
   </a>
@@ -410,10 +382,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#convergence-in-l1-vs-almost-sure-convergence" class="md-nav__link">
+  <a href="#three-series-theorem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convergence in \(L^1\) vs. almost sure convergence
+        Three-Series Theorem
       
     </span>
   </a>
@@ -421,21 +393,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#maximal-growth" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#exercises-of-chapter-1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Exercises of Chapter 1
+        Maximal Growth
       
     </span>
   </a>
@@ -461,297 +422,86 @@
 
 
 
-<h1 id="convergences">Convergences</h1>
+<h1 id="law-of-large-numbers">Law of Large Numbers</h1>
 <hr />
-<p><strong>参考书：吴昊老师的讲义</strong></p>
-<hr />
-<h2 id="convergences_1">Convergences</h2>
-<p>The convergence of a sequence <span class="arithmatex">\(\{X_n\}\)</span>:</p>
-<ul>
-<li>
-<p><strong>almost sure convergence</strong>,</p>
-</li>
-<li>
-<p><strong>convergence in probability</strong>,</p>
-</li>
-<li>
-<p><strong>convergence in <span class="arithmatex">\(L^p\)</span></strong> with <span class="arithmatex">\(p\in [1,\infty)\)</span>,</p>
-</li>
-<li>
-<p><strong>convergence in distribution</strong> (also called convergence in law, weak convergence).</p>
-</li>
-</ul>
-<hr />
-<p><strong>Definition</strong> The sequence of random variables <span class="arithmatex">\(\{X_n\}\)</span> <strong>converges a.s.</strong> to the random variable <span class="arithmatex">\(X\)</span> if there exists a null set <span class="arithmatex">\(\mathcal{N}\)</span> such that</p>
+<h2 id="weak-law-of-large-numbers">Weak Law of Large Numbers</h2>
+<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. random variables with finite mean <span class="arithmatex">\(m\)</span>, and set</p>
 <div class="arithmatex">\[
-\lim_{n\to\infty}X_n(\omega)=X(\omega),\quad \forall \omega\in \Omega\setminus \mathcal{N}.
+S_n = \sum_{j=1}^n X_j.
 \]</div>
-<p><strong>Lemma</strong> The sequence <span class="arithmatex">\(\{X_n\}\)</span> converges a.s. to <span class="arithmatex">\(X\)</span> if and only if, for any <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<p>The <strong>weak law of large numbers</strong> says that</p>
 <div class="arithmatex">\[
-\lim_{m\to\infty}\mathbb{P}\left[|X_n-X|\le \varepsilon,\ \forall n\ge m\right]=1.
+\frac{S_n}{n} \longrightarrow m
+\quad\text{in probability.}
+\]</div>
+<p>Equivalently, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb{P}\left(\left|\frac{S_n}{n}-m\right|&gt;\varepsilon\right)\longrightarrow 0.
 \]</div>
 <hr />
-<p><strong>Definition</strong> The sequence <span class="arithmatex">\(\{X_n\}\)</span> converges in probability to the random variable <span class="arithmatex">\(X\)</span> if, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<p>Two sequences of random variables <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are called <strong>equivalent</strong> if</p>
 <div class="arithmatex">\[
-\lim_{n\to\infty}\mathbb{P}\left[|X_n-X|&gt;\varepsilon\right]=0.
+\sum_{n=1}^{\infty}\mathbb{P}(X_n\ne Y_n)&lt;\infty.
 \]</div>
-<p>Almost sure convergence implies convergence in probability. But the converse is false.</p>
+<p>By the Borel-Cantelli lemma, equivalent sequences differ only finitely many times almost surely.</p>
+<p>If <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are equivalent, then</p>
+<div class="arithmatex">\[
+\frac1n\sum_{j=1}^n (X_j-Y_j)\longrightarrow 0
+\quad\text{almost surely.}
+\]</div>
+<p>Thus equivalent truncations may be used to prove limit theorems.</p>
 <hr />
-<p><strong>Definition</strong> Assume <span class="arithmatex">\(p\ge 1\)</span>. The sequence <span class="arithmatex">\(\{X_n\}\)</span> converges in <span class="arithmatex">\(L^p\)</span> to the random variable <span class="arithmatex">\(X\)</span> if <span class="arithmatex">\(X_n\in L^p\)</span>, <span class="arithmatex">\(X\in L^p\)</span> and</p>
+<h2 id="strong-law-of-large-numbers">Strong Law of Large Numbers</h2>
+<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. and set <span class="arithmatex">\(S_n=X_1+\cdots+X_n\)</span>.</p>
+<p>If <span class="arithmatex">\(\mathbb{E}|X_1|&lt;\infty\)</span>, then</p>
 <div class="arithmatex">\[
-\lim_{n\to\infty}\mathbb{E}\left[|X_n-X|^p\right]=0.
+\frac{S_n}{n}\longrightarrow \mathbb{E}[X_1]
+\quad\text{almost surely.}
 \]</div>
-<p><strong>Lemma</strong> Assume <span class="arithmatex">\(p&gt;0\)</span>. If <span class="arithmatex">\(X_n\to X\)</span> in <span class="arithmatex">\(L^p\)</span>, then <span class="arithmatex">\(X_n\to X\)</span> in probability.</p>
+<p>If <span class="arithmatex">\(\mathbb{E}|X_1|=\infty\)</span>, then the normalized sums cannot have a finite almost sure limit in the usual strong-law sense.</p>
 <hr />
-<p><strong>Lemma (L2 weak law)</strong> Let <span class="arithmatex">\(X_1,X_2,\ldots\)</span> be independent random variables with <span class="arithmatex">\(\mathbb{E}[X_i]=m\)</span> and <span class="arithmatex">\(\operatorname{var}(X_i)\le C&lt;\infty\)</span>. Set</p>
+<h2 id="truncation-method">Truncation Method</h2>
+<p>For <span class="arithmatex">\(A&gt;0\)</span>, define</p>
 <div class="arithmatex">\[
-S_n=\sum_{j=1}^n X_j.
+Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
 \]</div>
-<p>Then</p>
-<div class="arithmatex">\[
-\frac{S_n}{n}\to m,\quad \text{in }L^2.
-\]</div>
-<hr />
-<p>Let <span class="arithmatex">\(f\)</span> be a continuous function on <span class="arithmatex">\([0,1]\)</span>. Define the polynomial</p>
-<div class="arithmatex">\[
-f_n(x)=\sum_{j=0}^n {n\choose j}x^j(1-x)^{n-j}f(j/n).
-\]</div>
-<p>This is called the <strong>Bernstein polynomial of degree <span class="arithmatex">\(n\)</span> associated to <span class="arithmatex">\(f\)</span></strong>. Then</p>
-<div class="arithmatex">\[
-\sup_{x\in[0,1]}|f_n(x)-f(x)|\to 0,\quad n\to\infty.
-\]</div>
-<hr />
-<p><strong>Example (Coupon collecting)</strong> Let <span class="arithmatex">\(X_1,X_2,\ldots\)</span> be i.i.d. uniform on <span class="arithmatex">\(\{1,2,\ldots,N\}\)</span>. Let <span class="arithmatex">\(T_N\)</span> be the first time <span class="arithmatex">\(n\)</span> that</p>
-<div class="arithmatex">\[
-\#\{X_1,\ldots,X_n\}=N.
-\]</div>
-<p>Then</p>
-<div class="arithmatex">\[
-\frac{T_N}{N\log N}\to 1,\quad \text{in }L^2.
-\]</div>
-<hr />
-<p><strong>Definition</strong> Let <span class="arithmatex">\(\{E_n\}\)</span> be a sequence of subsets in <span class="arithmatex">\(\mathcal{F}\)</span>. Define</p>
-<div class="arithmatex">\[
-\limsup_{n\to\infty}E_n=\bigcap_{m=1}^{\infty}\bigcup_{n\ge m}E_n,\quad
-\liminf_{n\to\infty}E_n=\bigcup_{m=1}^{\infty}\bigcap_{n\ge m}E_n.
-\]</div>
-<p><strong>Lemma</strong> A point belongs to <span class="arithmatex">\(\limsup_n E_n\)</span> if and only if it belongs to infinitely many terms of the sequence <span class="arithmatex">\(\{E_n,n\ge 1\}\)</span>.</p>
-<p>In more intuitive language: the event <span class="arithmatex">\(\limsup_n E_n\)</span> occurs if and only if the events <span class="arithmatex">\(E_n\)</span> occur infinitely many often, and we write</p>
-<div class="arithmatex">\[
-\{\limsup_{n\to\infty}E_n\}=\{E_n,\ i.o.\}.
-\]</div>
-<hr />
-<p><strong>Theorem (Borel Cantelli lemma)</strong></p>
-<p>For arbitrary sequence <span class="arithmatex">\(\{E_n\}\)</span>, we have</p>
-<div class="arithmatex">\[
-\sum_n \mathbb{P}[E_n]&lt;\infty \Longrightarrow \mathbb{P}[E_n\ i.o.]=0.
-\]</div>
-<p>If the events <span class="arithmatex">\(\{E_n\}\)</span> are independent, we have</p>
-<div class="arithmatex">\[
-\sum_n \mathbb{P}[E_n]=\infty \Longrightarrow \mathbb{P}[E_n\ i.o.]=1.
-\]</div>
-<p><strong>Corollary</strong> Convergence in probability implies almost sure convergence along subsequence.</p>
-<hr />
-<p><strong>Example</strong> Suppose <span class="arithmatex">\(X_1,X_2,\ldots\)</span> are i.i.d. with <span class="arithmatex">\(\mathbb{E}[X_j]=m\)</span> and <span class="arithmatex">\(\mathbb{E}[X_j^4]&lt;\infty\)</span>. Set</p>
-<div class="arithmatex">\[
-S_n=\sum_{j=1}^n X_j.
-\]</div>
-<p>Then</p>
-<div class="arithmatex">\[
-\frac{S_n}{n}\to m,\quad a.s.
-\]</div>
-<hr />
-<p><strong>Theorem</strong> The implication</p>
-<div class="arithmatex">\[
-\sum_n \mathbb{P}[E_n]=\infty \Longrightarrow \mathbb{P}[E_n\ i.o.]=1
-\]</div>
-<p>remains true if the events <span class="arithmatex">\(\{E_n\}\)</span> are pairwise independent.</p>
-<hr />
-<p><strong>Definition</strong> A sequence of measures <span class="arithmatex">\(\{\mu_n\}\)</span> <strong>converges weakly to a measure <span class="arithmatex">\(\mu\)</span></strong> if</p>
-<div class="arithmatex">\[
-\mu_n((a,b])\to \mu((a,b]),
-\]</div>
-<p>for all continuity points <span class="arithmatex">\(a,b\)</span> of <span class="arithmatex">\(\mu\)</span>. We denote by</p>
-<div class="arithmatex">\[
-\mu_n\Rightarrow \mu.
-\]</div>
-<hr />
-<h3 id="hellys-extraction-principle">Helly's extraction principle</h3>
-<p>A measure <span class="arithmatex">\(\mu\)</span> on <span class="arithmatex">\((\mathbb{R},\mathcal{B})\)</span> is a <strong>subprobability measure</strong> if</p>
-<div class="arithmatex">\[
-\mu(\mathbb{R})\le 1.
-\]</div>
-<p><strong>Proposition</strong> Given any sequence of subprobability measures, there is a subsequence that converges weakly to a subprobability measure.</p>
-<p><strong>Proposition</strong> Suppose <span class="arithmatex">\(\{\mu_n\}\)</span> is a sequence of subprobability measures. If every weakly convergent subsequence converges to the same limit <span class="arithmatex">\(\mu\)</span>, then</p>
-<div class="arithmatex">\[
-\mu_n\Rightarrow \mu.
-\]</div>
-<hr />
-<p><strong>Definition</strong> A family of probability measures <span class="arithmatex">\(\{\mu_{\alpha},\alpha\in A\}\)</span> is <strong>tight</strong> if, for any <span class="arithmatex">\(\varepsilon&gt;0\)</span>, there exists a finite interval <span class="arithmatex">\(I\)</span> such that</p>
-<div class="arithmatex">\[
-\inf_{\alpha\in A}\mu_{\alpha}(I)\ge 1-\varepsilon.
-\]</div>
-<p><strong>Theorem</strong> Let <span class="arithmatex">\(\{\mu_{\alpha},\alpha\in A\}\)</span> be a family of probability measures. In order that any sequence contains a subsequence which converges weakly to a probability measure, it is necessary and sufficient that the family is tight.</p>
-<p>This statement can also be phrased as follows: a family of probability measures is relatively compact if and only if it is tight.</p>
-<hr />
-<h2 id="criterion-for-weak-convergence">Criterion for weak convergence</h2>
-<p>Let</p>
-<div class="arithmatex">\[
-C_c=\{\text{continuous functions which vanish outside a compact set}\},
-\]</div>
-<div class="arithmatex">\[
-C_0=\{\text{continuous functions }f\text{ such that }f(x)\to 0\text{ as }|x|\to\infty\},
-\]</div>
-<div class="arithmatex">\[
-C_b=\{\text{bounded continuous functions}\},
-\]</div>
-<div class="arithmatex">\[
-C=\{\text{continuous functions}\}.
-\]</div>
-<p>We have</p>
-<div class="arithmatex">\[
-C_c\subset C_0\subset C_b\subset C.
-\]</div>
-<p>It is well known that <span class="arithmatex">\(C_0\)</span> is the closure of <span class="arithmatex">\(C_c\)</span> with respect to uniform convergence.</p>
-<p><strong>Proposition</strong> Suppose <span class="arithmatex">\(\{\mu_n\}\)</span> and <span class="arithmatex">\(\mu\)</span> are probability measures. Then <span class="arithmatex">\(\mu_n\Rightarrow \mu\)</span> if and only if</p>
-<div class="arithmatex">\[
-\lim_{n\to\infty}\int f(x)\mu_n[dx]=\int f(x)\mu[dx],\quad \forall f\in C_b.
-\]</div>
-<hr />
-<p>A function <span class="arithmatex">\(f\)</span> on <span class="arithmatex">\(\mathbb{R}\)</span> is lower semicontinuous if</p>
-<div class="arithmatex">\[
-f(x)\le \liminf_{y\to x,\ y\ne x}f(y),\quad \forall x.
-\]</div>
-<p><span class="arithmatex">\(f\)</span> is bounded and lower semicontinuous if and only if there exists a sequence <span class="arithmatex">\(f_n\in C_b\)</span> which increases to <span class="arithmatex">\(f\)</span> everywhere.</p>
-<p><strong>Corollary</strong> Suppose <span class="arithmatex">\(\{\mu_n\}\)</span> and <span class="arithmatex">\(\mu\)</span> are probability measures. Then the following statements are equivalent:</p>
+<p>Truncation separates the proof into two parts:</p>
 <ol>
 <li>
-<p><span class="arithmatex">\(\mu_n\Rightarrow \mu\)</span>.</p>
+<p>Control the large jumps:</p>
+<div class="arithmatex">\[
+\sum_n \mathbb{P}(|X_n|&gt;A_n)&lt;\infty.
+\]</div>
 </li>
 <li>
-<p><span class="arithmatex">\(\lim_{n\to\infty}\int f\,d\mu_n=\int f\,d\mu,\quad \forall f\in C_b\)</span>.</p>
-</li>
-<li>
-<p><span class="arithmatex">\(\liminf_{n\to\infty}\int f\,d\mu_n\ge \int f\,d\mu,\quad \forall\)</span> bounded lower semicontinuous <span class="arithmatex">\(f\)</span>.</p>
-</li>
-<li>
-<p><span class="arithmatex">\(\limsup_{n\to\infty}\int f\,d\mu_n\le \int f\,d\mu,\quad \forall\)</span> bounded upper semicontinuous <span class="arithmatex">\(f\)</span>.</p>
+<p>Prove convergence for bounded variables, usually by variance estimates or Kolmogorov inequalities.</p>
 </li>
 </ol>
-<p><strong>Corollary</strong> Suppose <span class="arithmatex">\(\{\mu_n\}\)</span> and <span class="arithmatex">\(\mu\)</span> are probability measures. Then the following statements are equivalent:</p>
-<ol>
-<li>
-<p><span class="arithmatex">\(\mu_n\Rightarrow \mu\)</span>.</p>
-</li>
-<li>
-<p><span class="arithmatex">\(\liminf_{n\to\infty}\mu_n(O)\ge \mu(O)\)</span>, for any open set <span class="arithmatex">\(O\)</span>.</p>
-</li>
-<li>
-<p><span class="arithmatex">\(\limsup_{n\to\infty}\mu_n(K)\le \mu(K)\)</span>, for any closed set <span class="arithmatex">\(K\)</span>.</p>
-</li>
-</ol>
-<p>Combining the criteria above, we can also use the equivalent condition</p>
-<div class="arithmatex">\[
-\lim_{n\to\infty}\int f\,d\mu_n=\int f\,d\mu,\quad \forall f\in C_c.
-\]</div>
+<p>This is the standard route from bounded laws to integrable laws.</p>
 <hr />
-<h2 id="convergence-in-distribution">Convergence in distribution</h2>
-<p><strong>Definition</strong> A sequence of random variables <span class="arithmatex">\(\{X_n\}\)</span> converges in distribution to a random variable <span class="arithmatex">\(X\)</span> if</p>
+<h2 id="three-series-theorem">Three-Series Theorem</h2>
+<p>Let <span class="arithmatex">\((X_n)\)</span> be independent real random variables and fix <span class="arithmatex">\(A&gt;0\)</span>. Put</p>
 <div class="arithmatex">\[
-\mathcal{L}(X_n)\Rightarrow \mathcal{L}(X).
+Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
 \]</div>
-<p>We denote by</p>
+<p>Then <span class="arithmatex">\(\sum_n X_n\)</span> converges almost surely if and only if the following three series converge:</p>
 <div class="arithmatex">\[
-X_n\xRightarrow{d}X,
+\sum_n \mathbb{P}(|X_n|&gt;A),
 \]</div>
-<p>or <span class="arithmatex">\(X_n\to X\)</span> in distribution.</p>
-<p><strong>Lemma</strong> Convergence in probability implies convergence in distribution.</p>
+<div class="arithmatex">\[
+\sum_n \mathbb{E}[Y_n],
+\]</div>
+<div class="arithmatex">\[
+\sum_n \operatorname{Var}(Y_n).
+\]</div>
+<p>The value of <span class="arithmatex">\(A\)</span> is not essential; changing <span class="arithmatex">\(A\)</span> gives an equivalent criterion.</p>
 <hr />
-<p><strong>Proposition</strong> If</p>
+<h2 id="maximal-growth">Maximal Growth</h2>
+<p>For i.i.d. nonnegative random variables, the behavior of</p>
 <div class="arithmatex">\[
-X_n\to X,\quad \alpha_n\to a,\quad \beta_n\to b
+\max_{1\le j\le n}X_j
 \]</div>
-<p>in distribution where <span class="arithmatex">\(a,b\)</span> are constants, then</p>
-<div class="arithmatex">\[
-\alpha_nX_n+\beta_n\to aX+b
-\]</div>
-<p>in distribution.</p>
-<p><strong>Lemma</strong> Suppose <span class="arithmatex">\(X_n\)</span> converges to a constant <span class="arithmatex">\(c\)</span> in distribution. Then <span class="arithmatex">\(X_n\to c\)</span> in probability.</p>
-<p><strong>Lemma</strong> Suppose <span class="arithmatex">\(X_n\to X\)</span> in distribution, and <span class="arithmatex">\(Y_n\to 0\)</span> in distribution, then</p>
-<ol>
-<li>
-<p><span class="arithmatex">\(X_n+Y_n\to X\)</span> in distribution.</p>
-</li>
-<li>
-<p><span class="arithmatex">\(X_nY_n\to 0\)</span> in distribution.</p>
-</li>
-</ol>
-<hr />
-<p><strong>Theorem</strong> Suppose <span class="arithmatex">\(X_n\to X\)</span> in distribution. Then there exists a probability space and random variables in the space <span class="arithmatex">\(\{Y_n\}\)</span> and <span class="arithmatex">\(Y\)</span> such that</p>
-<div class="arithmatex">\[
-Y_n\to Y\quad a.s.,\quad \mathcal{L}(Y_n)=\mathcal{L}(X_n),\quad \mathcal{L}(Y)=\mathcal{L}(X).
-\]</div>
-<p>This is the coupling viewpoint: convergence in distribution can be realized as almost sure convergence on another probability space.</p>
-<hr />
-<h2 id="uniform-integrable">Uniform Integrable</h2>
-<p><strong>Definition</strong> A collection <span class="arithmatex">\((X_i,i\in I)\)</span> of random variables is Uniform Integrable (UI) if</p>
-<div class="arithmatex">\[
-\sup_i\mathbb{E}\left[|X_i|\mathbf{1}_{\{|X_i|\ge \alpha\}}\right]\to 0,\quad \alpha\to\infty.
-\]</div>
-<p><strong>Lemma</strong> If the family contains finitely many random variables in <span class="arithmatex">\(L^1\)</span>, then it is UI.</p>
-<p><strong>Lemma</strong></p>
-<ol>
-<li>
-<p>A UI family is bounded in <span class="arithmatex">\(L^1\)</span>.</p>
-</li>
-<li>
-<p>If a family of random variables is bounded in <span class="arithmatex">\(L^p\)</span> for <span class="arithmatex">\(p&gt;1\)</span>, then it is UI.</p>
-</li>
-</ol>
-<hr />
-<h2 id="convergence-in-l1-vs-almost-sure-convergence">Convergence in <span class="arithmatex">\(L^1\)</span> vs. almost sure convergence</h2>
-<p><strong>Proposition</strong> Suppose that <span class="arithmatex">\(X_n,X\in L^1\)</span> and <span class="arithmatex">\(X_n\to X\)</span> a.s. Then</p>
-<div class="arithmatex">\[
-X_n\to X\text{ in }L^1\quad \text{if and only if}\quad \{X_n,n\ge 1\}\text{ is UI}.
-\]</div>
-<p><strong>Corollary</strong> Suppose that <span class="arithmatex">\(\{X_n,n\ge 1\}\)</span> is UI, and that <span class="arithmatex">\(X_n\to X\)</span> in distribution. Then</p>
-<div class="arithmatex">\[
-\mathbb{E}[X_n]\to \mathbb{E}[X].
-\]</div>
-<hr />
-<h2 id="summary">Summary</h2>
-<p>The basic implication chain is</p>
-<div class="arithmatex">\[
-\text{almost sure convergence}
-\Longrightarrow
-\text{convergence in probability}
-\Longrightarrow
-\text{convergence in distribution}.
-\]</div>
-<p>Also,</p>
-<div class="arithmatex">\[
-\text{convergence in }L^1
-\Longrightarrow
-\text{convergence in probability}.
-\]</div>
-<p>Together with UI, almost sure convergence is equivalent to convergence in <span class="arithmatex">\(L^1\)</span>:</p>
-<div class="arithmatex">\[
-X_n\to X\ a.s.\quad\text{and}\quad \{X_n,n\ge 1\}\text{ is UI}
-\Longleftrightarrow
-X_n\to X\text{ in }L^1.
-\]</div>
-<p>By the coupling theorem, convergence in distribution can be represented as almost sure convergence after moving to a suitable probability space.</p>
-<hr />
-<h2 id="exercises-of-chapter-1">Exercises of Chapter 1</h2>
-<p><strong>Exercise 1.4.2</strong> Suppose <span class="arithmatex">\(\{X_1,\ldots,X_n,X_{n+1},\ldots,X_{n+m}\}\)</span> are independent random variables. Then</p>
-<div class="arithmatex">\[
-(X_1,\ldots,X_n)\quad \text{and}\quad (X_{n+1},\ldots,X_{n+m})
-\]</div>
-<p>are independent.</p>
-<p>Question: What is <span class="arithmatex">\(\mathcal{B}(\mathbb{R}^n)\)</span>?</p>
-<hr />
-<p><strong>Exercise 1.7.5</strong> Suppose that <span class="arithmatex">\(Z\)</span> is a random variable such that <span class="arithmatex">\(Z\)</span> is independent of itself. Show that <span class="arithmatex">\(Z\)</span> is almost surely a constant.</p>
-<p>Hint: Cauchy inequality?</p>
+<p>is controlled by the tail of <span class="arithmatex">\(X_1\)</span>. In many applications, the largest summand explains why a law of large numbers fails when <span class="arithmatex">\(\mathbb{E}|X_1|=\infty\)</span>.</p>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=course">#course</a></div>

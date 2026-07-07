@@ -25,7 +25,7 @@
     
     
       
-        <title>Law of Large Numbers - zdd14990</title>
+        <title>Central Limit Theorem - zdd14990</title>
       
     
     
@@ -69,14 +69,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-04/">
-  <meta property="og:title" content="Law of Large Numbers - zdd14990">
+  <meta property="og:title" content="Central Limit Theorem - zdd14990">
   <meta property="og:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
   <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-04/">
-  <meta name="twitter:title" content="Law of Large Numbers - zdd14990">
+  <meta name="twitter:title" content="Central Limit Theorem - zdd14990">
   <meta name="twitter:description" content="数学专业大三学生的数字花园，记录分析、代数与应用数学笔记。">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
@@ -99,7 +99,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#law-of-large-numbers" class="md-skip">
+        <a href="#central-limit-theorem" class="md-skip">
           跳转至
         </a>
       
@@ -349,10 +349,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#weak-law-of-large-numbers" class="md-nav__link">
+  <a href="#characteristic-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Weak Law of Large Numbers
+        Characteristic Functions
       
     </span>
   </a>
@@ -360,10 +360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#equivalent-sequences" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Equivalent Sequences
+        Examples
       
     </span>
   </a>
@@ -371,10 +371,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#strong-law-of-large-numbers" class="md-nav__link">
+  <a href="#inversion-and-uniqueness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Strong Law of Large Numbers
+        Inversion and Uniqueness
       
     </span>
   </a>
@@ -382,10 +382,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncation-method" class="md-nav__link">
+  <a href="#levy-continuity-theorem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Truncation Method
+        Levy Continuity Theorem
       
     </span>
   </a>
@@ -393,10 +393,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#three-series-theorem" class="md-nav__link">
+  <a href="#central-limit-theorem_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Three-Series Theorem
+        Central Limit Theorem
       
     </span>
   </a>
@@ -404,10 +404,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maximal-growth" class="md-nav__link">
+  <a href="#lindeberg-form" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Maximal Growth
+        Lindeberg Form
       
     </span>
   </a>
@@ -433,87 +433,125 @@
 
 
 
-<h1 id="law-of-large-numbers">Law of Large Numbers</h1>
+<h1 id="central-limit-theorem">Central Limit Theorem</h1>
 <hr />
-<h2 id="weak-law-of-large-numbers">Weak Law of Large Numbers</h2>
-<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. random variables with finite mean <span class="arithmatex">\(m\)</span>, and set</p>
+<h2 id="characteristic-functions">Characteristic Functions</h2>
+<p>For a real random variable <span class="arithmatex">\(X\)</span> with law <span class="arithmatex">\(\mu\)</span>, its <strong>characteristic function</strong> is</p>
 <div class="arithmatex">\[
-S_n = \sum_{j=1}^n X_j.
+\varphi_X(t)=\mathbb{E}[e^{itX}]
+=\int_{\mathbb{R}}e^{itx}\,\mu(dx),
+\qquad t\in\mathbb{R}.
 \]</div>
-<p>The <strong>weak law of large numbers</strong> says that</p>
-<div class="arithmatex">\[
-\frac{S_n}{n} \longrightarrow m
-\quad\text{in probability.}
-\]</div>
-<p>Equivalently, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
-<div class="arithmatex">\[
-\mathbb{P}\left(\left|\frac{S_n}{n}-m\right|&gt;\varepsilon\right)\longrightarrow 0.
-\]</div>
-<hr />
-<h2 id="equivalent-sequences">Equivalent Sequences</h2>
-<p>Two sequences of random variables <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are called <strong>equivalent</strong> if</p>
-<div class="arithmatex">\[
-\sum_{n=1}^{\infty}\mathbb{P}(X_n\ne Y_n)&lt;\infty.
-\]</div>
-<p>By the Borel-Cantelli lemma, equivalent sequences differ only finitely many times almost surely.</p>
-<p>If <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are equivalent, then</p>
-<div class="arithmatex">\[
-\frac1n\sum_{j=1}^n (X_j-Y_j)\longrightarrow 0
-\quad\text{almost surely.}
-\]</div>
-<p>Thus equivalent truncations may be used to prove limit theorems.</p>
-<hr />
-<h2 id="strong-law-of-large-numbers">Strong Law of Large Numbers</h2>
-<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. and set <span class="arithmatex">\(S_n=X_1+\cdots+X_n\)</span>.</p>
-<p>If <span class="arithmatex">\(\mathbb{E}|X_1|&lt;\infty\)</span>, then</p>
-<div class="arithmatex">\[
-\frac{S_n}{n}\longrightarrow \mathbb{E}[X_1]
-\quad\text{almost surely.}
-\]</div>
-<p>If <span class="arithmatex">\(\mathbb{E}|X_1|=\infty\)</span>, then the normalized sums cannot have a finite almost sure limit in the usual strong-law sense.</p>
-<hr />
-<h2 id="truncation-method">Truncation Method</h2>
-<p>For <span class="arithmatex">\(A&gt;0\)</span>, define</p>
-<div class="arithmatex">\[
-Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
-\]</div>
-<p>Truncation separates the proof into two parts:</p>
+<p>It is the Fourier transform of the probability measure <span class="arithmatex">\(\mu\)</span>.</p>
+<p>Basic properties:</p>
 <ol>
 <li>
-<p>Control the large jumps:</p>
+<p><span class="arithmatex">\(\varphi_X(0)=1\)</span> and <span class="arithmatex">\(|\varphi_X(t)|\le 1\)</span>.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\varphi_X\)</span> is uniformly continuous.</p>
+</li>
+<li>
+<p>For <span class="arithmatex">\(a,b\in\mathbb{R}\)</span>,</p>
 <div class="arithmatex">\[
-\sum_n \mathbb{P}(|X_n|&gt;A_n)&lt;\infty.
+\varphi_{aX+b}(t)=e^{ibt}\varphi_X(at).
 \]</div>
 </li>
 <li>
-<p>Prove convergence for bounded variables, usually by variance estimates or Kolmogorov inequalities.</p>
+<p>If <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent, then</p>
+<div class="arithmatex">\[
+\varphi_{X+Y}(t)=\varphi_X(t)\varphi_Y(t).
+\]</div>
 </li>
 </ol>
-<p>This is the standard route from bounded laws to integrable laws.</p>
 <hr />
-<h2 id="three-series-theorem">Three-Series Theorem</h2>
-<p>Let <span class="arithmatex">\((X_n)\)</span> be independent real random variables and fix <span class="arithmatex">\(A&gt;0\)</span>. Put</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li>
+<p>If <span class="arithmatex">\(X=a\)</span> almost surely, then <span class="arithmatex">\(\varphi_X(t)=e^{iat}\)</span>.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(\mathbb{P}(X=1)=\mathbb{P}(X=-1)=1/2\)</span>, then</p>
 <div class="arithmatex">\[
-Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
+\varphi_X(t)=\cos t.
 \]</div>
-<p>Then <span class="arithmatex">\(\sum_n X_n\)</span> converges almost surely if and only if the following three series converge:</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X\sim N(m,\sigma^2)\)</span>, then</p>
 <div class="arithmatex">\[
-\sum_n \mathbb{P}(|X_n|&gt;A),
+\varphi_X(t)=\exp\left(imt-\frac{\sigma^2t^2}{2}\right).
 \]</div>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X\sim \mathrm{Poisson}(\lambda)\)</span>, then</p>
 <div class="arithmatex">\[
-\sum_n \mathbb{E}[Y_n],
+\varphi_X(t)=\exp\{\lambda(e^{it}-1)\}.
 \]</div>
-<div class="arithmatex">\[
-\sum_n \operatorname{Var}(Y_n).
-\]</div>
-<p>The value of <span class="arithmatex">\(A\)</span> is not essential; changing <span class="arithmatex">\(A\)</span> gives an equivalent criterion.</p>
+</li>
+</ul>
 <hr />
-<h2 id="maximal-growth">Maximal Growth</h2>
-<p>For i.i.d. nonnegative random variables, the behavior of</p>
+<h2 id="inversion-and-uniqueness">Inversion and Uniqueness</h2>
+<p>The characteristic function determines the law. More precisely, if two probability measures have the same characteristic function, then they are equal.</p>
+<p>If <span class="arithmatex">\(\varphi\in L^1(\mathbb{R})\)</span>, then the corresponding law has density</p>
 <div class="arithmatex">\[
-\max_{1\le j\le n}X_j
+p(x)=\frac{1}{2\pi}\int_{\mathbb{R}}e^{-itx}\varphi(t)\,dt.
 \]</div>
-<p>is controlled by the tail of <span class="arithmatex">\(X_1\)</span>. In many applications, the largest summand explains why a law of large numbers fails when <span class="arithmatex">\(\mathbb{E}|X_1|=\infty\)</span>.</p>
+<p>The atoms are recovered by</p>
+<div class="arithmatex">\[
+\mu(\{x\})=
+\lim_{T\to\infty}
+\frac{1}{2T}\int_{-T}^{T}e^{-itx}\varphi(t)\,dt.
+\]</div>
+<hr />
+<h2 id="levy-continuity-theorem">Levy Continuity Theorem</h2>
+<p>Let <span class="arithmatex">\((X_n)\)</span> be real random variables with characteristic functions <span class="arithmatex">\(\varphi_n\)</span>.</p>
+<p>If <span class="arithmatex">\(X_n\Rightarrow X\)</span>, then</p>
+<div class="arithmatex">\[
+\varphi_n(t)\longrightarrow \varphi_X(t)
+\qquad\text{for every }t\in\mathbb{R}.
+\]</div>
+<p>Conversely, if <span class="arithmatex">\(\varphi_n(t)\to \varphi(t)\)</span> pointwise and <span class="arithmatex">\(\varphi\)</span> is continuous at <span class="arithmatex">\(0\)</span>, then <span class="arithmatex">\(\varphi\)</span> is the characteristic function of some law <span class="arithmatex">\(\mu\)</span>, and</p>
+<div class="arithmatex">\[
+X_n\Rightarrow \mu.
+\]</div>
+<hr />
+<h2 id="central-limit-theorem_1">Central Limit Theorem</h2>
+<p>Let <span class="arithmatex">\((X_n)\)</span> be i.i.d. with</p>
+<div class="arithmatex">\[
+\mathbb{E}[X_1]=m,
+\qquad
+\operatorname{Var}(X_1)=\sigma^2\in(0,\infty).
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\frac{S_n-nm}{\sigma\sqrt n}
+\Rightarrow N(0,1).
+\]</div>
+<p>Equivalently, for every <span class="arithmatex">\(x\in\mathbb{R}\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb{P}\left(\frac{S_n-nm}{\sigma\sqrt n}\le x\right)
+\longrightarrow
+\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{-u^2/2}\,du.
+\]</div>
+<hr />
+<h2 id="lindeberg-form">Lindeberg Form</h2>
+<p>For independent centered variables <span class="arithmatex">\((X_{n,k})\)</span>, set</p>
+<div class="arithmatex">\[
+s_n^2=\sum_k \operatorname{Var}(X_{n,k}).
+\]</div>
+<p>The Lindeberg condition is</p>
+<div class="arithmatex">\[
+\frac{1}{s_n^2}
+\sum_k
+\mathbb{E}\left[
+X_{n,k}^2\mathbf{1}_{\{|X_{n,k}|&gt;\varepsilon s_n\}}
+\right]
+\longrightarrow 0
+\]</div>
+<p>for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>. Under this condition,</p>
+<div class="arithmatex">\[
+\frac{\sum_k X_{n,k}}{s_n}\Rightarrow N(0,1).
+\]</div>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=course">#course</a></div>
