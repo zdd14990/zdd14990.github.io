@@ -1009,6 +1009,7 @@
   var params = new URLSearchParams(window.location.search);
   var tag = params.get("tag");
   var heading = document.getElementById("zdd-tag-heading");
+  var list = document.querySelector(".zdd-tag-results");
   var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
   if (tag) {
     heading.textContent = "#" + tag;
@@ -1016,6 +1017,8 @@
       var tags = (card.getAttribute("data-tags") || "").split(/\s+/);
       card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
     });
+  } else {
+    list.style.display = "none";
   }
 })();
 </script>
