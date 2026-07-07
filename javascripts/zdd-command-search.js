@@ -633,6 +633,34 @@
       return;
     }
 
+    if (name === "/pixiv") {
+      renderCommandOutput(commandLine, "Pixiv 排行榜", '<div class="zdd-command-empty">Fetching...</div>');
+      fetch(siteUrl("assets/pixiv-ranking.json"), {credentials: "same-origin", cache: "no-store"})
+        .then(function(response) {
+          if (!response.ok) throw new Error("No ranking data");
+          return response.json();
+        })
+        .then(function(items) {
+          if (!items.length) throw new Error("Empty ranking");
+          var picked = items[Math.floor(Math.random() * items.length)];
+          var imgSrc = "https://pixiv.cat/" + picked.id + ".jpg";
+          var title = escapeHtml(picked.title || "Untitled");
+          var link = picked.url || ("https://www.pixiv.net/artworks/" + picked.id);
+          renderCommandOutput(commandLine, "Pixiv 排行榜",
+            '<a class="zdd-pixiv-card" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">'
+            + '<img src="' + escapeHtml(imgSrc) + '" alt="' + title + '" loading="lazy" '
+            + 'onerror="this.onerror=null;this.src=\'' + escapeHtml(imgSrc).replace(/'/g, "\\'") + '\';this.style.opacity=\'1\';">'
+            + '<span class="zdd-pixiv-title">' + title + '</span>'
+            + '</a>'
+          );
+        })
+        .catch(function(err) {
+          renderCommandOutput(commandLine, "Pixiv 排行榜", '<div class="zdd-command-empty">No ranking data available. Try building locally with a PIXIV_SESSION.</div>');
+        });
+      return;
+    }
+
+
     renderCommandOutput(commandLine, "Unknown command", '<div class="zdd-command-empty">Command not found. Try <code>/help</code> or <code>/help advanced</code>.</div>');
   }
 
