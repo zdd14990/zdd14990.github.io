@@ -20,8 +20,8 @@
     {name: "/latest", syntax: "/latest", kind: "query", desc: "Show the latest updated articles."},
     {name: "/tag", syntax: "/tag <tag>", kind: "jump", fill: "/tag ", desc: "Open the result page for a tag."},
     {name: "/count", syntax: "/count", kind: "stats", desc: "Show article, category, tag, word and PDF counts."},
-    {name: "/next", syntax: "/next", kind: "jump", desc: "Open the next article in the timeline."},
-    {name: "/prev", syntax: "/prev", kind: "jump", desc: "Open the previous article in the timeline."},
+    {name: "/next", syntax: "/next", kind: "jump", desc: "Open the next article in this folder."},
+    {name: "/prev", syntax: "/prev", kind: "jump", desc: "Open the previous article in this folder."},
     {name: "/rewind", syntax: "/rewind", kind: "jump", desc: "Return to the last article you opened."},
     {name: "/log", syntax: "/log", kind: "query", desc: "Show recent update notes."},
     {name: "/tex", syntax: "/tex <formula>", kind: "render", fill: "/tex ", desc: "Preview a LaTeX formula."},
@@ -350,17 +350,22 @@
     });
   }
 
-  function jumpRelative(commandLine, direction) {
+  function currentArticle() {
     var index = currentArticleIndex();
-    if (index < 0) {
+    return index >= 0 ? state.posts[index] : null;
+  }
+
+  function jumpRelative(commandLine, direction) {
+    var current = currentArticle();
+    if (!current) {
       renderCommandOutput(commandLine, "No current article", '<div class="zdd-command-empty">Open an article first, then use this command.</div>');
       return;
     }
-    var next = state.posts[index + direction];
-    if (next) {
-      navigate(next.url);
+    var targetUrl = direction > 0 ? current.next_url : current.prev_url;
+    if (targetUrl) {
+      navigate(targetUrl);
     } else {
-      renderCommandOutput(commandLine, "Timeline edge", '<div class="zdd-command-empty">No more article in this direction.</div>');
+      renderCommandOutput(commandLine, "Folder edge", '<div class="zdd-command-empty">No more article in this folder direction.</div>');
     }
   }
 
