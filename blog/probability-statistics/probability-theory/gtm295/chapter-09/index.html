@@ -639,7 +639,30 @@ X_1,\cdots,X_n\le(1-\epsilon)\log n
 <div class="arithmatex">\[
 \mathrm{var}(Y)=\inf_{c\in\mathbb{R}}\mathbb{E}[(Y-c)^2]\le \mathbb{E}\left[\left(Y-\frac{a+b}{2}\right)^2\right]\le \frac{(b-a)^2}{4}.
 \]</div>
-<p>(2)</p>
+<p>(2) Set <span class="arithmatex">\(\mu=\mathbb{E}[X]\)</span>, <span class="arithmatex">\(Z=X-\mu\)</span>, then <span class="arithmatex">\(\psi_Z(\lambda)=\log\mathbb{E}[e^{\lambda Z}]\)</span>, we need to prove <span class="arithmatex">\(\psi_Z(\lambda)\le \lambda^2(b-a)^2/8\)</span>, which is follows from the following inequality: </p>
+<div class="arithmatex">\[
+\psi_Z''(\lambda)=\frac{\mathbb{E}[Z^2e^{\lambda Z}]\mathbb{E}[e^{\lambda Z}]-\mathbb{E}[Ze^{\lambda Z}]^2}{\mathbb{E}[e^{\lambda Z}]^2}=\operatorname{var}_{\mathbb{P}_\lambda}(Z)\le \frac{(b-a)^2}{4}.
+\]</div>
+<p>where <span class="arithmatex">\(\mathbb{P}_\lambda\)</span> is a probability measure defined by <span class="arithmatex">\(\frac{d\mathbb{P}_\lambda}{d\mathbb{P}}=\frac{e^{\lambda Z}}{\mathbb{E}[e^{\lambda Z}]}\)</span>.</p>
+<p>Btw, it not nessary to compute <span class="arithmatex">\(\psi_Z''\)</span>, by Jensen's inequality, we have</p>
+<div class="arithmatex">\[
+e^{\lambda x}\le \frac{b-x}{b-a}e^{\lambda a}+\frac{x-a}{b-a}e^{\lambda b},\quad x\in[a,b],
+\]</div>
+<p>so</p>
+<div class="arithmatex">\[
+\mathbb{E}[e^{\lambda Z}]\le e^{-\lambda\mu}\left(\frac{b-\mu}{b-a}e^{\lambda a}+\frac{\mu-a}{b-a}e^{\lambda b}\right)\le e^{\lambda^2(b-a)^2/8}.
+\]</div>
+<p>the last inequality is easy to check.</p>
+<p>(3) </p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \mathbb{P}\left(\sum_{i=1}^n X_i-\mathbb{E}\left[\sum_{i=1}^n X_i\right]\ge\varepsilon\right)&amp;\le e^{-\lambda\varepsilon}\mathbb{E}\left[e^{\lambda\sum_{i=1}^n(X_i-\mathbb{E}[X_i])}\right]\\
+    &amp;=e^{-\lambda\varepsilon}\prod_{i=1}^n\mathbb{E}\left[e^{\lambda(X_i-\mathbb{E}[X_i])}\right]\\
+    &amp;\le e^{-\lambda\varepsilon}\prod_{i=1}^n\exp\left(\frac{(b_i-a_i)^2}{8}\lambda^2\right)\\
+    &amp;=\exp\left(-\lambda\varepsilon+\frac{\lambda^2}{8}\sum_{i=1}^n(b_i-a_i)^2\right)\\
+    (\lambda=\frac{4\varepsilon}{\sum_{i=1}^n(b_i-a_i)^2})&amp;=\exp\left(-\frac{2\varepsilon^2}{\sum_{i=1}^n(b_i-a_i)^2}\right).
+\end{aligned}
+\]</div>
 <hr />
 <p><strong>Exercise 9.13</strong> Let <span class="arithmatex">\(U_1,\ldots,U_n\)</span> be independent random variables with values in <span class="arithmatex">\(\{-1,1\}\)</span> such that <span class="arithmatex">\(\mathbb{P}(U_j=1)=\mathbb{P}(U_j=-1)=1/2\)</span> for every <span class="arithmatex">\(j\in\{1,\ldots,n\}\)</span>. Let <span class="arithmatex">\(a_1,\ldots,a_n\in\mathbb{R}\)</span>. Prove that</p>
 <div class="arithmatex">\[
