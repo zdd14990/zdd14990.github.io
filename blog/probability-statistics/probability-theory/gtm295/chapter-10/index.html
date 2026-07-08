@@ -362,11 +362,55 @@
 <h1 id="gtm295-chapter-10">GTM295 Chapter 10</h1>
 <hr />
 <p><strong>Exercise 10.1</strong> In this exercise, to emphasize the dependence on the underlying probability measure, we speak of convergence in <span class="arithmatex">\(\mathbb{P}\)</span>-probability instead of convergence in probability. Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of real random variables such that <span class="arithmatex">\(X_n\)</span> converges in <span class="arithmatex">\(\mathbb{P}\)</span>-probability to <span class="arithmatex">\(X\)</span> when <span class="arithmatex">\(n\to\infty\)</span>. Suppose that <span class="arithmatex">\(\mathbb{P}'\)</span> is another probability measure on <span class="arithmatex">\((\Omega,\mathcal{A})\)</span> and that <span class="arithmatex">\(\mathbb{P}'\)</span> is absolutely continuous with respect to <span class="arithmatex">\(\mathbb{P}\)</span>. Show that <span class="arithmatex">\(X_n\)</span> also converges in <span class="arithmatex">\(\mathbb{P}'\)</span>-probability to <span class="arithmatex">\(X\)</span> when <span class="arithmatex">\(n\to\infty\)</span>.</p>
-<hr />
-<p><strong>Exercise 10.2</strong> Let <span class="arithmatex">\(f:[0,1]\to\mathbb{R}\)</span> be a continuous function. Prove that</p>
+<p><strong>Solution.</strong> By radon-nikodym theorem, there exists a nonnegative random variable <span class="arithmatex">\(Z\)</span> such that <span class="arithmatex">\(\mathbb{E}[Z]=1\)</span> and, for every <span class="arithmatex">\(A\in\mathcal{A}\)</span>,</p>
 <div class="arithmatex">\[
-\lim_{n\to\infty}\int_{[0,1]^n}f\left(\frac{x_1+x_2+\cdots+x_n}{n}\right)\,dx_1dx_2\cdots dx_n
-=f\left(\frac12\right).
+\mathbb{P}'(A)=\mathbb{E}[Z\mathbf{1}_A].
+\]</div>
+<p>we want to prove that <span class="arithmatex">\(\forall \epsilon&gt;0\)</span>, <span class="arithmatex">\(\exist \delta&gt;0\)</span>, s.t. <span class="arithmatex">\(\forall \mathbb{P}(A)&lt;\delta\)</span>, <span class="arithmatex">\(\mathbb{P}'(A)&lt;\epsilon\)</span>. Because <span class="arithmatex">\(Z\in L^1\)</span>, <span class="arithmatex">\(\exist M&gt;0\)</span>, s.t. <span class="arithmatex">\(\mathbb{E}[Z\mathbf{1}_{\{Z&gt;M\}}]&lt;\epsilon/2\)</span>. </p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb{P}'(A)&amp;=\mathbb{E}[Z\mathbf{1}_A]\\
+&amp;=\mathbb{E}[Z\mathbf{1}_{A\cap\{Z\le M\}}]+\mathbb{E}[Z\mathbf{1}_{A\cap\{Z&gt;M\}}]\\
+&amp;\le M\mathbb{P}(A)+\mathbb{E}[Z\mathbf{1}_{\{Z&gt;M\}}]\\
+(\delta = \frac{\epsilon}{2M})&amp;&lt; \epsilon
+\end{aligned}
+\]</div>
+<p>Set <span class="arithmatex">\(A_n^\epsilon=\{|X_n-X|&gt;\epsilon\}\)</span>, then <span class="arithmatex">\(\mathbb{P}(A_n^\epsilon)\to 0\)</span> as <span class="arithmatex">\(n\to\infty\)</span>, so <span class="arithmatex">\(\mathbb{P}'(A_n^\epsilon)\to 0\)</span> as <span class="arithmatex">\(n\to\infty\)</span>. This implies that <span class="arithmatex">\(X_n\)</span> converges in <span class="arithmatex">\(\mathbb{P}'\)</span>-probability to <span class="arithmatex">\(X\)</span> when <span class="arithmatex">\(n\to\infty\)</span>. </p>
+<hr />
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(X_1,X_2,\ldots\)</span> be independent random variables uniformly distributed on <span class="arithmatex">\([0,1]\)</span>, and set</p>
+<div class="arithmatex">\[
+S_n=X_1+\cdots+X_n.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\int_{[0,1]^n}f\left(\frac{x_1+\cdots+x_n}{n}\right)\,dx_1\cdots dx_n
+=
+\mathbb E\left[f\left(\frac{S_n}{n}\right)\right].
+\]</div>
+<p>By the strong law of large numbers,</p>
+<div class="arithmatex">\[
+\frac{S_n}{n}\to \mathbb E[X_1]=\frac12
+\qquad \text{a.s.}
+\]</div>
+<p>Since <span class="arithmatex">\(f\)</span> is continuous,</p>
+<div class="arithmatex">\[
+f\left(\frac{S_n}{n}\right)\to f\left(\frac12\right)
+\qquad \text{a.s.}
+\]</div>
+<p>Moreover, <span class="arithmatex">\(f\)</span> is continuous on the compact interval <span class="arithmatex">\([0,1]\)</span>, hence bounded. Therefore, by the dominated convergence theorem,</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}
+\mathbb E\left[f\left(\frac{S_n}{n}\right)\right]
+=
+\mathbb E\left[f\left(\frac12\right)\right]
+=
+f\left(\frac12\right).
+\]</div>
+<p>Thus,</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}\int_{[0,1]^n}f\left(\frac{x_1+\cdots+x_n}{n}\right)\,dx_1\cdots dx_n
+=
+f\left(\frac12\right).
 \]</div>
 <hr />
 <p><strong>Exercise 10.3 (Bernstein Polynomials)</strong> Let <span class="arithmatex">\(f:[0,1]\to\mathbb{R}\)</span> be a continuous function. Prove that, for every <span class="arithmatex">\(p\in[0,1]\)</span>,</p>
