@@ -315,7 +315,7 @@ use Borel-Cantelli lemma.
 
 1. Let $N$ and $N'$ be two independent Gaussian $\mathcal{N}(0,1)$ random variables. Show that $X=N/N'$ follows a Cauchy distribution with density $(\pi(1+x^2))^{-1}$.
 
-2. Compute the characteristic function of $X$. (*Hint:* Verify that
+2. Compute the characteristic function of $X$. (**Hint:** Verify that
 
     $$
     \mathbb{E}\left[e^{i\xi X}\right]
@@ -352,7 +352,7 @@ use Cauchy functional equation, we have $\varphi(\xi)=e^{-c|\xi|}$ for some $c>0
     \psi_Z(\lambda)\le\frac{(b-a)^2}{8}\lambda^2.
     $$
 
-    (*Hint:* Verify that the second derivative $\psi_Z''(\lambda)$ makes sense and is equal to the variance of $Z$ under a probability measure absolutely continuous with respect to $\mathbb{P}$.)
+    (**Hint:** Verify that the second derivative $\psi_Z''(\lambda)$ makes sense and is equal to the variance of $Z$ under a probability measure absolutely continuous with respect to $\mathbb{P}$.)
 
 3. Let $X_1,\ldots,X_n$ be independent real random variables such that, for every $i\in\{1,\ldots,n\}$, $X_i$ takes values in $[a_i,b_i]$, where $a_i<0<b_i$. Prove that, for every $\varepsilon>0$,
 
@@ -362,7 +362,7 @@ use Cauchy functional equation, we have $\varphi(\xi)=e^{-c|\xi|}$ for some $c>0
     \exp\left(-\frac{2\varepsilon^2}{\sum_{i=1}^n(b_i-a_i)^2}\right).
     $$
 
-This is known as *Hoeffding's inequality*.
+This is known as **Hoeffding's inequality**.
 
 **Solution.** (1)
 
@@ -370,9 +370,39 @@ $$
 \mathrm{var}(Y)=\inf_{c\in\mathbb{R}}\mathbb{E}[(Y-c)^2]\le \mathbb{E}\left[\left(Y-\frac{a+b}{2}\right)^2\right]\le \frac{(b-a)^2}{4}.
 $$
 
-(2)
+(2) Set $\mu=\mathbb{E}[X]$, $Z=X-\mu$, then $\psi_Z(\lambda)=\log\mathbb{E}[e^{\lambda Z}]$, we need to prove $\psi_Z(\lambda)\le \lambda^2(b-a)^2/8$, which is follows from the following inequality: 
 
+$$
+\psi_Z''(\lambda)=\frac{\mathbb{E}[Z^2e^{\lambda Z}]\mathbb{E}[e^{\lambda Z}]-\mathbb{E}[Ze^{\lambda Z}]^2}{\mathbb{E}[e^{\lambda Z}]^2}=\operatorname{var}_{\mathbb{P}_\lambda}(Z)\le \frac{(b-a)^2}{4}.
+$$
 
+where $\mathbb{P}_\lambda$ is a probability measure defined by $\frac{d\mathbb{P}_\lambda}{d\mathbb{P}}=\frac{e^{\lambda Z}}{\mathbb{E}[e^{\lambda Z}]}$.
+
+Btw, it not nessary to compute $\psi_Z''$, by Jensen's inequality, we have
+
+$$
+e^{\lambda x}\le \frac{b-x}{b-a}e^{\lambda a}+\frac{x-a}{b-a}e^{\lambda b},\quad x\in[a,b],
+$$
+
+so
+
+$$
+\mathbb{E}[e^{\lambda Z}]\le e^{-\lambda\mu}\left(\frac{b-\mu}{b-a}e^{\lambda a}+\frac{\mu-a}{b-a}e^{\lambda b}\right)\le e^{\lambda^2(b-a)^2/8}.
+$$
+
+the last inequality is easy to check.
+
+(3) 
+
+$$
+\begin{aligned}
+    \mathbb{P}\left(\sum_{i=1}^n X_i-\mathbb{E}\left[\sum_{i=1}^n X_i\right]\ge\varepsilon\right)&\le e^{-\lambda\varepsilon}\mathbb{E}\left[e^{\lambda\sum_{i=1}^n(X_i-\mathbb{E}[X_i])}\right]\\
+    &=e^{-\lambda\varepsilon}\prod_{i=1}^n\mathbb{E}\left[e^{\lambda(X_i-\mathbb{E}[X_i])}\right]\\
+    &\le e^{-\lambda\varepsilon}\prod_{i=1}^n\exp\left(\frac{(b_i-a_i)^2}{8}\lambda^2\right)\\
+    &=\exp\left(-\lambda\varepsilon+\frac{\lambda^2}{8}\sum_{i=1}^n(b_i-a_i)^2\right)\\
+    (\lambda=\frac{4\varepsilon}{\sum_{i=1}^n(b_i-a_i)^2})&=\exp\left(-\frac{2\varepsilon^2}{\sum_{i=1}^n(b_i-a_i)^2}\right).
+\end{aligned}
+$$
 
 ---
 
@@ -384,7 +414,7 @@ $$
 \sqrt{\frac13\sum_{j=1}^n a_j^2}.
 $$
 
-This is a particular case of the *Khintchine inequality* (the constant $1/3$ can be replaced by $1/2$, but this requires more work). *Hint:* Verify that, if $X$ is a real random variable in $L^4$,
+This is a particular case of the **Khintchine inequality** (the constant $1/3$ can be replaced by $1/2$, but this requires more work). **Hint:** Verify that, if $X$ is a real random variable in $L^4$,
 
 $$
 \mathbb{E}[|X|]\ge\frac{\mathbb{E}[X^2]^{3/2}}{\mathbb{E}[X^4]^{1/2}}.

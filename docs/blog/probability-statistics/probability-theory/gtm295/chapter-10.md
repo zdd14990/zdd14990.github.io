@@ -19,6 +19,8 @@ tags:
 
 **Exercise 10.1** In this exercise, to emphasize the dependence on the underlying probability measure, we speak of convergence in $\mathbb{P}$-probability instead of convergence in probability. Let $(X_n)_{n\in\mathbb{N}}$ be a sequence of real random variables such that $X_n$ converges in $\mathbb{P}$-probability to $X$ when $n\to\infty$. Suppose that $\mathbb{P}'$ is another probability measure on $(\Omega,\mathcal{A})$ and that $\mathbb{P}'$ is absolutely continuous with respect to $\mathbb{P}$. Show that $X_n$ also converges in $\mathbb{P}'$-probability to $X$ when $n\to\infty$.
 
+
+
 ---
 
 **Exercise 10.2** Let $f:[0,1]\to\mathbb{R}$ be a continuous function. Prove that
@@ -46,7 +48,6 @@ and that the convergence holds uniformly in $p\in[0,1]$.
 
     $$
     \lim_{n\to\infty}e^{-\lambda n}\sum_{k=0}^\infty\frac{(\lambda n)^k}{k!}f(k/n)=f(\lambda),
-    \tag{10.6}
     $$
 
     and that the convergence is uniform when $\lambda$ varies in a bounded subset of $(0,\infty)$.
