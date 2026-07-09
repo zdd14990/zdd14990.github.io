@@ -418,6 +418,7 @@ f\left(\frac12\right).
 f(p)=\lim_{n\to\infty}\sum_{k=0}^n\binom{n}{k}p^k(1-p)^{n-k}f(k/n),
 \]</div>
 <p>and that the convergence holds uniformly in <span class="arithmatex">\(p\in[0,1]\)</span>.</p>
+<p><strong>Solution.</strong></p>
 <hr />
 <p><strong>Exercise 10.4</strong></p>
 <ol>
@@ -441,6 +442,57 @@ f(p)=\lim_{n\to\infty}\sum_{k=0}^n\binom{n}{k}p^k(1-p)^{n-k}f(k/n),
 \]</div>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1) Set <span class="arithmatex">\(Y_{n,\lambda}~\text{Poisson}(\lambda n)\)</span>, then</p>
+<div class="arithmatex">\[
+\mathbb E[f(Y_{n,\lambda}/n)]=e^{-\lambda n}\sum_{k=0}^\infty\frac{(\lambda n)^k}{k!}f(k/n).
+\]</div>
+<div class="arithmatex">\[
+\mathbb{P}\left(|Y_{n,\lambda}/n-\lambda|&gt;\varepsilon\right)\le \frac{\operatorname{var}(Y_{n,\lambda}/n)}{\varepsilon^2}=\frac{\lambda}{n\varepsilon^2}\to 0.
+\]</div>
+<p>So</p>
+<div class="arithmatex">\[
+\frac{Y_{n,\lambda}}{n}\to\lambda \quad \text{in probability}.
+\]</div>
+<p>since <span class="arithmatex">\(f\)</span> is continuous,</p>
+<div class="arithmatex">\[
+f\left(\frac{Y_{n,\lambda}}{n}\right)\to f(\lambda) \quad \text{in probability}.
+\]</div>
+<p>Since <span class="arithmatex">\(f\)</span> is bounded, by dominated convergence theorem,</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}\mathbb E[f(Y_{n,\lambda}/n)]=f(\lambda).
+\]</div>
+<p>Set <span class="arithmatex">\(0&lt;\lambda&lt;R\)</span> for some <span class="arithmatex">\(R&gt;0\)</span>, then <span class="arithmatex">\(f\)</span> is uniformly continuous on <span class="arithmatex">\([0,R+1]\)</span>, so for any <span class="arithmatex">\(\epsilon&gt;0\)</span>, <span class="arithmatex">\(\exists \delta&gt;0\)</span>, s.t. <span class="arithmatex">\(|f(x)-f(y)|&lt;\epsilon\)</span> when <span class="arithmatex">\(|x-y|&lt;\delta\)</span>.</p>
+<div class="arithmatex">\[
+\left|f\left(\frac{Y_{n,\lambda}}{n}\right)-f(\lambda)\right|&lt;\begin{cases}
+    \epsilon &amp;, \text{if } \left|\frac{Y_{n,\lambda}}{n}-\lambda\right|&lt;\delta\\
+    2M &amp;, \text{otherwise}.
+\end{cases}
+\]</div>
+<p>so</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    \left|\mathbb{E}\left[f\left(\frac{Y_{n,\lambda}}{n}\right)\right]-f(\lambda)\right|\le&amp; \epsilon+2M\mathbb{P}\left(\left|\frac{Y_{n,\lambda}}{n}-\lambda\right|\ge \delta\right)\\
+    \le&amp; \epsilon+2M\frac{\mathrm{var}(Y_{n,\lambda}/n)}{\delta^2}= \epsilon+\frac{2M\lambda}{n\delta^2}.
+\end{aligned}
+\]</div>
+<p>we have</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}\sup_{\lambda\in[0,R]}\left|\mathbb{E}\left[f\left(\frac{Y_{n,\lambda}}{n}\right)\right]-f(\lambda)\right|\le \epsilon.
+\]</div>
+<p>for any <span class="arithmatex">\(\epsilon&gt;0\)</span>, so the convergence is uniform in <span class="arithmatex">\(\lambda\in[0,R]\)</span>.</p>
+<p>(3) </p>
+<div class="arithmatex">\[
+L^{(k)}(\lambda)=\int (-y)^ke^{-\lambda y}\mu(dy).
+\]</div>
+<p>Set <span class="arithmatex">\(Y_{n,y}~\text{Poisson}(ny)\)</span>, then</p>
+<div class="arithmatex">\[
+RHS=\int \sum_{k=0}^{\lfloor nx\rfloor}\frac{(-1)^k}{k!}n^k(-y)^ke^{-ny}\mu(dy):=\int_{\mathbb{R}_+}g_n(y)\mu(dy).
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+    g_n(y)&amp;=\mathbb{P}\left(\frac{Y_{n,y}}{n}\le \frac{\lfloor nx\rfloor}{n}\right) &amp;\to \mathbf{1}_{[0,x]}(y)(\frac{\lfloor nx\rfloor}{n}\to x, \frac{Y_{n,y}}{n}\to y \text{ in probability})
+\end{aligned}
+\]</div>
 <hr />
 <p><strong>Exercise 10.5 (Coupon Collector Problem)</strong> Suppose that, for every <span class="arithmatex">\(n\in\mathbb{N}\)</span>, <span class="arithmatex">\((X_k^{(n)})_{k\ge1}\)</span> is a sequence of independent random variables uniformly distributed on <span class="arithmatex">\(\{1,2,\ldots,n\}\)</span>. For every integer <span class="arithmatex">\(m\ge1\)</span>, let <span class="arithmatex">\(N_m^{(n)}\)</span> be the number of distinct values in the finite sequence <span class="arithmatex">\(X_1^{(n)},X_2^{(n)},\ldots,X_m^{(n)}\)</span>, and set</p>
 <div class="arithmatex">\[
@@ -459,6 +511,71 @@ T_n=\inf\{m\ge1:N_m^{(n)}=n\}.
 <p>in probability. (<em>Hint:</em> Estimate the expected value and the variance of <span class="arithmatex">\(T_n\)</span>.)</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> (2)</p>
+<p>By part (1), we can write</p>
+<div class="arithmatex">\[
+T_n=\tau_n^{(n)}
+=
+1+\sum_{k=2}^n\left(\tau_k^{(n)}-\tau_{k-1}^{(n)}\right):=1+\sum_{k=2}^n D_k^{(n)}.
+\]</div>
+<p>$$
+\mathbb E[D_k^{(n)}]
+=
+\frac{n}{n-k+1},</p>
+<h1 id="operatornamevard_kn">\operatorname{var}(D_k^{(n)})</h1>
+<p>\frac{n(k-1)}{(n-k+1)^2}.
+$$</p>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\mathbb E[T_n]=
+nH_n,
+H_n=\sum_{j=1}^n\frac1j.
+\]</div>
+<p>Since <span class="arithmatex">\(H_n\sim \log n,\)</span> we have</p>
+<div class="arithmatex">\[
+\frac{\mathbb E[T_n]}{n\log n}
+=
+\frac{H_n}{\log n}
+\to 1.
+\]</div>
+<p>Next, by the independence from part (1),</p>
+<div class="arithmatex">\[
+\operatorname{var}(T_n)
+=
+\sum_{k=2}^n \operatorname{var}(D_k^{(n)})
+=
+\sum_{k=2}^n
+\frac{n(k-1)}{(n-k+1)^2}\le Cn^2.
+\]</div>
+<p>Therefore, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>, Chebyshev's inequality gives</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb P\left(
+\left|
+\frac{T_n-\mathbb E[T_n]}{n\log n}
+\right|&gt;\varepsilon
+\right)
+&amp;\le
+\frac{\operatorname{var}(T_n)}
+{\varepsilon^2 n^2(\log n)^2}\\
+&amp;\le
+\frac{C}{\varepsilon^2(\log n)^2}
+\to0.
+\end{aligned}
+\]</div>
+<p>So</p>
+<div class="arithmatex">\[
+\frac{T_n-\mathbb E[T_n]}{n\log n}
+\xrightarrow[n\to\infty]{\mathbb P}0.
+\]</div>
+<div class="arithmatex">\[
+\frac{T_n}{n\log n}
+=
+\frac{T_n-\mathbb E[T_n]}{n\log n}
++
+\frac{\mathbb E[T_n]}{n\log n}
+\xrightarrow[n\to\infty]{\mathbb P}1.
+\]</div>
 <hr />
 <p><strong>Exercise 10.6</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> and <span class="arithmatex">\((Y_n)_{n\in\mathbb{N}}\)</span> be two sequences of real random variables, and let <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> be two real random variables. Is it always true that the properties</p>
 <div class="arithmatex">\[
@@ -475,16 +592,345 @@ Y_n\xrightarrow[n\to\infty]{(d)}Y
 <p>For every <span class="arithmatex">\(n\in\mathbb{N}\)</span>, <span class="arithmatex">\(X_n\)</span> and <span class="arithmatex">\(Y_n\)</span> are independent, and <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> Not true, </p>
+<p>In general, the conclusion is not true. Let <span class="arithmatex">\(Z\sim \mathcal N(0,1)\)</span>, and set <span class="arithmatex">\(X_n=Z,Y_n=Z.\)</span></p>
+<p>(1) Assume <span class="arithmatex">\(Y=c\)</span> a.s. Since <span class="arithmatex">\(Y_n\xrightarrow{d}Y=c\)</span>, we have <span class="arithmatex">\(Y_n\xrightarrow{\mathbb P}c\)</span>. We prove that <span class="arithmatex">\((X_n,Y_n)\xrightarrow{d}(X,c)\)</span>. </p>
+<p>Let <span class="arithmatex">\(\varphi:\mathbb R^2\to\mathbb R\)</span> be bounded and continuous. We need to prove</p>
+<div class="arithmatex">\[
+\mathbb E[\varphi(X_n,Y_n)]
+\to
+\mathbb E[\varphi(X,c)].
+\]</div>
+<p>Write</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\left|
+\mathbb E[\varphi(X_n,Y_n)]
+-
+\mathbb E[\varphi(X,c)]
+\right|\\
+&amp;\le
+\left|
+\mathbb E[\varphi(X_n,Y_n)]
+-
+\mathbb E[\varphi(X_n,c)]
+\right|
++
+\left|
+\mathbb E[\varphi(X_n,c)]
+-
+\mathbb E[\varphi(X,c)]
+\right|.
+\end{aligned}
+\]</div>
+<p>For the second term, define <span class="arithmatex">\(g(x)=\varphi(x,c).\)</span> Then <span class="arithmatex">\(g\)</span> is bounded and continuous on <span class="arithmatex">\(\mathbb R\)</span>. Since <span class="arithmatex">\(X_n\xrightarrow{d}X,\)</span> we get</p>
+<div class="arithmatex">\[
+\mathbb E[g(X_n)]\to \mathbb E[g(X)].
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+\mathbb E[\varphi(X_n,c)]\to \mathbb E[\varphi(X,c)].
+\]</div>
+<p>It remains to prove</p>
+<div class="arithmatex">\[
+\mathbb E[\varphi(X_n,Y_n)]
+-
+\mathbb E[\varphi(X_n,c)]
+\to 0.
+\]</div>
+<p>Let <span class="arithmatex">\(M=\|\varphi\|_\infty.\)</span> Since <span class="arithmatex">\(X_n\xrightarrow{d}X\)</span>, the sequence <span class="arithmatex">\((X_n)\)</span> is tight. Hence for every <span class="arithmatex">\(\eta&gt;0\)</span>, there exists <span class="arithmatex">\(K&gt;0\)</span> such that</p>
+<div class="arithmatex">\[
+\sup_n \mathbb P(|X_n|&gt;K)&lt;\eta.
+\]</div>
+<p>On the compact set <span class="arithmatex">\([-K,K]\times[c-1,c+1],\)</span> the function <span class="arithmatex">\(\varphi\)</span> is uniformly continuous. Hence for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>, there exists <span class="arithmatex">\(\delta\in(0,1)\)</span> such that whenever <span class="arithmatex">\(|x|\le K,|y-c|&lt;\delta,\)</span> we have</p>
+<div class="arithmatex">\[
+|\varphi(x,y)-\varphi(x,c)|&lt;\varepsilon.
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\mathbb E\left[
+|\varphi(X_n,Y_n)-\varphi(X_n,c)|
+\right]\\
+&amp;\le
+\varepsilon
++
+2M\mathbb P(|X_n|&gt;K)
++
+2M\mathbb P(|Y_n-c|\ge \delta).
+\end{aligned}
+\]</div>
+<p>Since <span class="arithmatex">\(Y_n\xrightarrow{\mathbb P}c,\)</span> we have <span class="arithmatex">\(\mathbb P(|Y_n-c|\ge\delta)\to0.\)</span> Thus</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}
+\mathbb E\left[
+|\varphi(X_n,Y_n)-\varphi(X_n,c)|
+\right]
+\le
+\varepsilon+2M\eta.
+\]</div>
+<p>Since <span class="arithmatex">\(\varepsilon&gt;0\)</span> and <span class="arithmatex">\(\eta&gt;0\)</span> are arbitrary,</p>
+<div class="arithmatex">\[
+\mathbb E\left[
+|\varphi(X_n,Y_n)-\varphi(X_n,c)|
+\right]\to0.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\mathbb E[\varphi(X_n,Y_n)]
+\to
+\mathbb E[\varphi(X,c)].
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\boxed{
+(X_n,Y_n)\xrightarrow{d}(X,c).
+}
+\]</div>
+<p>(2) Assume that for every <span class="arithmatex">\(n\)</span>, <span class="arithmatex">\(X_n\)</span> and <span class="arithmatex">\(Y_n\)</span> are independent, and <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent. Let <span class="arithmatex">\(\varphi_n(s,t)=\mathbb E[e^{i(sX_n+tY_n)}]\)</span> be the characteristic function of <span class="arithmatex">\((X_n,Y_n)\)</span>. Since <span class="arithmatex">\(X_n\)</span> and <span class="arithmatex">\(Y_n\)</span> are independent,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\varphi_n(s,t)
+&amp;=
+\mathbb E[e^{isX_n}e^{itY_n}]\\
+&amp;=
+\mathbb E[e^{isX_n}]
+\mathbb E[e^{itY_n}]\\
+&amp;=
+\varphi_{X_n}(s)\varphi_{Y_n}(t).
+\end{aligned}
+\]</div>
+<p>Since <span class="arithmatex">\(X_n\xrightarrow{d}X,\)</span> we have <span class="arithmatex">\(\varphi_{X_n}(s)\to \varphi_X(s),\forall s\in\mathbb R.\)</span> Similarly, <span class="arithmatex">\(\varphi_{Y_n}(t)\to \varphi_Y(t),\forall t\in\mathbb R.\)</span> Hence for every <span class="arithmatex">\((s,t)\in\mathbb R^2\)</span>,</p>
+<div class="arithmatex">\[
+\varphi_n(s,t)
+=
+\varphi_{X_n}(s)\varphi_{Y_n}(t)
+\to
+\varphi_X(s)\varphi_Y(t).
+\]</div>
+<p>Since <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent,</p>
+<div class="arithmatex">\[
+\varphi_X(s)\varphi_Y(t)
+=
+\mathbb E[e^{isX}]
+\mathbb E[e^{itY}]
+=
+\mathbb E[e^{i(sX+tY)}].
+\]</div>
+<p>Thus <span class="arithmatex">\(\varphi_X(s)\varphi_Y(t)\)</span> is exactly the characteristic function of <span class="arithmatex">\((X,Y)\)</span>. Therefore the characteristic functions of <span class="arithmatex">\((X_n,Y_n)\)</span> converge pointwise to the characteristic function of <span class="arithmatex">\((X,Y)\)</span>. By the continuity theorem for characteristic functions,</p>
+<div class="arithmatex">\[
+\boxed{
+(X_n,Y_n)\xrightarrow{d}(X,Y).
+}
+\]</div>
 <hr />
 <p><strong>Exercise 10.7</strong> Let <span class="arithmatex">\(\mu\)</span> be a probability measure on <span class="arithmatex">\(\mathbb{R}\)</span>, and, for every <span class="arithmatex">\(n\in\mathbb{N}\)</span>,</p>
 <div class="arithmatex">\[
 \mu_n(dx)=\sum_{k\in\mathbb{Z}}\mu([k2^{-n},(k+1)2^{-n}))\,\delta_{k2^{-n}}(dx).
 \]</div>
 <p>Show that the sequence <span class="arithmatex">\(\mu_n\)</span> converges weakly to <span class="arithmatex">\(\mu\)</span>.</p>
+<p><strong>Solution.</strong> Define <span class="arithmatex">\(q_n(x)=2^{-n}\lfloor 2^n x\rfloor .\)</span> Hence</p>
+<div class="arithmatex">\[
+0\le x-q_n(x)&lt;2^{-n},
+\]</div>
+<p>so <span class="arithmatex">\(q_n(x)\to x\)</span> for every <span class="arithmatex">\(x\in\mathbb R\)</span>. Let <span class="arithmatex">\(f:\mathbb R\to\mathbb R\)</span> be bounded and continuous. By the definition of <span class="arithmatex">\(\mu_n\)</span>,</p>
+<div class="arithmatex">\[
+\int f\,d\mu_n
+=
+\sum_{k\in\mathbb Z} f(k2^{-n})\mu([k2^{-n},(k+1)2^{-n})).
+\]</div>
+<p>Since <span class="arithmatex">\(q_n(x)=k2^{-n}\)</span> on <span class="arithmatex">\([k2^{-n},(k+1)2^{-n})\)</span>, we also have</p>
+<div class="arithmatex">\[
+\int f(q_n(x))\,\mu(dx)
+=
+\sum_{k\in\mathbb Z}
+\int_{[k2^{-n},(k+1)2^{-n})} f(k2^{-n})\,\mu(dx)
+=
+\int f\,d\mu_n.
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+\int f\,d\mu_n=\int f(q_n(x))\,\mu(dx).
+\]</div>
+<p>Since <span class="arithmatex">\(q_n(x)\to x\)</span> and <span class="arithmatex">\(f\)</span> is continuous,</p>
+<div class="arithmatex">\[
+f(q_n(x))\to f(x).
+\]</div>
+<p>Moreover,</p>
+<div class="arithmatex">\[
+|f(q_n(x))|\le \|f\|_\infty.
+\]</div>
+<p>By the dominated convergence theorem,</p>
+<div class="arithmatex">\[
+\int f(q_n(x))\,\mu(dx)\to \int f(x)\,\mu(dx).
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\int f\,d\mu_n\to \int f\,d\mu.
+\]</div>
+<p>Since this holds for every bounded continuous function <span class="arithmatex">\(f\)</span>, we conclude that</p>
+<div class="arithmatex">\[
+\mu_n\Rightarrow \mu.
+\]</div>
 <hr />
 <p><strong>Exercise 10.8</strong> Suppose that, for every <span class="arithmatex">\(n\in\mathbb{N}\)</span>, <span class="arithmatex">\(Y_n\)</span> is a Gaussian <span class="arithmatex">\(\mathcal{N}(m_n,\sigma_n^2)\)</span> random variable, where <span class="arithmatex">\(m_n\in\mathbb{R}\)</span> and <span class="arithmatex">\(\sigma_n&gt;0\)</span>. Prove that the sequence <span class="arithmatex">\((Y_n)_{n\in\mathbb{N}}\)</span> converges in distribution if and only if the two sequences <span class="arithmatex">\((m_n)\)</span> and <span class="arithmatex">\((\sigma_n)\)</span> converge, and identify the limiting distribution in that case.</p>
+<p><strong>Solution.</strong></p>
+<p>Assume <span class="arithmatex">\(m_n\to m, \sigma_n\to \sigma,\)</span> where necessarily <span class="arithmatex">\(\sigma\ge0\)</span>. The characteristic function of <span class="arithmatex">\(Y_n\)</span> is</p>
+<div class="arithmatex">\[
+\varphi_n(t)=\mathbb E[e^{itY_n}]
+=
+\exp\left(itm_n-\frac12\sigma_n^2t^2\right).
+\]</div>
+<p>Hence, for every <span class="arithmatex">\(t\in\mathbb R\)</span>,</p>
+<div class="arithmatex">\[
+\varphi_n(t)\to
+\exp\left(itm-\frac12\sigma^2t^2\right).
+\]</div>
+<p>If <span class="arithmatex">\(\sigma&gt;0\)</span>, this is the characteristic function of <span class="arithmatex">\(\mathcal N(m,\sigma^2)\)</span>. If <span class="arithmatex">\(\sigma=0\)</span>, it is <span class="arithmatex">\(e^{itm}\)</span>, the characteristic function of the degenerate distribution <span class="arithmatex">\(\delta_m\)</span>.</p>
+<p>By the continuity theorem for characteristic functions,</p>
+<div class="arithmatex">\[
+Y_n\xrightarrow{d}
+\begin{cases}
+\mathcal N(m,\sigma^2), &amp; \sigma&gt;0,\\
+\delta_m, &amp; \sigma=0.
+\end{cases}
+\]</div>
+<p>Assume <span class="arithmatex">\(Y_n\xrightarrow{d}Y.\)</span> Then <span class="arithmatex">\((Y_n)\)</span> is tight. We first show that <span class="arithmatex">\((m_n)\)</span> is bounded. If <span class="arithmatex">\(|m_n|&gt;K\)</span>, then by symmetry of the Gaussian distribution around <span class="arithmatex">\(m_n\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P(|Y_n|&gt;K)\ge \frac12.
+\]</div>
+<p>For example, if <span class="arithmatex">\(m_n&gt;K\)</span>, then</p>
+<div class="arithmatex">\[
+\mathbb P(|Y_n|&gt;K)\ge \mathbb P(Y_n&gt;K)\ge \mathbb P(Y_n\ge m_n)=\frac12,
+\]</div>
+<p>and the case <span class="arithmatex">\(m_n&lt;-K\)</span> is analogous. This contradicts tightness for large <span class="arithmatex">\(K\)</span>. Hence <span class="arithmatex">\((m_n)\)</span> is bounded.</p>
+<p>Next we show that <span class="arithmatex">\((\sigma_n)\)</span> is bounded. Suppose not. Then there is a subsequence <span class="arithmatex">\((n_j)\)</span> such that <span class="arithmatex">\(\sigma_{n_j}\to\infty\)</span>. Since <span class="arithmatex">\((m_n)\)</span> is bounded, say <span class="arithmatex">\(|m_n|\le M\)</span>, for every fixed <span class="arithmatex">\(K&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P(|Y_{n_j}|\le K)
+=
+\mathbb P\left(
+\frac{-K-m_{n_j}}{\sigma_{n_j}}
+\le Z\le
+\frac{K-m_{n_j}}{\sigma_{n_j}}
+\right),
+\qquad Z\sim \mathcal N(0,1).
+\]</div>
+<p>The interval on the right has length <span class="arithmatex">\(2K/\sigma_{n_j}\to0\)</span>. Since the standard Gaussian density is bounded,</p>
+<div class="arithmatex">\[
+\mathbb P(|Y_{n_j}|\le K)\to0,
+\]</div>
+<p>so <span class="arithmatex">\(\mathbb P(|Y_{n_j}|&gt;K)\to1\)</span>, contradicting tightness. Therefore <span class="arithmatex">\((\sigma_n)\)</span> is bounded.</p>
+<p>Thus <span class="arithmatex">\((m_n,\sigma_n)\)</span> is bounded in <span class="arithmatex">\(\mathbb R\times[0,\infty)\)</span>. Every subsequence has a further subsequence such that</p>
+<div class="arithmatex">\[
+m_{n_j}\to m,\qquad \sigma_{n_j}\to\sigma
+\]</div>
+<p>for some <span class="arithmatex">\(\sigma\ge0\)</span>. Along this subsequence,</p>
+<div class="arithmatex">\[
+\varphi_{n_j}(t)
+=
+\exp\left(itm_{n_j}-\frac12\sigma_{n_j}^2t^2\right)
+\to
+\exp\left(itm-\frac12\sigma^2t^2\right).
+\]</div>
+<p>Hence <span class="arithmatex">\(Y_{n_j}\)</span> converges in distribution to <span class="arithmatex">\(\mathcal N(m,\sigma^2)\)</span> if <span class="arithmatex">\(\sigma&gt;0\)</span>, and to <span class="arithmatex">\(\delta_m\)</span> if <span class="arithmatex">\(\sigma=0\)</span>. But since the whole sequence <span class="arithmatex">\(Y_n\)</span> converges in distribution to <span class="arithmatex">\(Y\)</span>, every subsequential limit must be the same.</p>
+<p>The parameters are unique: if</p>
+<div class="arithmatex">\[
+\exp\left(itm-\frac12\sigma^2t^2\right)
+=
+\exp\left(itm'-\frac12(\sigma')^2t^2\right),
+\qquad \forall t\in\mathbb R,
+\]</div>
+<p>then comparing absolute values gives <span class="arithmatex">\(\sigma=\sigma'\)</span>, and then <span class="arithmatex">\(e^{it(m-m')}=1\)</span> for all <span class="arithmatex">\(t\)</span>, so <span class="arithmatex">\(m=m'\)</span>.</p>
+<p>Therefore all convergent subsequences of <span class="arithmatex">\((m_n,\sigma_n)\)</span> have the same limit. Since <span class="arithmatex">\((m_n,\sigma_n)\)</span> is bounded, this implies that the whole sequence converges:</p>
+<div class="arithmatex">\[
+m_n\to m,\qquad \sigma_n\to\sigma.
+\]</div>
 <hr />
 <p><strong>Exercise 10.9</strong> Let <span class="arithmatex">\((Z_n)_{n\in\mathbb{N}}\)</span> be a sequence of random variables with values in <span class="arithmatex">\(\mathbb{R}^d\)</span>, and let <span class="arithmatex">\((a_n)_{n\in\mathbb{N}}\)</span> be a sequence of reals. Assume that <span class="arithmatex">\(Z_n\)</span> converges in distribution to <span class="arithmatex">\(Z\)</span> and <span class="arithmatex">\(a_n\)</span> converges to <span class="arithmatex">\(a\)</span> as <span class="arithmatex">\(n\to\infty\)</span>. Prove that <span class="arithmatex">\(a_nZ_n\)</span> converges in distribution to <span class="arithmatex">\(aZ\)</span>. (<em>Hint:</em> Use Proposition 10.12, and note that the space <span class="arithmatex">\(H\)</span> in this proposition can be chosen to contain only Lipschitz functions.)</p>
+<p><strong>Solution.</strong> By Proposition 10.12, it is enough to prove that for every bounded Lipschitz function <span class="arithmatex">\(f:\mathbb R^d\to\mathbb R\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E[f(a_nZ_n)]\to \mathbb E[f(aZ)].
+\]</div>
+<p>Let <span class="arithmatex">\(f\)</span> be bounded and Lipschitz. Write</p>
+<div class="arithmatex">\[
+|f(x)-f(y)|\le L|x-y|,
+\qquad
+|f(x)|\le M.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ)]\right|
+&amp;\le
+\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ_n)]\right|\\
+&amp;\quad+
+\left|\mathbb E[f(aZ_n)]-\mathbb E[f(aZ)]\right|.
+\end{aligned}
+\]</div>
+<p>For the second term, define <span class="arithmatex">\(g(z)=f(az)\)</span>. Since <span class="arithmatex">\(g\)</span> is bounded and continuous, and <span class="arithmatex">\(Z_n\xrightarrow{d}Z\)</span>, we have</p>
+<div class="arithmatex">\[
+\mathbb E[f(aZ_n)]
+=
+\mathbb E[g(Z_n)]
+\to
+\mathbb E[g(Z)]
+=
+\mathbb E[f(aZ)].
+\]</div>
+<p>Hence the second term tends to <span class="arithmatex">\(0\)</span>.</p>
+<p>Now consider the first term. Since <span class="arithmatex">\(Z_n\xrightarrow{d}Z\)</span>, the sequence <span class="arithmatex">\((Z_n)\)</span> is tight. Thus for every <span class="arithmatex">\(\eta&gt;0\)</span>, there exists <span class="arithmatex">\(R&gt;0\)</span> such that</p>
+<div class="arithmatex">\[
+\sup_n\mathbb P(|Z_n|&gt;R)&lt;\eta.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ_n)]\right|\\
+&amp;\le
+\mathbb E\left[|f(a_nZ_n)-f(aZ_n)|;\ |Z_n|\le R\right]
++
+\mathbb E\left[|f(a_nZ_n)-f(aZ_n)|;\ |Z_n|&gt;R\right].
+\end{aligned}
+\]</div>
+<p>On <span class="arithmatex">\(\{|Z_n|\le R\}\)</span>, by the Lipschitz property,</p>
+<div class="arithmatex">\[
+|f(a_nZ_n)-f(aZ_n)|
+\le L|(a_n-a)Z_n|
+\le L|a_n-a|R.
+\]</div>
+<p>On <span class="arithmatex">\(\{|Z_n|&gt;R\}\)</span>, by boundedness of <span class="arithmatex">\(f\)</span>,</p>
+<div class="arithmatex">\[
+|f(a_nZ_n)-f(aZ_n)|\le 2M.
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ_n)]\right|
+\le
+L|a_n-a|R+2M\mathbb P(|Z_n|&gt;R).
+\]</div>
+<p>By the choice of <span class="arithmatex">\(R\)</span>,</p>
+<div class="arithmatex">\[
+\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ_n)]\right|
+\le
+L|a_n-a|R+2M\eta.
+\]</div>
+<p>Letting <span class="arithmatex">\(n\to\infty\)</span>, since <span class="arithmatex">\(a_n\to a\)</span>, we get</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}
+\left|\mathbb E[f(a_nZ_n)]-\mathbb E[f(aZ_n)]\right|
+\le 2M\eta.
+\]</div>
+<p>Since <span class="arithmatex">\(\eta&gt;0\)</span> is arbitrary, the first term also tends to <span class="arithmatex">\(0\)</span>.</p>
+<p>Combining the two parts,</p>
+<div class="arithmatex">\[
+\mathbb E[f(a_nZ_n)]\to \mathbb E[f(aZ)].
+\]</div>
+<p>Hence, by Proposition 10.12,</p>
+<div class="arithmatex">\[
+\boxed{
+a_nZ_n\xrightarrow{d}aZ.
+}
+\]</div>
 <hr />
 <p><strong>Exercise 10.10</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent and identically distributed random variables. For every <span class="arithmatex">\(n\in\mathbb{N}\)</span>, set <span class="arithmatex">\(M_n=\max\{X_1,\ldots,X_n\}\)</span>.</p>
 <ol>
@@ -495,6 +941,14 @@ Y_n\xrightarrow[n\to\infty]{(d)}Y
 <p>Suppose that <span class="arithmatex">\(X_n\)</span> is distributed according to the Cauchy distribution of parameter <span class="arithmatex">\(1\)</span>. Show that <span class="arithmatex">\(n/M_n\)</span> converges in distribution and identify the limit.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1) </p>
+<div class="arithmatex">\[
+n(1-M_n)\xrightarrow{d}\mathrm{Exp}(1).
+\]</div>
+<p>(2)</p>
+<div class="arithmatex">\[
+\frac{n}{M_n}\xrightarrow{d}\mathrm{Exp}(\frac{1}{\pi}).
+\]</div>
 <hr />
 <p><strong>Exercise 10.11</strong></p>
 <ol>
@@ -512,6 +966,14 @@ Y_n\xrightarrow[n\to\infty]{(d)}Y
 \]</div>
 </li>
 </ol>
+<p><strong>Solution.</strong> (1) By the central limit theorem,</p>
+<div class="arithmatex">\[
+\mathbb{P}(S_n\le n)=\mathbb{P}\left(\frac{S_n-n}{\sqrt{n\mathrm{var}(X_1)}}\le 0\right)\to \mathbb P(Z\le 0)=\frac12,
+\]</div>
+<p>(2) Let <span class="arithmatex">\(Y_n\sim \text{Poisson}(n)\)</span>. Then</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}e^{-n}\sum_{k=0}^n\frac{n^k}{k!}=\lim_{n\to\infty}\mathbb{P}(Y_n\le n)=\frac12.
+\]</div>
 <hr />
 <p><strong>Exercise 10.12 (Glivenko-Cantelli Theorem)</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent and identically distributed real random variables with distribution function <span class="arithmatex">\(F\)</span>. For every integer <span class="arithmatex">\(n\in\mathbb{N}\)</span> and every <span class="arithmatex">\(x\in\mathbb{R}\)</span>, define the random variable</p>
 <div class="arithmatex">\[
@@ -522,6 +984,109 @@ F_n(x)=\frac1n\operatorname{card}\{j\in\{1,\ldots,n\}:X_j\le x\},
 \lim_{n\to\infty}\sup_{x\in\mathbb{R}}|F_n(x)-F(x)|=0.
 \]</div>
 <p>Compare with Theorem 10.14. (<em>Hint:</em> It may be useful to assume that the random variables <span class="arithmatex">\(X_n\)</span> are represented as in Lemma 8.7.)</p>
+<p><strong>Solution.</strong></p>
+<p>By the hint, we may assume that the random variables are represented by inverse transform. Let <span class="arithmatex">\((U_j)_{j\ge1}\)</span> be i.i.d. uniform random variables on <span class="arithmatex">\([0,1]\)</span>, and define</p>
+<div class="arithmatex">\[
+X_j=F^{-1}(U_j):=\inf\{x\in\mathbb R:F(x)\ge U_j\}.
+\]</div>
+<p>Then <span class="arithmatex">\(X_j\)</span> has distribution function <span class="arithmatex">\(F\)</span>. Moreover, for every <span class="arithmatex">\(x\in\mathbb R\)</span>,</p>
+<div class="arithmatex">\[
+X_j\le x \iff U_j\le F(x).
+\]</div>
+<p>Define the empirical distribution function of the <span class="arithmatex">\(U_j\)</span>'s by</p>
+<div class="arithmatex">\[
+G_n(t)=\frac1n\sum_{j=1}^n \mathbf 1_{\{U_j\le t\}},
+\qquad 0\le t\le1.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+F_n(x)
+=
+\frac1n\sum_{j=1}^n \mathbf 1_{\{X_j\le x\}}
+=
+\frac1n\sum_{j=1}^n \mathbf 1_{\{U_j\le F(x)\}}
+=
+G_n(F(x)).
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+|F_n(x)-F(x)|
+=
+|G_n(F(x))-F(x)|
+\le
+\sup_{0\le t\le1}|G_n(t)-t|.
+\]</div>
+<p>Therefore it is enough to prove the Glivenko-Cantelli theorem for the uniform distribution on <span class="arithmatex">\([0,1]\)</span>, namely</p>
+<div class="arithmatex">\[
+\sup_{0\le t\le1}|G_n(t)-t|\to0,
+\qquad a.s.
+\]</div>
+<p>Now fix <span class="arithmatex">\(m\in\mathbb N\)</span>. For each grid point <span class="arithmatex">\(k/m\)</span>, by the strong law of large numbers,</p>
+<div class="arithmatex">\[
+G_n(k/m)\to k/m,
+\qquad a.s.
+\]</div>
+<p>Since there are only finitely many grid points <span class="arithmatex">\(k=0,1,\ldots,m\)</span>, we have simultaneously</p>
+<div class="arithmatex">\[
+\max_{0\le k\le m}|G_n(k/m)-k/m|\to0,
+\qquad a.s.
+\]</div>
+<p>For any <span class="arithmatex">\(t\in[0,1]\)</span>, choose <span class="arithmatex">\(k\in\{1,\ldots,m\}\)</span> such that</p>
+<div class="arithmatex">\[
+\frac{k-1}{m}\le t\le \frac{k}{m}.
+\]</div>
+<p>Since <span class="arithmatex">\(G_n\)</span> is nondecreasing,</p>
+<div class="arithmatex">\[
+G_n((k-1)/m)\le G_n(t)\le G_n(k/m).
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+G_n(t)-t
+\le
+G_n(k/m)-\frac{k-1}{m}
+=
+\left(G_n(k/m)-\frac{k}{m}\right)+\frac1m,
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+t-G_n(t)
+\le
+\frac{k}{m}-G_n((k-1)/m)
+=
+\left(\frac{k-1}{m}-G_n((k-1)/m)\right)+\frac1m.
+\]</div>
+<p>Therefore</p>
+<div class="arithmatex">\[
+|G_n(t)-t|
+\le
+\max_{0\le j\le m}|G_n(j/m)-j/m|+\frac1m.
+\]</div>
+<p>Taking the supremum over <span class="arithmatex">\(t\in[0,1]\)</span>,</p>
+<div class="arithmatex">\[
+\sup_{0\le t\le1}|G_n(t)-t|
+\le
+\max_{0\le j\le m}|G_n(j/m)-j/m|+\frac1m.
+\]</div>
+<p>Letting <span class="arithmatex">\(n\to\infty\)</span>, we get</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}
+\sup_{0\le t\le1}|G_n(t)-t|
+\le
+\frac1m,
+\qquad a.s.
+\]</div>
+<p>Since <span class="arithmatex">\(m\)</span> is arbitrary,</p>
+<div class="arithmatex">\[
+\sup_{0\le t\le1}|G_n(t)-t|\to0,
+\qquad a.s.
+\]</div>
+<p>Finally,</p>
+<div class="arithmatex">\[
+\sup_{x\in\mathbb R}|F_n(x)-F(x)|
+\le
+\sup_{0\le t\le1}|G_n(t)-t|\to0,
+\qquad a.s.
+\]</div>
 <hr />
 <p><strong>Exercise 10.13</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent and identically distributed random variables in <span class="arithmatex">\(L^2\)</span>, such that <span class="arithmatex">\(\mathbb{E}[X_n]=0\)</span> and <span class="arithmatex">\(\operatorname{var}(X_n)&gt;0\)</span>. Set <span class="arithmatex">\(S_n=X_1+\cdots+X_n\)</span>.</p>
 <ol>
@@ -542,6 +1107,136 @@ F_n(x)=\frac1n\operatorname{card}\{j\in\{1,\ldots,n\}:X_j\le x\},
 <p>exists and compute this limit.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong></p>
+<p>Let <span class="arithmatex">\(\sigma^2=\operatorname{var}(X_1)&gt;0.\)</span></p>
+<p>(1) By the central limit theorem,</p>
+<div class="arithmatex">\[
+\frac{S_n}{\sigma\sqrt n}\xrightarrow{d}Z\sim\mathcal N(0,1).
+\]</div>
+<p>Fix <span class="arithmatex">\(A&gt;0\)</span>. Then</p>
+<div class="arithmatex">\[
+\mathbb P\left(\frac{S_n}{\sqrt n}&gt;A\right)
+=
+\mathbb P\left(\frac{S_n}{\sigma\sqrt n}&gt;\frac A\sigma\right)
+\to
+\mathbb P\left(Z&gt;\frac A\sigma\right)&gt;0.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}
+\mathbb P\left(\frac{S_n}{\sqrt n}&gt;A\right)&gt;0.
+\]</div>
+<p>Therefore</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\frac{S_n}{\sqrt n}&gt;A\ \text{i.o.}
+\right)&gt;0.
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\limsup_{n\to\infty}\frac{S_n}{\sqrt n}\ge A
+\right)=1.
+\]</div>
+<p>Since this holds for every <span class="arithmatex">\(A&gt;0\)</span>, we get</p>
+<div class="arithmatex">\[
+\limsup_{n\to\infty}\frac{S_n}{\sqrt n}=\infty,
+\qquad a.s.
+\]</div>
+<p>(2)</p>
+<p>Assume, for contradiction, that <span class="arithmatex">\(S_n/\sqrt n\)</span> converges in probability. Then it is Cauchy in probability. In particular,</p>
+<div class="arithmatex">\[
+\frac{S_{2n}}{\sqrt{2n}}-\frac{S_n}{\sqrt n}
+\xrightarrow{\mathbb P}0.
+\]</div>
+<p>But write</p>
+<div class="arithmatex">\[
+S_{2n}=S_n+(S_{2n}-S_n).
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\frac{S_{2n}}{\sqrt{2n}}-\frac{S_n}{\sqrt n}
+=
+\left(\frac1{\sqrt2}-1\right)\frac{S_n}{\sqrt n}
++
+\frac{S_{2n}-S_n}{\sqrt{2n}}.
+\]</div>
+<p>By the central limit theorem, and since <span class="arithmatex">\(S_n\)</span> is independent of <span class="arithmatex">\(S_{2n}-S_n\)</span>,</p>
+<div class="arithmatex">\[
+\left(
+\frac{S_n}{\sigma\sqrt n},
+\frac{S_{2n}-S_n}{\sigma\sqrt n}
+\right)
+\xrightarrow{d}
+(Z_1,Z_2),
+\]</div>
+<p>where <span class="arithmatex">\(Z_1,Z_2\)</span> are independent standard normal random variables. Hence</p>
+<div class="arithmatex">\[
+\frac{S_{2n}}{\sqrt{2n}}-\frac{S_n}{\sqrt n}
+\xrightarrow{d}
+\sigma\left(\frac1{\sqrt2}-1\right)Z_1+\frac{\sigma}{\sqrt2}Z_2.
+\]</div>
+<p>The limit is a non-degenerate normal random variable, so it is not identically <span class="arithmatex">\(0\)</span>. Therefore the left-hand side cannot converge in probability to <span class="arithmatex">\(0\)</span>, contradiction.</p>
+<p>Hence</p>
+<div class="arithmatex">\[
+\frac{S_n}{\sqrt n}
+\]</div>
+<p>does not converge in probability.</p>
+<p>(3) Let</p>
+<div class="arithmatex">\[
+T_n=S_{2n}-S_n=X_{n+1}+\cdots+X_{2n}.
+\]</div>
+<p>Then <span class="arithmatex">\(S_n\)</span> and <span class="arithmatex">\(T_n\)</span> are independent, and they have the same distribution. Also,</p>
+<div class="arithmatex">\[
+S_{2n}=S_n+T_n.
+\]</div>
+<p>So</p>
+<div class="arithmatex">\[
+\mathbb P(S_n&gt;0,S_{2n}&lt;0)
+=
+\mathbb P(S_n&gt;0,S_n+T_n&lt;0).
+\]</div>
+<p>By the central limit theorem,</p>
+<div class="arithmatex">\[
+\left(
+\frac{S_n}{\sigma\sqrt n},
+\frac{T_n}{\sigma\sqrt n}
+\right)
+\xrightarrow{d}
+(Z_1,Z_2),
+\]</div>
+<p>where <span class="arithmatex">\(Z_1,Z_2\)</span> are independent standard normal random variables. Hence</p>
+<div class="arithmatex">\[
+\mathbb P(S_n&gt;0,S_n+T_n&lt;0)
+\to
+\mathbb P(Z_1&gt;0,Z_1+Z_2&lt;0).
+\]</div>
+<p>Now compute this probability. Since <span class="arithmatex">\((Z_1,Z_2)\)</span> is rotationally symmetric in <span class="arithmatex">\(\mathbb R^2\)</span>, the probability only depends on the angle of the region</p>
+<div class="arithmatex">\[
+\{(x,y):x&gt;0,\ x+y&lt;0\}.
+\]</div>
+<p>This region is</p>
+<div class="arithmatex">\[
+x&gt;0,\qquad y&lt;-x.
+\]</div>
+<p>It is the sector between the negative <span class="arithmatex">\(y\)</span>-axis and the line <span class="arithmatex">\(y=-x\)</span>. Its angle is</p>
+<div class="arithmatex">\[
+\frac{\pi}{4}.
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\mathbb P(Z_1&gt;0,Z_1+Z_2&lt;0)
+=
+\frac{\pi/4}{2\pi}
+=
+\frac18.
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}\mathbb P(S_n&gt;0,S_{2n}&lt;0)
+=
+\boxed{\frac18}.
+\]</div>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=gtm295">#gtm295</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability">#probability</a></div>
