@@ -360,10 +360,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#finite-dimensional-distributions" class="md-nav__link">
+  <a href="#ergodic-theorem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Finite-Dimensional Distributions
+        Ergodic theorem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ergodic theorem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-random-walk-on-a-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple random walk on a cycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stationary-measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stationary Measure
       
     </span>
   </a>
@@ -371,10 +399,76 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#stopping-times-and-strong-markov-property" class="md-nav__link">
+  <a href="#time-reversal-and-detailed-balance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stopping Times and Strong Markov Property
+        Time Reversal and Detailed Balance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#birth-and-death-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Birth-and-Death Chains
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hitting-and-return-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hitting and Return Times
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#harmonic-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Harmonic Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ergodic-theorem_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ergodic Theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#total-variation-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total Variation Distance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convergence-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence Theorem
       
     </span>
   </a>
@@ -393,10 +487,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#irreducibility" class="md-nav__link">
+  <a href="#positive-recurrence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Irreducibility
+        Positive Recurrence
       
     </span>
   </a>
@@ -404,10 +498,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#invariant-measures" class="md-nav__link">
+  <a href="#ergodic-theorem-countable-state-space" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Invariant Measures
+        Ergodic Theorem: Countable State Space
       
     </span>
   </a>
@@ -415,10 +509,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reversibility" class="md-nav__link">
+  <a href="#convergence-theorem-countable-state-space" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reversibility
+        Convergence Theorem: Countable State Space
       
     </span>
   </a>
@@ -426,10 +520,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#convergence-to-equilibrium" class="md-nav__link">
+  <a href="#simple-random-walk" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convergence to Equilibrium
+        Simple Random Walk
       
     </span>
   </a>
@@ -458,106 +552,722 @@
 <h1 id="markov-chains">Markov Chains</h1>
 <hr />
 <h2 id="markov-property">Markov Property</h2>
-<p>Let <span class="arithmatex">\(E\)</span> be a countable state space. A sequence <span class="arithmatex">\((X_n)_{n\ge 0}\)</span> is a <strong>Markov chain</strong> if</p>
+<p>A sequence of random variables <span class="arithmatex">\(\left\{X_n\right\}\)</span> is a <strong>Markov process</strong> with state space <span class="arithmatex">\(S\)</span> and transition probabilities <span class="arithmatex">\(P\)</span> if for all <span class="arithmatex">\(n\ge 0\)</span> and all sequences <span class="arithmatex">\(x_0,\ldots,x_n,x_{n+1}\in S\)</span>, we have that</p>
 <div class="arithmatex">\[
-\mathbb{P}(X_{n+1}=y\mid X_0,\ldots,X_n)
-=
-\mathbb{P}(X_{n+1}=y\mid X_n)
+\mathbb{P}[X_{n+1}=x_{n+1}\mid X_0=x_0,\ldots,X_n=x_n]=\mathbb{P}[X_{n+1}=x_{n+1}\mid X_n=x_n]= P(x_n,x_{n+1}).
 \]</div>
-<p>for all states <span class="arithmatex">\(y\in E\)</span>.</p>
-<p>The transition probabilities are</p>
+<ul>
+<li>
+<p>the conditional probability is <span class="arithmatex">\(P(x,y)\)</span>, no matter what sequence <span class="arithmatex">\(x_0,\cdots,x_{n-1}\)</span> of states proceeds the current state <span class="arithmatex">\(x\)</span></p>
+</li>
+<li>
+<p>the transition matrix <span class="arithmatex">\(P\)</span> is a stochastic matrix, i.e. <span class="arithmatex">\(P(x,y)\ge 0\)</span> and <span class="arithmatex">\(\sum_{y\in S}P(x,y)=1\)</span> for all <span class="arithmatex">\(x\in S\)</span>.</p>
+</li>
+</ul>
+<hr />
+<h2 id="ergodic-theorem">Ergodic theorem</h2>
+<p><strong>Theorem</strong> Let <span class="arithmatex">\(f\)</span> be a real-valued function defined on <span class="arithmatex">\(S\)</span>. If <span class="arithmatex">\(\left\{X_n\right\}\)</span> is an irreducible Markov chain with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for any starting distribution <span class="arithmatex">\(\mu\)</span>, we have</p>
 <div class="arithmatex">\[
-Q(x,y)=\mathbb{P}(X_{n+1}=y\mid X_n=x).
+\lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}f(X_k)=\pi(f),\quad \mathbb{P}_\mu\text{-a.s.}
 \]</div>
-<p>The matrix <span class="arithmatex">\(Q=(Q(x,y))_{x,y\in E}\)</span> satisfies</p>
+<p><strong>Theorem</strong> Suppose that <span class="arithmatex">\(P\)</span> is irreducible, aperiodic, with stationary distribution <span class="arithmatex">\(\pi\)</span>. Then there exist constants <span class="arithmatex">\(\alpha \in (0,1)\)</span> and <span class="arithmatex">\(C &gt; 0\)</span> such that</p>
 <div class="arithmatex">\[
-Q(x,y)\ge 0,
+\max_{x\in S}\|P^n(x,\cdot)-\pi\|_{\text{TV}}\le C\alpha^n.
+\]</div>
+<p>In particular, for any state <span class="arithmatex">\(y\)</span>, we have</p>
+<div class="arithmatex">\[
+\lim _{n\to\infty}P^n(x,y)=\pi(y).
+\]</div>
+<p>A transition matrix <span class="arithmatex">\(P\)</span> is called <strong>irreducible</strong> if for any two states <span class="arithmatex">\(x,y\in S\)</span>, there exists an integer <span class="arithmatex">\(n\ge 0\)</span> such that <span class="arithmatex">\(P^n(x,y)&gt;0\)</span>. For any <span class="arithmatex">\(x\in S\)</span>, define <span class="arithmatex">\(T(x)=\left\{n\ge 1:P^n(x,x)&gt;0\right\}\)</span>, the <strong>period</strong> of <span class="arithmatex">\(x\)</span> is the greatest common divisor of <span class="arithmatex">\(T(x)\)</span>, denote by <span class="arithmatex">\(gcd(T(x))\)</span>.</p>
+<p><strong>Lemma</strong> If <span class="arithmatex">\(P\)</span> is irreducible, then <span class="arithmatex">\(gcd(T(x)) = gcd(T(y))\)</span> for all <span class="arithmatex">\(x,y \in S\)</span>. We define this common number to be the period of the chain.</p>
+<p>For an irreducible chain, the chain is <strong>aperiodic</strong> if all states have period one.</p>
+<h3 id="simple-random-walk-on-a-cycle">Simple random walk on a cycle</h3>
+<p>For the simple random walk on the <span class="arithmatex">\(N\)</span>-cycle:</p>
+<ul>
+<li>the chain is irreducible;</li>
+<li>if <span class="arithmatex">\(N\)</span> is odd, it is aperiodic;</li>
+<li>if <span class="arithmatex">\(N\)</span> is even, it has period <span class="arithmatex">\(2\)</span>.</li>
+</ul>
+<hr />
+<h2 id="stationary-measure">Stationary Measure</h2>
+<p>Consider a Markov chain <span class="arithmatex">\((X_n)_{n\ge0}\)</span> with state space <span class="arithmatex">\(S\)</span> and transition matrix <span class="arithmatex">\(P\)</span>. Let</p>
+<ul>
+<li><span class="arithmatex">\(\mu_0\)</span> be the distribution of <span class="arithmatex">\(X_0\)</span>;</li>
+<li><span class="arithmatex">\(\mu_n\)</span> be the distribution of <span class="arithmatex">\(X_n\)</span>.</li>
+</ul>
+<p>Then</p>
+<div class="arithmatex">\[
+\mu_{n+1}=\mu_nP,
 \qquad
-\sum_{y\in E}Q(x,y)=1.
+\mu_n=\mu_0P^n.
+\]</div>
+<p>For a function <span class="arithmatex">\(f:S\to\mathbb R\)</span>, define</p>
+<div class="arithmatex">\[
+Pf(x)=\sum_{y\in S}P(x,y)f(y).
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\mathbb E_\mu[f(X_n)]=\mu P^nf.
+\]</div>
+<p>A probability measure <span class="arithmatex">\(\pi\)</span> on <span class="arithmatex">\(S\)</span> is called a <strong>stationary distribution</strong> if</p>
+<div class="arithmatex">\[
+\pi=\pi P.
+\]</div>
+<p>Equivalently, for every <span class="arithmatex">\(y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\pi(y)=\sum_{x\in S}\pi(x)P(x,y).
+\]</div>
+<p>If <span class="arithmatex">\(X_0\sim\pi\)</span>, then</p>
+<div class="arithmatex">\[
+X_n\sim\pi,\qquad \forall n\ge0.
+\]</div>
+<p>Indeed,</p>
+<div class="arithmatex">\[
+\mu_n=\pi P^n=\pi.
 \]</div>
 <hr />
-<h2 id="finite-dimensional-distributions">Finite-Dimensional Distributions</h2>
-<p>If <span class="arithmatex">\(X_0\)</span> has law <span class="arithmatex">\(\mu\)</span>, then</p>
+<h2 id="time-reversal-and-detailed-balance">Time Reversal and Detailed Balance</h2>
+<p>A probability distribution <span class="arithmatex">\(\pi\)</span> satisfies the <strong>detailed balance equations</strong> if</p>
 <div class="arithmatex">\[
-\mathbb{P}(X_0=x_0,\ldots,X_n=x_n)
+\pi(x)P(x,y)=\pi(y)P(y,x),
+\qquad \forall x,y\in S.
+\]</div>
+<p>Any probability distribution satisfying the detailed balance equations is stationary. In fact,</p>
+<div class="arithmatex">\[
+\sum_{x\in S}\pi(x)P(x,y)
 =
-\mu(x_0)Q(x_0,x_1)\cdots Q(x_{n-1},x_n).
+\sum_{x\in S}\pi(y)P(y,x)
+=
+\pi(y)\sum_{x\in S}P(y,x)
+=
+\pi(y).
 \]</div>
-<p>The <span class="arithmatex">\(n\)</span>-step transition matrix is</p>
+<p>Suppose <span class="arithmatex">\(X_0\sim\pi\)</span>. For every sequence <span class="arithmatex">\(x_0,\ldots,x_n\)</span>,</p>
 <div class="arithmatex">\[
-Q^n(x,y)=\mathbb{P}_x(X_n=y).
+\begin{aligned}
+&amp;\mathbb P_\pi(X_0=x_0,\ldots,X_n=x_n)\\
+&amp;=
+\pi(x_0)P(x_0,x_1)\cdots P(x_{n-1},x_n)\\
+&amp;=
+\pi(x_n)P(x_n,x_{n-1})\cdots P(x_1,x_0)\\
+&amp;=
+\mathbb P_\pi(X_0=x_n,\ldots,X_n=x_0).
+\end{aligned}
 \]</div>
-<p>It satisfies the Chapman-Kolmogorov identity</p>
+<p>Thus the chain has the same law when time is reversed.</p>
+<p>A Markov chain satisfying the detailed balance equations is called <strong>reversible</strong>.</p>
+<hr />
+<h2 id="birth-and-death-chains">Birth-and-Death Chains</h2>
+<p>A birth-and-death chain has state space</p>
 <div class="arithmatex">\[
-Q^{m+n}(x,y)=\sum_{z\in E}Q^m(x,z)Q^n(z,y).
+S=\{0,1,\ldots,N\}.
+\]</div>
+<p>From state <span class="arithmatex">\(k\)</span>, the chain can only move to <span class="arithmatex">\(k-1\)</span>, <span class="arithmatex">\(k\)</span>, or <span class="arithmatex">\(k+1\)</span>. Write</p>
+<div class="arithmatex">\[
+P(k,k+1)=p_k,
+\qquad
+P(k,k)=r_k,
+\qquad
+P(k,k-1)=q_k,
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+p_k+r_k+q_k=1,
+\qquad
+p_N=0,
+\qquad
+q_0=0.
+\]</div>
+<p>Assume the chain is irreducible. The detailed balance equations are</p>
+<div class="arithmatex">\[
+\pi(k)p_k=\pi(k+1)q_{k+1},
+\qquad 0\le k&lt;N.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\pi(k+1)=\pi(k)\frac{p_k}{q_{k+1}}.
+\]</div>
+<p>Starting from <span class="arithmatex">\(\pi(0)\)</span>,</p>
+<div class="arithmatex">\[
+\pi(k)
+=
+\pi(0)
+\prod_{j=0}^{k-1}\frac{p_j}{q_{j+1}}.
+\]</div>
+<p>Define</p>
+<div class="arithmatex">\[
+w_0=1,
+\qquad
+w_k=\prod_{j=0}^{k-1}\frac{p_j}{q_{j+1}},
+\qquad 1\le k\le N.
+\]</div>
+<p>After normalization,</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(k)=\frac{w_k}{\sum_{j=0}^Nw_j}.
+}
+\]</div>
+<p>Therefore every finite irreducible birth-and-death chain is reversible.</p>
+<hr />
+<h2 id="hitting-and-return-times">Hitting and Return Times</h2>
+<p>For <span class="arithmatex">\(x\in S\)</span>, define</p>
+<div class="arithmatex">\[
+\tau_x=\inf\{n\ge0:X_n=x\},
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\tau_x^+=\inf\{n\ge1:X_n=x\}.
+\]</div>
+<p>The random variable <span class="arithmatex">\(\tau_x\)</span> is the <strong>hitting time</strong> of <span class="arithmatex">\(x\)</span>, while <span class="arithmatex">\(\tau_x^+\)</span> is the <strong>first return time</strong> when <span class="arithmatex">\(X_0=x\)</span>.</p>
+<p><strong>Theorem.</strong> Suppose that <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible. Then there exists a unique stationary distribution <span class="arithmatex">\(\pi\)</span>. Moreover,</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(x)=\frac1{\mathbb E_x[\tau_x^+]},
+\qquad x\in S.
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\pi(x)&gt;0.
+\]</div>
+<p>The formula has the following interpretation:</p>
+<div class="arithmatex">\[
+\boxed{
+\text{long-run proportion of time at }x
+=
+\frac1{\text{mean return time to }x}.
+}
+\]</div>
+<p>For every <span class="arithmatex">\(x,y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_y]&lt;\infty.
+\]</div>
+<p>This follows from finiteness and irreducibility: there exist <span class="arithmatex">\(m\ge1\)</span> and <span class="arithmatex">\(c&gt;0\)</span> such that, from every state, the chain reaches <span class="arithmatex">\(y\)</span> within <span class="arithmatex">\(m\)</span> steps with probability at least <span class="arithmatex">\(c\)</span>. Hence</p>
+<div class="arithmatex">\[
+\mathbb P_x(\tau_y&gt;km)\le(1-c)^k,
+\]</div>
+<p>and consequently</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_y]&lt;\infty.
 \]</div>
 <hr />
-<h2 id="stopping-times-and-strong-markov-property">Stopping Times and Strong Markov Property</h2>
-<p>A random time <span class="arithmatex">\(T\)</span> is a stopping time if</p>
+<h2 id="harmonic-functions">Harmonic Functions</h2>
+<p>A function <span class="arithmatex">\(f:S\to\mathbb R\)</span> is called <strong>harmonic</strong> if</p>
 <div class="arithmatex">\[
-\{T\le n\}\in\sigma(X_0,\ldots,X_n)
+f=Pf,
 \]</div>
-<p>for every <span class="arithmatex">\(n\)</span>.</p>
-<p>The <strong>strong Markov property</strong> says that, conditionally on <span class="arithmatex">\(\{T&lt;\infty\}\)</span> and <span class="arithmatex">\(X_T=x\)</span>, the shifted process</p>
+<p>that is,</p>
 <div class="arithmatex">\[
-(X_{T+n})_{n\ge 0}
+f(x)=\sum_{y\in S}P(x,y)f(y).
 \]</div>
-<p>is a Markov chain started from <span class="arithmatex">\(x\)</span> with the same transition matrix.</p>
+<p><strong>Lemma.</strong> If <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible, then every harmonic function is constant.</p>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(x_0\)</span> be a point where <span class="arithmatex">\(f\)</span> attains its maximum. Since</p>
+<div class="arithmatex">\[
+f(x_0)=\sum_yP(x_0,y)f(y)
+\]</div>
+<p>is a convex combination of values not exceeding <span class="arithmatex">\(f(x_0)\)</span>, every state <span class="arithmatex">\(y\)</span> with <span class="arithmatex">\(P(x_0,y)&gt;0\)</span> must satisfy</p>
+<div class="arithmatex">\[
+f(y)=f(x_0).
+\]</div>
+<p>Repeating this argument and using irreducibility shows that every state has the same value.</p>
+<hr />
+<h2 id="ergodic-theorem_1">Ergodic Theorem</h2>
+<p><strong>Theorem.</strong> Let <span class="arithmatex">\(f:S\to\mathbb R\)</span>. If <span class="arithmatex">\((X_n)\)</span> is a finite irreducible Markov chain with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for every starting distribution <span class="arithmatex">\(\mu\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+\frac1n\sum_{j=0}^{n}f(X_j)
+\longrightarrow
+\pi(f),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+\pi(f)=\sum_{x\in S}f(x)\pi(x).
+\]</div>
+<p>In particular, take</p>
+<div class="arithmatex">\[
+f(y)=\mathbf 1_{\{y=x\}}.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\boxed{
+\frac1n\sum_{j=0}^{n}\mathbf 1_{\{X_j=x\}}
+\longrightarrow
+\pi(x),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
+\]</div>
+<p>Thus <span class="arithmatex">\(\pi(x)\)</span> is the long-run proportion of time spent at state <span class="arithmatex">\(x\)</span>.</p>
+<p>Aperiodicity is not required for this time-average result.</p>
+<hr />
+<h2 id="total-variation-distance">Total Variation Distance</h2>
+<p>For two probability measures <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\nu\)</span> on <span class="arithmatex">\(S\)</span>, their <strong>total variation distance</strong> is</p>
+<div class="arithmatex">\[
+\|\mu-\nu\|_{\mathrm{TV}}
+=
+\max_{A\subset S}|\mu(A)-\nu(A)|.
+\]</div>
+<p>For a finite or countable state space,</p>
+<div class="arithmatex">\[
+\boxed{
+\|\mu-\nu\|_{\mathrm{TV}}
+=
+\frac12\sum_{x\in S}|\mu(x)-\nu(x)|.
+}
+\]</div>
+<p>The total variation distance satisfies the triangle inequality:</p>
+<div class="arithmatex">\[
+\|\mu-\nu\|_{\mathrm{TV}}
+\le
+\|\mu-\eta\|_{\mathrm{TV}}
++
+\|\eta-\nu\|_{\mathrm{TV}}.
+\]</div>
+<p>For every <span class="arithmatex">\(y\in S\)</span>,</p>
+<div class="arithmatex">\[
+|\mu(y)-\nu(y)|
+\le
+\|\mu-\nu\|_{\mathrm{TV}}.
+\]</div>
+<hr />
+<h2 id="convergence-theorem">Convergence Theorem</h2>
+<p><strong>Theorem.</strong> Suppose that <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible and aperiodic, with stationary distribution <span class="arithmatex">\(\pi\)</span>. Then there exist constants</p>
+<div class="arithmatex">\[
+\alpha\in(0,1),
+\qquad
+C&gt;0,
+\]</div>
+<p>such that</p>
+<div class="arithmatex">\[
+\boxed{
+\max_{x\in S}
+\|P^n(x,\cdot)-\pi\|_{\mathrm{TV}}
+\le C\alpha^n.
+}
+\]</div>
+<p>In particular, for every <span class="arithmatex">\(x,y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+P^n(x,y)\longrightarrow\pi(y).
+}
+\]</div>
+<p>The ergodic theorem and the convergence theorem are different:</p>
+<ul>
+<li>irreducibility is sufficient for convergence of time averages;</li>
+<li>aperiodicity is additionally required for convergence of the distribution at a fixed time.</li>
+</ul>
 <hr />
 <h2 id="recurrence-and-transience">Recurrence and Transience</h2>
-<p>For <span class="arithmatex">\(x\in E\)</span>, define the return time</p>
+<p>For <span class="arithmatex">\(x\in S\)</span>, recall</p>
 <div class="arithmatex">\[
-T_x^+=\inf\{n\ge 1:X_n=x\}.
+\tau_x^+=\inf\{n\ge1:X_n=x\}.
 \]</div>
-<p>The state <span class="arithmatex">\(x\)</span> is <strong>recurrent</strong> if</p>
+<p>A state <span class="arithmatex">\(x\)</span> is called <strong>recurrent</strong> if</p>
 <div class="arithmatex">\[
-\mathbb{P}_x(T_x^+&lt;\infty)=1,
+\mathbb P_x(\tau_x^+&lt;\infty)=1.
 \]</div>
-<p>and <strong>transient</strong> otherwise.</p>
-<p>The Green function is</p>
-<div class="arithmatex">\[
-G(x,y)=\sum_{n=0}^{\infty}Q^n(x,y),
-\]</div>
-<p>the expected number of visits to <span class="arithmatex">\(y\)</span> when the chain starts from <span class="arithmatex">\(x\)</span>.</p>
+<p>Otherwise, <span class="arithmatex">\(x\)</span> is called <strong>transient</strong>.</p>
+<p><strong>Lemma.</strong> Suppose <span class="arithmatex">\(P\)</span> is irreducible. The following are equivalent:</p>
+<ol>
+<li>there exists <span class="arithmatex">\(x\in S\)</span> such that</li>
+</ol>
+<p>$$
+   \mathbb P_x(\tau_x^+&lt;\infty)=1;
+   $$</p>
+<ol start="2">
+<li>for every <span class="arithmatex">\(x,y\in S\)</span>,</li>
+</ol>
+<p>$$
+   \mathbb P_x(\tau_y&lt;\infty)=1.
+   $$</p>
+<p>Thus an irreducible Markov chain is either recurrent or transient.</p>
+<p>If <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible, then every state is recurrent.</p>
 <hr />
-<h2 id="irreducibility">Irreducibility</h2>
-<p>We write <span class="arithmatex">\(x\to y\)</span> if <span class="arithmatex">\(Q^n(x,y)&gt;0\)</span> for some <span class="arithmatex">\(n\ge 0\)</span>.</p>
-<p>The chain is <strong>irreducible</strong> if every state communicates with every other state:</p>
+<h2 id="positive-recurrence">Positive Recurrence</h2>
+<p>A recurrent state <span class="arithmatex">\(x\)</span> is called <strong>positive recurrent</strong> if</p>
 <div class="arithmatex">\[
-x\to y
-\qquad\text{and}\qquad
-y\to x
+\mathbb E_x[\tau_x^+]&lt;\infty.
 \]</div>
-<p>for all <span class="arithmatex">\(x,y\in E\)</span>.</p>
-<p>In an irreducible chain, recurrence and transience are class properties.</p>
+<p>If <span class="arithmatex">\(x\)</span> is recurrent but</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_x^+]=\infty,
+\]</div>
+<p>then <span class="arithmatex">\(x\)</span> is called <strong>null recurrent</strong>.</p>
+<p>For an irreducible chain, positive recurrence is a class property: if one state is positive recurrent, then every state is positive recurrent.</p>
+<p><strong>Theorem.</strong> An irreducible Markov chain is positive recurrent if and only if there exists a stationary probability distribution <span class="arithmatex">\(\pi\)</span>.</p>
+<p>In this case, the stationary distribution is unique and</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(x)=\frac1{\mathbb E_x[\tau_x^+]},
+\qquad x\in S.
+}
+\]</div>
 <hr />
-<h2 id="invariant-measures">Invariant Measures</h2>
-<p>A measure <span class="arithmatex">\(\pi\)</span> on <span class="arithmatex">\(E\)</span> is invariant if</p>
+<h2 id="ergodic-theorem-countable-state-space">Ergodic Theorem: Countable State Space</h2>
+<p><strong>Theorem.</strong> Let <span class="arithmatex">\(f:S\to\mathbb R\)</span> satisfy</p>
 <div class="arithmatex">\[
-\pi Q=\pi,
+\pi(|f|)&lt;\infty.
 \]</div>
-<p>or equivalently</p>
+<p>If <span class="arithmatex">\((X_n)\)</span> is irreducible and positive recurrent with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for every starting distribution <span class="arithmatex">\(\mu\)</span>,</p>
 <div class="arithmatex">\[
-\pi(y)=\sum_{x\in E}\pi(x)Q(x,y).
+\boxed{
+\frac1n\sum_{j=0}^{n}f(X_j)
+\longrightarrow
+\pi(f),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
 \]</div>
-<p>If <span class="arithmatex">\(\pi\)</span> is a probability measure, it is called a <strong>stationary distribution</strong>.</p>
-<p>When <span class="arithmatex">\(X_0\sim\pi\)</span>, all <span class="arithmatex">\(X_n\)</span> have law <span class="arithmatex">\(\pi\)</span>.</p>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\frac1n\sum_{j=0}^{n}\mathbf 1_{\{X_j=x\}}
+\longrightarrow
+\pi(x),
+\qquad a.s.
+\]</div>
 <hr />
-<h2 id="reversibility">Reversibility</h2>
-<p>A probability measure <span class="arithmatex">\(\pi\)</span> is reversible for <span class="arithmatex">\(Q\)</span> if</p>
+<h2 id="convergence-theorem-countable-state-space">Convergence Theorem: Countable State Space</h2>
+<p><strong>Theorem.</strong> Suppose that the Markov chain is irreducible, aperiodic and positive recurrent. Then</p>
 <div class="arithmatex">\[
-\pi(x)Q(x,y)=\pi(y)Q(y,x)
+\boxed{
+\|P^n(x,\cdot)-\pi\|_{\mathrm{TV}}
+\longrightarrow0.
+}
 \]</div>
-<p>for all <span class="arithmatex">\(x,y\in E\)</span>.</p>
-<p>The detailed balance condition implies invariance.</p>
+<p>In particular,</p>
+<div class="arithmatex">\[
+P^n(x,y)\longrightarrow\pi(y)&gt;0.
+\]</div>
+<p>For an infinite state space, the theorem does not in general give a uniform exponential estimate of the form</p>
+<div class="arithmatex">\[
+C\alpha^n.
+\]</div>
 <hr />
-<h2 id="convergence-to-equilibrium">Convergence to Equilibrium</h2>
-<p>For finite irreducible aperiodic Markov chains, there is a unique stationary distribution <span class="arithmatex">\(\pi\)</span>, and</p>
+<h2 id="simple-random-walk">Simple Random Walk</h2>
+<p>Let <span class="arithmatex">\((S_n)\)</span> be a simple random walk on <span class="arithmatex">\(\mathbb Z^d\)</span> starting from the origin. Define successive return times by</p>
 <div class="arithmatex">\[
-Q^n(x,y)\longrightarrow \pi(y)
+\tau_0=0,
 \]</div>
-<p>as <span class="arithmatex">\(n\to\infty\)</span>.</p>
-<p>This is the basic ergodic theorem for finite Markov chains.</p>
+<p>and</p>
+<div class="arithmatex">\[
+\tau_{k+1}
+=
+\inf\{n&gt;\tau_k:S_n=0\}.
+\]</div>
+<p>The following statements are equivalent:</p>
+<ol>
+<li>the random walk is recurrent;</li>
+<li>the walk returns to the origin almost surely:</li>
+</ol>
+<p>$$
+   \mathbb P(\tau_1&lt;\infty)=1;
+   $$</p>
+<ol start="3">
+<li>the expected total number of visits to the origin is infinite:</li>
+</ol>
+<p>$$
+   \sum_{m=0}^\infty\mathbb P(S_m=0)=\infty.
+   $$</p>
+<p>Let</p>
+<div class="arithmatex">\[
+p_d(m)=\mathbb P(S_m=0).
+\]</div>
+<p>For <span class="arithmatex">\(d=1\)</span>,</p>
+<div class="arithmatex">\[
+p_1(2n)
+=
+\binom{2n}{n}2^{-2n}
+\sim
+\frac1{\sqrt{\pi n}}.
+\]</div>
+<p>For <span class="arithmatex">\(d=2\)</span>,</p>
+<div class="arithmatex">\[
+p_2(2n)
+=
+p_1(2n)^2
+\sim
+\frac1{\pi n}.
+\]</div>
+<p>For <span class="arithmatex">\(d=3\)</span>,</p>
+<div class="arithmatex">\[
+p_3(2n)=O(n^{-3/2}).
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\sum_np_1(n)=\infty,
+\qquad
+\sum_np_2(n)=\infty,
+\qquad
+\sum_np_3(n)&lt;\infty.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\boxed{
+\text{simple random walk on }\mathbb Z^d
+\text{ is recurrent for }d\le2
+\text{ and transient for }d\ge3.
+}
+\]</div>
+<hr />
+<h1 id="galton-watson-tree">Galton--Watson Tree</h1>
+<p>A tree is a connected graph with no cycles. A rooted tree has a distinguished vertex called the root.</p>
+<p>The <strong>depth</strong> of a vertex is its graph distance from the root. Vertices at depth <span class="arithmatex">\(n\)</span> form the <span class="arithmatex">\(n\)</span>-th generation.</p>
+<p>In a regular rooted tree, every vertex has exactly <span class="arithmatex">\(m\)</span> offspring, so the number of vertices in generation <span class="arithmatex">\(n\)</span> is</p>
+<div class="arithmatex">\[
+Z_n=m^n.
+\]</div>
+<p>In a Galton--Watson tree, the number of offspring is random.</p>
+<p>Start with one ancestor:</p>
+<div class="arithmatex">\[
+Z_0=1.
+\]</div>
+<p>Each individual independently produces a random number of offspring with distribution</p>
+<div class="arithmatex">\[
+p_k=\mathbb P(Z_1=k),
+\qquad k\ge0.
+\]</div>
+<p>If <span class="arithmatex">\(\xi_{n,i}\)</span> denotes the number of offspring produced by individual <span class="arithmatex">\(i\)</span> in generation <span class="arithmatex">\(n\)</span>, then</p>
+<div class="arithmatex">\[
+Z_{n+1}
+=
+\sum_{i=1}^{Z_n}\xi_{n,i}.
+\]</div>
+<p>The state <span class="arithmatex">\(0\)</span> is absorbing.</p>
+<p>Define the extinction time</p>
+<div class="arithmatex">\[
+T=\inf\{n\ge0:Z_n=0\},
+\]</div>
+<p>and the extinction probability</p>
+<div class="arithmatex">\[
+q
+=
+\mathbb P(Z_n=0\text{ eventually})
+=
+\mathbb P(T&lt;\infty).
+\]</div>
+<hr />
+<h2 id="reproduction-law">Reproduction Law</h2>
+<p>The reproduction law is</p>
+<div class="arithmatex">\[
+p_k=\mathbb P(Z_1=k),
+\qquad
+\sum_{k=0}^\infty p_k=1.
+\]</div>
+<p>Assume</p>
+<div class="arithmatex">\[
+p_0+p_1&lt;1,
+\]</div>
+<p>so the reproduction law is nontrivial.</p>
+<p>The mean number of offspring is</p>
+<div class="arithmatex">\[
+R_0
+=
+\mathbb E[Z_1]
+=
+\sum_{k=0}^\infty kp_k.
+\]</div>
+<p>Conditioning on <span class="arithmatex">\(Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}\mid Z_n]
+=
+R_0Z_n.
+\]</div>
+<p>Taking expectations,</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}]
+=
+R_0\mathbb E[Z_n].
+\]</div>
+<p>Since <span class="arithmatex">\(Z_0=1\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[Z_n]=R_0^n.
+}
+\]</div>
+<hr />
+<h2 id="generating-function">Generating Function</h2>
+<p>Define the generating function</p>
+<div class="arithmatex">\[
+f(s)
+=
+\mathbb E[s^{Z_1}]
+=
+\sum_{k=0}^\infty p_ks^k,
+\qquad 0\le s\le1.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+f(0)=p_0,
+\qquad
+f(1)=1,
+\qquad
+f'(1)=R_0.
+\]</div>
+<p>The function <span class="arithmatex">\(f\)</span> is increasing and convex.</p>
+<p>Conditioning on <span class="arithmatex">\(Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[s^{Z_{n+1}}\mid Z_n]
+&amp;=
+\mathbb E\left[
+s^{\xi_{n,1}+\cdots+\xi_{n,Z_n}}
+\mid Z_n
+\right]\\
+&amp;=
+f(s)^{Z_n}.
+\end{aligned}
+\]</div>
+<p>Let <span class="arithmatex">\(f_n\)</span> denote the <span class="arithmatex">\(n\)</span>-fold composition of <span class="arithmatex">\(f\)</span>. Then</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[s^{Z_n}]=f_n(s).
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\mathbb P(Z_n=0)=f_n(0).
+\]</div>
+<hr />
+<h2 id="extinction-probability">Extinction Probability</h2>
+<p>Set</p>
+<div class="arithmatex">\[
+q_n=\mathbb P(Z_n=0)=f_n(0).
+\]</div>
+<p>Since extinction is permanent,</p>
+<div class="arithmatex">\[
+q_n\uparrow q.
+\]</div>
+<p>Also,</p>
+<div class="arithmatex">\[
+q_{n+1}=f(q_n).
+\]</div>
+<p>Taking limits gives</p>
+<div class="arithmatex">\[
+f(q)=q.
+\]</div>
+<p>If <span class="arithmatex">\(s\in[0,1]\)</span> satisfies <span class="arithmatex">\(f(s)=s\)</span>, then <span class="arithmatex">\(q_0=0\le s\)</span>, and by induction,</p>
+<div class="arithmatex">\[
+q_n\le s.
+\]</div>
+<p>Hence <span class="arithmatex">\(q\le s\)</span>. Therefore,</p>
+<div class="arithmatex">\[
+\boxed{
+q\text{ is the smallest solution of }f(s)=s
+\text{ in }[0,1].
+}
+\]</div>
+<p>The shape of the generating function gives</p>
+<div class="arithmatex">\[
+\boxed{
+\begin{cases}
+R_0&lt;1 &amp;\Longrightarrow q=1,\\
+R_0=1 &amp;\Longrightarrow q=1,\\
+R_0&gt;1 &amp;\Longrightarrow q&lt;1.
+\end{cases}
+}
+\]</div>
+<p>Thus:</p>
+<ul>
+<li><span class="arithmatex">\(R_0&lt;1\)</span>: extinction occurs almost surely;</li>
+<li><span class="arithmatex">\(R_0=1\)</span>: extinction occurs almost surely;</li>
+<li><span class="arithmatex">\(R_0&gt;1\)</span>: survival has positive probability <span class="arithmatex">\(1-q\)</span>.</li>
+</ul>
+<hr />
+<h2 id="subcritical-case">Subcritical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0&lt;1
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma^2
+=
+\operatorname{Var}(Z_1)
+=
+\sum_{k=0}^\infty(k-R_0)^2p_k
+&lt;\infty.
+\]</div>
+<p>Then there exists <span class="arithmatex">\(C&gt;0\)</span> such that</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb P(T&gt;n)\sim CR_0^n.
+}
+\]</div>
+<p>Thus the survival probability decays exponentially.</p>
+<hr />
+<h2 id="critical-case">Critical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0=1
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma^2=\operatorname{Var}(Z_1)&lt;\infty.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb P(T&gt;n)
+\sim
+\frac{2}{\sigma^2n}.
+}
+\]</div>
+<p>Extinction still occurs almost surely, but the survival probability decays only at rate <span class="arithmatex">\(1/n\)</span>.</p>
+<hr />
+<h2 id="supercritical-case">Supercritical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0&gt;1.
+\]</div>
+<p>Then the survival probability is</p>
+<div class="arithmatex">\[
+1-q&gt;0.
+\]</div>
+<p>Define</p>
+<div class="arithmatex">\[
+W_n=\frac{Z_n}{R_0^n}.
+\]</div>
+<p>Let <span class="arithmatex">\(\mathcal F_n\)</span> be the information up to generation <span class="arithmatex">\(n\)</span>. Since</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}\mid\mathcal F_n]
+=
+R_0Z_n,
+\]</div>
+<p>we have</p>
+<div class="arithmatex">\[
+\mathbb E[W_{n+1}\mid\mathcal F_n]
+=
+W_n.
+\]</div>
+<p>Thus <span class="arithmatex">\((W_n)\)</span> is a nonnegative martingale. By the martingale convergence theorem,</p>
+<div class="arithmatex">\[
+\boxed{
+W_n\longrightarrow W,
+\qquad a.s.
+}
+\]</div>
+<p>The Kesten--Stigum theorem states that</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[W]=1
+\iff
+\mathbb P(W&gt;0\mid\text{survival})=1
+\iff
+\mathbb E[Z_1\log^+Z_1]&lt;\infty,
+}
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+\log^+x=\max\{\log x,0\}.
+\]</div>
+<p>Under this condition, on the survival event,</p>
+<div class="arithmatex">\[
+Z_n\approx WR_0^n,
+\]</div>
+<p>so the population grows exponentially.</p>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability">#probability</a></div>

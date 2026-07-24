@@ -501,6 +501,265 @@ Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
 \sum_n \operatorname{Var}(Y_n).
 \]</div>
 <p>The value of <span class="arithmatex">\(A\)</span> is not essential; changing <span class="arithmatex">\(A\)</span> gives an equivalent criterion.</p>
+<p><strong>Proof.</strong> We first establish the maximal inequalities used in the proof.</p>
+<hr />
+<p><strong>Lemma 1:</strong> Let <span class="arithmatex">\(Z_1,\ldots,Z_n\)</span> be independent random variables satisfying</p>
+<div class="arithmatex">\[
+\mathbb E[Z_j]=0,\qquad \mathbb E[Z_j^2]&lt;\infty,
+\]</div>
+<p>and put <span class="arithmatex">\(R_k=\sum_{j=1}^k Z_j\)</span>. Then, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P\left(\max_{1\le k\le n}|R_k|\ge\varepsilon\right)
+\le
+\frac{\operatorname{Var}(R_n)}{\varepsilon^2}.
+\]</div>
+<p>For <span class="arithmatex">\(1\le k\le n\)</span>, define the first-exit events</p>
+<div class="arithmatex">\[
+E_k=
+\{|R_1|&lt;\varepsilon,\ldots,|R_{k-1}|&lt;\varepsilon,\ |R_k|\ge\varepsilon\}.
+\]</div>
+<p>The events <span class="arithmatex">\(E_k\)</span> are pairwise disjoint and</p>
+<div class="arithmatex">\[
+\bigcup_{k=1}^n E_k
+=
+\left\{\max_{1\le k\le n}|R_k|\ge\varepsilon\right\}.
+\]</div>
+<p>Since <span class="arithmatex">\(E_k\)</span> and <span class="arithmatex">\(R_k\)</span> depend only on <span class="arithmatex">\(Z_1,\ldots,Z_k\)</span>, while <span class="arithmatex">\(R_n-R_k\)</span> is independent of them and has mean <span class="arithmatex">\(0\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[R_n^2\mathbf 1_{E_k}]
+&amp;=
+\mathbb E[(R_k+R_n-R_k)^2\mathbf 1_{E_k}]\\
+&amp;=
+\mathbb E[R_k^2\mathbf 1_{E_k}]
++
+\mathbb P(E_k)\mathbb E[(R_n-R_k)^2]\\
+&amp;\ge
+\varepsilon^2\mathbb P(E_k).
+\end{aligned}
+\]</div>
+<p>Summing over <span class="arithmatex">\(k\)</span>,</p>
+<div class="arithmatex">\[
+\operatorname{Var}(R_n)
+=
+\mathbb E[R_n^2]
+\ge
+\varepsilon^2
+\mathbb P\left(\max_{1\le k\le n}|R_k|\ge\varepsilon\right),
+\]</div>
+<p>which proves the inequality.</p>
+<p>As a consequence, if <span class="arithmatex">\((Z_n)\)</span> are independent and centered and</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)&lt;\infty,
+\]</div>
+<p>then <span class="arithmatex">\(\sum_n Z_n\)</span> converges almost surely. Indeed, choose <span class="arithmatex">\(N_r\uparrow\infty\)</span> such that</p>
+<div class="arithmatex">\[
+\sum_{j&gt;N_r}\operatorname{Var}(Z_j)\le 2^{-3r}.
+\]</div>
+<p>Kolmogorov's inequality gives</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\sup_{k&gt;N_r}\left|\sum_{j=N_r+1}^k Z_j\right|&gt;2^{-r}
+\right)
+\le
+2^{2r}\sum_{j&gt;N_r}\operatorname{Var}(Z_j)
+\le 2^{-r}.
+\]</div>
+<p>The right-hand side is summable, so the Borel--Cantelli lemma shows that the partial sums of <span class="arithmatex">\(\sum_n Z_n\)</span> satisfy the Cauchy criterion almost surely.</p>
+<hr />
+<p><strong>Lemma 2:</strong> Let <span class="arithmatex">\(Z_1,\ldots,Z_n\)</span> be independent centered random variables satisfying <span class="arithmatex">\(|Z_j|\le C\)</span> a.s., and put <span class="arithmatex">\(R_k=\sum_{j=1}^k Z_j\)</span>. Then</p>
+<div class="arithmatex">\[
+\mathbb P\left(\max_{1\le k\le n}|R_k|\le B\right)
+\le
+\frac{(B+C)^2}{\operatorname{Var}(R_n)}.
+\]</div>
+<p>This centered form is sufficient for the proof below and is slightly sharper than the corresponding estimate stated in the slides.</p>
+<p>Let</p>
+<div class="arithmatex">\[
+E=\left\{\max_{1\le k\le n}|R_k|\le B\right\},
+\qquad
+p=\mathbb P(E),
+\]</div>
+<p>and let <span class="arithmatex">\(E_k\)</span> be the event that <span class="arithmatex">\(R_k\)</span> is the first partial sum to leave <span class="arithmatex">\([-B,B]\)</span>. On <span class="arithmatex">\(E_k\)</span>,</p>
+<div class="arithmatex">\[
+|R_k|\le B+C.
+\]</div>
+<p>As in the proof of Lemma 1,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[R_n^2\mathbf 1_{E_k}]
+&amp;=
+\mathbb E[R_k^2\mathbf 1_{E_k}]
++
+\mathbb P(E_k)\mathbb E[(R_n-R_k)^2]\\
+&amp;\le
+(B+C)^2\mathbb P(E_k)
++
+\operatorname{Var}(R_n)\mathbb P(E_k).
+\end{aligned}
+\]</div>
+<p>Also, <span class="arithmatex">\(|R_n|\le B\)</span> on <span class="arithmatex">\(E\)</span>. Therefore,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\operatorname{Var}(R_n)
+&amp;=
+\mathbb E[R_n^2\mathbf 1_E]
++
+\sum_{k=1}^n\mathbb E[R_n^2\mathbf 1_{E_k}]\\
+&amp;\le
+B^2p+(B+C)^2(1-p)+\operatorname{Var}(R_n)(1-p).
+\end{aligned}
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+p\,\operatorname{Var}(R_n)
+\le
+B^2p+(B+C)^2(1-p)
+\le
+(B+C)^2,
+\]</div>
+<p>which gives the desired inequality.</p>
+<hr />
+<p><strong>Lemma 3:</strong> Let <span class="arithmatex">\((U_n)\)</span> be independent and suppose that <span class="arithmatex">\(|U_n|\le A\)</span> a.s. If</p>
+<div class="arithmatex">\[
+\sum_n U_n
+\]</div>
+<p>converges almost surely, then</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(U_n)&lt;\infty
+\]</div>
+<p>and the numerical series</p>
+<div class="arithmatex">\[
+\sum_n\mathbb E[U_n]
+\]</div>
+<p>converges.</p>
+<p>Let <span class="arithmatex">\((U_n')\)</span> be an independent copy of <span class="arithmatex">\((U_n)\)</span>, defined on a product probability space, and set</p>
+<div class="arithmatex">\[
+Z_n=U_n-U_n'.
+\]</div>
+<p>Then the <span class="arithmatex">\(Z_n\)</span>'s are independent and centered,</p>
+<div class="arithmatex">\[
+|Z_n|\le 2A,
+\qquad
+\operatorname{Var}(Z_n)=2\operatorname{Var}(U_n),
+\]</div>
+<p>and <span class="arithmatex">\(\sum_n Z_n\)</span> converges almost surely.</p>
+<p>Consequently,</p>
+<div class="arithmatex">\[
+\sup_{k&gt;m}\left|\sum_{j=m+1}^k Z_j\right|\to0
+\qquad\text{a.s.}
+\]</div>
+<p>Thus, for all sufficiently large <span class="arithmatex">\(m\)</span> and every <span class="arithmatex">\(n&gt;m\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\max_{m&lt;k\le n}
+\left|\sum_{j=m+1}^k Z_j\right|\le1
+\right)\ge\frac12.
+\]</div>
+<p>Applying Lemma 2 to <span class="arithmatex">\(Z_{m+1},\ldots,Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\frac12
+\le
+\frac{(1+2A)^2}
+{\sum_{j=m+1}^n\operatorname{Var}(Z_j)}.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\sum_{j=m+1}^n\operatorname{Var}(Z_j)
+\le
+2(1+2A)^2.
+\]</div>
+<p>Letting <span class="arithmatex">\(n\to\infty\)</span>,</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)&lt;\infty,
+\]</div>
+<p>and therefore</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(U_n)&lt;\infty.
+\]</div>
+<p>By Lemma 1,</p>
+<div class="arithmatex">\[
+\sum_n\bigl(U_n-\mathbb E[U_n]\bigr)
+\]</div>
+<p>converges almost surely. Since <span class="arithmatex">\(\sum_nU_n\)</span> also converges almost surely, their difference</p>
+<div class="arithmatex">\[
+\sum_{j=1}^n\mathbb E[U_j]
+=
+\sum_{j=1}^nU_j
+-
+\sum_{j=1}^n\bigl(U_j-\mathbb E[U_j]\bigr)
+\]</div>
+<p>converges. Hence <span class="arithmatex">\(\sum_n\mathbb E[U_n]\)</span> converges.</p>
+<hr />
+<p>"<span class="arithmatex">\(\Longleftarrow\)</span>"</p>
+<p>Assume that</p>
+<div class="arithmatex">\[
+\sum_n\mathbb P(|X_n|&gt;A)&lt;\infty,
+\qquad
+\sum_n\mathbb E[Y_n]\ \text{converges},
+\qquad
+\sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\]</div>
+<p>By the first Borel--Cantelli lemma,</p>
+<div class="arithmatex">\[
+\mathbb P(|X_n|&gt;A\ \text{i.o.})=0,
+\]</div>
+<p>so <span class="arithmatex">\(X_n=Y_n\)</span> eventually almost surely.</p>
+<p>Set</p>
+<div class="arithmatex">\[
+Z_n=Y_n-\mathbb E[Y_n].
+\]</div>
+<p>Then the <span class="arithmatex">\(Z_n\)</span>'s are independent and centered, and</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)
+=
+\sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\]</div>
+<p>By Lemma 1, <span class="arithmatex">\(\sum_nZ_n\)</span> converges almost surely. Since <span class="arithmatex">\(\sum_n\mathbb E[Y_n]\)</span> converges,</p>
+<div class="arithmatex">\[
+\sum_nY_n
+=
+\sum_nZ_n+\sum_n\mathbb E[Y_n]
+\]</div>
+<p>converges almost surely. Since <span class="arithmatex">\(X_n=Y_n\)</span> eventually,</p>
+<div class="arithmatex">\[
+\sum_nX_n
+\]</div>
+<p>also converges almost surely.</p>
+<hr />
+<p>"<span class="arithmatex">\(\Longrightarrow\)</span>"</p>
+<p>Assume that</p>
+<div class="arithmatex">\[
+\sum_nX_n
+\]</div>
+<p>converges almost surely. Then <span class="arithmatex">\(X_n\to0\)</span> almost surely, so</p>
+<div class="arithmatex">\[
+\mathbb P(|X_n|&gt;A\ \text{i.o.})=0.
+\]</div>
+<p>The events <span class="arithmatex">\(\{|X_n|&gt;A\}\)</span> are independent. By the second Borel--Cantelli lemma,</p>
+<div class="arithmatex">\[
+\sum_n\mathbb P(|X_n|&gt;A)&lt;\infty.
+\]</div>
+<p>Moreover, <span class="arithmatex">\(X_n=Y_n\)</span> eventually almost surely, so <span class="arithmatex">\(\sum_nY_n\)</span> converges almost surely. Since <span class="arithmatex">\(|Y_n|\le A\)</span>, Lemma 3 gives</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Y_n)&lt;\infty
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sum_n\mathbb E[Y_n]
+\]</div>
+<p>converges. Thus all three series converge.</p>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\sum_nX_n\text{ converges a.s.}
+\quad\Longleftrightarrow\quad
+\begin{cases}
+\displaystyle \sum_n\mathbb P(|X_n|&gt;A)&lt;\infty,\\[2mm]
+\displaystyle \sum_n\mathbb E[Y_n]\text{ converges},\\[2mm]
+\displaystyle \sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\end{cases}
+\]</div>
+<p>Finally, if the criterion holds for one value of <span class="arithmatex">\(A&gt;0\)</span>, the series <span class="arithmatex">\(\sum_nX_n\)</span> converges almost surely; the necessity part then shows that the criterion holds for every <span class="arithmatex">\(A&gt;0\)</span>.</p>
 <hr />
 <h2 id="maximal-growth">Maximal Growth</h2>
 <p>For i.i.d. nonnegative random variables, the behavior of</p>

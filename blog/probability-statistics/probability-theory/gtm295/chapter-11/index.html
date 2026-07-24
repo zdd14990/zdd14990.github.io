@@ -376,10 +376,31 @@
 <p>Suppose that we have <span class="arithmatex">\(n\)</span> boxes numbered <span class="arithmatex">\(1,2,\ldots,n\)</span>, and that the <span class="arithmatex">\(i\)</span>-th box contains <span class="arithmatex">\(r_i\)</span> red balls and <span class="arithmatex">\(n_i\)</span> black balls, where <span class="arithmatex">\(r_i,n_i\ge1\)</span>. Imagine that one chooses a box uniformly at random, and then picks a ball (again at random) in the chosen box. Compute the probability that the <span class="arithmatex">\(i\)</span>-th box was chosen knowing that a red ball was picked.</p>
 </li>
 </ol>
+<p><strong>Solution.</strong> </p>
+<p>(1)</p>
+<div class="arithmatex">\[
+B=\bigcup_{j=1}^n(B\cap A_j) \Longrightarrow \mathbb{P}(B)=\sum_{j=1}^n\mathbb{P}(B\cap A_j)=\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j).
+\]</div>
+<p>so,</p>
+<div class="arithmatex">\[
+\mathbb{P}(A_i\mid B)=\frac{\mathbb{P}(A_i\cap B)}{\mathbb{P}(B)}=\frac{\mathbb{P}(A_i)\mathbb{P}(B\mid A_i)}{\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j)}.
+\]</div>
+<p>(2)</p>
+<div class="arithmatex">\[
+\mathbb{P}(A_i|B)=\frac{\mathbb{P}(A_i)\mathbb{P}(B\mid A_i)}{\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j)}=\frac{\frac{1}{n}\cdot\frac{r_i}{r_i+n_i}}{\sum_{j=1}^n\frac{1}{n}\cdot\frac{r_j}{r_j+n_j}}=\frac{\frac{r_i}{r_i+n_i}}{\sum_{j=1}^n\frac{r_j}{r_j+n_j}}.
+\]</div>
 <hr />
 <p><strong>Exercise 11.2</strong> Let <span class="arithmatex">\(X_1,\ldots,X_n\)</span> be independent Bernoulli random variables with parameter <span class="arithmatex">\(p\in(0,1)\)</span>, and <span class="arithmatex">\(S_n=X_1+\cdots+X_n\)</span>. Prove that, for every <span class="arithmatex">\(k\in\{0,1,\ldots,n\}\)</span>, the conditional distribution of <span class="arithmatex">\((X_1,\ldots,X_n)\)</span> knowing that <span class="arithmatex">\(S_n=k\)</span> (that is, the law of <span class="arithmatex">\((X_1,\ldots,X_n)\)</span> under <span class="arithmatex">\(\mathbb{P}(\cdot\mid S_n=k)\)</span>) is the uniform distribution on</p>
 <div class="arithmatex">\[
 \{(x_1,\ldots,x_n)\in\{0,1\}^n:x_1+\cdots+x_n=k\}.
+\]</div>
+<p><strong>Solution.</strong> Set <span class="arithmatex">\(E_k=\{(x_1,\ldots,x_n)\in\{0,1\}^n:x_1+\cdots+x_n=k\}\)</span>. <span class="arithmatex">\(S_n\sim \text{Binomial}(n,p)\)</span>, so</p>
+<div class="arithmatex">\[
+\begin{aligned}
+    &amp;\mathbb{P}\left((X_1,\ldots,X_n)=(x_1,\ldots,x_n)\mid S_n=k\right)\\
+    =&amp;\frac{\mathbb{P}\left((X_1,\ldots,X_n)=(x_1,\ldots,x_n),S_n=k\right)}{\mathbb{P}(S_n=k)}\\
+    =&amp;\frac{p^k(1-p)^{n-k}}{\binom{n}{k}p^k(1-p)^{n-k}}=\frac{1}{\binom{n}{k}},
+\end{aligned}
 \]</div>
 <hr />
 <p><strong>Exercise 11.3</strong> Let <span class="arithmatex">\((X_n)_{n\in\mathbb{N}}\)</span> be a sequence of independent real random variables uniformly distributed over <span class="arithmatex">\([0,1]\)</span>. Define the <em>record times</em> of the sequence by <span class="arithmatex">\(T_1=1\)</span> and, for every <span class="arithmatex">\(p\ge2\)</span>,</p>
@@ -393,6 +414,21 @@ T_p:=\inf\{n&gt;T_{p-1}:X_n&gt;X_{T_{p-1}}\}
 \mathbb{E}\!\left[\mathbf{1}_{\{T_p=k\}}\mid T_{p-1}\right]
 =
 \frac{T_{p-1}}{k(k-1)}\mathbf{1}_{\{k&gt;T_{p-1}\}}.
+\]</div>
+<p><strong>Solution.</strong> Set <span class="arithmatex">\(T_{p-1}=m\)</span>.</p>
+<div class="arithmatex">\[
+\mathbb{P}\left(X_{T_{p-1}}\le x|T_{p-1}=m\right)=x^m\Longrightarrow \mathbb{P}\left(X_{T_{p-1}}=x|T_{p-1}=m\right)=mx^{m-1}, \quad x\in[0,1].
+\]</div>
+<div class="arithmatex">\[
+\mathbb{P}\left(T_p=k|T_{p-1}=m,X_{T_{p-1}}=x\right)=\mathbb{P}\left(X_m\le x,\ldots,X_{k-1}\le x,X_k&gt;x\right)=x^{k-m-1}(1-x), \quad k&gt;m.
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+    &amp;\mathbb{P}\left(T_p=k|T_{p-1}=m\right)\\
+    =&amp;\int_0^1\mathbb{P}\left(T_p=k|T_{p-1}=m,X_{T_{p-1}}=x\right)\mathbb{P}\left(X_{T_{p-1}}=x|T_{p-1}=m\right)dx\\
+    =&amp;\int_0^1x^{k-m-1}(1-x)mx^{m-1}dx\\
+    =&amp;\frac{m}{k(k-1)}\mathbb{1}_{\{k&gt;m\}}.
+\end{aligned}
 \]</div>
 <hr />
 <p><strong>Exercise 11.4</strong> Let <span class="arithmatex">\(\mathcal{B}\)</span> be a sub-<span class="arithmatex">\(\sigma\)</span>-field of <span class="arithmatex">\(\mathcal{A}\)</span>, and let <span class="arithmatex">\(X\)</span> be a nonnegative real random variable. Prove that the set</p>

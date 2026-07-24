@@ -404,10 +404,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lindeberg-form" class="md-nav__link">
+  <a href="#lindeberg-feller-theorem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lindeberg Form
+        Lindeberg-Feller Theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#poisson-convergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Poisson Convergence
       
     </span>
   </a>
@@ -446,7 +457,7 @@
 <p>Basic properties:</p>
 <ol>
 <li>
-<p><span class="arithmatex">\(\varphi_X(0)=1\)</span> and <span class="arithmatex">\(|\varphi_X(t)|\le 1\)</span>.</p>
+<p><span class="arithmatex">\(\varphi_X(0)=1\)</span> and <span class="arithmatex">\(|\varphi_X(t)|\le 1\)</span>, and <span class="arithmatex">\(\varphi_X(-t)=\overline{\varphi_X(t)}\)</span>.</p>
 </li>
 <li>
 <p><span class="arithmatex">\(\varphi_X\)</span> is uniformly continuous.</p>
@@ -463,6 +474,12 @@
 \varphi_{X+Y}(t)=\varphi_X(t)\varphi_Y(t).
 \]</div>
 </li>
+<li>
+<p>Convex combination of characteristic functions is a characteristic function. That is because the law of a convex combination of independent random variables is the corresponding convex combination of their laws.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(f\)</span> is a characteristic function, then <span class="arithmatex">\(|f|^2\)</span> is also a characteristic function. </p>
+</li>
 </ol>
 <hr />
 <h2 id="examples">Examples</h2>
@@ -477,9 +494,21 @@
 \]</div>
 </li>
 <li>
+<p>If <span class="arithmatex">\(X\sim \mathrm{Uniform}[-a,a]\)</span>, then</p>
+<div class="arithmatex">\[
+\varphi_X(t)=\frac{\sin(at)}{at}.
+\]</div>
+</li>
+<li>
 <p>If <span class="arithmatex">\(X\sim N(m,\sigma^2)\)</span>, then</p>
 <div class="arithmatex">\[
 \varphi_X(t)=\exp\left(imt-\frac{\sigma^2t^2}{2}\right).
+\]</div>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X \sim \mathrm{Exponential}(\lambda)\)</span>, then</p>
+<div class="arithmatex">\[
+\varphi_X(t)=\frac{\lambda}{\lambda-it}.
 \]</div>
 </li>
 <li>
@@ -488,10 +517,30 @@
 \varphi_X(t)=\exp\{\lambda(e^{it}-1)\}.
 \]</div>
 </li>
+<li>
+<p>If <span class="arithmatex">\(X\sim \mathrm{Geometric}(p)\)</span>, then</p>
+<div class="arithmatex">\[
+\varphi_X(t)=\frac{pe^{it}}{1-(1-p)e^{it}}.
+\]</div>
+</li>
+</ul>
+<hr />
+<p><strong>Lemma:</strong> Suppose <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are independent. Then</p>
+<ul>
+<li>
+<p>The distribution of <span class="arithmatex">\(X+Y\)</span> is <span class="arithmatex">\(F_X*F_Y\)</span> </p>
+</li>
+<li>
+<p>The characteristic function of <span class="arithmatex">\(X+Y\)</span> is <span class="arithmatex">\(\varphi_X\times \varphi_Y\)</span>.</p>
+</li>
 </ul>
 <hr />
 <h2 id="inversion-and-uniqueness">Inversion and Uniqueness</h2>
-<p>The characteristic function determines the law. More precisely, if two probability measures have the same characteristic function, then they are equal.</p>
+<p><strong>Theorem:</strong> Suppose <span class="arithmatex">\(f\)</span> is the characteristic function of a law <span class="arithmatex">\(\mu\)</span>. Then for any <span class="arithmatex">\(x&lt;y\)</span> we have:</p>
+<div class="arithmatex">\[
+\mu[(x,y)]+\frac{1}{2}\mu[\{x\}]+\frac{1}{2}\mu[\{y\}]=\lim_{T\to\infty}\frac{1}{2\pi}\int_{-T}^{T}\frac{e^{-itx}-e^{-ity}}{it}f(t)\,dt.
+\]</div>
+<p><strong>Corollary:</strong> If two probability measures have the same characteristic function, then they are equal.</p>
 <p>If <span class="arithmatex">\(\varphi\in L^1(\mathbb{R})\)</span>, then the corresponding law has density</p>
 <div class="arithmatex">\[
 p(x)=\frac{1}{2\pi}\int_{\mathbb{R}}e^{-itx}\varphi(t)\,dt.
@@ -502,6 +551,21 @@ p(x)=\frac{1}{2\pi}\int_{\mathbb{R}}e^{-itx}\varphi(t)\,dt.
 \lim_{T\to\infty}
 \frac{1}{2T}\int_{-T}^{T}e^{-itx}\varphi(t)\,dt.
 \]</div>
+<hr />
+<p>The random variable <span class="arithmatex">\(X\)</span> is <strong>symmetric</strong>  if <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(-X\)</span> have the same law. </p>
+<p><strong>Lemma:</strong> <span class="arithmatex">\(X\)</span> is symmetric if and only if <span class="arithmatex">\(\varphi_X(t)\)</span> is real for all <span class="arithmatex">\(t\in\mathbb{R}\)</span>.</p>
+<p>A random vector <span class="arithmatex">\(X=(X_1,\ldots,X_d)\)</span> is a <strong>Gaussian vector</strong> if for every <span class="arithmatex">\(u=(u_1,\ldots,u_d)\in\mathbb{R}^d\)</span>, the random variable <span class="arithmatex">\(u^TX=\sum_{j=1}^du_jX_j\)</span> is Gaussian. We denote</p>
+<div class="arithmatex">\[
+m=(\mathbb{E}[X_1],\ldots,\mathbb{E}[X_d])\in \mathbb{R}^d,
+\]</div>
+<div class="arithmatex">\[
+\Sigma = (w_{ij})_{1\le i,j\le d},\qquad w_{ij}=\operatorname{Cov}(X_i,X_j),
+\]</div>
+<p><strong>Lemma:</strong> The matrix <span class="arithmatex">\(\Sigma\)</span> is a positive semidefinite matrix and we have</p>
+<div class="arithmatex">\[
+\mathbb{E}[e^{i u^TX}]=\exp\left(i u^Tm-\frac{1}{2}u^T\Sigma u\right).
+\]</div>
+<p><strong>Lemma:</strong> As <span class="arithmatex">\(\Sigma\)</span> is positive semidefinite, there exists a matrix <span class="arithmatex">\(A\)</span> such that <span class="arithmatex">\(\Sigma=AA^T\)</span>. Suppose <span class="arithmatex">\(Y=(Y_1,\ldots,Y_d)\)</span> where <span class="arithmatex">\(Y_1,\ldots,Y_d\)</span> are i.i.d. <span class="arithmatex">\(\sim N(0,1)\)</span>. Then <span class="arithmatex">\(X\)</span> has the same law as <span class="arithmatex">\(AY+m\)</span>.</p>
 <hr />
 <h2 id="levy-continuity-theorem">Levy Continuity Theorem</h2>
 <p>Let <span class="arithmatex">\((X_n)\)</span> be real random variables with characteristic functions <span class="arithmatex">\(\varphi_n\)</span>.</p>
@@ -534,24 +598,35 @@ X_n\Rightarrow \mu.
 \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{-u^2/2}\,du.
 \]</div>
 <hr />
-<h2 id="lindeberg-form">Lindeberg Form</h2>
-<p>For independent centered variables <span class="arithmatex">\((X_{n,k})\)</span>, set</p>
+<h2 id="lindeberg-feller-theorem">Lindeberg-Feller Theorem</h2>
+<p>For each <span class="arithmatex">\(n\)</span>, let <span class="arithmatex">\(\left\{X_{n,m}\right\}_{m=1}^{n}\)</span> be i.r.v. with <span class="arithmatex">\(\mathbb{E}[X_{n,m}]=0\)</span> Suppose that </p>
 <div class="arithmatex">\[
-s_n^2=\sum_k \operatorname{Var}(X_{n,k}).
+\lim_{n\to\infty}\sum_{m=1}^{n}\mathbb{E}[X_{n,m}^2]=\sigma^2\in(0,\infty),
 \]</div>
-<p>The Lindeberg condition is</p>
+<p>and for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
 <div class="arithmatex">\[
-\frac{1}{s_n^2}
-\sum_k
-\mathbb{E}\left[
-X_{n,k}^2\mathbf{1}_{\{|X_{n,k}|&gt;\varepsilon s_n\}}
-\right]
-\longrightarrow 0
+\lim_{n\to\infty}\sum_{m=1}^{n}\mathbb{E}[X_{n,m}^2\mathbf{1}_{\{|X_{n,m}|&gt;\varepsilon\}}]=0.
 \]</div>
-<p>for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>. Under this condition,</p>
+<p>Then </p>
 <div class="arithmatex">\[
-\frac{\sum_k X_{n,k}}{s_n}\Rightarrow N(0,1).
+S_n^{\#}=\sum_{m=1}^{n}X_{n,m}\Rightarrow N(0,\sigma^2).
 \]</div>
+<hr />
+<h2 id="poisson-convergence">Poisson Convergence</h2>
+<p><strong>Theorem</strong> For each <span class="arithmatex">\(n\)</span>, let <span class="arithmatex">\(\left\{X_{n,m}:1\le m\le n\right\}\)</span> be i.v. with <span class="arithmatex">\(\mathbb{P}(X_{n,m}=1)=p_n\)</span> and <span class="arithmatex">\(\mathbb{P}(X_{n,m}=0)=1-p_n\)</span>. Suppose that </p>
+<div class="arithmatex">\[
+\sum_{m=1}^{n}p_n\longrightarrow \lambda\in(0,\infty), \text{ and }, \max_{1\le m\le n}p_n\longrightarrow 0.
+\]</div>
+<p>Then </p>
+<div class="arithmatex">\[
+S_n^{\#}=\sum_{m=1}^{n}X_{n,m}\Rightarrow \mathrm{Poisson}(\lambda).
+\]</div>
+<hr />
+<p>A complex-valued function <span class="arithmatex">\(f\)</span> defined on <span class="arithmatex">\(\mathbb{R}\)</span> is called <strong>positive definite</strong> if for any set of real numbers <span class="arithmatex">\(t_j\)</span> and complex numbers <span class="arithmatex">\(z_j\)</span>, we have</p>
+<div class="arithmatex">\[
+\sum _{j,k}f(t_j-t_k)z_j\overline{z_k}\ge 0.
+\]</div>
+<p><strong>Theorem:</strong> <span class="arithmatex">\(f\)</span> is a characteristic function if and only if it is positive definite and continuous at zero with <span class="arithmatex">\(f(0)=1\)</span>.</p>
 <div class="zdd-article-taxonomy">
   <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#概统</span><span class="zdd-category-chip">#概率论</span></div>
   <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-statistics">#probability-statistics</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability-theory">#probability-theory</a><a class="zdd-tag-chip" href="../../../../../tags/?tag=probability">#probability</a></div>

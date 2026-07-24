@@ -349,17 +349,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#definition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Definition
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#basic-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -371,21 +360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tower-property" class="md-nav__link">
+  <a href="#conditioning-probability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tower Property
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conditioning-by-a-random-variable" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Conditioning by a Random Variable
+        Conditioning probability
       
     </span>
   </a>
@@ -446,66 +424,75 @@
 
 <h1 id="conditional-expectation">Conditional Expectation</h1>
 <hr />
-<h2 id="definition">Definition</h2>
-<p>Let <span class="arithmatex">\(X\in L^1(\Omega,\mathcal{A},\mathbb{P})\)</span> and let <span class="arithmatex">\(\mathcal{G}\subset\mathcal{A}\)</span> be a sub-<span class="arithmatex">\(\sigma\)</span>-field.</p>
-<p>The <strong>conditional expectation</strong> of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(\mathcal{G}\)</span> is the random variable <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> such that:</p>
+<p><strong>Theorem</strong> Let <span class="arithmatex">\(X\in L^1(\Omega,\mathcal{F},\mathbb{P})\)</span> and let <span class="arithmatex">\(\mathcal{A}\subset\mathcal{F}\)</span> be a sub-<span class="arithmatex">\(\sigma\)</span>-field. Then there exists a <strong>unique</strong> random variable <span class="arithmatex">\(Y\)</span> such that:</p>
 <ol>
 <li>
-<p><span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{G}]\)</span> is <span class="arithmatex">\(\mathcal{G}\)</span>-measurable.</p>
+<p><span class="arithmatex">\(Y\)</span> is <span class="arithmatex">\(\mathcal{A}\)</span>-measurable.</p>
 </li>
 <li>
-<p>For every <span class="arithmatex">\(G\in\mathcal{G}\)</span>,</p>
-<div class="arithmatex">\[
-\int_G \mathbb{E}[X\mid\mathcal{G}]\,d\mathbb{P}
-=
-\int_G X\,d\mathbb{P}.
-\]</div>
+<p>for any <span class="arithmatex">\(A\in\mathcal{A}\)</span>, we have <span class="arithmatex">\(\mathbb{E}[Y\mathbf{1}_A]=\mathbb{E}[X\mathbf{1}_A]\)</span>.</p>
 </li>
 </ol>
-<p>It is unique up to almost sure equality.</p>
+<p>A random variable <span class="arithmatex">\(Y\)</span> satisfying the above two properties is called a <strong>conditional expectation</strong> of <span class="arithmatex">\(X\)</span> given <span class="arithmatex">\(\mathcal{A}\)</span>, and is denoted by <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{A}]\)</span>.</p>
 <hr />
 <h2 id="basic-properties">Basic Properties</h2>
 <p>For integrable random variables <span class="arithmatex">\(X,Y\)</span> and constants <span class="arithmatex">\(a,b\)</span>,</p>
-<div class="arithmatex">\[
-\mathbb{E}[aX+bY\mid\mathcal{G}]
-=a\mathbb{E}[X\mid\mathcal{G}]
-+b\mathbb{E}[Y\mid\mathcal{G}].
-\]</div>
-<p>If <span class="arithmatex">\(X\ge 0\)</span>, then</p>
-<div class="arithmatex">\[
-\mathbb{E}[X\mid\mathcal{G}]\ge 0.
-\]</div>
-<p>If <span class="arithmatex">\(Y\)</span> is bounded and <span class="arithmatex">\(\mathcal{G}\)</span>-measurable, then</p>
-<div class="arithmatex">\[
-\mathbb{E}[YX\mid\mathcal{G}]
-=Y\mathbb{E}[X\mid\mathcal{G}].
-\]</div>
+<ul>
+<li>
+<p>If <span class="arithmatex">\(\mathcal{A}=\{\emptyset,\Omega\}\)</span>, then <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{A}]=\mathbb{E}[X]\)</span> a.s.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X\)</span> is <span class="arithmatex">\(\mathcal{A}\)</span>-measurable, then <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{A}]=X\)</span> a.s.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathbb{E}[aX+bY\mid\mathcal{A}]=a\mathbb{E}[X\mid\mathcal{A}]+b\mathbb{E}[Y\mid\mathcal{A}].\)</span></p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X\ge 0\)</span> a.s., then <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{A}]\ge 0\)</span> a.s.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(X\le Y\)</span> a.s., then <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{A}]\le \mathbb{E}[Y\mid\mathcal{A}]\)</span> a.s.</p>
+</li>
+<li>
+<p>If <span class="arithmatex">\(Z=\mathbb{E}[X\mid\mathcal{A}]\)</span>, then <span class="arithmatex">\(\mathbb{E}[Z]=\mathbb{E}[X]\)</span> and <span class="arithmatex">\(|Z|\le \mathbb{E}[|X|\mid\mathcal{A}]\)</span> a.s. and <span class="arithmatex">\(\mathbb{E}[|Z|]\le \mathbb{E}[|X|]\)</span>.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathbb{E}[X\mid \mathcal{A}]\le \mathbb{E}[Y\mid \mathcal{A}]\)</span> a.s. iff <span class="arithmatex">\(\mathbb{E}[X\mathbf{1}_A]\le \mathbb{E}[Y\mathbf{1}_A]\)</span> for all <span class="arithmatex">\(A\in\mathcal{A}\)</span>.</p>
+</li>
+</ul>
 <hr />
-<h2 id="tower-property">Tower Property</h2>
-<p>If <span class="arithmatex">\(\mathcal{H}\subset\mathcal{G}\subset\mathcal{A}\)</span>, then</p>
-<div class="arithmatex">\[
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\mid\mathcal{H}\right]
-=
-\mathbb{E}[X\mid\mathcal{H}].
-\]</div>
-<p>In particular,</p>
-<div class="arithmatex">\[
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\right]
-=
-\mathbb{E}[X].
-\]</div>
+<p>Suppose <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(\left\{X_n\right\}\)</span> are r.v. in <span class="arithmatex">\(L^1(\Omega,\mathcal{F},\mathbb{P})\)</span> and <span class="arithmatex">\(\mathcal{A}\subset\mathcal{F}\)</span> is a sub-<span class="arithmatex">\(\sigma\)</span>-field. Then we have:</p>
+<ul>
+<li>
+<p>(Monotone Converge Theorem) If <span class="arithmatex">\(0\le X_n\uparrow X\)</span> a.s., then <span class="arithmatex">\(\mathbb{E}[X_n\mid\mathcal{A}]\uparrow \mathbb{E}[X\mid\mathcal{A}]\)</span> a.s.</p>
+</li>
+<li>
+<p>(Fatou's lemma) If <span class="arithmatex">\(X_n\ge 0\)</span> a.s., then <span class="arithmatex">\(\mathbb{E}[\liminf_{n}X_n\mid\mathcal{A}]\le \liminf_{n}\mathbb{E}[X_n\mid\mathcal{A}]\)</span> a.s.</p>
+</li>
+<li>
+<p>(DCT) If <span class="arithmatex">\(X_n\to X\)</span> a.s. and <span class="arithmatex">\(|X_n|\le Z\)</span> a.s. for some <span class="arithmatex">\(Z\in L^1\)</span>, then <span class="arithmatex">\(\mathbb{E}[X_n\mid\mathcal{A}]\to \mathbb{E}[X\mid\mathcal{A}]\)</span> a.s.</p>
+</li>
+<li>
+<p>(Jensen) If <span class="arithmatex">\(\varphi\)</span> is convex and <span class="arithmatex">\(\varphi(X)\in L^1\)</span>, then <span class="arithmatex">\(\varphi(\mathbb{E}[X\mid\mathcal{A}])\le \mathbb{E}[\varphi(X)\mid\mathcal{A}]\)</span></p>
+</li>
+<li>
+<p>(Holder) Let <span class="arithmatex">\(p,q&gt;1\)</span> with <span class="arithmatex">\(1/p+1/q=1\)</span>. If <span class="arithmatex">\(X\in L^p\)</span> and <span class="arithmatex">\(Y\in L^q\)</span>, then <span class="arithmatex">\(\mathbb{E}[|XY|\mid\mathcal{A}]\le \mathbb{E}[|X|^p\mid\mathcal{A}]^{1/p}\mathbb{E}[|Y|^q\mid\mathcal{A}]^{1/q}\)</span> a.s.</p>
+</li>
+<li>
+<p>(Tower property) Suppose that <span class="arithmatex">\(\mathcal{B}\)</span> is a sub-<span class="arithmatex">\(\sigma\)</span>-field of <span class="arithmatex">\(\mathcal{A}\)</span>. Then <span class="arithmatex">\(\mathbb{E}[\mathbb{E}[X\mid\mathcal{A}]\mid\mathcal{B}]=\mathbb{E}[X\mid\mathcal{B}]\)</span> a.s.</p>
+</li>
+<li>
+<p>("Thinking out what is known") If <span class="arithmatex">\(Z\)</span> is <span class="arithmatex">\(\mathcal{A}\)</span>-measurable, then <span class="arithmatex">\(\mathbb{E}[XZ\mid\mathcal{A}]=Z\mathbb{E}[X\mid\mathcal{A}]\)</span> a.s.</p>
+</li>
+<li>
+<p>(Independence) If <span class="arithmatex">\(\mathcal{B}\)</span> is independent of <span class="arithmatex">\(\sigma(X,\mathcal{A})\)</span>, then <span class="arithmatex">\(\mathbb{E}[X\mid\sigma(\mathcal{A},\mathcal{B})]=\mathbb{E}[X\mid\mathcal{A}]\)</span> a.s. In particular, if <span class="arithmatex">\(X\)</span> is independent of <span class="arithmatex">\(\mathcal{B}\)</span>, then <span class="arithmatex">\(\mathbb{E}[X\mid\mathcal{B}]=\mathbb{E}[X]\)</span> a.s.</p>
+</li>
+</ul>
 <hr />
-<h2 id="conditioning-by-a-random-variable">Conditioning by a Random Variable</h2>
-<p>For a random variable <span class="arithmatex">\(Y\)</span>, write</p>
+<h2 id="conditioning-probability">Conditioning probability</h2>
+<p>Suppose <span class="arithmatex">\(A,B\)</span> are events with <span class="arithmatex">\(\mathbb{P}(B)&gt;0\)</span> and  <span class="arithmatex">\(\mathcal{G}\)</span> is a sub-<span class="arithmatex">\(\sigma\)</span>-field of <span class="arithmatex">\(\mathcal{F}\)</span>. Then we define conditional probability as</p>
 <div class="arithmatex">\[
-\mathbb{E}[X\mid Y]
-=
-\mathbb{E}[X\mid\sigma(Y)].
-\]</div>
-<p>This is the best approximation of <span class="arithmatex">\(X\)</span> by a measurable function of <span class="arithmatex">\(Y\)</span> in the <span class="arithmatex">\(L^2\)</span> sense when <span class="arithmatex">\(X\in L^2\)</span>.</p>
-<p>If <span class="arithmatex">\(X\)</span> is independent of <span class="arithmatex">\(\mathcal{G}\)</span>, then</p>
-<div class="arithmatex">\[
-\mathbb{E}[X\mid\mathcal{G}]=\mathbb{E}[X].
+\mathbb{P}[A\mid \mathcal{G}]=\mathbb{E}[\mathbf{1}_A\mid \mathcal{G}],\quad \mathbb{P}[A\mid B]=\frac{\mathbb{P}[A\cap B]}{\mathbb{P}[B]}.
 \]</div>
 <hr />
 <h2 id="jensen-inequality">Jensen Inequality</h2>
