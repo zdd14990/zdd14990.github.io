@@ -555,7 +555,8 @@
     }
 
     if (name === "/latest") {
-      renderPostOutput(commandLine, "Latest articles", state.posts.slice(0, 6), "No articles found.");
+      var publishedPosts = state.posts.filter(function(post) { return post.published; });
+      renderPostOutput(commandLine, "Latest articles", publishedPosts.slice(0, 6), "No articles found.");
       return;
     }
 
@@ -567,7 +568,9 @@
     if (name === "/count") {
       var words = state.posts.reduce(function(sum, post) { return sum + (Number(post.words) || 0); }, 0);
       var pdfCount = state.posts.filter(function(post) { return post.has_pdf; }).length;
-      var latest = state.posts.reduce(function(max, post) { return post.date > max ? post.date : max; }, "");
+      var latest = state.posts.reduce(function(max, post) {
+        return post.published && post.date > max ? post.date : max;
+      }, "");
       var stats = [
         ["Articles", state.posts.length.toLocaleString()],
         ["Categories", allCategories().length.toLocaleString()],
