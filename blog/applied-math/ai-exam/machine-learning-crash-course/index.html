@@ -1122,9 +1122,16 @@ Prove that <span class="arithmatex">\(\mathcal{H}\)</span> is PAC learnable (ass
 m_{\mathcal{H}}(\epsilon, \delta) \le \frac{\log(1/\delta)}{\epsilon}
 \]</div>
 <hr />
-<p><strong>解答</strong>：我们只需取离原点最近的正样本点 <span class="arithmatex">\(x_{min}\)</span>，令 <span class="arithmatex">\(r = ||x_{min}||\)</span> 即可。此时对于真实的圆 <span class="arithmatex">\(r^*\)</span>，模型的真实误差 <span class="arithmatex">\(L_{\mathcal{D}}(h_{\hat{r}})\)</span> 就等于这个圆环区域在真实分布 <span class="arithmatex">\(\mathcal{D}\)</span> 下的概率。</p>
-<p>对 <span class="arithmatex">\(m\)</span> 个独立的点，全不落在该圆环内的概率为 <span class="arithmatex">\((1-\epsilon)^m\le e^{-\epsilon m}\)</span>。</p>
-<p>因此为满足 <span class="arithmatex">\(\mathbb{P}[L_{\mathcal{D}}(h_{\hat{r}}) &gt; \epsilon] \le \delta\)</span>，我们需要 <span class="arithmatex">\(e^{-\epsilon m} \le \delta\)</span>，即 <span class="arithmatex">\(m \ge \frac{\log(1/\delta)}{\epsilon}\)</span>。</p>
+<p><strong>解答</strong>：令 <span class="arithmatex">\(\widehat r\)</span> 为样本中离原点最远的正样本的半径；若样本中没有正例，则取 <span class="arithmatex">\(\widehat r=0\)</span>。在可实现条件下 <span class="arithmatex">\(\widehat rle r^*\)</span>，且所有训练正例均被覆盖。因此可能出错的区域只有</p>
+<div class="arithmatex">\[
+A_{\widehat r}=\{x:\widehat r&lt;\|x\|\le r^*\},
+\]</div>
+<p>即真实圆内、经验圆外的圆环。若某个候选半径对应的该圆环概率超过 <span class="arithmatex">\(\epsilon\)</span>，训练集仍完全没有落入该圆环的概率至多为 <span class="arithmatex">\((1-\epsilon)^m\)</span>。</p>
+<p>对 <span class="arithmatex">\(m\)</span> 个独立样本，全不落在该圆环内的概率为 <span class="arithmatex">\((1-\epsilon)^m\le e^{-\epsilon m}\)</span>。</p>
+<p>因此，为满足 <span class="arithmatex">\(\mathbb{P}[L_{\mathcal{D}}(h_{\widehat r}) &gt; \epsilon] \le \delta\)</span>，只需 <span class="arithmatex">\(e^{-\epsilon m} \le \delta\)</span>，即</p>
+<div class="arithmatex">\[
+m\ge \frac{\log(1/\delta)}{\epsilon}
+\]</div>
 <hr />
 <p><strong>(Autumn, 2025, A12)</strong> We initialise <span class="arithmatex">\(w_1 \in \mathcal{W}\)</span>. At round <span class="arithmatex">\(t = 1, 2, \dots,\)</span> we obtain a random estimate <span class="arithmatex">\(\hat{g}_t\)</span> of a subgradient <span class="arithmatex">\(g_t \in \partial F(w_t)\)</span> so that <span class="arithmatex">\(\mathbb{E}[\hat{g}_t] = g_t\)</span>, and update the iterate <span class="arithmatex">\(w_t\)</span> as follows:</p>
 <div class="arithmatex">\[
@@ -1157,22 +1164,330 @@ Fix some <span class="arithmatex">\(\epsilon &gt; 0\)</span>. Construct a neural
 \]</div>
 <p>Hint: Partition <span class="arithmatex">\([-1, 1]^n\)</span> into small boxes. Use the Lipschitzness of <span class="arithmatex">\(f\)</span> to show that it is approximately constant at each box. Finally, show that a neural network can first decide which box the input vector belongs to, and then predict the averaged value of <span class="arithmatex">\(f\)</span> at that box.</p>
 <hr />
-<p><strong>解答</strong>：将 <span class="arithmatex">\([-1, 1]^n\)</span> 均匀划分成 <span class="arithmatex">\(M^n\)</span> 个小立方体，这里 <span class="arithmatex">\(M&gt; \frac{2\rho \sqrt{n}}{\epsilon}\)</span>。此时每个小立方体中函数值之差不超过 <span class="arithmatex">\(\epsilon\)</span>，取 <span class="arithmatex">\(c_k\)</span> 为该立方体中函数的平均值。</p>
-<p>Sigmoid 函数 <span class="arithmatex">\(\sigma(z) = \frac{1}{1 + e^{-z}}\)</span>。对大 <span class="arithmatex">\(K\)</span> 考虑 <span class="arithmatex">\(\sigma(Kz)\)</span>，它就会变成阶跃函数。</p>
-<p>对于一维区间 <span class="arithmatex">\([a, b]\)</span>，我们可以用两个并排的神经元来构造它的指示函数：</p>
+<p><strong>解答</strong>：先取网格尺度 <span class="arithmatex">\(h&lt;\epsilon/(2\rho\sqrt n)\)</span>。由 Lipschitz 性，只要 <span class="arithmatex">\(\|x-y\|_2\le h\sqrt n\)</span>，就有</p>
 <div class="arithmatex">\[
-I_{[a,b]}(x_i) \approx \sigma(K(x_i - a)) - \sigma(K(x_i - b))
+|f(x)-f(y)|\le \rho h\sqrt n&lt;\epsilon/2.
 \]</div>
-<p>当 <span class="arithmatex">\(x_i\)</span> 落在 <span class="arithmatex">\([a, b]\)</span> 内时，前一项约为 1，后一项约为 0，差值为 1。落在外面则差值为 0。</p>
-<p>对于高维的小立方体 <span class="arithmatex">\(B_k\)</span>，构造</p>
+<p>在网格顶点记录 <span class="arithmatex">\(f\)</span> 的函数值，并在每个小立方体内做多线性插值，得到连续函数 <span class="arithmatex">\(g\)</span>。由于插值是相邻顶点函数值的凸组合，故</p>
 <div class="arithmatex">\[
-I_{B_k}(x) \approx \sigma\left( K' \left( \sum_{i=1}^n I_{[a_i, b_i]}(x_i) - (n - 0.5) \right) \right)
+\|f-g\|_\infty&lt;\epsilon/2.
 \]</div>
-<p>只有当 <span class="arithmatex">\(x\)</span> 的每个坐标都落在对应的区间 <span class="arithmatex">\([a_i, b_i]\)</span> 内时，内部的和才会达到 <span class="arithmatex">\(n\)</span>，使得 <span class="arithmatex">\(\sigma\)</span> 的输入大于 0.5，输出约为 1。否则至少有一个坐标不满足，和最多为 <span class="arithmatex">\(n-1\)</span>，使得 <span class="arithmatex">\(\sigma\)</span> 的输入小于 0.5，输出约为 0。</p>
-<p>最后取 <span class="arithmatex">\(N=\sum_{k=1}^{M^n} c_k I_{B_k}(x)\)</span> 即可。</p>
-<div class="zdd-article-taxonomy">
-  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#AI 博资考</span></div>
-  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=ai-exam">#ai-exam</a><a class="zdd-tag-chip" href="../../../../tags/?tag=applied-math">#applied-math</a><a class="zdd-tag-chip" href="../../../../tags/?tag=machine-learning-crash-course">#machine-learning-crash-course</a><a class="zdd-tag-chip" href="../../../../tags/?tag=machine-learning">#machine-learning</a></div>
+<p>接着使用 sigmoid 的通用逼近定理：对紧集 <span class="arithmatex">\([-1,1]^n\)</span> 上的连续函数 <span class="arithmatex">\(g\)</span>，存在有限宽单隐层 sigmoid 网络 <span class="arithmatex">\(N\)</span>，使得</p>
+<div class="arithmatex">\[
+\|g-N\|_\infty&lt;\epsilon/2.
+\]</div>
+<p>由三角不等式，</p>
+<div class="arithmatex">\[
+\|f-N\|_\infty
+\le \|f-g\|_\infty+\|g-N\|_\infty
+&lt;\epsilon.
+\]</div>
+<p>下面说明如何用 sigmoid 网络近似这个连续插值。Sigmoid 函数为</p>
+<div class="arithmatex">\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]</div>
+<p>对充分大的 <span class="arithmatex">\(K\)</span>，<span class="arithmatex">\(\sigma(Kz)\)</span> 可以近似阶跃函数。对每个坐标上的网格节点，可以用若干 sigmoid 的差构造连续的局部权重；再用第二层 sigmoid 近似不同坐标局部权重的乘积，从而得到每个小立方体对应的连续选择函数 <span class="arithmatex">\(\phi_k(x)\)</span>，并使</p>
+<div class="arithmatex">\[
+\phi_k(x)\ge0,\qquad \sum_k\phi_k(x)\approx1
+\]</div>
+<p>设 <span class="arithmatex">\(c_k\)</span> 为第 <span class="arithmatex">\(k\)</span> 个网格节点处的函数值，取</p>
+<div class="arithmatex">\[
+N(x)=\sum_k c_k\phi_k(x)
+\]</div>
+<p>只要 <span class="arithmatex">\(K\)</span> 足够大，就可以使 <span class="arithmatex">\(N\)</span> 对连续插值函数 <span class="arithmatex">\(g\)</span> 的一致逼近误差小于 <span class="arithmatex">\(\epsilon/2\)</span>。因此</p>
+<div class="arithmatex">\[
+\sup_{x\in[-1,1]^n}|f(x)-N(x)|
+\le
+\|f-g\|_\infty+\|g-N\|_\infty
+&lt;\epsilon
+\]</div>
+<p>输出层若需要严格落在 <span class="arithmatex">\([-1,1]\)</span>，可以先把目标值线性映射到 <span class="arithmatex">\([0,1]\)</span>，完成逼近后再映回 <span class="arithmatex">\([-1,1]\)</span>。</p>
+<hr />
+<p><strong>(Spring, 2026, MQ1)</strong> In the agnostic PAC learning setting, what quantity does a learning algorithm aim to compete with?</p>
+<p>(a) The Bayes optimal classifier.</p>
+<p>(b) The hypothesis with zero training error.</p>
+<p>(c) The best hypothesis in the class <span class="arithmatex">\(\mathcal{H}\)</span>.</p>
+<p>(d) The hypothesis minimising validation error.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。在不可知 PAC 学习中，我们不假设真实标记函数属于 <span class="arithmatex">\(\mathcal{H}\)</span>，而是要求学习器输出的假设满足</p>
+<div class="arithmatex">\[
+L_{\mathcal{D}}(h)\le \inf_{h'\in\mathcal{H}}L_{\mathcal{D}}(h')+\epsilon
+\]</div>
+<hr />
+<p><strong>(Spring, 2026, MQ2)</strong> Let <span class="arithmatex">\(\mathcal{H}\)</span> be a binary hypothesis class with VC dimension <span class="arithmatex">\(d&lt;\infty\)</span>. Which statement about its growth function <span class="arithmatex">\(\tau_{\mathcal{H}}(m)\)</span> is necessarily true?</p>
+<p>(a) <span class="arithmatex">\(\tau_{\mathcal{H}}(m)=2^m\)</span> for all <span class="arithmatex">\(m\)</span>.</p>
+<p>(b) <span class="arithmatex">\(\tau_{\mathcal{H}}(m)=O(m^d)\)</span> for all <span class="arithmatex">\(m\)</span>.</p>
+<p>(c) <span class="arithmatex">\(\tau_{\mathcal{H}}(m)\le \sum_{i=0}^d\binom{m}{i}\)</span> for all <span class="arithmatex">\(m\)</span>.</p>
+<p>(d) <span class="arithmatex">\(\tau_{\mathcal{H}}(m)\)</span> is constant for <span class="arithmatex">\(m&gt;d\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。根据 Sauer 引理，若 <span class="arithmatex">\(VCdim(\mathcal{H})=d&lt;\infty\)</span>，则</p>
+<div class="arithmatex">\[
+\tau_{\mathcal{H}}(m)\le \sum_{i=0}^d\binom{m}{i}
+\]</div>
+<p>当 <span class="arithmatex">\(m&gt;d\)</span> 时，还可以进一步得到</p>
+<div class="arithmatex">\[
+\tau_{\mathcal{H}}(m)\le \left(\frac{em}{d}\right)^d
+\]</div>
+<hr />
+<p><strong>(Spring, 2026, MQ3)</strong> Which statement about ReLU neural networks is correct from a learning-theoretic perspective?</p>
+<p>(a) ReLU networks represent smooth functions on <span class="arithmatex">\(\mathbb{R}^d\)</span>.</p>
+<p>(b) Increasing depth always decreases the VC dimension.</p>
+<p>(c) ReLU networks compute piecewise linear functions whose complexity depends on depth and width.</p>
+<p>(d) Universal approximation of ReLU networks implies PAC learnability.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。ReLU 函数 <span class="arithmatex">\(\max\{0,x\}\)</span> 是分段线性的，有限层 ReLU 网络仍然表示分段线性函数。网络能够产生的线性区域数量与深度和宽度有关。通用逼近性只说明表示能力，不能单独推出 PAC 可学习性。</p>
+<hr />
+<p><strong>(Spring, 2026, MQ4)</strong> Which statement about empirical risk minimisation (ERM) is correct?</p>
+<p>(a) ERM is guaranteed to be consistent for any hypothesis class.</p>
+<p>(b) ERM always finds a hypothesis with minimum true risk.</p>
+<p>(c) If <span class="arithmatex">\(\mathcal{H}\)</span> has finite VC dimension, ERM is PAC learnable in the realisable setting.</p>
+<p>(d) ERM is PAC learnable only if <span class="arithmatex">\(\mathcal{H}\)</span> is finite.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。有限 VC 维保证经验风险与真实风险能够一致收敛，因此在可实现条件下，ERM 是 PAC 学习器。假设空间本身可以是无限集，只要其 VC 维有限即可。</p>
+<hr />
+<p><strong>(Spring, 2026, MQ5)</strong> Which statement is a correct consequence of the No Free Lunch theorem?</p>
+<p>(a) Restricting the hypothesis class always improves generalization.</p>
+<p>(b) There exists a universally optimal learning algorithm.</p>
+<p>(c) Inductive bias is necessary to obtain non-trivial learning guarantees.</p>
+<p>(d) Random guessing is optimal for all supervised learning problems.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。No Free Lunch 定理说明，没有一个学习算法能在所有可能的数据分布和标记规则上都优于其他算法。因此，要得到非平凡的学习保证，必须通过假设空间或算法结构引入归纳偏置。</p>
+<hr />
+<p><strong>(Spring, 2026, MQ6)</strong> Let <span class="arithmatex">\(K:\mathcal{X}\times\mathcal{X}\to\mathbb{R}\)</span> be a symmetric function. Which of the following statements is correct?</p>
+<p>(a) <span class="arithmatex">\(K\)</span> is a valid kernel if and only if <span class="arithmatex">\(K(x,x)\ge0\)</span> for all <span class="arithmatex">\(x\in\mathcal{X}\)</span>.</p>
+<p>(b) <span class="arithmatex">\(K\)</span> is a valid kernel if and only if there exists a finite-dimensional feature map <span class="arithmatex">\(\psi\)</span> such that <span class="arithmatex">\(K(x,x')=\langle\psi(x),\psi(x')\rangle\)</span>.</p>
+<p>(c) If <span class="arithmatex">\(K\)</span> is positive semidefinite, then there exists a possibly infinite-dimensional Hilbert space <span class="arithmatex">\(\mathcal{H}\)</span> and a feature map <span class="arithmatex">\(\psi:\mathcal{X}\to\mathcal{H}\)</span> such that <span class="arithmatex">\(K(x,x')=\langle\psi(x),\psi(x')\rangle_{\mathcal{H}}\)</span>.</p>
+<p>(d) Every kernel corresponds to a unique feature map.</p>
+<hr />
+<p><strong>解答</strong>：选择 (c)。正半定性要求对任意 <span class="arithmatex">\(m\)</span>、任意 <span class="arithmatex">\(x_1,\dots,x_m\)</span> 和任意 <span class="arithmatex">\(c_1,\dots,c_m\in\mathbb{R}\)</span>，都有</p>
+<div class="arithmatex">\[
+\sum_{i=1}^m\sum_{j=1}^m c_ic_jK(x_i,x_j)\ge0
+\]</div>
+<p>由核的特征表示定理，存在一个可能无限维的 Hilbert 空间和特征映射 <span class="arithmatex">\(\psi\)</span>，使得 <span class="arithmatex">\(K\)</span> 可以表示为其中的内积。特征映射一般不唯一。</p>
+<hr />
+<p><strong>(Spring, 2026, A1)</strong> Let <span class="arithmatex">\(\mathcal{H}\)</span> be a hypothesis class of binary classifiers <span class="arithmatex">\(h:\mathcal{X}\to\{0,1\}\)</span>. Let <span class="arithmatex">\(\mathcal{D}\)</span> be an unknown distribution over <span class="arithmatex">\(\mathcal{X}\)</span>, and let <span class="arithmatex">\(f\in\mathcal{H}\)</span> be the target hypothesis. For a fixed <span class="arithmatex">\(h\in\mathcal{H}\)</span>, define the empirical loss on a sample <span class="arithmatex">\(S=\{x_1,\dots,x_m\}\sim\mathcal{D}^m\)</span> by</p>
+<div class="arithmatex">\[
+L_S(h)=\frac1m\sum_{i=1}^m\mathbb{1}[h(x_i)\neq f(x_i)]
+\]</div>
+<p>(a) Let <span class="arithmatex">\(p:=L_{\mathcal{D},f}(h)\)</span>. Show that</p>
+<div class="arithmatex">\[
+\mathbb{E}_{S\sim\mathcal{D}^m}\left[(L_S(h)-p)^2\right]=\frac{p(1-p)}{m}
+\]</div>
+<p>(b) Deduce that</p>
+<div class="arithmatex">\[
+\mathbb{E}\left[(L_S(h)-p)^2\right]\le\frac1{4m}
+\]</div>
+<p>and therefore it decreases at rate <span class="arithmatex">\(O(1/m)\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：令</p>
+<div class="arithmatex">\[
+Z_i=\mathbb{1}[h(x_i)\neq f(x_i)]
+\]</div>
+<p>则 <span class="arithmatex">\(Z_1,\dots,Z_m\)</span> 独立同分布，并且</p>
+<div class="arithmatex">\[
+Z_i\sim Bernoulli(p),\qquad \mathbb{E}[Z_i]=p,\qquad Var(Z_i)=p(1-p)
+\]</div>
+<p>又因为</p>
+<div class="arithmatex">\[
+L_S(h)=\frac1m\sum_{i=1}^mZ_i
+\]</div>
+<p>所以</p>
+<div class="arithmatex">\[
+\mathbb{E}[L_S(h)]=p
+\]</div>
+<p>从而</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb{E}\left[(L_S(h)-p)^2\right]
+&amp;=Var(L_S(h))\\
+&amp;=Var\left(\frac1m\sum_{i=1}^mZ_i\right)\\
+&amp;=\frac1{m^2}\sum_{i=1}^mVar(Z_i)\\
+&amp;=\frac{p(1-p)}m
+\end{aligned}
+\]</div>
+<p>由于对任意 <span class="arithmatex">\(p\in[0,1]\)</span> 都有</p>
+<div class="arithmatex">\[
+p(1-p)=\frac14-\left(p-\frac12\right)^2\le\frac14
+\]</div>
+<p>因此</p>
+<div class="arithmatex">\[
+\mathbb{E}\left[(L_S(h)-p)^2\right]\le\frac1{4m}=O\left(\frac1m\right)
+\]</div>
+<hr />
+<p><strong>(Spring, 2026, A2)</strong> Let <span class="arithmatex">\(f:\mathbb{R}^d\to\mathbb{R}\)</span> be twice continuously differentiable and <span class="arithmatex">\(\lambda\)</span>-strongly convex. Prove that <span class="arithmatex">\(f\)</span> admits a unique global minimiser.</p>
+<hr />
+<p><strong>解答</strong>：由 <span class="arithmatex">\(\lambda\)</span>-强凸性，对任意 <span class="arithmatex">\(x\in\mathbb{R}^d\)</span>，有</p>
+<div class="arithmatex">\[
+f(x)\ge f(0)+\langle\nabla f(0),x\rangle+\frac\lambda2||x||^2
+\]</div>
+<p>再由柯西不等式，</p>
+<div class="arithmatex">\[
+f(x)\ge f(0)-||\nabla f(0)||\,||x||+\frac\lambda2||x||^2
+\]</div>
+<p>当 <span class="arithmatex">\(||x||\to\infty\)</span> 时，右侧趋于 <span class="arithmatex">\(+\infty\)</span>，因此 <span class="arithmatex">\(f\)</span> 是 coercive 的。由于 <span class="arithmatex">\(f\)</span> 连续，所以它在 <span class="arithmatex">\(\mathbb{R}^d\)</span> 上存在全局最小值点。</p>
+<p>下面证明唯一性。假设 <span class="arithmatex">\(u\neq v\)</span> 都是全局最小值点。由强凸性，</p>
+<div class="arithmatex">\[
+f\left(\frac{u+v}{2}\right)
+\le
+\frac12f(u)+\frac12f(v)-\frac\lambda8||u-v||^2
+&lt;
+\frac12f(u)+\frac12f(v)
+\]</div>
+<p>但 <span class="arithmatex">\(f(u)=f(v)=\min_xf(x)\)</span>，所以</p>
+<div class="arithmatex">\[
+f\left(\frac{u+v}{2}\right)&lt;\min_xf(x)
+\]</div>
+<p>矛盾。因此 <span class="arithmatex">\(f\)</span> 存在唯一的全局最小值点。</p>
+<hr />
+<p><strong>(Spring, 2026, A3)</strong> Let <span class="arithmatex">\(\mathcal{X}=\mathbb{R}\)</span> and consider the hypothesis class</p>
+<div class="arithmatex">\[
+\mathcal{H}
+=
+\left\{
+h_{a,b,c}(x)=\mathbb{1}_{[a,b]}(x)\vee\mathbb{1}_{[c,\infty)}(x)
+\mid
+a\le b&lt;c, a,b,c\in\mathbb{R}
+\right\}
+\]</div>
+<p>where <span class="arithmatex">\(\vee\)</span> denotes the logical OR.</p>
+<p>(a) Let <span class="arithmatex">\(x_1,\dots,x_n\)</span> be <span class="arithmatex">\(n\)</span> distinct points in <span class="arithmatex">\(\mathbb{R}\)</span>. Give an upper bound on the growth function <span class="arithmatex">\(s(\mathcal{H},n)\)</span>.</p>
+<p>(b) Determine the VC dimension of <span class="arithmatex">\(\mathcal{H}\)</span>.</p>
+<hr />
+<p><strong>解答</strong>：不妨设</p>
+<div class="arithmatex">\[
+x_1&lt;x_2&lt;\cdots&lt;x_n
+\]</div>
+<p><span class="arithmatex">\((a)\)</span>：参数 <span class="arithmatex">\(a,b,c\)</span> 在这些样本点上产生的分类只取决于它们分别落在哪两个相邻样本点之间。每个参数至多有 <span class="arithmatex">\(n+1\)</span> 种位置，因此</p>
+<div class="arithmatex">\[
+s(\mathcal{H},n)\le(n+1)^3
+\]</div>
+<p>也可以从标签结构理解这一点：任意 <span class="arithmatex">\(h\in\mathcal{H}\)</span> 在有序样本上产生的正类集合只能由一个有限连续区间和一个右侧尾部组成。</p>
+<p><span class="arithmatex">\((b)\)</span>：先证明下界。任取三个点</p>
+<div class="arithmatex">\[
+x_1&lt;x_2&lt;x_3
+\]</div>
+<p>对于三个点的任意二元标记，都可以用一个有限区间 <span class="arithmatex">\([a,b]\)</span> 和一个右侧射线 <span class="arithmatex">\([c,\infty)\)</span> 实现。例如标记 <span class="arithmatex">\((1,0,1)\)</span> 时，用 <span class="arithmatex">\([a,b]\)</span> 单独覆盖 <span class="arithmatex">\(x_1\)</span>，再用 <span class="arithmatex">\([c,\infty)\)</span> 覆盖 <span class="arithmatex">\(x_3\)</span>；标记 <span class="arithmatex">\((0,1,0)\)</span> 时，用 <span class="arithmatex">\([a,b]\)</span> 单独覆盖 <span class="arithmatex">\(x_2\)</span>，并令 <span class="arithmatex">\(c&gt;x_3\)</span>。其余标记同理。因此</p>
+<div class="arithmatex">\[
+VCdim(\mathcal{H})\ge3
+\]</div>
+<p>再证明上界。任取四个点</p>
+<div class="arithmatex">\[
+x_1&lt;x_2&lt;x_3&lt;x_4
+\]</div>
+<p>考虑标记</p>
+<div class="arithmatex">\[
+(1,0,1,0)
+\]</div>
+<p>因为 <span class="arithmatex">\(x_4\)</span> 的标记为 <span class="arithmatex">\(0\)</span>，右侧射线 <span class="arithmatex">\([c,\infty)\)</span> 不能覆盖 <span class="arithmatex">\(x_3\)</span>，否则它也会覆盖 <span class="arithmatex">\(x_4\)</span>。于是 <span class="arithmatex">\(x_1\)</span> 和 <span class="arithmatex">\(x_3\)</span> 都必须由同一个区间 <span class="arithmatex">\([a,b]\)</span> 覆盖，但这样位于二者之间的 <span class="arithmatex">\(x_2\)</span> 也会被覆盖，与其标记为 <span class="arithmatex">\(0\)</span> 矛盾。因此任意四个点都不能被打散，所以</p>
+<div class="arithmatex">\[
+VCdim(\mathcal{H})\le3
+\]</div>
+<p>综上，</p>
+<div class="arithmatex">\[
+VCdim(\mathcal{H})=3
+\]</div>
+<hr />
+<p><strong>(Spring, 2026, A4)</strong> Consider a set <span class="arithmatex">\(S\)</span> of examples in <span class="arithmatex">\(\mathbb{R}^n\times[k]\)</span> for which there exist vectors <span class="arithmatex">\(\mu_1,\dots,\mu_k\in\mathbb{R}^n\)</span> such that every example <span class="arithmatex">\((x,y)\in S\)</span> falls within a ball centered at <span class="arithmatex">\(\mu_y\)</span> whose radius is <span class="arithmatex">\(r\ge1\)</span>. Assume also that for every <span class="arithmatex">\(i\neq j\)</span>,</p>
+<div class="arithmatex">\[
+||\mu_i-\mu_j||\ge4r
+\]</div>
+<p>Consider concatenating each instance by the constant <span class="arithmatex">\(1\)</span> and then applying the multivector construction, namely,</p>
+<div class="arithmatex">\[
+\Psi(x,y)
+=
+[0,\dots,0,x_1,\dots,x_n,1,0,\dots,0]
+\in\mathbb{R}^{k(n+1)}
+\]</div>
+<p>Show that there exists a vector <span class="arithmatex">\(w\in\mathbb{R}^{k(n+1)}\)</span> such that <span class="arithmatex">\(\ell(w,(x,y))=0\)</span> for every <span class="arithmatex">\((x,y)\in S\)</span>.</p>
+<p>Hint: Write <span class="arithmatex">\(x=\mu_y+v\)</span> for some <span class="arithmatex">\(||v||\le r\)</span>, and take <span class="arithmatex">\(w=[w_1,\dots,w_k]\)</span>, where</p>
+<div class="arithmatex">\[
+w_i=\left[\mu_i,-\frac{||\mu_i||^2}{2}\right]
+\]</div>
+<hr />
+<p><strong>解答</strong>：对于第 <span class="arithmatex">\(i\)</span> 类，定义它的得分为</p>
+<div class="arithmatex">\[
+s_i(x)=\langle w,\Psi(x,i)\rangle
+=
+\langle\mu_i,x\rangle-\frac12||\mu_i||^2
+\]</div>
+<p>对任意样本 <span class="arithmatex">\((x,y)\in S\)</span>，可以写成</p>
+<div class="arithmatex">\[
+x=\mu_y+v,\qquad ||v||\le r
+\]</div>
+<p>对任意 <span class="arithmatex">\(j\neq y\)</span>，令</p>
+<div class="arithmatex">\[
+\Delta=\mu_y-\mu_j
+\]</div>
+<p>则</p>
+<div class="arithmatex">\[
+\begin{aligned}
+s_y(x)-s_j(x)
+&amp;=\langle\mu_y-\mu_j,x\rangle-\frac12\left(||\mu_y||^2-||\mu_j||^2\right)\\
+&amp;=\langle\Delta,\mu_y+v\rangle-\frac12\left(||\mu_y||^2-||\mu_j||^2\right)\\
+&amp;=\frac12||\Delta||^2+\langle\Delta,v\rangle\\
+&amp;\ge\frac12||\Delta||^2-||\Delta||\,||v||\\
+&amp;\ge\frac12||\Delta||^2-r||\Delta||\\
+&amp;=||\Delta||\left(\frac{||\Delta||}{2}-r\right)
+\end{aligned}
+\]</div>
+<p>由于 <span class="arithmatex">\(||\Delta||\ge4r\)</span> 且 <span class="arithmatex">\(r\ge1\)</span>，所以</p>
+<div class="arithmatex">\[
+s_y(x)-s_j(x)
+\ge
+4r(2r-r)
+=4r^2
+\ge1
+\]</div>
+<p>于是对所有 <span class="arithmatex">\(j\neq y\)</span> 都有</p>
+<div class="arithmatex">\[
+1+s_j(x)-s_y(x)\le0
+\]</div>
+<p>因此多分类 hinge loss 满足</p>
+<div class="arithmatex">\[
+\ell(w,(x,y))
+=
+\max_{j\neq y}\left[1+s_j(x)-s_y(x)\right]_+
+=0
+\]</div>
+<hr />
+<p><strong>(Spring, 2026, A5)</strong> Let <span class="arithmatex">\(d\in\mathbb{N}\)</span>. Consider two feedforward neural networks with the same input dimension <span class="arithmatex">\(d\)</span> and scalar output. Assume that the first network <span class="arithmatex">\(\Phi_{\mathrm{ReLU}}\)</span> uses the ReLU activation function in all hidden layers, while the second network <span class="arithmatex">\(\Phi_\sigma\)</span> uses the sigmoid activation function. Suppose that the two networks represent the same function on <span class="arithmatex">\(\mathbb{R}^d\)</span>, that is,</p>
+<div class="arithmatex">\[
+\Phi_{\mathrm{ReLU}}(x)=\Phi_\sigma(x)\qquad\text{for all }x\in\mathbb{R}^d
+\]</div>
+<p>Show that the function represented by <span class="arithmatex">\(\Phi_{\mathrm{ReLU}}\)</span> and <span class="arithmatex">\(\Phi_\sigma\)</span> must be constant.</p>
+<hr />
+<p><strong>解答</strong>：有限 ReLU 网络表示的是连续分段仿射函数。因此，<span class="arithmatex">\(\mathbb{R}^d\)</span> 可以被划分成有限个多面体区域，并且在每个区域上都有</p>
+<div class="arithmatex">\[
+\Phi_{\mathrm{ReLU}}(x)=a^Tx+b
+\]</div>
+<p>至少存在一个具有非空内部的区域 <span class="arithmatex">\(U\)</span>，使得上式在 <span class="arithmatex">\(U\)</span> 上成立。</p>
+<p>另一方面，sigmoid 函数</p>
+<div class="arithmatex">\[
+\sigma(t)=\frac1{1+e^{-t}}
+\]</div>
+<p>是实解析函数。有限次仿射变换、复合与线性组合仍然是实解析函数，因此 <span class="arithmatex">\(\Phi_\sigma\)</span> 在 <span class="arithmatex">\(\mathbb{R}^d\)</span> 上是实解析函数。</p>
+<p>因为两个网络表示同一个函数，所以在开集 <span class="arithmatex">\(U\)</span> 上有</p>
+<div class="arithmatex">\[
+\Phi_\sigma(x)-(a^Tx+b)=0
+\]</div>
+<p>实解析函数如果在非空开集上恒为零，就在整个连通区域 <span class="arithmatex">\(\mathbb{R}^d\)</span> 上恒为零。因此</p>
+<div class="arithmatex">\[
+\Phi_\sigma(x)=a^Tx+b
+\]</div>
+<p>对所有 <span class="arithmatex">\(x\in\mathbb{R}^d\)</span> 都成立。</p>
+<p>但是 sigmoid 隐藏层的每个输出都位于 <span class="arithmatex">\((0,1)\)</span> 中，所以有限 sigmoid 网络的标量输出是有界的。仿射函数 <span class="arithmatex">\(a^Tx+b\)</span> 在整个 <span class="arithmatex">\(\mathbb{R}^d\)</span> 上有界，只可能有</p>
+<div class="arithmatex">\[
+a=0
+\]</div>
+<p>因此</p>
+<div class="arithmatex">\[
+\Phi_{\mathrm{ReLU}}(x)=\Phi_\sigma(x)=b
+\]</div>
+<p>即两个网络表示的函数必为常数函数。</p>
+<p><div class="zdd-article-taxonomy">
+<br />
+<div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#AI 博资考</span></div></p>
+<div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=ai-exam">#ai-exam</a><a class="zdd-tag-chip" href="../../../../tags/?tag=applied-math">#applied-math</a><a class="zdd-tag-chip" href="../../../../tags/?tag=machine-learning-crash-course">#machine-learning-crash-course</a><a class="zdd-tag-chip" href="../../../../tags/?tag=machine-learning">#machine-learning</a></div>
 </div>
 
 
