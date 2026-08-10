@@ -17,11 +17,10 @@
   var helpCategories = ["Navigation", "Knowledge", "Tools", "Site"];
   var commands = [
     {name: "/lab", syntax: "/lab", kind: "jump", category: "Navigation", desc: "Open the experiment index."},
-    {name: "/micro", syntax: "/micro", kind: "jump", category: "Navigation", desc: "Open the micro-note feed."},
     {name: "/next", syntax: "/next", kind: "jump", category: "Navigation", advanced: true, desc: "Open the next article in this folder."},
     {name: "/prev", syntax: "/prev", kind: "jump", category: "Navigation", advanced: true, desc: "Open the previous article in this folder."},
     {name: "/rewind", syntax: "/rewind", kind: "jump", category: "Navigation", advanced: true, desc: "Return to the last article you opened."},
-    {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", category: "Knowledge", fill: "/random ", desc: "Open a random post, micro note, or lab."},
+    {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", category: "Knowledge", fill: "/random ", desc: "Open a random post or lab."},
     {name: "/latest", syntax: "/latest", kind: "query", category: "Knowledge", desc: "Show the latest dated articles."},
     {name: "/tag", syntax: "/tag <tag>", kind: "jump", category: "Knowledge", fill: "/tag ", desc: "Open the result page for a tag."},
     {name: "/pdf", syntax: "/pdf", kind: "query", category: "Knowledge", advanced: true, desc: "List articles with PDF readers or downloads."},
@@ -41,7 +40,7 @@
     {
       date: "2026-08-10",
       title: "Knowledge playground",
-      detail: "Added Lab experiments, reusable article widgets, internal article previews, Micro notes, and matching console routes."
+      detail: "Added Lab experiments, reusable article widgets, internal article previews, and matching console routes."
     },
     {
       date: "2026-07-06",
@@ -542,11 +541,6 @@
       return;
     }
 
-    if (name === "/micro") {
-      navigate(siteUrl("micro/"));
-      return;
-    }
-
     if (name === "/life") {
       navigate(siteUrl("lab/life/"));
       return;
@@ -596,7 +590,6 @@
 
     if (name === "/count") {
       var articles = state.posts.filter(function(post) { return !post.type || post.type === "post"; });
-      var microNotes = state.posts.filter(function(post) { return post.type === "micro"; });
       var labItems = state.posts.filter(function(post) { return post.type === "lab"; });
       var words = state.posts.reduce(function(sum, post) { return sum + (Number(post.words) || 0); }, 0);
       var pdfCount = articles.filter(function(post) { return post.has_pdf; }).length;
@@ -605,7 +598,6 @@
       }, "");
       var stats = [
         ["Articles", articles.length.toLocaleString()],
-        ["Micro notes", microNotes.length.toLocaleString()],
         ["Lab items", labItems.length.toLocaleString()],
         ["Categories", allCategories().length.toLocaleString()],
         ["Tags", allTags().length.toLocaleString()],

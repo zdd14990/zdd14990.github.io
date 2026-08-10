@@ -7,8 +7,6 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
-import markdown as markdown_lib
-
 DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
 CHAPTER_RE = re.compile(
@@ -325,39 +323,6 @@ def _article_data():
     return articles
 
 
-def _micro_data():
-    docs_dir = _docs_dir()
-    micro_dir = docs_dir / "micro"
-    if not micro_dir.exists():
-        return []
-
-    notes = []
-    for path in sorted(micro_dir.glob("*.md")):
-        if path.name == "index.md":
-            continue
-        meta, body = _meta_and_body(path)
-        date = _parse_scalar_meta(meta, "date")
-        published_at = _date_obj(date)
-        title = _parse_scalar_meta(meta, "title")
-        tags = _clean_tags(_parse_list_meta(meta, "tags"))
-        src_path = path.relative_to(docs_dir).as_posix()
-        notes.append({
-            "path": path,
-            "src_path": src_path,
-            "url": _article_url(src_path),
-            "title": title,
-            "date": date,
-            "published": published_at is not None,
-            "sort_key": published_at or datetime.fromtimestamp(path.stat().st_mtime),
-            "tags": tags,
-            "words": _word_count(body),
-            "preview": _render_math_text(_first_content_block(body)),
-            "search_text": _plain_markdown(body)[:SEARCH_TEXT_LIMIT],
-            "body": body.strip(),
-        })
-    return sorted(notes, key=lambda note: note["sort_key"], reverse=True)
-
-
 def _format_words(count):
     return f"{count:,} 字"
 
@@ -407,49 +372,6 @@ def _lab_catalog():
 </a>
 """)
     return '<div class="zdd-lab-list">' + "".join(cards) + "</div>"
-
-
-def _micro_feed():
-    entries = []
-    for note in _micro_data():
-        title = (
-            f'<h2 class="zdd-micro-title"><a href="{note["url"]}">{html.escape(note["title"])}</a></h2>'
-            if note["title"]
-            else ""
-        )
-        tags = "".join(
-            f'<a class="zdd-micro-tag" href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}</a>'
-            for tag in note["tags"]
-        )
-        date = html.escape(note["date"] or "Undated")
-        rendered_body = markdown_lib.markdown(
-            note["body"],
-            extensions=[
-                "attr_list",
-                "footnotes",
-                "sane_lists",
-                "tables",
-                "pymdownx.arithmatex",
-                "pymdownx.highlight",
-                "pymdownx.inlinehilite",
-                "pymdownx.superfences",
-            ],
-            extension_configs={"pymdownx.arithmatex": {"generic": True}},
-        )
-        entries.append(f"""
-<article class="zdd-micro-entry">
-  <header class="zdd-micro-header">
-    <time datetime="{date}">{date}</time>
-    <a class="zdd-micro-permalink" href="{note['url']}" aria-label="Permanent link to this micro note">permalink</a>
-  </header>
-  {title}
-  <div class="zdd-micro-body">{rendered_body}</div>
-  <footer class="zdd-micro-tags">{tags}</footer>
-</article>
-""")
-    if not entries:
-        return '<p class="zdd-micro-empty">No micro notes yet.</p>'
-    return '<div class="zdd-micro-feed">' + "".join(entries) + "</div>"
 
 
 def _folder_stats(articles):
@@ -535,24 +457,6 @@ def _search_index_items():
             "content": article["search_text"],
             "source": _strip_frontmatter(_read_text(article["path"]))[:3000],
             "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", _read_text(article["path"]), re.I)),
-        })
-
-    for note in _micro_data():
-        items.append({
-            "type": "micro",
-            "title": note["title"] or f"Micro note · {note['date'] or note['path'].stem}",
-            "url": note["url"],
-            "prev_url": "",
-            "next_url": "",
-            "preview": re.sub(r"<[^>]+>", " ", note["preview"]),
-            "date": note["date"],
-            "published": note["published"],
-            "words": note["words"],
-            "categories": ["Micro"],
-            "tags": note["tags"],
-            "content": note["search_text"],
-            "source": note["body"][:3000],
-            "has_pdf": False,
         })
 
     for item in LAB_ITEMS:
@@ -732,10 +636,6 @@ def define_env(env):
     @env.macro
     def lab_catalog():
         return _lab_catalog()
-
-    @env.macro
-    def micro_feed():
-        return _micro_feed()
 
     @env.macro
     def tag_explorer():
