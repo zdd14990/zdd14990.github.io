@@ -86,6 +86,15 @@ FLATTEN_ROOTS = {"applied-math"}
 
 LAB_ITEMS = [
     {
+        "slug": "diagram",
+        "title": "Commutative Diagram",
+        "description": "Build commutative diagrams visually and export TikZ-CD.",
+        "date": "2026-08-10",
+        "tags": ["math", "diagram", "tikz-cd"],
+        "status": "stable",
+        "featured": True,
+    },
+    {
         "slug": "tex",
         "title": "LaTeX Playground",
         "description": "Write a formula and render it immediately with the site's existing MathJax setup.",
