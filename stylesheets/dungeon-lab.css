@@ -1,0 +1,635 @@
+/* Dungeon Seed Lab v2. Topology comes from dungeon-core.js; this file only
+   styles the public map, hidden-room guessing, and revealed answers. */
+
+.zdd-dungeon {
+  --zdd-dungeon-line: var(--zdd-playground-line, rgba(94, 159, 199, 0.42));
+  --zdd-dungeon-ink: var(--zdd-playground-ink, #183746);
+  --zdd-dungeon-muted: var(--zdd-playground-muted, #4a6a78);
+  --zdd-dungeon-panel: var(--zdd-playground-panel, rgba(247, 252, 255, 0.96));
+  --zdd-dungeon-accent: var(--zdd-playground-accent, #2e7491);
+  --zdd-dungeon-error: var(--zdd-playground-error, #b34545);
+  --zdd-dungeon-start: #3f7e75;
+  --zdd-dungeon-boss: #a5545b;
+  --zdd-dungeon-shop: #37798c;
+  --zdd-dungeon-treasure: #98751e;
+  --zdd-dungeon-ritual: #75558a;
+  --zdd-dungeon-secret: #725b8c;
+  margin: 1.6rem 0;
+  color: var(--zdd-dungeon-ink);
+  border-block: 1px solid var(--zdd-dungeon-line);
+}
+
+body[data-md-color-scheme="slate"] .zdd-dungeon {
+  --zdd-dungeon-start: #77c3b4;
+  --zdd-dungeon-boss: #ef949c;
+  --zdd-dungeon-shop: #7fc5dd;
+  --zdd-dungeon-treasure: #e3bd64;
+  --zdd-dungeon-ritual: #bea1d0;
+  --zdd-dungeon-secret: #c4a9db;
+}
+
+.zdd-dungeon-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.zdd-dungeon-seed-panel,
+.zdd-dungeon-map-panel,
+.zdd-dungeon-info-panel,
+.zdd-dungeon-guess-panel {
+  padding: 0.95rem;
+}
+
+.zdd-dungeon-seed-panel {
+  border-bottom: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-section-heading,
+.zdd-dungeon-seed-form,
+.zdd-dungeon-seed-actions,
+.zdd-dungeon-examples,
+.zdd-dungeon-legend,
+.zdd-dungeon-guess-heading,
+.zdd-dungeon-guess-modes,
+.zdd-dungeon-guess-readout {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.zdd-dungeon-section-heading,
+.zdd-dungeon-guess-heading {
+  justify-content: space-between;
+  gap: 0.7rem;
+  min-height: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.md-typeset .zdd-dungeon-section-heading h2,
+.md-typeset .zdd-dungeon-guess-heading h2,
+.md-typeset .zdd-dungeon-why h3 {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.md-typeset .zdd-dungeon-section-heading p,
+.md-typeset .zdd-dungeon-guess-heading p {
+  margin: 0.16rem 0 0;
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.69rem;
+}
+
+.zdd-dungeon-seed-form {
+  align-items: stretch;
+  gap: 0.5rem;
+  max-width: 42rem;
+}
+
+.zdd-dungeon-seed-field {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.zdd-dungeon-seed-field input {
+  width: 100%;
+  min-height: 2.55rem;
+  box-sizing: border-box;
+  padding: 0.45rem 0.7rem;
+  overflow: hidden;
+  color: var(--zdd-dungeon-ink);
+  background: var(--zdd-dungeon-panel);
+  border: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0.25rem;
+  font: 0.88rem/1.4 var(--md-code-font-family, monospace);
+  text-overflow: ellipsis;
+}
+
+.zdd-dungeon-primary {
+  min-width: 6.2rem;
+}
+
+.zdd-dungeon-seed-actions {
+  gap: 0.42rem;
+  margin-top: 0.55rem;
+}
+
+.zdd-dungeon-examples {
+  gap: 0.38rem;
+  margin-top: 0.8rem;
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.67rem;
+}
+
+.zdd-dungeon-examples > span {
+  margin-right: 0.18rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.zdd-dungeon-examples button {
+  padding: 0.18rem 0.42rem;
+  color: var(--zdd-dungeon-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0;
+  font: 0.66rem/1.4 var(--md-code-font-family, monospace);
+  cursor: pointer;
+}
+
+.zdd-dungeon-examples button:hover,
+.zdd-dungeon-examples button:focus-visible {
+  color: var(--zdd-dungeon-accent);
+  border-color: var(--zdd-dungeon-accent);
+  outline: none;
+}
+
+.zdd-dungeon-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 15rem);
+}
+
+.zdd-dungeon-map-panel {
+  min-width: 0;
+}
+
+.zdd-dungeon-info-panel {
+  border-left: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-map-shell {
+  position: relative;
+  width: 100%;
+  height: min(26.25rem, 75vh);
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--zdd-dungeon-panel) 82%, transparent);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px);
+  background-size: 1.2rem 1.2rem;
+  border: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0.25rem;
+  transition: height 160ms ease;
+}
+
+.zdd-dungeon-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+.zdd-dungeon-connection {
+  stroke: color-mix(in srgb, var(--zdd-dungeon-ink) 58%, var(--zdd-dungeon-panel));
+  stroke-width: 9;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+
+.zdd-dungeon-guess-cell {
+  color: var(--zdd-dungeon-muted);
+  cursor: crosshair;
+  outline: none;
+}
+
+.zdd-dungeon-guess-cell rect {
+  fill: transparent;
+  stroke: color-mix(in srgb, currentColor 30%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.zdd-dungeon-guess-cell:hover rect,
+.zdd-dungeon-guess-cell:focus-visible rect {
+  fill: color-mix(in srgb, var(--zdd-dungeon-accent) 7%, transparent);
+  stroke: var(--zdd-dungeon-accent);
+  stroke-width: 2;
+}
+
+.zdd-dungeon-room {
+  color: var(--zdd-dungeon-ink);
+  cursor: pointer;
+  outline: none;
+}
+
+.zdd-dungeon-room-shape {
+  fill: var(--zdd-dungeon-panel);
+  stroke: currentColor;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.zdd-dungeon-room:hover .zdd-dungeon-room-shape,
+.zdd-dungeon-room:focus-visible .zdd-dungeon-room-shape,
+.zdd-dungeon-room.is-selected .zdd-dungeon-room-shape {
+  stroke-width: 3;
+}
+
+.zdd-dungeon-room:focus-visible .zdd-dungeon-room-focus,
+.zdd-dungeon-room.is-selected .zdd-dungeon-room-focus {
+  opacity: 1;
+}
+
+.zdd-dungeon-room-focus {
+  fill: none;
+  stroke: var(--zdd-dungeon-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+  vector-effect: non-scaling-stroke;
+}
+
+.zdd-dungeon-room[data-room-type="start"] { color: var(--zdd-dungeon-start); }
+.zdd-dungeon-room[data-room-type="boss"] { color: var(--zdd-dungeon-boss); }
+.zdd-dungeon-room[data-room-type="shop"] { color: var(--zdd-dungeon-shop); }
+.zdd-dungeon-room[data-room-type="treasure"] { color: var(--zdd-dungeon-treasure); }
+.zdd-dungeon-room[data-room-type="curse"],
+.zdd-dungeon-room[data-room-type="sacrifice"],
+.zdd-dungeon-room[data-room-type="challenge"],
+.zdd-dungeon-room[data-room-type="arcade"],
+.zdd-dungeon-room[data-room-type="vault"],
+.zdd-dungeon-room[data-room-type="library"],
+.zdd-dungeon-room[data-room-type="planetarium"] { color: var(--zdd-dungeon-ritual); }
+.zdd-dungeon-room[data-room-type="secret"],
+.zdd-dungeon-room[data-room-type="super-secret"] { color: var(--zdd-dungeon-secret); }
+
+.zdd-dungeon-room:not([data-room-type="normal"]) .zdd-dungeon-room-shape {
+  fill: color-mix(in srgb, currentColor 11%, var(--zdd-dungeon-panel));
+}
+
+.zdd-dungeon-room[data-room-type="secret"] .zdd-dungeon-room-shape {
+  stroke-dasharray: 5 3;
+}
+
+.zdd-dungeon-room[data-room-type="super-secret"] .zdd-dungeon-room-shape {
+  stroke-width: 3;
+  stroke-dasharray: 2 3;
+}
+
+.zdd-dungeon-room-label,
+.zdd-dungeon-guess-marker text {
+  fill: currentColor;
+  font: 800 17px/1 var(--md-code-font-family, monospace);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.zdd-dungeon-room-coordinate {
+  fill: var(--zdd-dungeon-muted);
+  font: 8px/1 var(--md-code-font-family, monospace);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.zdd-dungeon-guess-marker {
+  color: var(--zdd-dungeon-accent);
+  pointer-events: none;
+}
+
+.zdd-dungeon-guess-marker[data-guess-type="super-secret"] {
+  color: var(--zdd-dungeon-secret);
+}
+
+.zdd-dungeon-guess-marker rect {
+  fill: color-mix(in srgb, currentColor 8%, transparent);
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.zdd-dungeon-guess-marker[data-guess-type="super-secret"] rect {
+  stroke-width: 3;
+  stroke-dasharray: 2 3;
+}
+
+.zdd-dungeon-legend {
+  gap: 0.38rem 0.65rem;
+  margin-top: 0.55rem;
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.61rem;
+}
+
+.zdd-dungeon-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.zdd-dungeon-legend b {
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  color: var(--zdd-dungeon-ink);
+  background: var(--zdd-dungeon-panel);
+  border: 1px solid var(--zdd-dungeon-line);
+  font: 800 0.56rem/1 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-stats {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-stats > div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.58rem 0;
+  border-bottom: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-stats dt {
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.61rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.zdd-dungeon-stats dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--zdd-dungeon-ink);
+  font: 0.72rem/1.4 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-stats [data-dungeon-info="fingerprint"] {
+  color: var(--zdd-dungeon-accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.zdd-dungeon-inspector {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--zdd-dungeon-panel) 70%, transparent);
+  border: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0.25rem;
+}
+
+.zdd-dungeon-inspector-label {
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.zdd-dungeon-inspector strong {
+  margin-top: 0.2rem;
+  font: 800 0.8rem/1.35 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-inspector > span:not(.zdd-dungeon-inspector-label) {
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+.zdd-dungeon-guess-panel {
+  border-top: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-guess-heading > div:first-child {
+  max-width: 42rem;
+}
+
+.zdd-dungeon-score {
+  min-width: 4rem;
+  padding: 0.3rem 0.55rem;
+  color: var(--zdd-dungeon-panel);
+  background: var(--zdd-dungeon-accent);
+  border-radius: 0.2rem;
+  font: 800 0.8rem/1.4 var(--md-code-font-family, monospace);
+  text-align: center;
+}
+
+.zdd-dungeon-guess-controls {
+  display: grid;
+  grid-template-columns: auto minmax(15rem, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.zdd-dungeon-guess-modes {
+  gap: 0.42rem;
+}
+
+.zdd-dungeon-guess-readout {
+  gap: 0.45rem;
+}
+
+.zdd-dungeon-guess-readout > span {
+  display: grid;
+  min-width: 8.2rem;
+  padding: 0.34rem 0.5rem;
+  color: var(--zdd-dungeon-muted);
+  background: color-mix(in srgb, var(--zdd-dungeon-panel) 66%, transparent);
+  border: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0.22rem;
+}
+
+.zdd-dungeon-guess-readout b {
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.zdd-dungeon-guess-readout output {
+  color: var(--zdd-dungeon-ink);
+  font: 0.67rem/1.5 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-reveal {
+  min-width: 6.7rem;
+}
+
+.zdd-dungeon .zdd-lab-button:disabled {
+  color: color-mix(in srgb, var(--zdd-dungeon-muted) 55%, transparent);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--zdd-dungeon-line) 55%, transparent);
+  cursor: not-allowed;
+}
+
+.md-typeset .zdd-dungeon-guess-hint {
+  min-height: 1.2rem;
+  margin: 0.65rem 0 0;
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.68rem;
+}
+
+.zdd-dungeon-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-results[hidden],
+.zdd-dungeon-score[hidden] {
+  display: none;
+}
+
+.zdd-dungeon-result-row {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-result-row:nth-child(2) {
+  border-left: 1px solid var(--zdd-dungeon-line);
+}
+
+.zdd-dungeon-result-row strong {
+  font-size: 0.68rem;
+}
+
+.zdd-dungeon-result-row span {
+  color: var(--zdd-dungeon-muted);
+  font: 0.68rem/1.5 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-why {
+  grid-column: 1 / -1;
+  padding: 0.8rem 0.75rem 0.2rem;
+}
+
+.md-typeset .zdd-dungeon-why p {
+  margin: 0.35rem 0;
+  color: var(--zdd-dungeon-muted);
+  font-size: 0.69rem;
+}
+
+.zdd-dungeon-seed-field input:focus-visible {
+  outline: 0.16rem solid var(--zdd-dungeon-accent);
+  outline-offset: 0.12rem;
+}
+
+@media screen and (max-width: 56em) {
+  .zdd-dungeon-workbench {
+    grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 13rem);
+  }
+
+  .zdd-dungeon-guess-controls {
+    grid-template-columns: 1fr auto;
+  }
+
+  .zdd-dungeon-guess-readout {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media screen and (max-width: 44em) {
+  .zdd-dungeon-workbench {
+    grid-template-columns: 1fr;
+  }
+
+  .zdd-dungeon-info-panel {
+    border-top: 1px solid var(--zdd-dungeon-line);
+    border-left: 0;
+  }
+
+  .zdd-dungeon-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .zdd-dungeon-stats > div:nth-child(odd) {
+    padding-right: 0.7rem;
+  }
+
+  .zdd-dungeon-stats > div:nth-child(even) {
+    padding-left: 0.7rem;
+    border-left: 1px solid var(--zdd-dungeon-line);
+  }
+
+}
+
+@media screen and (max-width: 30em) {
+  .zdd-dungeon-seed-panel,
+  .zdd-dungeon-map-panel,
+  .zdd-dungeon-info-panel,
+  .zdd-dungeon-guess-panel {
+    padding-inline: 0.7rem;
+  }
+
+  .zdd-dungeon-seed-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .zdd-dungeon-seed-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .zdd-dungeon-seed-actions .zdd-lab-button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .zdd-dungeon-guess-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .zdd-dungeon-guess-modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .zdd-dungeon-guess-modes .zdd-lab-button,
+  .zdd-dungeon-reveal {
+    width: 100%;
+  }
+
+  .zdd-dungeon-guess-readout {
+    grid-column: auto;
+    grid-row: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .zdd-dungeon-guess-readout > span {
+    min-width: 0;
+  }
+
+  .zdd-dungeon-results {
+    grid-template-columns: 1fr;
+  }
+
+  .zdd-dungeon-result-row:nth-child(2) {
+    border-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zdd-dungeon *,
+  .zdd-dungeon *::before,
+  .zdd-dungeon *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
