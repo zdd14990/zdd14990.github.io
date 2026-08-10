@@ -1,6 +1,6 @@
 ---
 title: Conditional Expectation
-date: 2026-07-06
+date: 2026-07-23
 hide:
   - navigation
 categories:
@@ -17,23 +17,14 @@ tags:
 
 ---
 
-## Definition
 
-Let $X\in L^1(\Omega,\mathcal{A},\mathbb{P})$ and let $\mathcal{G}\subset\mathcal{A}$ be a sub-$\sigma$-field.
+**Theorem** Let $X\in L^1(\Omega,\mathcal{F},\mathbb{P})$ and let $\mathcal{A}\subset\mathcal{F}$ be a sub-$\sigma$-field. Then there exists a **unique** random variable $Y$ such that:
 
-The **conditional expectation** of $X$ given $\mathcal{G}$ is the random variable $\mathbb{E}[X\mid\mathcal{G}]$ such that:
+1. $Y$ is $\mathcal{A}$-measurable.
 
-1. $\mathbb{E}[X\mid\mathcal{G}]$ is $\mathcal{G}$-measurable.
+2. for any $A\in\mathcal{A}$, we have $\mathbb{E}[Y\mathbf{1}_A]=\mathbb{E}[X\mathbf{1}_A]$.
 
-2. For every $G\in\mathcal{G}$,
-
-    $$
-    \int_G \mathbb{E}[X\mid\mathcal{G}]\,d\mathbb{P}
-    =
-    \int_G X\,d\mathbb{P}.
-    $$
-
-It is unique up to almost sure equality.
+A random variable $Y$ satisfying the above two properties is called a **conditional expectation** of $X$ given $\mathcal{A}$, and is denoted by $\mathbb{E}[X\mid\mathcal{A}]$.
 
 ---
 
@@ -41,63 +32,49 @@ It is unique up to almost sure equality.
 
 For integrable random variables $X,Y$ and constants $a,b$,
 
-$$
-\mathbb{E}[aX+bY\mid\mathcal{G}]
-=a\mathbb{E}[X\mid\mathcal{G}]
-+b\mathbb{E}[Y\mid\mathcal{G}].
-$$
+* If $\mathcal{A}=\{\emptyset,\Omega\}$, then $\mathbb{E}[X\mid\mathcal{A}]=\mathbb{E}[X]$ a.s.
 
-If $X\ge 0$, then
+* If $X$ is $\mathcal{A}$-measurable, then $\mathbb{E}[X\mid\mathcal{A}]=X$ a.s.
 
-$$
-\mathbb{E}[X\mid\mathcal{G}]\ge 0.
-$$
+* $\mathbb{E}[aX+bY\mid\mathcal{A}]=a\mathbb{E}[X\mid\mathcal{A}]+b\mathbb{E}[Y\mid\mathcal{A}].$
 
-If $Y$ is bounded and $\mathcal{G}$-measurable, then
+* If $X\ge 0$ a.s., then $\mathbb{E}[X\mid\mathcal{A}]\ge 0$ a.s.
 
-$$
-\mathbb{E}[YX\mid\mathcal{G}]
-=Y\mathbb{E}[X\mid\mathcal{G}].
-$$
+* If $X\le Y$ a.s., then $\mathbb{E}[X\mid\mathcal{A}]\le \mathbb{E}[Y\mid\mathcal{A}]$ a.s.
+
+* If $Z=\mathbb{E}[X\mid\mathcal{A}]$, then $\mathbb{E}[Z]=\mathbb{E}[X]$ and $|Z|\le \mathbb{E}[|X|\mid\mathcal{A}]$ a.s. and $\mathbb{E}[|Z|]\le \mathbb{E}[|X|]$.
+
+* $\mathbb{E}[X\mid \mathcal{A}]\le \mathbb{E}[Y\mid \mathcal{A}]$ a.s. iff $\mathbb{E}[X\mathbf{1}_A]\le \mathbb{E}[Y\mathbf{1}_A]$ for all $A\in\mathcal{A}$.
+
 
 ---
 
-## Tower Property
+Suppose $X$ and $\left\{X_n\right\}$ are r.v. in $L^1(\Omega,\mathcal{F},\mathbb{P})$ and $\mathcal{A}\subset\mathcal{F}$ is a sub-$\sigma$-field. Then we have:
 
-If $\mathcal{H}\subset\mathcal{G}\subset\mathcal{A}$, then
+* (Monotone Converge Theorem) If $0\le X_n\uparrow X$ a.s., then $\mathbb{E}[X_n\mid\mathcal{A}]\uparrow \mathbb{E}[X\mid\mathcal{A}]$ a.s.
 
-$$
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\mid\mathcal{H}\right]
-=
-\mathbb{E}[X\mid\mathcal{H}].
-$$
+* (Fatou's lemma) If $X_n\ge 0$ a.s., then $\mathbb{E}[\liminf_{n}X_n\mid\mathcal{A}]\le \liminf_{n}\mathbb{E}[X_n\mid\mathcal{A}]$ a.s.
 
-In particular,
+* (DCT) If $X_n\to X$ a.s. and $|X_n|\le Z$ a.s. for some $Z\in L^1$, then $\mathbb{E}[X_n\mid\mathcal{A}]\to \mathbb{E}[X\mid\mathcal{A}]$ a.s.
 
-$$
-\mathbb{E}\left[\mathbb{E}[X\mid\mathcal{G}]\right]
-=
-\mathbb{E}[X].
-$$
+* (Jensen) If $\varphi$ is convex and $\varphi(X)\in L^1$, then $\varphi(\mathbb{E}[X\mid\mathcal{A}])\le \mathbb{E}[\varphi(X)\mid\mathcal{A}]$
+
+* (Holder) Let $p,q>1$ with $1/p+1/q=1$. If $X\in L^p$ and $Y\in L^q$, then $\mathbb{E}[|XY|\mid\mathcal{A}]\le \mathbb{E}[|X|^p\mid\mathcal{A}]^{1/p}\mathbb{E}[|Y|^q\mid\mathcal{A}]^{1/q}$ a.s.
+
+* (Tower property) Suppose that $\mathcal{B}$ is a sub-$\sigma$-field of $\mathcal{A}$. Then $\mathbb{E}[\mathbb{E}[X\mid\mathcal{A}]\mid\mathcal{B}]=\mathbb{E}[X\mid\mathcal{B}]$ a.s.
+
+* ("Thinking out what is known") If $Z$ is $\mathcal{A}$-measurable, then $\mathbb{E}[XZ\mid\mathcal{A}]=Z\mathbb{E}[X\mid\mathcal{A}]$ a.s.
+
+* (Independence) If $\mathcal{B}$ is independent of $\sigma(X,\mathcal{A})$, then $\mathbb{E}[X\mid\sigma(\mathcal{A},\mathcal{B})]=\mathbb{E}[X\mid\mathcal{A}]$ a.s. In particular, if $X$ is independent of $\mathcal{B}$, then $\mathbb{E}[X\mid\mathcal{B}]=\mathbb{E}[X]$ a.s.
 
 ---
 
-## Conditioning by a Random Variable
+## Conditioning probability
 
-For a random variable $Y$, write
-
-$$
-\mathbb{E}[X\mid Y]
-=
-\mathbb{E}[X\mid\sigma(Y)].
-$$
-
-This is the best approximation of $X$ by a measurable function of $Y$ in the $L^2$ sense when $X\in L^2$.
-
-If $X$ is independent of $\mathcal{G}$, then
+Suppose $A,B$ are events with $\mathbb{P}(B)>0$ and  $\mathcal{G}$ is a sub-$\sigma$-field of $\mathcal{F}$. Then we define conditional probability as
 
 $$
-\mathbb{E}[X\mid\mathcal{G}]=\mathbb{E}[X].
+\mathbb{P}[A\mid \mathcal{G}]=\mathbb{E}[\mathbf{1}_A\mid \mathcal{G}],\quad \mathbb{P}[A\mid B]=\frac{\mathbb{P}[A\cap B]}{\mathbb{P}[B]}.
 $$
 
 ---

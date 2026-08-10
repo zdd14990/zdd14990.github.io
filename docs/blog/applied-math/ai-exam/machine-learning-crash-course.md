@@ -933,11 +933,21 @@ $$
 
 ---
 
-**解答**：我们只需取离原点最近的正样本点 $x_{min}$，令 $r = ||x_{min}||$ 即可。此时对于真实的圆 $r^*$，模型的真实误差 $L_{\mathcal{D}}(h_{\hat{r}})$ 就等于这个圆环区域在真实分布 $\mathcal{D}$ 下的概率。
+**解答**：令 $\widehat r$ 为样本中离原点最远的正样本的半径；若样本中没有正例，则取 $\widehat r=0$。在可实现条件下 $\widehat rle r^*$，且所有训练正例均被覆盖。因此可能出错的区域只有
 
-对 $m$ 个独立的点，全不落在该圆环内的概率为 $(1-\epsilon)^m\le e^{-\epsilon m}$。
+$$
+A_{\widehat r}=\{x:\widehat r<\|x\|\le r^*\},
+$$
 
-因此为满足 $\mathbb{P}[L_{\mathcal{D}}(h_{\hat{r}}) > \epsilon] \le \delta$，我们需要 $e^{-\epsilon m} \le \delta$，即 $m \ge \frac{\log(1/\delta)}{\epsilon}$。
+即真实圆内、经验圆外的圆环。若某个候选半径对应的该圆环概率超过 $\epsilon$，训练集仍完全没有落入该圆环的概率至多为 $(1-\epsilon)^m$。
+
+对 $m$ 个独立样本，全不落在该圆环内的概率为 $(1-\epsilon)^m\le e^{-\epsilon m}$。
+
+因此，为满足 $\mathbb{P}[L_{\mathcal{D}}(h_{\widehat r}) > \epsilon] \le \delta$，只需 $e^{-\epsilon m} \le \delta$，即
+
+$$
+m\ge \frac{\log(1/\delta)}{\epsilon}
+$$
 
 ---
 
@@ -986,24 +996,498 @@ Hint: Partition $[-1, 1]^n$ into small boxes. Use the Lipschitzness of $f$ to sh
 
 ---
 
-**解答**：将 $[-1, 1]^n$ 均匀划分成 $M^n$ 个小立方体，这里 $M> \frac{2\rho \sqrt{n}}{\epsilon}$。此时每个小立方体中函数值之差不超过 $\epsilon$，取 $c_k$ 为该立方体中函数的平均值。
-
-Sigmoid 函数 $\sigma(z) = \frac{1}{1 + e^{-z}}$。对大 $K$ 考虑 $\sigma(Kz)$，它就会变成阶跃函数。
-
-对于一维区间 $[a, b]$，我们可以用两个并排的神经元来构造它的指示函数：
+**解答**：先取网格尺度 $h<\epsilon/(2\rho\sqrt n)$。由 Lipschitz 性，只要 $\|x-y\|_2\le h\sqrt n$，就有
 
 $$
-I_{[a,b]}(x_i) \approx \sigma(K(x_i - a)) - \sigma(K(x_i - b))
+|f(x)-f(y)|\le \rho h\sqrt n<\epsilon/2.
 $$
 
-当 $x_i$ 落在 $[a, b]$ 内时，前一项约为 1，后一项约为 0，差值为 1。落在外面则差值为 0。
-
-对于高维的小立方体 $B_k$，构造
+在网格顶点记录 $f$ 的函数值，并在每个小立方体内做多线性插值，得到连续函数 $g$。由于插值是相邻顶点函数值的凸组合，故
 
 $$
-I_{B_k}(x) \approx \sigma\left( K' \left( \sum_{i=1}^n I_{[a_i, b_i]}(x_i) - (n - 0.5) \right) \right)
+\|f-g\|_\infty<\epsilon/2.
 $$
 
-只有当 $x$ 的每个坐标都落在对应的区间 $[a_i, b_i]$ 内时，内部的和才会达到 $n$，使得 $\sigma$ 的输入大于 0.5，输出约为 1。否则至少有一个坐标不满足，和最多为 $n-1$，使得 $\sigma$ 的输入小于 0.5，输出约为 0。
+接着使用 sigmoid 的通用逼近定理：对紧集 $[-1,1]^n$ 上的连续函数 $g$，存在有限宽单隐层 sigmoid 网络 $N$，使得
 
-最后取 $N=\sum_{k=1}^{M^n} c_k I_{B_k}(x)$ 即可。
+$$
+\|g-N\|_\infty<\epsilon/2.
+$$
+
+由三角不等式，
+
+$$
+\|f-N\|_\infty
+\le \|f-g\|_\infty+\|g-N\|_\infty
+<\epsilon.
+$$
+
+下面说明如何用 sigmoid 网络近似这个连续插值。Sigmoid 函数为
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+对充分大的 $K$，$\sigma(Kz)$ 可以近似阶跃函数。对每个坐标上的网格节点，可以用若干 sigmoid 的差构造连续的局部权重；再用第二层 sigmoid 近似不同坐标局部权重的乘积，从而得到每个小立方体对应的连续选择函数 $\phi_k(x)$，并使
+
+$$
+\phi_k(x)\ge0,\qquad \sum_k\phi_k(x)\approx1
+$$
+
+设 $c_k$ 为第 $k$ 个网格节点处的函数值，取
+
+$$
+N(x)=\sum_k c_k\phi_k(x)
+$$
+
+只要 $K$ 足够大，就可以使 $N$ 对连续插值函数 $g$ 的一致逼近误差小于 $\epsilon/2$。因此
+
+$$
+\sup_{x\in[-1,1]^n}|f(x)-N(x)|
+\le
+\|f-g\|_\infty+\|g-N\|_\infty
+<\epsilon
+$$
+
+输出层若需要严格落在 $[-1,1]$，可以先把目标值线性映射到 $[0,1]$，完成逼近后再映回 $[-1,1]$。
+
+---
+
+**(Spring, 2026, MQ1)** In the agnostic PAC learning setting, what quantity does a learning algorithm aim to compete with?
+
+(a) The Bayes optimal classifier.
+
+(b) The hypothesis with zero training error.
+
+(c) The best hypothesis in the class $\mathcal{H}$.
+
+(d) The hypothesis minimising validation error.
+
+---
+
+**解答**：选择 (c)。在不可知 PAC 学习中，我们不假设真实标记函数属于 $\mathcal{H}$，而是要求学习器输出的假设满足
+
+$$
+L_{\mathcal{D}}(h)\le \inf_{h'\in\mathcal{H}}L_{\mathcal{D}}(h')+\epsilon
+$$
+
+---
+
+**(Spring, 2026, MQ2)** Let $\mathcal{H}$ be a binary hypothesis class with VC dimension $d<\infty$. Which statement about its growth function $\tau_{\mathcal{H}}(m)$ is necessarily true?
+
+(a) $\tau_{\mathcal{H}}(m)=2^m$ for all $m$.
+
+(b) $\tau_{\mathcal{H}}(m)=O(m^d)$ for all $m$.
+
+(c) $\tau_{\mathcal{H}}(m)\le \sum_{i=0}^d\binom{m}{i}$ for all $m$.
+
+(d) $\tau_{\mathcal{H}}(m)$ is constant for $m>d$.
+
+---
+
+**解答**：选择 (c)。根据 Sauer 引理，若 $VCdim(\mathcal{H})=d<\infty$，则
+
+$$
+\tau_{\mathcal{H}}(m)\le \sum_{i=0}^d\binom{m}{i}
+$$
+
+当 $m>d$ 时，还可以进一步得到
+
+$$
+\tau_{\mathcal{H}}(m)\le \left(\frac{em}{d}\right)^d
+$$
+
+---
+
+**(Spring, 2026, MQ3)** Which statement about ReLU neural networks is correct from a learning-theoretic perspective?
+
+(a) ReLU networks represent smooth functions on $\mathbb{R}^d$.
+
+(b) Increasing depth always decreases the VC dimension.
+
+(c) ReLU networks compute piecewise linear functions whose complexity depends on depth and width.
+
+(d) Universal approximation of ReLU networks implies PAC learnability.
+
+---
+
+**解答**：选择 (c)。ReLU 函数 $\max\{0,x\}$ 是分段线性的，有限层 ReLU 网络仍然表示分段线性函数。网络能够产生的线性区域数量与深度和宽度有关。通用逼近性只说明表示能力，不能单独推出 PAC 可学习性。
+
+---
+
+**(Spring, 2026, MQ4)** Which statement about empirical risk minimisation (ERM) is correct?
+
+(a) ERM is guaranteed to be consistent for any hypothesis class.
+
+(b) ERM always finds a hypothesis with minimum true risk.
+
+(c) If $\mathcal{H}$ has finite VC dimension, ERM is PAC learnable in the realisable setting.
+
+(d) ERM is PAC learnable only if $\mathcal{H}$ is finite.
+
+---
+
+**解答**：选择 (c)。有限 VC 维保证经验风险与真实风险能够一致收敛，因此在可实现条件下，ERM 是 PAC 学习器。假设空间本身可以是无限集，只要其 VC 维有限即可。
+
+---
+
+**(Spring, 2026, MQ5)** Which statement is a correct consequence of the No Free Lunch theorem?
+
+(a) Restricting the hypothesis class always improves generalization.
+
+(b) There exists a universally optimal learning algorithm.
+
+(c) Inductive bias is necessary to obtain non-trivial learning guarantees.
+
+(d) Random guessing is optimal for all supervised learning problems.
+
+---
+
+**解答**：选择 (c)。No Free Lunch 定理说明，没有一个学习算法能在所有可能的数据分布和标记规则上都优于其他算法。因此，要得到非平凡的学习保证，必须通过假设空间或算法结构引入归纳偏置。
+
+---
+
+**(Spring, 2026, MQ6)** Let $K:\mathcal{X}\times\mathcal{X}\to\mathbb{R}$ be a symmetric function. Which of the following statements is correct?
+
+(a) $K$ is a valid kernel if and only if $K(x,x)\ge0$ for all $x\in\mathcal{X}$.
+
+(b) $K$ is a valid kernel if and only if there exists a finite-dimensional feature map $\psi$ such that $K(x,x')=\langle\psi(x),\psi(x')\rangle$.
+
+(c) If $K$ is positive semidefinite, then there exists a possibly infinite-dimensional Hilbert space $\mathcal{H}$ and a feature map $\psi:\mathcal{X}\to\mathcal{H}$ such that $K(x,x')=\langle\psi(x),\psi(x')\rangle_{\mathcal{H}}$.
+
+(d) Every kernel corresponds to a unique feature map.
+
+---
+
+**解答**：选择 (c)。正半定性要求对任意 $m$、任意 $x_1,\dots,x_m$ 和任意 $c_1,\dots,c_m\in\mathbb{R}$，都有
+
+$$
+\sum_{i=1}^m\sum_{j=1}^m c_ic_jK(x_i,x_j)\ge0
+$$
+
+由核的特征表示定理，存在一个可能无限维的 Hilbert 空间和特征映射 $\psi$，使得 $K$ 可以表示为其中的内积。特征映射一般不唯一。
+
+---
+
+**(Spring, 2026, A1)** Let $\mathcal{H}$ be a hypothesis class of binary classifiers $h:\mathcal{X}\to\{0,1\}$. Let $\mathcal{D}$ be an unknown distribution over $\mathcal{X}$, and let $f\in\mathcal{H}$ be the target hypothesis. For a fixed $h\in\mathcal{H}$, define the empirical loss on a sample $S=\{x_1,\dots,x_m\}\sim\mathcal{D}^m$ by
+
+$$
+L_S(h)=\frac1m\sum_{i=1}^m\mathbb{1}[h(x_i)\neq f(x_i)]
+$$
+
+(a) Let $p:=L_{\mathcal{D},f}(h)$. Show that
+
+$$
+\mathbb{E}_{S\sim\mathcal{D}^m}\left[(L_S(h)-p)^2\right]=\frac{p(1-p)}{m}
+$$
+
+(b) Deduce that
+
+$$
+\mathbb{E}\left[(L_S(h)-p)^2\right]\le\frac1{4m}
+$$
+
+and therefore it decreases at rate $O(1/m)$.
+
+---
+
+**解答**：令
+
+$$
+Z_i=\mathbb{1}[h(x_i)\neq f(x_i)]
+$$
+
+则 $Z_1,\dots,Z_m$ 独立同分布，并且
+
+$$
+Z_i\sim Bernoulli(p),\qquad \mathbb{E}[Z_i]=p,\qquad Var(Z_i)=p(1-p)
+$$
+
+又因为
+
+$$
+L_S(h)=\frac1m\sum_{i=1}^mZ_i
+$$
+
+所以
+
+$$
+\mathbb{E}[L_S(h)]=p
+$$
+
+从而
+
+$$
+\begin{aligned}
+\mathbb{E}\left[(L_S(h)-p)^2\right]
+&=Var(L_S(h))\\
+&=Var\left(\frac1m\sum_{i=1}^mZ_i\right)\\
+&=\frac1{m^2}\sum_{i=1}^mVar(Z_i)\\
+&=\frac{p(1-p)}m
+\end{aligned}
+$$
+
+由于对任意 $p\in[0,1]$ 都有
+
+$$
+p(1-p)=\frac14-\left(p-\frac12\right)^2\le\frac14
+$$
+
+因此
+
+$$
+\mathbb{E}\left[(L_S(h)-p)^2\right]\le\frac1{4m}=O\left(\frac1m\right)
+$$
+
+---
+
+**(Spring, 2026, A2)** Let $f:\mathbb{R}^d\to\mathbb{R}$ be twice continuously differentiable and $\lambda$-strongly convex. Prove that $f$ admits a unique global minimiser.
+
+---
+
+**解答**：由 $\lambda$-强凸性，对任意 $x\in\mathbb{R}^d$，有
+
+$$
+f(x)\ge f(0)+\langle\nabla f(0),x\rangle+\frac\lambda2||x||^2
+$$
+
+再由柯西不等式，
+
+$$
+f(x)\ge f(0)-||\nabla f(0)||\,||x||+\frac\lambda2||x||^2
+$$
+
+当 $||x||\to\infty$ 时，右侧趋于 $+\infty$，因此 $f$ 是 coercive 的。由于 $f$ 连续，所以它在 $\mathbb{R}^d$ 上存在全局最小值点。
+
+下面证明唯一性。假设 $u\neq v$ 都是全局最小值点。由强凸性，
+
+$$
+f\left(\frac{u+v}{2}\right)
+\le
+\frac12f(u)+\frac12f(v)-\frac\lambda8||u-v||^2
+<
+\frac12f(u)+\frac12f(v)
+$$
+
+但 $f(u)=f(v)=\min_xf(x)$，所以
+
+$$
+f\left(\frac{u+v}{2}\right)<\min_xf(x)
+$$
+
+矛盾。因此 $f$ 存在唯一的全局最小值点。
+
+---
+
+**(Spring, 2026, A3)** Let $\mathcal{X}=\mathbb{R}$ and consider the hypothesis class
+
+$$
+\mathcal{H}
+=
+\left\{
+h_{a,b,c}(x)=\mathbb{1}_{[a,b]}(x)\vee\mathbb{1}_{[c,\infty)}(x)
+\mid
+a\le b<c, a,b,c\in\mathbb{R}
+\right\}
+$$
+
+where $\vee$ denotes the logical OR.
+
+(a) Let $x_1,\dots,x_n$ be $n$ distinct points in $\mathbb{R}$. Give an upper bound on the growth function $s(\mathcal{H},n)$.
+
+(b) Determine the VC dimension of $\mathcal{H}$.
+
+---
+
+**解答**：不妨设
+
+$$
+x_1<x_2<\cdots<x_n
+$$
+
+$(a)$：参数 $a,b,c$ 在这些样本点上产生的分类只取决于它们分别落在哪两个相邻样本点之间。每个参数至多有 $n+1$ 种位置，因此
+
+$$
+s(\mathcal{H},n)\le(n+1)^3
+$$
+
+也可以从标签结构理解这一点：任意 $h\in\mathcal{H}$ 在有序样本上产生的正类集合只能由一个有限连续区间和一个右侧尾部组成。
+
+$(b)$：先证明下界。任取三个点
+
+$$
+x_1<x_2<x_3
+$$
+
+对于三个点的任意二元标记，都可以用一个有限区间 $[a,b]$ 和一个右侧射线 $[c,\infty)$ 实现。例如标记 $(1,0,1)$ 时，用 $[a,b]$ 单独覆盖 $x_1$，再用 $[c,\infty)$ 覆盖 $x_3$；标记 $(0,1,0)$ 时，用 $[a,b]$ 单独覆盖 $x_2$，并令 $c>x_3$。其余标记同理。因此
+
+$$
+VCdim(\mathcal{H})\ge3
+$$
+
+再证明上界。任取四个点
+
+$$
+x_1<x_2<x_3<x_4
+$$
+
+考虑标记
+
+$$
+(1,0,1,0)
+$$
+
+因为 $x_4$ 的标记为 $0$，右侧射线 $[c,\infty)$ 不能覆盖 $x_3$，否则它也会覆盖 $x_4$。于是 $x_1$ 和 $x_3$ 都必须由同一个区间 $[a,b]$ 覆盖，但这样位于二者之间的 $x_2$ 也会被覆盖，与其标记为 $0$ 矛盾。因此任意四个点都不能被打散，所以
+
+$$
+VCdim(\mathcal{H})\le3
+$$
+
+综上，
+
+$$
+VCdim(\mathcal{H})=3
+$$
+
+---
+
+**(Spring, 2026, A4)** Consider a set $S$ of examples in $\mathbb{R}^n\times[k]$ for which there exist vectors $\mu_1,\dots,\mu_k\in\mathbb{R}^n$ such that every example $(x,y)\in S$ falls within a ball centered at $\mu_y$ whose radius is $r\ge1$. Assume also that for every $i\neq j$,
+
+$$
+||\mu_i-\mu_j||\ge4r
+$$
+
+Consider concatenating each instance by the constant $1$ and then applying the multivector construction, namely,
+
+$$
+\Psi(x,y)
+=
+[0,\dots,0,x_1,\dots,x_n,1,0,\dots,0]
+\in\mathbb{R}^{k(n+1)}
+$$
+
+Show that there exists a vector $w\in\mathbb{R}^{k(n+1)}$ such that $\ell(w,(x,y))=0$ for every $(x,y)\in S$.
+
+Hint: Write $x=\mu_y+v$ for some $||v||\le r$, and take $w=[w_1,\dots,w_k]$, where
+
+$$
+w_i=\left[\mu_i,-\frac{||\mu_i||^2}{2}\right]
+$$
+
+---
+
+**解答**：对于第 $i$ 类，定义它的得分为
+
+$$
+s_i(x)=\langle w,\Psi(x,i)\rangle
+=
+\langle\mu_i,x\rangle-\frac12||\mu_i||^2
+$$
+
+对任意样本 $(x,y)\in S$，可以写成
+
+$$
+x=\mu_y+v,\qquad ||v||\le r
+$$
+
+对任意 $j\neq y$，令
+
+$$
+\Delta=\mu_y-\mu_j
+$$
+
+则
+
+$$
+\begin{aligned}
+s_y(x)-s_j(x)
+&=\langle\mu_y-\mu_j,x\rangle-\frac12\left(||\mu_y||^2-||\mu_j||^2\right)\\
+&=\langle\Delta,\mu_y+v\rangle-\frac12\left(||\mu_y||^2-||\mu_j||^2\right)\\
+&=\frac12||\Delta||^2+\langle\Delta,v\rangle\\
+&\ge\frac12||\Delta||^2-||\Delta||\,||v||\\
+&\ge\frac12||\Delta||^2-r||\Delta||\\
+&=||\Delta||\left(\frac{||\Delta||}{2}-r\right)
+\end{aligned}
+$$
+
+由于 $||\Delta||\ge4r$ 且 $r\ge1$，所以
+
+$$
+s_y(x)-s_j(x)
+\ge
+4r(2r-r)
+=4r^2
+\ge1
+$$
+
+于是对所有 $j\neq y$ 都有
+
+$$
+1+s_j(x)-s_y(x)\le0
+$$
+
+因此多分类 hinge loss 满足
+
+$$
+\ell(w,(x,y))
+=
+\max_{j\neq y}\left[1+s_j(x)-s_y(x)\right]_+
+=0
+$$
+
+---
+
+**(Spring, 2026, A5)** Let $d\in\mathbb{N}$. Consider two feedforward neural networks with the same input dimension $d$ and scalar output. Assume that the first network $\Phi_{\mathrm{ReLU}}$ uses the ReLU activation function in all hidden layers, while the second network $\Phi_\sigma$ uses the sigmoid activation function. Suppose that the two networks represent the same function on $\mathbb{R}^d$, that is,
+
+$$
+\Phi_{\mathrm{ReLU}}(x)=\Phi_\sigma(x)\qquad\text{for all }x\in\mathbb{R}^d
+$$
+
+Show that the function represented by $\Phi_{\mathrm{ReLU}}$ and $\Phi_\sigma$ must be constant.
+
+---
+
+**解答**：有限 ReLU 网络表示的是连续分段仿射函数。因此，$\mathbb{R}^d$ 可以被划分成有限个多面体区域，并且在每个区域上都有
+
+$$
+\Phi_{\mathrm{ReLU}}(x)=a^Tx+b
+$$
+
+至少存在一个具有非空内部的区域 $U$，使得上式在 $U$ 上成立。
+
+另一方面，sigmoid 函数
+
+$$
+\sigma(t)=\frac1{1+e^{-t}}
+$$
+
+是实解析函数。有限次仿射变换、复合与线性组合仍然是实解析函数，因此 $\Phi_\sigma$ 在 $\mathbb{R}^d$ 上是实解析函数。
+
+因为两个网络表示同一个函数，所以在开集 $U$ 上有
+
+$$
+\Phi_\sigma(x)-(a^Tx+b)=0
+$$
+
+实解析函数如果在非空开集上恒为零，就在整个连通区域 $\mathbb{R}^d$ 上恒为零。因此
+
+$$
+\Phi_\sigma(x)=a^Tx+b
+$$
+
+对所有 $x\in\mathbb{R}^d$ 都成立。
+
+但是 sigmoid 隐藏层的每个输出都位于 $(0,1)$ 中，所以有限 sigmoid 网络的标量输出是有界的。仿射函数 $a^Tx+b$ 在整个 $\mathbb{R}^d$ 上有界，只可能有
+
+$$
+a=0
+$$
+
+因此
+
+
+$$
+\Phi_{\mathrm{ReLU}}(x)=\Phi_\sigma(x)=b
+$$
+
+即两个网络表示的函数必为常数函数。

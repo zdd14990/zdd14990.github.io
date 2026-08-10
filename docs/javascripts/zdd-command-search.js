@@ -14,26 +14,35 @@
     activeScope: "home"
   };
 
-  var commonNames = ["/random", "/latest", "/tag", "/count"];
+  var helpCategories = ["Navigation", "Knowledge", "Tools", "Site"];
   var commands = [
-    {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", fill: "/random ", desc: "Open a random article."},
-    {name: "/latest", syntax: "/latest", kind: "query", desc: "Show the latest updated articles."},
-    {name: "/tag", syntax: "/tag <tag>", kind: "jump", fill: "/tag ", desc: "Open the result page for a tag."},
-    {name: "/count", syntax: "/count", kind: "stats", desc: "Show article, category, tag, word and PDF counts."},
-    {name: "/next", syntax: "/next", kind: "jump", desc: "Open the next article in this folder."},
-    {name: "/prev", syntax: "/prev", kind: "jump", desc: "Open the previous article in this folder."},
-    {name: "/rewind", syntax: "/rewind", kind: "jump", desc: "Return to the last article you opened."},
-    {name: "/log", syntax: "/log", kind: "query", desc: "Show recent update notes."},
-    {name: "/tex", syntax: "/tex <formula>", kind: "render", fill: "/tex ", desc: "Preview a LaTeX formula."},
-    {name: "/ip", syntax: "/ip", kind: "query", desc: "Show your visitor IP address."},
-    {name: "/404", syntax: "/404", kind: "jump", desc: "Enter the 404 page on purpose."},
-    {name: "/pdf", syntax: "/pdf", kind: "query", desc: "List articles with PDF readers or downloads."},
-    {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", fill: "/theme ", desc: "Switch the color theme."},
-    {name: "/clear", syntax: "/clear", kind: "system", desc: "Clear the console result."},
-    {name: "/kill", syntax: "/kill", kind: "system", desc: "Crash the page, politely."},
-    {name: "/help", syntax: "/help [advanced]", kind: "system", fill: "/help ", desc: "Show command help."}
+    {name: "/lab", syntax: "/lab", kind: "jump", category: "Navigation", desc: "Open the experiment index."},
+    {name: "/micro", syntax: "/micro", kind: "jump", category: "Navigation", desc: "Open the micro-note feed."},
+    {name: "/next", syntax: "/next", kind: "jump", category: "Navigation", advanced: true, desc: "Open the next article in this folder."},
+    {name: "/prev", syntax: "/prev", kind: "jump", category: "Navigation", advanced: true, desc: "Open the previous article in this folder."},
+    {name: "/rewind", syntax: "/rewind", kind: "jump", category: "Navigation", advanced: true, desc: "Return to the last article you opened."},
+    {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", category: "Knowledge", fill: "/random ", desc: "Open a random post, micro note, or lab."},
+    {name: "/latest", syntax: "/latest", kind: "query", category: "Knowledge", desc: "Show the latest dated articles."},
+    {name: "/tag", syntax: "/tag <tag>", kind: "jump", category: "Knowledge", fill: "/tag ", desc: "Open the result page for a tag."},
+    {name: "/pdf", syntax: "/pdf", kind: "query", category: "Knowledge", advanced: true, desc: "List articles with PDF readers or downloads."},
+    {name: "/tex", syntax: "/tex [formula]", kind: "jump", category: "Tools", fill: "/tex ", desc: "Open the LaTeX playground, optionally prefilled."},
+    {name: "/plot", syntax: "/plot [expression]", kind: "jump", category: "Tools", fill: "/plot ", desc: "Open the function plotter, optionally prefilled."},
+    {name: "/life", syntax: "/life", kind: "jump", category: "Tools", desc: "Open Conway's Game of Life."},
+    {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", category: "Site", fill: "/theme ", desc: "Switch the color theme."},
+    {name: "/count", syntax: "/count", kind: "stats", category: "Site", desc: "Show content, category, tag, word and PDF counts."},
+    {name: "/log", syntax: "/log", kind: "query", category: "Site", advanced: true, desc: "Show recent update notes."},
+    {name: "/ip", syntax: "/ip", kind: "query", category: "Site", advanced: true, desc: "Show your visitor IP address."},
+    {name: "/404", syntax: "/404", kind: "jump", category: "Site", advanced: true, desc: "Enter the 404 page on purpose."},
+    {name: "/clear", syntax: "/clear", kind: "system", category: "Site", desc: "Clear the console result."},
+    {name: "/kill", syntax: "/kill", kind: "system", category: "Site", advanced: true, desc: "Crash the page, politely."},
+    {name: "/help", syntax: "/help [advanced]", kind: "system", category: "Site", fill: "/help ", desc: "Show commands grouped by purpose."}
   ];
   var updateLogs = [
+    {
+      date: "2026-08-10",
+      title: "Knowledge playground",
+      detail: "Added Lab experiments, reusable article widgets, internal article previews, Micro notes, and matching console routes."
+    },
     {
       date: "2026-07-06",
       title: "Global command console",
@@ -84,16 +93,24 @@
 
   function loadPosts() {
     if (state.loaded) return Promise.resolve(state.posts);
+    if (window.zddContentIndexPromise) {
+      return window.zddContentIndexPromise.then(function(data) {
+        state.posts = Array.isArray(data) ? data : [];
+        state.loaded = true;
+        return state.posts;
+      });
+    }
     var embedded = document.getElementById("zdd-search-data");
     if (embedded) {
       try {
         state.posts = JSON.parse(embedded.textContent || "[]");
         state.loaded = true;
+        window.zddContentIndexPromise = Promise.resolve(state.posts);
         return Promise.resolve(state.posts);
       } catch (e) {}
     }
     var url = window.zddSearchDataUrl || "/assets/zdd-search-data.json";
-    return fetch(url, {credentials: "same-origin", cache: "no-store"})
+    window.zddContentIndexPromise = fetch(url, {credentials: "same-origin", cache: "no-store"})
       .then(function(response) {
         if (!response.ok) throw new Error("Search data unavailable");
         return response.json();
@@ -108,6 +125,7 @@
         state.loaded = true;
         return state.posts;
       });
+    return window.zddContentIndexPromise;
   }
 
   function allTags() {
@@ -121,6 +139,7 @@
   function allCategories() {
     var categories = [];
     state.posts.forEach(function(post) {
+      if (post.type && post.type !== "post") return;
       categories = categories.concat(post.categories || []);
     });
     return unique(categories).sort();
@@ -177,9 +196,14 @@
   }
 
   function postResult(post) {
+    var contentType = post.type || "post";
+    var category = (post.categories || []).join(" / ") || contentType;
+    var detail = contentType === "post"
+      ? category + " · " + Number(post.words || 0).toLocaleString() + " words"
+      : category + (post.date ? " · " + post.date : "");
     return '<a class="zdd-search-result" href="' + escapeHtml(post.url) + '">'
       + '<span class="zdd-search-title">' + escapeHtml(post.title) + '</span>'
-      + '<span class="zdd-search-meta">' + escapeHtml((post.categories || []).join(" / ")) + ' · ' + Number(post.words || 0).toLocaleString() + ' words</span>'
+      + '<span class="zdd-search-meta">' + escapeHtml(detail) + '</span>'
       + '</a>';
   }
 
@@ -271,15 +295,15 @@
     if (!state.resultBox) return;
     var raw = String(query || "").trim();
     if (mode !== "help" && renderCommandParameters(raw)) return;
-    var needle = normalize(raw.replace(/^\//, ""));
+    var needle = normalize(raw.replace(/^\//, "").split(/\s+/)[0]);
     var pool = commands;
     if (mode === "help") {
       pool = commands.filter(function(command) {
-        return commonNames.indexOf(command.name) >= 0;
+        return !command.advanced;
       });
     } else if (mode === "advanced") {
       pool = commands.filter(function(command) {
-        return commonNames.indexOf(command.name) < 0;
+        return command.advanced;
       });
     }
     if (mode !== "help" && mode !== "advanced" && (!raw || raw === "/" || !needle)) {
@@ -292,9 +316,21 @@
     });
     state.suggestionRows = [];
     state.selectedCommandIndex = Math.max(0, Math.min(state.selectedCommandIndex, state.commandRows.length - 1));
+    var rows = state.commandRows.map(commandButton).join("");
+    if ((mode === "help" || mode === "advanced") && state.commandRows.length) {
+      rows = helpCategories.map(function(category) {
+        var grouped = state.commandRows.map(function(command, index) {
+          return {command: command, index: index};
+        }).filter(function(item) {
+          return item.command.category === category;
+        });
+        if (!grouped.length) return "";
+        return '<section class="zdd-command-group"><div class="zdd-command-group-title">' + escapeHtml(category) + '</div>'
+          + grouped.map(function(item) { return commandButton(item.command, item.index); }).join("") + '</section>';
+      }).join("");
+    }
     state.resultBox.innerHTML = '<div class="zdd-command-panel">'
-      + (state.commandRows.length ? state.commandRows.map(commandButton).join("") : '<div class="zdd-command-empty">No command found.</div>')
-      + '</div>';
+      + (rows || '<div class="zdd-command-empty">No command found.</div>') + '</div>';
     state.resultBox.hidden = false;
     updateGhost(firstCompletion());
   }
@@ -454,30 +490,6 @@
     ].join(" "));
   }
 
-  function renderTex(commandLine, formula) {
-    if (!formula) {
-      renderCommandOutput(commandLine, "Missing formula", '<div class="zdd-command-empty">Usage: <code>/tex e^{i\\pi}+1=0</code></div>');
-      return;
-    }
-    var block = formula.length > 36 || /\\\\|\\begin|\\frac|\\sum|\\int/.test(formula);
-    var rendered = block
-      ? '<div class="zdd-tex-preview"><span class="arithmatex">\\[' + escapeHtml(formula) + '\\]</span></div>'
-      : '<div class="zdd-tex-preview"><span class="arithmatex">\\(' + escapeHtml(formula) + '\\)</span></div>';
-    renderCommandOutput(commandLine, "LaTeX preview", rendered);
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([state.resultBox]).catch(function() {});
-    }
-  }
-
-  function renderTexInput(raw) {
-    var formula = String(raw || "").replace(/^\/tex\s*/i, "");
-    if (!formula.trim()) {
-      hideResults();
-      return;
-    }
-    renderTex("/tex", formula);
-  }
-
   function renderLog(commandLine) {
     var rows = updateLogs.map(function(item) {
       return '<div class="zdd-log-row">'
@@ -525,6 +537,21 @@
       return;
     }
 
+    if (name === "/lab") {
+      navigate(siteUrl("lab/"));
+      return;
+    }
+
+    if (name === "/micro") {
+      navigate(siteUrl("micro/"));
+      return;
+    }
+
+    if (name === "/life") {
+      navigate(siteUrl("lab/life/"));
+      return;
+    }
+
     if (name === "/404") {
       navigate(siteUrl("404/"));
       return;
@@ -555,7 +582,10 @@
     }
 
     if (name === "/latest") {
-      renderPostOutput(commandLine, "Latest articles", state.posts.slice(0, 6), "No articles found.");
+      var publishedPosts = state.posts.filter(function(post) {
+        return (!post.type || post.type === "post") && post.published;
+      });
+      renderPostOutput(commandLine, "Latest articles", publishedPosts.slice(0, 6), "No articles found.");
       return;
     }
 
@@ -565,11 +595,18 @@
     }
 
     if (name === "/count") {
+      var articles = state.posts.filter(function(post) { return !post.type || post.type === "post"; });
+      var microNotes = state.posts.filter(function(post) { return post.type === "micro"; });
+      var labItems = state.posts.filter(function(post) { return post.type === "lab"; });
       var words = state.posts.reduce(function(sum, post) { return sum + (Number(post.words) || 0); }, 0);
-      var pdfCount = state.posts.filter(function(post) { return post.has_pdf; }).length;
-      var latest = state.posts.reduce(function(max, post) { return post.date > max ? post.date : max; }, "");
+      var pdfCount = articles.filter(function(post) { return post.has_pdf; }).length;
+      var latest = state.posts.reduce(function(max, post) {
+        return post.published && post.date > max ? post.date : max;
+      }, "");
       var stats = [
-        ["Articles", state.posts.length.toLocaleString()],
+        ["Articles", articles.length.toLocaleString()],
+        ["Micro notes", microNotes.length.toLocaleString()],
+        ["Lab items", labItems.length.toLocaleString()],
         ["Categories", allCategories().length.toLocaleString()],
         ["Tags", allTags().length.toLocaleString()],
         ["Words", words.toLocaleString()],
@@ -583,12 +620,19 @@
     }
 
     if (name === "/pdf") {
-      renderPostOutput(commandLine, "PDF articles", state.posts.filter(function(post) { return post.has_pdf; }).slice(0, 10), "No PDF articles found.");
+      renderPostOutput(commandLine, "PDF articles", state.posts.filter(function(post) {
+        return (!post.type || post.type === "post") && post.has_pdf;
+      }).slice(0, 10), "No PDF articles found.");
       return;
     }
 
     if (name === "/tex") {
-      renderTex(commandLine, arg);
+      navigate(siteUrl("lab/tex/" + (arg ? "?formula=" + encodeURIComponent(arg) : "")));
+      return;
+    }
+
+    if (name === "/plot") {
+      navigate(siteUrl("lab/plot/" + (arg ? "?expression=" + encodeURIComponent(arg) : "")));
       return;
     }
 
@@ -628,7 +672,7 @@
       if (picked) {
         navigate(picked.url);
       } else {
-        renderCommandOutput(commandLine, "No article found", '<div class="zdd-command-empty">Try <code>/random</code> or check the tag/category name.</div>');
+        renderCommandOutput(commandLine, "No content found", '<div class="zdd-command-empty">Try <code>/random</code> or check the tag/category name.</div>');
       }
       return;
     }
@@ -690,9 +734,7 @@
       state.selectedCommandIndex = 0;
       state.selectedSuggestionIndex = 0;
       var value = state.input.value.trim();
-      if (/^\/tex\s+/i.test(value)) {
-        renderTexInput(value);
-      } else if (value.charAt(0) === "/") {
+      if (value.charAt(0) === "/") {
         renderCommandPanel(value);
       } else {
         renderContentResults();

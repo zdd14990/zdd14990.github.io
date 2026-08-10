@@ -7,6 +7,8 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+import markdown as markdown_lib
+
 DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
 CHAPTER_RE = re.compile(
@@ -19,6 +21,9 @@ MEANINGLESS_TAG_RE = re.compile(
 
 TOPIC_INFERENCE = {
     "probability-statistics": ["probability"],
+    "qualification-exam-review": ["qualification-exam", "review-materials"],
+    "cryptography": ["cryptography"],
+    "cryptography/cryptanalysis": ["cryptanalysis"],
     "applied-math/convex-optimization": ["optimization"],
     "applied-math/numerical-pde": ["numerical-methods", "pde"],
     "applied-math/applied-math-exam": ["numerical-methods"],
@@ -46,6 +51,9 @@ DISPLAY_NAMES = {
     "probability-theory": "概率论",
     "course": "课程",
     "gtm295": "GTM295",
+    "qualification-exam-review": "博资考复习资料",
+    "cryptography": "密码学",
+    "cryptanalysis": "密码分析学",
     "applied-math": "应用数学",
     "numerical-pde": "PDE 数值解",
     "convex-optimization": "凸优化",
@@ -62,6 +70,8 @@ TOP_ORDER = [
     "analysis",
     "algebra",
     "probability-statistics",
+    "qualification-exam-review",
+    "cryptography",
     "course",
     "gtm295",
     "ai-exam",
@@ -75,6 +85,45 @@ TOP_ORDER = [
     "misc",
 ]
 FLATTEN_ROOTS = {"applied-math"}
+
+LAB_ITEMS = [
+    {
+        "slug": "tex",
+        "title": "LaTeX Playground",
+        "description": "Write a formula and render it immediately with the site's existing MathJax setup.",
+        "date": "2026-08-10",
+        "tags": ["math", "latex"],
+        "status": "stable",
+        "featured": True,
+    },
+    {
+        "slug": "plot",
+        "title": "Function Plotter",
+        "description": "Plot common functions with a small expression parser and no eval().",
+        "date": "2026-08-10",
+        "tags": ["math", "visualization"],
+        "status": "experimental",
+        "featured": True,
+    },
+    {
+        "slug": "life",
+        "title": "Game of Life",
+        "description": "A minimal, keyboard-friendly implementation of Conway's cellular automaton.",
+        "date": "2026-08-10",
+        "tags": ["simulation", "cellular-automata"],
+        "status": "stable",
+        "featured": True,
+    },
+    {
+        "slug": "fourier",
+        "title": "Fourier Series Visualizer",
+        "description": "Watch partial sums approach a square wave as the number of terms changes.",
+        "date": "2026-08-10",
+        "tags": ["math", "fourier", "interactive-widget"],
+        "status": "stable",
+        "featured": True,
+    },
+]
 
 
 def _docs_dir():
@@ -240,7 +289,8 @@ def _article_data():
         rel = path.relative_to(docs_dir).as_posix()
         src_path = rel
         title = _parse_scalar_meta(meta, "title") or path.stem.replace("-", " ").title()
-        date = _parse_scalar_meta(meta, "date") or datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d")
+        date = _parse_scalar_meta(meta, "date")
+        published_at = _date_obj(date)
         tags = list(dict.fromkeys(_clean_tags(_parse_list_meta(meta, "tags")) + _infer_topic_tags(src_path)))
         categories = _parse_list_meta(meta, "categories")
         content = _read_text(path)
@@ -255,7 +305,8 @@ def _article_data():
             "url": _article_url(src_path),
             "title": title,
             "date": date,
-            "sort_key": _date_obj(date) or datetime.fromtimestamp(path.stat().st_mtime),
+            "published": published_at is not None,
+            "sort_key": published_at or datetime.fromtimestamp(path.stat().st_mtime),
             "modified": date,
             "created": date,
             "categories": categories,
@@ -274,6 +325,39 @@ def _article_data():
     return articles
 
 
+def _micro_data():
+    docs_dir = _docs_dir()
+    micro_dir = docs_dir / "micro"
+    if not micro_dir.exists():
+        return []
+
+    notes = []
+    for path in sorted(micro_dir.glob("*.md")):
+        if path.name == "index.md":
+            continue
+        meta, body = _meta_and_body(path)
+        date = _parse_scalar_meta(meta, "date")
+        published_at = _date_obj(date)
+        title = _parse_scalar_meta(meta, "title")
+        tags = _clean_tags(_parse_list_meta(meta, "tags"))
+        src_path = path.relative_to(docs_dir).as_posix()
+        notes.append({
+            "path": path,
+            "src_path": src_path,
+            "url": _article_url(src_path),
+            "title": title,
+            "date": date,
+            "published": published_at is not None,
+            "sort_key": published_at or datetime.fromtimestamp(path.stat().st_mtime),
+            "tags": tags,
+            "words": _word_count(body),
+            "preview": _render_math_text(_first_content_block(body)),
+            "search_text": _plain_markdown(body)[:SEARCH_TEXT_LIMIT],
+            "body": body.strip(),
+        })
+    return sorted(notes, key=lambda note: note["sort_key"], reverse=True)
+
+
 def _format_words(count):
     return f"{count:,} 字"
 
@@ -281,28 +365,103 @@ def _format_words(count):
 def _post_card(article, extra_class=""):
     tags = " ".join(html.escape(tag) for tag in article["tags"])
     category = " / ".join(html.escape(c) for c in article["categories"]) or "未分类"
+    date_meta = f"\n    <span>{html.escape(article['date'])}</span>" if article["date"] else ""
     return f"""
 <a class="zdd-post-card {extra_class}" href="{article['url']}" data-tags="{tags}">
   <span class="zdd-post-title">{html.escape(article['title'])}</span>
   <span class="zdd-post-preview">{article['preview']}</span>
   <span class="zdd-post-meta">
-    <span>{category}</span>
-    <span>{html.escape(article['date'])}</span>
+    <span>{category}</span>{date_meta}
     <span>{_format_words(article['words'])}</span>
   </span>
 </a>
 """
 
 
+def _lab_catalog():
+    cards = []
+    for item in sorted(
+        LAB_ITEMS,
+        key=lambda value: (not value.get("featured", False), value.get("date", ""), value["title"]),
+    ):
+        tags = "".join(
+            f'<span class="zdd-lab-tag">{html.escape(tag)}</span>'
+            for tag in item.get("tags", [])
+        )
+        status = item.get("status", "")
+        status_label = (
+            f'<span class="zdd-lab-status" data-status="{html.escape(status)}">{html.escape(status)}</span>'
+            if status
+            else ""
+        )
+        date = item.get("date", "")
+        date_label = f'<time datetime="{html.escape(date)}">{html.escape(date)}</time>' if date else ""
+        cards.append(f"""
+<a class="zdd-lab-item" href="/lab/{html.escape(item['slug'])}/">
+  <span class="zdd-lab-item-heading">
+    <span class="zdd-lab-item-title">{html.escape(item['title'])}</span>
+    {status_label}
+  </span>
+  <span class="zdd-lab-item-description">{html.escape(item['description'])}</span>
+  <span class="zdd-lab-item-meta">{date_label}<span class="zdd-lab-tags">{tags}</span></span>
+</a>
+""")
+    return '<div class="zdd-lab-list">' + "".join(cards) + "</div>"
+
+
+def _micro_feed():
+    entries = []
+    for note in _micro_data():
+        title = (
+            f'<h2 class="zdd-micro-title"><a href="{note["url"]}">{html.escape(note["title"])}</a></h2>'
+            if note["title"]
+            else ""
+        )
+        tags = "".join(
+            f'<a class="zdd-micro-tag" href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}</a>'
+            for tag in note["tags"]
+        )
+        date = html.escape(note["date"] or "Undated")
+        rendered_body = markdown_lib.markdown(
+            note["body"],
+            extensions=[
+                "attr_list",
+                "footnotes",
+                "sane_lists",
+                "tables",
+                "pymdownx.arithmatex",
+                "pymdownx.highlight",
+                "pymdownx.inlinehilite",
+                "pymdownx.superfences",
+            ],
+            extension_configs={"pymdownx.arithmatex": {"generic": True}},
+        )
+        entries.append(f"""
+<article class="zdd-micro-entry">
+  <header class="zdd-micro-header">
+    <time datetime="{date}">{date}</time>
+    <a class="zdd-micro-permalink" href="{note['url']}" aria-label="Permanent link to this micro note">permalink</a>
+  </header>
+  {title}
+  <div class="zdd-micro-body">{rendered_body}</div>
+  <footer class="zdd-micro-tags">{tags}</footer>
+</article>
+""")
+    if not entries:
+        return '<p class="zdd-micro-empty">No micro notes yet.</p>'
+    return '<div class="zdd-micro-feed">' + "".join(entries) + "</div>"
+
+
 def _folder_stats(articles):
     if not articles:
         return {"count": 0, "created": "-", "updated": "-", "words": 0}
-    created = min(a["sort_key"] for a in articles).strftime("%Y-%m-%d")
-    updated = max(a["sort_key"] for a in articles).strftime("%Y-%m-%d")
+    published = [a for a in articles if a["published"]]
+    created = min((a["sort_key"] for a in published), default=None)
+    updated = max((a["sort_key"] for a in published), default=None)
     return {
         "count": len(articles),
-        "created": created,
-        "updated": updated,
+        "created": created.strftime("%Y-%m-%d") if created else "-",
+        "updated": updated.strftime("%Y-%m-%d") if updated else "-",
         "words": sum(a["words"] for a in articles),
     }
 
@@ -334,11 +493,12 @@ def _render_tree(node, level=0):
         articles = _collect_articles(child)
         stats = _folder_stats(articles)
         name = DISPLAY_NAMES.get(key, key.replace("-", " ").title())
+        date_range = f" · {stats['created']} - {stats['updated']}" if stats["created"] != "-" else ""
         html_parts.append(f"""
 <details class="zdd-catalog-folder" data-level="{level}">
   <summary>
     <span class="zdd-folder-name">{html.escape(name)}</span>
-    <span class="zdd-folder-meta">{stats['count']} 篇 · {stats['created']} - {stats['updated']} · {_format_words(stats['words'])}</span>
+    <span class="zdd-folder-meta">{stats['count']} 篇{date_range} · {_format_words(stats['words'])}</span>
   </summary>
   <div class="zdd-folder-content"><div>
     {_render_tree(child, level + 1)}
@@ -361,12 +521,14 @@ def _search_index_items():
     for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True):
         adjacent = neighbors.get(article["src_path"], {})
         items.append({
+            "type": "post",
             "title": article["title"],
             "url": article["url"],
             "prev_url": adjacent.get("prev_url", ""),
             "next_url": adjacent.get("next_url", ""),
             "preview": re.sub(r"<[^>]+>", " ", article["preview"]),
             "date": article["date"],
+            "published": article["published"],
             "words": article["words"],
             "categories": article["categories"],
             "tags": article["tags"],
@@ -374,6 +536,44 @@ def _search_index_items():
             "source": _strip_frontmatter(_read_text(article["path"]))[:3000],
             "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", _read_text(article["path"]), re.I)),
         })
+
+    for note in _micro_data():
+        items.append({
+            "type": "micro",
+            "title": note["title"] or f"Micro note · {note['date'] or note['path'].stem}",
+            "url": note["url"],
+            "prev_url": "",
+            "next_url": "",
+            "preview": re.sub(r"<[^>]+>", " ", note["preview"]),
+            "date": note["date"],
+            "published": note["published"],
+            "words": note["words"],
+            "categories": ["Micro"],
+            "tags": note["tags"],
+            "content": note["search_text"],
+            "source": note["body"][:3000],
+            "has_pdf": False,
+        })
+
+    for item in LAB_ITEMS:
+        items.append({
+            "type": "lab",
+            "title": item["title"],
+            "url": f"/lab/{item['slug']}/",
+            "prev_url": "",
+            "next_url": "",
+            "preview": item["description"],
+            "date": item.get("date", ""),
+            "published": bool(_date_obj(item.get("date", ""))),
+            "words": len(item["description"].split()),
+            "categories": ["Lab"],
+            "tags": item.get("tags", []),
+            "content": item["description"],
+            "source": item["description"],
+            "has_pdf": False,
+            "status": item.get("status", ""),
+        })
+    items.sort(key=lambda item: item.get("date", ""), reverse=True)
     return items
 
 
@@ -391,21 +591,19 @@ def _load_pixiv_session():
     return ""
 
 
-def _fetch_pixiv_ranking(mode="daily"):
-    session = _load_pixiv_session()
-    label = f"pixiv:{mode}"
-    if not session:
-        print(f"[{label}] No PIXIV_SESSION found — skipping")
-        return []
-
+def _fetch_pixiv_ranking(mode="daily", session=""):
+    auth_label = "session" if session else "anonymous"
+    label = f"pixiv:{mode}:{auth_label}"
     url = f"https://www.pixiv.net/ranking.php?format=json&mode={mode}"
-    req = urllib.request.Request(url, headers={
-        "Cookie": f"PHPSESSID={session}",
+    headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://www.pixiv.net/",
         "Accept": "application/json",
         "Accept-Language": "zh-CN,zh;q=0.9",
-    })
+    }
+    if session:
+        headers["Cookie"] = f"PHPSESSID={session}"
+    req = urllib.request.Request(url, headers=headers)
 
     try:
         ctx = ssl.create_default_context()
@@ -431,6 +629,42 @@ def _fetch_pixiv_ranking(mode="daily"):
 
     print(f"[{label}] Fetched {len(results)} entries")
     return results
+
+
+def _load_pixiv_cache(path):
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"[pixiv:cache] Failed to read {path}: {exc}")
+        return []
+    if not isinstance(data, list):
+        return []
+    return [item for item in data if isinstance(item, dict) and item.get("id")]
+
+
+def _write_json(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    temporary.replace(path)
+
+
+def _refresh_pixiv_ranking(mode, session, requires_session=False):
+    if requires_session:
+        if not session:
+            print(f"[pixiv:{mode}] No PIXIV_SESSION found - using cache")
+            return []
+        return _fetch_pixiv_ranking(mode, session=session)
+
+    data = _fetch_pixiv_ranking(mode)
+    if not data and session:
+        print(f"[pixiv:{mode}] Anonymous request failed - retrying with session")
+        data = _fetch_pixiv_ranking(mode, session=session)
+    return data
+
+
 def on_post_build(env=None, config=None, **kwargs):
     config = config or getattr(env, "_conf", None) or getattr(env, "config", env)
     try:
@@ -441,10 +675,32 @@ def on_post_build(env=None, config=None, **kwargs):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(_search_index_items(), ensure_ascii=False), encoding="utf-8")
 
-    for file_name, mode in [("pixiv-ranking.json", "daily"), ("pixiv-r18-ranking.json", "daily_r18")]:
-        data = _fetch_pixiv_ranking(mode)
+    if os.environ.get("ZDD_SKIP_PIXIV") == "1":
+        print("[pixiv] Refresh skipped by ZDD_SKIP_PIXIV")
+        return
+
+    session = _load_pixiv_session()
+    cache_dir = Path("docs") / "assets"
+    rankings = [
+        ("pixiv-ranking.json", "daily", False),
+        ("pixiv-r18-ranking.json", "daily_r18", True),
+    ]
+    for file_name, mode, requires_session in rankings:
+        cache_path = cache_dir / file_name
+        data = _refresh_pixiv_ranking(mode, session, requires_session=requires_session)
+        source = "fresh"
         if data:
-            (Path(site_dir) / "assets" / file_name).write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            _write_json(cache_path, data)
+        else:
+            data = _load_pixiv_cache(cache_path)
+            source = "cache"
+
+        if data:
+            output_path = Path(site_dir) / "assets" / file_name
+            _write_json(output_path, data)
+            print(f"[pixiv:{mode}] Published {len(data)} {source} entries")
+        else:
+            print(f"[pixiv:{mode}] No fresh data or cache available")
 
 
 def define_env(env):
@@ -458,7 +714,8 @@ def define_env(env):
 
     @env.macro
     def recent_posts(max_items=6):
-        posts = sorted(_article_data(), key=lambda x: x["sort_key"], reverse=True)[:max_items]
+        posts = [article for article in _article_data() if article["published"]]
+        posts = sorted(posts, key=lambda x: x["sort_key"], reverse=True)[:max_items]
         return '<div class="zdd-post-list">' + "".join(_post_card(post, "recent") for post in posts) + "</div>"
 
     @env.macro
@@ -471,6 +728,14 @@ def define_env(env):
         for article in _article_data():
             _tree_insert(tree, article)
         return '<div class="zdd-blog-catalog">' + _render_tree(tree) + "</div>"
+
+    @env.macro
+    def lab_catalog():
+        return _lab_catalog()
+
+    @env.macro
+    def micro_feed():
+        return _micro_feed()
 
     @env.macro
     def tag_explorer():

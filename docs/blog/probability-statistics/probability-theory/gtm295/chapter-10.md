@@ -25,7 +25,7 @@ $$
 \mathbb{P}'(A)=\mathbb{E}[Z\mathbf{1}_A].
 $$
 
-we want to prove that $\forall \epsilon>0$, $\exist \delta>0$, s.t. $\forall \mathbb{P}(A)<\delta$, $\mathbb{P}'(A)<\epsilon$. Because $Z\in L^1$, $\exist M>0$, s.t. $\mathbb{E}[Z\mathbf{1}_{\{Z>M\}}]<\epsilon/2$. 
+we want to prove that $\forall \epsilon>0$, $\exists \delta>0$, s.t. $\forall \mathbb{P}(A)<\delta$, $\mathbb{P}'(A)<\epsilon$. Because $Z\in L^1$, $\exists M>0$, s.t. $\mathbb{E}[Z\mathbf{1}_{\{Z>M\}}]<\epsilon/2$. 
 
 $$
 \begin{aligned}
@@ -232,7 +232,6 @@ $$
 \mathbb E[D_k^{(n)}]
 =
 \frac{n}{n-k+1},
-
 \operatorname{var}(D_k^{(n)})
 =
 \frac{n(k-1)}{(n-k+1)^2}.

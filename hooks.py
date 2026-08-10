@@ -97,6 +97,35 @@ def _append_taxonomy(markdown, page):
     return markdown + taxonomy
 
 
+def _prepend_micro_meta(markdown, page):
+    path = page.file.src_path.replace("\\", "/")
+    if not path.startswith("micro/") or path.endswith("index.md"):
+        return markdown
+
+    title = str(page.meta.get("title") or "").strip()
+    date = str(page.meta.get("date") or "").strip()
+    tags = _clean_tags(_as_list(page.meta.get("tags")))
+    tags_url = get_relative_url("tags/", page.url)
+    heading = f"# {title}\n\n" if title else ""
+    tag_links = "".join(
+        f'<a class="zdd-micro-tag" href="{tags_url}?tag={html.escape(tag)}">#{html.escape(tag)}</a>'
+        for tag in tags
+    )
+    date_label = (
+        f'<time datetime="{html.escape(date)}">{html.escape(date)}</time>'
+        if date
+        else "<span>Undated</span>"
+    )
+    meta = f"""
+<div class="zdd-micro-permalink-header">
+  {date_label}
+  <span class="zdd-micro-tags">{tag_links}</span>
+</div>
+
+"""
+    return heading + meta + markdown
+
+
 def on_page_markdown(markdown, page, config, files):
     markdown = _fix_pdf_embed_paths(markdown, page, config)
 
@@ -112,4 +141,5 @@ def on_page_markdown(markdown, page, config, files):
         if 'navigation' not in page.meta['hide']:
             page.meta['hide'].append('navigation')
             
+    markdown = _prepend_micro_meta(markdown, page)
     return _append_taxonomy(markdown, page)

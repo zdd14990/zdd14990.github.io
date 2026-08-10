@@ -30,6 +30,28 @@ tags:
 
 2. Suppose that we have $n$ boxes numbered $1,2,\ldots,n$, and that the $i$-th box contains $r_i$ red balls and $n_i$ black balls, where $r_i,n_i\ge1$. Imagine that one chooses a box uniformly at random, and then picks a ball (again at random) in the chosen box. Compute the probability that the $i$-th box was chosen knowing that a red ball was picked.
 
+**Solution.** 
+
+(1)
+
+$$
+B=\bigcup_{j=1}^n(B\cap A_j) \Longrightarrow \mathbb{P}(B)=\sum_{j=1}^n\mathbb{P}(B\cap A_j)=\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j).
+$$
+
+so,
+
+$$
+\mathbb{P}(A_i\mid B)=\frac{\mathbb{P}(A_i\cap B)}{\mathbb{P}(B)}=\frac{\mathbb{P}(A_i)\mathbb{P}(B\mid A_i)}{\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j)}.
+$$
+
+(2)
+
+$$
+\mathbb{P}(A_i|B)=\frac{\mathbb{P}(A_i)\mathbb{P}(B\mid A_i)}{\sum_{j=1}^n\mathbb{P}(A_j)\mathbb{P}(B\mid A_j)}=\frac{\frac{1}{n}\cdot\frac{r_i}{r_i+n_i}}{\sum_{j=1}^n\frac{1}{n}\cdot\frac{r_j}{r_j+n_j}}=\frac{\frac{r_i}{r_i+n_i}}{\sum_{j=1}^n\frac{r_j}{r_j+n_j}}.
+$$  
+
+
+
 ---
 
 **Exercise 11.2** Let $X_1,\ldots,X_n$ be independent Bernoulli random variables with parameter $p\in(0,1)$, and $S_n=X_1+\cdots+X_n$. Prove that, for every $k\in\{0,1,\ldots,n\}$, the conditional distribution of $(X_1,\ldots,X_n)$ knowing that $S_n=k$ (that is, the law of $(X_1,\ldots,X_n)$ under $\mathbb{P}(\cdot\mid S_n=k)$) is the uniform distribution on
@@ -37,6 +59,17 @@ tags:
 $$
 \{(x_1,\ldots,x_n)\in\{0,1\}^n:x_1+\cdots+x_n=k\}.
 $$
+
+**Solution.** Set $E_k=\{(x_1,\ldots,x_n)\in\{0,1\}^n:x_1+\cdots+x_n=k\}$. $S_n\sim \text{Binomial}(n,p)$, so
+
+$$
+\begin{aligned}
+    &\mathbb{P}\left((X_1,\ldots,X_n)=(x_1,\ldots,x_n)\mid S_n=k\right)\\
+    =&\frac{\mathbb{P}\left((X_1,\ldots,X_n)=(x_1,\ldots,x_n),S_n=k\right)}{\mathbb{P}(S_n=k)}\\
+    =&\frac{p^k(1-p)^{n-k}}{\binom{n}{k}p^k(1-p)^{n-k}}=\frac{1}{\binom{n}{k}},
+\end{aligned}
+$$
+
 
 ---
 
@@ -56,6 +89,25 @@ $$
 \frac{T_{p-1}}{k(k-1)}\mathbf{1}_{\{k>T_{p-1}\}}.
 $$
 
+**Solution.** Set $T_{p-1}=m$.
+
+$$
+\mathbb{P}\left(X_{T_{p-1}}\le x|T_{p-1}=m\right)=x^m\Longrightarrow \mathbb{P}\left(X_{T_{p-1}}=x|T_{p-1}=m\right)=mx^{m-1}, \quad x\in[0,1].
+$$
+
+$$
+\mathbb{P}\left(T_p=k|T_{p-1}=m,X_{T_{p-1}}=x\right)=\mathbb{P}\left(X_m\le x,\ldots,X_{k-1}\le x,X_k>x\right)=x^{k-m-1}(1-x), \quad k>m.
+$$
+
+$$
+\begin{aligned}
+    &\mathbb{P}\left(T_p=k|T_{p-1}=m\right)\\
+    =&\int_0^1\mathbb{P}\left(T_p=k|T_{p-1}=m,X_{T_{p-1}}=x\right)\mathbb{P}\left(X_{T_{p-1}}=x|T_{p-1}=m\right)dx\\
+    =&\int_0^1x^{k-m-1}(1-x)mx^{m-1}dx\\
+    =&\frac{m}{k(k-1)}\mathbb{1}_{\{k>m\}}.
+\end{aligned}
+$$
+
 ---
 
 **Exercise 11.4** Let $\mathcal{B}$ be a sub-$\sigma$-field of $\mathcal{A}$, and let $X$ be a nonnegative real random variable. Prove that the set
@@ -68,6 +120,10 @@ is the smallest $\mathcal{B}$-measurable set containing $\{X>0\}$, in the sense 
 
 - $\mathbb{P}(\{X>0\}\setminus A)=0$;
 - if $B\in\mathcal{B}$ is such that $\{X>0\}\subset B$, then $\mathbb{P}(A\setminus B)=0$.
+
+
+
+
 
 ---
 
