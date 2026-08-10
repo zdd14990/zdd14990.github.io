@@ -95,6 +95,15 @@ LAB_ITEMS = [
         "featured": True,
     },
     {
+        "slug": "dungeon",
+        "title": "Dungeon Seed",
+        "description": "Generate deterministic dungeon layouts from a seed.",
+        "date": "2026-08-10",
+        "tags": ["procedural-generation", "seed", "visualization"],
+        "status": "stable",
+        "featured": True,
+    },
+    {
         "slug": "tex",
         "title": "LaTeX Playground",
         "description": "Write a formula and render it immediately with the site's existing MathJax setup.",
