@@ -12,27 +12,31 @@
         <meta name="author" content="zdd">
       
       
-        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
+        <link rel="canonical" href="https://zdd14990.github.io/os/">
       
       
+        <link rel="prev" href="../lab/">
+      
+      
+        <link rel="next" href="../tags/">
       
       
         
       
       
-      <link rel="icon" href="../../../../assets/favicon.png">
+      <link rel="icon" href="../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>附录：算法说明 - zdd14990</title>
+        <title>zddOS - zdd14990</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,17 +55,17 @@
       
     
     
-      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+      <link rel="stylesheet" href="../stylesheets/solid-background.css">
     
-      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+      <link rel="stylesheet" href="../stylesheets/knowledge-playground.css">
     
-      <link rel="stylesheet" href="../../../../stylesheets/dungeon-lab.css">
+      <link rel="stylesheet" href="../stylesheets/dungeon-lab.css">
     
-      <link rel="stylesheet" href="../../../../stylesheets/personal-os.css">
+      <link rel="stylesheet" href="../stylesheets/personal-os.css">
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -70,20 +74,20 @@
    <meta name="description" content="zdd'blog">
   <meta name="author" content="zdd">
   <script>
-    window.zddSearchDataUrl = "../../../../assets/zdd-search-data.json";
-    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddSearchDataUrl = "../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../assets/zdd-public-search-index.json";
   </script>
 
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
-  <meta property="og:title" content="附录：算法说明 - zdd14990">
+  <meta property="og:url" content="https://zdd14990.github.io/os/">
+  <meta property="og:title" content="OS - zdd14990">
   <meta property="og:description" content="zdd'blog">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
-  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
-  <meta name="twitter:title" content="附录：算法说明 - zdd14990">
+  <meta property="twitter:url" content="https://zdd14990.github.io/os/">
+  <meta name="twitter:title" content="OS - zdd14990">
   <meta name="twitter:description" content="zdd'blog">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
@@ -105,11 +109,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#_1" class="md-skip">
-          跳转至
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -121,7 +120,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
-    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+    <a href=".." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
@@ -172,17 +171,17 @@
     
     <div class="zdd-header-nav" aria-label="Primary navigation">
       
-        <a href="../../../../index.html">Home</a>
+        <a href="../index.html">Home</a>
+      
+      
+        <a href="../blog/" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../lab/" data-zdd-nav="lab">Lab</a>
       
       
       
-        <a href="../../../../lab/" data-zdd-nav="lab">Lab</a>
-      
-      
-        <a href="../../../../os/" data-zdd-nav="os">OS</a>
-      
-      
-        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+        <a href="../tags/" data-zdd-nav="tags">Tags</a>
       
       
         <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
@@ -214,7 +213,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+    <a href=".." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
@@ -232,7 +231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -259,7 +258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../" class="md-nav__link">
+      <a href="../blog/" class="md-nav__link">
         
   
   
@@ -286,7 +285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../lab/" class="md-nav__link">
+      <a href="../lab/" class="md-nav__link">
         
   
   
@@ -310,10 +309,17 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../../os/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -329,6 +335,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -340,7 +347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../tags/" class="md-nav__link">
+      <a href="../tags/" class="md-nav__link">
         
   
   
@@ -367,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../friends/friends/" class="md-nav__link">
+      <a href="../friends/friends/" class="md-nav__link">
         
   
   
@@ -397,7 +404,7 @@
               
                 
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -406,115 +413,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        恩尼格玛密码机
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cipherfour" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CipherFour
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        AES
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mini-aes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mini-AES
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#grain-128" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grain-128
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keccak" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Keccak
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whirlpool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Whirlpool
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#md4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MD4
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#md5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MD5
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -533,19 +431,46 @@
 
 
 
-<h1 id="_1">附录：算法说明</h1>
-<h2 id="_2">恩尼格玛密码机</h2>
-<h2 id="cipherfour">CipherFour</h2>
-<h2 id="aes">AES</h2>
-<h2 id="mini-aes">Mini-AES</h2>
-<h2 id="grain-128">Grain-128</h2>
-<h2 id="keccak">Keccak</h2>
-<h2 id="whirlpool">Whirlpool</h2>
-<h2 id="md4">MD4</h2>
-<h2 id="md5">MD5</h2>
-<div class="zdd-article-taxonomy">
-  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#密码学</span><span class="zdd-category-chip">#密码分析</span></div>
-  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=cryptography">#cryptography</a><a class="zdd-tag-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a></div>
+  <h1>OS</h1>
+
+<div class="zdd-os" data-personal-os-root aria-live="polite">
+  <header class="zdd-os__topbar">
+    <a class="zdd-os__brand" href="./" data-os-link="library" aria-label="zddOS Library">
+      <strong>zddOS</strong>
+    </a>
+    <a class="zdd-os__mode-switch" href="../">Website <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <div class="zdd-os__workspace">
+    <aside class="zdd-os__sidebar" aria-label="Personal OS">
+      <nav class="zdd-os__nav">
+        <button type="button" data-os-view="library"><span aria-hidden="true">▦</span>Library</button>
+        <button type="button" data-os-view="search"><span aria-hidden="true">⌕</span>Search</button>
+        <button type="button" data-os-view="courses"><span aria-hidden="true">◫</span>Courses</button>
+      </nav>
+    </aside>
+
+    <main class="zdd-os__main" data-os-content>
+      <section class="zdd-os__loading">
+        <span class="zdd-os__spinner" aria-hidden="true"></span>
+        <p>Connecting to the local knowledge library…</p>
+      </section>
+    </main>
+  </div>
+
+  <div class="zdd-os__command" data-os-command hidden>
+    <button class="zdd-os__command-backdrop" type="button" data-os-command-close aria-label="Close search"></button>
+    <section class="zdd-os__command-panel" role="dialog" aria-modal="true" aria-label="Search everything">
+      <label class="zdd-os__command-input">
+        <span aria-hidden="true">⌕</span>
+        <input type="search" data-os-command-input placeholder="Search titles, passages, courses, topics…" autocomplete="off">
+        <kbd>Esc</kbd>
+      </label>
+      <div class="zdd-os__command-results" data-os-command-results>
+        <p class="zdd-os__empty">Type to search the private passage index.</p>
+      </div>
+    </section>
+  </div>
 </div>
 
 
@@ -627,31 +552,31 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
   
-      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="../../../../javascripts/mathjax.js"></script>
+        <script src="../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
-        <script src="../../../../javascripts/funny_title.js"></script>
+        <script src="../javascripts/funny_title.js"></script>
       
-        <script src="../../../../javascripts/theme-fade.js"></script>
+        <script src="../javascripts/theme-fade.js"></script>
       
-        <script src="../../../../javascripts/interactive-widgets.js"></script>
+        <script src="../javascripts/interactive-widgets.js"></script>
       
-        <script src="../../../../javascripts/zdd-search-core.js"></script>
+        <script src="../javascripts/zdd-search-core.js"></script>
       
-        <script src="../../../../javascripts/zdd-command-search.js"></script>
+        <script src="../javascripts/zdd-command-search.js"></script>
       
-        <script src="../../../../javascripts/personal-os-core.js"></script>
+        <script src="../javascripts/personal-os-core.js"></script>
       
-        <script src="../../../../javascripts/personal-os.js"></script>
+        <script src="../javascripts/personal-os.js"></script>
       
-        <script src="../../../../javascripts/knowledge-preview.js"></script>
+        <script src="../javascripts/knowledge-preview.js"></script>
       
     
   <script>

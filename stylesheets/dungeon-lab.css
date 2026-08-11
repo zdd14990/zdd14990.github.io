@@ -1,5 +1,5 @@
-/* Dungeon Seed Lab v2. Topology comes from dungeon-core.js; this file only
-   styles the public map, hidden-room guessing, and revealed answers. */
+/* Dungeon Seed Lab. The generator remains in dungeon-core.js; these rules
+   describe only the page, SVG map, and replay states. */
 
 .zdd-dungeon {
   --zdd-dungeon-line: var(--zdd-playground-line, rgba(94, 159, 199, 0.42));
@@ -10,10 +10,7 @@
   --zdd-dungeon-error: var(--zdd-playground-error, #b34545);
   --zdd-dungeon-start: #3f7e75;
   --zdd-dungeon-boss: #a5545b;
-  --zdd-dungeon-shop: #37798c;
-  --zdd-dungeon-treasure: #98751e;
-  --zdd-dungeon-ritual: #75558a;
-  --zdd-dungeon-secret: #725b8c;
+  --zdd-dungeon-treasure: #9a741f;
   margin: 1.6rem 0;
   color: var(--zdd-dungeon-ink);
   border-block: 1px solid var(--zdd-dungeon-line);
@@ -22,10 +19,7 @@
 body[data-md-color-scheme="slate"] .zdd-dungeon {
   --zdd-dungeon-start: #77c3b4;
   --zdd-dungeon-boss: #ef949c;
-  --zdd-dungeon-shop: #7fc5dd;
   --zdd-dungeon-treasure: #e3bd64;
-  --zdd-dungeon-ritual: #bea1d0;
-  --zdd-dungeon-secret: #c4a9db;
 }
 
 .zdd-dungeon-visually-hidden {
@@ -42,7 +36,7 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 .zdd-dungeon-seed-panel,
 .zdd-dungeon-map-panel,
 .zdd-dungeon-info-panel,
-.zdd-dungeon-guess-panel {
+.zdd-dungeon-replay {
   padding: 0.95rem;
 }
 
@@ -54,26 +48,22 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 .zdd-dungeon-seed-form,
 .zdd-dungeon-seed-actions,
 .zdd-dungeon-examples,
-.zdd-dungeon-legend,
-.zdd-dungeon-guess-heading,
-.zdd-dungeon-guess-modes,
-.zdd-dungeon-guess-readout {
+.zdd-dungeon-replay-toolbar,
+.zdd-dungeon-speed,
+.zdd-dungeon-legend {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.zdd-dungeon-section-heading,
-.zdd-dungeon-guess-heading {
+.zdd-dungeon-section-heading {
   justify-content: space-between;
   gap: 0.7rem;
   min-height: 2rem;
   margin-bottom: 0.75rem;
 }
 
-.md-typeset .zdd-dungeon-section-heading h2,
-.md-typeset .zdd-dungeon-guess-heading h2,
-.md-typeset .zdd-dungeon-why h3 {
+.md-typeset .zdd-dungeon-section-heading h2 {
   margin: 0;
   font-size: 0.76rem;
   font-weight: 800;
@@ -81,8 +71,7 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
   text-transform: uppercase;
 }
 
-.md-typeset .zdd-dungeon-section-heading p,
-.md-typeset .zdd-dungeon-guess-heading p {
+.md-typeset .zdd-dungeon-section-heading p {
   margin: 0.16rem 0 0;
   color: var(--zdd-dungeon-muted);
   font-size: 0.69rem;
@@ -157,6 +146,7 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 .zdd-dungeon-workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(13rem, 15rem);
+  min-height: 31rem;
 }
 
 .zdd-dungeon-map-panel {
@@ -169,22 +159,20 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 
 .zdd-dungeon-map-shell {
   position: relative;
-  width: 100%;
-  height: min(26.25rem, 75vh);
-  min-height: 0;
-  box-sizing: border-box;
+  min-height: 29rem;
   overflow: hidden;
   background-color: color-mix(in srgb, var(--zdd-dungeon-panel) 82%, transparent);
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--zdd-dungeon-line) 24%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--zdd-dungeon-line) 24%, transparent) 1px, transparent 1px);
   background-size: 1.2rem 1.2rem;
   border: 1px solid var(--zdd-dungeon-line);
   border-radius: 0.25rem;
-  transition: height 160ms ease;
 }
 
 .zdd-dungeon-map {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -193,30 +181,16 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 
 .zdd-dungeon-connection {
   stroke: color-mix(in srgb, var(--zdd-dungeon-ink) 58%, var(--zdd-dungeon-panel));
-  stroke-width: 9;
+  stroke-width: 10;
   stroke-linecap: square;
   vector-effect: non-scaling-stroke;
 }
 
-.zdd-dungeon-guess-cell {
-  color: var(--zdd-dungeon-muted);
-  cursor: crosshair;
-  outline: none;
-}
-
-.zdd-dungeon-guess-cell rect {
-  fill: transparent;
-  stroke: color-mix(in srgb, currentColor 30%, transparent);
-  stroke-width: 1;
-  stroke-dasharray: 3 5;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-guess-cell:hover rect,
-.zdd-dungeon-guess-cell:focus-visible rect {
-  fill: color-mix(in srgb, var(--zdd-dungeon-accent) 7%, transparent);
+.zdd-dungeon-candidate-connection {
   stroke: var(--zdd-dungeon-accent);
   stroke-width: 2;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
 }
 
 .zdd-dungeon-room {
@@ -254,33 +228,15 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
 
 .zdd-dungeon-room[data-room-type="start"] { color: var(--zdd-dungeon-start); }
 .zdd-dungeon-room[data-room-type="boss"] { color: var(--zdd-dungeon-boss); }
-.zdd-dungeon-room[data-room-type="shop"] { color: var(--zdd-dungeon-shop); }
 .zdd-dungeon-room[data-room-type="treasure"] { color: var(--zdd-dungeon-treasure); }
-.zdd-dungeon-room[data-room-type="curse"],
-.zdd-dungeon-room[data-room-type="sacrifice"],
-.zdd-dungeon-room[data-room-type="challenge"],
-.zdd-dungeon-room[data-room-type="arcade"],
-.zdd-dungeon-room[data-room-type="vault"],
-.zdd-dungeon-room[data-room-type="library"],
-.zdd-dungeon-room[data-room-type="planetarium"] { color: var(--zdd-dungeon-ritual); }
-.zdd-dungeon-room[data-room-type="secret"],
-.zdd-dungeon-room[data-room-type="super-secret"] { color: var(--zdd-dungeon-secret); }
 
-.zdd-dungeon-room:not([data-room-type="normal"]) .zdd-dungeon-room-shape {
-  fill: color-mix(in srgb, currentColor 11%, var(--zdd-dungeon-panel));
+.zdd-dungeon-room[data-room-type="start"] .zdd-dungeon-room-shape,
+.zdd-dungeon-room[data-room-type="boss"] .zdd-dungeon-room-shape,
+.zdd-dungeon-room[data-room-type="treasure"] .zdd-dungeon-room-shape {
+  fill: color-mix(in srgb, currentColor 12%, var(--zdd-dungeon-panel));
 }
 
-.zdd-dungeon-room[data-room-type="secret"] .zdd-dungeon-room-shape {
-  stroke-dasharray: 5 3;
-}
-
-.zdd-dungeon-room[data-room-type="super-secret"] .zdd-dungeon-room-shape {
-  stroke-width: 3;
-  stroke-dasharray: 2 3;
-}
-
-.zdd-dungeon-room-label,
-.zdd-dungeon-guess-marker text {
+.zdd-dungeon-room-label {
   fill: currentColor;
   font: 800 17px/1 var(--md-code-font-family, monospace);
   text-anchor: middle;
@@ -295,50 +251,64 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
   pointer-events: none;
 }
 
-.zdd-dungeon-guess-marker {
+.zdd-dungeon-candidate {
   color: var(--zdd-dungeon-accent);
   pointer-events: none;
 }
 
-.zdd-dungeon-guess-marker[data-guess-type="super-secret"] {
-  color: var(--zdd-dungeon-secret);
-}
-
-.zdd-dungeon-guess-marker rect {
-  fill: color-mix(in srgb, currentColor 8%, transparent);
+.zdd-dungeon-candidate-shape {
+  fill: color-mix(in srgb, var(--zdd-dungeon-accent) 8%, transparent);
   stroke: currentColor;
   stroke-width: 2;
   stroke-dasharray: 6 4;
   vector-effect: non-scaling-stroke;
 }
 
-.zdd-dungeon-guess-marker[data-guess-type="super-secret"] rect {
-  stroke-width: 3;
-  stroke-dasharray: 2 3;
+.zdd-dungeon-candidate[data-status="rejected"] {
+  color: var(--zdd-dungeon-error);
+}
+
+.zdd-dungeon-candidate-mark {
+  fill: currentColor;
+  font: 800 20px/1 var(--md-code-font-family, monospace);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.zdd-dungeon-map-empty {
+  fill: var(--zdd-dungeon-muted);
+  font: 12px/1.5 var(--md-code-font-family, monospace);
+  text-anchor: middle;
 }
 
 .zdd-dungeon-legend {
-  gap: 0.38rem 0.65rem;
+  gap: 0.38rem 0.75rem;
   margin-top: 0.55rem;
   color: var(--zdd-dungeon-muted);
-  font-size: 0.61rem;
+  font-size: 0.63rem;
 }
 
-.zdd-dungeon-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.zdd-dungeon-legend b {
-  display: inline-grid;
-  place-items: center;
-  width: 1rem;
-  height: 1rem;
-  color: var(--zdd-dungeon-ink);
+.zdd-dungeon-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 0.58rem;
+  height: 0.58rem;
+  margin-right: 0.28rem;
+  vertical-align: -0.04rem;
   background: var(--zdd-dungeon-panel);
-  border: 1px solid var(--zdd-dungeon-line);
-  font: 800 0.56rem/1 var(--md-code-font-family, monospace);
+  border: 1px solid var(--zdd-dungeon-ink);
+}
+
+.zdd-dungeon-legend span[data-kind="start"]::before { border-color: var(--zdd-dungeon-start); }
+.zdd-dungeon-legend span[data-kind="boss"]::before { border-color: var(--zdd-dungeon-boss); }
+.zdd-dungeon-legend span[data-kind="treasure"]::before { border-color: var(--zdd-dungeon-treasure); }
+.zdd-dungeon-legend span[data-kind="candidate"]::before {
+  border-color: var(--zdd-dungeon-accent);
+  border-style: dashed;
+}
+.zdd-dungeon-legend span[data-kind="rejected"]::before {
+  border-color: var(--zdd-dungeon-error);
+  border-style: dashed;
 }
 
 .zdd-dungeon-stats {
@@ -406,62 +376,39 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
   line-height: 1.45;
 }
 
-.zdd-dungeon-guess-panel {
+.zdd-dungeon-replay {
   border-top: 1px solid var(--zdd-dungeon-line);
 }
 
-.zdd-dungeon-guess-heading > div:first-child {
-  max-width: 42rem;
-}
-
-.zdd-dungeon-score {
-  min-width: 4rem;
-  padding: 0.3rem 0.55rem;
-  color: var(--zdd-dungeon-panel);
-  background: var(--zdd-dungeon-accent);
-  border-radius: 0.2rem;
-  font: 800 0.8rem/1.4 var(--md-code-font-family, monospace);
-  text-align: center;
-}
-
-.zdd-dungeon-guess-controls {
-  display: grid;
-  grid-template-columns: auto minmax(15rem, 1fr) auto;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.zdd-dungeon-guess-modes {
-  gap: 0.42rem;
-}
-
-.zdd-dungeon-guess-readout {
-  gap: 0.45rem;
-}
-
-.zdd-dungeon-guess-readout > span {
-  display: grid;
-  min-width: 8.2rem;
-  padding: 0.34rem 0.5rem;
+.zdd-dungeon-speed {
+  gap: 0.4rem;
   color: var(--zdd-dungeon-muted);
-  background: color-mix(in srgb, var(--zdd-dungeon-panel) 66%, transparent);
-  border: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0.22rem;
-}
-
-.zdd-dungeon-guess-readout b {
-  font-size: 0.58rem;
-  letter-spacing: 0.05em;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.zdd-dungeon-guess-readout output {
+.zdd-dungeon-speed select {
+  min-height: 2.05rem;
+  padding: 0.25rem 0.42rem;
   color: var(--zdd-dungeon-ink);
-  font: 0.67rem/1.5 var(--md-code-font-family, monospace);
+  background: var(--zdd-dungeon-panel);
+  border: 1px solid var(--zdd-dungeon-line);
+  border-radius: 0.25rem;
+  font: 0.7rem/1.3 var(--md-code-font-family, monospace);
 }
 
-.zdd-dungeon-reveal {
-  min-width: 6.7rem;
+.zdd-dungeon-replay-toolbar {
+  gap: 0.42rem;
+}
+
+.zdd-dungeon-play {
+  min-width: 4.2rem;
+}
+
+.zdd-dungeon-reset {
+  margin-left: auto;
 }
 
 .zdd-dungeon .zdd-lab-button:disabled {
@@ -471,58 +418,56 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
   cursor: not-allowed;
 }
 
-.md-typeset .zdd-dungeon-guess-hint {
-  min-height: 1.2rem;
-  margin: 0.65rem 0 0;
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.68rem;
+.zdd-dungeon-timeline {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
 }
 
-.zdd-dungeon-results {
+.zdd-dungeon-timeline label {
+  color: var(--zdd-dungeon-muted);
+  font: 0.68rem/1.4 var(--md-code-font-family, monospace);
+}
+
+.zdd-dungeon-timeline input[type="range"] {
+  width: 100%;
+  accent-color: var(--zdd-dungeon-accent);
+}
+
+.zdd-dungeon-step-readout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  margin-top: 0.8rem;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 2.2rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
   border-top: 1px solid var(--zdd-dungeon-line);
 }
 
-.zdd-dungeon-results[hidden],
-.zdd-dungeon-score[hidden] {
-  display: none;
+.zdd-dungeon-step-kind {
+  color: var(--zdd-dungeon-accent);
+  font: 800 0.62rem/1.4 var(--md-code-font-family, monospace);
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
 }
 
-.zdd-dungeon-result-row {
-  display: grid;
-  gap: 0.25rem;
-  padding: 0.75rem;
-  border-bottom: 1px solid var(--zdd-dungeon-line);
+.zdd-dungeon-step-kind[data-kind="reject"] {
+  color: var(--zdd-dungeon-error);
 }
 
-.zdd-dungeon-result-row:nth-child(2) {
-  border-left: 1px solid var(--zdd-dungeon-line);
+.md-typeset .zdd-dungeon-step-readout p {
+  margin: 0;
+  color: var(--zdd-dungeon-ink);
+  font-size: 0.72rem;
+  line-height: 1.55;
 }
 
-.zdd-dungeon-result-row strong {
-  font-size: 0.68rem;
-}
-
-.zdd-dungeon-result-row span {
-  color: var(--zdd-dungeon-muted);
-  font: 0.68rem/1.5 var(--md-code-font-family, monospace);
-}
-
-.zdd-dungeon-why {
-  grid-column: 1 / -1;
-  padding: 0.8rem 0.75rem 0.2rem;
-}
-
-.md-typeset .zdd-dungeon-why p {
-  margin: 0.35rem 0;
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.69rem;
-}
-
-.zdd-dungeon-seed-field input:focus-visible {
+.zdd-dungeon-seed-field input:focus-visible,
+.zdd-dungeon-speed select:focus-visible,
+.zdd-dungeon-timeline input:focus-visible {
   outline: 0.16rem solid var(--zdd-dungeon-accent);
   outline-offset: 0.12rem;
 }
@@ -532,13 +477,8 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
     grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 13rem);
   }
 
-  .zdd-dungeon-guess-controls {
-    grid-template-columns: 1fr auto;
-  }
-
-  .zdd-dungeon-guess-readout {
-    grid-column: 1 / -1;
-    grid-row: 2;
+  .zdd-dungeon-map-shell {
+    min-height: 25rem;
   }
 }
 
@@ -565,13 +505,16 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
     border-left: 1px solid var(--zdd-dungeon-line);
   }
 
+  .zdd-dungeon-map-shell {
+    min-height: 22rem;
+  }
 }
 
 @media screen and (max-width: 30em) {
   .zdd-dungeon-seed-panel,
   .zdd-dungeon-map-panel,
   .zdd-dungeon-info-panel,
-  .zdd-dungeon-guess-panel {
+  .zdd-dungeon-replay {
     padding-inline: 0.7rem;
   }
 
@@ -589,37 +532,28 @@ body[data-md-color-scheme="slate"] .zdd-dungeon {
     grid-column: 1 / -1;
   }
 
-  .zdd-dungeon-guess-controls {
-    grid-template-columns: 1fr;
+  .zdd-dungeon-map-shell {
+    min-height: 19rem;
   }
 
-  .zdd-dungeon-guess-modes {
+  .zdd-dungeon-replay-toolbar {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
-  .zdd-dungeon-guess-modes .zdd-lab-button,
-  .zdd-dungeon-reveal {
+  .zdd-dungeon-replay-toolbar .zdd-lab-button {
     width: 100%;
   }
 
-  .zdd-dungeon-guess-readout {
-    grid-column: auto;
-    grid-row: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .zdd-dungeon-reset {
+    grid-column: 1 / -1;
+    margin-left: 0;
   }
 
-  .zdd-dungeon-guess-readout > span {
-    min-width: 0;
-  }
-
-  .zdd-dungeon-results {
+  .zdd-dungeon-timeline,
+  .zdd-dungeon-step-readout {
     grid-template-columns: 1fr;
-  }
-
-  .zdd-dungeon-result-row:nth-child(2) {
-    border-left: 0;
+    gap: 0.4rem;
   }
 }
 

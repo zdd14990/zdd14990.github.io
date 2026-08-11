@@ -63,6 +63,8 @@
     
       <link rel="stylesheet" href="../stylesheets/dungeon-lab.css">
     
+      <link rel="stylesheet" href="../stylesheets/personal-os.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -73,6 +75,7 @@
   <meta name="author" content="zdd">
   <script>
     window.zddSearchDataUrl = "../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../assets/zdd-public-search-index.json";
   </script>
 
   <meta property="og:type" content="website">
@@ -178,6 +181,9 @@
       
       
         <a href="../lab/" data-zdd-nav="lab">Lab</a>
+      
+      
+        <a href="../os/" data-zdd-nav="os">OS</a>
       
       
         <a href="../tags/" data-zdd-nav="tags">Tags</a>
@@ -302,6 +308,33 @@
     
   
     Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../os/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OS
   
 
     
@@ -1263,7 +1296,7 @@
 
 <a class="zdd-post-card catalog" href="/blog/applied-math/applied-math-exam/numerical-linear-algebra/" data-tags="applied-math applied-math-exam numerical-methods">
   <span class="zdd-post-title">Numerical Linear Algebra</span>
-  <span class="zdd-post-preview">1. Metric (度量) <span class="arithmatex">\(d(x, y)\)</span> : 定义集合上的距离。映射 <span class="arithmatex">\(d: X \times X \to \mathbb{R}_{\ge 0}\)</span> 满足： <span class="arithmatex">\(d(x, y) \ge 0\)</span> 且 <span class="arithmatex">\(d(x, y) = 0 \iff x = y\)</span> (非负性 &amp; 唯一性) <span class="arithmatex">\(d(x, y) = d(y, x)\)</span> (对称性) <span class="arithmatex">\(d(x, z) \le d(x, y) + d(y, z)\)</span> (三角不等式)</span>
+  <span class="zdd-post-preview">Metric (度量) <span class="arithmatex">\(d(x, y)\)</span> : 定义集合上的距离。映射 <span class="arithmatex">\(d: X \times X \to \mathbb{R}_{\ge 0}\)</span> 满足： <span class="arithmatex">\(d(x, y) \ge 0\)</span> 且 <span class="arithmatex">\(d(x, y) = 0 \iff x = y\)</span> (非负性 &amp; 唯一性) <span class="arithmatex">\(d(x, y) = d(y, x)\)</span> (对称性) <span class="arithmatex">\(d(x, z) \le d(x, y) + d(y, z)\)</span> (三角不等式)</span>
   <span class="zdd-post-meta">
     <span>应用数学 / 应用数学博资考</span>
     <span>2025-12-11</span>
@@ -1298,7 +1331,7 @@
 
 <a class="zdd-post-card catalog" href="/blog/applied-math/applied-math-exam/exercise-collection/" data-tags="applied-math applied-math-exam numerical-methods">
   <span class="zdd-post-title">练习题集</span>
-  <span class="zdd-post-preview">- 函数逼近与插值练习题</span>
+  <span class="zdd-post-preview">函数逼近与插值练习题</span>
   <span class="zdd-post-meta">
     <span>应用数学 / 应用数学博资考</span>
     <span>2026-01-07</span>
@@ -1565,7 +1598,13 @@
       
         <script src="../javascripts/interactive-widgets.js"></script>
       
+        <script src="../javascripts/zdd-search-core.js"></script>
+      
         <script src="../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../javascripts/personal-os-core.js"></script>
+      
+        <script src="../javascripts/personal-os.js"></script>
       
         <script src="../javascripts/knowledge-preview.js"></script>
       
@@ -1578,6 +1617,8 @@
       document.body.classList.add("zdd-minimal-layout");
       if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
           document.body.classList.add("home-layout");
+      } else if (parts.indexOf("os") !== -1) {
+          document.body.classList.add("os-layout");
       } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
           document.body.classList.add("blog-index-layout");
       } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {

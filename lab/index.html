@@ -18,7 +18,7 @@
         <link rel="prev" href="../blog/">
       
       
-        <link rel="next" href="../tags/">
+        <link rel="next" href="../os/">
       
       
         
@@ -63,6 +63,8 @@
     
       <link rel="stylesheet" href="../stylesheets/dungeon-lab.css">
     
+      <link rel="stylesheet" href="../stylesheets/personal-os.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -73,6 +75,7 @@
   <meta name="author" content="zdd">
   <script>
     window.zddSearchDataUrl = "../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../assets/zdd-public-search-index.json";
   </script>
 
   <meta property="og:type" content="website">
@@ -178,6 +181,9 @@
       
         <a href="../blog/" data-zdd-nav="blog">Blog</a>
       
+      
+      
+        <a href="../os/" data-zdd-nav="os">OS</a>
       
       
         <a href="../tags/" data-zdd-nav="tags">Tags</a>
@@ -321,6 +327,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../os/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../tags/" class="md-nav__link">
         
   
@@ -425,7 +458,7 @@
     <span class="zdd-lab-item-title">Dungeon Seed</span>
     <span class="zdd-lab-status" data-status="stable">stable</span>
   </span>
-  <span class="zdd-lab-item-description">Generate Isaac-like floors and guess the hidden rooms.</span>
+  <span class="zdd-lab-item-description">Generate deterministic dungeon layouts from a seed.</span>
   <span class="zdd-lab-item-meta"><time datetime="2026-08-10">2026-08-10</time><span class="zdd-lab-tags"><span class="zdd-lab-tag">procedural-generation</span><span class="zdd-lab-tag">seed</span><span class="zdd-lab-tag">visualization</span></span></span>
 </a>
 
@@ -561,7 +594,13 @@
       
         <script src="../javascripts/interactive-widgets.js"></script>
       
+        <script src="../javascripts/zdd-search-core.js"></script>
+      
         <script src="../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../javascripts/personal-os-core.js"></script>
+      
+        <script src="../javascripts/personal-os.js"></script>
       
         <script src="../javascripts/knowledge-preview.js"></script>
       
@@ -574,6 +613,8 @@
       document.body.classList.add("zdd-minimal-layout");
       if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
           document.body.classList.add("home-layout");
+      } else if (parts.indexOf("os") !== -1) {
+          document.body.classList.add("os-layout");
       } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
           document.body.classList.add("blog-index-layout");
       } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {
