@@ -5,6 +5,7 @@
   <meta name="author" content="{{ config.site_author }}">
   <script>
     window.zddSearchDataUrl = "{{ 'assets/zdd-search-data.json' | url }}";
+    window.zddPublicSearchIndexUrl = "{{ 'assets/zdd-public-search-index.json' | url }}";
   </script>
 
   <meta property="og:type" content="website">
@@ -57,6 +58,8 @@
       document.body.classList.add("zdd-minimal-layout");
       if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
           document.body.classList.add("home-layout");
+      } else if (parts.indexOf("os") !== -1) {
+          document.body.classList.add("os-layout");
       } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
           document.body.classList.add("blog-index-layout");
       } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {

@@ -1,4 +1,5 @@
 import html
+import hashlib
 import json
 import os
 import re
@@ -7,8 +8,13 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+from markdown.extensions.toc import slugify, unique
+
 DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
+HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*$")
+HEADING_ATTR_RE = re.compile(r"\s+\{[^}]*#([A-Za-z0-9_.:-]+)[^}]*\}\s*$")
+FENCE_RE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
 CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
 )
@@ -41,6 +47,8 @@ def _infer_topic_tags(src_path):
     return sorted(inferred)
 
 SEARCH_TEXT_LIMIT = 12000
+PASSAGE_CHAR_LIMIT = 900
+PASSAGE_OVERLAP = 120
 DISPLAY_NAMES = {
     "analysis": "分析",
     "algebra": "代数",
@@ -239,12 +247,146 @@ def _article_url(src_path):
 
 
 def _plain_markdown(text):
+    text = re.sub(r"```[\s\S]*?```", " ", text)
+    text = re.sub(r"~~~[\s\S]*?~~~", " ", text)
     text = re.sub(r"!\[[^\]]*\]\([^)]+\)", " ", text)
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"<[^>]+>", " ", text)
     text = re.sub(r"^\s*#{1,6}\s*", "", text, flags=re.M)
     text = re.sub(r"^\s*!!!.*$", "", text, flags=re.M)
+    text = re.sub(r"^\s*(?:[-+*]|\d+[.)])\s+", "", text, flags=re.M)
     text = re.sub(r"[*_`>#|{}\[\]]", " ", text)
     return re.sub(r"\s+", " ", text).strip()
+
+
+def _chunk_passage_text(text, limit=PASSAGE_CHAR_LIMIT, overlap=PASSAGE_OVERLAP):
+    text = _plain_markdown(text)
+    if not text:
+        return []
+    if len(text) <= limit:
+        return [text]
+
+    chunks = []
+    start = 0
+    sentence_marks = "。！？.!?；;"
+    while start < len(text):
+        end = min(len(text), start + limit)
+        if end < len(text):
+            floor = start + int(limit * 0.62)
+            sentence_end = max(text.rfind(mark, floor, end) for mark in sentence_marks)
+            if sentence_end >= floor:
+                end = sentence_end + 1
+            else:
+                word_end = text.rfind(" ", floor, end)
+                if word_end >= floor:
+                    end = word_end
+        chunk = text[start:end].strip()
+        if chunk:
+            chunks.append(chunk)
+        if end >= len(text):
+            break
+        next_start = max(0, end - overlap)
+        if next_start <= start:
+            next_start = end
+        space = text.find(" ", next_start, min(end, next_start + overlap))
+        start = space + 1 if space >= 0 else next_start
+    return chunks
+
+
+def _heading_data(raw_heading, used_ids):
+    heading = re.sub(r"\s+#+\s*$", "", raw_heading.strip())
+    custom_match = HEADING_ATTR_RE.search(heading)
+    custom_id = custom_match.group(1) if custom_match else ""
+    if custom_match:
+        heading = heading[:custom_match.start()].strip()
+    heading = _plain_markdown(heading)
+    anchor = unique(custom_id or slugify(heading, "-"), used_ids)
+    return heading, anchor
+
+
+def _markdown_passages(document_id, document_url, document_title, body):
+    used_ids = set()
+    heading_stack = {}
+    sections = []
+    current = {
+        "section": document_title,
+        "anchor": "",
+        "heading_level": 0,
+        "breadcrumb": [],
+        "lines": [],
+    }
+    active_fence = ""
+
+    def flush():
+        text = "\n".join(current["lines"]).strip()
+        chunks = _chunk_passage_text(text)
+        if not chunks and current["heading_level"]:
+            chunks = [current["section"]]
+        if chunks:
+            sections.append({
+                "section": current["section"],
+                "anchor": current["anchor"],
+                "heading_level": current["heading_level"],
+                "breadcrumb": current["breadcrumb"],
+                "chunks": chunks,
+            })
+
+    for line in body.splitlines():
+        fence_match = FENCE_RE.match(line)
+        if active_fence:
+            if fence_match and fence_match.group(1).startswith(active_fence[0]) and len(fence_match.group(1)) >= len(active_fence):
+                active_fence = ""
+            continue
+        if fence_match:
+            active_fence = fence_match.group(1)
+            continue
+
+        heading_match = HEADING_RE.match(line)
+        if not heading_match:
+            current["lines"].append(line)
+            continue
+
+        level = len(heading_match.group(1))
+        heading, anchor = _heading_data(heading_match.group(2), used_ids)
+        if level > 3:
+            current["lines"].append(heading)
+            continue
+
+        flush()
+        for stacked_level in list(heading_stack):
+            if stacked_level >= level:
+                del heading_stack[stacked_level]
+        heading_stack[level] = heading
+        current = {
+            "section": heading or document_title,
+            "anchor": anchor,
+            "heading_level": level,
+            "breadcrumb": [heading_stack[key] for key in sorted(heading_stack)],
+            "lines": [],
+        }
+    flush()
+
+    passages = []
+    passage_index = 0
+    for section in sections:
+        for chunk_index, chunk in enumerate(section["chunks"]):
+            anchor = section["anchor"]
+            passages.append({
+                "id": f"{document_id}:{anchor or 'document'}:{chunk_index}",
+                "documentId": document_id,
+                "section": section["section"],
+                "breadcrumb": section["breadcrumb"],
+                "text": chunk,
+                "url": f"{document_url}#{anchor}" if anchor else document_url,
+                "location": {
+                    "anchor": anchor,
+                    "headingLevel": section["heading_level"],
+                    "passageIndex": passage_index,
+                    "chunkIndex": chunk_index,
+                },
+            })
+            passage_index += 1
+    return passages
 
 
 def _render_math_text(text, limit=180):
@@ -454,15 +596,31 @@ def _render_tree(node, level=0):
     return "".join(html_parts)
 
 
-def _search_index_items():
-    items = []
+def _article_subtitle(article):
+    if article["categories"]:
+        return " / ".join(article["categories"])
+    labels = [DISPLAY_NAMES.get(part, part.replace("-", " ").title()) for part in article["folder_parts"]]
+    return " / ".join(labels)
+
+
+def _public_search_index():
+    documents = []
+    passages = []
     articles = _article_data()
     neighbors = _chapter_neighbors(articles)
     for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True):
         adjacent = neighbors.get(article["src_path"], {})
-        items.append({
+        document_id = article["src_path"][:-3]
+        source_text = _read_text(article["path"])
+        _, body = _meta_and_body(article["path"])
+        documents.append({
+            "id": document_id,
             "type": "post",
+            "sourceType": "blog-post",
+            "contentType": "article",
+            "visibility": "public",
             "title": article["title"],
+            "subtitle": _article_subtitle(article),
             "url": article["url"],
             "prev_url": adjacent.get("prev_url", ""),
             "next_url": adjacent.get("next_url", ""),
@@ -473,15 +631,23 @@ def _search_index_items():
             "categories": article["categories"],
             "tags": article["tags"],
             "content": article["search_text"],
-            "source": _strip_frontmatter(_read_text(article["path"]))[:3000],
-            "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", _read_text(article["path"]), re.I)),
+            "source": _strip_frontmatter(source_text)[:3000],
+            "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", source_text, re.I)),
         })
+        passages.extend(_markdown_passages(document_id, article["url"], article["title"], body))
 
     for item in LAB_ITEMS:
-        items.append({
+        document_id = f"lab:{item['slug']}"
+        url = f"/lab/{item['slug']}/"
+        documents.append({
+            "id": document_id,
             "type": "lab",
+            "sourceType": "lab",
+            "contentType": "interactive",
+            "visibility": "public",
             "title": item["title"],
-            "url": f"/lab/{item['slug']}/",
+            "subtitle": "Lab",
+            "url": url,
             "prev_url": "",
             "next_url": "",
             "preview": item["description"],
@@ -495,8 +661,39 @@ def _search_index_items():
             "has_pdf": False,
             "status": item.get("status", ""),
         })
-    items.sort(key=lambda item: item.get("date", ""), reverse=True)
-    return items
+        passages.append({
+            "id": f"{document_id}:document:0",
+            "documentId": document_id,
+            "section": item["title"],
+            "breadcrumb": [],
+            "text": item["description"],
+            "url": url,
+            "location": {
+                "anchor": "",
+                "headingLevel": 0,
+                "passageIndex": 0,
+                "chunkIndex": 0,
+            },
+        })
+    documents.sort(key=lambda item: item.get("date", ""), reverse=True)
+    index = {
+        "scope": "public",
+        "version": 2,
+        "documents": documents,
+        "passages": passages,
+    }
+    content_payload = json.dumps({"documents": documents, "passages": passages}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    index.update({
+        "generatedAt": datetime.now().astimezone().isoformat(),
+        "documentCount": len(documents),
+        "passageCount": len(passages),
+        "contentHash": hashlib.sha256(content_payload.encode("utf-8")).hexdigest(),
+    })
+    return index
+
+
+def _search_index_items():
+    return _public_search_index()["documents"]
 
 
 
@@ -593,9 +790,13 @@ def on_post_build(env=None, config=None, **kwargs):
         site_dir = config["site_dir"]
     except (KeyError, TypeError):
         site_dir = config.site_dir
-    output = Path(site_dir) / "assets" / "zdd-search-data.json"
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(_search_index_items(), ensure_ascii=False), encoding="utf-8")
+    public_index = _public_search_index()
+    public_output = Path(site_dir) / "assets" / "zdd-public-search-index.json"
+    public_output.parent.mkdir(parents=True, exist_ok=True)
+    public_output.write_text(json.dumps(public_index, ensure_ascii=False), encoding="utf-8")
+
+    legacy_output = Path(site_dir) / "assets" / "zdd-search-data.json"
+    legacy_output.write_text(json.dumps(public_index["documents"], ensure_ascii=False), encoding="utf-8")
 
     if os.environ.get("ZDD_SKIP_PIXIV") == "1":
         print("[pixiv] Refresh skipped by ZDD_SKIP_PIXIV")

@@ -1,6 +1,7 @@
 (function() {
   var state = {
     posts: [],
+    searchIndex: null,
     loaded: false,
     input: null,
     resultBox: null,
@@ -94,39 +95,24 @@
 
   function loadPosts() {
     if (state.loaded) return Promise.resolve(state.posts);
-    if (window.zddContentIndexPromise) {
-      return window.zddContentIndexPromise.then(function(data) {
-        state.posts = Array.isArray(data) ? data : [];
-        state.loaded = true;
-        return state.posts;
-      });
+    function acceptIndex(data) {
+      var valid = data && data.scope === "public" && Array.isArray(data.documents) && Array.isArray(data.passages);
+      state.searchIndex = valid ? data : {scope: "public", version: 2, documents: [], passages: []};
+      state.posts = state.searchIndex.documents;
+      state.loaded = true;
+      return state.posts;
     }
-    var embedded = document.getElementById("zdd-search-data");
-    if (embedded) {
-      try {
-        state.posts = JSON.parse(embedded.textContent || "[]");
-        state.loaded = true;
-        window.zddContentIndexPromise = Promise.resolve(state.posts);
-        return Promise.resolve(state.posts);
-      } catch (e) {}
+    if (window.zddPublicSearchIndexPromise) {
+      return window.zddPublicSearchIndexPromise.then(acceptIndex);
     }
-    var url = window.zddSearchDataUrl || "/assets/zdd-search-data.json";
-    window.zddContentIndexPromise = fetch(url, {credentials: "same-origin", cache: "no-store"})
+    var url = window.zddPublicSearchIndexUrl || "/assets/zdd-public-search-index.json";
+    window.zddPublicSearchIndexPromise = fetch(url, {credentials: "same-origin", cache: "no-store"})
       .then(function(response) {
-        if (!response.ok) throw new Error("Search data unavailable");
+        if (!response.ok) throw new Error("Public search index unavailable");
         return response.json();
       })
-      .then(function(data) {
-        state.posts = Array.isArray(data) ? data : [];
-        state.loaded = true;
-        return state.posts;
-      })
-      .catch(function() {
-        state.posts = [];
-        state.loaded = true;
-        return state.posts;
-      });
-    return window.zddContentIndexPromise;
+      .catch(function() { return {scope: "public", version: 2, documents: [], passages: []}; });
+    return window.zddPublicSearchIndexPromise.then(acceptIndex);
   }
 
   function allTags() {
@@ -147,11 +133,11 @@
   }
 
   function siteUrl(path) {
-    var base = window.zddSearchDataUrl || "/assets/zdd-search-data.json";
+    var base = window.zddPublicSearchIndexUrl || "/assets/zdd-public-search-index.json";
     var prefix = "/";
     try {
       var url = new URL(base, window.location.href);
-      var marker = "/assets/zdd-search-data.json";
+      var marker = "/assets/zdd-public-search-index.json";
       prefix = url.pathname.endsWith(marker) ? url.pathname.slice(0, url.pathname.length - marker.length) + "/" : "/";
     } catch (e) {}
     return prefix + String(path || "").replace(/^\/+/, "");
@@ -205,6 +191,30 @@
     return '<a class="zdd-search-result" href="' + escapeHtml(post.url) + '">'
       + '<span class="zdd-search-title">' + escapeHtml(post.title) + '</span>'
       + '<span class="zdd-search-meta">' + escapeHtml(detail) + '</span>'
+      + '</a>';
+  }
+
+  function highlightedHtml(text, terms) {
+    var core = window.ZddSearchCore;
+    if (!core) return escapeHtml(text);
+    return core.highlightParts(text, terms || []).map(function(part) {
+      var value = escapeHtml(part.text);
+      return part.highlighted ? '<mark class="zdd-search-hit">' + value + '</mark>' : value;
+    }).join("");
+  }
+
+  function passageResult(result) {
+    var meta = [result.sourceType, result.subtitle, result.date].filter(Boolean);
+    (result.tags || []).slice(0, 2).forEach(function(tag) { meta.push("#" + tag); });
+    var breadcrumb = (result.breadcrumb || []).filter(function(label, index, labels) {
+      return label && labels.indexOf(label) === index && normalize(label) !== normalize(result.title);
+    }).join(" › ");
+    return '<a class="zdd-search-result zdd-passage-result" href="' + escapeHtml(result.url) + '">'
+      + '<span class="zdd-search-title">' + highlightedHtml(result.title, result.highlights) + '</span>'
+      + (result.section ? '<span class="zdd-search-section">' + highlightedHtml(result.section, result.highlights) + '</span>' : '')
+      + (breadcrumb && normalize(breadcrumb) !== normalize(result.section) ? '<span class="zdd-search-location">' + highlightedHtml(breadcrumb, result.highlights) + '</span>' : '')
+      + '<span class="zdd-search-preview">' + highlightedHtml(result.snippet, result.highlights) + '</span>'
+      + '<span class="zdd-search-meta">' + highlightedHtml(meta.join(" · "), result.highlights) + '</span>'
       + '</a>';
   }
 
@@ -481,16 +491,6 @@
     }, 120);
   }
 
-  function articleText(post) {
-    return normalize([
-      post.title,
-      post.preview,
-      post.content,
-      (post.categories || []).join(" "),
-      (post.tags || []).join(" ")
-    ].join(" "));
-  }
-
   function renderLog(commandLine) {
     var rows = updateLogs.map(function(item) {
       return '<div class="zdd-log-row">'
@@ -716,7 +716,7 @@
 
   function renderContentResults() {
     if (!state.input || !state.resultBox) return;
-    var query = normalize(state.input.value.trim());
+    var query = state.input.value.trim();
     if (!query) {
       hideResults();
       return;
@@ -724,11 +724,16 @@
     state.commandRows = [];
     state.suggestionRows = [];
     updateGhost("");
-    var matches = state.posts.filter(function(post) {
-      return articleText(post).indexOf(query) >= 0;
-    });
-    state.resultBox.innerHTML = matches.slice(0, 8).map(postResult).join("");
-    state.resultBox.hidden = matches.length === 0;
+    var core = window.ZddSearchCore;
+    var matches = core ? core.search(state.searchIndex, query, {
+      limit: 12,
+      perDocument: 2,
+      snippetLength: 240
+    }) : [];
+    state.resultBox.innerHTML = matches.length
+      ? matches.map(passageResult).join("")
+      : '<div class="zdd-search-empty">No matching passage found.</div>';
+    state.resultBox.hidden = false;
   }
 
   function renderResults() {
@@ -838,6 +843,87 @@
     }
   }
 
+  function sectionRoots(target, contentRoot) {
+    if (!target || target === contentRoot || !/^H[1-6]$/.test(target.tagName || "")) return [contentRoot];
+    var roots = [target];
+    var level = Number(target.tagName.slice(1));
+    var sibling = target.nextElementSibling;
+    while (sibling) {
+      if (/^H[1-6]$/.test(sibling.tagName || "") && Number(sibling.tagName.slice(1)) <= level) break;
+      roots.push(sibling);
+      sibling = sibling.nextElementSibling;
+    }
+    return roots;
+  }
+
+  function markMatches(roots, terms) {
+    var core = window.ZddSearchCore;
+    var marks = [];
+    var nodes = [];
+    roots.forEach(function(root) {
+      if (!root) return;
+      var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      var node;
+      while ((node = walker.nextNode())) nodes.push(node);
+      if (root.nodeType === Node.TEXT_NODE) nodes.push(root);
+    });
+    nodes.some(function(node) {
+      if (!node.nodeValue || !node.parentElement || node.parentElement.closest("script, style, pre, code, .arithmatex, .MathJax, mark, .headerlink")) return false;
+      var parts = core.highlightParts(node.nodeValue, terms);
+      if (!parts.some(function(part) { return part.highlighted; })) return false;
+      var fragment = document.createDocumentFragment();
+      parts.forEach(function(part) {
+        if (!part.text) return;
+        if (part.highlighted && marks.length < 30) {
+          var mark = document.createElement("mark");
+          mark.className = "zdd-search-landing-hit";
+          mark.textContent = part.text;
+          marks.push(mark);
+          fragment.appendChild(mark);
+        } else {
+          fragment.appendChild(document.createTextNode(part.text));
+        }
+      });
+      node.parentNode.replaceChild(fragment, node);
+      return marks.length >= 30;
+    });
+    return marks;
+  }
+
+  function highlightLocatedPassage() {
+    var core = window.ZddSearchCore;
+    if (!core) return;
+    var pageUrl = new URL(window.location.href);
+    var query = pageUrl.searchParams.get("zdd-highlight");
+    if (!query) return;
+    var terms = core.queryTerms(query);
+    var contentRoot = document.querySelector(".md-content__inner");
+    if (!terms.length || !contentRoot) return;
+
+    var hash = pageUrl.hash ? pageUrl.hash.slice(1) : "";
+    var anchor = hash;
+    try { anchor = decodeURIComponent(hash); } catch (error) {}
+    var target = anchor ? document.getElementById(anchor) : contentRoot;
+    if (!target) target = contentRoot;
+    target.classList.add("zdd-search-target");
+
+    window.setTimeout(function() {
+      if (target !== contentRoot) target.scrollIntoView({block: "start", behavior: "auto"});
+      var marks = markMatches(sectionRoots(target, contentRoot), terms);
+      pageUrl.searchParams.delete("zdd-highlight");
+      if (history.replaceState) history.replaceState(null, "", pageUrl.pathname + pageUrl.search + pageUrl.hash);
+      window.setTimeout(function() {
+        target.classList.remove("zdd-search-target");
+        marks.forEach(function(mark) {
+          if (!mark.parentNode) return;
+          var parent = mark.parentNode;
+          parent.replaceChild(document.createTextNode(mark.textContent), mark);
+          parent.normalize();
+        });
+      }, 10000);
+    }, 80);
+  }
+
   function createModal() {
     if (state.overlay) return;
     var overlay = document.createElement("div");
@@ -919,6 +1005,7 @@
 
   function init() {
     initHomeTitle();
+    highlightLocatedPassage();
     bindSearch(
       document.getElementById("home-search-form"),
       document.getElementById("home-search-input"),
