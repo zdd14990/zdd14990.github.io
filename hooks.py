@@ -3,38 +3,11 @@ import html
 import os
 import re
 
+from blog_taxonomy import article_tags
 from mkdocs.utils import get_relative_url
 
 
 PDF_EMBED_RE = re.compile(r'(<embed\s+[^>]*?src=")([^"]+\.pdf)("[^>]*>)', re.IGNORECASE)
-MEANINGLESS_TAG_RE = re.compile(
-    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection|course|exercises|notes)$",
-    re.I,
-)
-
-TOPIC_INFERENCE = {
-    "probability-statistics": ["probability"],
-    "applied-math/convex-optimization": ["optimization"],
-    "applied-math/numerical-pde": ["numerical-methods", "pde"],
-    "applied-math/applied-math-exam": ["numerical-methods"],
-    "applied-math/ai-exam": ["machine-learning"],
-    "applied-math/data-science": ["machine-learning"],
-    "physics/electrodynamics": ["electromagnetism"],
-    "physics/quantum-mechanics": ["quantum"],
-    "physics/statistical-mechanics": ["statistical-physics"],
-}
-
-
-def _infer_topic_tags(page):
-    src = page.file.src_path.replace("\\", "/")
-    inferred = set()
-    for prefix, topics in TOPIC_INFERENCE.items():
-        if src.startswith("blog/" + prefix + "/"):
-            inferred.update(topics)
-    return sorted(inferred)
-
-
-
 def _fix_pdf_embed_paths(markdown, page, config):
     docs_dir = os.path.abspath(config["docs_dir"])
     page_dir = os.path.dirname(page.file.abs_src_path)
@@ -63,17 +36,13 @@ def _as_list(value):
     return [str(value)]
 
 
-def _clean_tags(tags):
-    return [tag for tag in tags if not MEANINGLESS_TAG_RE.match(tag)]
-
-
 def _append_taxonomy(markdown, page):
     path = page.file.src_path.replace("\\", "/")
     if not path.startswith("blog/") or path.endswith("index.md"):
         return markdown
 
     categories = _as_list(page.meta.get("categories"))
-    tags = list(dict.fromkeys(_clean_tags(_as_list(page.meta.get("tags"))) + _infer_topic_tags(page)))
+    tags = article_tags(page.meta.get("tags"), path)
     if not categories and not tags:
         return markdown
 

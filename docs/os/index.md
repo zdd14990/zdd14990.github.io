@@ -1,5 +1,10 @@
 ---
 title: zddOS
+robots: noindex, nofollow
+search:
+  exclude: true
+zdd_assets:
+  - personal-os
 hide:
   - navigation
   - toc

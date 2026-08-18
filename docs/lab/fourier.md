@@ -1,6 +1,8 @@
 ---
 title: Fourier Series Visualizer
 description: Explore how Fourier partial sums approximate a square wave.
+zdd_assets:
+  - interactive-widgets
 hide:
   - navigation
   - toc

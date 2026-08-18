@@ -1,8 +1,22 @@
 {% extends "base.html" %}
+{% set zdd_assets = page.meta.zdd_assets if page and page.meta and page.meta.zdd_assets else [] %}
 
 {% block extrahead %}
-  {{ super() }} <meta name="description" content="{{ config.site_description }}">
+{{ super() }}
+{% if "personal-os" in zdd_assets %}
+  <link rel="stylesheet" href="{{ 'stylesheets/personal-os.css' | url }}">
+{% endif %}
+{% if page and page.url == "lab/dungeon/" %}
+  <link rel="stylesheet" href="{{ 'stylesheets/dungeon-lab.css' | url }}">
+{% endif %}
   <meta name="author" content="{{ config.site_author }}">
+{% if not page %}
+  <meta name="robots" content="noindex, nofollow">
+{% elif page.meta and page.meta.robots %}
+  <meta name="robots" content="{{ page.meta.robots }}">
+{% elif page.url == "404.html" %}
+  <meta name="robots" content="noindex, nofollow">
+{% endif %}
   <script>
     window.zddSearchDataUrl = "{{ 'assets/zdd-search-data.json' | url }}";
     window.zddPublicSearchIndexUrl = "{{ 'assets/zdd-public-search-index.json' | url }}";
@@ -50,6 +64,13 @@
 
 {% block scripts %}
   {{ super() }}
+{% if "personal-os" in zdd_assets %}
+  <script src="{{ 'javascripts/personal-os-core.js' | url }}"></script>
+  <script src="{{ 'javascripts/personal-os.js' | url }}"></script>
+{% endif %}
+{% if "interactive-widgets" in zdd_assets %}
+  <script src="{{ 'javascripts/interactive-widgets.js' | url }}"></script>
+{% endif %}
   <script>
   (function() {
       var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");

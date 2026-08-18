@@ -18,14 +18,39 @@
 ## 本地运行
 
 ```bash
-# 安装依赖
-pip install mkdocs-material mkdocs-macros-plugin pymdown-extensions
+# 创建并激活干净环境
+python -m venv .venv
+# Windows PowerShell: .\.venv\Scripts\Activate.ps1
+# macOS / Linux: source .venv/bin/activate
+
+# 安装固定版本的直接构建依赖
+python -m pip install -r requirements.txt
 
 # 本地预览 (http://127.0.0.1:8000)
 mkdocs serve
 
+# 生产构建（只读取已有 Pixiv 缓存，不访问 Pixiv 网络）
+mkdocs build --strict
+
 # 部署到 GitHub Pages
 mkdocs gh-deploy
+```
+
+## 数据刷新与测试
+
+Pixiv 排行缓存只会通过显式命令刷新，普通预览和构建不会修改源缓存：
+
+```bash
+python scripts/refresh_pixiv_cache.py
+```
+
+R18 排行需要在当前进程环境中提供 `PIXIV_SESSION`。不要把会话值写入 Git 或命令输出；没有该变量时，刷新命令会保留已有的 R18 缓存。
+
+运行现有回归测试：
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+node --test tests/*.test.js
 ```
 
 ## 项目结构
@@ -34,6 +59,8 @@ mkdocs gh-deploy
 zdd/
 ├── docs/                  # Markdown 源文件
 │   ├── blog/              # 笔记内容（按学科分目录）
+│   ├── lab/               # 交互实验页面
+│   ├── os/                # 本地 Personal OS 页面壳
 │   ├── index.md           # 首页
 │   ├── tags/              # 标签系统
 │   ├── friends/           # 友链
@@ -41,9 +68,12 @@ zdd/
 │   └── stylesheets/       # 自定义 CSS
 ├── mkdocs.yml             # 站点配置
 ├── main.py                # 自定义宏（blog catalog、标签探索、Pixiv 集成等）
+├── blog_taxonomy.py       # 页面与索引共用的标签规则
 ├── hooks.py               # 构建钩子（搜索索引预处理、页面后处理）
 ├── overrides/             # 主题覆写（main.html 等）
-├── tools/                 # 辅助脚本
+├── scripts/               # Pixiv 缓存、Personal OS 数据等辅助脚本
+├── tests/                 # Python 与 Node 回归测试
+├── requirements.txt       # 固定版本的直接构建依赖
 └── site/                  # 构建输出（由 mkdocs 生成）
 ```
 

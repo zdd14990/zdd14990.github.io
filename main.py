@@ -1,14 +1,16 @@
 import html
 import hashlib
+import gzip
 import json
-import os
 import re
-import ssl
-import urllib.request
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urljoin
+from xml.etree import ElementTree
 
+from blog_taxonomy import article_tags
 from markdown.extensions.toc import slugify, unique
+from scripts.refresh_pixiv_cache import publish_cached_rankings
 
 DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
@@ -18,34 +20,6 @@ FENCE_RE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
 CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
 )
-MEANINGLESS_TAG_RE = re.compile(
-    r"^(chapter\d+|part\d+|exercise\d+|homework|final-project|final-cheatsheet|midterm-cheatsheet|exercise-collection|course|exercises|notes)$",
-    re.I,
-)
-
-TOPIC_INFERENCE = {
-    "probability-statistics": ["probability"],
-    "qualification-exam-review": ["qualification-exam", "review-materials"],
-    "cryptography": ["cryptography"],
-    "cryptography/cryptanalysis": ["cryptanalysis"],
-    "applied-math/convex-optimization": ["optimization"],
-    "applied-math/numerical-pde": ["numerical-methods", "pde"],
-    "applied-math/applied-math-exam": ["numerical-methods"],
-    "applied-math/ai-exam": ["machine-learning"],
-    "applied-math/data-science": ["machine-learning"],
-    "physics/electrodynamics": ["electromagnetism"],
-    "physics/quantum-mechanics": ["quantum"],
-    "physics/statistical-mechanics": ["statistical-physics"],
-}
-
-
-def _infer_topic_tags(src_path):
-    inferred = set()
-    for prefix, topics in TOPIC_INFERENCE.items():
-        if src_path.startswith("blog/" + prefix + "/"):
-            inferred.update(topics)
-    return sorted(inferred)
-
 SEARCH_TEXT_LIMIT = 12000
 PASSAGE_CHAR_LIMIT = 900
 PASSAGE_OVERLAP = 120
@@ -179,10 +153,6 @@ def _parse_scalar_meta(meta, key):
     if not match:
         return ""
     return match.group(1).strip().strip('"\'')
-
-
-def _clean_tags(tags):
-    return [tag for tag in tags if not MEANINGLESS_TAG_RE.match(tag)]
 
 
 def _meta_and_body(path):
@@ -449,7 +419,7 @@ def _article_data():
         title = _parse_scalar_meta(meta, "title") or path.stem.replace("-", " ").title()
         date = _parse_scalar_meta(meta, "date")
         published_at = _date_obj(date)
-        tags = list(dict.fromkeys(_clean_tags(_parse_list_meta(meta, "tags")) + _infer_topic_tags(src_path)))
+        tags = article_tags(_parse_list_meta(meta, "tags"), src_path)
         categories = _parse_list_meta(meta, "categories")
         content = _read_text(path)
         search_text = _plain_markdown(body)
@@ -474,12 +444,6 @@ def _article_data():
             "search_text": search_text[:SEARCH_TEXT_LIMIT],
             "folder_parts": folder_parts,
         })
-    tag_freq = {}
-    for a in articles:
-        for t in a["tags"]:
-            tag_freq[t] = tag_freq.get(t, 0) + 1
-    for a in articles:
-        a["tags"] = [t for t in a["tags"] if tag_freq[t] >= 3]
     return articles
 
 
@@ -696,92 +660,73 @@ def _search_index_items():
     return _public_search_index()["documents"]
 
 
+def _tag_explorer():
+    articles = _article_data()
+    tags = sorted({tag for article in articles for tag in article["tags"]})
+    options = "".join(f'<a href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}</a>' for tag in tags)
+    cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
+    return f"""
+<div class="zdd-tag-page">
+  <div id="zdd-tag-heading" class="zdd-tag-heading">All Tags</div>
+  <div class="zdd-post-list zdd-tag-results">{cards}</div>
+  <div class="zdd-tag-cloud">{options}</div>
+</div>
+<script>
+(function() {{
+  var params = new URLSearchParams(window.location.search);
+  var tag = params.get("tag");
+  var heading = document.getElementById("zdd-tag-heading");
+  var list = document.querySelector(".zdd-tag-results");
+  var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
+  if (tag) {{
+    heading.textContent = "#" + tag;
+    cards.forEach(function(card) {{
+      var tags = (card.getAttribute("data-tags") || "").split(/\\s+/);
+      card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
+    }});
+  }} else {{
+    list.style.display = "none";
+  }}
+}})();
+</script>
+"""
 
 
-def _load_pixiv_session():
-    env_path = Path(".env")
-    if not env_path.exists():
-        return ""
-    content = env_path.read_text(encoding="utf-8", errors="ignore")
-    for line in content.splitlines():
-        line = line.strip()
-        if line.startswith("PIXIV_SESSION="):
-            return line.split("=", 1)[1].strip().strip("\"'")
-    return ""
+def _exclude_sitemap_urls(site_dir, site_url, excluded_paths):
+    sitemap_path = Path(site_dir) / "sitemap.xml"
+    if not sitemap_path.exists() or not excluded_paths:
+        return 0
 
+    namespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
+    ElementTree.register_namespace("", namespace)
+    try:
+        tree = ElementTree.parse(sitemap_path)
+    except (OSError, ElementTree.ParseError) as exc:
+        print(f"[sitemap] Unable to filter {sitemap_path}: {exc}")
+        return 0
 
-def _fetch_pixiv_ranking(mode="daily", session=""):
-    auth_label = "session" if session else "anonymous"
-    label = f"pixiv:{mode}:{auth_label}"
-    url = f"https://www.pixiv.net/ranking.php?format=json&mode={mode}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "Referer": "https://www.pixiv.net/",
-        "Accept": "application/json",
-        "Accept-Language": "zh-CN,zh;q=0.9",
+    excluded_urls = {
+        urljoin(site_url.rstrip("/") + "/", str(path).lstrip("/"))
+        for path in excluded_paths
     }
-    if session:
-        headers["Cookie"] = f"PHPSESSID={session}"
-    req = urllib.request.Request(url, headers=headers)
+    root = tree.getroot()
+    removed = 0
+    for entry in list(root.findall(f"{{{namespace}}}url")):
+        location = entry.find(f"{{{namespace}}}loc")
+        if location is not None and location.text in excluded_urls:
+            root.remove(entry)
+            removed += 1
 
-    try:
-        ctx = ssl.create_default_context()
-        with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-    except Exception as e:
-        print(f"[{label}] Failed: {e}")
-        return []
-
-    contents = data.get("contents", [])
-    if not isinstance(contents, list):
-        return []
-
-    results = []
-    for item in contents:
-        illust_id = item.get("illust_id")
-        if illust_id:
-            results.append({
-                "id": illust_id,
-                "title": item.get("title", ""),
-                "url": item.get("url", ""),
-            })
-
-    print(f"[{label}] Fetched {len(results)} entries")
-    return results
+    if not removed:
+        return 0
+    ElementTree.indent(tree, space="    ")
+    tree.write(sitemap_path, encoding="utf-8", xml_declaration=True)
+    with sitemap_path.open("rb") as source, gzip.open(sitemap_path.with_suffix(".xml.gz"), "wb") as target:
+        target.write(source.read())
+    print(f"[sitemap] Excluded {removed} non-indexable URL(s)")
+    return removed
 
 
-def _load_pixiv_cache(path):
-    if not path.exists():
-        return []
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        print(f"[pixiv:cache] Failed to read {path}: {exc}")
-        return []
-    if not isinstance(data, list):
-        return []
-    return [item for item in data if isinstance(item, dict) and item.get("id")]
-
-
-def _write_json(path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-    temporary.replace(path)
-
-
-def _refresh_pixiv_ranking(mode, session, requires_session=False):
-    if requires_session:
-        if not session:
-            print(f"[pixiv:{mode}] No PIXIV_SESSION found - using cache")
-            return []
-        return _fetch_pixiv_ranking(mode, session=session)
-
-    data = _fetch_pixiv_ranking(mode)
-    if not data and session:
-        print(f"[pixiv:{mode}] Anonymous request failed - retrying with session")
-        data = _fetch_pixiv_ranking(mode, session=session)
-    return data
 
 
 def on_post_build(env=None, config=None, **kwargs):
@@ -797,33 +742,10 @@ def on_post_build(env=None, config=None, **kwargs):
 
     legacy_output = Path(site_dir) / "assets" / "zdd-search-data.json"
     legacy_output.write_text(json.dumps(public_index["documents"], ensure_ascii=False), encoding="utf-8")
-
-    if os.environ.get("ZDD_SKIP_PIXIV") == "1":
-        print("[pixiv] Refresh skipped by ZDD_SKIP_PIXIV")
-        return
-
-    session = _load_pixiv_session()
-    cache_dir = Path("docs") / "assets"
-    rankings = [
-        ("pixiv-ranking.json", "daily", False),
-        ("pixiv-r18-ranking.json", "daily_r18", True),
-    ]
-    for file_name, mode, requires_session in rankings:
-        cache_path = cache_dir / file_name
-        data = _refresh_pixiv_ranking(mode, session, requires_session=requires_session)
-        source = "fresh"
-        if data:
-            _write_json(cache_path, data)
-        else:
-            data = _load_pixiv_cache(cache_path)
-            source = "cache"
-
-        if data:
-            output_path = Path(site_dir) / "assets" / file_name
-            _write_json(output_path, data)
-            print(f"[pixiv:{mode}] Published {len(data)} {source} entries")
-        else:
-            print(f"[pixiv:{mode}] No fresh data or cache available")
+    publish_cached_rankings(site_dir)
+    extra = config.get("extra", {}) if hasattr(config, "get") else getattr(config, "extra", {})
+    site_url = config.get("site_url", "") if hasattr(config, "get") else getattr(config, "site_url", "")
+    _exclude_sitemap_urls(site_dir, site_url, extra.get("sitemap_exclude", []))
 
 
 def define_env(env):
@@ -858,32 +780,4 @@ def define_env(env):
 
     @env.macro
     def tag_explorer():
-        articles = _article_data()
-        tags = sorted({tag for article in articles for tag in article["tags"]})
-        options = "".join(f'<a href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}</a>' for tag in tags)
-        cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
-        return f"""
-<div class="zdd-tag-page">
-  <div id="zdd-tag-heading" class="zdd-tag-heading">All Tags</div>
-  <div class="zdd-post-list zdd-tag-results">{cards}</div>
-  <div class="zdd-tag-cloud">{options}</div>
-</div>
-<script>
-(function() {{
-  var params = new URLSearchParams(window.location.search);
-  var tag = params.get("tag");
-  var heading = document.getElementById("zdd-tag-heading");
-  var list = document.querySelector(".zdd-tag-results");
-  var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
-  if (tag) {{
-    heading.textContent = "#" + tag;
-    cards.forEach(function(card) {{
-      var tags = (card.getAttribute("data-tags") || "").split(/\\s+/);
-      card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
-    }});
-  }} else {{
-    list.style.display = "none";
-  }}
-}})();
-</script>
-"""
+        return _tag_explorer()
