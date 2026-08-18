@@ -3,9 +3,6 @@
 
   var SVG_NS = "http://www.w3.org/2000/svg";
   var DEFAULT_SEED = "ZDD14990";
-  var GRID_SIZE = 76;
-  var ROOM_SIZE = 46;
-  var MAP_PADDING = 42;
 
   function svgElement(name, attributes) {
     var element = document.createElementNS(SVG_NS, name);
@@ -18,32 +15,30 @@
   function init() {
     var root = document.getElementById("zdd-dungeon-lab");
     var core = window.ZddDungeonCore;
-    var replay = window.ZddDungeonReplay;
-    if (!root || !core || !replay || root.dataset.zddReady === "1") return;
+    var ui = window.ZddDungeonUiCore;
+    if (!root || !core || !ui || root.dataset.zddReady === "1") return;
     root.dataset.zddReady = "1";
 
     var form = root.querySelector("[data-dungeon-form]");
     var seedInput = root.querySelector("[data-dungeon-seed]");
     var status = root.querySelector("[data-dungeon-status]");
     var map = root.querySelector("[data-dungeon-map]");
+    var mapShell = root.querySelector("[data-dungeon-map-shell]");
     var inspector = root.querySelector("[data-dungeon-inspector]");
-    var stepInput = root.querySelector("[data-dungeon-step]");
-    var stepLabel = root.querySelector("[data-dungeon-step-label]");
-    var stepKind = root.querySelector("[data-dungeon-step-kind]");
-    var stepDescription = root.querySelector("[data-dungeon-step-description]");
-    var speedSelect = root.querySelector("[data-dungeon-speed]");
-    var firstButton = root.querySelector("[data-dungeon-first]");
-    var previousButton = root.querySelector("[data-dungeon-previous]");
-    var playButton = root.querySelector("[data-dungeon-play]");
-    var nextButton = root.querySelector("[data-dungeon-next]");
-    var lastButton = root.querySelector("[data-dungeon-last]");
-    var resetButton = root.querySelector("[data-dungeon-reset]");
+    var mapCaption = root.querySelector("[data-dungeon-map-caption]");
+    var revealButton = root.querySelector("[data-dungeon-reveal]");
+    var results = root.querySelector("[data-dungeon-results]");
+    var score = root.querySelector("[data-dungeon-score]");
+    var guessHint = root.querySelector("[data-dungeon-guess-hint]");
     var dungeon = null;
-    var replayState = replay.buildReplayState([], 0);
-    var replayIndex = 0;
-    var playTimer = 0;
+    var visibleDungeon = {rooms: [], connections: [], roomIds: []};
+    var revealed = false;
+    var guessMode = "secret";
+    var guesses = {secret: null, "super-secret": null};
     var selectedRoomId = "";
-    var lastBounds = null;
+    var resizeObserver = null;
+    var resizeFrame = 0;
+    var observedMapWidth = 0;
 
     function setStatus(message, stateName) {
       status.textContent = message || "";
@@ -61,7 +56,8 @@
       if (window.crypto && window.crypto.getRandomValues) {
         window.crypto.getRandomValues(values);
       } else {
-        var fallback = core.hashSeed(String(Date.now()) + ":" + String(window.performance && performance.now()));
+        var timing = window.performance && window.performance.now ? window.performance.now() : 0;
+        var fallback = core.hashSeed(String(Date.now()) + ":" + String(timing));
         for (var index = 0; index < values.length; index += 1) {
           values[index] = (fallback >>> ((index % 4) * 8)) & 255;
           fallback = core.hashSeed(String(fallback) + ":" + index);
@@ -84,9 +80,7 @@
     function mutateSeed(value) {
       var seed = usableSeed(value, true);
       var last = seed.charAt(seed.length - 1);
-      if (/\d/.test(last)) {
-        return seed.slice(0, -1) + String((Number(last) + 1) % 10);
-      }
+      if (/\d/.test(last)) return seed.slice(0, -1) + String((Number(last) + 1) % 10);
       if (/[A-Y]/.test(last)) return seed.slice(0, -1) + String.fromCharCode(last.charCodeAt(0) + 1);
       if (last === "Z") return seed.slice(0, -1) + "A";
       if (/[a-y]/.test(last)) return seed.slice(0, -1) + String.fromCharCode(last.charCodeAt(0) + 1);
@@ -111,6 +105,7 @@
       if (!window.history || !window.history.replaceState) return false;
       try {
         var url = new URL(window.location.href);
+        url.search = "";
         url.searchParams.set("seed", seed);
         var next = url.pathname + url.search + url.hash;
         if (mode === "push" && window.history.pushState) window.history.pushState(null, "", next);
@@ -124,65 +119,104 @@
     function roomName(type) {
       return {
         start: "Start",
+        normal: "Normal",
         boss: "Boss",
+        shop: "Shop",
         treasure: "Treasure",
-        normal: "Normal"
+        curse: "Curse",
+        sacrifice: "Sacrifice",
+        challenge: "Challenge",
+        arcade: "Arcade",
+        vault: "Vault",
+        library: "Library",
+        planetarium: "Planetarium",
+        secret: "Secret",
+        "super-secret": "Super Secret"
       }[type] || "Normal";
     }
 
     function roomMark(type) {
-      return {start: "S", boss: "B", treasure: "T"}[type] || "";
+      return {
+        start: "S",
+        boss: "B",
+        shop: "$",
+        treasure: "T",
+        curse: "C",
+        sacrifice: "\u2020",
+        challenge: "!",
+        arcade: "A",
+        vault: "V",
+        library: "L",
+        planetarium: "P",
+        secret: "?",
+        "super-secret": "??"
+      }[type] || "";
+    }
+
+    function pointFor(cell) {
+      return ui.gridToSvg(cell);
     }
 
     function roomById(id) {
-      return replayState.rooms.find(function(room) { return room.id === id; }) || null;
+      return visibleDungeon.rooms.find(function(room) { return room.id === id; }) || null;
     }
 
-    function coordinate(room) {
-      return {x: room.x * GRID_SIZE, y: room.y * GRID_SIZE};
-    }
-
-    function calculateBounds() {
-      var cells = dungeon && dungeon.rooms ? dungeon.rooms.slice() : [];
-      if (replayState.candidate) cells.push(replayState.candidate);
-      if (!cells.length) cells.push({x: 0, y: 0});
-      var minimumX = cells.reduce(function(value, room) { return Math.min(value, room.x); }, Infinity);
-      var maximumX = cells.reduce(function(value, room) { return Math.max(value, room.x); }, -Infinity);
-      var minimumY = cells.reduce(function(value, room) { return Math.min(value, room.y); }, Infinity);
-      var maximumY = cells.reduce(function(value, room) { return Math.max(value, room.y); }, -Infinity);
-      var left = minimumX * GRID_SIZE - ROOM_SIZE / 2 - MAP_PADDING;
-      var top = minimumY * GRID_SIZE - ROOM_SIZE / 2 - MAP_PADDING;
-      var width = (maximumX - minimumX) * GRID_SIZE + ROOM_SIZE + MAP_PADDING * 2;
-      var height = (maximumY - minimumY) * GRID_SIZE + ROOM_SIZE + MAP_PADDING * 2;
+    function currentRenderModel() {
+      var guessCells = revealed ? [] : ui.getGuessableCells(dungeon, false);
+      var guessMarkers = [];
+      if (!revealed && guesses.secret) {
+        guessMarkers.push({type: "secret", x: guesses.secret.x, y: guesses.secret.y});
+      }
+      if (!revealed && guesses["super-secret"]) {
+        guessMarkers.push({
+          type: "super-secret",
+          x: guesses["super-secret"].x,
+          y: guesses["super-secret"].y
+        });
+      }
       return {
-        left: left,
-        top: top,
-        width: Math.max(width, 180),
-        height: Math.max(height, 180),
-        centerX: left + Math.max(width, 180) / 2,
-        centerY: top + Math.max(height, 180) / 2
+        rooms: visibleDungeon.rooms,
+        connections: visibleDungeon.connections,
+        guessCells: guessCells,
+        guessMarkers: guessMarkers
       };
     }
 
-    function fitMap() {
-      if (!dungeon) return;
-      lastBounds = calculateBounds();
-      map.setAttribute("viewBox", [
-        lastBounds.left,
-        lastBounds.top,
-        lastBounds.width,
-        lastBounds.height
-      ].join(" "));
+    function updateMapHeight(viewBox, measuredWidth) {
+      var width = Number(measuredWidth) || mapShell.clientWidth;
+      if (!width) return;
+      var mobile = window.matchMedia && window.matchMedia("(max-width: 44em)").matches;
+      var minimumHeight = mobile ? 360 : 420;
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 900;
+      var maximumHeight = Math.max(minimumHeight, Math.min(viewportHeight * 0.75, 900));
+      var height = ui.computeDungeonViewportHeight(viewBox, width, {
+        minHeight: minimumHeight,
+        maxHeight: maximumHeight
+      });
+      if (Math.abs(mapShell.getBoundingClientRect().height - height) >= 1) {
+        mapShell.style.height = height + "px";
+      }
     }
 
-    function appendConnection(edge, className) {
-      var from = roomById(edge.from);
-      var to = roomById(edge.to);
+    function fitMap(renderModel, measuredWidth) {
+      if (!dungeon) return;
+      var model = renderModel || currentRenderModel();
+      var viewBox = ui.computeDungeonViewBox(model.rooms, {
+        guessCells: model.guessCells,
+        guessMarkers: model.guessMarkers
+      });
+      map.setAttribute("viewBox", viewBox.value);
+      updateMapHeight(viewBox, measuredWidth);
+    }
+
+    function appendConnection(connection) {
+      var from = roomById(connection.from);
+      var to = roomById(connection.to);
       if (!from || !to) return;
-      var start = coordinate(from);
-      var end = coordinate(to);
+      var start = pointFor(from);
+      var end = pointFor(to);
       map.appendChild(svgElement("line", {
-        "class": className || "zdd-dungeon-connection",
+        "class": "zdd-dungeon-connection",
         x1: start.x,
         y1: start.y,
         x2: end.x,
@@ -191,25 +225,30 @@
       }));
     }
 
-    function appendCandidateConnections(candidate) {
-      (candidate.fromRoomIds || []).forEach(function(roomId) {
-        var from = roomById(roomId);
-        if (!from) return;
-        var start = coordinate(from);
-        var end = coordinate(candidate);
-        map.appendChild(svgElement("line", {
-          "class": "zdd-dungeon-candidate-connection",
-          x1: start.x,
-          y1: start.y,
-          x2: end.x,
-          y2: end.y,
-          "aria-hidden": "true"
-        }));
+    function appendGuessCell(cell) {
+      var rect = ui.getGuessCellRect(cell);
+      var group = svgElement("g", {
+        "class": "zdd-dungeon-guess-cell",
+        "data-guess-x": cell.x,
+        "data-guess-y": cell.y,
+        tabindex: "0",
+        role: "button",
+        "aria-label": "Guess hidden room at (" + cell.x + "," + cell.y + ")"
       });
+      group.appendChild(svgElement("rect", {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        rx: "3"
+      }));
+      map.appendChild(group);
     }
 
     function appendRoom(room) {
-      var point = coordinate(room);
+      var point = pointFor(room);
+      var focusRect = ui.getFocusRect(room);
+      var roomRect = ui.getRoomRect(room);
       var group = svgElement("g", {
         "class": "zdd-dungeon-room" + (selectedRoomId === room.id ? " is-selected" : ""),
         "data-room-id": room.id,
@@ -221,18 +260,18 @@
       });
       group.appendChild(svgElement("rect", {
         "class": "zdd-dungeon-room-focus",
-        x: point.x - ROOM_SIZE / 2 - 5,
-        y: point.y - ROOM_SIZE / 2 - 5,
-        width: ROOM_SIZE + 10,
-        height: ROOM_SIZE + 10,
+        x: focusRect.x,
+        y: focusRect.y,
+        width: focusRect.width,
+        height: focusRect.height,
         rx: "4"
       }));
       group.appendChild(svgElement("rect", {
         "class": "zdd-dungeon-room-shape",
-        x: point.x - ROOM_SIZE / 2,
-        y: point.y - ROOM_SIZE / 2,
-        width: ROOM_SIZE,
-        height: ROOM_SIZE,
+        x: roomRect.x,
+        y: roomRect.y,
+        width: roomRect.width,
+        height: roomRect.height,
         rx: "3"
       }));
       var mark = svgElement("text", {
@@ -243,188 +282,164 @@
       });
       mark.textContent = roomMark(room.type);
       group.appendChild(mark);
-      var label = svgElement("text", {
+      var coordinate = svgElement("text", {
         "class": "zdd-dungeon-room-coordinate",
         x: point.x,
         y: point.y + 16,
         "aria-hidden": "true"
       });
-      label.textContent = room.x + "," + room.y;
-      group.appendChild(label);
+      coordinate.textContent = room.x + "," + room.y;
+      group.appendChild(coordinate);
       map.appendChild(group);
     }
 
-    function appendCandidate(candidate) {
-      var point = coordinate(candidate);
+    function appendGuessMarker(marker) {
+      var point = pointFor(marker);
+      var rect = ui.getGuessMarkerRect(marker);
       var group = svgElement("g", {
-        "class": "zdd-dungeon-candidate",
-        "data-status": candidate.status,
+        "class": "zdd-dungeon-guess-marker",
+        "data-guess-type": marker.type,
         "aria-hidden": "true"
       });
       group.appendChild(svgElement("rect", {
-        "class": "zdd-dungeon-candidate-shape",
-        x: point.x - ROOM_SIZE / 2,
-        y: point.y - ROOM_SIZE / 2,
-        width: ROOM_SIZE,
-        height: ROOM_SIZE,
-        rx: "3"
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        rx: "4"
       }));
-      var mark = svgElement("text", {
-        "class": "zdd-dungeon-candidate-mark",
+      var label = svgElement("text", {
         x: point.x,
         y: point.y,
         "aria-hidden": "true"
       });
-      mark.textContent = candidate.status === "rejected" ? "\u00d7" : "+";
-      group.appendChild(mark);
+      label.textContent = marker.type === "secret" ? "?" : "??";
+      group.appendChild(label);
       map.appendChild(group);
     }
 
     function renderMap() {
+      var renderModel = currentRenderModel();
       while (map.firstChild) map.removeChild(map.firstChild);
-      fitMap();
-      replayState.edges.forEach(function(edge) {
-        appendConnection(edge, "zdd-dungeon-connection");
-      });
-      if (replayState.candidate) appendCandidateConnections(replayState.candidate);
-      replayState.rooms.slice().sort(function(left, right) {
+      fitMap(renderModel);
+      renderModel.connections.forEach(appendConnection);
+      renderModel.guessCells.forEach(appendGuessCell);
+      renderModel.rooms.slice().sort(function(left, right) {
         return left.y - right.y || left.x - right.x;
       }).forEach(appendRoom);
-      if (replayState.candidate) appendCandidate(replayState.candidate);
-      if (!replayState.rooms.length && lastBounds) {
-        var empty = svgElement("text", {
-          "class": "zdd-dungeon-map-empty",
-          x: lastBounds.centerX,
-          y: lastBounds.centerY
-        });
-        empty.textContent = "Replay is at step 0";
-        map.appendChild(empty);
-      }
-    }
-
-    function replayDistances() {
-      var adjacency = Object.create(null);
-      replayState.rooms.forEach(function(room) { adjacency[room.id] = []; });
-      replayState.edges.forEach(function(edge) {
-        if (!adjacency[edge.from] || !adjacency[edge.to]) return;
-        adjacency[edge.from].push(edge.to);
-        adjacency[edge.to].push(edge.from);
-      });
-      var start = replayState.rooms.find(function(room) { return room.type === "start"; });
-      var distances = Object.create(null);
-      if (!start) return distances;
-      var queue = [start.id];
-      distances[start.id] = 0;
-      for (var index = 0; index < queue.length; index += 1) {
-        adjacency[queue[index]].forEach(function(neighborId) {
-          if (distances[neighborId] != null) return;
-          distances[neighborId] = distances[queue[index]] + 1;
-          queue.push(neighborId);
-        });
-      }
-      return distances;
+      renderModel.guessMarkers.forEach(appendGuessMarker);
     }
 
     function renderInspector(roomId) {
       var room = roomById(roomId || selectedRoomId);
       if (!room) {
         inspector.innerHTML = '<span class="zdd-dungeon-inspector-label">Room inspector</span>'
-          + "<strong>Select a room</strong><span>Hover, focus, or tap a room to inspect it.</span>";
+          + "<strong>Select a room</strong><span>Hover, focus, or tap a visible room.</span>";
         return;
       }
-      var degree = replayState.edges.reduce(function(total, edge) {
-        return total + (edge.from === room.id || edge.to === room.id ? 1 : 0);
-      }, 0);
-      var distance = replayDistances()[room.id];
       inspector.innerHTML = '<span class="zdd-dungeon-inspector-label">Room inspector</span>'
         + "<strong>" + roomName(room.type) + " (" + room.x + "," + room.y + ")</strong>"
-        + "<span>Distance from Start: " + (distance == null ? "-" : distance) + "</span>"
-        + "<span>Degree: " + degree + "</span>";
+        + "<span>Distance from Start: " + (room.distance == null ? "-" : room.distance) + "</span>"
+        + "<span>Degree: " + room.degree + "</span>";
+    }
+
+    function coordinateText(coordinate) {
+      return coordinate ? "(" + coordinate.x + "," + coordinate.y + ")" : "Not placed";
+    }
+
+    function renderGuessControls() {
+      root.querySelectorAll("[data-dungeon-guess-mode]").forEach(function(button) {
+        var active = button.dataset.dungeonGuessMode === guessMode;
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+        button.disabled = revealed;
+      });
+      root.querySelector('[data-dungeon-guess-output="secret"]').textContent = coordinateText(guesses.secret);
+      root.querySelector('[data-dungeon-guess-output="super-secret"]').textContent = coordinateText(guesses["super-secret"]);
+      revealButton.disabled = revealed;
+      revealButton.textContent = revealed ? "Rooms Revealed" : "Reveal Rooms";
+      if (!revealed) {
+        guessHint.textContent = "Guessing " + (guessMode === "secret" ? "Secret Room" : "Super Secret Room")
+          + ". Select any outlined empty cell beside a visible room.";
+      }
+    }
+
+    function fullRoom(id) {
+      return dungeon.rooms.find(function(room) { return room.id === id; });
+    }
+
+    function resultText(correct, guess, actual) {
+      if (correct) return "\u2713 Correct";
+      return "\u2717 " + (guess ? "Guess " + coordinateText(guess) : "Not guessed")
+        + " \u00b7 Actual " + coordinateText(actual);
+    }
+
+    function renderResults() {
+      if (!revealed) {
+        results.hidden = true;
+        score.hidden = true;
+        return;
+      }
+      var secret = fullRoom(dungeon.secretRoomId);
+      var superSecret = fullRoom(dungeon.superSecretRoomId);
+      var secretCorrect = ui.checkSecretGuess(dungeon, guesses.secret);
+      var superCorrect = ui.checkSuperSecretGuess(dungeon, guesses["super-secret"]);
+      var total = Number(secretCorrect) + Number(superCorrect);
+      score.textContent = total + " / 2";
+      score.hidden = false;
+      results.hidden = false;
+      root.querySelector('[data-dungeon-result="secret"]').textContent = resultText(secretCorrect, guesses.secret, secret);
+      root.querySelector('[data-dungeon-result="super-secret"]').textContent = resultText(
+        superCorrect, guesses["super-secret"], superSecret
+      );
+      root.querySelector('[data-dungeon-why="secret"]').textContent = "Secret Room: adjacent to "
+        + dungeon.stats.secretNeighborCount + " rooms, the highest valid adjacency tier on this floor.";
+      root.querySelector('[data-dungeon-why="super-secret"]').textContent = "Super Secret Room: dead end with one entrance. Distance from Start: "
+        + superSecret.distance + ".";
     }
 
     function renderInfo() {
-      if (!dungeon) return;
       infoValue("seed", dungeon.seed);
       infoValue("fingerprint", dungeon.fingerprint);
       infoValue("generator", dungeon.version);
-      infoValue("rooms", dungeon.stats.roomCount);
-      infoValue("dead-ends", dungeon.stats.deadEndCount);
+      infoValue("visible-rooms", dungeon.stats.visibleRoomCount);
+      infoValue("total-rooms", dungeon.stats.roomCount);
       infoValue("max-distance", dungeon.stats.maxDistance);
     }
 
-    function renderReplay() {
-      if (!dungeon) return;
-      var total = dungeon.steps.length;
-      var currentStep = replayIndex > 0 ? dungeon.steps[replayIndex - 1] : null;
-      stepInput.max = total;
-      stepInput.value = replayIndex;
-      stepLabel.textContent = "Step " + replayIndex + " / " + total;
-      stepKind.textContent = currentStep ? currentStep.type.replace(/-/g, " ") : "Ready";
-      stepKind.dataset.kind = currentStep ? currentStep.type : "ready";
-      stepDescription.textContent = replay.describeDungeonStep(currentStep);
-      firstButton.disabled = replayIndex === 0;
-      previousButton.disabled = replayIndex === 0;
-      nextButton.disabled = replayIndex >= total;
-      lastButton.disabled = replayIndex >= total;
-      resetButton.disabled = replayIndex === 0;
-      playButton.disabled = total === 0;
-      playButton.textContent = playTimer ? "Pause" : "Play";
-      playButton.setAttribute("aria-pressed", playTimer ? "true" : "false");
-    }
-
     function renderAll() {
+      visibleDungeon = ui.getVisibleDungeon(dungeon, revealed);
+      if (selectedRoomId && !roomById(selectedRoomId)) selectedRoomId = "";
+      mapCaption.textContent = revealed
+        ? "Secret and Super Secret rooms are revealed with their connections."
+        : "Secret rooms and their connections are hidden.";
       renderInfo();
       renderMap();
-      renderReplay();
       renderInspector();
+      renderGuessControls();
+      renderResults();
     }
 
-    function pause() {
-      if (playTimer) window.clearInterval(playTimer);
-      playTimer = 0;
-      if (dungeon) renderReplay();
-    }
-
-    function showReplayIndex(value, keepPlaying) {
-      if (!dungeon) return;
-      if (!keepPlaying) pause();
-      replayIndex = Math.max(0, Math.min(dungeon.steps.length, Math.floor(Number(value) || 0)));
-      replayState = replay.buildReplayState(dungeon.steps, replayIndex);
-      if (selectedRoomId && !roomById(selectedRoomId)) selectedRoomId = "";
-      renderAll();
-    }
-
-    function startPlaying() {
-      if (!dungeon || playTimer || !dungeon.steps.length) return;
-      if (replayIndex >= dungeon.steps.length) showReplayIndex(0, true);
-      var interval = Math.max(80, Number(speedSelect.value) || 350);
-      playTimer = window.setInterval(function() {
-        if (!dungeon || replayIndex >= dungeon.steps.length) {
-          pause();
-          return;
-        }
-        showReplayIndex(replayIndex + 1, true);
-        if (replayIndex >= dungeon.steps.length) pause();
-      }, interval);
-      renderReplay();
+    function resetChallenge() {
+      revealed = false;
+      guessMode = "secret";
+      guesses = {secret: null, "super-secret": null};
+      selectedRoomId = "";
     }
 
     function generate(seedValue, historyMode, message) {
-      pause();
       var seed = usableSeed(seedValue, true);
       try {
         dungeon = core.generateDungeon(seed);
         seedInput.value = seed;
-        replayIndex = dungeon.steps.length;
-        replayState = replay.buildReplayState(dungeon.steps, replayIndex);
-        var start = replayState.rooms.find(function(room) { return room.type === "start"; });
+        resetChallenge();
+        var start = dungeon.rooms.find(function(room) { return room.type === "start"; });
         selectedRoomId = start ? start.id : "";
         var urlUpdated = updateUrl(seed, historyMode);
         renderAll();
         if (!urlUpdated) {
           setStatus("The floor was generated, but the URL could not be updated.", "error");
         } else {
-          setStatus(message || "Generated " + dungeon.stats.roomCount + " rooms from this seed.", "ready");
+          setStatus(message || "Classic floor generated. Place two guesses before revealing the hidden rooms.", "ready");
         }
       } catch (error) {
         setStatus(error && error.message ? error.message : "Unable to generate this floor.", "error");
@@ -444,14 +459,64 @@
         temporary.style.opacity = "0";
         document.body.appendChild(temporary);
         temporary.select();
-        task = Promise.resolve(document.execCommand("copy"));
+        var copied = document.execCommand("copy");
         temporary.remove();
+        task = copied ? Promise.resolve() : Promise.reject(new Error("Copy failed"));
       }
       task.then(function() {
-        setStatus("Link copied to clipboard.", "ready");
+        setStatus("Challenge link copied. It contains only the seed.", "ready");
       }).catch(function() {
         setStatus("Copy failed. Copy the URL from the address bar.", "error");
       });
+    }
+
+    function selectGuessCell(target) {
+      if (!target || revealed) return;
+      guesses[guessMode] = {
+        x: Number(target.dataset.guessX),
+        y: Number(target.dataset.guessY)
+      };
+      renderMap();
+      renderGuessControls();
+    }
+
+    function selectRoom(target) {
+      if (!target) return;
+      selectedRoomId = target.dataset.roomId;
+      renderMap();
+      renderInspector();
+      var selected = map.querySelector('[data-room-id="' + selectedRoomId + '"]');
+      if (selected) selected.focus();
+    }
+
+    function roomTarget(event) {
+      return event.target.closest && event.target.closest("[data-room-id]");
+    }
+
+    function guessTarget(event) {
+      return event.target.closest && event.target.closest("[data-guess-x][data-guess-y]");
+    }
+
+    function scheduleMapFit() {
+      if (!dungeon || resizeFrame) return;
+      resizeFrame = window.requestAnimationFrame(function() {
+        resizeFrame = 0;
+        fitMap();
+      });
+    }
+
+    function handleMapResize(entries) {
+      var width = entries && entries[0] ? entries[0].contentRect.width : 0;
+      if (!width || Math.abs(width - observedMapWidth) < 0.5) return;
+      observedMapWidth = width;
+      scheduleMapFit();
+    }
+
+    function cleanupMapFit() {
+      if (resizeObserver) resizeObserver.disconnect();
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = 0;
+      window.removeEventListener("resize", scheduleMapFit);
     }
 
     form.addEventListener("submit", function(event) {
@@ -460,45 +525,59 @@
     });
 
     root.querySelector("[data-dungeon-random]").addEventListener("click", function() {
-      generate(randomSeed(), "push", "Generated a new random seed string and replayed it through dungeon-core.");
+      generate(randomSeed(), "push", "New seed generated. Hidden-room guesses were reset.");
     });
 
     root.querySelector("[data-dungeon-mutate]").addEventListener("click", function() {
-      generate(mutateSeed(seedInput.value), "push", "Mutated one character and generated the resulting floor.");
+      generate(mutateSeed(seedInput.value), "push", "Seed mutated by one character. Hidden-room guesses were reset.");
     });
 
     root.querySelector("[data-dungeon-copy]").addEventListener("click", copyLink);
 
     root.querySelectorAll("[data-dungeon-example]").forEach(function(button) {
       button.addEventListener("click", function() {
-        generate(button.dataset.dungeonExample, "push", "Loaded regression seed " + button.dataset.dungeonExample + ".");
+        generate(button.dataset.dungeonExample, "push", "Regression seed loaded. Hidden-room guesses were reset.");
       });
     });
 
     root.querySelector("[data-dungeon-fit]").addEventListener("click", function() {
       fitMap();
-      setStatus("Map fitted to the current floor.", "ready");
+      setStatus("Map fitted to its current rendered geometry.", "ready");
     });
 
-    firstButton.addEventListener("click", function() { showReplayIndex(0); });
-    previousButton.addEventListener("click", function() { showReplayIndex(replayIndex - 1); });
-    playButton.addEventListener("click", function() {
-      if (playTimer) pause();
-      else startPlaying();
-    });
-    nextButton.addEventListener("click", function() { showReplayIndex(replayIndex + 1); });
-    lastButton.addEventListener("click", function() { showReplayIndex(dungeon.steps.length); });
-    resetButton.addEventListener("click", function() { showReplayIndex(0); });
-    stepInput.addEventListener("input", function() { showReplayIndex(stepInput.value); });
-    speedSelect.addEventListener("change", function() {
-      var wasPlaying = Boolean(playTimer);
-      pause();
-      if (wasPlaying) startPlaying();
+    root.querySelectorAll("[data-dungeon-guess-mode]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (revealed) return;
+        guessMode = button.dataset.dungeonGuessMode;
+        renderGuessControls();
+      });
     });
 
-    function roomTarget(event) {
-      return event.target.closest && event.target.closest("[data-room-id]");
-    }
+    revealButton.addEventListener("click", function() {
+      if (revealed) return;
+      revealed = true;
+      visibleDungeon = ui.getVisibleDungeon(dungeon, true);
+      renderAll();
+    });
+
+    map.addEventListener("click", function(event) {
+      var guessCell = guessTarget(event);
+      if (guessCell) {
+        selectGuessCell(guessCell);
+        return;
+      }
+      selectRoom(roomTarget(event));
+    });
+
+    map.addEventListener("keydown", function(event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      var guessCell = guessTarget(event);
+      var room = roomTarget(event);
+      if (!guessCell && !room) return;
+      event.preventDefault();
+      if (guessCell) selectGuessCell(guessCell);
+      else selectRoom(room);
+    });
 
     map.addEventListener("pointerover", function(event) {
       var target = roomTarget(event);
@@ -522,46 +601,16 @@
       renderInspector();
     });
 
-    function selectRoom(target) {
-      if (!target) return;
-      selectedRoomId = target.dataset.roomId;
-      renderMap();
-      renderInspector();
-      var selected = map.querySelector('[data-room-id="' + selectedRoomId + '"]');
-      if (selected) selected.focus();
-    }
-
-    map.addEventListener("click", function(event) {
-      selectRoom(roomTarget(event));
-    });
-
-    map.addEventListener("keydown", function(event) {
-      var target = roomTarget(event);
-      if (target && (event.key === "Enter" || event.key === " ")) {
-        event.preventDefault();
-        selectRoom(target);
-      }
-    });
-
-    function stopForPageExit() {
-      pause();
-    }
-
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) pause();
-    });
-    window.addEventListener("pagehide", stopForPageExit);
-
-    if (typeof ResizeObserver === "function") {
-      var resizeObserver = new ResizeObserver(fitMap);
-      resizeObserver.observe(root.querySelector("[data-dungeon-map-shell]"));
-    } else {
-      window.addEventListener("resize", fitMap, {passive: true});
-    }
-
     window.addEventListener("popstate", function() {
-      generate(seedFromUrl(), "none", "Restored the seed from browser history.");
+      generate(seedFromUrl(), "none", "Seed restored from browser history. Hidden-room guesses were reset.");
     });
+
+    if (window.ResizeObserver) {
+      resizeObserver = new window.ResizeObserver(handleMapResize);
+      resizeObserver.observe(mapShell);
+    }
+    window.addEventListener("resize", scheduleMapFit);
+    window.addEventListener("pagehide", cleanupMapFit, {once: true});
 
     generate(seedFromUrl(), "replace");
   }

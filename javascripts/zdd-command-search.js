@@ -692,11 +692,14 @@
           return response.json();
         })
         .then(function(items) {
-          if (!items.length) throw new Error("Empty ranking");
-          var picked = items[Math.floor(Math.random() * items.length)];
-          var imgSrc = "https://pixiv.cat/" + picked.id + ".jpg";
+          var pixivCore = window.ZddPixivCore;
+          if (!pixivCore || !Array.isArray(items)) throw new Error("Invalid ranking data");
+          var validItems = items.map(pixivCore.normalizeItem).filter(Boolean);
+          if (!validItems.length) throw new Error("Empty ranking");
+          var picked = validItems[Math.floor(Math.random() * validItems.length)];
+          var imgSrc = pixivCore.imageUrl(picked.id);
           var title = escapeHtml(picked.title || "Untitled");
-          var link = picked.url || ("https://www.pixiv.net/artworks/" + picked.id);
+          var link = pixivCore.artworkUrl(picked.id);
           renderCommandOutput(commandLine, label,
             '<a class="zdd-pixiv-card" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">'
             + '<img src="' + escapeHtml(imgSrc) + '" alt="' + title + '" loading="lazy">'
