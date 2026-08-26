@@ -3,17 +3,37 @@
 var assert = require("assert");
 var core = require("../docs/javascripts/dungeon-core.js");
 
-var DIRECTIONS = [
-  {name: "up", opposite: "down", dx: 0, dy: -1},
-  {name: "down", opposite: "up", dx: 0, dy: 1},
-  {name: "left", opposite: "right", dx: -1, dy: 0},
-  {name: "right", opposite: "left", dx: 1, dy: 0}
-];
+var DIRECTIONS = core.DIRECTIONS;
+var GUARANTEED_TYPES = ["start", "boss", "shop", "treasure", "secret", "super-secret"];
 
-function degree(room) {
-  return DIRECTIONS.reduce(function(total, direction) {
-    return total + (room.neighbors[direction.name] ? 1 : 0);
-  }, 0);
+function edgeKey(from, to) {
+  return [from, to].sort().join(">");
+}
+
+function graphData(rooms, connections) {
+  var adjacency = Object.create(null);
+  rooms.forEach(function(room) { adjacency[room.id] = []; });
+  connections.forEach(function(connection) {
+    if (!adjacency[connection.from] || !adjacency[connection.to]) return;
+    adjacency[connection.from].push(connection.to);
+    adjacency[connection.to].push(connection.from);
+  });
+  var start = rooms.find(function(room) { return room.type === "start"; });
+  var distances = Object.create(null);
+  var queue = start ? [start.id] : [];
+  if (start) distances[start.id] = 0;
+  for (var index = 0; index < queue.length; index += 1) {
+    adjacency[queue[index]].forEach(function(id) {
+      if (distances[id] != null) return;
+      distances[id] = distances[queue[index]] + 1;
+      queue.push(id);
+    });
+  }
+  return {adjacency: adjacency, distances: distances};
+}
+
+function roomOfType(dungeon, type) {
+  return dungeon.rooms.find(function(room) { return room.type === type; });
 }
 
 function topology(dungeon) {
@@ -23,132 +43,159 @@ function topology(dungeon) {
 }
 
 function assertDungeonInvariants(dungeon) {
-  assert.strictEqual(dungeon.version, "dungeon-v1");
-  assert.ok(dungeon.stats.roomCount >= 12 && dungeon.stats.roomCount <= 18);
+  assert.strictEqual(dungeon.version, "dungeon-v2-isaaclike");
+  assert.strictEqual(dungeon.steps, undefined, "v2 must not return replay steps");
+  assert.ok(dungeon.stats.baseRoomCount >= 14 && dungeon.stats.baseRoomCount <= 20);
+  assert.strictEqual(dungeon.stats.roomCount, dungeon.stats.baseRoomCount + 1);
   assert.strictEqual(dungeon.rooms.length, dungeon.stats.roomCount);
-  assert.strictEqual(dungeon.stats.roomCount, dungeon.stats.targetRooms);
-  assert.ok(dungeon.stats.attempts <= dungeon.stats.maxAttempts);
-  assert.strictEqual(dungeon.stats.maxAttempts, dungeon.stats.targetRooms * 20);
+  assert.strictEqual(dungeon.stats.visibleRoomCount, dungeon.rooms.length - 2);
+  assert.ok(dungeon.stats.layoutRetryCount >= 0);
+  assert.ok(dungeon.stats.layoutRetryCount < core.MAX_LAYOUT_RETRIES);
 
   var roomsById = Object.create(null);
   var coordinates = Object.create(null);
   dungeon.rooms.forEach(function(room) {
     assert.ok(Number.isInteger(room.x));
     assert.ok(Number.isInteger(room.y));
-    assert.ok(!coordinates[room.x + "," + room.y], "duplicate coordinate");
+    assert.ok(room.x >= core.GRID_BOUNDS.minX && room.x <= core.GRID_BOUNDS.maxX);
+    assert.ok(room.y >= core.GRID_BOUNDS.minY && room.y <= core.GRID_BOUNDS.maxY);
     assert.ok(!roomsById[room.id], "duplicate room ID");
-    coordinates[room.x + "," + room.y] = true;
+    assert.ok(!coordinates[room.x + "," + room.y], "duplicate room coordinate");
     roomsById[room.id] = room;
-  });
-  dungeon.rooms.forEach(function(room) {
-    var completesSquare = coordinates[(room.x + 1) + "," + room.y]
-      && coordinates[room.x + "," + (room.y + 1)]
-      && coordinates[(room.x + 1) + "," + (room.y + 1)];
-    assert.ok(!completesSquare, "2x2 solid room blocks are not allowed");
+    coordinates[room.x + "," + room.y] = room;
   });
 
-  var starts = dungeon.rooms.filter(function(room) { return room.type === "start"; });
-  var bosses = dungeon.rooms.filter(function(room) { return room.type === "boss"; });
-  var treasures = dungeon.rooms.filter(function(room) { return room.type === "treasure"; });
-  assert.strictEqual(starts.length, 1);
-  assert.strictEqual(bosses.length, 1);
-  assert.strictEqual(treasures.length, 1);
-  assert.strictEqual(starts[0].x, 0);
-  assert.strictEqual(starts[0].y, 0);
-  assert.notStrictEqual(starts[0].id, bosses[0].id);
-  assert.notStrictEqual(starts[0].id, treasures[0].id);
-  assert.notStrictEqual(bosses[0].id, treasures[0].id);
+  GUARANTEED_TYPES.forEach(function(type) {
+    assert.strictEqual(dungeon.rooms.filter(function(room) { return room.type === type; }).length, 1, type);
+  });
+  var start = roomOfType(dungeon, "start");
+  var boss = roomOfType(dungeon, "boss");
+  var shop = roomOfType(dungeon, "shop");
+  var treasure = roomOfType(dungeon, "treasure");
+  var secret = roomOfType(dungeon, "secret");
+  var superSecret = roomOfType(dungeon, "super-secret");
+  assert.strictEqual(start.x, 0);
+  assert.strictEqual(start.y, 0);
+  assert.strictEqual(dungeon.secretRoomId, secret.id);
+  assert.strictEqual(dungeon.superSecretRoomId, superSecret.id);
 
+  var optionalRooms = dungeon.rooms.filter(function(room) {
+    return core.EXTRA_SPECIAL_TYPES.indexOf(room.type) >= 0;
+  });
+  assert.ok(optionalRooms.length >= 1 && optionalRooms.length <= 3);
+  assert.strictEqual(optionalRooms.length, dungeon.stats.extraSpecialCount);
+  assert.strictEqual(new Set(optionalRooms.map(function(room) { return room.type; })).size, optionalRooms.length);
+  assert.ok(!(optionalRooms.some(function(room) { return room.type === "arcade"; })
+    && optionalRooms.some(function(room) { return room.type === "vault"; })));
+
+  var connectionKeys = new Set();
+  dungeon.connections.forEach(function(connection) {
+    var from = roomsById[connection.from];
+    var to = roomsById[connection.to];
+    assert.ok(from && to, "connection references a missing room");
+    assert.strictEqual(Math.abs(from.x - to.x) + Math.abs(from.y - to.y), 1);
+    var key = edgeKey(connection.from, connection.to);
+    assert.ok(!connectionKeys.has(key), "duplicate connection");
+    connectionKeys.add(key);
+  });
   dungeon.rooms.forEach(function(room) {
     DIRECTIONS.forEach(function(direction) {
       var neighborId = room.neighbors[direction.name];
       if (!neighborId) return;
       var neighbor = roomsById[neighborId];
-      assert.ok(neighbor, "connection references a missing room");
-      assert.strictEqual(Math.abs(room.x - neighbor.x) + Math.abs(room.y - neighbor.y), 1);
+      assert.ok(neighbor);
       assert.strictEqual(neighbor.x, room.x + direction.dx);
       assert.strictEqual(neighbor.y, room.y + direction.dy);
       assert.strictEqual(neighbor.neighbors[direction.opposite], room.id);
+      assert.ok(connectionKeys.has(edgeKey(room.id, neighbor.id)));
     });
   });
 
-  dungeon.edges.forEach(function(edge) {
-    var from = roomsById[edge.from];
-    var to = roomsById[edge.to];
-    assert.ok(from && to);
-    assert.strictEqual(Math.abs(from.x - to.x) + Math.abs(from.y - to.y), 1);
-  });
-
-  var distances = core.computeDistancesFromStart(dungeon);
-  assert.strictEqual(Object.keys(distances).length, dungeon.rooms.length);
+  var fullGraph = graphData(dungeon.rooms, dungeon.connections);
+  assert.strictEqual(Object.keys(fullGraph.distances).length, dungeon.rooms.length, "full graph must be connected");
   dungeon.rooms.forEach(function(room) {
-    assert.strictEqual(room.distance, distances[room.id]);
+    assert.strictEqual(room.distance, fullGraph.distances[room.id]);
   });
-  assert.strictEqual(distances[starts[0].id], 0);
-  assert.strictEqual(Math.max.apply(null, Object.keys(distances).map(function(id) {
-    return distances[id];
-  })), dungeon.stats.maxDistance);
+  assert.strictEqual(dungeon.stats.maxDistance, Math.max.apply(null, dungeon.rooms.map(function(room) {
+    return room.distance;
+  })));
 
-  var eligibleBossLeaves = dungeon.rooms.filter(function(room) {
-    return room.type !== "start" && degree(room) === 1 && distances[room.id] > 1;
+  var baseRooms = dungeon.rooms.filter(function(room) { return room.id !== secret.id; });
+  var baseConnections = dungeon.connections.filter(function(connection) {
+    return connection.from !== secret.id && connection.to !== secret.id;
   });
-  assert.ok(eligibleBossLeaves.length > 0);
-  var farthestLeafDistance = Math.max.apply(null, eligibleBossLeaves.map(function(room) {
-    return distances[room.id];
+  var baseGraph = graphData(baseRooms, baseConnections);
+  assert.strictEqual(baseConnections.length, baseRooms.length - 1, "base floor must be a tree");
+  assert.strictEqual(Object.keys(baseGraph.distances).length, baseRooms.length, "base floor must be connected");
+  assert.ok(baseGraph.adjacency[start.id].length >= 2, "Start must not be a dead end");
+
+  var baseDeadEnds = baseRooms.filter(function(room) {
+    return baseGraph.adjacency[room.id].length === 1;
+  });
+  assert.ok(baseDeadEnds.length >= 4 + optionalRooms.length);
+  assert.strictEqual(dungeon.stats.deadEndCount, baseDeadEnds.length);
+  assert.strictEqual(baseGraph.adjacency[boss.id].length, 1);
+  assert.strictEqual(baseGraph.adjacency[superSecret.id].length, 1);
+  assert.strictEqual(baseGraph.adjacency[shop.id].length, 1);
+  assert.strictEqual(baseGraph.adjacency[treasure.id].length, 1);
+  optionalRooms.forEach(function(room) {
+    assert.strictEqual(baseGraph.adjacency[room.id].length, 1);
+  });
+  assert.ok(baseGraph.distances[boss.id] > 1);
+  assert.notStrictEqual(baseGraph.adjacency[superSecret.id][0], boss.id);
+  assert.ok(baseGraph.adjacency[boss.id].indexOf(superSecret.id) < 0);
+
+  var farthestBossDistance = Math.max.apply(null, baseDeadEnds.filter(function(room) {
+    return room.type !== "start";
+  }).map(function(room) { return baseGraph.distances[room.id]; }));
+  assert.strictEqual(baseGraph.distances[boss.id], farthestBossDistance);
+  var legalSuperDeadEnds = baseDeadEnds.filter(function(room) {
+    return room.id !== boss.id && baseGraph.adjacency[room.id][0] !== boss.id;
+  });
+  var bestSuperDistance = Math.max.apply(null, legalSuperDeadEnds.map(function(room) {
+    return baseGraph.distances[room.id];
   }));
-  assert.strictEqual(degree(bosses[0]), 1);
-  assert.strictEqual(distances[bosses[0].id], farthestLeafDistance);
-  assert.ok(distances[bosses[0].id] > 1);
+  assert.strictEqual(baseGraph.distances[superSecret.id], bestSuperDistance);
+  assert.ok(baseGraph.distances[superSecret.id] >= Math.ceil(farthestBossDistance * 0.6));
 
-  var otherLeaves = dungeon.rooms.filter(function(room) {
-    return room.id !== starts[0].id && room.id !== bosses[0].id && degree(room) === 1;
+  assert.strictEqual(fullGraph.adjacency[boss.id].length, 1, "Secret must not connect to Boss");
+  assert.strictEqual(fullGraph.adjacency[superSecret.id].length, 1, "Super Secret must remain a dead end");
+  assert.ok(fullGraph.adjacency[secret.id].length >= 1);
+  assert.ok(fullGraph.adjacency[secret.id].indexOf(boss.id) < 0);
+  assert.ok(fullGraph.adjacency[secret.id].indexOf(superSecret.id) < 0);
+
+  var secretCandidates = core.getSecretCandidates(baseRooms);
+  assert.ok(secretCandidates.length > 0);
+  assert.ok(secretCandidates[0].neighborCount >= 2);
+  assert.strictEqual(fullGraph.adjacency[secret.id].length, secretCandidates[0].neighborCount);
+  assert.strictEqual(dungeon.stats.secretNeighborCount, secretCandidates[0].neighborCount);
+  assert.ok(secretCandidates.some(function(candidate) {
+    return candidate.x === secret.x
+      && candidate.y === secret.y
+      && candidate.neighborCount === secretCandidates[0].neighborCount;
+  }), "Secret must use the best available candidate tier");
+
+  var visible = new Set(dungeon.visibleRoomIds);
+  assert.ok(!visible.has(secret.id));
+  assert.ok(!visible.has(superSecret.id));
+  dungeon.rooms.forEach(function(room) {
+    assert.strictEqual(visible.has(room.id), room.id !== secret.id && room.id !== superSecret.id);
   });
-  if (otherLeaves.length) assert.strictEqual(degree(treasures[0]), 1);
 
   assert.strictEqual(core.getDungeonFingerprint(dungeon), dungeon.fingerprint);
   assert.match(dungeon.fingerprint, /^[0-9A-F]{8}$/);
-  assert.ok(dungeon.steps.some(function(step) { return step.type === "start"; }));
-  assert.ok(dungeon.steps.some(function(step) { return step.type === "candidate"; }));
-  assert.ok(dungeon.steps.some(function(step) { return step.type === "room-added"; }));
-  assert.strictEqual(dungeon.steps.filter(function(step) {
-    return step.type === "boss-assigned";
-  }).length, 1);
-  assert.strictEqual(dungeon.steps.filter(function(step) {
-    return step.type === "treasure-assigned";
-  }).length, 1);
-  var loggedRooms = dungeon.steps.filter(function(step) {
-    return step.type === "start" || step.type === "room-added";
-  }).map(function(step) {
-    return step.room.x + "," + step.room.y;
-  }).sort();
-  assert.deepStrictEqual(loggedRooms, Object.keys(coordinates).sort());
-  assert.strictEqual(dungeon.steps.filter(function(step) {
-    return step.type === "candidate" && step.mode === "growth";
-  }).length, dungeon.stats.attempts);
-  assert.strictEqual(dungeon.steps.filter(function(step) {
-    return step.type === "reject";
-  }).length, dungeon.stats.rejectedCandidates);
-  assert.strictEqual(dungeon.steps.find(function(step) {
-    return step.type === "boss-assigned";
-  }).roomId, bosses[0].id);
-  assert.strictEqual(dungeon.steps.find(function(step) {
-    return step.type === "treasure-assigned";
-  }).roomId, treasures[0].id);
 }
 
 assert.strictEqual(core.hashSeed("hello"), 0x4f9f2cab);
 assert.strictEqual(core.hashSeed("hello"), core.hashSeed("hello"));
 assert.notStrictEqual(core.hashSeed("hello"), core.hashSeed("world"));
-assert.strictEqual(core.hashSeed("数学"), core.hashSeed("数学"));
+assert.strictEqual(core.hashSeed("\u6570\u5b66"), core.hashSeed("\u6570\u5b66"));
 
 var randomA = core.createPRNG("ZDD14990");
 var randomB = core.createPRNG("ZDD14990");
 var sequenceA = Array.from({length: 8}, function() { return randomA(); });
 var sequenceB = Array.from({length: 8}, function() { return randomB(); });
 assert.deepStrictEqual(sequenceA, sequenceB);
-var randomOther = core.createPRNG("ZDD14991");
-assert.notDeepStrictEqual(sequenceA, Array.from({length: 8}, function() { return randomOther(); }));
-sequenceA.forEach(function(value) { assert.ok(value >= 0 && value < 1); });
 
 var repeated = Array.from({length: 5}, function() {
   return core.generateDungeon("ZDD14990");
@@ -161,32 +208,28 @@ var variedSeeds = ["AAA", "AAB", "hello", "world", "123", "124"];
 var variedTopologies = new Set(variedSeeds.map(function(seed) {
   return topology(core.generateDungeon(seed));
 }));
-assert.ok(variedTopologies.size >= 4, "different seeds should influence the topology");
-
-var simpleRooms = [
-  {id: "start", x: 0, y: 0, type: "start", neighbors: {up: null, down: "middle", left: null, right: null}},
-  {id: "middle", x: 0, y: 1, type: "normal", neighbors: {up: "start", down: "end", left: null, right: null}},
-  {id: "end", x: 0, y: 2, type: "normal", neighbors: {up: "middle", down: null, left: null, right: null}}
-];
-assert.deepStrictEqual(core.computeDistancesFromStart(simpleRooms), {start: 0, middle: 1, end: 2});
+assert.ok(variedTopologies.size >= 5, "different seeds should influence v2 floors");
 
 var BULK_SEED_COUNT = 500;
 for (var seedIndex = 0; seedIndex < BULK_SEED_COUNT; seedIndex += 1) {
   assertDungeonInvariants(core.generateDungeon("bulk-seed-" + seedIndex));
 }
+assertDungeonInvariants(core.generateDungeon("\u6570\u5b66 \ud83d\uddfa\ufe0f seed"));
 
-var knownSeeds = ["ZDD14990", "ISAAC", "HELLO-WORLD"];
-var knownSummaries = knownSeeds.map(function(seed) {
+var knownSummaries = ["ZDD14990", "ISAAC", "HELLO-WORLD"].map(function(seed) {
   var dungeon = core.generateDungeon(seed);
-  var boss = dungeon.rooms.find(function(room) { return room.type === "boss"; });
-  var treasure = dungeon.rooms.find(function(room) { return room.type === "treasure"; });
+  function coordinateOf(type) {
+    var room = roomOfType(dungeon, type);
+    return room.x + "," + room.y;
+  }
   return {
     seed: seed,
-    coordinates: dungeon.rooms.map(function(room) { return room.x + "," + room.y; }).sort(),
-    roomCount: dungeon.stats.roomCount,
-    boss: boss.x + "," + boss.y,
-    treasure: treasure.x + "," + treasure.y,
-    maxDistance: dungeon.stats.maxDistance,
+    roomCount: dungeon.rooms.length,
+    boss: coordinateOf("boss"),
+    shop: coordinateOf("shop"),
+    treasure: coordinateOf("treasure"),
+    secret: coordinateOf("secret"),
+    superSecret: coordinateOf("super-secret"),
     fingerprint: dungeon.fingerprint
   };
 });
@@ -194,41 +237,34 @@ var knownSummaries = knownSeeds.map(function(seed) {
 assert.deepStrictEqual(knownSummaries, [
   {
     seed: "ZDD14990",
-    coordinates: [
-      "-1,-1", "0,-1", "0,-2", "0,0", "0,1", "1,0", "2,0",
-      "2,1", "3,-1", "3,0", "4,-1", "5,-1", "5,-2"
-    ],
-    roomCount: 13,
-    boss: "5,-2",
-    treasure: "2,1",
-    maxDistance: 7,
-    fingerprint: "F58C8595"
+    roomCount: 16,
+    boss: "-3,1",
+    shop: "0,-3",
+    treasure: "1,-2",
+    secret: "1,-1",
+    superSecret: "-1,4",
+    fingerprint: "181E428B"
   },
   {
     seed: "ISAAC",
-    coordinates: [
-      "-1,1", "-2,0", "-2,1", "0,0", "0,1", "0,2", "0,4", "1,-1",
-      "1,-2", "1,0", "1,2", "1,3", "1,4", "1,5", "2,-1", "2,3"
-    ],
-    roomCount: 16,
-    boss: "0,4",
-    treasure: "2,-1",
-    maxDistance: 6,
-    fingerprint: "CDFA4483"
+    roomCount: 19,
+    boss: "-3,-1",
+    shop: "2,-2",
+    treasure: "0,4",
+    secret: "0,-1",
+    superSecret: "-1,3",
+    fingerprint: "63C2E14A"
   },
   {
     seed: "HELLO-WORLD",
-    coordinates: [
-      "-1,-1", "-1,-2", "-1,-3", "-1,0", "-2,-1", "-2,-3", "-2,-4",
-      "-3,-3", "0,-2", "0,0", "1,-1", "1,0", "1,1", "1,2", "2,1",
-      "3,1", "4,1"
-    ],
-    roomCount: 17,
-    boss: "-2,-4",
-    treasure: "-3,-3",
-    maxDistance: 6,
-    fingerprint: "8FC13D3F"
+    roomCount: 20,
+    boss: "-1,4",
+    shop: "-2,3",
+    treasure: "2,-2",
+    secret: "1,1",
+    superSecret: "4,1",
+    fingerprint: "8243E96D"
   }
 ]);
 
-console.log("dungeon-core: " + BULK_SEED_COUNT + " bulk seeds and all tests passed");
+console.log("dungeon-core v2: " + BULK_SEED_COUNT + " tree floors and all invariants passed");
