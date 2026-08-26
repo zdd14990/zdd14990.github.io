@@ -4,6 +4,7 @@ import os
 import re
 
 from blog_taxonomy import article_tags
+from main import article_description
 from mkdocs.utils import get_relative_url
 
 
@@ -66,7 +67,18 @@ def _append_taxonomy(markdown, page):
     return markdown + taxonomy
 
 
+def _set_article_description(markdown, page):
+    path = page.file.src_path.replace("\\", "/")
+    if not path.startswith("blog/") or path.endswith("index.md") or page.meta.get("description"):
+        return
+    description = article_description(markdown)
+    if not description:
+        description = f"{page.title}：zdd 的个人学习笔记与复习资料。"
+    page.meta["description"] = description
+
+
 def on_page_markdown(markdown, page, config, files):
+    _set_article_description(markdown, page)
     markdown = _fix_pdf_embed_paths(markdown, page, config)
 
     # 判断逻辑：如果当前页面不是首页 (index.md)

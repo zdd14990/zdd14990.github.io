@@ -1,0 +1,10 @@
+{% include "partials/tags.html" %}
+{% include "partials/actions.html" %}
+{% set zdd_hide_index_title = page and page.url in ["blog/", "tags/"] %}
+{% if "<h1" not in page.content and not zdd_hide_index_title %}
+  <h1>{{ page.title | d(config.site_name, true) }}</h1>
+{% endif %}
+{{ page.content }}
+{% include "partials/source-file.html" %}
+{% include "partials/feedback.html" %}
+{% include "partials/comments.html" %}

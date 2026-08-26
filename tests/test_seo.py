@@ -37,5 +37,26 @@ class SitemapTests(unittest.TestCase):
         self.assertNotIn("/os/", compressed)
 
 
+class ArticleDescriptionTests(unittest.TestCase):
+    def test_description_uses_first_meaningful_article_paragraph(self):
+        markdown = """# Sample title
+
+<div><embed src="sample.pdf" type="application/pdf"></div>
+
+[Click to download](sample.pdf)
+
+This is the useful article summary with **Markdown** and a [link](https://example.com/).
+"""
+        self.assertEqual(
+            main.article_description(markdown),
+            "This is the useful article summary with Markdown and a link.",
+        )
+
+    def test_description_is_bounded_for_metadata(self):
+        description = main.article_description("word " * 80)
+        self.assertLessEqual(len(description), 160)
+        self.assertTrue(description.endswith("…"))
+
+
 if __name__ == "__main__":
     unittest.main()

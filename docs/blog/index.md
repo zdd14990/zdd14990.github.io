@@ -5,6 +5,4 @@ hide:
   - toc
 ---
 
-# Blog
-
 {{ blog_catalog() }}

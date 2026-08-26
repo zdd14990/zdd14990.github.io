@@ -135,6 +135,7 @@ class BlogPageTests(SiteBuildTestCase):
             self.assertNotIn(marker, text)
         self.assertIn('class="zdd-blog-catalog"', text)
         self.assertIn("zdd-post-card", text)
+        self.assertNotRegex(text, r"<h1[^>]*>\s*Blog\s*</h1>")
 
     def test_tags_page_renders(self):
         self.assert_build_ok()
@@ -144,6 +145,23 @@ class BlogPageTests(SiteBuildTestCase):
         for marker in ERROR_MARKERS:
             self.assertNotIn(marker, text)
         self.assertIn("zdd-tag-page", text)
+        self.assertNotRegex(text, r"<h1[^>]*>\s*Tags\s*</h1>")
+
+    def test_article_has_specific_social_and_structured_metadata(self):
+        self.assert_build_ok()
+        articles = [
+            path for path in (self.site_dir / "blog").rglob("index.html")
+            if path.parent != self.site_dir / "blog"
+        ]
+        self.assertGreater(len(articles), 0)
+        for page in articles:
+            text = _read_text(page)
+            relative = page.relative_to(self.site_dir)
+            self.assertIn('<meta property="og:type" content="article">', text, relative)
+            self.assertIn('type="application/ld+json"', text, relative)
+            self.assertIn('"@type": "BlogPosting"', text, relative)
+            self.assertRegex(text, r'<meta name="description" content="(?!zdd\'blog)[^"]+">', relative)
+            self.assertRegex(text, r'<meta property="og:description" content="(?!zdd\'blog)[^"]+">', relative)
 
 
 class SearchAssetTests(SiteBuildTestCase):
@@ -204,6 +222,17 @@ class SearchAssetTests(SiteBuildTestCase):
             text = _read_text(path)
             for script in SEARCH_SCRIPTS:
                 self.assertRegex(text, r'src="[^"]*' + re.escape(script) + r'"')
+
+
+class CachedShellScriptTests(SiteBuildTestCase):
+    def test_site_shell_is_external_and_available(self):
+        self.assert_build_ok()
+        asset = self.site_dir / "javascripts" / "site-shell.js"
+        self.assertTrue(asset.exists(), "site-shell.js missing from build")
+        for path in (self.site_dir / "index.html", self.site_dir / "blog" / "index.html"):
+            text = _read_text(path)
+            self.assertRegex(text, r'src="[^"]*javascripts/site-shell\.js"')
+            self.assertNotIn('var historyKey = "zdd.articleHistory"', text)
 
 
 class KeyPageTests(SiteBuildTestCase):

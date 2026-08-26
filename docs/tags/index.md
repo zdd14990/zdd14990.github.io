@@ -5,6 +5,4 @@ hide:
   - toc
 ---
 
-# Tags
-
 {{ tag_explorer() }}

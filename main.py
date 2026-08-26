@@ -65,6 +65,12 @@ TOP_ORDER = [
     "misc",
 ]
 FLATTEN_ROOTS = {"applied-math"}
+QUALIFICATION_REVIEW_ROOT = "qualification-exam-review"
+QUALIFICATION_REVIEW_PAGES = {
+    "probability-statistics-qualification-exam-review": "probability-statistics",
+    "ai-qualification-exam-review": "ai-exam",
+    "applied-mathematics-qualification-exam-review": "applied-math-exam",
+}
 
 LAB_ITEMS = [
     {
@@ -79,7 +85,7 @@ LAB_ITEMS = [
     {
         "slug": "dungeon",
         "title": "Dungeon Seed",
-        "description": "Generate deterministic dungeon layouts from a seed.",
+        "description": "Generate Isaac-like floors and guess the hidden rooms.",
         "date": "2026-08-10",
         "tags": ["procedural-generation", "seed", "visualization"],
         "status": "stable",
@@ -398,12 +404,21 @@ def _first_content_block(body):
             or "<embed" in block
             or "application/pdf" in block
             or block.startswith("[点击下载")
+            or re.fullmatch(r"\[[^\]]+\]\([^)]+\.pdf(?:[?#][^)]*)?\)(?:\{[^}]*\})?", block, re.I)
             or re.fullmatch(r"-{3,}", block)
             or re.match(r"^(title|date|categories|tags):", block, re.I)
         ):
             continue
         return block
     return ""
+
+
+def article_description(body, limit=160):
+    description = _plain_markdown(_first_content_block(body))
+    if len(description) <= limit:
+        return description
+    shortened = description[: limit - 1].rstrip(" ,.;:。，；：")
+    return shortened + "…"
 
 
 def _article_data():
@@ -425,7 +440,19 @@ def _article_data():
         search_text = _plain_markdown(body)
         parts = rel.split("/")
         folder_parts = parts[1:-1]
-        if len(folder_parts) > 1 and folder_parts[0] in FLATTEN_ROOTS:
+        if folder_parts == [QUALIFICATION_REVIEW_ROOT]:
+            section = QUALIFICATION_REVIEW_PAGES.get(path.stem)
+            if section:
+                folder_parts.append(section)
+        elif folder_parts and folder_parts[0] == "probability-statistics":
+            folder_parts.insert(0, QUALIFICATION_REVIEW_ROOT)
+        elif (
+            len(folder_parts) > 1
+            and folder_parts[0] == "applied-math"
+            and folder_parts[1] in {"ai-exam", "applied-math-exam"}
+        ):
+            folder_parts = [QUALIFICATION_REVIEW_ROOT, *folder_parts[1:]]
+        elif len(folder_parts) > 1 and folder_parts[0] in FLATTEN_ROOTS:
             folder_parts = folder_parts[1:]
         articles.append({
             "path": path,
@@ -440,6 +467,7 @@ def _article_data():
             "categories": categories,
             "tags": tags,
             "words": _word_count(content),
+            "description": article_description(body),
             "preview": _render_math_text(_first_content_block(body)),
             "search_text": search_text[:SEARCH_TEXT_LIMIT],
             "folder_parts": folder_parts,
