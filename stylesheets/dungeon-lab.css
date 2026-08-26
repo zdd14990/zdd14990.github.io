@@ -1,635 +1,661 @@
-/* Dungeon Seed Lab v2. Topology comes from dungeon-core.js; this file only
-   styles the public map, hidden-room guessing, and revealed answers. */
-
-.zdd-dungeon {
-  --zdd-dungeon-line: var(--zdd-playground-line, rgba(94, 159, 199, 0.42));
-  --zdd-dungeon-ink: var(--zdd-playground-ink, #183746);
-  --zdd-dungeon-muted: var(--zdd-playground-muted, #4a6a78);
-  --zdd-dungeon-panel: var(--zdd-playground-panel, rgba(247, 252, 255, 0.96));
-  --zdd-dungeon-accent: var(--zdd-playground-accent, #2e7491);
-  --zdd-dungeon-error: var(--zdd-playground-error, #b34545);
-  --zdd-dungeon-start: #3f7e75;
-  --zdd-dungeon-boss: #a5545b;
-  --zdd-dungeon-shop: #37798c;
-  --zdd-dungeon-treasure: #98751e;
-  --zdd-dungeon-ritual: #75558a;
-  --zdd-dungeon-secret: #725b8c;
-  margin: 1.6rem 0;
-  color: var(--zdd-dungeon-ink);
-  border-block: 1px solid var(--zdd-dungeon-line);
+.zdd-isaac {
+  --isaac-ink: var(--md-default-fg-color, #173342);
+  --isaac-muted: var(--md-default-fg-color--light, #5d7380);
+  --isaac-line: color-mix(in srgb, var(--isaac-ink) 17%, transparent);
+  --isaac-panel: color-mix(in srgb, var(--md-default-bg-color, #fff) 94%, #dceef6);
+  --isaac-panel-strong: color-mix(in srgb, var(--md-default-bg-color, #fff) 88%, #cce4ef);
+  --isaac-accent: #2d7896;
+  --isaac-accent-soft: color-mix(in srgb, var(--isaac-accent) 12%, transparent);
+  --isaac-success: #2f7c65;
+  --isaac-danger: #b14d55;
+  --isaac-shadow: 0 22px 55px rgba(28, 67, 84, 0.09);
+  color: var(--isaac-ink);
+  border-block: 1px solid var(--isaac-line);
+  margin-block: 1.6rem 2.6rem;
 }
 
-body[data-md-color-scheme="slate"] .zdd-dungeon {
-  --zdd-dungeon-start: #77c3b4;
-  --zdd-dungeon-boss: #ef949c;
-  --zdd-dungeon-shop: #7fc5dd;
-  --zdd-dungeon-treasure: #e3bd64;
-  --zdd-dungeon-ritual: #bea1d0;
-  --zdd-dungeon-secret: #c4a9db;
+body[data-md-color-scheme="slate"] .zdd-isaac {
+  --isaac-ink: #d7e8ef;
+  --isaac-muted: #9eb4be;
+  --isaac-line: rgba(165, 204, 220, 0.2);
+  --isaac-panel: rgba(22, 37, 44, 0.92);
+  --isaac-panel-strong: rgba(29, 50, 59, 0.94);
+  --isaac-accent: #75bed7;
+  --isaac-accent-soft: rgba(117, 190, 215, 0.13);
+  --isaac-success: #7dd0b2;
+  --isaac-danger: #ef929a;
+  --isaac-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
 }
 
-.zdd-dungeon-visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+.zdd-isaac *,
+.zdd-isaac *::before,
+.zdd-isaac *::after {
+  box-sizing: border-box;
+}
+
+.zdd-isaac-hero,
+.zdd-isaac-page-intro,
+.zdd-isaac-controls,
+.zdd-isaac-map-panel,
+.zdd-isaac-sidebar,
+.zdd-isaac-trace,
+.zdd-isaac-note {
+  padding: clamp(1rem, 2.5vw, 1.7rem);
+}
+
+.zdd-isaac-page-intro {
+  border-bottom: 1px solid var(--isaac-line);
+}
+
+.md-typeset .zdd-isaac-page-intro h1 {
+  color: var(--isaac-ink);
+  margin: 0 0 0.55rem;
+}
+
+.md-typeset .zdd-isaac-page-intro p {
+  max-width: 54rem;
+  margin: 0;
+  color: var(--isaac-muted);
+}
+
+.md-typeset .zdd-isaac-page-intro em {
+  display: inline;
+  margin: 0;
+}
+
+.zdd-isaac-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: end;
+  background:
+    radial-gradient(circle at 82% 10%, var(--isaac-accent-soft), transparent 34%),
+    linear-gradient(135deg, var(--isaac-panel), transparent);
+  border-bottom: 1px solid var(--isaac-line);
+}
+
+.zdd-isaac-eyebrow {
+  display: block;
+  color: var(--isaac-accent);
+  font: 700 0.66rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.md-typeset .zdd-isaac h2 {
+  color: var(--isaac-ink);
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.18;
+  margin: 0;
+}
+
+.md-typeset .zdd-isaac-hero h2 {
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.md-typeset .zdd-isaac p {
+  color: var(--isaac-muted);
+  margin: 0;
+}
+
+.zdd-isaac-hero p {
+  max-width: 48rem;
+  margin-top: 0.7rem !important;
+}
+
+.zdd-isaac-runtime-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.zdd-isaac-runtime-badges span {
+  color: var(--isaac-muted);
+  background: var(--isaac-panel-strong);
+  border: 1px solid var(--isaac-line);
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font: 650 0.62rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
   white-space: nowrap;
-  border: 0;
 }
 
-.zdd-dungeon-seed-panel,
-.zdd-dungeon-map-panel,
-.zdd-dungeon-info-panel,
-.zdd-dungeon-guess-panel {
-  padding: 0.95rem;
+.zdd-isaac-controls,
+.zdd-isaac-trace {
+  border-bottom: 1px solid var(--isaac-line);
 }
 
-.zdd-dungeon-seed-panel {
-  border-bottom: 1px solid var(--zdd-dungeon-line);
+.zdd-isaac-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.4rem;
+  margin-bottom: 1rem;
 }
 
-.zdd-dungeon-section-heading,
-.zdd-dungeon-seed-form,
-.zdd-dungeon-seed-actions,
-.zdd-dungeon-examples,
-.zdd-dungeon-legend,
-.zdd-dungeon-guess-heading,
-.zdd-dungeon-guess-modes,
-.zdd-dungeon-guess-readout {
+.zdd-isaac-section-heading > div:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+}
+
+.zdd-isaac-section-heading > div:first-child > span {
+  color: var(--isaac-accent);
+  font: 700 0.65rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.zdd-isaac-section-heading > p {
+  max-width: 27rem;
+  text-align: right;
+  font-size: 0.72rem;
+}
+
+.zdd-isaac-form {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.5fr) repeat(3, minmax(7.5rem, 1fr)) auto;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.zdd-isaac-field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.zdd-isaac-field > span {
+  color: var(--isaac-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.zdd-isaac-field input,
+.zdd-isaac-field select {
+  width: 100%;
+  min-height: 2.45rem;
+  color: var(--isaac-ink);
+  background: var(--isaac-panel);
+  border: 1px solid var(--isaac-line);
+  border-radius: 0.55rem;
+  padding: 0.55rem 0.68rem;
+  font: inherit;
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.zdd-isaac-seed-field input {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.zdd-isaac-field input:focus,
+.zdd-isaac-field select:focus {
+  border-color: var(--isaac-accent);
+  box-shadow: 0 0 0 3px var(--isaac-accent-soft);
+}
+
+.zdd-isaac-button {
+  min-height: 2.35rem;
+  color: var(--isaac-ink);
+  background: transparent;
+  border: 1px solid var(--isaac-line);
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.72rem;
+  font: 700 0.68rem/1.2 inherit;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+
+.zdd-isaac-button:hover:not(:disabled),
+.zdd-isaac-button:focus-visible:not(:disabled) {
+  color: var(--isaac-accent);
+  border-color: var(--isaac-accent);
+  background: var(--isaac-accent-soft);
+}
+
+.zdd-isaac-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.zdd-isaac-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.zdd-isaac-button-primary {
+  color: #fff;
+  background: var(--isaac-accent);
+  border-color: var(--isaac-accent);
+  padding-inline: 1rem;
+}
+
+.zdd-isaac-button-primary:hover:not(:disabled),
+.zdd-isaac-button-primary:focus-visible:not(:disabled) {
+  color: #fff;
+  background: color-mix(in srgb, var(--isaac-accent) 87%, #000);
+}
+
+.zdd-isaac-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
-.zdd-dungeon-section-heading,
-.zdd-dungeon-guess-heading {
-  justify-content: space-between;
-  gap: 0.7rem;
-  min-height: 2rem;
-  margin-bottom: 0.75rem;
+.zdd-isaac-examples {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  color: var(--isaac-muted);
+  font-size: 0.68rem;
+  margin-left: auto;
 }
 
-.md-typeset .zdd-dungeon-section-heading h2,
-.md-typeset .zdd-dungeon-guess-heading h2,
-.md-typeset .zdd-dungeon-why h3 {
+.zdd-isaac-examples button {
+  color: var(--isaac-accent);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0;
+  font: 700 0.68rem/1.25 ui-monospace, SFMono-Regular, Consolas, monospace;
+  cursor: pointer;
+}
+
+.zdd-isaac-runtime-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 1.4rem;
+  margin-top: 0.75rem;
+}
+
+.zdd-isaac-runtime-status p {
+  font-size: 0.7rem;
+}
+
+.zdd-isaac-runtime-status p[data-tone="success"] { color: var(--isaac-success); }
+.zdd-isaac-runtime-status p[data-tone="error"] { color: var(--isaac-danger); }
+.zdd-isaac-runtime-status p[data-tone="loading"] { color: var(--isaac-accent); }
+
+.zdd-isaac-progress {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: 0 0 auto;
+  border: 2px solid var(--isaac-line);
+  border-top-color: var(--isaac-accent);
+  border-radius: 50%;
+  animation: zdd-isaac-spin 800ms linear infinite;
+}
+
+@keyframes zdd-isaac-spin {
+  to { transform: rotate(360deg); }
+}
+
+.zdd-isaac-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.32fr);
+  border-bottom: 1px solid var(--isaac-line);
+}
+
+.zdd-isaac-map-panel {
+  min-width: 0;
+}
+
+.zdd-isaac-sidebar {
+  min-width: 0;
+  background: var(--isaac-panel);
+  border-left: 1px solid var(--isaac-line);
+}
+
+.zdd-isaac-map-actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.zdd-isaac-map-shell {
+  position: relative;
+  display: grid;
+  min-height: clamp(24rem, 58vw, 38rem);
+  overflow: hidden;
+  background-color: var(--isaac-panel);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--isaac-line) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--isaac-line) 55%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border: 1px solid var(--isaac-line);
+  border-radius: 0.8rem;
+  box-shadow: inset 0 0 70px color-mix(in srgb, var(--isaac-accent) 4%, transparent);
+}
+
+.zdd-isaac-placeholder {
+  place-self: center;
+  display: grid;
+  gap: 0.3rem;
+  max-width: 19rem;
+  color: var(--isaac-muted);
+  text-align: center;
+  padding: 1rem;
+}
+
+.zdd-isaac-placeholder strong {
+  color: var(--isaac-ink);
+  font-size: 0.86rem;
+}
+
+.zdd-isaac-placeholder span {
+  font-size: 0.72rem;
+}
+
+.zdd-isaac-map {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+}
+
+.zdd-isaac-connection {
+  stroke: color-mix(in srgb, var(--isaac-ink) 42%, var(--isaac-panel));
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.zdd-isaac-room {
+  color: var(--isaac-ink);
+  cursor: pointer;
+  outline: none;
+}
+
+.zdd-isaac-room-cell {
+  fill: var(--isaac-panel-strong);
+  stroke: color-mix(in srgb, currentColor 64%, var(--isaac-line));
+  stroke-width: 2.4;
+  vector-effect: non-scaling-stroke;
+  transition: fill 140ms ease, stroke 140ms ease, filter 140ms ease;
+}
+
+.zdd-isaac-room:hover .zdd-isaac-room-cell,
+.zdd-isaac-room:focus-visible .zdd-isaac-room-cell,
+.zdd-isaac-room.is-selected .zdd-isaac-room-cell {
+  fill: color-mix(in srgb, currentColor 17%, var(--isaac-panel));
+  stroke: currentColor;
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, currentColor 18%, transparent));
+}
+
+.zdd-isaac-room-label {
+  fill: currentColor;
+  font: 750 12px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  pointer-events: none;
+}
+
+.zdd-isaac-room-order {
+  fill: color-mix(in srgb, var(--isaac-muted) 78%, transparent);
+  font: 700 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  pointer-events: none;
+}
+
+.zdd-isaac-room-icon {
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.zdd-isaac-room.room-type-2 { color: #3f8ca0; }
+.zdd-isaac-room.room-type-4 { color: #ba8b22; }
+.zdd-isaac-room.room-type-5 { color: #c55f65; }
+.zdd-isaac-room.room-type-6 { color: #ae6872; }
+.zdd-isaac-room.room-type-7 { color: #8063a2; }
+.zdd-isaac-room.room-type-8 { color: #a16c9d; }
+.zdd-isaac-room.room-type-9 { color: #5278ad; }
+.zdd-isaac-room.room-type-10 { color: #a3648e; }
+.zdd-isaac-room.room-type-11 { color: #bb7047; }
+.zdd-isaac-room.room-type-12 { color: #5c74a2; }
+.zdd-isaac-room.room-type-13 { color: #a25959; }
+.zdd-isaac-room.room-type-14 { color: #b24f57; }
+.zdd-isaac-room.room-type-15 { color: #bf9a34; }
+.zdd-isaac-room.room-type-17 { color: #b45d42; }
+.zdd-isaac-room.room-type-18 { color: #507da4; }
+.zdd-isaac-room.room-type-19 { color: #806c56; }
+.zdd-isaac-room.room-type-20 { color: #8d6934; }
+.zdd-isaac-room.room-type-21 { color: #477e8e; }
+.zdd-isaac-room.room-type-24 { color: #5b70b7; }
+.zdd-isaac-room.room-type-25,
+.zdd-isaac-room.room-type-26 { color: #54898a; }
+.zdd-isaac-room.room-type-29 { color: #a057b3; }
+
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-2 { color: #78c2d4; }
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-4 { color: #e7bd59; }
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-5 { color: #ef9298; }
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-7 { color: #bda2dc; }
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-8 { color: #d7a2cf; }
+body[data-md-color-scheme="slate"] .zdd-isaac-room.room-type-29 { color: #dda0ec; }
+
+.zdd-isaac-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  min-height: 1rem;
+  color: var(--isaac-muted);
+  margin-top: 0.8rem;
+  font-size: 0.64rem;
+}
+
+.zdd-isaac-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.zdd-isaac-legend i {
+  width: 0.56rem;
+  height: 0.56rem;
+  background: var(--isaac-muted);
+  border-radius: 0.15rem;
+}
+
+.zdd-isaac-legend i[data-room-type="start"] { background: #4d9b7c; }
+.zdd-isaac-legend i[data-room-type="2"] { background: #3f8ca0; }
+.zdd-isaac-legend i[data-room-type="4"] { background: #ba8b22; }
+.zdd-isaac-legend i[data-room-type="5"] { background: #c55f65; }
+.zdd-isaac-legend i[data-room-type="7"] { background: #8063a2; }
+.zdd-isaac-legend i[data-room-type="8"] { background: #a16c9d; }
+.zdd-isaac-legend i[data-room-type="29"] { background: #a057b3; }
+
+.zdd-isaac-stats {
   margin: 0;
-  font-size: 0.76rem;
-  font-weight: 800;
+}
+
+.zdd-isaac-stats > div {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 0.8fr) minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.48rem 0;
+  border-bottom: 1px solid var(--isaac-line);
+}
+
+.zdd-isaac-stats dt {
+  color: var(--isaac-muted);
+  font-size: 0.65rem;
+}
+
+.zdd-isaac-stats dd {
+  min-width: 0;
+  color: var(--isaac-ink);
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+  font: 700 0.66rem/1.35 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.zdd-isaac-inspector {
+  display: grid;
+  gap: 0.35rem;
+  background: var(--isaac-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--isaac-accent) 28%, transparent);
+  border-radius: 0.7rem;
+  margin-top: 1rem;
+  padding: 0.8rem;
+}
+
+.zdd-isaac-inspector > span {
+  color: var(--isaac-accent);
+  font: 700 0.6rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.md-typeset .zdd-dungeon-section-heading p,
-.md-typeset .zdd-dungeon-guess-heading p {
-  margin: 0.16rem 0 0;
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.69rem;
+.zdd-isaac-inspector strong {
+  font-size: 0.8rem;
 }
 
-.zdd-dungeon-seed-form {
-  align-items: stretch;
-  gap: 0.5rem;
-  max-width: 42rem;
+.zdd-isaac-inspector p {
+  font-size: 0.68rem;
 }
 
-.zdd-dungeon-seed-field {
-  flex: 1 1 18rem;
-  min-width: 0;
+.zdd-isaac-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--isaac-line);
+  border-radius: 0.7rem;
 }
 
-.zdd-dungeon-seed-field input {
+.md-typeset .zdd-isaac table {
   width: 100%;
-  min-height: 2.55rem;
-  box-sizing: border-box;
-  padding: 0.45rem 0.7rem;
-  overflow: hidden;
-  color: var(--zdd-dungeon-ink);
-  background: var(--zdd-dungeon-panel);
-  border: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0.25rem;
-  font: 0.88rem/1.4 var(--md-code-font-family, monospace);
-  text-overflow: ellipsis;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.68rem;
 }
 
-.zdd-dungeon-primary {
-  min-width: 6.2rem;
-}
-
-.zdd-dungeon-seed-actions {
-  gap: 0.42rem;
-  margin-top: 0.55rem;
-}
-
-.zdd-dungeon-examples {
-  gap: 0.38rem;
-  margin-top: 0.8rem;
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.67rem;
-}
-
-.zdd-dungeon-examples > span {
-  margin-right: 0.18rem;
-  font-weight: 800;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-}
-
-.zdd-dungeon-examples button {
-  padding: 0.18rem 0.42rem;
-  color: var(--zdd-dungeon-muted);
-  background: transparent;
+.md-typeset .zdd-isaac th,
+.md-typeset .zdd-isaac td {
   border: 0;
-  border-bottom: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0;
-  font: 0.66rem/1.4 var(--md-code-font-family, monospace);
-  cursor: pointer;
+  border-bottom: 1px solid var(--isaac-line);
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  white-space: nowrap;
 }
 
-.zdd-dungeon-examples button:hover,
-.zdd-dungeon-examples button:focus-visible {
-  color: var(--zdd-dungeon-accent);
-  border-color: var(--zdd-dungeon-accent);
-  outline: none;
-}
-
-.zdd-dungeon-workbench {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(13rem, 15rem);
-}
-
-.zdd-dungeon-map-panel {
-  min-width: 0;
-}
-
-.zdd-dungeon-info-panel {
-  border-left: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-map-shell {
-  position: relative;
-  width: 100%;
-  height: min(26.25rem, 75vh);
-  min-height: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-  background-color: color-mix(in srgb, var(--zdd-dungeon-panel) 82%, transparent);
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--zdd-dungeon-line) 22%, transparent) 1px, transparent 1px);
-  background-size: 1.2rem 1.2rem;
-  border: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0.25rem;
-  transition: height 160ms ease;
-}
-
-.zdd-dungeon-map {
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: manipulation;
-}
-
-.zdd-dungeon-connection {
-  stroke: color-mix(in srgb, var(--zdd-dungeon-ink) 58%, var(--zdd-dungeon-panel));
-  stroke-width: 9;
-  stroke-linecap: square;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-guess-cell {
-  color: var(--zdd-dungeon-muted);
-  cursor: crosshair;
-  outline: none;
-}
-
-.zdd-dungeon-guess-cell rect {
-  fill: transparent;
-  stroke: color-mix(in srgb, currentColor 30%, transparent);
-  stroke-width: 1;
-  stroke-dasharray: 3 5;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-guess-cell:hover rect,
-.zdd-dungeon-guess-cell:focus-visible rect {
-  fill: color-mix(in srgb, var(--zdd-dungeon-accent) 7%, transparent);
-  stroke: var(--zdd-dungeon-accent);
-  stroke-width: 2;
-}
-
-.zdd-dungeon-room {
-  color: var(--zdd-dungeon-ink);
-  cursor: pointer;
-  outline: none;
-}
-
-.zdd-dungeon-room-shape {
-  fill: var(--zdd-dungeon-panel);
-  stroke: currentColor;
-  stroke-width: 1.7;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-room:hover .zdd-dungeon-room-shape,
-.zdd-dungeon-room:focus-visible .zdd-dungeon-room-shape,
-.zdd-dungeon-room.is-selected .zdd-dungeon-room-shape {
-  stroke-width: 3;
-}
-
-.zdd-dungeon-room:focus-visible .zdd-dungeon-room-focus,
-.zdd-dungeon-room.is-selected .zdd-dungeon-room-focus {
-  opacity: 1;
-}
-
-.zdd-dungeon-room-focus {
-  fill: none;
-  stroke: var(--zdd-dungeon-accent);
-  stroke-width: 1.5;
-  stroke-dasharray: 3 3;
-  opacity: 0;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-room[data-room-type="start"] { color: var(--zdd-dungeon-start); }
-.zdd-dungeon-room[data-room-type="boss"] { color: var(--zdd-dungeon-boss); }
-.zdd-dungeon-room[data-room-type="shop"] { color: var(--zdd-dungeon-shop); }
-.zdd-dungeon-room[data-room-type="treasure"] { color: var(--zdd-dungeon-treasure); }
-.zdd-dungeon-room[data-room-type="curse"],
-.zdd-dungeon-room[data-room-type="sacrifice"],
-.zdd-dungeon-room[data-room-type="challenge"],
-.zdd-dungeon-room[data-room-type="arcade"],
-.zdd-dungeon-room[data-room-type="vault"],
-.zdd-dungeon-room[data-room-type="library"],
-.zdd-dungeon-room[data-room-type="planetarium"] { color: var(--zdd-dungeon-ritual); }
-.zdd-dungeon-room[data-room-type="secret"],
-.zdd-dungeon-room[data-room-type="super-secret"] { color: var(--zdd-dungeon-secret); }
-
-.zdd-dungeon-room:not([data-room-type="normal"]) .zdd-dungeon-room-shape {
-  fill: color-mix(in srgb, currentColor 11%, var(--zdd-dungeon-panel));
-}
-
-.zdd-dungeon-room[data-room-type="secret"] .zdd-dungeon-room-shape {
-  stroke-dasharray: 5 3;
-}
-
-.zdd-dungeon-room[data-room-type="super-secret"] .zdd-dungeon-room-shape {
-  stroke-width: 3;
-  stroke-dasharray: 2 3;
-}
-
-.zdd-dungeon-room-label,
-.zdd-dungeon-guess-marker text {
-  fill: currentColor;
-  font: 800 17px/1 var(--md-code-font-family, monospace);
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-}
-
-.zdd-dungeon-room-coordinate {
-  fill: var(--zdd-dungeon-muted);
-  font: 8px/1 var(--md-code-font-family, monospace);
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.zdd-dungeon-guess-marker {
-  color: var(--zdd-dungeon-accent);
-  pointer-events: none;
-}
-
-.zdd-dungeon-guess-marker[data-guess-type="super-secret"] {
-  color: var(--zdd-dungeon-secret);
-}
-
-.zdd-dungeon-guess-marker rect {
-  fill: color-mix(in srgb, currentColor 8%, transparent);
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
-  vector-effect: non-scaling-stroke;
-}
-
-.zdd-dungeon-guess-marker[data-guess-type="super-secret"] rect {
-  stroke-width: 3;
-  stroke-dasharray: 2 3;
-}
-
-.zdd-dungeon-legend {
-  gap: 0.38rem 0.65rem;
-  margin-top: 0.55rem;
-  color: var(--zdd-dungeon-muted);
+.md-typeset .zdd-isaac th {
+  color: var(--isaac-muted);
+  background: var(--isaac-panel);
   font-size: 0.61rem;
-}
-
-.zdd-dungeon-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.zdd-dungeon-legend b {
-  display: inline-grid;
-  place-items: center;
-  width: 1rem;
-  height: 1rem;
-  color: var(--zdd-dungeon-ink);
-  background: var(--zdd-dungeon-panel);
-  border: 1px solid var(--zdd-dungeon-line);
-  font: 800 0.56rem/1 var(--md-code-font-family, monospace);
-}
-
-.zdd-dungeon-stats {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  border-top: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-stats > div {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.58rem 0;
-  border-bottom: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-stats dt {
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.61rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.zdd-dungeon-stats dd {
-  min-width: 0;
-  margin: 0;
-  overflow-wrap: anywhere;
-  color: var(--zdd-dungeon-ink);
-  font: 0.72rem/1.4 var(--md-code-font-family, monospace);
+.md-typeset .zdd-isaac tbody tr:last-child td {
+  border-bottom: 0;
 }
 
-.zdd-dungeon-stats [data-dungeon-info="fingerprint"] {
-  color: var(--zdd-dungeon-accent);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-}
-
-.zdd-dungeon-inspector {
+.zdd-isaac-note {
   display: grid;
-  gap: 0.2rem;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: color-mix(in srgb, var(--zdd-dungeon-panel) 70%, transparent);
-  border: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0.25rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.8rem 1rem;
+  align-items: baseline;
+  background: var(--isaac-panel);
 }
 
-.zdd-dungeon-inspector-label {
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
+.zdd-isaac-note strong {
+  color: var(--isaac-accent);
+  font-size: 0.7rem;
 }
 
-.zdd-dungeon-inspector strong {
-  margin-top: 0.2rem;
-  font: 800 0.8rem/1.35 var(--md-code-font-family, monospace);
-}
-
-.zdd-dungeon-inspector > span:not(.zdd-dungeon-inspector-label) {
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.67rem;
-  line-height: 1.45;
-}
-
-.zdd-dungeon-guess-panel {
-  border-top: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-guess-heading > div:first-child {
-  max-width: 42rem;
-}
-
-.zdd-dungeon-score {
-  min-width: 4rem;
-  padding: 0.3rem 0.55rem;
-  color: var(--zdd-dungeon-panel);
-  background: var(--zdd-dungeon-accent);
-  border-radius: 0.2rem;
-  font: 800 0.8rem/1.4 var(--md-code-font-family, monospace);
-  text-align: center;
-}
-
-.zdd-dungeon-guess-controls {
-  display: grid;
-  grid-template-columns: auto minmax(15rem, 1fr) auto;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.zdd-dungeon-guess-modes {
-  gap: 0.42rem;
-}
-
-.zdd-dungeon-guess-readout {
-  gap: 0.45rem;
-}
-
-.zdd-dungeon-guess-readout > span {
-  display: grid;
-  min-width: 8.2rem;
-  padding: 0.34rem 0.5rem;
-  color: var(--zdd-dungeon-muted);
-  background: color-mix(in srgb, var(--zdd-dungeon-panel) 66%, transparent);
-  border: 1px solid var(--zdd-dungeon-line);
-  border-radius: 0.22rem;
-}
-
-.zdd-dungeon-guess-readout b {
-  font-size: 0.58rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.zdd-dungeon-guess-readout output {
-  color: var(--zdd-dungeon-ink);
-  font: 0.67rem/1.5 var(--md-code-font-family, monospace);
-}
-
-.zdd-dungeon-reveal {
-  min-width: 6.7rem;
-}
-
-.zdd-dungeon .zdd-lab-button:disabled {
-  color: color-mix(in srgb, var(--zdd-dungeon-muted) 55%, transparent);
-  background: transparent;
-  border-color: color-mix(in srgb, var(--zdd-dungeon-line) 55%, transparent);
-  cursor: not-allowed;
-}
-
-.md-typeset .zdd-dungeon-guess-hint {
-  min-height: 1.2rem;
-  margin: 0.65rem 0 0;
-  color: var(--zdd-dungeon-muted);
+.zdd-isaac-note p {
   font-size: 0.68rem;
 }
 
-.zdd-dungeon-results {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  margin-top: 0.8rem;
-  border-top: 1px solid var(--zdd-dungeon-line);
+.zdd-isaac-note code {
+  color: var(--isaac-ink);
+  background: var(--isaac-accent-soft);
 }
 
-.zdd-dungeon-results[hidden],
-.zdd-dungeon-score[hidden] {
-  display: none;
-}
-
-.zdd-dungeon-result-row {
-  display: grid;
-  gap: 0.25rem;
-  padding: 0.75rem;
-  border-bottom: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-result-row:nth-child(2) {
-  border-left: 1px solid var(--zdd-dungeon-line);
-}
-
-.zdd-dungeon-result-row strong {
-  font-size: 0.68rem;
-}
-
-.zdd-dungeon-result-row span {
-  color: var(--zdd-dungeon-muted);
-  font: 0.68rem/1.5 var(--md-code-font-family, monospace);
-}
-
-.zdd-dungeon-why {
-  grid-column: 1 / -1;
-  padding: 0.8rem 0.75rem 0.2rem;
-}
-
-.md-typeset .zdd-dungeon-why p {
-  margin: 0.35rem 0;
-  color: var(--zdd-dungeon-muted);
-  font-size: 0.69rem;
-}
-
-.zdd-dungeon-seed-field input:focus-visible {
-  outline: 0.16rem solid var(--zdd-dungeon-accent);
-  outline-offset: 0.12rem;
-}
-
-@media screen and (max-width: 56em) {
-  .zdd-dungeon-workbench {
-    grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 13rem);
+@media (max-width: 70rem) {
+  .zdd-isaac-form {
+    grid-template-columns: minmax(11rem, 1.5fr) repeat(2, minmax(7rem, 1fr));
   }
 
-  .zdd-dungeon-guess-controls {
-    grid-template-columns: 1fr auto;
+  .zdd-isaac-form .zdd-isaac-field:nth-child(4) {
+    grid-column: 1 / 3;
   }
 
-  .zdd-dungeon-guess-readout {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-}
-
-@media screen and (max-width: 44em) {
-  .zdd-dungeon-workbench {
+  .zdd-isaac-workbench {
     grid-template-columns: 1fr;
   }
 
-  .zdd-dungeon-info-panel {
-    border-top: 1px solid var(--zdd-dungeon-line);
+  .zdd-isaac-sidebar {
+    border-top: 1px solid var(--isaac-line);
     border-left: 0;
   }
 
-  .zdd-dungeon-stats {
-    grid-template-columns: 1fr 1fr;
+  .zdd-isaac-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1rem;
   }
-
-  .zdd-dungeon-stats > div:nth-child(odd) {
-    padding-right: 0.7rem;
-  }
-
-  .zdd-dungeon-stats > div:nth-child(even) {
-    padding-left: 0.7rem;
-    border-left: 1px solid var(--zdd-dungeon-line);
-  }
-
 }
 
-@media screen and (max-width: 30em) {
-  .zdd-dungeon-seed-panel,
-  .zdd-dungeon-map-panel,
-  .zdd-dungeon-info-panel,
-  .zdd-dungeon-guess-panel {
-    padding-inline: 0.7rem;
-  }
-
-  .zdd-dungeon-seed-form {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .zdd-dungeon-seed-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .zdd-dungeon-seed-actions .zdd-lab-button:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .zdd-dungeon-guess-controls {
+@media (max-width: 45rem) {
+  .zdd-isaac-hero {
     grid-template-columns: 1fr;
   }
 
-  .zdd-dungeon-guess-modes {
-    display: grid;
+  .zdd-isaac-runtime-badges {
+    justify-content: flex-start;
+  }
+
+  .zdd-isaac-section-heading,
+  .zdd-isaac-map-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .zdd-isaac-section-heading > p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .zdd-isaac-form {
     grid-template-columns: 1fr 1fr;
   }
 
-  .zdd-dungeon-guess-modes .zdd-lab-button,
-  .zdd-dungeon-reveal {
+  .zdd-isaac-form .zdd-isaac-seed-field,
+  .zdd-isaac-form .zdd-isaac-field:nth-child(4),
+  .zdd-isaac-button-primary {
+    grid-column: 1 / -1;
+  }
+
+  .zdd-isaac-examples {
     width: 100%;
+    margin-left: 0;
   }
 
-  .zdd-dungeon-guess-readout {
-    grid-column: auto;
-    grid-row: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .zdd-isaac-map-shell {
+    min-height: 23rem;
   }
 
-  .zdd-dungeon-guess-readout > span {
-    min-width: 0;
-  }
-
-  .zdd-dungeon-results {
+  .zdd-isaac-stats {
     grid-template-columns: 1fr;
   }
 
-  .zdd-dungeon-result-row:nth-child(2) {
-    border-left: 0;
+  .zdd-isaac-note {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zdd-dungeon *,
-  .zdd-dungeon *::before,
-  .zdd-dungeon *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
+  .zdd-isaac-progress {
+    animation-duration: 1.8s;
+  }
+
+  .zdd-isaac-button,
+  .zdd-isaac-room-cell {
+    transition: none;
   }
 }

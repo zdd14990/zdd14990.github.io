@@ -29,7 +29,7 @@
     {name: "/plot", syntax: "/plot [expression]", kind: "jump", category: "Tools", fill: "/plot ", desc: "Open the function plotter, optionally prefilled."},
     {name: "/life", syntax: "/life", kind: "jump", category: "Tools", desc: "Open Conway's Game of Life."},
     {name: "/diagram", syntax: "/diagram", kind: "jump", category: "Tools", desc: "Open the commutative diagram editor."},
-    {name: "/dungeon", syntax: "/dungeon [seed]", kind: "jump", category: "Tools", fill: "/dungeon ", desc: "Open Dungeon Seed, optionally with a seed."},
+    {name: "/dungeon", syntax: "/dungeon [seed]", kind: "jump", category: "Tools", fill: "/dungeon ", desc: "Open Isaac Map Lab, optionally with a seed."},
     {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", category: "Site", fill: "/theme ", desc: "Switch the color theme."},
     {name: "/count", syntax: "/count", kind: "stats", category: "Site", desc: "Show content, category, tag, word and PDF counts."},
     {name: "/log", syntax: "/log", kind: "query", category: "Site", advanced: true, desc: "Show recent update notes."},

@@ -70,8 +70,6 @@
 
 
 
-  <meta name="author" content="zdd">
-
   <script>
     window.zddSearchDataUrl = "../assets/zdd-search-data.json";
     window.zddPublicSearchIndexUrl = "../assets/zdd-public-search-index.json";
@@ -83,12 +81,15 @@
   <meta property="og:description" content="zdd'blog">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
 
+
+
   <meta name="twitter:card" content="summary_large_image">
   <meta property="twitter:domain" content="zdd14990.github.io">
   <meta property="twitter:url" content="https://zdd14990.github.io/tags/">
   <meta name="twitter:title" content="Tags - zdd14990">
   <meta name="twitter:description" content="zdd'blog">
   <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
 
   </head>
   
@@ -107,11 +108,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#tags" class="md-skip">
-          跳转至
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -289,8 +285,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -359,8 +353,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -379,7 +371,7 @@
 
 
 
-<h1 id="tags">Tags</h1>
+
 <div class="zdd-tag-page">
   <div id="zdd-tag-heading" class="zdd-tag-heading">All Tags</div>
   <div class="zdd-post-list zdd-tag-results">
@@ -387,7 +379,7 @@
   <span class="zdd-post-title">人工智能博士资格考试复习资料</span>
   <span class="zdd-post-preview">覆盖机器学习理论、深度学习与强化学习、人工智能中的优化方法和自然语言处理，可用于系统复习、证明训练与历年真题准备。</span>
   <span class="zdd-post-meta">
-    <span>应用数学 / AI 博资考</span>
+    <span>博资考复习资料 / AI 博资考</span>
     <span>2026-07-27</span>
     <span>278 字</span>
   </span>
@@ -397,7 +389,7 @@
   <span class="zdd-post-title">计算与应用数学博士资格考试复习资料</span>
   <span class="zdd-post-preview">覆盖误差分析、逼近论、非线性问题、线性代数、常微分方程、偏微分方程、渐近分析与优化，可用于系统复习与历年真题准备。</span>
   <span class="zdd-post-meta">
-    <span>应用数学 / 应用数学博资考</span>
+    <span>博资考复习资料 / 应用数学博资考</span>
     <span>2026-07-27</span>
     <span>321 字</span>
   </span>
@@ -407,7 +399,7 @@
   <span class="zdd-post-title">概率论与数理统计博士资格考试复习资料</span>
   <span class="zdd-post-preview">覆盖概率论基础与极限定理、随机过程和数理统计，可用于系统复习、证明训练与历年真题准备。</span>
   <span class="zdd-post-meta">
-    <span>概统 / 博资考</span>
+    <span>博资考复习资料 / 概统</span>
     <span>2026-07-27</span>
     <span>312 字</span>
   </span>
@@ -1348,219 +1340,7 @@
     
 
 
-  <script>
-  (function() {
-      var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
-      var parts = path.split("/").filter(Boolean);
-      var blogIndex = parts.lastIndexOf("blog");
-      document.body.classList.add("zdd-minimal-layout");
-      if (document.querySelector(".minimal-home") || path === "" || path === "index.html") {
-          document.body.classList.add("home-layout");
-      } else if (parts.indexOf("os") !== -1) {
-          document.body.classList.add("os-layout");
-      } else if (document.querySelector(".zdd-blog-catalog") || blogIndex === parts.length - 1) {
-          document.body.classList.add("blog-index-layout");
-      } else if (document.querySelector(".zdd-tag-page") || parts.indexOf("tags") !== -1) {
-          document.body.classList.add("tag-layout");
-      } else if (parts.indexOf("lab") !== -1) {
-          document.body.classList.add("lab-layout");
-      } else if (blogIndex !== -1) {
-          document.body.classList.add("article-layout");
-      }
-  })();
-  </script>
-  <script>
-  (function() {
-      var historyKey = "zdd.articleHistory";
-      var presetKey = "zdd.themePreset";
-      var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
-
-      function readJson(key, fallback) {
-          try {
-              return JSON.parse(localStorage.getItem(key) || "null") || fallback;
-          } catch (e) {
-              return fallback;
-          }
-      }
-
-      function applyPreset() {
-          presetClasses.forEach(function(name) {
-              document.body.classList.remove(name);
-          });
-          var preset = localStorage.getItem(presetKey);
-          if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
-              document.body.classList.add("zdd-theme-" + preset);
-          }
-      }
-
-      function rememberArticle() {
-          if (!document.body.classList.contains("article-layout")) return;
-          var titleNode = document.querySelector(".md-content__inner h1");
-          var item = {
-              url: window.location.pathname,
-              title: titleNode ? titleNode.textContent.trim() : document.title,
-              time: Date.now()
-          };
-          var history = readJson(historyKey, []).filter(function(entry) {
-              return entry && entry.url && entry.url !== item.url;
-          });
-          history.push(item);
-          localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
-      }
-
-      window.zddReadArticleHistory = function() {
-          return readJson(historyKey, []);
-      };
-
-      window.zddSetThemePreset = function(preset) {
-          if (preset) {
-              localStorage.setItem(presetKey, preset);
-          } else {
-              localStorage.removeItem(presetKey);
-          }
-          applyPreset();
-      };
-
-      function refresh() {
-          document.body.classList.remove("zdd-zen");
-          localStorage.removeItem("zdd.zen");
-          applyPreset();
-          rememberArticle();
-      }
-
-      if (window.document$ && document$.subscribe) {
-          document$.subscribe(refresh);
-      } else {
-          document.addEventListener("DOMContentLoaded", refresh);
-      }
-  })();
-  </script>
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      // 1. 创建进度条容器
-      var progressBar = document.createElement("div");
-      progressBar.id = "reading-progress";
-      // 样式：固定顶部，高度3px，粉色，初始宽度0
-      progressBar.style.cssText = "position: fixed; top: 0; left: 0; height: 3px; background: #e67e96; width: 0%; z-index: 99999; transition: width 0.1s ease;";
-      document.body.appendChild(progressBar);
-
-      // 2. 监听滚动事件
-      window.addEventListener("scroll", function() {
-          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-          var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          var scrolled = (scrollTop / scrollHeight) * 100;
-          progressBar.style.width = scrolled + "%";
-      });
-  });
-</script>
-  <script>
-  (function() {
-      function attachCatalogAnimations(root) {
-          var folders = (root || document).querySelectorAll(".zdd-catalog-folder");
-          folders.forEach(function(folder) {
-              if (folder.dataset.zddAnimated === "1") return;
-              var summary = folder.querySelector(":scope > summary");
-              var content = folder.querySelector(":scope > .zdd-folder-content");
-              if (!summary || !content) return;
-              folder.dataset.zddAnimated = "1";
-
-              summary.addEventListener("click", function(event) {
-                  event.preventDefault();
-                  if (folder.dataset.zddAnimating === "1") return;
-                  folder.dataset.zddAnimating = "1";
-
-                  if (folder.open) {
-                      content.style.height = content.scrollHeight + "px";
-                      content.offsetHeight;
-                      requestAnimationFrame(function() {
-                          content.style.height = "0px";
-                      });
-                      content.addEventListener("transitionend", function done(e) {
-                          if (e.propertyName !== "height") return;
-                          content.removeEventListener("transitionend", done);
-                          folder.open = false;
-                          folder.dataset.zddAnimating = "0";
-                      });
-                  } else {
-                      folder.open = true;
-                      content.style.height = "0px";
-                      content.offsetHeight;
-                      requestAnimationFrame(function() {
-                          content.style.height = content.scrollHeight + "px";
-                      });
-                      content.addEventListener("transitionend", function done(e) {
-                          if (e.propertyName !== "height") return;
-                          content.removeEventListener("transitionend", done);
-                          content.style.height = "auto";
-                          folder.dataset.zddAnimating = "0";
-                      });
-                  }
-              });
-          });
-      }
-
-      if (window.document$ && document$.subscribe) {
-          document$.subscribe(function() {
-              attachCatalogAnimations(document);
-          });
-      } else {
-          document.addEventListener("DOMContentLoaded", function() {
-              attachCatalogAnimations(document);
-          });
-      }
-  })();
-  </script>
-  <script>
-  (function() {
-      function samePageAnchor(anchor) {
-          var raw = anchor.getAttribute("href") || "";
-          if (raw === "#") return "";
-          if (!raw || raw.charAt(0) !== "#") {
-              try {
-                  var url = new URL(anchor.href, window.location.href);
-                  if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return null;
-                  return url.hash ? url.hash.slice(1) : null;
-              } catch (e) {
-                  return null;
-              }
-          }
-          return raw.slice(1);
-      }
-
-      function findAnchorTarget(id) {
-          if (!id) return null;
-          try {
-              return document.getElementById(decodeURIComponent(id)) || document.getElementById(id);
-          } catch (e) {
-              return document.getElementById(id);
-          }
-      }
-
-      function smoothScrollTo(target, id) {
-          var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          var behavior = reduceMotion ? "auto" : "smooth";
-          if (target) {
-              target.scrollIntoView({ behavior: behavior, block: "start" });
-          } else {
-              window.scrollTo({ top: 0, behavior: behavior });
-          }
-          if (history.pushState) {
-              history.pushState(null, "", id ? "#" + id : window.location.pathname + window.location.search);
-          }
-      }
-
-      document.addEventListener("click", function(event) {
-          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-          var anchor = event.target.closest && event.target.closest("a[href]");
-          if (!anchor) return;
-          var id = samePageAnchor(anchor);
-          if (id === null) return;
-          event.preventDefault();
-          event.stopPropagation();
-          smoothScrollTo(findAnchorTarget(id), id);
-      }, true);
-  })();
-  </script>
+  <script src="../javascripts/site-shell.js"></script>
 
   </body>
 </html>
