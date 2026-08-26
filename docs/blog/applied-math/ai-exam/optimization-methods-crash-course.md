@@ -9,7 +9,6 @@ categories:
 tags:
   - ai-exam
   - applied-math
-  - optimization-methods-crash-course
 ---
 ## 优化方法速通
 

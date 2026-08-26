@@ -7,7 +7,6 @@ categories:
   - 代数
 tags:
   - algebra
-  - commutative-algebra
 ---
 <div style="height: 800px; width: 100%;">
     <embed src="../../assets/commutative-algebra-notes.pdf" type="application/pdf" width="100%" height="100%">

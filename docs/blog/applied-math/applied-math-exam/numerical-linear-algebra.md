@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - numerical-linear-algebra
 ---
 # Numerical Linear Algebra
 

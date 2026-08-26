@@ -8,8 +8,6 @@ categories:
   - 论文笔记
 tags:
   - applied-math
-  - paper-notes
-  - periodic-integral-equations
 ---
 # A Unified Integral Equation Scheme for Doubly Periodic Laplace and Stokes Boundary Value Problems in Two Dimensions
 

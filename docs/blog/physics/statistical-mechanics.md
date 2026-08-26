@@ -7,7 +7,6 @@ categories:
   - 物理
 tags:
   - physics
-  - statistical-mechanics
 ---
 
 # 统计力学复习笔记

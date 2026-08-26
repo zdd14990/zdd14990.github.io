@@ -7,7 +7,6 @@ categories:
   - 分析
 tags:
   - analysis
-  - mathematical-analysis
 ---
 
 # 数分

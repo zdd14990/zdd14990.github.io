@@ -9,7 +9,6 @@ categories:
 tags:
   - ai-exam
   - applied-math
-  - machine-learning-crash-course
 ---
 ## 机器学习
 

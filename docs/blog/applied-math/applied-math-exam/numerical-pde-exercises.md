@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - numerical-pde-exercises
 ---
 ## 数值 PDE
 !!! problem "Autumn, 2023"

@@ -7,7 +7,6 @@ categories:
   - 物理
 tags:
   - physics
-  - quantum-mechanics
 ---
 # 量子力学
 

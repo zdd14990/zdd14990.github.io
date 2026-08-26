@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - approximation-interpolation-exercises
 ---
 ## 函数逼近与插值
 

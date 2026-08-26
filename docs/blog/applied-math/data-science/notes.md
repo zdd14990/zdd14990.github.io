@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - data-science
-  - notes
 ---
 ## 回顾
 !!! theorem "马尔可夫不等式"

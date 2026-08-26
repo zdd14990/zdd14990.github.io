@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - convex-optimization-exercises
 ---
 ## 凸优化
 !!! problem "Autumn, 2023"

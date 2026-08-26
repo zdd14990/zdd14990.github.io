@@ -7,7 +7,6 @@ categories:
   - 应用数学
 tags:
   - applied-math
-  - computational-math
 ---
 
 # 计算与应用数学

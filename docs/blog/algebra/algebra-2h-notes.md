@@ -7,7 +7,6 @@ categories:
   - 代数
 tags:
   - algebra
-  - algebra-2h-notes
 ---
 <div style="height: 800px; width: 100%;">
     <embed src="../../assets/algebra-2h-notes.pdf" type="application/pdf" width="100%" height="100%">

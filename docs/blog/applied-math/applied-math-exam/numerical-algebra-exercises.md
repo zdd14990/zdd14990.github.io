@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - numerical-algebra-exercises
 ---
 ## 数值代数
 !!! problem "Autumn, 2023"

@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - asymptotic-analysis-exercises
 ---
 ## 渐进分析
 !!! problem "Autumn, 2023"

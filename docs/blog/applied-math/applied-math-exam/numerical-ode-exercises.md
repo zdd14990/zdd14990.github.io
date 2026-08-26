@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - numerical-ode-exercises
 ---
 ## 数值 ODE
 !!! problem "Autumn, 2023"

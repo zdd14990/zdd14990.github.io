@@ -9,7 +9,6 @@ categories:
 tags:
   - applied-math
   - applied-math-exam
-  - numerical-integration-exercises
 ---
 ## 数值积分
 

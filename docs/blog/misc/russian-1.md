@@ -7,7 +7,6 @@ categories:
   - 其他
 tags:
   - misc
-  - russian-1
 ---
 # 俄语1
 

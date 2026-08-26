@@ -7,7 +7,6 @@ categories:
   - 代数
 tags:
   - algebra
-  - representation-theory
 ---
 <div style="height: 800px; width: 100%;">
     <embed src="../../assets/representation-theory.pdf" type="application/pdf" width="100%" height="100%">

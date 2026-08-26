@@ -9,7 +9,6 @@ categories:
 tags:
   - ai-exam
   - applied-math
-  - deep-learning-crash-course
 ---
 ## 深度学习速通
 

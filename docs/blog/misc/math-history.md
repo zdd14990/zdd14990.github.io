@@ -7,7 +7,6 @@ categories:
   - 其他
 tags:
   - misc
-  - math-history
 ---
 
 # 数学史论文
