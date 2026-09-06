@@ -7,6 +7,7 @@
     resultBox: null,
     ghost: null,
     overlay: null,
+    returnFocus: null,
     selectedCommandIndex: 0,
     selectedSuggestionIndex: 0,
     commandRows: [],
@@ -106,7 +107,7 @@
       return window.zddPublicSearchIndexPromise.then(acceptIndex);
     }
     var url = window.zddPublicSearchIndexUrl || "/assets/zdd-public-search-index.json";
-    window.zddPublicSearchIndexPromise = fetch(url, {credentials: "same-origin", cache: "no-store"})
+    window.zddPublicSearchIndexPromise = fetch(url, {credentials: "same-origin"})
       .then(function(response) {
         if (!response.ok) throw new Error("Public search index unavailable");
         return response.json();
@@ -520,6 +521,11 @@
     var name = normalize(parts[0]);
     var arg = commandLine.slice(parts[0].length).trim();
 
+    if (!state.loaded && ["/next", "/prev", "/random", "/latest", "/tag", "/pdf", "/count"].indexOf(name) >= 0) {
+      loadPosts().then(function() { runCommand(line); });
+      return;
+    }
+
     if (!commandLine || commandLine === "/") {
       renderCommandPanel(commandLine);
       return;
@@ -742,6 +748,10 @@
   function renderResults() {
     if (!state.input) return;
     updateHomeSearchState();
+    if (!state.input.value.trim()) {
+      hideResults();
+      return;
+    }
     loadPosts().then(function() {
       state.selectedCommandIndex = 0;
       state.selectedSuggestionIndex = 0;
@@ -772,13 +782,8 @@
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
-      loadPosts().then(function() {
-        if (input.value.trim().charAt(0) === "/") {
-          runCommand(input.value);
-        } else {
-          renderContentResults();
-        }
-      });
+      if (input.value.trim().charAt(0) === "/") runCommand(input.value);
+      else if (input.value.trim()) loadPosts().then(renderContentResults);
     });
 
     input.addEventListener("focus", function() {
@@ -793,8 +798,7 @@
     input.addEventListener("keydown", function(event) {
       var isCommand = input.value.trim().charAt(0) === "/";
       if (event.key === "Escape") {
-        if (scope === "modal") closeModal();
-        else {
+        if (scope !== "modal") {
           hideResults();
           updateHomeSearchState();
         }
@@ -803,7 +807,7 @@
       if (!isCommand) {
         if (event.key === "Enter") {
           event.preventDefault();
-          loadPosts().then(renderContentResults);
+          if (input.value.trim()) loadPosts().then(renderContentResults);
         }
         return;
       }
@@ -816,7 +820,7 @@
           state.selectedCommandIndex = moveSelection(state.commandRows, state.selectedCommandIndex, event.key === "ArrowDown" ? 1 : -1);
         }
         renderCommandPanel(input.value);
-      } else if (event.key === "Tab") {
+      } else if (event.key === "Tab" && !event.shiftKey) {
         event.preventDefault();
         if (state.suggestionRows.length) {
           completeSuggestion();
@@ -825,9 +829,7 @@
         }
       } else if (event.key === "Enter") {
         event.preventDefault();
-        loadPosts().then(function() {
-          runCommand(input.value);
-        });
+        runCommand(input.value);
       }
     });
 
@@ -952,9 +954,27 @@
     overlay.addEventListener("click", function(event) {
       if (event.target.closest("[data-zdd-close-search]")) closeModal();
     });
+    document.addEventListener("keydown", function(event) {
+      if (overlay.hidden) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeModal();
+      } else if (event.key === "Tab" && !event.defaultPrevented) {
+        var focusable = Array.from(overlay.querySelectorAll('a[href], button, input, select, textarea, [tabindex]')).filter(function(node) {
+          return node.tabIndex >= 0 && !node.disabled && node.getClientRects().length;
+        });
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (first && (!overlay.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last))) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus();
+        }
+      }
+    });
   }
 
   function openModal() {
+    if (!state.overlay || state.overlay.hidden) state.returnFocus = document.activeElement;
     createModal();
     state.overlay.hidden = false;
     document.body.classList.add("zdd-search-open");
@@ -965,17 +985,20 @@
     state.resultBox = resultBox;
     state.ghost = ghost;
     hideResults();
-    window.setTimeout(function() {
-      input.focus();
-      input.select();
-    }, 30);
+    input.focus();
+    input.select();
   }
 
   function closeModal() {
-    if (!state.overlay) return;
+    if (!state.overlay || state.overlay.hidden) return;
     state.overlay.hidden = true;
     document.body.classList.remove("zdd-search-open");
     hideResults();
+    var trigger = state.returnFocus;
+    state.returnFocus = null;
+    try {
+      if (trigger && trigger.isConnected && typeof trigger.focus === "function") trigger.focus({preventScroll: true});
+    } catch (error) {}
   }
 
   function initHomeTitle() {
@@ -1030,21 +1053,19 @@
         }
       });
     }
-    loadPosts().then(function() {
-      var input = document.getElementById("home-search-input");
-      var initialQuery = new URLSearchParams(window.location.search).get("q");
-      if (input && initialQuery) {
-        state.input = input;
-        state.resultBox = document.getElementById("home-search-results");
-        state.ghost = document.getElementById("home-search-ghost");
-        input.value = initialQuery;
-        if (history.replaceState) {
-          history.replaceState(null, "", window.location.pathname + window.location.hash);
-        }
-        if (initialQuery.trim().charAt(0) === "/") runCommand(initialQuery);
-        else renderContentResults();
+    var input = document.getElementById("home-search-input");
+    var initialQuery = new URLSearchParams(window.location.search).get("q");
+    if (input && initialQuery && initialQuery.trim()) {
+      state.input = input;
+      state.resultBox = document.getElementById("home-search-results");
+      state.ghost = document.getElementById("home-search-ghost");
+      input.value = initialQuery;
+      if (history.replaceState) {
+        history.replaceState(null, "", window.location.pathname + window.location.hash);
       }
-    });
+      if (initialQuery.trim().charAt(0) === "/") runCommand(initialQuery);
+      else loadPosts().then(renderContentResults);
+    }
   }
 
   if (window.document$ && document$.subscribe) {

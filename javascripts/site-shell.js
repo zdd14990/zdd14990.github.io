@@ -5,6 +5,18 @@
   var presetKey = "zdd.themePreset";
   var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
+  function safeGet(key) {
+    try { return localStorage.getItem(key); } catch (error) { return null; }
+  }
+
+  function safeSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) {}
+  }
+
+  function safeRemove(key) {
+    try { localStorage.removeItem(key); } catch (error) {}
+  }
+
   function classifyPage() {
     var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
     var parts = path.split("/").filter(Boolean);
@@ -37,7 +49,7 @@
 
   function readJson(key, fallback) {
     try {
-      return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+      return JSON.parse(safeGet(key) || "null") || fallback;
     } catch (error) {
       return fallback;
     }
@@ -47,7 +59,7 @@
     presetClasses.forEach(function(name) {
       document.body.classList.remove(name);
     });
-    var preset = localStorage.getItem(presetKey);
+    var preset = safeGet(presetKey);
     if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
       document.body.classList.add("zdd-theme-" + preset);
     }
@@ -65,7 +77,7 @@
       return entry && entry.url && entry.url !== item.url;
     });
     history.push(item);
-    localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+    safeSet(historyKey, JSON.stringify(history.slice(-30)));
   }
 
   window.zddReadArticleHistory = function() {
@@ -74,9 +86,9 @@
 
   window.zddSetThemePreset = function(preset) {
     if (preset) {
-      localStorage.setItem(presetKey, preset);
+      safeSet(presetKey, preset);
     } else {
-      localStorage.removeItem(presetKey);
+      safeRemove(presetKey);
     }
     applyPreset();
   };
@@ -117,7 +129,7 @@
   function refreshPageState() {
     classifyPage();
     document.body.classList.remove("zdd-zen");
-    localStorage.removeItem("zdd.zen");
+    safeRemove("zdd.zen");
     applyPreset();
     rememberArticle();
     attachCatalogAnimations(document);
