@@ -1,0 +1,1072 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+  <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
+
+
+  <script>
+    window.zddSearchDataUrl = "../../../../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+  </script>
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/">
+  <meta property="og:title" content="Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合 - zdd14990">
+  <meta property="og:description" content="有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-09-05">
+
+
+
+
+  <meta property="article:tag" content="autograd">
+
+  <meta property="article:tag" content="automatic-differentiation">
+
+  <meta property="article:tag" content="python">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/">
+  <meta name="twitter:title" content="Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合 - zdd14990">
+  <meta name="twitter:description" content="有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Autograd \u6e90\u7801\u5b66\u4e60\uff08\u5341\u4e00\uff09\uff1aJacobian\u3001Hessian \u4e0e\u7b97\u5b50\u7ec4\u5408",
+    "description": "\u6709\u4e86 JVP\u3001VJP \u548c nested tracing\uff0c\u518d\u770b jacobian\u3001hessian\u3001make hvp\uff0c\u5c31\u4e0d\u9700\u8981\u5047\u8bbe\u5b83\u4eec\u5404\u81ea\u9690\u85cf\u7740\u4e00\u5957\u6c42\u5bfc\u5f15\u64ce\u3002\u5b83\u4eec\u4e3b\u8981\u6539\u53d8\u67e5\u8be2\u65b9\u5411\u3001\u7ec4\u7ec7\u7ed3\u679c\uff0c\u6216\u5bf9\u5bfc\u6570\u7a0b\u5e8f\u518d\u6b21\u6c42\u5bfc\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-09-05",
+    "keywords": ["autograd", "automatic-differentiation", "python"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#autograd-jacobianhessian" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        必要的数学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一个最小例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对应的 Autograd 源码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        调用时序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        源码 walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="源码 walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jacobian-forward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        jacobian：一次 forward，按输出基向量取行
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hessian-jacobian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hessian：对得到 Jacobian 的程序再求导
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make_hvp-hessian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        make_hvp：只查询 Hessian 的作用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementwise_grad-1-seed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        elementwise_grad 的全 1 seed 究竟选了什么
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value_and_grad-trace-primal-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value_and_grad：复用同一次 trace 的 primal answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        理论与源码的对应关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个自测问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一篇
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+<div class="zdd-reading-dates">
+  <span>发布于 <time datetime="2026-09-05">2026-09-05</time></span>
+  
+</div>
+
+<h1 id="autograd-jacobianhessian">Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合</h1>
+<p>有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make_hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。</p>
+<p>这一篇按“需要完整矩阵还是只需要矩阵的作用”读源码，同时区分 loss、gradient 和 HVP closure 的返回值。</p>
+<p><a href="../10-higher-order-ad/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../12-numerical-gradient-checking/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<p>源码基线：HIPS/autograd 1.9.1，commit <code>f53a21734fdfae636f448744d9097d8d35a643a0</code>。</p>
+<h2 id="_1">本文目标</h2>
+<ol>
+<li>高级 API 如何复用少数底层 VJP/JVP primitives？</li>
+<li><code>hessian</code> 为什么是 <code>jacobian(jacobian(fun))</code>？</li>
+<li><code>make_hvp</code> 与显式 Hessian 的取舍是什么？</li>
+</ol>
+<h2 id="mental-model">Mental Model</h2>
+<p>这些 API 不是多套互不相干的求导引擎。它们主要组合 <code>make_vjp</code>、basis vectors、reshape/stack 和再次求导。理解底层 product 后，高级 operator 是查询策略。</p>
+<h2 id="_2">必要的数学</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gradient: scalar f 的一阶 Jacobian
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Jacobian: 对 output basis cotangents 逐行查询 VJP
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Hessian: gradient 的 Jacobian
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>HVP: H v，不必保存完整 H
+</code></pre></div>
+<p><code>elementwise_grad</code> 实际返回 Jacobian 每列之和；只有 Jacobian 为 diagonal 等适用情形时，它等于逐元素导数。</p>
+<h2 id="_3">一个最小例子</h2>
+<p><code>loss(x)=sum(x^3)</code>, <code>x=[1,2]</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>grad=[3,12]
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>H=[[6,0],[0,12]]
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>H@[2,-1]=[12,-12]
+</code></pre></div>
+<p>另用 <code>vector_function=[x0*x1,sin(x0)]</code> 验证 <code>(2,2)</code> Jacobian。</p>
+<h2 id="autograd">对应的 Autograd 源码</h2>
+<table>
+<thead>
+<tr>
+<th>File / symbol</th>
+<th>谁调用</th>
+<th>它调用谁</th>
+<th>输入 -&gt; 输出</th>
+<th>AD 角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>differential_operators.py :: jacobian</code>（58 行）</td>
+<td>user/hessian</td>
+<td><code>_make_vjp</code>, output <code>standard_basis</code>, stack/reshape</td>
+<td>fun,x -&gt; full Jacobian</td>
+<td>多次 basis VJP</td>
+</tr>
+<tr>
+<td><code>hessian</code>（89 行）</td>
+<td>user</td>
+<td><code>jacobian(jacobian(fun))</code></td>
+<td>scalar fun,x -&gt; Hessian</td>
+<td>operator composition</td>
+</tr>
+<tr>
+<td><code>elementwise_grad</code>（40 行）</td>
+<td>user</td>
+<td><code>_make_vjp</code>, output ones</td>
+<td>fun,x -&gt; column-sum vector</td>
+<td>one VJP query</td>
+</tr>
+<tr>
+<td><code>value_and_grad</code>（164 行）</td>
+<td>optimizers/user</td>
+<td>one <code>_make_vjp</code></td>
+<td>fun,x -&gt; <code>(value,gradient)</code></td>
+<td>复用 forward answer</td>
+</tr>
+<tr>
+<td><code>make_hvp</code>（95 行）</td>
+<td>user</td>
+<td><code>_make_vjp(grad(fun),x)</code></td>
+<td>fun,x -&gt; <code>(hvp,gradient)</code></td>
+<td>gradient pullback</td>
+</tr>
+<tr>
+<td><code>tensor_jacobian_product</code></td>
+<td>user</td>
+<td><code>jacobian</code> of vector-dot-fun</td>
+<td>fun,args,tensor -&gt; product</td>
+<td>composition helper</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">调用时序</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>hessian(fun)
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  -&gt; jacobian(jacobian(fun))
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  -&gt; inner jacobian builds first derivative values
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  -&gt; outer jacobian differentiates that program
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>make_hvp(fun)(x)
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  -&gt; _make_vjp(grad(fun),x)
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  -&gt; returned closure maps v to H^T v (=Hv for smooth scalar Hessian)
+</code></pre></div>
+<h2 id="walkthrough">源码 walkthrough</h2>
+<h3 id="jacobian-forward">jacobian：一次 forward，按输出基向量取行</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py"><code>autograd/differential_operators.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py#L57-L71"><code>jacobian</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@unary_to_nary</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">    Returns a function which computes the Jacobian of `fun` with respect to</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="sd">    positional argument number `argnum`, which must be a scalar or array. Unlike</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="sd">    `grad` it is not restricted to scalar-output functions, but also it cannot</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="sd">    take derivatives with respect to some argument types (like lists or dicts).</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="sd">    If the input to `fun` has shape (in1, in2, ...) and the output has shape</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="sd">    (out1, out2, ...) then the Jacobian has shape (out1, out2, ..., in1, in2, ...).</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">vjp</span><span class="p">,</span> <span class="n">ans</span> <span class="o">=</span> <span class="n">_make_vjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">ans_vspace</span> <span class="o">=</span> <span class="n">vspace</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">jacobian_shape</span> <span class="o">=</span> <span class="n">ans_vspace</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="n">vspace</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">grads</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">vjp</span><span class="p">,</span> <span class="n">ans_vspace</span><span class="o">.</span><span class="n">standard_basis</span><span class="p">())</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">jacobian_shape</span><span class="p">)</span>
+</code></pre></div>
+<p>进入时只有 fun 与 x。<code>_make_vjp</code> 先固定本次 forward 图；<code>ans_vspace</code> 描述输出空间，<code>standard_basis()</code> 给出每个输出坐标方向。<code>grads</code> 是延迟迭代的 map 对象，stack 消费它时，对同一个 VJP closure 反复传不同 seed，得到 Jacobian 的行，再 reshape 为 output shape + input shape。此处才显式创建完整 Jacobian，局部 primitives 从未被要求保存它。</p>
+<p>在已有实验 <code>vector_function([1,2])=[2,sin(1)]</code> 上：</p>
+<table>
+<thead>
+<tr>
+<th>对象 / 查询</th>
+<th>值或 shape</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>[1,2]，shape=(2,)</td>
+<td>输入空间</td>
+</tr>
+<tr>
+<td>ans</td>
+<td>[2,0.8414709848]，shape=(2,)</td>
+<td>输出空间</td>
+</tr>
+<tr>
+<td>vjp([1,0])</td>
+<td>[2,1]</td>
+<td>第一个输出对两个输入的导数</td>
+</tr>
+<tr>
+<td>vjp([0,1])</td>
+<td>[cos(1),0]</td>
+<td>第二个输出对两个输入的导数</td>
+</tr>
+<tr>
+<td>stack 后</td>
+<td>[[2,1],[cos(1),0]]</td>
+<td>两行完整 Jacobian</td>
+</tr>
+<tr>
+<td>jacobian_shape</td>
+<td>(2,)+(2,)=(2,2)</td>
+<td>输出轴在前，输入轴在后</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hessian-jacobian">hessian：对得到 Jacobian 的程序再求导</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py"><code>autograd/differential_operators.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py#L88-L91"><code>hessian</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nd">@unary_to_nary</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">hessian</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="s2">&quot;Returns a function that computes the exact Hessian.&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="k">return</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">jacobian</span><span class="p">(</span><span class="n">fun</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div>
+<p>外层获得的是一个“计算内层 Jacobian”的普通 Python callable。对 scalar <code>loss=sum(x^3)</code>，内层输出是 <code>[3*x0^2,3*x1^2]</code>；外层再对这个向量程序求 Jacobian，给出 <code>diag(6*x0,6*x1)</code>。下一步仍是上面同一个 jacobian 实现，区别是它观察的函数包含另一次 AD。第十篇 的 lower-trace Box 保留机制让这次组合可行。</p>
+<h3 id="make_hvp-hessian">make_hvp：只查询 Hessian 的作用</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py"><code>autograd/differential_operators.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py#L94-L99"><code>make_hvp</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nd">@unary_to_nary</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_hvp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds a function for evaluating the Hessian-vector product at a point,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sd">    which may be useful when evaluating many Hessian-vector products at the same</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="sd">    point while caching the results of the forward pass.&quot;&quot;&quot;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="k">return</span> <span class="n">_make_vjp</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">fun</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span>
+</code></pre></div>
+<p>进入时 fun 是 scalar loss。<code>grad(fun)</code> 返回一阶梯度程序，<code>_make_vjp</code> 将这个程序在 x 处 trace，得到 <code>(hvp,gradient_at_x)</code>。这里第二项是 gradient，不是原 loss；closure 输入的 seed 与 gradient 同空间。它计算的是 gradient Jacobian 的 pullback <code>v^T H</code>，以一维数组表示时是 <code>H^T v</code>。对光滑实 scalar 函数的对称 Hessian，这等于常说的 Hv。</p>
+<p>本实验 x=[1,2]，gradient=[3,12]；传入 direction=[2,-1] 后得到 <code>[12,-12]</code>。显式 H 为 diag(6,12)，可以单独用点积核对；make_hvp 的实现自身没有创建该矩阵。保留 closure 可以反复查询，但也会保留本次 gradient program 的图。</p>
+<h3 id="elementwise_grad-1-seed">elementwise_grad 的全 1 seed 究竟选了什么</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py"><code>autograd/differential_operators.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py#L46-L49"><code>elementwise_grad, VJP query excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>    <span class="n">vjp</span><span class="p">,</span> <span class="n">ans</span> <span class="o">=</span> <span class="n">_make_vjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">if</span> <span class="n">vspace</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Elementwise_grad only applies to real-output functions.&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="k">return</span> <span class="n">vjp</span><span class="p">(</span><span class="n">vspace</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span><span class="o">.</span><span class="n">ones</span><span class="p">())</span>
+</code></pre></div>
+<p>这里进入 <code>_make_vjp</code> 后拿到的是向量输出的 pullback，仍只查询一次，但 seed 是输出全 1。数学结果为 <code>1^T J</code>，即每列之和。实验使用逐元素 sin，其 Jacobian 是 diagonal，因此列和刚好就是 <code>[cos(x0),cos(x1)]</code>；有跨元素依赖时不应将它误解释为只取对角线。下一步执行的还是通用 backward_pass。</p>
+<h3 id="value_and_grad-trace-primal-answer">value_and_grad：复用同一次 trace 的 primal answer</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py"><code>autograd/differential_operators.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py#L163-L174"><code>value_and_grad</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nd">@unary_to_nary</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">value_and_grad</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a function that returns both value and gradient. Suitable for use</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="sd">    in scipy.optimize&quot;&quot;&quot;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">vjp</span><span class="p">,</span> <span class="n">ans</span> <span class="o">=</span> <span class="n">_make_vjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">vspace</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="s2">&quot;value_and_grad only applies to real scalar-output &quot;</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="s2">&quot;functions. Try jacobian, elementwise_grad or &quot;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>            <span class="s2">&quot;holomorphic_grad.&quot;</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="p">)</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="k">return</span> <span class="n">ans</span><span class="p">,</span> <span class="n">vjp</span><span class="p">(</span><span class="n">vspace</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span><span class="o">.</span><span class="n">ones</span><span class="p">())</span>
+</code></pre></div>
+<p>函数体只调用一次 <code>_make_vjp</code>，已有 ans 直接作为 tuple 第一项返回，第二项由同一图的 pullback 算出。本实验得到 <code>(9,[3,12])</code>；原始 loss、gradient_at_x 与 HVP 的数值和对象类型由此可以分清。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>needed information         query strategy                    shared machinery
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>gradient                   output ones -------------------&gt; make_vjp -&gt; backward_pass
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Jacobian                   output basis, stack rows ------&gt; same VJP closure
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Hessian                    jacobian(jacobian(fun)) --------&gt; nested tracing
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Hessian action             make_vjp(grad(fun),x) ----------&gt; pullback of gradient program
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>value + gradient           keep ans + output ones --------&gt; same forward trace
+</code></pre></div>
+<h2 id="_5">实验验证</h2>
+<p><a href="../../../../assets/autograd/experiments/operator_composition.py">完整实验：operator_composition.py</a>。运行环境、资源目录及路径配置见<a href="../00-overview/#experiments">系列总览</a>。下方命令以解压后的资源目录为工作目录。</p>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/operator_composition.py"><code>experiments/operator_composition.py</code></a><br />
+Purpose: 用既有向量函数和 scalar loss 交叉检查高级 operators 的组合结果。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>    <span class="n">jac</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">vector_function</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">gradient</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">hess</span> <span class="o">=</span> <span class="n">hessian</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">value</span><span class="p">,</span> <span class="n">combined_gradient</span> <span class="o">=</span> <span class="n">value_and_grad</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">diagonal</span> <span class="o">=</span> <span class="n">elementwise_grad</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">hvp</span><span class="p">,</span> <span class="n">gradient_at_x</span> <span class="o">=</span> <span class="n">make_hvp</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">hessian_vector</span> <span class="o">=</span> <span class="n">hvp</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+</code></pre></div>
+<p>进入时 x=[1,2]、direction=[2,-1]，每个变量保存上文解释的一种数学对象。随后实验把它们与手写 expected_jac、expected_gradient、expected_hessian 比较，并验证 HVP 与显式矩阵乘积一致。这是对不同查询策略的交叉验证，不只是打印 API 返回值。</p>
+<p>运行 <code>python -B experiments/operator_composition.py</code>，结果摘要：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>gradient=[3,12]
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>hessian=[[6,0],[0,12]]
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>value_and_grad=(9,[3,12])
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>H@[2,-1]=[12,-12]
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>all checks passed
+</code></pre></div>
+<h2 id="_6">理论与源码的对应关系</h2>
+<table>
+<thead>
+<tr>
+<th>数学 operator</th>
+<th>构造方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gradient</td>
+<td>VJP with output ones</td>
+</tr>
+<tr>
+<td>Jacobian</td>
+<td>VJP over output standard basis</td>
+</tr>
+<tr>
+<td>Hessian</td>
+<td>Jacobian of Jacobian in current implementation</td>
+</tr>
+<tr>
+<td>HVP closure</td>
+<td>VJP of <code>grad(fun)</code></td>
+</tr>
+<tr>
+<td>value + gradient</td>
+<td>single forward <code>ans</code> plus same trace pullback</td>
+</tr>
+</tbody>
+</table>
+<p>注意：数学上常说 Hessian 是 gradient 的 Jacobian；当前源码字面写的是 <code>jacobian(jacobian(fun))</code>。scalar-output 时内层 <code>jacobian(fun)</code> 就是 gradient-shaped 结果，因此两种表述相容。</p>
+<h2 id="_7">几个自测问题</h2>
+<ol>
+<li><code>jacobian</code> 为什么遍历 output basis 而不是 input basis？</li>
+<li><code>elementwise_grad</code> 在非 diagonal Jacobian 时返回什么？</li>
+<li>HVP 相对完整 Hessian 节省的主要资源是什么？</li>
+</ol>
+<h2 id="_8">小结</h2>
+<p>jacobian 复用 VJP 并按输出 basis 取行，hessian 再组合一次 jacobian，make_hvp 查询梯度程序的 pullback。value_and_grad 则保留同次 forward answer；选择 API 前应先确定需要的数学对象。</p>
+<h2 id="_9">下一篇</h2>
+<p>接下来读<a href="../12-numerical-gradient-checking/">第十二篇：Numerical Gradient Checking</a>。</p>
+<h2 id="_10">参考资料</h2>
+<ul>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py">autograd/differential_operators.py</a>，固定 commit 原文件。</li>
+<li><a href="https://mlsyscourse.org/slides/04-automatic-differentiation.pdf">Automatic Differentiation lecture</a>。</li>
+</ul>
+<hr />
+<p><a href="../10-higher-order-ad/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../12-numerical-gradient-checking/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<div class="zdd-article-taxonomy">
+  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#Autograd 源码学习</span></div>
+  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=autograd">#autograd</a><a class="zdd-tag-chip" href="../../../../tags/?tag=automatic-differentiation">#automatic-differentiation</a><a class="zdd-tag-chip" href="../../../../tags/?tag=python">#python</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-pixiv-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+    
+
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

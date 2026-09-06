@@ -1,0 +1,107 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# V2 教材化重构验收
+
+日期：2026-09-05。重构基于原有14课与已验证资产，先完成 [逐课审计计划](https://zdd14990.github.io/blog/applied-math/autograd/00-overview/)，再按 Lesson 1 -> 14 扩充 Markdown。没有重新生成课程或更换实验主例子。
+
+## 唯一基线与资产保留
+
+- HIPS/autograd：1.9.1。
+- 指定与实际 HEAD：`f53a21734fdfae636f448744d9097d8d35a643a0`。
+- 实际导入：`autograd/__init__.py`。
+- Python：3.14.4，课程虚拟环境 `当前虚拟环境`。
+- 核心仓库：开始审计与复跑后 `git status --porcelain=v1 --untracked-files=all` 均为空。
+- 14个实验 Python 文件、Mini 的3个 Python 文件均与修订前 SHA-256 相同；没有删除文件或修改实验/引擎逻辑。
+- 原 repository map、theory reference、implementation design review、Mini README、MASTER_PLAN 保留原文；口试与 debugger 仅补来源标识及对应代码的准确节选。
+- 所有原 checkpoint 问题通过逐项内容匹配保留。
+
+`multiple_paths.py` 本来就在独立进程内临时包装 add_outgrads，并在 finally 恢复；本轮按原样运行，没有写入 HIPS 源码。检查与运行使用 `-B` / `PYTHONDONTWRITEBYTECODE=1`，Mini pytest 禁用 coverage 与 cache 写入。
+
+## 每课修改
+
+以下14个文件均在原章节内扩充，保留原数学、实验结论与 checkpoint。
+
+| 课 | 修改文件 | 本次增加的教材内容 |
+| --- | --- | --- |
+| 1 | [01-ad-and-computational-graph.md](https://zdd14990.github.io/blog/applied-math/autograd/01-ad-and-computational-graph/) | 完整 grad 原文，log/sin 分开标来源，seed/closure 与原手算表衔接 |
+| 2 | [02-jvp-vjp.md](https://zdd14990.github.io/blog/applied-math/autograd/02-jvp-vjp/) | R2->R2 的逐项 J、Jv、VJP，局部传播表，完整 make_jvp/make_vjp，Node 状态与 closure 时序比较 |
+| 3 | [grad-call-chain.md](https://zdd14990.github.io/blog/applied-math/autograd/03-grad-call-chain/) | 包装器创建/执行分开，完整 unary_to_nary/grad/make_vjp/trace，__mul__ 到 primitive，输出 ones，完整对象边界表 |
+| 4 | [tracer.md](https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/) | trace/root/TraceStack/Box/new_box/find_top 原文，primitive 三级阅读，wrapper locals 与控制流 Box 快照 |
+| 5 | [core-reverse-mode.md](https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/) | 完整 make_vjp/backward_pass/VJPNode/toposort，defvjp 三个时刻，outgrads 每步状态，3+3=6 与 PDF 第14页逐行映射 |
+| 6 | [numpy-vjps.md](https://zdd14990.github.io/blog/applied-math/autograd/06-numpy-vjps/) | add/multiply/subtract/divide/exp/log/sin/sum 的真实 VJP，staged 捕获表，sum shape helper 与各路径贡献 |
+| 7 | [06-broadcasting.md](https://zdd14990.github.io/blog/applied-math/autograd/07-broadcasting/) | 完整 unbroadcast_f/unbroadcast，metadata，scalar->vector 与 (3,)->(2,3) 的反向归约状态与相反方向图 |
+| 8 | [forward-mode.md](https://zdd14990.github.io/blog/applied-math/autograd/08-forward-mode/) | make_jvp/JVPNode/defjvp/def_linear 原文，按参数分别线性，两个 basis tangent 的即时传播表 |
+| 9 | [09-why-reverse-mode.md](https://zdd14990.github.io/blog/applied-math/autograd/09-why-reverse-mode/) | 三个方向查询手算，完整 scalar 检查消息，VSpace size 契约，执行次数与图保留成本的区别 |
+| 10 | [10-higher-order-ad.md](https://zdd14990.github.io/blog/applied-math/autograd/10-higher-order-ad/) | trace2->1->0 nested Box 图、各层 root、逐层解箱/装箱表、power VJP 与 derivative program 再被求导 |
+| 11 | [11-operator-composition.md](https://zdd14990.github.io/blog/applied-math/autograd/11-operator-composition/) | jacobian/hessian/make_hvp/value_and_grad 原文，按输出 basis 取行、形状拼接、elementwise 的列和语义 |
+| 12 | [12-numerical-gradient-checking.md](https://zdd14990.github.io/blog/applied-math/autograd/12-numerical-gradient-checking/) | make_numerical_jvp/check_jvp/check_vjp 原文，EPS 尺度区别、伴随恒等式状态表、二阶递归检查 |
+| 13 | [custom-primitive.md](https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/) | registry 前后状态、缺失规则的实际失败位置、translate_vjp、正确浮点示例与可微 closure 边界 |
+| 14 | [14-mini-autograd-design.md](https://zdd14990.github.io/blog/applied-math/autograd/14-mini-autograd-design/) | 直接节选原 Value.__mul__/Value.backward，与 VJPNode/backward_pass/add_outgrads 并排比较，实现差异与共享输入状态 |
+
+其他修改：
+
+- [README.md](https://zdd14990.github.io/blog/applied-math/autograd/00-overview/)：V2 入口、来源分类、可点击的14课索引。
+- [roadmap.md](https://zdd14990.github.io/blog/applied-math/autograd/00-overview/)：V2 完成记录，原阶段完整测试与本轮复核分开。
+- [debugger-walkthrough.md](https://zdd14990.github.io/assets/autograd/source-notes/debugger-walkthrough.txt)：实验代码按真实文件标注来源。
+- [source-oral-exam.md](https://zdd14990.github.io/assets/autograd/questions/source-oral-exam.txt)：保留全部题目，明确题干程序是教学代码。
+
+新增文件：
+
+- [REVISION_PLAN_V2.md](https://zdd14990.github.io/blog/applied-math/autograd/00-overview/)：修改前逐课审计和完成状态。
+- [grad-runtime-sequence.md](https://zdd14990.github.io/assets/autograd/diagrams/grad-runtime-sequence.txt)、[nested-traces.md](https://zdd14990.github.io/assets/autograd/diagrams/nested-traces.txt)：大版时序/对象图。
+- 本验收文件，以及 verify_v2.py（教材原附件：tools/verify_v2.py）、markdown_audit.mjs（教材原附件：tools/markdown_audit.mjs）：重复核验工具。
+- `verification/baseline-v2.json`、`verification/source-audit-v2.json`、`verification/test-results-v2.json`：资产哈希、逐块原文定位与完整 stdout/stderr。
+- `verification/reverse-ad-page14.png`：原 PDF 第14页的只读渲染核对记录。
+
+## 原文与 Markdown 核验
+
+79个 `[REAL SOURCE]` 节选均逐块匹配 `git show f53a21734fdfae636f448744d9097d8d35a643a0:<File>` 的连续行，仅允许展示缩进/换行格式归一化。每块均含 File、Symbol、完整 Commit；没有通过替换变量、删除中间行或缩写消息伪装原文。
+
+18个 `[EXPERIMENT]` Python 节选匹配现有实验文件，并包含 File/Purpose。8个 `[TEACHING SIMPLIFICATION]` 块均明确声明“以下不是 HIPS/autograd verbatim source。”；其中3个 Mini 节选额外匹配本地原实现/demo。
+
+围栏扫描与 Marked 17.0.5 的 GFM 解析交叉核对 Python 块数量；本地链接通过结构化 parser 提取后检查目标存在。原文匹配位置与所有检查错误列表记录在 source-audit-v2.json，最终 errors 为空。Lesson 3、4、5、10 的 STATE SNAPSHOT 存在检查也包含在脚本中。
+
+重要准确性修正：旧 primitive 节选省略的 dispatcher 参数恢复为原文；grad 异常文字恢复原文；RecordingNode 额外字段与真实 VJPNode 分开；第二次 dense 累加明确是 vs.add；整数不能用于 missing-VJP 示例；官方 logsumexp 例子中与表达式矛盾的“不捕获x”注释没有被继续当作事实。
+
+## 实验复跑结果
+
+| 既有实验 | 结果 | 关键证据 |
+| --- | --- | --- |
+| lesson01_ad_and_graph.py | PASS | 解析、AD、中心差分一致，本地 import 断言通过 |
+| jvp_vjp.py | PASS | J、Jv、w^T J 均与显式矩阵一致 |
+| simple_grad.py | PASS | parents=(root,root)，forward=9，VJP/grad=6 |
+| trace_box.py | PASS | positive branch，2次循环，4次 Box 观察 |
+| multiple_paths.py | PASS | None+3 -> (3,False)，3+3 -> (6,True) |
+| numpy_primitives.py | PASS | 八种基础运算组合与解析梯度一致 |
+| broadcasting.py | PASS | scalar cotangent=3，vector cotangent=[2,2,2]，shape 正确 |
+| forward_mode.py | PASS | 两列 basis JVP 与完整 Jacobian 一致 |
+| reverse_mode_scaling.py | PASS | forward执行3次，reverse构图执行1次 |
+| higher_order.py | PASS | 一至三阶12/12/6；Box trace 2->1->0 |
+| operator_composition.py | PASS | gradient/Hessian/HVP/value_and_grad 等交叉验证 |
+| gradient_check.py | PASS | 五个步长误差记录一致，双模式二阶 checker 通过 |
+| custom_primitive.py | PASS | 预期 missing VJP 后登记成功，二阶 reverse checker 通过 |
+| debug_walkthrough.py | PASS | 真实源码 call/return 边界与最终梯度断言通过 |
+
+全部14个实验退出码为0。Mini demo 退出码为0，输出 `z=11.652071455223`、`dz/dx=5.5`、`dz/dy=1.716337814537`；Mini tests 为 **4 passed in 0.01s**。
+
+本轮没有重跑原阶段的645项核心测试，因为修改集中在教材 Markdown，用户要求的14个原实验和 Mini tests 已全部重跑。README/roadmap 中的 `645 passed, 14 warnings` 明确保留为原阶段记录。
+
+## 重复核验
+
+以下保留教材阶段的核验方式。`tools/verify_v2.py` 属于原教材工具，不包含在博客下载包中；下载包的运行方法见系列总览。命令中的 `../autograd` 表示与教材目录相邻的源码 checkout。
+
+仅检查资产、原文、围栏、链接和核心工作树：
+
+```powershell
+python -B tools\verify_v2.py
+```
+
+重跑全部原实验和 Mini 验证，再执行上述检查：
+
+```powershell
+python -B tools\verify_v2.py --run-assets
+git -C ../autograd status --short --branch
+git -C ../autograd rev-parse HEAD
+```
+
+Markdown parser 使用本机已安装的 Codex Node runtime 与 marked；搬迁机器时可设置 `V2_NODE_RUNTIME` 指向含 `bin/node.exe` 与 `node_modules/marked` 的 runtime。`--snapshot` 只用于首次建立基线，已有基线时会拒绝覆盖。

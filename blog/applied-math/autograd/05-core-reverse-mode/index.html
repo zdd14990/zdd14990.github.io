@@ -1,0 +1,1455 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="上一篇已经看到 primitive 如何产生 VJPNode。这里从 forward 留下的 end node 开始，检查局部规则怎样接到输出 seed，又怎样把贡献交给同一个输入。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Autograd 源码学习（五）：Reverse Mode 的核心实现 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+  <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
+
+
+  <script>
+    window.zddSearchDataUrl = "../../../../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+  </script>
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/">
+  <meta property="og:title" content="Autograd 源码学习（五）：Reverse Mode 的核心实现 - zdd14990">
+  <meta property="og:description" content="上一篇已经看到 primitive 如何产生 VJPNode。这里从 forward 留下的 end node 开始，检查局部规则怎样接到输出 seed，又怎样把贡献交给同一个输入。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-09-05">
+
+
+
+
+  <meta property="article:tag" content="autograd">
+
+  <meta property="article:tag" content="automatic-differentiation">
+
+  <meta property="article:tag" content="python">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/">
+  <meta name="twitter:title" content="Autograd 源码学习（五）：Reverse Mode 的核心实现 - zdd14990">
+  <meta name="twitter:description" content="上一篇已经看到 primitive 如何产生 VJPNode。这里从 forward 留下的 end node 开始，检查局部规则怎样接到输出 seed，又怎样把贡献交给同一个输入。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Autograd \u6e90\u7801\u5b66\u4e60\uff08\u4e94\uff09\uff1aReverse Mode \u7684\u6838\u5fc3\u5b9e\u73b0",
+    "description": "\u4e0a\u4e00\u7bc7\u5df2\u7ecf\u770b\u5230 primitive \u5982\u4f55\u4ea7\u751f VJPNode\u3002\u8fd9\u91cc\u4ece forward \u7559\u4e0b\u7684 end node \u5f00\u59cb\uff0c\u68c0\u67e5\u5c40\u90e8\u89c4\u5219\u600e\u6837\u63a5\u5230\u8f93\u51fa seed\uff0c\u53c8\u600e\u6837\u628a\u8d21\u732e\u4ea4\u7ed9\u540c\u4e00\u4e2a\u8f93\u5165\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-09-05",
+    "keywords": ["autograd", "automatic-differentiation", "python"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#autograd-reverse-mode" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        必要的数学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一个最小例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对应的 Autograd 源码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        调用时序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        源码 walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="源码 walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#make_vjpupstream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        make_vjp：图已经建好，upstream 还没到
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vjpnode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VJPNode 保存什么，为什么足够
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defvjp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defvjp 的三个时刻：登记、捕获、应用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backward_pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backward_pass 完整原文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STATE SNAPSHOT：先核对图与函数状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-snapshot_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STATE SNAPSHOT：按真实语句逐状态执行
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_outgrads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_outgrads：数学求和与表示管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toposort-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        toposort 为什么让 R 最后才能消费
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pdf-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与课程 PDF 第 14 页逐行映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        理论与源码的对应关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个自测问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一篇
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+<div class="zdd-reading-dates">
+  <span>发布于 <time datetime="2026-09-05">2026-09-05</time></span>
+  
+</div>
+
+<h1 id="autograd-reverse-mode">Autograd 源码学习（五）：Reverse Mode 的核心实现</h1>
+<p>上一篇已经看到 primitive 如何产生 VJPNode。这里从 forward 留下的 end node 开始，检查局部规则怎样接到输出 seed，又怎样把贡献交给同一个输入。</p>
+<p>仍然只用 <code>z=x*x, x=3</code>。例子虽然小，却包含 reverse engine 最关键的三个职责：合法的访问顺序、局部 pullback，以及多条路径的梯度累加。下面把每次字典变化都列出来。</p>
+<p><a href="../04-tracer/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../06-numpy-vjps/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<p>源码基线：HIPS/autograd 1.9.1，commit <code>f53a21734fdfae636f448744d9097d8d35a643a0</code>。</p>
+<h2 id="_1">本文目标</h2>
+<ol>
+<li><code>make_vjp</code> closure 捕获什么？</li>
+<li>课程讲义的 Reverse AD 伪代码如何逐行对应 <code>backward_pass</code>？</li>
+<li><code>x*x</code> 的两个 <code>3</code> 在哪里变成 <code>6</code>？</li>
+</ol>
+<h2 id="mental-model">Mental Model</h2>
+<p>forward trace 为每个 operation node 准备一个“收到 output cotangent 后，如何给 parents 产生 input cotangents”的函数。backward pass 从 end node 开始，按反向拓扑顺序调用这些局部函数，并用 <code>add_outgrads</code> 合并指向同一 parent 的贡献。</p>
+<h2 id="_2">必要的数学</h2>
+<p>下面的公式概括本篇使用的数学关系，具体数值与传播步骤接着展开。</p>
+<div class="arithmatex">\[
+\bar v_k=\sum_{i:\,k\in\operatorname{inputs}(i)}\bar v_i\frac{\partial v_i}{\partial v_k}.
+\]</div>
+<p>在 <span class="arithmatex">\(z=x\cdot x\)</span> 的例子上，两条输入边各产生一项：</p>
+<div class="arithmatex">\[
+\bar x=1\cdot3+1\cdot3=6.
+\]</div>
+<p>对 node <code>vi = op(vk,...)</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>partial_adjoint(k -&gt; i) = bar(vi) * dvi/dvk
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bar(vk) = sum_i partial_adjoint(k -&gt; i)
+</code></pre></div>
+<p>反向拓扑顺序保证消费 node 时，它从所有 downstream paths 得到的 contribution 已经汇合。</p>
+<h2 id="_3">一个最小例子</h2>
+<p><code>z=x*x</code>, <code>x=3</code>：multiply 的两个输入位置都指向 root。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bar(z)=1
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>arg0 contribution = 1*x = 3
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>arg1 contribution = 1*x = 3
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>bar(x)=3+3=6
+</code></pre></div>
+<h2 id="autograd">对应的 Autograd 源码</h2>
+<table>
+<thead>
+<tr>
+<th>File / symbol</th>
+<th>谁调用</th>
+<th>它调用谁</th>
+<th>输入 -&gt; 输出</th>
+<th>AD 角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>core.py :: make_vjp</code>（11 行）</td>
+<td><code>grad</code>, <code>jacobian</code>,用户</td>
+<td><code>VJPNode.new_root</code>, <code>trace</code>; closure 调 <code>backward_pass</code></td>
+<td>fun,x -&gt; <code>(vjp,end_value)</code></td>
+<td>建 reverse graph</td>
+</tr>
+<tr>
+<td><code>core.py :: VJPNode.__init__</code>（39 行）</td>
+<td>primitive wrapper</td>
+<td><code>primitive_vjps[fun]</code></td>
+<td>operation state -&gt; parents/vjp</td>
+<td>保存局部 rule</td>
+</tr>
+<tr>
+<td><code>core.py :: defvjp</code>（68 行）</td>
+<td>NumPy/SciPy rule modules、用户扩展</td>
+<td><code>translate_vjp</code>, <code>defvjp_argnums</code></td>
+<td>primitive + rule makers -&gt; registry side effect</td>
+<td>注册局部 rule</td>
+</tr>
+<tr>
+<td><code>core.py :: backward_pass</code>（26 行）</td>
+<td><code>make_vjp</code> closure</td>
+<td><code>toposort</code>, <code>node.vjp</code>, <code>add_outgrads</code></td>
+<td>seed,end node -&gt; input cotangent</td>
+<td>reverse algorithm</td>
+</tr>
+<tr>
+<td><code>core.py :: add_outgrads</code>（185 行）</td>
+<td>backward/JVP sum helpers</td>
+<td><code>vspace(...).add/mut_add</code></td>
+<td>previous + contribution -&gt; accumulated pair</td>
+<td>多路径累加</td>
+</tr>
+<tr>
+<td><code>util.py :: toposort</code>（21 行）</td>
+<td><code>backward_pass</code></td>
+<td>parent traversal</td>
+<td>end node -&gt; nodes iterator</td>
+<td>reverse topological order</td>
+</tr>
+<tr>
+<td><code>core.py :: vspace</code>（289 行）</td>
+<td>seeds/zeros/adds/checks</td>
+<td>registered VSpace maker</td>
+<td>value -&gt; VSpace</td>
+<td>type-aware tangent/cotangent operations</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">调用时序</h2>
+<ol class="zdd-flow" aria-label="调用时序">
+<li><code>make_vjp(fun,x)</code></li>
+<li><code>root=VJPNode.new_root()</code></li>
+<li><code>end_value,end_node=trace(root,fun,x)</code></li>
+<li><code>return vjp closure capturing x or end_node, plus end_value</code></li>
+<li><code>vjp(g)</code></li>
+<li><code>backward_pass(g,end_node)</code></li>
+<li><code>for node in toposort(end_node)</code></li>
+<li><code>outgrad = accumulated cotangent for node</code></li>
+<li><code>ingrads = node.vjp(outgrad)</code></li>
+<li><code>add each ingrad to matching parent</code></li>
+<li><code>return root outgrad</code></li>
+</ol>
+
+<p>若 <code>end_node is None</code>，closure 返回 <code>vspace(x).zeros()</code>。</p>
+<h2 id="walkthrough">源码 walkthrough</h2>
+<h3 id="make_vjpupstream">make_vjp：图已经建好，upstream 还没到</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L11-L23"><code>make_vjp</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_vjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">start_node</span> <span class="o">=</span> <span class="n">VJPNode</span><span class="o">.</span><span class="n">new_root</span><span class="p">()</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">end_value</span><span class="p">,</span> <span class="n">end_node</span> <span class="o">=</span> <span class="n">trace</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">if</span> <span class="n">end_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">vjp</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>            <span class="k">return</span> <span class="n">vspace</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zeros</span><span class="p">()</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">vjp</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>            <span class="k">return</span> <span class="n">backward_pass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">return</span> <span class="n">vjp</span><span class="p">,</span> <span class="n">end_value</span>
+</code></pre></div>
+<p>进入时 <code>fun</code> 是一元函数，<code>x=3.0</code>。第一行创建 R；第二行把 R、fun、x 交给 tracer，得到 <code>(9.0,M)</code>。R 没有 parents，M 的两个输入位置都指向 R。正常分支产生的 closure 捕获 M，而不是复制整个图；通过 M 的父引用就能找到所有相关节点。此刻没有 output seed，也没有 <code>outgrads</code> 字典。</p>
+<p>调用者得到两个不同用途的对象：<code>end_value</code> 用于显示 loss、确定输出空间或构造 seed；<code>vjp</code> 用于稍后查询输入 cotangent。<code>grad</code> 选择 <code>vspace(9.0).ones()</code>，数学上为 1；直接使用 <code>make_vjp</code> 的用户也可以传其他 seed。若输出独立于输入，<code>end_node=None</code> 的分支返回输入空间的零；这个分支不进入下面的 reverse traversal。</p>
+<h3 id="vjpnode">VJPNode 保存什么，为什么足够</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L36-L50"><code>VJPNode</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">VJPNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;parents&quot;</span><span class="p">,</span> <span class="s2">&quot;vjp&quot;</span><span class="p">]</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">parent_argnums</span><span class="p">,</span> <span class="n">parents</span><span class="p">):</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>            <span class="n">vjpmaker</span> <span class="o">=</span> <span class="n">primitive_vjps</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>            <span class="n">fun_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="n">fun</span><span class="p">)</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VJP of </span><span class="si">{</span><span class="n">fun_name</span><span class="si">}</span><span class="s2"> wrt argnums </span><span class="si">{</span><span class="n">parent_argnums</span><span class="si">}</span><span class="s2"> not defined&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">vjp</span> <span class="o">=</span> <span class="n">vjpmaker</span><span class="p">(</span><span class="n">parent_argnums</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_root</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">vjp</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="p">()</span>
+</code></pre></div>
+<p>primitive wrapper 调用构造器时已经有 <code>value=9.0</code>、<code>fun=anp.multiply</code> 的包装函数、<code>args=(3.0,3.0)</code>、<code>kwargs={}</code>、<code>parent_argnums=(0,1)</code>、<code>parents=(R,R)</code>。registry 的 key 是 primitive callable，不是名字字符串；<code>vjpmaker</code> 为本次参数位置创建局部 pullback，保存到 <code>self.vjp</code>。下一次要运行它的人是 <code>backward_pass</code>。</p>
+<p>M 没有 <code>value</code>、<code>argnums</code> 或 <code>grad</code> 字段。构造参数的必要部分被闭包捕获，例如乘法规则需要另一个输入值；节点本身只长期持有两个 slot。完整 Jacobian 对本例是 <code>[x,x]</code>，但用 <code>g -&gt; (g*x,g*x)</code> 就能完成任何输出 seed 查询，因此无需构造矩阵。</p>
+<p>root 使用继承的 <code>Node.new_root</code> 走 <code>initialize_root</code>，不会运行 operation 的 <code>__init__</code>。它的局部 <code>vjp</code> 总返回空 tuple：输入边界已经到了，不能再往前传。这个 root 仍然会被 <code>backward_pass</code> 消费一次，正是最后返回输入 cotangent 的关键。</p>
+<h3 id="defvjp">defvjp 的三个时刻：登记、捕获、应用</h3>
+<p>先看本例已注册的两条局部规则。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_vjps.py"><code>autograd/numpy/numpy_vjps.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_vjps.py#L79-L83"><code>defvjp(anp.multiply, ...)</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">defvjp</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">anp</span><span class="o">.</span><span class="n">multiply</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">lambda</span> <span class="n">ans</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">unbroadcast_f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">y</span> <span class="o">*</span> <span class="n">g</span><span class="p">),</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="k">lambda</span> <span class="n">ans</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">unbroadcast_f</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">g</span><span class="p">),</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
+</code></pre></div>
+<p>导入 NumPy VJP 模块时，<code>defvjp</code> 得到 primitive 和两个 maker，还没有某次调用的 x/y。forward 创建 M 时两个 maker 才分别收到 <code>ans=9,x=3,y=3</code>，产生等待 g 的 closure；反向收到 1 时，它们各算出 3。<code>unbroadcast_f</code> 在 scalar happy path 保持 scalar shape，第七篇 研究数组归约。这解释了 <code>ingrads</code> 为何按参数位置返回两个值，即使父节点对象相同也不能丢掉其中一个。</p>
+<p>[TEACHING SIMPLIFICATION]<br />
+以下不是 HIPS/autograd verbatim source。省略参数编号配置、None 规则、异常、生成器和 1/2 参数优化；只展示 registry 如何保存 staged maker。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">teaching_defvjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="o">*</span><span class="n">makers</span><span class="p">):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">make_local_vjp</span><span class="p">(</span><span class="n">argnums</span><span class="p">,</span> <span class="n">ans</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">makers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">ans</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">argnums</span><span class="p">]</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">local_vjp</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rule</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="k">return</span> <span class="n">local_vjp</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">primitive_vjps</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_local_vjp</span>
+</code></pre></div>
+<p>进入时 <code>makers</code> 是每个参数位置的规则制造函数。<code>make_local_vjp</code> 不是马上运行，而是作为 registry value 保存；VJPNode 创建时调用它，拿到局部函数；backward 最后调用局部函数。这段区分了三个时间点，而不是把 <code>defvjp</code> 当作反向传播函数。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L68-L72"><code>defvjp, registration setup excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">defvjp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="o">*</span><span class="n">vjpmakers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">argnums</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;argnums&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">())</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">vjps_dict</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="n">argnum</span><span class="p">:</span> <span class="n">translate_vjp</span><span class="p">(</span><span class="n">vjpmaker</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">argnum</span><span class="p">)</span> <span class="k">for</span> <span class="n">argnum</span><span class="p">,</span> <span class="n">vjpmaker</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">argnums</span><span class="p">,</span> <span class="n">vjpmakers</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="p">}</span>
+</code></pre></div>
+<p>本例没有显式 <code>argnums</code>，<code>count()</code> 从 0 编号，所以 <code>vjps_dict</code> 把 0、1 分别映射到两条 maker。<code>translate_vjp</code> 为 callable 保留原对象。这个局部字典将被内层 registry maker 捕获；它不是以 graph node 为 key 的 <code>outgrads</code>。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L85-L94"><code>defvjp.vjp_argnums, L == 2 excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>        <span class="k">elif</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>            <span class="n">argnum_0</span><span class="p">,</span> <span class="n">argnum_1</span> <span class="o">=</span> <span class="n">argnums</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>            <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>                <span class="n">vjp_0_fun</span> <span class="o">=</span> <span class="n">vjps_dict</span><span class="p">[</span><span class="n">argnum_0</span><span class="p">]</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>                <span class="n">vjp_1_fun</span> <span class="o">=</span> <span class="n">vjps_dict</span><span class="p">[</span><span class="n">argnum_1</span><span class="p">]</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VJP of </span><span class="si">{</span><span class="n">fun</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> wrt argnums 0, 1 not defined&quot;</span><span class="p">)</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="n">vjp_0</span> <span class="o">=</span> <span class="n">vjp_0_fun</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="n">vjp_1</span> <span class="o">=</span> <span class="n">vjp_1_fun</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>            <span class="k">return</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="p">(</span><span class="n">vjp_0</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="n">vjp_1</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+</code></pre></div>
+<p>这是 forward 创建 M 时实际命中的分支，<code>L=len(argnums)=2</code>。两个 <code>_fun</code> 是 maker，两个不带 <code>_fun</code> 的 <code>vjp_0/vjp_1</code> 才是捕获本次 forward state 后的 closure。该区段返回聚合 closure 给 <code>VJPNode.vjp</code>；以后传入 1，它确实返回 tuple <code>(3,3)</code>，不是生成器。其他参数数量有各自分支，本文不依赖它们。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L95-L99"><code>defvjp, final registration excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>            <span class="n">vjps</span> <span class="o">=</span> <span class="p">[</span><span class="n">vjps_dict</span><span class="p">[</span><span class="n">argnum</span><span class="p">](</span><span class="n">ans</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">argnum</span> <span class="ow">in</span> <span class="n">argnums</span><span class="p">]</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>            <span class="k">return</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="p">(</span><span class="n">vjp</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">vjp</span> <span class="ow">in</span> <span class="n">vjps</span><span class="p">)</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">defvjp_argnums</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">vjp_argnums</span><span class="p">)</span>
+</code></pre></div>
+<p>最后一行在外层 <code>defvjp</code> 调用时执行，将内层 <code>vjp_argnums</code> 登记到 registry；上方 else 是另一个参数数量分支，未在本例运行。这里完整保留相邻原文，尤其不要把最末行误认为运行在 backward 内。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L56-L57"><code>defvjp_argnums</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">defvjp_argnums</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">vjpmaker</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">primitive_vjps</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">vjpmaker</span>
+</code></pre></div>
+<p>它收到 primitive callable 与整体 maker，执行一次字典赋值，之后由 VJPNode 查找。完整 symbol 位置：<code>autograd/core.py :: defvjp</code>，包含未展开的单参数优化、其他参数数目和缺失规则处理。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>import numpy_vjps      forward primitive call             backward query
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>defvjp(multiply,...)   multiply(3,3)=9                     vjp(seed=1)
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  |                     |                                  |
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  v                     v                                  v
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>registry[fun]=maker --&gt; VJPNode calls maker(0,1;9;3,3) --&gt; M.vjp(1)
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>                        |                                  |
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>                        v                                  v
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>                    captures vjp_0,vjp_1                  (3,3)
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>                                                           |
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>                                                           v
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>                                                     same parent R
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>                                                     3 + 3 = 6
+</code></pre></div>
+<h3 id="backward_pass">backward_pass 完整原文</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L26-L33"><code>backward_pass</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">backward_pass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">end_node</span><span class="p">):</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">outgrads</span> <span class="o">=</span> <span class="p">{</span><span class="n">end_node</span><span class="p">:</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="kc">False</span><span class="p">)}</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">toposort</span><span class="p">(</span><span class="n">end_node</span><span class="p">):</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="n">outgrad</span> <span class="o">=</span> <span class="n">outgrads</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>        <span class="n">ingrads</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">vjp</span><span class="p">(</span><span class="n">outgrad</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ingrad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">parents</span><span class="p">,</span> <span class="n">ingrads</span><span class="p">):</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>            <span class="n">outgrads</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_outgrads</span><span class="p">(</span><span class="n">outgrads</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parent</span><span class="p">),</span> <span class="n">ingrad</span><span class="p">)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="k">return</span> <span class="n">outgrad</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+<p>进入时只有 output cotangent <code>g=1</code> 和 M。<code>outgrads</code> 是 node -&gt; <code>(cotangent,mutable_flag)</code> 的字典；<code>outgrad</code> 是当前节点已经汇总好的 tuple；<code>ingrads</code> 是当前局部 VJP 对输入位置产生的 cotangents。<code>zip</code> 将每个 contribution 与其对应 parent 配对，<code>add_outgrads</code> 负责汇合。整个函数没有按变量名查找，也没有重新执行原函数的 forward。</p>
+<h3 id="state-snapshot">STATE SNAPSHOT：先核对图与函数状态</h3>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>类型</th>
+<th>保存的内容</th>
+<th>不保存的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R</td>
+<td>VJPNode</td>
+<td>parents=[]，vjp(g)=()</td>
+<td>不保存输入 3、trace id 或累计 grad</td>
+</tr>
+<tr>
+<td>M</td>
+<td>VJPNode</td>
+<td>parents=(R,R)，vjp(g) 为两个输入位置返回贡献</td>
+<td>不保存名为 argnums/value 的字段</td>
+</tr>
+<tr>
+<td>Bx（forward 中）</td>
+<td>ArrayBox</td>
+<td><code>_value=3</code>，<code>_trace=0</code>，<code>_node=R</code></td>
+<td>不保存 backward 总梯度</td>
+</tr>
+<tr>
+<td>Bz（forward 中）</td>
+<td>ArrayBox</td>
+<td><code>_value=9</code>，<code>_trace=0</code>，<code>_node=M</code></td>
+<td>不保存自己的 parents 字段</td>
+</tr>
+<tr>
+<td>外层 vjp closure</td>
+<td>Python function</td>
+<td>正常分支捕获 M</td>
+<td>不缓存某次 seed 的 outgrads</td>
+</tr>
+</tbody>
+</table>
+<p>Box 在 forward 中让值继续流动；完成 trace 后，不要求 reverse traversal 再持有这些 Box 外壳。Node 的 parent 链与必要闭包引用足以做反向计算。</p>
+<h3 id="state-snapshot_1">STATE SNAPSHOT：按真实语句逐状态执行</h3>
+<p>下表以数值 1/3/6 缩写 NumPy scalar 或 0 维数组，保留真实 dict/tuple 结构和布尔 flag。<code>grad</code> 的初始 1 是输出空间创建的 0 维 ones。</p>
+<table>
+<thead>
+<tr>
+<th>步骤 / 正在执行的语句</th>
+<th>node</th>
+<th>outgrad / upstream g</th>
+<th>ingrads 或当前 ingrad</th>
+<th>previous outgrad</th>
+<th>执行后的 outgrads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始化字典</td>
+<td>尚未遍历</td>
+<td>g=1</td>
+<td>尚未计算</td>
+<td>无</td>
+<td><code>{M:(1,False)}</code></td>
+</tr>
+<tr>
+<td>第一次 <code>toposort</code> yield</td>
+<td>M</td>
+<td>尚未 pop</td>
+<td>尚未计算</td>
+<td>无</td>
+<td><code>{M:(1,False)}</code></td>
+</tr>
+<tr>
+<td><code>outgrad=outgrads.pop(M)</code></td>
+<td>M</td>
+<td><code>(1,False)</code>，g=1</td>
+<td>尚未计算</td>
+<td>M 项被取出</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>M.vjp(outgrad[0])</code></td>
+<td>M</td>
+<td>1</td>
+<td><code>(3,3)</code></td>
+<td>无</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td>zip 第1项，parent=R</td>
+<td>M</td>
+<td>1</td>
+<td>arg0 ingrad=3</td>
+<td><code>outgrads.get(R)=None</code></td>
+<td><code>{R:(3,False)}</code></td>
+</tr>
+<tr>
+<td>zip 第2项，parent=R</td>
+<td>M</td>
+<td>1</td>
+<td>arg1 ingrad=3</td>
+<td><code>(3,False)</code></td>
+<td><code>{R:(6,True)}</code></td>
+</tr>
+<tr>
+<td>第二次 <code>toposort</code> yield / pop</td>
+<td>R</td>
+<td><code>(6,True)</code>，g=6</td>
+<td>尚未调用 R.vjp</td>
+<td>R 项被取出</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>R.vjp(6)</code></td>
+<td>R</td>
+<td>6</td>
+<td><code>()</code></td>
+<td>无</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>zip(R.parents,())</code></td>
+<td>R</td>
+<td>6</td>
+<td>空迭代，不再写入</td>
+<td>无</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>return outgrad[0]</code></td>
+<td>最后节点 R</td>
+<td>6</td>
+<td>已结束</td>
+<td>无</td>
+<td>用户收到 6</td>
+</tr>
+</tbody>
+</table>
+<p>第一次是 <code>None + 3 -&gt; 3</code>，这里的 None 表示尚未收到任何 contribution，而不是参与数学加法的数。第二次是 <code>3 + 3 -&gt; 6</code>。两条边来自 multiply 的两个参数位置，并不要求两个不同的父对象。<code>pop</code> 只移除本次查询的梯度项，不会删除节点或修改 <code>parents/vjp</code>；所以闭包可以在新的查询中复用同一个图。</p>
+<h3 id="add_outgrads">add_outgrads：数学求和与表示管理</h3>
+<p>[TEACHING SIMPLIFICATION]<br />
+以下不是 HIPS/autograd verbatim source。省略 sparse、VSpace、可变优化，仅用稠密标量说明缺失值与贡献求和。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">teaching_add_outgrads</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">contribution</span><span class="p">):</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="k">return</span> <span class="n">contribution</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="k">return</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">contribution</span>
+</code></pre></div>
+<p>该模型输入是“之前收到的总量”和“这条边的新贡献”，输出新的总量；调用者将结果写回同一个 parent。它对应 partial-adjoint sum，下一次同 parent 的贡献又会进入此函数。真实实现还需避免不恰当地原地修改调用者或共享路径持有的数组，因此多了 flag。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L201-L205"><code>add_outgrads, first contribution branch</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>            <span class="k">return</span> <span class="n">sparse_add</span><span class="p">(</span><span class="n">vspace</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">g</span><span class="p">),</span> <span class="kc">True</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>            <span class="k">return</span> <span class="n">g</span><span class="p">,</span> <span class="kc">False</span>
+</code></pre></div>
+<p>这是函数最外层 <code>if prev_g_flagged</code> 的 else 原文。第一次 R 没有条目，<code>prev_g_flagged=None</code>；本例 <code>g=3</code> 是 dense，因此返回 <code>(3,False)</code>。它直接保存收到的值，没有制造一个零再相加，也没有声称该值已可供原地改写。随后 caller 将这个 tuple 写入 <code>outgrads[R]</code>。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L185-L200"><code>add_outgrads, existing contribution branch</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">add_outgrads</span><span class="p">(</span><span class="n">prev_g_flagged</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">sparse</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sparse_object_types</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="k">if</span> <span class="n">prev_g_flagged</span><span class="p">:</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>        <span class="n">vs</span> <span class="o">=</span> <span class="n">vspace</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>        <span class="n">prev_g</span><span class="p">,</span> <span class="n">mutable</span> <span class="o">=</span> <span class="n">prev_g_flagged</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>        <span class="k">if</span> <span class="n">mutable</span><span class="p">:</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>            <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>                <span class="k">return</span> <span class="n">sparse_add</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">prev_g</span><span class="p">,</span> <span class="n">g</span><span class="p">),</span> <span class="kc">True</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>                <span class="k">return</span> <span class="n">vs</span><span class="o">.</span><span class="n">mut_add</span><span class="p">(</span><span class="n">prev_g</span><span class="p">,</span> <span class="n">g</span><span class="p">),</span> <span class="kc">True</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>            <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>                <span class="n">prev_g_mutable</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">mut_add</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">prev_g</span><span class="p">)</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>                <span class="k">return</span> <span class="n">sparse_add</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">prev_g_mutable</span><span class="p">,</span> <span class="n">g</span><span class="p">),</span> <span class="kc">True</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>                <span class="k">return</span> <span class="n">vs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prev_g</span><span class="p">,</span> <span class="n">g</span><span class="p">),</span> <span class="kc">True</span>
+</code></pre></div>
+<p>第二次输入为 <code>prev_g_flagged=(3,False)</code>、<code>g=3</code>。非空 tuple 为真，即使它的数值部分为零也仍会走 existing 分支。<code>vs</code> 是新 contribution 的 vector space；<code>mutable=False</code>、<code>sparse=False</code>，所以命中最末行 <code>vs.add(3,3)</code>，返回 <code>(6,True)</code>。<strong>第二次用的是 add，不是 mut_add。</strong> 第三次 dense contribution 若到来，才命中 <code>mutable=True</code> 的 <code>vs.mut_add</code> 分支。</p>
+<p>flag 不表示“可微/不可微”，也不表示“这个节点访问过没有”；它描述累计值的可变累加许可。对 float，True 也不是宣称 Python float 变成可变对象；这是通用 vector-space 协议。完整位置：<code>autograd/core.py :: add_outgrads</code>。上面两个原文区段合起来覆盖真实分支，阅读当前例子只沿 dense 路径即可。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L243-L245"><code>VSpace.add</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>    <span class="nd">@primitive</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_prev</span><span class="p">,</span> <span class="n">x_new</span><span class="p">):</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">x_prev</span><span class="p">,</span> <span class="n">x_new</span><span class="p">)</span>
+</code></pre></div>
+<p>此处接到 <code>vs.add(3,3)</code>，将相加交给该 VSpace 的 <code>_add</code>；当前基类 <code>_add</code> 返回 <code>x+y</code>。<code>add</code> 本身是 primitive，使累加操作也可参与外层求导。这是数据类型操作层；它产生的 6 最后仍由 <code>backward_pass</code> 写回字典，而非写入 R.grad。</p>
+<h3 id="toposort-r">toposort 为什么让 R 最后才能消费</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/util.py"><code>autograd/util.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/util.py#L21-L40"><code>toposort</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">toposort</span><span class="p">(</span><span class="n">end_node</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;parents&quot;</span><span class="p">)):</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">child_counts</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="n">end_node</span><span class="p">]</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>        <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">child_counts</span><span class="p">:</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>            <span class="n">child_counts</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>            <span class="n">child_counts</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>            <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parents</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="n">childless_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">end_node</span><span class="p">]</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="k">while</span> <span class="n">childless_nodes</span><span class="p">:</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>        <span class="n">node</span> <span class="o">=</span> <span class="n">childless_nodes</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>        <span class="k">yield</span> <span class="n">node</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>            <span class="k">if</span> <span class="n">child_counts</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>                <span class="n">childless_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>                <span class="n">child_counts</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>进入时从 M 向 parents 收集依赖，第一阶段得到 <code>child_counts[M]=1</code>、<code>child_counts[R]=2</code>，重复父引用被计数两次。第二阶段先 yield M；生成器暂停期间 <code>backward_pass</code> 完整处理 M 的两条贡献。恢复后，两次 parent 处理将 R 的未完成依赖计数从 2 处理到可入队状态，之后才 yield R。</p>
+<p>所以 <code>toposort</code> 在本文件中的输出顺序本来就是 output-before-input；caller 没有再调用 reversed。对更复杂的汇合，所有下游子节点贡献都完成后才会处理当前节点，这是局部 VJP 只需调用一次仍能正确传播总 cotangent 的原因。函数最后遍历到输入 root，解释了 <code>return outgrad[0]</code> 为何得到输入而非输出梯度。</p>
+<h3 id="pdf-14">与课程 PDF 第 14 页逐行映射</h3>
+<p>下面对照 <a href="https://mlsyscourse.org/slides/04-automatic-differentiation.pdf#page=14">Automatic Differentiation 讲义</a> 第 14 页的 Reverse AD Algorithm。下面按原页的每个算法步骤映射；数学符号用文字/ASCII 转写，不作为 HIPS 原文代码块。</p>
+<table>
+<thead>
+<tr>
+<th>讲义伪代码</th>
+<th>HIPS/autograd 1.9.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_to_grad={out:[1]}</code></td>
+<td><code>outgrads={end_node:(g,False)}</code>，其中 <code>grad</code> 传入的 <code>g</code> 是 output ones</td>
+</tr>
+<tr>
+<td><code>reverse_topo_order(out)</code></td>
+<td><code>for node in toposort(end_node)</code></td>
+</tr>
+<tr>
+<td><code>sum(node_to_grad[i])</code></td>
+<td>当前实现不保留 list；每次写 parent 时由 <code>add_outgrads</code> 增量合并</td>
+</tr>
+<tr>
+<td><code>upstream * local derivative</code></td>
+<td><code>ingrads=node.vjp(outgrad[0])</code></td>
+</tr>
+<tr>
+<td>append partial adjoint</td>
+<td><code>outgrads[parent]=add_outgrads(...)</code></td>
+</tr>
+<tr>
+<td>return input adjoint</td>
+<td>循环最后的 root <code>outgrad[0]</code></td>
+</tr>
+</tbody>
+</table>
+<p>PDF 的 <code>for k in inputs(i)</code> 对应 <code>zip(node.parents,ingrads)</code>：这里的输入必须按 operation 输入位置理解，本例 R 出现两次。PDF 在访问节点时 <code>sum(list)</code>；本实现把求和提前到每次写 parent 时，因此 <code>outgrads.pop(node)</code> 拿到的已经是总量。数据结构、求和时机不同，链式法则相同。</p>
+<table>
+<thead>
+<tr>
+<th>PDF 步骤在 x*x 上的状态</th>
+<th>本实现对应状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{z:[1]}</code></td>
+<td><code>{M:(1,False)}</code></td>
+</tr>
+<tr>
+<td><code>sum([1])=1</code></td>
+<td><code>outgrad[0]=1</code></td>
+</tr>
+<tr>
+<td>输入位置0 append 3</td>
+<td>R 从 None 变成 <code>(3,False)</code></td>
+</tr>
+<tr>
+<td>输入位置1 append 3，列表为 <code>[3,3]</code></td>
+<td>R 提前合并为 <code>(6,True)</code></td>
+</tr>
+<tr>
+<td>访问 x 后 <code>sum([3,3])=6</code></td>
+<td>pop R 直接得到 6</td>
+</tr>
+<tr>
+<td>return input adjoint</td>
+<td>返回最后一次 outgrad 的数值 6</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">实验验证</h2>
+<p><a href="../../../../assets/autograd/experiments/multiple_paths.py">完整实验：multiple_paths.py</a>。运行环境、资源目录及路径配置见<a href="../00-overview/#experiments">系列总览</a>。下方命令以解压后的资源目录为工作目录。</p>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/multiple_paths.py"><code>experiments/multiple_paths.py</code></a><br />
+Purpose: 记录真实 add_outgrads 的 previous、contribution、result，验证重复父边的两次合并。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">logging_add_outgrads</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">contribution</span><span class="p">):</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">original_add_outgrads</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">contribution</span><span class="p">)</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>        <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">previous</span><span class="p">,</span> <span class="n">contribution</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>        <span class="k">return</span> <span class="n">result</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">core</span><span class="o">.</span><span class="n">add_outgrads</span> <span class="o">=</span> <span class="n">logging_add_outgrads</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="mf">3.0</span><span class="p">)</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>        <span class="n">core</span><span class="o">.</span><span class="n">add_outgrads</span> <span class="o">=</span> <span class="n">original_add_outgrads</span>
+</code></pre></div>
+<p>进入此区段前 <code>original_add_outgrads</code> 已保存原函数，<code>events=[]</code>。wrapper 先执行真实累加，再记录参数与结果；因此没有在实验中替换数学逻辑。临时替换仅发生在该 Python 进程内，finally 恢复；磁盘上的 HIPS 源码未改。下一步断言检查结果为 6、贡献列表恰为 <code>[3.0,3.0]</code>。</p>
+<p>运行 <code>python -B experiments/multiple_paths.py</code>，现有结果的数值摘要：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>call 1: previous=None, contribution=3, accumulated=(3,False)
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>call 2: previous=(3,False), contribution=3, accumulated=(6,True)
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>gradient contributions: 3 + 3 = 6
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>all checks passed
+</code></pre></div>
+<h2 id="_6">理论与源码的对应关系</h2>
+<table>
+<thead>
+<tr>
+<th>Level 2 AD</th>
+<th>Level 3 implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>output adjoint</td>
+<td><code>g</code> passed to VJP closure</td>
+</tr>
+<tr>
+<td>local pullback</td>
+<td><code>VJPNode.vjp</code></td>
+</tr>
+<tr>
+<td>reverse graph walk</td>
+<td><code>toposort(end_node)</code></td>
+</tr>
+<tr>
+<td>partial adjoint</td>
+<td>each <code>ingrad</code></td>
+</tr>
+<tr>
+<td>accumulation</td>
+<td><code>add_outgrads</code></td>
+</tr>
+<tr>
+<td>zero derivative for independent output</td>
+<td>independent-output closure returns <code>vspace(x).zeros()</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_7">几个自测问题</h2>
+<ol>
+<li>为什么 <code>VJPNode</code> 不必保存完整 Jacobian？</li>
+<li>若不使用反向拓扑顺序，何时可能过早消费一个 node？</li>
+<li><code>outgrads</code> 为什么以 node 为 key，而不是变量名？</li>
+</ol>
+<h2 id="_8">小结</h2>
+<p>VJPNode 保存 parents 和等待 g 的局部函数，backward_pass 为每次查询建立独立累计表。重复输入边保留两条贡献；add_outgrads 先接收 3，再用 vs.add 合并为 6，反向拓扑顺序保证 root 最后才被消费。</p>
+<h2 id="_9">下一篇</h2>
+<p>接下来读<a href="../06-numpy-vjps/">第六篇：NumPy Primitive 与 VJP</a>。</p>
+<h2 id="_10">参考资料</h2>
+<ul>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py">autograd/core.py</a>，固定 commit 原文件。</li>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_vjps.py">autograd/numpy/numpy_vjps.py</a>，固定 commit 原文件。</li>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/util.py">autograd/util.py</a>，固定 commit 原文件。</li>
+<li><a href="https://mlsyscourse.org/slides/04-automatic-differentiation.pdf">Automatic Differentiation lecture</a>。</li>
+</ul>
+<hr />
+<p><a href="../04-tracer/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../06-numpy-vjps/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<div class="zdd-article-taxonomy">
+  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#Autograd 源码学习</span></div>
+  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=autograd">#autograd</a><a class="zdd-tag-chip" href="../../../../tags/?tag=automatic-differentiation">#automatic-differentiation</a><a class="zdd-tag-chip" href="../../../../tags/?tag=python">#python</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-pixiv-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+    
+
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

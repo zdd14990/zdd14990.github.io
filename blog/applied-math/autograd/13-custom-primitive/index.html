@@ -1,0 +1,1018 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="如果一个计算已经被声明为 primitive，Autograd 就把它当作原子调用。原函数能算出值，并不意味着框架已经知道如何把 cotangent 拉回输入。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Autograd 源码学习（十三）：自定义 Primitive - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+  <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
+
+
+  <script>
+    window.zddSearchDataUrl = "../../../../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+  </script>
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/">
+  <meta property="og:title" content="Autograd 源码学习（十三）：自定义 Primitive - zdd14990">
+  <meta property="og:description" content="如果一个计算已经被声明为 primitive，Autograd 就把它当作原子调用。原函数能算出值，并不意味着框架已经知道如何把 cotangent 拉回输入。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-09-05">
+
+
+
+
+  <meta property="article:tag" content="autograd">
+
+  <meta property="article:tag" content="automatic-differentiation">
+
+  <meta property="article:tag" content="python">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/">
+  <meta name="twitter:title" content="Autograd 源码学习（十三）：自定义 Primitive - zdd14990">
+  <meta name="twitter:description" content="如果一个计算已经被声明为 primitive，Autograd 就把它当作原子调用。原函数能算出值，并不意味着框架已经知道如何把 cotangent 拉回输入。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Autograd \u6e90\u7801\u5b66\u4e60\uff08\u5341\u4e09\uff09\uff1a\u81ea\u5b9a\u4e49 Primitive",
+    "description": "\u5982\u679c\u4e00\u4e2a\u8ba1\u7b97\u5df2\u7ecf\u88ab\u58f0\u660e\u4e3a primitive\uff0cAutograd \u5c31\u628a\u5b83\u5f53\u4f5c\u539f\u5b50\u8c03\u7528\u3002\u539f\u51fd\u6570\u80fd\u7b97\u51fa\u503c\uff0c\u5e76\u4e0d\u610f\u5473\u7740\u6846\u67b6\u5df2\u7ecf\u77e5\u9053\u5982\u4f55\u628a cotangent \u62c9\u56de\u8f93\u5165\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/autograd/13-custom-primitive/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-09-05",
+    "keywords": ["autograd", "automatic-differentiation", "python"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#autograd-primitive" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        必要的数学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一个最小例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对应的 Autograd 源码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        调用时序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        源码 walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="源码 walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vjp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        缺失 VJP 在哪个时刻暴露
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maker-closure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        登记函数写的是 maker，节点保存的是本次 closure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-snapshot-primitive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STATE SNAPSHOT：同一 primitive 的注册前后
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        捕获 forward state 与高阶导数的边界
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        理论与源码的对应关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个自测问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一篇
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+<div class="zdd-reading-dates">
+  <span>发布于 <time datetime="2026-09-05">2026-09-05</time></span>
+  
+</div>
+
+<h1 id="autograd-primitive">Autograd 源码学习（十三）：自定义 Primitive</h1>
+<p>如果一个计算已经被声明为 primitive，Autograd 就把它当作原子调用。原函数能算出值，并不意味着框架已经知道如何把 cotangent 拉回输入。</p>
+<p>这里继续使用教材中的 square 实验，先观察 missing VJP 在哪里失败，再登记 staged rule，并用上一篇的 checker 验证到二阶。</p>
+<p><a href="../12-numerical-gradient-checking/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../14-mini-autograd-design/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<p>源码基线：HIPS/autograd 1.9.1，commit <code>f53a21734fdfae636f448744d9097d8d35a643a0</code>。</p>
+<h2 id="_1">本文目标</h2>
+<ol>
+<li><code>@primitive</code> 承诺了什么，又没有承诺什么？</li>
+<li>未注册 VJP 时为何 forward 成功而 <code>grad</code> 失败？</li>
+<li>怎样写支持高阶导数的 staged VJP？</li>
+</ol>
+<h2 id="mental-model">Mental Model</h2>
+<p><code>@primitive</code> 把函数声明为 tracing 的原子黑盒：Autograd 执行它得到 forward value，但不会进入函数体逐个记录内部 operations。要做 reverse mode，使用者必须为 differentiable arguments 注册局部 pullback。</p>
+<h2 id="_2">必要的数学</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>square(x)=x^2
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>local VJP(g)=g*2x
+</code></pre></div>
+<p>局部规则必须乘 upstream <code>g</code>；只返回 <code>2x</code> 只在 <code>g=1</code> 的特殊顶层 scalar 情形碰巧正确。</p>
+<h2 id="_3">一个最小例子</h2>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/custom_primitive.py"><code>experiments/custom_primitive.py</code></a><br />
+Purpose: 将平方声明为 primitive，以便单独观察缺失 VJP 与注册后的行为。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@primitive</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+</code></pre></div>
+<p>注册前调用 <code>square(3.0)</code> 可 forward 得 9；<code>grad(square)(3.0)</code> 在 <code>VJPNode</code> 构造时找不到 registry entry。这里必须使用浮点输入：整数3在当前类型注册下会更早因不能装箱而失败，不能拿它验证 missing VJP。</p>
+<p><code>@primitive</code> 执行时把 raw square 包装成 callable；raw body 接收到已解箱的数值，内部 <code>x*x</code> 是普通数值计算，不会自动变成内部 multiply node。primitive 边界整体需要一条自己的规则。这正是包装外部库调用时所需要的扩展接口。</p>
+<h2 id="autograd">对应的 Autograd 源码</h2>
+<table>
+<thead>
+<tr>
+<th>File / symbol</th>
+<th>谁调用</th>
+<th>它调用谁</th>
+<th>输入 -&gt; 输出</th>
+<th>AD 角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>autograd.extend :: primitive</code></td>
+<td>extension author</td>
+<td><code>tracer.primitive</code></td>
+<td>raw function -&gt; wrapped black box</td>
+<td>声明原子 operation</td>
+</tr>
+<tr>
+<td><code>autograd.extend :: defvjp</code></td>
+<td>extension author</td>
+<td><code>core.defvjp</code></td>
+<td>primitive/rule makers -&gt; registry</td>
+<td>reverse extension API</td>
+</tr>
+<tr>
+<td><code>core.py :: VJPNode.__init__</code></td>
+<td>primitive wrapper</td>
+<td><code>primitive_vjps[fun]</code></td>
+<td>operation info -&gt; local VJP</td>
+<td>missing rule failure point</td>
+</tr>
+<tr>
+<td><code>core.py :: translate_vjp</code></td>
+<td><code>defvjp</code></td>
+<td>zero/callable validation</td>
+<td>maker spec -&gt; normalized maker</td>
+<td><code>None</code> 表示零 VJP</td>
+</tr>
+<tr>
+<td><code>examples/define_gradient.py :: logsumexp_vjp</code></td>
+<td>official demo</td>
+<td>wrapped NumPy ops</td>
+<td>ans,x -&gt; closure(g)</td>
+<td>staged stable custom rule</td>
+</tr>
+<tr>
+<td><code>test_util.py :: check_grads</code></td>
+<td>extension author/tests</td>
+<td>numerical JVP/VJP</td>
+<td>custom function -&gt; assertions</td>
+<td>rule validation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">调用时序</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>@primitive -&gt; wrapped square
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>square(ArrayBox)
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  -&gt; raw square(3)=9, no tracing inside body
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  -&gt; VJPNode tries primitive_vjps[square]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  -&gt; before defvjp: NotImplementedError
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>defvjp(square, maker)
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  -&gt; primitive_vjps[square]=normalized maker
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  -&gt; next trace stores closure g -&gt; g*2*x
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>  -&gt; backward returns 6
+</code></pre></div>
+<h2 id="walkthrough">源码 walkthrough</h2>
+<p>官方 <code>examples/define_gradient.py</code> 使用数值稳定的 <code>logsumexp</code>，其注释给出三个关键设计理由：primitive 可包外部库或有原地操作的代码；VJP closure 可依赖 <code>x</code> 与 <code>ans</code>；若要高阶导数，closure 内部必须由 Autograd 可微操作构成。</p>
+<p>当前推荐扩展入口是：</p>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/custom_primitive.py"><code>experiments/custom_primitive.py</code></a><br />
+Purpose: 使用当前扩展入口与仓库自带 checker，不修改核心文件。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">autograd.extend</span><span class="w"> </span><span class="kn">import</span> <span class="n">defvjp</span><span class="p">,</span> <span class="n">primitive</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">autograd.test_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_grads</span>
+</code></pre></div>
+<p>这些 import 分别得到 tracer 包装器、core 登记函数和数值检查工具。随后由实验进程调用扩展 API，无需在核心源码文件里硬编码 square 的规则。</p>
+<h3 id="vjp">缺失 VJP 在哪个时刻暴露</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L39-L46"><code>VJPNode.__init__</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">parent_argnums</span><span class="p">,</span> <span class="n">parents</span><span class="p">):</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>            <span class="n">vjpmaker</span> <span class="o">=</span> <span class="n">primitive_vjps</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>            <span class="n">fun_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="n">fun</span><span class="p">)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VJP of </span><span class="si">{</span><span class="n">fun_name</span><span class="si">}</span><span class="s2"> wrt argnums </span><span class="si">{</span><span class="n">parent_argnums</span><span class="si">}</span><span class="s2"> not defined&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">vjp</span> <span class="o">=</span> <span class="n">vjpmaker</span><span class="p">(</span><span class="n">parent_argnums</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+<p>进入此构造器时 raw square 已经算出 <code>value=9</code>，<code>fun</code> 是 square 的包装函数，<code>args=(3.0,)</code>、<code>parent_argnums=(0,)</code>，parents 包含输入 root。查表失败后抛错；没有生成一个可用的输出节点，也还没有运行 backward。错误的含义是“原数值计算可执行，但这个 primitive 的反向语义尚未登记”。</p>
+<h3 id="maker-closure">登记函数写的是 maker，节点保存的是本次 closure</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L56-L57"><code>defvjp_argnums</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">defvjp_argnums</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">vjpmaker</span><span class="p">):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">primitive_vjps</span><span class="p">[</span><span class="n">fun</span><span class="p">]</span> <span class="o">=</span> <span class="n">vjpmaker</span>
+</code></pre></div>
+<p><code>defvjp(square,...)</code> 最后调用此 helper，把整体 maker 登记到全局进程内字典。key 是 square callable 的对象身份，不是字符串 "square"。之后新的一次 trace 才能在构造节点时取到它；调用登记函数不会为某次输入偷偷计算出一个梯度。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py"><code>autograd/core.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py#L102-L108"><code>translate_vjp</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">translate_vjp</span><span class="p">(</span><span class="n">vjpfun</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">argnum</span><span class="p">):</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">if</span> <span class="n">vjpfun</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="k">return</span> <span class="k">lambda</span> <span class="n">ans</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">vspace</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">argnum</span><span class="p">])</span><span class="o">.</span><span class="n">zeros</span><span class="p">()</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">vjpfun</span><span class="p">):</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="k">return</span> <span class="n">vjpfun</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bad VJP &#39;</span><span class="si">{</span><span class="n">vjpfun</span><span class="si">}</span><span class="s2">&#39; for &#39;</span><span class="si">{</span><span class="n">fun</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>进入时 <code>defvjp</code> 正在规范化某个参数位置的 maker。callable 原样保留；None 则变成“为此输入空间返回零”的规则。None 表示显式声明零导数，不能用它掩盖真正未知的规则，否则数值可能错误却不再报 missing VJP。产物交给 defvjp 的位置字典，之后由节点 construction 使用。</p>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/custom_primitive.py"><code>experiments/custom_primitive.py</code></a><br />
+Purpose: 登记正确的 staged square VJP，并立即验证数值和二阶 reverse rule。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>    <span class="n">defvjp</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ans</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span> <span class="o">*</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">derivative</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">square</span><span class="p">)(</span><span class="mf">3.0</span><span class="p">)</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="k">assert</span> <span class="n">derivative</span> <span class="o">==</span> <span class="mf">6.0</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">check_grads</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rev&quot;</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="mf">3.0</span><span class="p">)</span>
+</code></pre></div>
+<p>第一行发生在捕获并确认预期异常之后。maker 在新 trace 的 forward 节点构造时收到 ans=9,x=3，返回使用 x 的 closure；backward 的 g=1 到达后得到6。最后 checker 对 VJP 程序继续求导到二阶，确认规则用到的乘法也能被外层 trace 观察。实验没有登记 JVP，因此 modes 只选择 rev，不能把 reverse 检查通过表述为所有模式都已支持。</p>
+<h3 id="state-snapshot-primitive">STATE SNAPSHOT：同一 primitive 的注册前后</h3>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>registry[square]</th>
+<th>本次 value / Box / node</th>
+<th>g 与结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通 square(3.0)</td>
+<td>不存在也可执行</td>
+<td>无 Box，raw value=9</td>
+<td>不求导</td>
+</tr>
+<tr>
+<td>首次 grad 的 forward</td>
+<td>缺失</td>
+<td>输入有 Box/root，raw answer=9，输出节点构造失败</td>
+<td>尚无 backward g</td>
+</tr>
+<tr>
+<td>defvjp 执行后</td>
+<td>存在整体 maker</td>
+<td>尚未创建新的输入图</td>
+<td>尚无 g</td>
+</tr>
+<tr>
+<td>再次 grad 的 forward</td>
+<td>查得 maker</td>
+<td>节点 parents=(root,)，vjp 捕获 x=3</td>
+<td>等待 g</td>
+</tr>
+<tr>
+<td>backward</td>
+<td>registry 无需重新登记</td>
+<td>调用节点 vjp(1)</td>
+<td>contribution=6</td>
+</tr>
+<tr>
+<td>二阶检查</td>
+<td>同一规则</td>
+<td>closure 运算可被外层 trace</td>
+<td>检查导数程序</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>raw function -&gt; @primitive -&gt; ordinary forward works
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>                             |
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>                             +-&gt; traced forward -&gt; VJPNode registry miss
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>defvjp registers maker ------+
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>                             +-&gt; next traced forward -&gt; closure captures x
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>                                                        |
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>output seed g ------------------------------------------+-&gt; g*2*x -&gt; parent
+</code></pre></div>
+<h3 id="forward-state">捕获 forward state 与高阶导数的边界</h3>
+<p>本例 inner closure 引用 x，不引用 ans；因此它需要保留的是 x 的对象引用。exp 则使用 ans，第六篇 已展示过。不能只看 maker 的参数列表就断言所有 forward 参数都会长期被保存，也不能仅依据注释断言某个参数没有被捕获。</p>
+<p>当前官方 <code>examples/define_gradient.py :: logsumexp_vjp</code> 的返回表达式确实引用了 x 与 ans；其中“doesn't close over x”的注释与该 commit 的表达式不一致，应以实际表达式为准。这里保留官方例子关于可微 closure 的有效说明，但不沿用这句不准确的内存描述。</p>
+<p>primitive 的 raw 数值函数可以封装非 Autograd 实现，局部导数由你提供；要支持高阶微分，VJP 的计算过程仍必须使用可微操作。这里是扩展契约，不是自动解析任意黑盒函数的导数。</p>
+<h2 id="_5">实验验证</h2>
+<p><a href="../../../../assets/autograd/experiments/custom_primitive.py">完整实验：custom_primitive.py</a>。运行环境、资源目录及路径配置见<a href="../00-overview/#experiments">系列总览</a>。下方命令以解压后的资源目录为工作目录。</p>
+<p>运行 <code>python -B experiments/custom_primitive.py</code>，同一进程先失败、再注册、再验证：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>before defvjp: VJP of square wrt argnums (0,) not defined
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>after defvjp: grad(square)(3.0)=6.0
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>reverse-mode gradient check through order 2 passed
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>all checks passed
+</code></pre></div>
+<h2 id="_6">理论与源码的对应关系</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>AD system
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  = tracing machinery
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  + primitive numerical semantics
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  + registered JVP/VJP rules
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>  + chain rule traversal
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>  + contribution accumulation
+</code></pre></div>
+<p><code>primitive</code> 本身不是“自动发现数学导数”。unsupported operation 报 <code>VJP not defined</code> 通常正是缺少 registry rule，而不是 Python 无法执行 forward。</p>
+<h2 id="_7">几个自测问题</h2>
+<ol>
+<li>为什么 primitive 内部即使写了 <code>x*x</code>，Autograd 也不会自动使用 multiply VJP？</li>
+<li>staged maker 的外层与内层 closure 分别在什么时候运行？</li>
+<li>custom VJP 如何同时利用 forward answer 并避免不必要的引用保留？</li>
+</ol>
+<h2 id="_8">小结</h2>
+<p>primitive 定义追踪边界，defvjp 提供该边界的反向语义。maker 在 forward 捕获状态，closure 在 backward 接收 g；要支持高阶导数，这段 closure 自身也必须由可微操作组成。</p>
+<h2 id="_9">下一篇</h2>
+<p>接下来读<a href="../14-mini-autograd-design/">第十四篇：Mini Autograd：实现与源码对读</a>。</p>
+<h2 id="_10">参考资料</h2>
+<ul>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py">autograd/core.py</a>，固定 commit 原文件。</li>
+<li><a href="https://mlsyscourse.org/slides/04-automatic-differentiation.pdf">Automatic Differentiation lecture</a>。</li>
+</ul>
+<hr />
+<p><a href="../12-numerical-gradient-checking/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../14-mini-autograd-design/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<div class="zdd-article-taxonomy">
+  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#Autograd 源码学习</span></div>
+  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=autograd">#autograd</a><a class="zdd-tag-chip" href="../../../../tags/?tag=automatic-differentiation">#automatic-differentiation</a><a class="zdd-tag-chip" href="../../../../tags/?tag=python">#python</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-pixiv-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+    
+
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -3,6 +3,7 @@
 <html lang="zh" class="no-js">
   <head>
     
+
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
@@ -27,6 +28,29 @@
       <link rel="icon" href="../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
     
       
         <title>Blog - zdd14990</title>
@@ -47,19 +71,17 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../stylesheets/extra.css">
     
       <link rel="stylesheet" href="../stylesheets/solid-background.css">
     
+      <link rel="stylesheet" href="../stylesheets/site-layout.css">
+    
       <link rel="stylesheet" href="../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../stylesheets/reading.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -68,6 +90,7 @@
     
     
 
+  <link rel="stylesheet" href="../assets/fonts/wenkai/result.css">
 
 
   <script>
@@ -80,6 +103,7 @@
   <meta property="og:title" content="Blog - zdd14990">
   <meta property="og:description" content="zdd'blog">
   <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
 
 
 
@@ -115,6 +139,15 @@
     </div>
     
     
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "blog-index-layout");
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  
       
 
 
@@ -184,6 +217,7 @@
   </nav>
 </header>
     
+
     <div class="md-container" data-md-component="container">
       
       
@@ -367,6 +401,7 @@
                 
                   
   
+
 
 
 
@@ -1415,6 +1450,166 @@
 
 <details class="zdd-catalog-folder" data-level="0">
   <summary>
+    <span class="zdd-folder-name">Autograd</span>
+    <span class="zdd-folder-meta">15 篇 · 2026-09-05 - 2026-09-05 · 38,824 字</span>
+  </summary>
+  <div class="zdd-folder-content"><div>
+    <div class="zdd-catalog-posts">
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/00-overview/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习系列总览</span>
+  <span class="zdd-post-preview">用过自动微分之后，很自然会想知道：输入仍然是一段普通 Python 程序，梯度究竟是在什么时刻、由哪些对象算出来的？这个系列沿 HIPS/autograd 的实际调用链，把数学里的链式法则接到 Box、primitive、局部 VJP 和运行时状态上。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,385 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/01-ad-and-computational-graph/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（一）：自动微分与计算图</span>
+  <span class="zdd-post-preview">会用链式法则，并不意味着已经知道一段 Python 程序如何得到梯度。计算图把这个过程拆成了可以逐步检查的局部操作：先算出值，再沿依赖反向传回贡献。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,603 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/02-jvp-vjp/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（二）：JVP、VJP 与两种自动微分模式</span>
+  <span class="zdd-post-preview">上一篇把导数沿计算图传播的过程拆开了。面对向量输入和向量输出，接下来的问题是：我们究竟要得到整个 Jacobian，还是只需要知道它对某个方向的作用？</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,556 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/03-grad-call-chain/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（三）：从 grad 开始追踪完整调用链</span>
+  <span class="zdd-post-preview">现在已经知道 grad 最终要做一次 VJP 查询，但 grad(f)(3.0) 中还夹着参数适配、装箱、primitive 调用和图节点创建。只看最后两行反向代码，很容易漏掉这些对象是从哪里来的。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>3,571 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/04-tracer/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（四）：tracer.py 与动态计算图</span>
+  <span class="zdd-post-preview">上一篇已经走完 grad 的调用链，这里把镜头停在 primitive 收到 Box 的时刻。一个普通数值调用，要增加哪些状态，才能让后面的求导继续知道依赖来自哪里？</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>3,443 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/05-core-reverse-mode/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（五）：Reverse Mode 的核心实现</span>
+  <span class="zdd-post-preview">上一篇已经看到 primitive 如何产生 VJPNode。这里从 forward 留下的 end node 开始，检查局部规则怎样接到输出 seed，又怎样把贡献交给同一个输入。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>4,256 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/06-numpy-vjps/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（六）：NumPy Primitive 与 VJP</span>
+  <span class="zdd-post-preview">通用 reverse engine 已经知道怎样调用 node.vjp(g) ，但它并不知道 sin、exp 或乘法的导数。数学语义来自 NumPy 集成中为每个 primitive 登记的局部规则。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,699 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/07-broadcasting/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（七）：Broadcasting 的反向传播</span>
+  <span class="zdd-post-preview">上一篇的 binary VJP 总会出现 unbroadcast f 。即使局部导数的每个数字都算对了，若返回的 shape 不属于原输入空间，整个规则仍然是错的。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,157 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/08-forward-mode/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（八）：Forward Mode 与 JVPNode</span>
+  <span class="zdd-post-preview">到这里，reverse mode 的保存、等待和反向遍历已经完整了。换成 forward mode 后，tracer 仍然可用，但一个 operation 在创建节点时就已经拿到了所有 parent tangents。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,323 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/09-why-reverse-mode/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（九）：为什么机器学习偏爱 Reverse Mode</span>
+  <span class="zdd-post-preview">两种模式都能正确使用链式法则，差别在一次查询能得到多少导数信息。机器学习常见的输入是大量参数，输出却只有一个 loss，这个维度关系决定了 reverse mode 的优势。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>1,641 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/10-higher-order-ad/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（十）：高阶自动微分与 Nested Tracing</span>
+  <span class="zdd-post-preview">求完一阶导数后，Autograd 执行过的是一段由 VJP operations 组成的程序。若这段程序本身还能被追踪，就可以继续对它求导。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,940 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/11-operator-composition/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合</span>
+  <span class="zdd-post-preview">有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>1,773 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/12-numerical-gradient-checking/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（十二）：Numerical Gradient Checking</span>
+  <span class="zdd-post-preview">源码中的局部规则写得简洁，并不能替代独立验证。有限差分只使用函数值，为 AD 的方向、符号和 shape 提供了另一条检查路线。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,014 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/13-custom-primitive/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（十三）：自定义 Primitive</span>
+  <span class="zdd-post-preview">如果一个计算已经被声明为 primitive，Autograd 就把它当作原子调用。原函数能算出值，并不意味着框架已经知道如何把 cotangent 拉回输入。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,016 字</span>
+  </span>
+</a>
+
+<a class="zdd-post-card catalog" href="/blog/applied-math/autograd/14-mini-autograd-design/" data-tags="autograd automatic-differentiation python">
+  <span class="zdd-post-title">Autograd 源码学习（十四）：Mini Autograd：实现与源码对读</span>
+  <span class="zdd-post-preview">最后回到一个可以完整掌握的标量引擎。教材已有的 Mini Autograd 把值、父引用和梯度放在 Value 中，正好可以与 HIPS 中分开的 Box、VJPNode 和 outgrads 对照。</span>
+  <span class="zdd-post-meta">
+    <span>应用数学 / Autograd 源码学习</span>
+    <span>2026-09-05</span>
+    <span>2,447 字</span>
+  </span>
+</a>
+</div>
+  </div></div>
+</details>
+
+<details class="zdd-catalog-folder" data-level="0">
+  <summary>
     <span class="zdd-folder-name">应用数学</span>
     <span class="zdd-folder-meta">1 篇 · 2026-07-07 - 2026-07-07 · 20 字</span>
   </summary>
@@ -1516,12 +1711,12 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
+
+  <script src="../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
   
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
-      
-        <script src="../javascripts/mathjax.js"></script>
-      
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
       
         <script src="../javascripts/funny_title.js"></script>
       
@@ -1539,6 +1734,8 @@
 
 
   <script src="../javascripts/site-shell.js"></script>
+
+
 
   </body>
 </html>

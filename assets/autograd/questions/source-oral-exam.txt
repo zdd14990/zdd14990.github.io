@@ -1,0 +1,68 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# HIPS/autograd 源码口试
+
+请不要边看答案边回答。仓库基线为 commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
+
+[TEACHING SIMPLIFICATION]
+以下不是 HIPS/autograd verbatim source。这是保留的课程口试题，使用真实公开 API，但不是某个核心函数或现有实验文件的节选。省略测试夹具，只保留需解释的 loss 程序。
+
+```python
+import autograd.numpy as np
+from autograd import grad
+
+def loss(x, y):
+    a = np.sin(x)
+    b = x * y
+    c = a + b
+    return np.sum(c ** 2)
+
+g = grad(loss, 0)
+```
+
+## 口头解释
+
+1. `grad(loss,0)` 创建时做什么，真正 trace 何时开始？
+2. `unary_to_nary` 如何只替换参数 `x`？
+3. root node 与 start Box 分别是什么？
+4. `sin` 如何通过 `autograd.numpy` 成为 primitive operation？
+5. `multiply` 如何确定 boxed argument positions 与 parents？
+6. `a`, `b`, `c` 对应的 Python objects 和 nodes 有何区别？
+7. 当前实现中 computational graph 存在哪里？
+8. 每个 `VJPNode` 保存什么，不保存什么？
+9. forward evaluation 的哪些 state 会被 VJP closure 捕获？
+10. `sum(c**2)` 的 output adjoint 为什么是 scalar 1？
+11. `backward_pass` 使用怎样的遍历顺序？
+12. power 与 sum 的 VJP 各如何传播 shape 和 cotangent？
+13. add node 如何把 upstream 分给 `a` 与 `b`？
+14. `x` 从 `sin(x)` 和 `x*y` 收到的两条 contribution 在哪里汇合？
+15. `add_outgrads` 的 `(gradient,mutable_flag)` 表示什么？
+16. `unbroadcast` 可能在哪些 operation rules 中介入？
+17. 最终 gradient 的解析表达式是什么？
+18. 若 `loss` 返回 `c**2` 而不 `sum`，`grad` 会怎样？
+19. `grad(grad(...))` 时 TraceStack 如何避免层次混乱？
+20. 如何用 `check_grads` 独立验证该函数？
+
+## 手绘任务
+
+画出两张图：
+
+1. forward computational graph，标出 `sin`, multiply, add, power, sum 与 parents。
+2. backward flow，标出 output seed、每个 local VJP、`x` 的两条 pathway 与 accumulation。
+
+## 源码定位任务
+
+不使用全文总结，只通过 `rg` 找出并说明：
+
+```text
+differential_operators.py :: grad
+wrap_util.py :: unary_to_nary
+core.py :: make_vjp / VJPNode / backward_pass / add_outgrads
+tracer.py :: trace / primitive / Box / find_top_boxed_args
+util.py :: toposort
+numpy_boxes.py :: ArrayBox
+numpy_vjps.py :: sin / multiply / add / power / sum rules
+test_util.py :: check_grads
+```
+
+验收标准：回答必须始终区分数学导数、AD 抽象算法与 Python 实现对象；能指出具体 symbol，而不是只复述“Autograd 会自动反向传播”。

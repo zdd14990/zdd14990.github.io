@@ -1,88 +1,3 @@
-/* Final solid-background override.
-   This file has a new URL, so deployed browsers won't reuse the old cached
-   extra.css that still painted the former wallpaper. */
-
-:root,
-html,
-body,
-.md-container,
-.md-main,
-.md-main__inner {
-    background: #eaf5fb !important;
-    background-color: #eaf5fb !important;
-    background-image: none !important;
-}
-
-body,
-body.zdd-minimal-layout,
-body.home-layout,
-body.blog-index-layout,
-body.tag-layout,
-body.article-layout {
-    background: #eaf5fb !important;
-    background-color: #eaf5fb !important;
-    background-image: none !important;
-}
-
-body::before,
-body::after,
-body.zdd-minimal-layout::before,
-body.zdd-minimal-layout::after,
-.md-container::before,
-.md-container::after,
-.md-main::before,
-.md-main::after,
-.minimal-home::before,
-.minimal-home::after {
-    content: none !important;
-    display: none !important;
-    opacity: 0 !important;
-    background: none !important;
-    background-image: none !important;
-}
-
-body.zdd-minimal-layout .md-container,
-body.zdd-minimal-layout .md-main,
-body.zdd-minimal-layout .md-main__inner,
-body.zdd-minimal-layout .md-content__inner,
-body.zdd-minimal-layout .md-typeset,
-.minimal-home,
-.minimal-home-hero,
-.minimal-recent {
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
-}
-
-[data-md-color-scheme="slate"],
-[data-md-color-scheme="slate"] html,
-[data-md-color-scheme="slate"] body,
-[data-md-color-scheme="slate"] .md-container,
-[data-md-color-scheme="slate"] .md-main,
-[data-md-color-scheme="slate"] .md-main__inner,
-body[data-md-color-scheme="slate"],
-body[data-md-color-scheme="slate"].zdd-minimal-layout,
-body[data-md-color-scheme="slate"].home-layout,
-body[data-md-color-scheme="slate"].blog-index-layout,
-body[data-md-color-scheme="slate"].tag-layout,
-body[data-md-color-scheme="slate"].article-layout {
-    background: #101924 !important;
-    background-color: #101924 !important;
-    background-image: none !important;
-}
-
-body.article-layout .md-content,
-body.zdd-minimal-layout.article-layout .md-content {
-    background-color: rgba(255, 255, 255, 0.94) !important;
-    background-image: none !important;
-}
-
-body.article-layout[data-md-color-scheme="slate"] .md-content,
-[data-md-color-scheme="slate"] body.article-layout .md-content,
-body[data-md-color-scheme="slate"].article-layout .md-content {
-    background-color: rgba(30, 32, 48, 0.92) !important;
-    background-image: none !important;
-}
 /* Compact, unified cards and navigation */
 :root {
     --zdd-surface: rgba(247, 252, 255, 0.96);
@@ -740,25 +655,6 @@ body[data-md-color-scheme="slate"].blog-index-layout .md-typeset h1 {
     color: var(--zdd-surface-muted) !important;
 }
 
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav--secondary,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-sidebar__scrollwrap {
-    background: var(--zdd-surface) !important;
-    color: var(--zdd-surface-ink) !important;
-    border: 1px solid var(--zdd-surface-border) !important;
-    box-shadow: var(--zdd-surface-shadow) !important;
-}
-
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav__title,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav__link,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav__item {
-    color: var(--zdd-surface-ink) !important;
-}
-
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav__link:hover,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav__link--active {
-    color: #f1fbff !important;
-}
-
 /* Final polish overrides */
 body.blog-index-layout .zdd-catalog-folder > summary::before,
 body.blog-index-layout .zdd-catalog-folder > summary .twemoji,
@@ -807,23 +703,6 @@ body[data-md-color-scheme="slate"].home-layout .zdd-post-preview,
 body[data-md-color-scheme="slate"].home-layout .zdd-post-meta,
 body[data-md-color-scheme="slate"].home-layout .zdd-search-meta {
     color: var(--zdd-surface-muted) !important;
-}
-
-body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap,
-[data-md-color-scheme="slate"] body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-sidebar__scrollwrap {
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-}
-
-[data-md-color-scheme="slate"] body.article-layout .md-sidebar--secondary .md-nav--secondary,
-body[data-md-color-scheme="slate"].article-layout .md-sidebar--secondary .md-nav--secondary {
-    background: var(--zdd-surface) !important;
-    color: var(--zdd-surface-ink) !important;
-    border: 1px solid var(--zdd-surface-border) !important;
-    box-shadow: var(--zdd-surface-shadow) !important;
 }
 
 .zdd-blog-catalog {
@@ -946,6 +825,115 @@ html {
         scroll-behavior: auto;
     }
 }
+
+/* A hidden horizontal overflow created a non-scrolling sticky container. */
+body.article-layout {
+    overflow-x: clip;
+    overflow-y: visible;
+}
+
+@media screen and (min-width: 60em) {
+    body.article-layout .md-sidebar--secondary {
+        position: sticky !important;
+        top: 4rem !important;
+        align-self: flex-start;
+        padding: 0;
+        height: auto !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap {
+        margin: 0 !important;
+        max-height: calc(100vh - 5rem) !important;
+        max-height: calc(100dvh - 5rem) !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar {
+        display: block;
+        width: 5px !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-nav--secondary {
+        margin: 0 !important;
+        border-radius: 8px !important;
+        padding: 0.7rem !important;
+        font-size: 0.7rem;
+        box-shadow: none !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-nav__link {
+        line-height: 1.5;
+    }
+}
+
+.zdd-toc-toggle { display: none; }
+.zdd-toc-toggle[hidden] { display: none !important; }
+@media screen and (max-width: 59.984375em) {
+    .zdd-toc-toggle {
+        display: grid;
+        place-items: center;
+        position: fixed;
+        right: 1rem;
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--zdd-surface-border);
+        background: var(--zdd-surface, #fff);
+        color: var(--zdd-surface-ink, #253743);
+        box-shadow: 0 2px 12px #0002;
+        z-index: 20;
+        cursor: pointer;
+    }
+}
+
+.zdd-toc-dialog {
+    width: min(28rem, calc(100% - 1.5rem));
+    max-height: min(80dvh, 36rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--zdd-surface-border);
+    border-radius: 8px;
+    background: var(--md-default-bg-color, #fff);
+    color: var(--md-default-fg-color, #253743);
+    overscroll-behavior: contain;
+}
+.zdd-toc-dialog::backdrop { background: #0007; }
+.zdd-toc-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--md-default-bg-color, #fff);
+    border-bottom: 1px solid var(--zdd-surface-border);
+    z-index: 1;
+}
+.zdd-toc-header button { width: 2rem; height: 2rem; cursor: pointer; }
+.zdd-toc-list { list-style: none; margin: 0; padding: 0.4rem 0.8rem 0.8rem; }
+.zdd-toc-list a { display: block; padding: 0.5rem; font-size: 0.8rem; line-height: 1.5; overflow-wrap: anywhere; }
+.zdd-toc-list li { padding-left: calc(var(--zdd-toc-level, 0) * 0.6rem); }
+.zdd-toc-list a[aria-current] { color: var(--md-accent-fg-color); border-left: 3px solid currentColor; }
+.zdd-toc-list a:hover { background: var(--md-code-bg-color); }
+.zdd-toc-list a:focus-visible, .zdd-toc-toggle:focus-visible, .zdd-toc-header button:focus-visible { outline: 2px solid var(--md-accent-fg-color); outline-offset: 2px; }
+
+body.article-layout .md-typeset :is(h2, h3, h4, h5, h6)[id] {
+    scroll-margin-top: 4rem;
+}
+
+.md-typeset .zdd-flow {
+    list-style: none;
+    padding: 0 0 0 1rem;
+    margin: 1.3rem 0 1.3rem 0.5rem;
+    border-left: 2px solid var(--md-accent-fg-color);
+}
+.md-typeset .zdd-flow > li { position: relative; padding: 0.2rem 0 0.6rem 0.4rem; margin: 0; overflow-wrap: anywhere; }
+.md-typeset .zdd-flow > li::before { content: ""; position: absolute; left: -1.25rem; top: 0.75rem; width: 0.4rem; height: 0.4rem; background: var(--md-accent-fg-color); border-radius: 50%; }
+.md-typeset .zdd-computation-graph { display: block; width: 100%; max-width: 520px; height: auto; margin: 1.25rem auto; }
 
 /* Smooth visual fade for theme switching */
 html.zdd-theme-fading::before {

@@ -1,0 +1,55 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# 三阶求导的两种顺序
+
+基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。对应 [Lesson 10](https://zdd14990.github.io/blog/applied-math/autograd/10-higher-order-ad/) 与既有实验 `experiments/higher_order.py`。这是对象/时序示意，R/P/B 都是教学标签。
+
+## 调用栈先建立 0，再建立 1、2
+
+```text
+grad(grad(grad(f)))(2.0)
+  outer grad begins trace0, B0(value=2,node=R0)
+    middle grad begins trace1, B1(value=B0,node=R1)
+      inner grad begins trace2, B2(value=B1,node=R2)
+        original f receives B2
+```
+
+## 从原 f 看到的包裹层次是 2 -> 1 -> 0
+
+```text
+B2 [ArrayBox, _trace=2, _node=R2]
+ |_value
+ v
+B1 [ArrayBox, _trace=1, _node=R1]
+ |_value
+ v
+B0 [ArrayBox, _trace=0, _node=R0]
+ |_value
+ v
+2.0 [float]
+```
+
+## primitive 递归进入与返回
+
+```text
+power(B2,3) -> select trace2 -> args=(B1,3), parents=(R2,)
+  power(B1,3) -> select trace1 -> args=(B0,3), parents=(R1,)
+    power(B0,3) -> select trace0 -> args=(2,3), parents=(R0,)
+      raw power(2,3) -> 8
+    create P0 -> return Box0(value=8,node=P0)
+  create P1 -> return Box1(value=Box0,node=P1)
+create P2 -> return Box2(value=Box1,node=P2)
+```
+
+## 反向计算仍在外层被观察
+
+```text
+inner forward trace2 finishes -> top=1
+  inner VJP uses x=Box1 -> computes 3*x^2 -> derivative value12 in Box1
+middle forward trace1 finishes -> top=0
+  middle VJP differentiates the derivative program -> value12 in Box0
+outer forward trace0 finishes -> top=-1
+  outer VJP -> third derivative6 as an ordinary value
+```
+
+只解最高层让每个 trace 保留自己的依赖；VJP 使用可微 primitives 让 derivative program 本身可被外层观察。两者缺一不可。实验直接验证输入 Box 层次和12/12/6；P 节点的递归示意依据当前 primitive 源码推演。

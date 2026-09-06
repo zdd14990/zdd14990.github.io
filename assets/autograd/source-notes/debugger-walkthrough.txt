@@ -1,0 +1,104 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# Debugger Walkthrough - `grad(sin(x)*x)`
+
+## 【1. 今天解决的问题】
+
+1. 如何在不修改核心源码的情况下观察关键边界？
+2. forward nodes 与 backward contributions 的实际顺序是什么？
+3. 当前 commit 的断点应该设在哪里？
+
+## 【2. Mental Model】
+
+源码级 debugger 不用盯住每个 NumPy 内部调用。最有信息量的边界是 API seed、trace start、primitive wrapper、VJPNode construction、backward traversal 与 accumulation。
+
+## 【3. 数学】
+
+```text
+f(x)=sin(x)*x
+f'(x)=sin(x)+x*cos(x)
+x=2 -> 0.077003753731
+```
+
+direct multiply path contribution 是 `sin(2)=0.909297...`；sin path 的 multiply upstream 是 `2`，再乘 `cos(2)` 得 `-0.832293...`，汇合为 `0.077003...`。
+
+## 【4. 极简例子】
+
+[EXPERIMENT]
+File: experiments/debug_walkthrough.py  
+Purpose: 自动记录 sin 与 multiply 的真实源码调用边界。
+
+```python
+def f(x):
+    return np.sin(x) * x
+```
+
+这是实验中的原函数；main 调用 `grad(f)(2.0)`，返回值与解析导数核对。输入在 trace 中被装箱，函数输出经过真实 backward 得到下面的贡献记录。
+
+## 【5. Autograd 中对应哪里】
+
+当前 commit 的建议断点：
+
+| File | Symbol / 当前入口行 | 观察 locals |
+| --- | --- | --- |
+| `differential_operators.py` | `grad`, 24 | `fun,x,vjp,ans` |
+| `core.py` | `make_vjp`, 11 | `start_node,end_value,end_node` |
+| `tracer.py` | `trace`, 14 | `t,start_box,end_box` |
+| `tracer.py` | primitive inner `f_wrapped`, 52 | `boxed_args,argvals,parents,ans,node` |
+| `core.py` | `VJPNode.__init__`, 39 | `fun,parent_argnums,parents,vjpmaker` |
+| `core.py` | `backward_pass`, 26 | `g,node,outgrad,ingrads,outgrads` |
+| `core.py` | `add_outgrads`, 185 | `prev_g_flagged,g` |
+
+symbol name 优先于固定行号；切换 commit 后应重新搜索。
+
+## 【6. 调用链】
+
+```text
+grad -> make_vjp -> trace
+  -> sin primitive -> sin VJPNode
+  -> multiply primitive -> multiply VJPNode
+backward_pass(seed=1)
+  -> multiply VJP: sin node gets 2; root gets sin(2)
+  -> sin VJP: root gets 2*cos(2)
+  -> add_outgrads merges root contributions
+```
+
+## 【7. 关键源码】
+
+`experiments/debug_walkthrough.py` 使用标准库 `sys.settrace` 模拟一组自动化源码断点，只记录上述函数的 call/return；它不 monkeypatch 或修改仓库文件。实测捕获到 `sin`/`multiply` 的 `VJPNode.__init__`，以及三次 `add_outgrads`。
+
+最后两次与 root 有关的累加：
+
+```text
+root first receives 0.9092974268256817
+root then accumulates 2*cos(2)
+result becomes 0.0770037537313969
+```
+
+## 【8. 实验】
+
+运行：
+
+```powershell
+python experiments/debug_walkthrough.py
+```
+
+结果依序包含 `grad`, `make_vjp`, `trace`, `new_box`, primitive wrappers, `VJPNode.__init__`, `backward_pass`, `add_outgrads`，最终断言通过。
+
+## 【9. 理论 ↔ 源码映射】
+
+| 要观察的数学量 | debugger locals |
+| --- | --- |
+| forward x/ans | `x`, `argvals`, `ans`, Box `_value` |
+| graph parent | `parents`, node `_node` |
+| output adjoint | `backward_pass.g` |
+| local contributions | `ingrads` |
+| accumulated adjoint | `outgrads`, `add_outgrads` result |
+
+## 【10. Checkpoint】
+
+1. multiply node 为什么先给 sin node 一个 upstream `2`？
+2. root 的 `0.909...` 与 `-0.832...` 分别来自哪条路径？
+3. debugger 中看到两个 primitive wrapper call/return 层次的原因是什么？
+
+walkthrough 已执行；后续手动调试可使用同一 symbol 表复现。

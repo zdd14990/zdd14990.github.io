@@ -1,3 +1,14 @@
+// Keep the document canvas in sync with Material's body palette on every page.
+(function () {
+  function syncCanvas() {
+    var scheme = document.body.getAttribute("data-md-color-scheme");
+    document.documentElement.style.setProperty("background", scheme === "slate" ? "#101924" : "#eaf5fb", "important");
+    document.documentElement.style.colorScheme = scheme === "slate" ? "dark" : "light";
+  }
+  syncCanvas();
+  new MutationObserver(syncCanvas).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+})();
+
 document.addEventListener(
   "click",
   function (event) {

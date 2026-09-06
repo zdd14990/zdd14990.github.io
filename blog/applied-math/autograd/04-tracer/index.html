@@ -1,0 +1,1271 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="上一篇已经走完 grad 的调用链，这里把镜头停在 primitive 收到 Box 的时刻。一个普通数值调用，要增加哪些状态，才能让后面的求导继续知道依赖来自哪里？">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Autograd 源码学习（四）：tracer.py 与动态计算图 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+  <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
+
+
+  <script>
+    window.zddSearchDataUrl = "../../../../assets/zdd-search-data.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+  </script>
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/">
+  <meta property="og:title" content="Autograd 源码学习（四）：tracer.py 与动态计算图 - zdd14990">
+  <meta property="og:description" content="上一篇已经走完 grad 的调用链，这里把镜头停在 primitive 收到 Box 的时刻。一个普通数值调用，要增加哪些状态，才能让后面的求导继续知道依赖来自哪里？">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-09-05">
+
+
+
+
+  <meta property="article:tag" content="autograd">
+
+  <meta property="article:tag" content="automatic-differentiation">
+
+  <meta property="article:tag" content="python">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/">
+  <meta name="twitter:title" content="Autograd 源码学习（四）：tracer.py 与动态计算图 - zdd14990">
+  <meta name="twitter:description" content="上一篇已经走完 grad 的调用链，这里把镜头停在 primitive 收到 Box 的时刻。一个普通数值调用，要增加哪些状态，才能让后面的求导继续知道依赖来自哪里？">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Autograd \u6e90\u7801\u5b66\u4e60\uff08\u56db\uff09\uff1atracer.py \u4e0e\u52a8\u6001\u8ba1\u7b97\u56fe",
+    "description": "\u4e0a\u4e00\u7bc7\u5df2\u7ecf\u8d70\u5b8c grad \u7684\u8c03\u7528\u94fe\uff0c\u8fd9\u91cc\u628a\u955c\u5934\u505c\u5728 primitive \u6536\u5230 Box \u7684\u65f6\u523b\u3002\u4e00\u4e2a\u666e\u901a\u6570\u503c\u8c03\u7528\uff0c\u8981\u589e\u52a0\u54ea\u4e9b\u72b6\u6001\uff0c\u624d\u80fd\u8ba9\u540e\u9762\u7684\u6c42\u5bfc\u7ee7\u7eed\u77e5\u9053\u4f9d\u8d56\u6765\u81ea\u54ea\u91cc\uff1f",
+    "url": "https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-09-05",
+    "keywords": ["autograd", "automatic-differentiation", "python"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#autograd-tracerpy" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本文目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        必要的数学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一个最小例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        对应的 Autograd 源码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        调用时序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        源码 walkthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="源码 walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        trace 的边界：输入装箱，输出拆出值与节点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#primitive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        primitive 的三级阅读：先模型，再原文，再完整位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#find_top_boxed_args-trace-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_top_boxed_args 选择哪个 trace 负责这次 operation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-snapshotmultiply-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STATE SNAPSHOT：multiply wrapper 内部
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-ifloop-graph-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python if/loop 为什么不需要额外 graph node
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验验证
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="实验验证">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-snapshot-forward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STATE SNAPSHOT：控制流实验 forward
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        理论与源码的对应关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个自测问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一篇
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+<div class="zdd-reading-dates">
+  <span>发布于 <time datetime="2026-09-05">2026-09-05</time></span>
+  
+</div>
+
+<h1 id="autograd-tracerpy">Autograd 源码学习（四）：tracer.py 与动态计算图</h1>
+<p>上一篇已经走完 <code>grad</code> 的调用链，这里把镜头停在 primitive 收到 Box 的时刻。一个普通数值调用，要增加哪些状态，才能让后面的求导继续知道依赖来自哪里？</p>
+<p>沿用 R、M、Bx 这些教学标签，我们按选择最高 trace、单层解箱、原始计算、节点构造和重新装箱的顺序读源码，再用真实的 if 与循环实验观察动态执行。</p>
+<p><a href="../03-grad-call-chain/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../05-core-reverse-mode/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<p>源码基线：HIPS/autograd 1.9.1，commit <code>f53a21734fdfae636f448744d9097d8d35a643a0</code>。</p>
+<h2 id="_1">本文目标</h2>
+<ol>
+<li><code>trace</code>, <code>TraceStack</code>, <code>new_box</code> 与 <code>primitive</code> 各负责什么？</li>
+<li>primitive 收到普通值或 Box 时为何走不同路径？</li>
+<li><code>if</code>、<code>for</code>、<code>while</code> 为什么无需变成静态图节点？</li>
+</ol>
+<h2 id="mental-model">Mental Model</h2>
+<p>tracer 是一个运行时观察层。它不给 Python 语法建图，只给实际执行到的 differentiable primitive calls 建 node。Box 像带着“本次 trace 身份与上游 node 指针”的运行值；primitive 在计算前解箱，在计算后把答案和新 node 重新装箱。</p>
+<h2 id="_2">必要的数学</h2>
+<p>tracing 本身不是求导公式。它收集 reverse algorithm 之后所需的数据：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>operation output value
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>parents / differentiable argument positions
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>local VJP closure
+</code></pre></div>
+<p>链式法则和 adjoint propagation 属于 AD 算法；Box、trace id、node constructor 属于 Python 实现。</p>
+<h2 id="_3">一个最小例子</h2>
+<p><code>controlled_function(x)</code> 在 <code>x=2</code> 时真实执行：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>y = sin(x)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>if x &gt; 0:
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    repeat twice: y = y*x
+</code></pre></div>
+<p>所以本次图只包含 positive branch 的 <code>sin</code> 与两个 <code>multiply</code>。negative branch 根本没有运行，也不会留下候选 graph。</p>
+<h2 id="autograd">对应的 Autograd 源码</h2>
+<table>
+<thead>
+<tr>
+<th>File / symbol</th>
+<th>谁调用</th>
+<th>它调用谁</th>
+<th>输入 -&gt; 输出</th>
+<th>AD 角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tracer.py :: trace</code>（14 行）</td>
+<td><code>make_vjp</code>, JVP closure,其他 tracers</td>
+<td><code>trace_stack.new_trace</code>, <code>new_box</code>, <code>fun</code></td>
+<td>start node,fun,x -&gt; value/end node</td>
+<td>一次 define-by-run trace</td>
+</tr>
+<tr>
+<td><code>TraceStack.new_trace</code>（148 行）</td>
+<td><code>trace</code></td>
+<td>自增/自减 <code>top</code></td>
+<td>context -&gt; integer trace id</td>
+<td>nested trace 优先级</td>
+</tr>
+<tr>
+<td><code>new_box</code>（186 行）</td>
+<td><code>trace</code>, primitive wrapper</td>
+<td><code>box_type_mappings[type(value)]</code></td>
+<td>value,trace,node -&gt; registered Box subclass</td>
+<td>装箱</td>
+</tr>
+<tr>
+<td><code>Box</code>（157 行）</td>
+<td><code>new_box</code></td>
+<td>无求导调用</td>
+<td>value,trace,node -&gt; wrapper</td>
+<td>关联三类状态</td>
+</tr>
+<tr>
+<td><code>primitive</code>（44 行）</td>
+<td>NumPy namespace wrapping / decorators</td>
+<td><code>find_top_boxed_args</code>, raw function, node constructor, <code>new_box</code></td>
+<td>raw callable -&gt; wrapped callable</td>
+<td>primitive 调用拦截</td>
+</tr>
+<tr>
+<td><code>find_top_boxed_args</code>（119 行）</td>
+<td>primitive wrapper</td>
+<td>扫描 positional args</td>
+<td>args -&gt; boxes/top trace/node type/dispatch flag</td>
+<td>nested trace 仲裁</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">调用时序</h2>
+<ol class="zdd-flow" aria-label="调用时序">
+<li><code>trace(start_node, fun, x)</code></li>
+<li><code>new_trace() gives t</code></li>
+<li><code>new_box(x,t,start_node)</code></li>
+<li><code>fun(start_box)</code></li>
+<li><code>wrapped primitive</code></li>
+<li><code>find highest-trace boxed args</code></li>
+<li><code>replace Box args with _value</code></li>
+<li><code>execute raw computation</code></li>
+<li><code>node_constructor(ans,...,parents)</code></li>
+<li><code>new_box(ans,trace,node)</code></li>
+<li><code>return end_box._value, end_box._node</code></li>
+</ol>
+
+<p>若输出不是本 trace 的 Box，当前代码发出 <code>Output seems independent of input</code> warning，并返回 <code>end_node=None</code>。</p>
+<h2 id="walkthrough">源码 walkthrough</h2>
+<h3 id="trace">trace 的边界：输入装箱，输出拆出值与节点</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L14-L22"><code>trace</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">trace</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">with</span> <span class="n">trace_stack</span><span class="o">.</span><span class="n">new_trace</span><span class="p">()</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="n">start_box</span> <span class="o">=</span> <span class="n">new_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">start_node</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">end_box</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">start_box</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="k">if</span> <span class="n">isbox</span><span class="p">(</span><span class="n">end_box</span><span class="p">)</span> <span class="ow">and</span> <span class="n">end_box</span><span class="o">.</span><span class="n">_trace</span> <span class="o">==</span> <span class="n">start_box</span><span class="o">.</span><span class="n">_trace</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>            <span class="k">return</span> <span class="n">end_box</span><span class="o">.</span><span class="n">_value</span><span class="p">,</span> <span class="n">end_box</span><span class="o">.</span><span class="n">_node</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Output seems independent of input.&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>            <span class="k">return</span> <span class="n">end_box</span><span class="p">,</span> <span class="kc">None</span>
+</code></pre></div>
+<p>调用者已决定模式并给出 <code>start_node</code>，tracer 本身没有写死 reverse mode。<code>x</code> 是输入值，<code>t</code> 是本次 trace id，<code>start_box</code> 将两者与节点关联。<code>fun(start_box)</code> 是普通 Python 函数调用，这一行允许任意实际执行的 if/loop 参与决定调用哪些 primitives。<code>end_box</code> 必须属于本 trace，才能返回它的 <code>_node</code>；否则给出 <code>None</code>，由 core 返回零导数。</p>
+<p><code>trace</code> 不会把程序解析为 AST，也不会在结束后扫描局部变量去补图。所有连接都是执行 primitive 时已经建立的。下一步看三个建立 trace 所需的基础对象。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L34-L38"><code>Node.new_root</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">new_root</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="n">root</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="n">root</span><span class="o">.</span><span class="n">initialize_root</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="k">return</span> <span class="n">root</span>
+</code></pre></div>
+<p>进入时 <code>cls</code> 由调用者指定，例如 <code>VJPNode</code>。root 不是由某个 primitive 计算出来的，因而没有 <code>fun,args,parents</code> 可传给普通 operation 构造器。这里用 <code>__new__</code> 分配对象，再调用子类的 <code>initialize_root</code> 初始化模式状态，最后交给 <code>trace</code>。reverse root 没有 parents；forward root 则由初始化参数接收 tangent。这是“指定 AD 输入边界”，不是创建一个虚构的输入 operation。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L143-L151"><code>TraceStack</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">TraceStack</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="nd">@contextmanager</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">new_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">-=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>普通最外层求导进入时 <code>top=-1</code>，进入 context 后 <code>t=0</code>，正常离开时恢复为 -1。如果 context 内又求导，新层得到 1。id 表示当前嵌套优先级，并不是全局不断增加的 graph 编号；两次不嵌套的正常求导都会使用 0。这里只描述代码展示的正常进入/退出路径。分配完 id，下一步 <code>new_box</code> 才真正建立带身份的运行值。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L157-L169"><code>Box, state and boolean excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Box</span><span class="p">:</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">type_mappings</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">types</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_node&quot;</span><span class="p">,</span> <span class="s2">&quot;_trace&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">]</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="n">node</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_trace</span> <span class="o">=</span> <span class="n">trace</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+</code></pre></div>
+<p>构造器收到已经算好的值和已经创建的节点，只负责保存关联。它产生的 Box 继续流入用户函数/primitive；<code>__bool__</code> 把真值判断交给底层值。Box 自身没有求导规则，也没有反向累计梯度槽位。三个 slot 的含义是：</p>
+<ul>
+<li><code>_value</code>：本层 Box 包裹的 forward value；高阶求导时它也可能是较低 trace 的 Box。</li>
+<li><code>_trace</code>：整数优先级。<code>find_top_boxed_args</code> 只让最高 trace 构造本次 node。</li>
+<li><code>_node</code>：当前值在对应 trace 中的 node。</li>
+</ul>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L176-L180"><code>Box.register</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="n">Box</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="n">Box</span><span class="o">.</span><span class="n">type_mappings</span><span class="p">[</span><span class="n">value_type</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="n">Box</span><span class="o">.</span><span class="n">type_mappings</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+</code></pre></div>
+<p>NumPy 集成调用 <code>ArrayBox.register(float)</code> 等注册函数时，<code>cls=ArrayBox</code>，这会让普通 float 选择 ArrayBox，也让已经是 ArrayBox 的值还能再被 ArrayBox 包一层。后一个映射是 第十篇 的 nested Box 能通过同一工厂创建的关键，当前课只需知道工厂由类型表驱动。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L186-L190"><code>new_box</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">new_box</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>        <span class="k">return</span> <span class="n">box_type_mappings</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)](</span><span class="n">value</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t differentiate w.r.t. type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>本例调用 <code>new_box(3.0,0,R)</code>，表中取到 ArrayBox 构造器，返回 Bx。输出重装箱时调用 <code>new_box(9.0,0,M)</code>，返回 Bz。两次的职责相同：把一个已知值与其 AD 状态连接起来，交给下一段用户运算。没有注册类型时不能凭空发明一种 Box。</p>
+<h3 id="primitive">primitive 的三级阅读：先模型，再原文，再完整位置</h3>
+<p>primitive 的两个 happy paths：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>没有 boxed args -&gt; 直接 f_raw(*args, **kwargs)
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>存在 boxed args -&gt; 解箱 -&gt; raw compute -&gt; 建 node -&gt; re-box
+</code></pre></div>
+<p>解箱让底层数值库看到它认识的值；re-box 让后续 operation 继续携带 trace。NumPy ufunc 还有 <code>__array_ufunc__</code> dispatcher 分支，这是 xarray 等互操作的当前实现细节。</p>
+<p>[TEACHING SIMPLIFICATION]<br />
+以下不是 HIPS/autograd verbatim source。省略 ufunc dispatch、notrace 分支、异常处理和 wrapper 元数据；保留逐层递归解箱，建立普通数值 happy-path mental model。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">teaching_primitive</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>        <span class="n">boxes</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">node_type</span><span class="p">,</span> <span class="n">_dispatch</span> <span class="o">=</span> <span class="n">find_top_boxed_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">boxes</span><span class="p">:</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>            <span class="k">return</span> <span class="n">raw</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>        <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>            <span class="n">values</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">_value</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>        <span class="n">parents</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">_node</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">)</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="n">positions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">position</span> <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">)</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>        <span class="n">answer</span> <span class="o">=</span> <span class="n">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>        <span class="n">node</span> <span class="o">=</span> <span class="n">node_type</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">parents</span><span class="p">)</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="k">return</span> <span class="n">new_box</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="k">return</span> <span class="n">wrapped</span>
+</code></pre></div>
+<p>进入 <code>wrapped</code> 时只有实参 tuple，可能含 Box。<code>boxes</code> 选出本层活跃输入；<code>values</code> 是只解掉这一层后的参数；<code>parents</code> 和 <code>positions</code> 保存依赖位置；<code>answer</code> 是原运算结果；<code>node</code> 把该 operation 的局部 AD 状态接到父节点上。最后重新装箱，保证下个 operation 仍知道 trace 身份。它对应 AD 中“执行局部原操作并记录依赖”，尚未传播 reverse cotangent。</p>
+<p>这里递归调用 <code>wrapped</code> 而不是强行直接调用 <code>raw</code>，是为保留较低 trace 的处理机会。对当前普通一阶例子只多进入一层 wrapper：第二次已经没有 Box，于是才执行 raw multiply。下面看真实实现的两个连续区段。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L51-L53"><code>primitive.f_wrapped, argument selection entry</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f_raw</span><span class="p">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">f_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">called_by_autograd_dispatcher</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="n">boxed_args</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">node_constructor</span><span class="p">,</span> <span class="n">ufunc_dispatch_needed</span> <span class="o">=</span> <span class="n">find_top_boxed_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</code></pre></div>
+<p>进入的是 primitive 的实际调用，不是装饰器首次包装函数的时刻。<code>f_raw</code> 在外层 closure 中指向 NumPy multiply；本次返回的 <code>node_constructor</code> 是 VJPNode，由最高 trace 的父节点类型决定。本例 dispatch 标记为 False，不经过第三方 ufunc 分派；下一步进入真实的解箱区段。</p>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L77-L88"><code>primitive.f_wrapped, unbox through rebox excerpt</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>            <span class="n">argvals</span> <span class="o">=</span> <span class="n">subvals</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="p">[(</span><span class="n">argnum</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span> <span class="k">for</span> <span class="n">argnum</span><span class="p">,</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxed_args</span><span class="p">])</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>            <span class="k">if</span> <span class="n">f_wrapped</span> <span class="ow">in</span> <span class="n">notrace_primitives</span><span class="p">[</span><span class="n">node_constructor</span><span class="p">]:</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>                <span class="k">return</span> <span class="n">f_wrapped</span><span class="p">(</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>                    <span class="o">*</span><span class="n">argvals</span><span class="p">,</span> <span class="n">called_by_autograd_dispatcher</span><span class="o">=</span><span class="n">called_by_autograd_dispatcher</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>                <span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>            <span class="n">parents</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">_node</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxed_args</span><span class="p">)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>            <span class="n">argnums</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">argnum</span> <span class="k">for</span> <span class="n">argnum</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">boxed_args</span><span class="p">)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>            <span class="n">ans</span> <span class="o">=</span> <span class="n">f_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">argvals</span><span class="p">,</span> <span class="n">called_by_autograd_dispatcher</span><span class="o">=</span><span class="n">called_by_autograd_dispatcher</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>            <span class="n">node</span> <span class="o">=</span> <span class="n">node_constructor</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">f_wrapped</span><span class="p">,</span> <span class="n">argvals</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">argnums</span><span class="p">,</span> <span class="n">parents</span><span class="p">)</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>            <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>                <span class="n">box</span> <span class="o">=</span> <span class="n">new_box</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>                <span class="k">return</span> <span class="n">box</span>
+</code></pre></div>
+<p>进入时 <code>boxed_args</code> 已经选好。本例 <code>argvals=(3.0,3.0)</code>，multiply 没有被登记为 notrace，因而产生 <code>parents=(R,R)</code>、<code>argnums=(0,1)</code>。<code>ans</code> 的递归调用最终落到 raw multiply 并得到 9；之后构造 M，并将 M 与 9 装进 Bz。VJPNode 的构造会查局部规则，下一篇展开；tracer 只提供一致的构造参数。</p>
+<p>注意真实语句先提取 <code>parents/argnums</code>，再计算 <code>ans</code>。下面的生命周期图按运行顺序画，避免把概念上“得到结果后关联依赖”误读成另一种语句顺序。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Box input (Bx,Bx)
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  -&gt; find top trace: boxed_args=[(0,Bx),(1,Bx)], t=0
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  -&gt; unbox this layer: argvals=(3,3)
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  -&gt; collect parents/argnums: (R,R), (0,1)
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>  -&gt; recursive wrapper -&gt; no boxes -&gt; raw multiply(3,3)=9
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>  -&gt; node construction: M=VJPNode(...)
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>  -&gt; rebox: Bz(value=9,trace=0,node=M)
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>  -&gt; next user operation, or trace returns (9,M)
+</code></pre></div>
+<p>完整位置：<code>autograd/tracer.py :: primitive</code>。上面原文没有改动签名，也没有用省略号替换内部语句；未展示的部分主要是 dispatch 决策、异常转换与包装器属性设置。研究互操作时才需要打开完整 symbol。</p>
+<h3 id="find_top_boxed_args-trace-operation">find_top_boxed_args 选择哪个 trace 负责这次 operation</h3>
+<p>[REAL SOURCE]<br />
+File: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py"><code>autograd/tracer.py</code></a><br />
+Symbol: <a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py#L119-L140"><code>find_top_boxed_args</code></a><br />
+Commit: <a href="https://github.com/HIPS/autograd/commit/f53a21734fdfae636f448744d9097d8d35a643a0">f53a21734fdfae636f448744d9097d8d35a643a0</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">find_top_boxed_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">top_trace</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">top_boxes</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">top_node_type</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">any_arraybox</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">any_unboxed_ufunc_overrider</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="k">for</span> <span class="n">argnum</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>        <span class="n">t</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>        <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">box_types</span><span class="p">:</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>            <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">autograd</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">numpy_boxes</span><span class="o">.</span><span class="n">ArrayBox</span><span class="p">:</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>                <span class="n">any_arraybox</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>            <span class="n">trace</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">_trace</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>            <span class="k">if</span> <span class="n">trace</span> <span class="o">&gt;</span> <span class="n">top_trace</span><span class="p">:</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>                <span class="n">top_boxes</span> <span class="o">=</span> <span class="p">[(</span><span class="n">argnum</span><span class="p">,</span> <span class="n">arg</span><span class="p">)]</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>                <span class="n">top_trace</span> <span class="o">=</span> <span class="n">trace</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>                <span class="n">top_node_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_node</span><span class="p">)</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>            <span class="k">elif</span> <span class="n">trace</span> <span class="o">==</span> <span class="n">top_trace</span><span class="p">:</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>                <span class="n">top_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">argnum</span><span class="p">,</span> <span class="n">arg</span><span class="p">))</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;__array_ufunc__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">__array_ufunc__</span><span class="p">):</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>            <span class="n">any_unboxed_ufunc_overrider</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>    <span class="n">ufunc_dispatch_needed</span> <span class="o">=</span> <span class="n">any_arraybox</span> <span class="ow">and</span> <span class="n">any_unboxed_ufunc_overrider</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>    <span class="k">return</span> <span class="n">top_boxes</span><span class="p">,</span> <span class="n">top_trace</span><span class="p">,</span> <span class="n">top_node_type</span><span class="p">,</span> <span class="n">ufunc_dispatch_needed</span>
+</code></pre></div>
+<p>输入是 positional args，而不是 Python 局部变量表。第一次遇到 Bx 时，把最高 trace 从 -1 改成 0，记录 <code>(0,Bx)</code>；第二个位置还是 Bx，trace 相等，于是追加 <code>(1,Bx)</code>。代码没有按 Box 身份去重，所以重复使用一个输入的两条边都能保留。<code>top_node_type</code> 来自 Box 的 node，是 tracer 在不同模式间复用的接口。</p>
+<p>遇到更高 trace 时旧列表被替换，较低 trace 不参与当前层的 parents；但较低 Box 仍留在解箱后的实参中，下一层递归再处理。当前函数不会递归进入 <code>_value</code>；它只在本次参数边界决定最高层归属。两个布尔变量只服务 NumPy dispatch，不决定数学导数。</p>
+<h3 id="state-snapshotmultiply-wrapper">STATE SNAPSHOT：multiply wrapper 内部</h3>
+<table>
+<thead>
+<tr>
+<th>时刻 / 局部变量</th>
+<th>Python 对象或值</th>
+<th>Box / node 状态</th>
+<th>产物与下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td><code>(Bx,Bx)</code></td>
+<td>同一 ArrayBox 出现两次，value=3，trace=0，node=R</td>
+<td>扫描两个位置</td>
+</tr>
+<tr>
+<td>boxed_args</td>
+<td><code>[(0,Bx),(1,Bx)]</code></td>
+<td>保留两条边</td>
+<td>只解最高 trace</td>
+</tr>
+<tr>
+<td>trace / node_constructor</td>
+<td><code>0</code> / <code>VJPNode</code> 类</td>
+<td>身份 / 构造器分离</td>
+<td>选择本层 AD 模式</td>
+</tr>
+<tr>
+<td>argvals</td>
+<td><code>(3.0,3.0)</code></td>
+<td>普通 float，无 Box</td>
+<td>递归 wrapper 调 raw computation</td>
+</tr>
+<tr>
+<td>parents / argnums</td>
+<td><code>(R,R)</code> / <code>(0,1)</code></td>
+<td>两个引用指向同一 R</td>
+<td>交给构造器，不存入 Box</td>
+</tr>
+<tr>
+<td>ans</td>
+<td>数值 9.0</td>
+<td>本例无 Box</td>
+<td>创建 M</td>
+</tr>
+<tr>
+<td>node</td>
+<td>M，VJPNode</td>
+<td>parents=(R,R)，vjp 已准备，尚无 upstream g</td>
+<td>重装箱</td>
+</tr>
+<tr>
+<td>box</td>
+<td>Bz，ArrayBox</td>
+<td><code>_value=9</code>，<code>_trace=0</code>，<code>_node=M</code></td>
+<td>返回用户函数，继续执行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="python-ifloop-graph-node">Python if/loop 为什么不需要额外 graph node</h3>
+<p>本文实验的 <code>x&gt;0</code> 经 <code>ArrayBox.__gt__</code> 转发到 <code>anp.greater</code>；<code>numpy_vjps.py :: nograd_functions</code> 包含 greater，并调用 <code>register_notrace(VJPNode,fun)</code>。因此比较运算提供给 Python 的是用于分支选择的普通布尔结果，tracer 不为比较构造 VJPNode。Python 根据它执行 positive branch，循环每迭代一次，就再调用一次实际 multiply。</p>
+<p>本次 <code>x=2</code> 时程序等价于 <code>sin(x)*x*x</code>，其导数 <code>x^2*cos(x)+2*x*sin(x)</code> 是当前执行路径上的导数。这里没有对“选择分支”这个离散决定求导；分支边界处是否可微是函数本身的数学问题。<code>for</code> 决定 operation 调用次数，不需要额外的 loop VJP。</p>
+<h2 id="_5">实验验证</h2>
+<p><a href="../../../../assets/autograd/experiments/trace_box.py">完整实验：trace_box.py</a>。运行环境、资源目录及路径配置见<a href="../00-overview/#experiments">系列总览</a>。下方命令以解压后的资源目录为工作目录。</p>
+<p>[EXPERIMENT]<br />
+File: <a href="../../../../assets/autograd/experiments/trace_box.py"><code>experiments/trace_box.py</code></a><br />
+Purpose: 观察实际执行分支与每个中间值的 Box 私有字段。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">controlled_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;sin&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">x</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>            <span class="n">observe</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;positive-loop-</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>        <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">y</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>        <span class="n">observe</span><span class="p">(</span><span class="s2">&quot;negative-branch&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="k">return</span> <span class="n">y</span>
+</code></pre></div>
+<p>进入时 <code>x</code> 是 trace 0 的 ArrayBox；<code>observe</code> 仅读取字段，把信息放在实验列表中。每次乘法返回新 Box 并更新 Python 名字 <code>y</code>，旧的依赖仍通过 node parents 保留。函数返回 positive branch 的最终 Box，随后真实 grad 执行 reverse pass。实验断言观察标签恰好是下表四项，没有 negative branch。</p>
+<h3 id="state-snapshot-forward">STATE SNAPSHOT：控制流实验 forward</h3>
+<table>
+<thead>
+<tr>
+<th>观察标签</th>
+<th>Type</th>
+<th style="text-align: right;"><code>_value</code>（约）</th>
+<th style="text-align: right;"><code>_trace</code></th>
+<th><code>_node</code> 的教学标签</th>
+<th>parents（按源码推演）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input</td>
+<td>ArrayBox</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td>R</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>sin</td>
+<td>ArrayBox</td>
+<td style="text-align: right;">0.9092974268</td>
+<td style="text-align: right;">0</td>
+<td>S</td>
+<td>(R,)</td>
+</tr>
+<tr>
+<td>positive-loop-0</td>
+<td>ArrayBox</td>
+<td style="text-align: right;">1.8185948537</td>
+<td style="text-align: right;">0</td>
+<td>M0</td>
+<td>(S,R)</td>
+</tr>
+<tr>
+<td>positive-loop-1</td>
+<td>ArrayBox</td>
+<td style="text-align: right;">3.6371897073</td>
+<td style="text-align: right;">0</td>
+<td>M1</td>
+<td>(M0,R)</td>
+</tr>
+</tbody>
+</table>
+<p>实验直接记录 Type/value/trace/node 类型；教学节点标签和 parents 列由真实 wrapper 的参数顺序推演，没有声称实验输出了对象 id 或父列表。运行 <code>python -B experiments/trace_box.py</code>，观察结果：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>input/sin/positive-loop-0/positive-loop-1 均为 ArrayBox
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>trace 均为 0，node 均为 VJPNode
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>executed branch=positive, loop iterations=2
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>gradient=1.972602361114
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>all checks passed
+</code></pre></div>
+<h2 id="_6">理论与源码的对应关系</h2>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>当前实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>define-by-run</td>
+<td><code>trace</code> 直接执行 <code>fun(start_box)</code></td>
+</tr>
+<tr>
+<td>动态控制流</td>
+<td>Python 自己执行条件和循环，只有实际 primitive calls 被记录</td>
+</tr>
+<tr>
+<td>graph node</td>
+<td>由 <code>node_constructor</code> 创建的 <code>VJPNode</code>/<code>JVPNode</code></td>
+</tr>
+<tr>
+<td>graph edge</td>
+<td>node constructor 收到的 <code>parents</code></td>
+</tr>
+<tr>
+<td>nested differentiation</td>
+<td><code>TraceStack</code> 与 highest <code>_trace</code> selection</td>
+</tr>
+<tr>
+<td>operator overloading</td>
+<td><code>ArrayBox.__mul__</code> 等转发到 wrapped NumPy functions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_7">几个自测问题</h2>
+<ol>
+<li>primitive 为什么不能把 Box 原样传给原生 NumPy ufunc 后就结束？</li>
+<li>控制流本身不建 node，为什么仍能得到当前输入的正确导数？</li>
+<li>nested Box 中为何必须优先处理 trace id 更大的那一层？</li>
+</ol>
+<h2 id="_8">小结</h2>
+<p>tracer 观察实际 primitive 调用，Box 把值、trace id 与 node 关联起来。Python 自己决定分支和循环，当前执行路径上的可微运算才建立节点；最高 trace 的选择也为后面的嵌套求导保留了边界。</p>
+<h2 id="_9">下一篇</h2>
+<p>接下来读<a href="../05-core-reverse-mode/">第五篇：Reverse Mode 的核心实现</a>。</p>
+<h2 id="_10">参考资料</h2>
+<ul>
+<li><a href="https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py">autograd/tracer.py</a>，固定 commit 原文件。</li>
+<li><a href="https://mlsyscourse.org/slides/04-automatic-differentiation.pdf">Automatic Differentiation lecture</a>。</li>
+</ul>
+<hr />
+<p><a href="../03-grad-call-chain/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.78 19.03a.75.75 0 0 1-1.06 0l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L5.81 11.5h14.44a.75.75 0 0 1 0 1.5H5.81l4.97 4.97a.75.75 0 0 1 0 1.06"/></svg></span> 上一篇</a> | <a href="../00-overview/">系列总览</a> | <a href="../05-core-reverse-mode/">下一篇 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></p>
+<div class="zdd-article-taxonomy">
+  <div class="zdd-taxonomy-row zdd-taxonomy-categories"><span class="zdd-category-chip">#应用数学</span><span class="zdd-category-chip">#Autograd 源码学习</span></div>
+  <div class="zdd-taxonomy-row zdd-taxonomy-tags"><a class="zdd-tag-chip" href="../../../../tags/?tag=autograd">#autograd</a><a class="zdd-tag-chip" href="../../../../tags/?tag=automatic-differentiation">#automatic-differentiation</a><a class="zdd-tag-chip" href="../../../../tags/?tag=python">#python</a></div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      copyright © zdd All Rights Reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-pixiv-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+    
+
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

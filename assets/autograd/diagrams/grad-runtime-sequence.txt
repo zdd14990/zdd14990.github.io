@@ -1,0 +1,83 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# grad(f)(3.0) 完整调用时序
+
+基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。这是调用关系图，不是源码块；对应 [Lesson 3](https://zdd14990.github.io/blog/applied-math/autograd/03-grad-call-chain/)、[Lesson 4](https://zdd14990.github.io/blog/applied-math/autograd/04-tracer/)、[Lesson 5](https://zdd14990.github.io/blog/applied-math/autograd/05-core-reverse-mode/) 的逐段原文。
+
+## 创建包装器与执行包装器
+
+```text
+module import
+  unary_to_nary(original unary grad) -> public grad = nary_operator
+
+user: df = grad(f)
+  nary_operator(fun=f,argnum=0) -> df = nary_f
+  no input value yet; no Box; no node; no g
+
+user: df(3.0)
+  nary_f(args=(3.0,),kwargs={})
+    creates unary_f: replace args[0] with its supplied x
+    calls original unary grad(unary_f,3.0)
+      |
+      +-> _make_vjp alias -> core.make_vjp
+      |     |
+      |     +-> VJPNode.new_root -> R(parents=[],vjp(g)=())
+      |     +-> trace(R,unary_f,3.0)
+      |           |
+      |           +-> TraceStack.new_trace -> t=0
+      |           +-> new_box(3.0,0,R) -> Bx
+      |           +-> unary_f(Bx) -> original f(Bx)
+      |           |     |
+      |           |     +-> Bx.__mul__(Bx)
+      |           |           -> anp.multiply(Bx,Bx)
+      |           |           -> primitive.f_wrapped
+      |           |                find_top_boxed_args -> positions (0,1), trace0
+      |           |                unbox -> argvals=(3.0,3.0)
+      |           |                parents=(R,R), argnums=(0,1)
+      |           |                recursive f_wrapped -> raw multiply -> 9.0
+      |           |                VJPNode.__init__ -> M
+      |           |                  primitive_vjps[multiply] -> maker
+      |           |                  maker(positions,9,args,kwargs) -> local vjp
+      |           |                new_box(9.0,0,M) -> Bz
+      |           |     <----- f returns Bz
+      |           +-> return (Bz._value,Bz._node) = (9.0,M)
+      |                 normal trace exit: top=-1
+      |     <----- return (closure capturing M,9.0)
+      |
+      +-> check vspace(9.0).size == 1
+      +-> output ones -> ndarray(shape=(),value=1)
+      +-> vjp(1) -> backward_pass(1,M)
+            outgrads={M:(1,False)}
+            visit M -> pop 1 -> M.vjp(1)=(3,3)
+              first edge to R: None + 3 -> (3,False)
+              second edge to R: 3 + 3 -> (6,True)
+            visit R -> pop 6 -> R.vjp(6)=()
+            return 6
+  <----- user receives np.float64(6.0), not a Box
+```
+
+R/M/Bx/Bz 是教学对象标签；VJPNode 没有 name/value/argnums 字段。`argnums` 与 `parents` 在 raw computation 前收集，节点必须等 answer 算好才创建。图内的顺序对应真实源码，而不是把概念步骤强行排成另一种语句顺序。
+
+## reverse 依赖与梯度流
+
+```text
+forward graph:
+          arg0
+R -----------------\
+                    M (local primitive: multiply)
+R -----------------/
+          arg1
+same R object on both edges
+
+backward query:
+seed 1 -> M.vjp(1) -> (3,3)
+                       | |
+                       v v
+                    outgrads[R]
+                    None -> (3,False) -> (6,True)
+                       |
+                       v
+                 R.vjp(6)=() -> return 6
+```
+
+局部 VJP 负责产生贡献，`add_outgrads` 负责汇合，`toposort` 负责让节点在依赖全部完成后才被消费。三种职责不能用一个“反向传播会自动处理”替代解释。

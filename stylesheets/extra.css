@@ -1,13 +1,12 @@
-﻿@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css');
-
+﻿
 body, .md-typeset {
     /* 优先使用霞鹜文楷，没有则退化为系统字体 */
-    font-family: "LXGW WenKai Screen", "Roboto", sans-serif !important;
+    font-family: var(--zdd-reading-font) !important;
 }
 
 /* 代码块保持等宽字体 */
 code, kbd, pre {
-    font-family: "JetBrains Mono", monospace !important;
+    font-family: var(--md-code-font-family) !important;
 }
 
 /* 定义 - 绿色 */
@@ -121,242 +120,6 @@ code, kbd, pre {
 /* ==========================================================================
    3. 磨砂玻璃容器 (让文字清晰)
    ========================================================================== */
-
-/* 正文区域 */
-/* ==========================================================================
-   3. 磨砂玻璃容器 (修复版：侧边栏自动高度适配)
-   ========================================================================== */
-
-/* 1. 正文区域 (中间的文章) - 保持不变 */
-.md-content {
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 16px; 
-    padding: 20px;
-    margin-top: 20px; margin-bottom: 20px;
-    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-}
-
-/* 2. 侧边栏 (左侧导航 + 右侧 TOC) - 强制卡片化 */
-.md-sidebar__scrollwrap {
-    /* 背景与磨砂 */
-    background-color: rgba(255, 255, 255, 0.85) !important;
-    backdrop-filter: blur(5px); 
-    -webkit-backdrop-filter: blur(5px);
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    
-    /* 布局间距 */
-    padding: 12px;
-    margin: 20px 0;
-    
-    /* --- 核心修复 (解决太长/不适配问题) --- */
-    
-    /* 1. 强制覆盖 JS 设置的高度，让高度随内容自动收缩 */
-    height: auto !important; 
-    min-height: 0 !important;
-    
-    /* 2. 限制最大高度为屏幕高度的 75%，防止顶天立地 */
-    max-height: 75vh !important; 
-    
-    /* 3. 内容超出时显示滚动条 */
-    overflow-y: auto !important;
-}
-
-/* 3. 核心修复：让侧边栏吸附在屏幕上 (Sticky) */
-.md-sidebar {
-    background: none !important;
-    box-shadow: none !important;
-    z-index: 10;
-}
-
-/* 只在桌面宽度调整侧边栏吸附位置，避免覆盖窄屏抽屉菜单 */
-@media screen and (min-width: 76.25em) {
-    .md-sidebar {
-        position: sticky !important;
-        top: 6.5rem !important;
-        height: auto !important;
-    }
-
-    body.blog-primary-sidebar .md-sidebar--primary[hidden] {
-        display: block !important;
-    }
-
-    body.blog-primary-sidebar .md-sidebar--primary .md-sidebar__scrollwrap {
-        visibility: visible !important;
-    }
-}
-
-/* 4. 隐藏侧边栏滚动条 (美观) */
-.md-sidebar__scrollwrap::-webkit-scrollbar {
-    width: 0 !important; display: none;
-}
-.md-sidebar__scrollwrap {
-    scrollbar-width: none; -ms-overflow-style: none;
-}
-
-/* 5. 暗色模式适配 */
-[data-md-color-scheme="slate"] .md-content,
-[data-md-color-scheme="slate"] .md-sidebar__scrollwrap {
-    background-color: rgba(30, 32, 48, 0.85) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
-/* 窄屏时恢复 Material 主题的侧边栏折叠行为，避免左上角露出半截卡片 */
-@media screen and (max-width: 76.234375em) {
-    .md-sidebar--primary .md-sidebar__scrollwrap {
-        background: transparent !important;
-        box-shadow: none !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        max-height: none !important;
-        overflow: visible !important;
-    }
-
-    .md-sidebar--primary .md-sidebar__scrollwrap {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        height: auto !important;
-        overflow: hidden !important;
-    }
-
-    .md-sidebar--secondary .md-sidebar__scrollwrap {
-        background-color: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(5px) !important;
-        -webkit-backdrop-filter: blur(5px) !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
-        padding: 12px !important;
-        margin: 20px 0 !important;
-        max-height: 75vh !important;
-        overflow-y: auto !important;
-    }
-
-    [data-md-color-scheme="slate"] .md-sidebar--secondary .md-sidebar__scrollwrap {
-        background-color: rgba(30, 32, 48, 0.85) !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-    }
-}
-
-/* 右侧目录卡片：把白底绑定到目录本体，避免缩放时只剩标题条有背景 */
-.md-sidebar--secondary .md-sidebar__scrollwrap {
-    background: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    padding: 0 !important;
-    max-height: 75vh !important;
-    overflow-y: auto !important;
-}
-
-.md-sidebar--secondary .md-nav--secondary {
-    background-color: rgba(255, 255, 255, 0.86) !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
-    margin: 20px 0 !important;
-    padding: 12px 14px !important;
-}
-
-.md-sidebar--secondary .md-nav--secondary .md-nav__title {
-    background: transparent !important;
-    box-shadow: none !important;
-    height: auto !important;
-    margin: 0 0 0.35rem !important;
-    padding: 0.2rem 0.4rem !important;
-    position: static !important;
-}
-
-.md-sidebar--secondary .md-nav--secondary .md-nav__list {
-    background: transparent !important;
-}
-
-[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav--secondary {
-    background-color: rgba(30, 32, 48, 0.85) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-}
-/* ==========================================================================
-   4. 首页名片卡 (保留左侧介绍，去除了右侧文章列表样式)
-   ========================================================================== */
-
-
-/* ==========================================================================
-   5. 主题切换平滑过渡 (修复版 - 仅针对核心容器)
-   ========================================================================== */
-
-/* 只对 body、内容卡片、侧边栏、标题栏应用过渡 
-   避免对所有 DOM 元素使用通配符 *
-*/
-
-.md-content, 
-.md-sidebar, 
-.md-header, 
-.md-footer,
-.md-nav {
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* 伪元素背景图过渡 (之前定义的) */
-body::before, 
-body::after {
-    transition: opacity 0.6s ease-in-out;
-}
-
-/* SVG 图标填充色过渡 */
-svg {
-    transition: fill 0.3s ease, stroke 0.3s ease;
-}
-
-/* ==========================================================================
-   背景图淡入淡出效果 (通过伪元素实现)
-   ========================================================================== */
-html, body {
-    background: none !important; /* 这一行至关重要，防止白色底色遮挡背景图 */
-    background-color: transparent !important;
-}
-/* 核心：将 body 设为相对定位，为伪元素做准备 */
-body {
-    position: relative; 
-    min-height: 100vh; 
-    overflow-x: hidden; 
-}
-
-/* 伪元素基类：全屏覆盖，固定不动 */
-body::before,
-body::after {
-    content: '';
-    position: fixed; /* 固定在视口 */
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1; /* 确保背景在所有内容之下 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: opacity 0.6s ease-in-out; /* 淡入淡出过渡时间 */
-    pointer-events: none; /* 确保不影响鼠标事件 */
-}
-
-body::before {
-    opacity: 1; /* 默认显示亮色伪元素 */
-}
-body::after {
-    opacity: 0; /* 默认隐藏暗色伪元素 */
-}
-
-/* 当切换到暗色模式时 */
-body[data-md-color-scheme="slate"]::before {
-    opacity: 0; /* 亮色背景淡出 */
-}
-
-body[data-md-color-scheme="slate"]::after {
-    opacity: 1; /* 暗色背景淡入 */
-}
 
 /* ==========================================
    打字机特效
@@ -491,7 +254,7 @@ body[data-md-color-scheme="slate"]::after {
     background-repeat: no-repeat;
     background-size: 0% 2px; /* 初始宽度 */
     transition: background-size 0.3s;
-    color: var(--md-accent-fg-color); /* 使用主题色 */
+    color: var(--zdd-reading-link, var(--md-accent-fg-color));
 }
 
 /* 悬停效果 */
@@ -500,35 +263,18 @@ body[data-md-color-scheme="slate"]::after {
 }
 
 /* ==========================================
-   Mac 风格代码块 (Mac-style Code Block)
+   Compact code blocks
    ========================================== */
 .md-typeset pre > code {
     position: relative;
-    margin-top: 24px; /* 给上面留出放圆点的位置 */
+    margin-top: 0;
     border-radius: 8px; /* 圆角 */
 }
 
-/* 伪元素画出红黄绿三个点 */
-.md-typeset pre > code::before {
-    content: "";
-    position: absolute;
-    top: -20px;
-    left: 10px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #fc625d; /* 红色点 */
-    box-shadow: 
-        20px 0 #fdbc40, /* 黄色点 */
-        40px 0 #35cd4b; /* 绿色点 */
-    z-index: 10;
-}
-
-/* 调整代码块背景容器，包裹住圆点 */
 .highlight {
     background-color: var(--md-code-bg-color);
     border-radius: 8px;
-    padding-top: 10px;
+    padding-top: 0;
 }
 
 /* ==========================================
@@ -872,29 +618,6 @@ mjx-container[display="true"] {
     --zdd-line: rgba(83, 106, 112, 0.16);
 }
 
-body.zdd-minimal-layout,
-body.home-layout,
-body.blog-index-layout,
-body.tag-layout,
-body.article-layout {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-
-body.zdd-minimal-layout .md-header,
-body.zdd-minimal-layout .md-tabs {
-    background: transparent !important;
-    color: var(--zdd-ink) !important;
-    box-shadow: none !important;
-}
-
-body.zdd-minimal-layout .md-header__title,
-body.zdd-minimal-layout .md-tabs__link,
-body.zdd-minimal-layout .md-header__button,
-body.zdd-minimal-layout .md-logo {
-    color: var(--zdd-ink) !important;
-}
-
 body.home-layout .md-content,
 body.home-layout .md-content__inner,
 body.home-layout .md-main__inner,
@@ -922,17 +645,6 @@ body.tag-layout .md-source-file {
 
 body.article-layout .md-sidebar--primary {
     display: none !important;
-}
-
-body.article-layout .md-sidebar--secondary {
-    position: sticky !important;
-    top: 5.5rem !important;
-    height: auto !important;
-}
-
-body.article-layout .md-sidebar--secondary .md-nav--secondary {
-    background: rgba(236, 248, 255, 0.88) !important;
-    border: 1px solid var(--zdd-line);
 }
 
 .minimal-home {
@@ -1224,58 +936,6 @@ body.tag-layout .md-content {
 /* ==========================================================================
    Restore ZDD visual identity and local homepage search
    ========================================================================== */
-body.zdd-minimal-layout,
-body.home-layout,
-body.blog-index-layout,
-body.tag-layout,
-body.article-layout {
-    background: transparent !important;
-}
-
-body.zdd-minimal-layout::before {
-    opacity: 1 !important;
-}
-
-body.zdd-minimal-layout::after {
-    opacity: 0 !important;
-}
-
-body.zdd-minimal-layout[data-md-color-scheme="slate"]::before {
-    opacity: 0 !important;
-}
-
-body.zdd-minimal-layout[data-md-color-scheme="slate"]::after {
-    opacity: 1 !important;
-}
-
-body.zdd-minimal-layout .md-header,
-body.zdd-minimal-layout .md-tabs {
-    background: var(--md-primary-fg-color) !important;
-    color: var(--md-primary-bg-color) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
-}
-
-body.zdd-minimal-layout .md-header__title,
-body.zdd-minimal-layout .md-tabs__link,
-body.zdd-minimal-layout .md-header__button,
-body.zdd-minimal-layout .md-logo {
-    color: var(--md-primary-bg-color) !important;
-}
-
-body.zdd-minimal-layout .md-search {
-    display: none !important;
-}
-
-html,
-body,
-body.zdd-minimal-layout .md-container,
-body.zdd-minimal-layout .md-main,
-body.zdd-minimal-layout .md-main__inner,
-body.zdd-minimal-layout .md-typeset {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-
 .minimal-search-results {
     width: min(720px, 100%);
     margin: 1rem auto 0;
@@ -1457,20 +1117,6 @@ body.home-layout .zdd-post-meta span:nth-child(2) {
     display: none !important;
 }
 
-body.article-layout .md-content {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.58) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    padding: 24px !important;
-}
-
-body.article-layout .md-content__inner {
-    background: transparent !important;
-}
-
 [data-md-color-scheme="slate"] {
     --zdd-card-bg: rgba(24, 35, 49, 0.9);
     --zdd-card-bg-hover: rgba(31, 45, 62, 0.96);
@@ -1478,13 +1124,6 @@ body.article-layout .md-content__inner {
     --zdd-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
     --zdd-card-ink: #e4f0f4;
     --zdd-card-muted: #b5c9d2;
-}
-
-[data-md-color-scheme="slate"] body.article-layout .md-content,
-body.article-layout[data-md-color-scheme="slate"] .md-content {
-    background-color: rgba(30, 32, 48, 0.9) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.36) !important;
 }
 
 /* ==========================================================================
@@ -1538,61 +1177,6 @@ body.home-layout .zdd-post-card,
 body.blog-index-layout .zdd-post-card,
 body.blog-index-layout .zdd-catalog-folder {
     background: rgba(246, 252, 255, 0.99) !important;
-}
-
-body.article-layout .md-content,
-body.zdd-minimal-layout.article-layout .md-content {
-    background: rgba(255, 255, 255, 0.93) !important;
-    color: var(--md-default-fg-color) !important;
-}
-
-body.article-layout .md-typeset,
-body.article-layout .md-content__inner {
-    color: var(--md-default-fg-color) !important;
-}
-
-/* ==========================================================================
-   Solid site background
-   ========================================================================== */
-html,
-body,
-body.zdd-minimal-layout,
-body.home-layout,
-body.blog-index-layout,
-body.tag-layout,
-body.article-layout {
-    background: #eaf5fb !important;
-    background-color: #eaf5fb !important;
-}
-
-body::before,
-body::after,
-body.zdd-minimal-layout::before,
-body.zdd-minimal-layout::after {
-    content: none !important;
-    display: none !important;
-    opacity: 0 !important;
-    background-image: none !important;
-}
-
-body.zdd-minimal-layout .md-container,
-body.zdd-minimal-layout .md-main,
-body.zdd-minimal-layout .md-main__inner,
-body.zdd-minimal-layout .md-typeset {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-
-[data-md-color-scheme="slate"] html,
-[data-md-color-scheme="slate"] body,
-body[data-md-color-scheme="slate"],
-body[data-md-color-scheme="slate"].zdd-minimal-layout,
-body[data-md-color-scheme="slate"].home-layout,
-body[data-md-color-scheme="slate"].blog-index-layout,
-body[data-md-color-scheme="slate"].tag-layout,
-body[data-md-color-scheme="slate"].article-layout {
-    background: #101924 !important;
-    background-color: #101924 !important;
 }
 
 body.home-layout .minimal-recent h2 {
