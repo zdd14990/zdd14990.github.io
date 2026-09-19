@@ -86,6 +86,7 @@
     
     
 
+
   <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
 
 
@@ -235,6 +236,8 @@
       
         <a href="../../../../index.html">Home</a>
       
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
       
       
         <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
@@ -647,6 +650,7 @@
   
 </div>
 
+
 <h1 id="autograd-jacobianhessian">Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合</h1>
 <p>有了 JVP、VJP 和 nested tracing，再看 jacobian、hessian、make_hvp，就不需要假设它们各自隐藏着一套求导引擎。它们主要改变查询方向、组织结果，或对导数程序再次求导。</p>
 <p>这一篇按“需要完整矩阵还是只需要矩阵的作用”读源码，同时区分 loss、gradient 和 HVP closure 的返回值。</p>
@@ -948,6 +952,7 @@ Purpose: 用既有向量函数和 scalar loss 交叉检查高级 operators 的�
 
 
 
+
   
   
 
@@ -1021,7 +1026,7 @@ Purpose: 用既有向量函数和 scalar loss 交叉检查高级 operators 的�
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
 
@@ -1051,6 +1056,7 @@ Purpose: 用既有向量函数和 scalar loss 交叉检查高级 operators 的�
   <div class="zdd-media-viewport" tabindex="0"></div>
 </dialog>
   <script src="../../../../javascripts/reading.js"></script>
+
 
 
   <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>

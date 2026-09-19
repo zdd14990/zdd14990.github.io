@@ -86,6 +86,7 @@
     
     
 
+
   <link rel="stylesheet" href="../../../../assets/fonts/wenkai/result.css">
 
 
@@ -235,6 +236,8 @@
       
         <a href="../../../../index.html">Home</a>
       
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
       
       
         <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
@@ -653,6 +656,7 @@
   
 </div>
 
+
 <h1 id="autograd-jvpvjp">Autograd 源码学习（二）：JVP、VJP 与两种自动微分模式</h1>
 <p>上一篇把导数沿计算图传播的过程拆开了。面对向量输入和向量输出，接下来的问题是：我们究竟要得到整个 Jacobian，还是只需要知道它对某个方向的作用？</p>
 <p>这里用一个二维输入、二维输出的例子显式算出 J，再分别计算 Jv 和 VJP。随后对照 <code>make_jvp</code> 与 <code>make_vjp</code>，看看“立刻执行”和“返回一个等待查询的函数”如何决定节点需要保存什么。</p>
@@ -1025,6 +1029,7 @@ Purpose: 对照手算 Jacobian，验证同一函数的 primal、JVP 和 VJP。</
 
 
 
+
   
   
 
@@ -1098,7 +1103,7 @@ Purpose: 对照手算 Jacobian，验证同一函数的 primal、JVP 和 VJP。</
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
 
@@ -1131,6 +1136,7 @@ Purpose: 对照手算 Jacobian，验证同一函数的 primal、JVP 和 VJP。</
   <div class="zdd-media-viewport" tabindex="0"></div>
 </dialog>
   <script src="../../../../javascripts/reading.js"></script>
+
 
 
   <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>

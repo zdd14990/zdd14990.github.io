@@ -137,6 +137,45 @@
     return snippet;
   }
 
+  function makeDisplaySnippet(text, terms, maxLength) {
+    var math = /(?<!\\)\$\$[\s\S]*?(?<!\\)\$\$|(?<![\\$])\$(?:\\.|[^$\\\n])+\$(?!\$)|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g;
+    var original = String(text || "");
+    var limit = Math.max(80, Number(maxLength) || 240);
+    var matchIndex = Math.max(0, snippetMatch(original, terms));
+    var start = original.length <= limit ? 0 : Math.max(0, matchIndex - Math.round(limit * 0.34));
+    if (original.length > limit) start = sentenceStart(original, matchIndex, start);
+    var preferredEnd = Math.min(original.length, start + limit);
+    var end = preferredEnd === original.length ? preferredEnd : sentenceEnd(original, preferredEnd);
+    end = Math.min(end, start + limit + 80);
+    var match;
+    // Select the original neighborhood before shortening math. Otherwise omitted
+    // formulas pull unrelated later paragraphs into the same visual budget.
+    while ((match = math.exec(original))) {
+      if (start > match.index && start < math.lastIndex) start = match.index;
+      if (end > match.index && end < math.lastIndex) end = math.lastIndex;
+    }
+    var windowText = original.slice(start, end);
+    var source = "";
+    var cursor = 0;
+    math.lastIndex = 0;
+    while ((match = math.exec(windowText))) {
+      source += cleanText(windowText.slice(cursor, match.index)) + " ";
+      var formula = match[0].replace(/\s+/g, " ");
+      var matched = terms.filter(function(term) {
+        return firstMatch(formula, [term]) >= 0 || firstMatch(cleanText(formula), [term]) >= 0;
+      });
+      var label;
+      if (matched.length && formula.length <= 160) label = formula;
+      else if (matched.length) label = "〔公式中匹配：" + matched.join("、") + "〕";
+      else if (formula.length <= 20 && !/[\\{}]/.test(formula)) label = formula;
+      else label = "〔公式〕";
+      source += label + " ";
+      cursor = math.lastIndex;
+    }
+    source += cleanText(windowText.slice(cursor));
+    return (start > 0 ? "…" : "") + source.trim() + (end < original.length ? "…" : "");
+  }
+
   function highlightRanges(text, terms) {
     var source = String(text || "");
     var normalized = normalize(source);
@@ -278,6 +317,7 @@
         subtitle: document.subtitle || "",
         section: section,
         snippet: makeSnippet(snippetSource(fields, terms), terms, settings.snippetLength || 240),
+        displayText: snippetSource(fields, terms) === fields.text ? passage.displayText : undefined,
         highlights: terms.slice(),
         url: buildLocatedUrl(passage.url || document.url, query),
         location: passage.location || {},
@@ -303,6 +343,11 @@
       if ((counts[result.documentId] || 0) >= perDocument) return false;
       seen[key] = true;
       counts[result.documentId] = (counts[result.documentId] || 0) + 1;
+      // Keep the legacy snippet as the deduplication key, then change display only.
+      if (result.displayText !== undefined) {
+        result.snippet = makeDisplaySnippet(result.displayText, terms, settings.snippetLength || 240);
+      }
+      delete result.displayText;
       results.push(result);
       return results.length >= limit;
     });
@@ -314,6 +359,7 @@
     cleanText: cleanText,
     queryTerms: queryTerms,
     makeSnippet: makeSnippet,
+    makeDisplaySnippet: makeDisplaySnippet,
     highlightParts: highlightParts,
     buildLocatedUrl: buildLocatedUrl,
     search: search

@@ -3,6 +3,13 @@
     posts: [],
     searchIndex: null,
     loaded: false,
+    loadStatus: "idle",
+    loadPromise: null,
+    requestVersion: 0,
+    resultRows: [],
+    selectedResultIndex: -1,
+    resultQuery: "",
+    retryAction: null,
     input: null,
     resultBox: null,
     ghost: null,
@@ -96,24 +103,31 @@
 
   function loadPosts() {
     if (state.loaded) return Promise.resolve(state.posts);
-    function acceptIndex(data) {
-      var valid = data && data.scope === "public" && Array.isArray(data.documents) && Array.isArray(data.passages);
-      state.searchIndex = valid ? data : {scope: "public", version: 2, documents: [], passages: []};
-      state.posts = state.searchIndex.documents;
-      state.loaded = true;
-      return state.posts;
-    }
-    if (window.zddPublicSearchIndexPromise) {
-      return window.zddPublicSearchIndexPromise.then(acceptIndex);
-    }
+    if (state.loadPromise) return state.loadPromise;
+    state.loadStatus = "loading";
     var url = window.zddPublicSearchIndexUrl || "/assets/zdd-public-search-index.json";
-    window.zddPublicSearchIndexPromise = fetch(url, {credentials: "same-origin"})
+    var request = window.zddPublicSearchIndexPromise || fetch(url, {credentials: "same-origin"})
       .then(function(response) {
         if (!response.ok) throw new Error("Public search index unavailable");
         return response.json();
-      })
-      .catch(function() { return {scope: "public", version: 2, documents: [], passages: []}; });
-    return window.zddPublicSearchIndexPromise.then(acceptIndex);
+      });
+    window.zddPublicSearchIndexPromise = request;
+    state.loadPromise = request.then(function(data) {
+      if (!data || data.scope !== "public" || !Array.isArray(data.documents) || !Array.isArray(data.passages)) {
+        throw new Error("Invalid public search index");
+      }
+      state.searchIndex = data;
+      state.posts = data.documents;
+      state.loaded = true;
+      state.loadStatus = "ready";
+      return state.posts;
+    }).catch(function(error) {
+      state.loadStatus = "error";
+      state.loadPromise = null;
+      window.zddPublicSearchIndexPromise = null;
+      throw error;
+    });
+    return state.loadPromise;
   }
 
   function allTags() {
@@ -148,7 +162,16 @@
     window.location.href = url;
   }
 
+  function clearResultSelection() {
+    state.resultRows = [];
+    state.selectedResultIndex = -1;
+    state.resultQuery = "";
+    if (state.input) state.input.removeAttribute("aria-activedescendant");
+  }
+
   function hideResults() {
+    state.requestVersion += 1;
+    clearResultSelection();
     if (state.resultBox) {
       state.resultBox.innerHTML = "";
       state.resultBox.hidden = true;
@@ -522,7 +545,7 @@
     var arg = commandLine.slice(parts[0].length).trim();
 
     if (!state.loaded && ["/next", "/prev", "/random", "/latest", "/tag", "/pdf", "/count"].indexOf(name) >= 0) {
-      loadPosts().then(function() { runCommand(line); });
+      requestResults(function() { runCommand(line); });
       return;
     }
 
@@ -743,25 +766,78 @@
       ? matches.map(passageResult).join("")
       : '<div class="zdd-search-empty">No matching passage found.</div>';
     state.resultBox.hidden = false;
+    state.resultRows = Array.from(state.resultBox.querySelectorAll(".zdd-passage-result"));
+    state.resultQuery = query;
+    state.resultRows.forEach(function(row, index) {
+      row.id = state.resultBox.id + "-result-" + index;
+    });
   }
 
-  function renderResults() {
-    if (!state.input) return;
+  function isComposing(event) {
+    return (event && (event.isComposing || event.keyCode === 229))
+      || (state.input && state.input.dataset.zddComposing === "1");
+  }
+
+  function renderResults() { requestResults(); }
+
+  function requestResults(action) {
+    if (!state.input || isComposing()) return;
     updateHomeSearchState();
-    if (!state.input.value.trim()) {
-      hideResults();
-      return;
+    var input = state.input;
+    var box = state.resultBox;
+    var raw = input.value;
+    var version = ++state.requestVersion;
+    clearResultSelection();
+    state.commandRows = [];
+    state.suggestionRows = [];
+    state.retryAction = action || null;
+    updateGhost("");
+    if (!raw.trim()) { hideResults(); return; }
+    function current() {
+      return version === state.requestVersion && state.input === input
+        && state.resultBox === box && input.value === raw && !isComposing();
+    }
+    if (!state.loaded) {
+      box.innerHTML = '<div class="zdd-search-empty" role="status">正在加载搜索索引…</div>';
+      box.hidden = false;
     }
     loadPosts().then(function() {
+      if (!current()) return;
       state.selectedCommandIndex = 0;
       state.selectedSuggestionIndex = 0;
-      var value = state.input.value.trim();
-      if (value.charAt(0) === "/") {
-        renderCommandPanel(value);
-      } else {
-        renderContentResults();
-      }
+      if (action) action();
+      else if (raw.trim().charAt(0) === "/") renderCommandPanel(raw.trim());
+      else renderContentResults();
+    }).catch(function() {
+      if (!current()) return;
+      box.innerHTML = '<div class="zdd-search-empty" role="status">搜索索引加载失败，请重试。</div>'
+        + '<button type="button" class="zdd-search-retry" data-zdd-search-retry>重试</button>';
+      box.hidden = false;
     });
+  }
+
+  function selectResult(direction) {
+    if (!state.resultRows.length || state.resultQuery !== state.input.value.trim()) return;
+    state.selectedResultIndex = state.selectedResultIndex < 0
+      ? (direction > 0 ? 0 : state.resultRows.length - 1)
+      : moveSelection(state.resultRows, state.selectedResultIndex, direction);
+    state.resultRows.forEach(function(row, index) {
+      row.classList.toggle("is-active", index === state.selectedResultIndex);
+    });
+    var row = state.resultRows[state.selectedResultIndex];
+    state.input.setAttribute("aria-activedescendant", row.id);
+    row.scrollIntoView({block: "nearest"});
+  }
+
+  function submitSearch() {
+    if (isComposing()) return;
+    var query = state.input.value.trim();
+    if (query.charAt(0) === "/") runCommand(query);
+    else if (query) {
+      var row = state.resultQuery === query && state.resultRows[state.selectedResultIndex];
+      if (row) navigate(row.href);
+      else renderResults();
+    }
   }
 
   function moveSelection(rows, selected, direction) {
@@ -782,8 +858,7 @@
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
-      if (input.value.trim().charAt(0) === "/") runCommand(input.value);
-      else if (input.value.trim()) loadPosts().then(renderContentResults);
+      submitSearch();
     });
 
     input.addEventListener("focus", function() {
@@ -793,9 +868,29 @@
       updateHomeSearchState();
     });
 
-    input.addEventListener("input", renderResults);
+    input.setAttribute("aria-controls", resultBox.id);
+    input.addEventListener("compositionstart", function() {
+      input.dataset.zddComposing = "1";
+      hideResults();
+    });
+    input.addEventListener("compositionend", function() {
+      input.dataset.zddComposing = "0";
+      // Coalesce compositionend and the final input event into one search.
+      window.clearTimeout(compositionTimer);
+      var version = state.requestVersion;
+      compositionTimer = window.setTimeout(function() {
+        if (state.input === input && state.requestVersion === version) renderResults();
+      }, 0);
+    });
+    var compositionTimer = 0;
+    input.addEventListener("input", function(event) {
+      if (isComposing(event)) return;
+      window.clearTimeout(compositionTimer);
+      renderResults();
+    });
 
     input.addEventListener("keydown", function(event) {
+      if (isComposing(event)) return;
       var isCommand = input.value.trim().charAt(0) === "/";
       if (event.key === "Escape") {
         if (scope !== "modal") {
@@ -805,9 +900,12 @@
         return;
       }
       if (!isCommand) {
-        if (event.key === "Enter") {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
           event.preventDefault();
-          if (input.value.trim()) loadPosts().then(renderContentResults);
+          selectResult(event.key === "ArrowDown" ? 1 : -1);
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          submitSearch();
         }
         return;
       }
@@ -835,6 +933,11 @@
 
     if (resultBox) {
       resultBox.addEventListener("click", function(event) {
+        if (event.target.closest("[data-zdd-search-retry]")) {
+          input.focus();
+          requestResults(state.retryAction);
+          return;
+        }
         var suggestion = event.target.closest(".zdd-command-suggestion");
         if (suggestion) {
           state.selectedSuggestionIndex = Number(suggestion.getAttribute("data-suggestion-index"));
@@ -955,7 +1058,7 @@
       if (event.target.closest("[data-zdd-close-search]")) closeModal();
     });
     document.addEventListener("keydown", function(event) {
-      if (overlay.hidden) return;
+      if (overlay.hidden || isComposing(event)) return;
       if (event.key === "Escape") {
         event.preventDefault();
         closeModal();
@@ -1047,7 +1150,7 @@
     if (!window.zddCommandSearchKeyBound) {
       window.zddCommandSearchKeyBound = true;
       document.addEventListener("keydown", function(event) {
-        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        if (!isComposing(event) && (event.ctrlKey || event.metaKey) && event.key === "Enter") {
           event.preventDefault();
           openModal();
         }
@@ -1064,7 +1167,7 @@
         history.replaceState(null, "", window.location.pathname + window.location.hash);
       }
       if (initialQuery.trim().charAt(0) === "/") runCommand(initialQuery);
-      else loadPosts().then(renderContentResults);
+      else renderResults();
     }
   }
 

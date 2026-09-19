@@ -133,6 +133,7 @@
     applyPreset();
     rememberArticle();
     attachCatalogAnimations(document);
+    revealCourseCatalog();
     loadPageAssets();
     updateReadingProgress();
   }
@@ -154,6 +155,18 @@
     var scrolled = scrollHeight > 0 ? Math.min(100, Math.max(0, scrollTop / scrollHeight * 100)) : 0;
     progressBar.style.width = scrolled + "%";
   }
+
+  function revealCourseCatalog() {
+    if (window.location.hash !== "#probability-theory-course") return;
+    var target = document.getElementById("probability-theory-course");
+    if (!target) return;
+    for (var folder = target; folder; folder = folder.parentElement) {
+      if (folder.matches("details.zdd-catalog-folder")) folder.open = true;
+    }
+    requestAnimationFrame(function() { target.scrollIntoView({block: "start"}); });
+  }
+
+  window.addEventListener("hashchange", revealCourseCatalog);
 
   function attachCatalogAnimations(root) {
     var folders = (root || document).querySelectorAll(".zdd-catalog-folder");
