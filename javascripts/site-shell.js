@@ -93,39 +93,6 @@
     applyPreset();
   };
 
-  function pageAssetUrl(value) {
-    if (!value) return null;
-    try {
-      var url = new URL(value, window.location.href);
-      return url.origin === window.location.origin ? url.href : null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function loadPageAssets() {
-    var root = document.querySelector("[data-zdd-page-style], [data-zdd-page-script]");
-    if (!root) return;
-
-    var styleUrl = pageAssetUrl(root.dataset.zddPageStyle);
-    if (styleUrl && !document.querySelector('link[data-zdd-page-asset="' + styleUrl + '"]')) {
-      var link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = styleUrl;
-      link.dataset.zddPageAsset = styleUrl;
-      document.head.appendChild(link);
-    }
-
-    var scriptUrl = pageAssetUrl(root.dataset.zddPageScript);
-    if (scriptUrl && !document.querySelector('script[data-zdd-page-asset="' + scriptUrl + '"]')) {
-      var script = document.createElement("script");
-      script.src = scriptUrl;
-      script.defer = true;
-      script.dataset.zddPageAsset = scriptUrl;
-      document.head.appendChild(script);
-    }
-  }
-
   function refreshPageState() {
     classifyPage();
     document.body.classList.remove("zdd-zen");
@@ -134,7 +101,6 @@
     rememberArticle();
     attachCatalogAnimations(document);
     revealCourseCatalog();
-    loadPageAssets();
     updateReadingProgress();
   }
 

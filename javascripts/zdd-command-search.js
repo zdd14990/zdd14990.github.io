@@ -4,7 +4,6 @@
     searchIndex: null,
     loaded: false,
     loadStatus: "idle",
-    loadPromise: null,
     requestVersion: 0,
     resultRows: [],
     selectedResultIndex: -1,
@@ -101,33 +100,21 @@
     return out;
   }
 
-  function loadPosts() {
-    if (state.loaded) return Promise.resolve(state.posts);
-    if (state.loadPromise) return state.loadPromise;
+  function loadPosts(includePassages) {
+    if (state.loaded && (!includePassages || state.searchIndex)) return Promise.resolve(state.posts);
     state.loadStatus = "loading";
-    var url = window.zddPublicSearchIndexUrl || "/assets/zdd-public-search-index.json";
-    var request = window.zddPublicSearchIndexPromise || fetch(url, {credentials: "same-origin"})
-      .then(function(response) {
-        if (!response.ok) throw new Error("Public search index unavailable");
-        return response.json();
-      });
-    window.zddPublicSearchIndexPromise = request;
-    state.loadPromise = request.then(function(data) {
-      if (!data || data.scope !== "public" || !Array.isArray(data.documents) || !Array.isArray(data.passages)) {
-        throw new Error("Invalid public search index");
-      }
-      state.searchIndex = data;
+    var loader = window.ZddContentData;
+    var request = includePassages ? loader.loadSearchIndex() : loader.loadCatalog();
+    return request.then(function(data) {
+      if (includePassages) state.searchIndex = data;
       state.posts = data.documents;
       state.loaded = true;
       state.loadStatus = "ready";
       return state.posts;
     }).catch(function(error) {
       state.loadStatus = "error";
-      state.loadPromise = null;
-      window.zddPublicSearchIndexPromise = null;
       throw error;
     });
-    return state.loadPromise;
   }
 
   function allTags() {
@@ -797,11 +784,12 @@
       return version === state.requestVersion && state.input === input
         && state.resultBox === box && input.value === raw && !isComposing();
     }
-    if (!state.loaded) {
+    var includePassages = raw.trim().charAt(0) !== "/";
+    if (!state.loaded || (includePassages && !state.searchIndex)) {
       box.innerHTML = '<div class="zdd-search-empty" role="status">正在加载搜索索引…</div>';
       box.hidden = false;
     }
-    loadPosts().then(function() {
+    loadPosts(includePassages).then(function() {
       if (!current()) return;
       state.selectedCommandIndex = 0;
       state.selectedSuggestionIndex = 0;

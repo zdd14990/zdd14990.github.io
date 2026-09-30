@@ -7,6 +7,8 @@
 })(typeof window !== "undefined" ? window : globalThis, function() {
   "use strict";
 
+  var preparedIndexes = new WeakMap();
+
   function normalize(text) {
     return String(text || "").toLocaleLowerCase();
   }
@@ -33,9 +35,7 @@
     });
   }
 
-  function countOccurrences(text, term) {
-    var haystack = normalize(text);
-    var needle = normalize(term);
+  function countOccurrences(haystack, needle) {
     var count = 0;
     var from = 0;
     if (!needle) return count;
@@ -248,11 +248,31 @@
     };
   }
 
-  function fieldScore(fields, terms, rawQuery) {
+  function prepareIndex(index) {
+    var cached = preparedIndexes.get(index);
+    if (cached && cached.documents === index.documents && cached.passages === index.passages
+        && cached.documentCount === (index.documents || []).length && cached.passageCount === (index.passages || []).length) return cached;
+    var documents = documentMap(index.documents);
+    var rows = [];
+    (index.passages || []).forEach(function(passage) {
+      var document = documents[passage.documentId];
+      if (!document) return;
+      var fields = searchableFields(document, passage);
+      var normalized = {};
+      Object.keys(fields).forEach(function(key) { normalized[key] = normalize(fields[key]); });
+      rows.push({document: document, passage: passage, fields: fields, normalized: normalized,
+        aggregate: Object.keys(normalized).map(function(key) { return normalized[key]; }).join(" ")});
+    });
+    cached = {documents: index.documents, passages: index.passages, documentCount: (index.documents || []).length,
+      passageCount: (index.passages || []).length, rows: rows};
+    preparedIndexes.set(index, cached);
+    return cached;
+  }
+
+  function fieldScore(fields, aggregate, terms, rawQuery) {
     var score = 0;
-    var aggregate = Object.keys(fields).map(function(key) { return fields[key]; }).join(" ");
     var query = normalize(rawQuery).trim();
-    if (!terms.every(function(term) { return normalize(aggregate).indexOf(term) >= 0; })) return -1;
+    if (!terms.every(function(term) { return aggregate.indexOf(term) >= 0; })) return -1;
 
     terms.forEach(function(term) {
       score += countOccurrences(fields.title, term) * 18;
@@ -262,11 +282,11 @@
       score += countOccurrences(fields.taxonomy, term) * 5;
       score += Math.min(8, countOccurrences(fields.text, term)) * 2;
     });
-    if (query && normalize(fields.section).indexOf(query) >= 0) score += 42;
-    if (query && normalize(fields.title).indexOf(query) >= 0) score += 30;
-    if (query && normalize(fields.text).indexOf(query) >= 0) score += 26;
-    else if (query && normalize(aggregate).indexOf(query) >= 0) score += 7;
-    if (terms.every(function(term) { return normalize(fields.text).indexOf(term) >= 0; })) score += 6;
+    if (query && fields.section.indexOf(query) >= 0) score += 42;
+    if (query && fields.title.indexOf(query) >= 0) score += 30;
+    if (query && fields.text.indexOf(query) >= 0) score += 26;
+    else if (query && aggregate.indexOf(query) >= 0) score += 7;
+    if (terms.every(function(term) { return fields.text.indexOf(term) >= 0; })) score += 6;
     return score;
   }
 
@@ -286,14 +306,14 @@
     var terms = queryTerms(query);
     if (!index || index.scope !== expectedScope || !terms.length) return [];
 
-    var documents = documentMap(index.documents);
+    var prepared = prepareIndex(index);
     var candidates = [];
-    (index.passages || []).forEach(function(passage) {
+    prepared.rows.forEach(function(row) {
+      var passage = row.passage;
       if (settings.documentId && passage.documentId !== settings.documentId) return;
-      var document = documents[passage.documentId];
-      if (!document) return;
-      var fields = searchableFields(document, passage);
-      var score = fieldScore(fields, terms, query);
+      var document = row.document;
+      var fields = row.fields;
+      var score = fieldScore(row.normalized, row.aggregate, terms, query);
       if (score < 0) return;
 
       var passageField = [fields.section, fields.breadcrumb, fields.text].join(" ");
