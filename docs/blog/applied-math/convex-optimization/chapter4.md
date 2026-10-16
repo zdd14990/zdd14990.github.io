@@ -100,6 +100,4 @@ $$M=\text{epi}(p)$$其中 $p:\mathbb{R}^n\rightarrow [-\infty,\infty]$，则 $w^
 
 [ :octicons-arrow-left-24: 上一章： 凸优化](chapter3.md){ .md-button }
 
-[ 下一章：还没写 :octicons-arrow-right-24: ](chapter4.md){ .md-button .md-button--primary }
-
 </div>

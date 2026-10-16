@@ -1,5 +1,5 @@
 ---
-title: Notes
+title: 数据科学专题：集中不等式与熵方法
 date: 2025-11-27
 hide:
   - navigation
@@ -10,6 +10,8 @@ tags:
   - applied-math
   - data-science
 ---
+记录累积量生成函数（CGF）、尾部概率与集中不等式、二次型、Lipschitz 函数、熵方法及矩阵集中不等式。
+
 ## 回顾
 !!! theorem "马尔可夫不等式"
     对于任意非负随机变量 $X$ 和任意 $t>0$，有

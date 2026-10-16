@@ -44,8 +44,13 @@ tags:
 
 | 编号 | 试卷 | 参考解答 |
 | --- | --- | --- |
-| 01 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/01-exam.pdf) | [解答（5 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/01-solutions.pdf) |
-| 02 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/02-exam.pdf) | [解答（4 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/02-solutions.pdf) |
-| 03 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/03-exam.pdf) | [解答（4 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/03-solutions.pdf) |
-| 04 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/04-exam.pdf) | [解答（4 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/04-solutions.pdf) |
-| 05 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/05-exam.pdf) | [解答（4 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/05-solutions.pdf) |
+| 01 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/01-exam.pdf) | [解答（7 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/01-solutions.pdf) |
+| 02 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/02-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/02-solutions.pdf) |
+| 03 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/03-exam.pdf) | [解答（5 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/03-solutions.pdf) |
+| 04 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/04-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/04-solutions.pdf) |
+| 05 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/05-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/05-solutions.pdf) |
+| 06 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/06-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/06-solutions.pdf) |
+| 07 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/07-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/07-solutions.pdf) |
+| 08 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/08-exam.pdf) | [解答（6 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/08-solutions.pdf) |
+| 09 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/09-exam.pdf) | [解答（7 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/09-solutions.pdf) |
+| 10 | [试卷（2 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/10-exam.pdf) | [解答（7 页）](../../assets/qualification-exam-review/applied-mathematics/mock-exams/10-solutions.pdf) |
