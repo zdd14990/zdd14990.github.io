@@ -370,10 +370,39 @@ def _search_index_items():
     return _public_search_index(compact=True)["documents"]
 
 
+def _tag_groups(articles):
+    """Group tags under the subject (first category) most of their articles belong to."""
+    counts, subjects, order = {}, {}, {}
+    for article in articles:
+        subject = (article["categories"] or ["其他"])[0]
+        order.setdefault(subject, len(order))
+        for tag in article["tags"]:
+            counts[tag] = counts.get(tag, 0) + 1
+            subjects.setdefault(tag, {}).setdefault(subject, 0)
+            subjects[tag][subject] += 1
+    groups = {}
+    for tag, by_subject in subjects.items():
+        subject = max(by_subject, key=lambda name: (by_subject[name], -order[name]))
+        groups.setdefault(subject, []).append(tag)
+    return [
+        (subject, sorted(tags, key=lambda tag: (-counts[tag], tag)), counts)
+        for subject, tags in sorted(groups.items(), key=lambda item: order[item[0]])
+    ]
+
+
+def _tag_option(tag, count):
+    size = "is-large" if count >= 8 else "is-medium" if count >= 3 else ""
+    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}'
+            f'<small>{count}</small></a>')
+
+
 def _tag_explorer():
     articles = _article_data()
-    tags = sorted({tag for article in articles for tag in article["tags"]})
-    options = "".join(f'<a href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}</a>' for tag in tags)
+    options = "".join(
+        f'<section class="zdd-tag-group"><h2>{html.escape(subject)}</h2>'
+        + "".join(_tag_option(tag, counts[tag]) for tag in tags) + "</section>"
+        for subject, tags, counts in _tag_groups(articles)
+    )
     cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
     return f"""
 <div class="zdd-tag-page">

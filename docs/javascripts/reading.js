@@ -7,6 +7,9 @@
   var dates = article.querySelector('.zdd-reading-dates');
   var title = article.querySelector('h1');
   if (dates && title) title.after(dates);
+  document.querySelectorAll('.md-nav--secondary .md-ellipsis').forEach(function (label) {
+    if (!label.title) label.title = label.textContent.trim();
+  });
   media.querySelector('[data-reader-close]').addEventListener('click', function () { media.close(); });
   media.addEventListener('click', function (event) {
     if (event.target !== media) return;

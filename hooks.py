@@ -173,6 +173,10 @@ def on_page_markdown(markdown, page, config, files):
         published, modified = article_dates(page.meta.get('date'), page.meta.get('updated'))
         page.meta['reading_date'] = published
         page.meta['reading_updated'] = modified if modified != published else ''
+        from main import _word_count  # local import keeps hook start-up independent of the macros module
+        words = _word_count(markdown)
+        page.meta['reading_words'] = words
+        page.meta['reading_minutes'] = max(1, round(words / 350))
     _set_article_description(markdown, page)
     markdown = _fix_pdf_embed_paths(markdown, page, config)
 

@@ -109,7 +109,7 @@
     if (progressBar) return progressBar;
     progressBar = document.createElement("div");
     progressBar.id = "reading-progress";
-    progressBar.style.cssText = "position:fixed;top:0;left:0;height:3px;background:#e67e96;width:0%;z-index:99999;transition:width .1s ease";
+    progressBar.style.cssText = "position:fixed;top:0;left:0;height:3px;background:var(--zdd-progress);width:0%;z-index:99999;transition:width .1s ease";
     document.body.appendChild(progressBar);
     return progressBar;
   }
