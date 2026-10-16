@@ -73,6 +73,7 @@ def _as_list(value):
 
 def _append_taxonomy(markdown, page):
     path = page.file.src_path.replace("\\", "/")
+    page.meta.pop("taxonomy", None)
     if not path.startswith("blog/") or path.endswith("index.md"):
         return markdown
 
@@ -81,24 +82,14 @@ def _append_taxonomy(markdown, page):
     if not categories and not tags:
         return markdown
 
+    # Rendered by overrides/partials/article-end.html together with the
+    # series pager and backlinks.
     tags_url = get_relative_url("tags/", page.url)
-    category_links = "".join(
-        f'<span class="zdd-category-chip">#{html.escape(label)}</span>'
-        for label in categories
-    )
-    tag_links = "".join(
-        f'<a class="zdd-tag-chip" href="{tags_url}?tag={html.escape(tag)}">#{html.escape(tag)}</a>'
-        for tag in tags
-    )
-
-    taxonomy = f"""
-
-<div class="zdd-article-taxonomy">
-  <div class="zdd-taxonomy-row zdd-taxonomy-categories">{category_links}</div>
-  <div class="zdd-taxonomy-row zdd-taxonomy-tags">{tag_links}</div>
-</div>
-"""
-    return markdown + taxonomy
+    page.meta["taxonomy"] = {
+        "categories": categories,
+        "tags": [{"name": tag, "url": f"{tags_url}?tag={tag}"} for tag in tags],
+    }
+    return markdown
 
 
 def _set_article_description(markdown, page):

@@ -1,0 +1,41 @@
+{# End-of-article block: series pager, taxonomy and backlinks in one card. #}
+{% set course = page.meta.course_navigation %}
+{% set taxonomy = page.meta.taxonomy %}
+{% if course or taxonomy or page.meta.backlinks %}
+<footer class="zdd-article-end">
+  {% if course %}
+  <nav class="zdd-course-navigation zdd-pager" aria-label="{{ course.title }}章节导航">
+    {% if course.previous %}
+    <a class="zdd-pager-link is-prev" href="{{ course.previous.url }}" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">{{ course.previous.title }}</span>
+    </a>
+    {% else %}<span class="zdd-pager-link is-empty" aria-hidden="true"></span>{% endif %}
+    {% if course.next %}
+    <a class="zdd-pager-link is-next" href="{{ course.next.url }}" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">{{ course.next.title }}</span>
+    </a>
+    {% else %}<span class="zdd-pager-link is-empty" aria-hidden="true"></span>{% endif %}
+    <a class="zdd-pager-catalog" href="{{ course.catalog_url }}">{{ course.title }} · 第 {{ course.position }} / {{ course.total }} 章 · 系列目录</a>
+  </nav>
+  {% endif %}
+  {% if taxonomy %}
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      {% for name in taxonomy.categories %}<span class="zdd-end-chip is-category">{{ name }}</span>{% endfor %}
+      {% for tag in taxonomy.tags %}<a class="zdd-end-chip" href="{{ tag.url }}">#{{ tag.name }}</a>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% if page.meta.backlinks %}
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      {% for link in page.meta.backlinks %}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</footer>
+{% endif %}
