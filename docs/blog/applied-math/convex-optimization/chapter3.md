@@ -45,15 +45,3 @@ $(d)$：由$(a)$和$(c)$即得。
 * 对 $\frac{1}{p}+\frac{1}{q}=1$，$p>1$ 的 $f(x)=\frac{1}{p}\|x\|^p$，其共轭函数为 $f^*(y)=\frac{1}{q}\|y\|^q$。
 * $f(x)=\frac{1}{2}x'Qx+a'x+b$，$Q$ 为半正定矩阵，则 $f^*(y)=\frac{1}{2}(y-a)'Q^{-1}(y-a)-b$。
 * $f(x)=p(A(x-c))+a'x+b$，则 $f^*(y)=q((A')^{-1}(y-a))+c'y+d$，其中 $q$ 是 $p$ 的共轭函数，$d=-(c'a+b)$。
-
-
-<br>
-<hr>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
-
-[ :octicons-arrow-left-24: 上一章：凸多面体](chapter2.md){ .md-button }
-
-[ 下一章：几何对偶框架 :octicons-arrow-right-24: ](chapter4.md){ .md-button .md-button--primary }
-
-</div>

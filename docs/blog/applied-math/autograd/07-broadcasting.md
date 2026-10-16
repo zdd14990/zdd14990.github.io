@@ -17,7 +17,6 @@ tags:
 
 我们用 scalar bias 加到向量，以及长度 3 的 bias 加到两行矩阵这两个已有实验，沿着与 forward broadcasting 相反的方向，把每一步 reduction 写清楚。
 
-[:octicons-arrow-left-24: 上一篇](06-numpy-vjps.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](08-forward-mode.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -265,6 +264,3 @@ broadcasting 引入重复使用位置，反向必须把这些位置的贡献求�
 - [autograd/numpy/numpy_wrapper.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_wrapper.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](06-numpy-vjps.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](08-forward-mode.md)

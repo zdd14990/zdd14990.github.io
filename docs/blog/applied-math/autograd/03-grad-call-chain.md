@@ -17,7 +17,6 @@ tags:
 
 我们沿 `f(x)=x*x` 走完整条链：先区分 `grad(f)` 与真正求值，再追踪 3、9、1 和 6 分别出现在哪个对象里。primitive 的分支和 backward 字典的细节，分别留到接下来两篇展开。
 
-[:octicons-arrow-left-24: 上一篇](02-jvp-vjp.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](04-tracer.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -426,6 +425,3 @@ all checks passed
 - [autograd/wrap_util.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/wrap_util.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](02-jvp-vjp.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](04-tracer.md)

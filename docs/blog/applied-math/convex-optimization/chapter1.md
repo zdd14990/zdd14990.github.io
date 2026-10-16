@@ -437,13 +437,3 @@ $C=C_1\times \cdots \times C_m$ 是 $\mathbb{R}^{nm}$ 的非空闭凸子集，�
 
 我们已经将对偶的概念从集合的对偶延伸至函数的对偶，现在我们考虑问题的对偶。
 
-<br>
-<hr>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
-
-[ :octicons-arrow-left-24: 返回目录](../../index.md){ .md-button }
-
-[ 下一章：凸多面体 :octicons-arrow-right-24: ](chapter2.md){ .md-button .md-button--primary }
-
-</div>

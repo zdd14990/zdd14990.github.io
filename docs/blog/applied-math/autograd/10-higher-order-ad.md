@@ -17,7 +17,6 @@ tags:
 
 我们沿已有的三阶实验观察 `grad(grad(grad(f)))`：调用栈依次建立 trace 0、1、2，原函数却从最外壳看到 2、1、0。理解这两种顺序，就能说明为什么 primitive 只能先解开最高 trace。
 
-[:octicons-arrow-left-24: 上一篇](09-why-reverse-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](11-operator-composition.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -314,6 +313,3 @@ all checks passed
 - [autograd/tracer.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](09-why-reverse-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](11-operator-composition.md)

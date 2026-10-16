@@ -17,7 +17,6 @@ tags:
 
 这里继续使用教材中的 square 实验，先观察 missing VJP 在哪里失败，再登记 staged rule，并用上一篇的 checker 验证到二阶。
 
-[:octicons-arrow-left-24: 上一篇](12-numerical-gradient-checking.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](14-mini-autograd-design.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -237,6 +236,3 @@ primitive 定义追踪边界，defvjp 提供该边界的反向语义。maker 在
 - [autograd/core.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](12-numerical-gradient-checking.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](14-mini-autograd-design.md)

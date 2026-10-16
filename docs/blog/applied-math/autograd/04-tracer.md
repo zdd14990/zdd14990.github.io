@@ -17,7 +17,6 @@ tags:
 
 沿用 R、M、Bx 这些教学标签，我们按选择最高 trace、单层解箱、原始计算、节点构造和重新装箱的顺序读源码，再用真实的 if 与循环实验观察动态执行。
 
-[:octicons-arrow-left-24: 上一篇](03-grad-call-chain.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](05-core-reverse-mode.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -415,6 +414,3 @@ tracer 观察实际 primitive 调用，Box 把值、trace id 与 node 关联起�
 - [autograd/tracer.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/tracer.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](03-grad-call-chain.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](05-core-reverse-mode.md)

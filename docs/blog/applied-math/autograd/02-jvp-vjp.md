@@ -17,7 +17,6 @@ tags:
 
 这里用一个二维输入、二维输出的例子显式算出 J，再分别计算 Jv 和 VJP。随后对照 `make_jvp` 与 `make_vjp`，看看“立刻执行”和“返回一个等待查询的函数”如何决定节点需要保存什么。
 
-[:octicons-arrow-left-24: 上一篇](01-ad-and-computational-graph.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](03-grad-call-chain.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -291,6 +290,3 @@ JVP 从输入方向得到输出方向，VJP 从输出 cotangent 得到输入 cot
 - [autograd/core.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](01-ad-and-computational-graph.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](03-grad-call-chain.md)

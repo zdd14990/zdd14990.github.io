@@ -17,7 +17,6 @@ tags:
 
 我们从 `log(x1) + x1*x2 - sin(x2)` 开始，把手算、程序中的中间值和 Autograd 的入口放在一起。读完这一篇，再去看 Box 和 VJPNode，就能分清它们服务的是哪一步数学运算。
 
-[系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](02-jvp-vjp.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -306,6 +305,3 @@ all checks passed
 - [autograd/numpy/numpy_vjps.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_vjps.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](02-jvp-vjp.md)

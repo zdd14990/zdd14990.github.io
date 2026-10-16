@@ -17,7 +17,6 @@ tags:
 
 这一篇按“需要完整矩阵还是只需要矩阵的作用”读源码，同时区分 loss、gradient 和 HVP closure 的返回值。
 
-[:octicons-arrow-left-24: 上一篇](10-higher-order-ad.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](12-numerical-gradient-checking.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -264,6 +263,3 @@ jacobian 复用 VJP 并按输出 basis 取行，hessian 再组合一次 jacobian
 - [autograd/differential_operators.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](10-higher-order-ad.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](12-numerical-gradient-checking.md)

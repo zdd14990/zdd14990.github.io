@@ -17,7 +17,6 @@ tags:
 
 这一篇保留原实现的关键方法、共享输入的状态变化和四项测试。我们关注哪些职责在两边对应，以及接口、遍历算法和高阶能力为何不能直接画等号。
 
-[:octicons-arrow-left-24: 上一篇](13-custom-primitive.md) | [系列总览](00-overview.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -307,6 +306,3 @@ Mini 与 HIPS 都通过局部链式法则、反向拓扑顺序和贡献累加完
 - [autograd/core.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/core.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](13-custom-primitive.md) | [系列总览](00-overview.md)

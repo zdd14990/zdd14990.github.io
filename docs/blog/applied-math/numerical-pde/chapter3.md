@@ -938,13 +938,3 @@ $\frac{d}{dt}U_{j}+\frac{1}{h}[F(U_{j+\frac{1}{2}},t)-F(U_{j-\frac{1}{2}},t)]=0$
 $\min_{c_{l}}SI=(U_{j+\frac{1}{2}}^{m}-U_{j-\frac{1}{2}}^{m})^{2}$，
 s.t. $U_{j+\frac{1}{2}}^{m}=\sum_{l}c_{l}U_{l}^{m}$。 -->
 
-<br>
-<hr>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
-
-[ :octicons-arrow-left-24:  上一章：抛物 PDE 的有限差分法 ](chapter2.md){ .md-button }
-
-[ 下一章：有限元方法 :octicons-arrow-right-24: ](chapter4.md){ .md-button .md-button--primary }
-
-</div>

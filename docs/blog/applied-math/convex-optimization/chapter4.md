@@ -91,11 +91,3 @@ $$M=\text{epi}(p)$$其中 $p:\mathbb{R}^n\rightarrow [-\infty,\infty]$，则 $w^
 
 第二个玩家的目标是最小化其最大损失： $\text{maximize } \min_{x} \phi(x,z)$
 
-<br>
-<hr>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
-
-[ :octicons-arrow-left-24: 上一章： 凸优化](chapter3.md){ .md-button }
-
-</div>

@@ -17,7 +17,6 @@ tags:
 
 这里对同一函数数一数 forward 实际执行了几次，再回到 grad 的 scalar-output 检查。计数只回答查询策略的问题，图与 closure 的保存成本还需要单独考虑。
 
-[:octicons-arrow-left-24: 上一篇](08-forward-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](10-higher-order-ad.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -195,6 +194,3 @@ all checks passed
 - [autograd/differential_operators.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/differential_operators.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](08-forward-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](10-higher-order-ad.md)

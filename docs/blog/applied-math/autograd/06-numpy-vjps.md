@@ -17,7 +17,6 @@ tags:
 
 这一篇沿既有实验中的八种运算展开，重点分清三个时刻：导入时登记 maker，forward 时捕获需要的状态，backward 时接收 upstream cotangent。
 
-[:octicons-arrow-left-24: 上一篇](05-core-reverse-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](07-broadcasting.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -318,6 +317,3 @@ linalg、FFT 和 SciPy 的复杂规则仍可沿相同入口查阅，这里先把
 - [autograd/numpy/numpy_wrapper.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_wrapper.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](05-core-reverse-mode.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](07-broadcasting.md)

@@ -17,7 +17,6 @@ tags:
 
 这一篇直接读 JVPNode、defjvp 和 def_linear，再用两次输入 basis 查询拼出 Jacobian。关键是分清“当前就能计算的 tangent”和“以后才到达的 cotangent”。
 
-[:octicons-arrow-left-24: 上一篇](07-broadcasting.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](09-why-reverse-mode.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -298,6 +297,3 @@ JVPNode 读取 parent.g 后立即计算 self.g，因此无需保存未来 revers
 - [autograd/numpy/numpy_jvps.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/numpy/numpy_jvps.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](07-broadcasting.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](09-why-reverse-mode.md)

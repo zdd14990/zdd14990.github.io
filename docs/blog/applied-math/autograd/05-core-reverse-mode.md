@@ -17,7 +17,6 @@ tags:
 
 仍然只用 `z=x*x, x=3`。例子虽然小，却包含 reverse engine 最关键的三个职责：合法的访问顺序、局部 pullback，以及多条路径的梯度累加。下面把每次字典变化都列出来。
 
-[:octicons-arrow-left-24: 上一篇](04-tracer.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](06-numpy-vjps.md)
 
 源码基线：HIPS/autograd 1.9.1，commit `f53a21734fdfae636f448744d9097d8d35a643a0`。
 
@@ -509,6 +508,3 @@ VJPNode 保存 parents 和等待 g 的局部函数，backward_pass 为每次查�
 - [autograd/util.py](https://github.com/HIPS/autograd/blob/f53a21734fdfae636f448744d9097d8d35a643a0/autograd/util.py)，固定 commit 原文件。
 - [Automatic Differentiation lecture](https://mlsyscourse.org/slides/04-automatic-differentiation.pdf)。
 
----
-
-[:octicons-arrow-left-24: 上一篇](04-tracer.md) | [系列总览](00-overview.md) | [下一篇 :octicons-arrow-right-24:](06-numpy-vjps.md)

@@ -180,13 +180,3 @@ $$
     u(x,t)=\frac{1}{\sqrt{2\pi}} \int_\mathbb{R} e^{i\xi (x-c\xi ^2t)}\hat{\eta}(\xi )\mathrm{d} \xi
     $$
 
-<br>
-<hr>
-
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
-
-[ :octicons-arrow-left-24: 返回目录 ](../../index.md){ .md-button }
-
-[ 下一章：椭圆 PDE 的有限差分法 :octicons-arrow-right-24: ](chapter1.md){ .md-button .md-button--primary }
-
-</div>
