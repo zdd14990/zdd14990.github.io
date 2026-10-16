@@ -75,6 +75,8 @@ class ContentStore:
         self.sources = {}
         self.articles = None
         self.rendered_headings = {}
+        self.statements = {}
+        self.backlinks = None
 
     def read(self, path):
         path = Path(path).resolve()

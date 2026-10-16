@@ -31,6 +31,8 @@
     {name: "/random", syntax: "/random [tag:<tag>|category:<category>]", kind: "jump", category: "Knowledge", fill: "/random ", desc: "Open a random post or lab."},
     {name: "/latest", syntax: "/latest", kind: "query", category: "Knowledge", desc: "Show the latest dated articles."},
     {name: "/tag", syntax: "/tag <tag>", kind: "jump", category: "Knowledge", fill: "/tag ", desc: "Open the result page for a tag."},
+    {name: "/thm", syntax: "/thm [keyword]", kind: "query", category: "Knowledge", fill: "/thm ", desc: "Search theorems, definitions and exercises; without a keyword, open the index."},
+    {name: "/quiz", syntax: "/quiz [definition|theorem|problem] [tag:<tag>]", kind: "view", category: "Knowledge", fill: "/quiz ", desc: "Draw a random card to review a theorem, definition or exercise."},
     {name: "/pdf", syntax: "/pdf", kind: "query", category: "Knowledge", advanced: true, desc: "List articles with PDF readers or downloads."},
     {name: "/tex", syntax: "/tex [formula]", kind: "jump", category: "Tools", fill: "/tex ", desc: "Open the LaTeX playground, optionally prefilled."},
     {name: "/plot", syntax: "/plot [expression]", kind: "jump", category: "Tools", fill: "/plot ", desc: "Open the function plotter, optionally prefilled."},
@@ -305,6 +307,17 @@
       renderSuggestionPanel("/tag ", tagCommand[1], "/tag <tag>", allTags(), "#", "tag");
       return true;
     }
+    var quizTag = raw.match(/^\/quiz(?:\s+\S+)?\s+tag:([^\s]*)$/i);
+    if (quizTag) {
+      var quizBase = raw.slice(0, raw.length - quizTag[1].length);
+      renderSuggestionPanel(quizBase, quizTag[1], "/quiz [kind] tag:<tag>", allTags(), "#", "tag");
+      return true;
+    }
+    var quizKind = raw.match(/^\/quiz\s+([a-z]*)$/i);
+    if (quizKind) {
+      renderSuggestionPanel("/quiz ", quizKind[1], "/quiz <kind>", ["definition", "theorem", "problem", "tag:"], "", "kind");
+      return true;
+    }
     var themeCommand = raw.match(/^\/theme\s+([^\s]*)$/i);
     if (themeCommand) {
       renderSuggestionPanel("/theme ", themeCommand[1], "/theme <preset>", ["light", "dark", "ocean", "terminal", "cat"], "", "theme");
@@ -525,6 +538,185 @@
       });
   }
 
+  // ---- Theorem index (/thm) and review cards (/quiz) ----
+  var statementData = {index: null, quiz: null};
+  var mathJaxLoading = null;
+  var QUIZ_KINDS = {
+    definition: ["definition"],
+    theorem: ["theorem", "proposition", "lemma", "corollary"],
+    problem: ["problem"]
+  };
+
+  function loadJson(url) {
+    return fetch(url).then(function(response) {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    });
+  }
+
+  function loadStatements(kind) {
+    if (!statementData[kind]) {
+      var url = kind === "quiz" ? window.zddQuizUrl : window.zddStatementsUrl;
+      statementData[kind] = loadJson(url).catch(function(error) {
+        statementData[kind] = null;
+        throw error;
+      });
+    }
+    return statementData[kind];
+  }
+
+  function ensureMathJax() {
+    var math = window.MathJax;
+    if (math && math.typesetPromise) return Promise.resolve(math);
+    if (mathJaxLoading) return mathJaxLoading;
+    mathJaxLoading = new Promise(function(resolve, reject) {
+      var waited = 0;
+      function fail() {
+        mathJaxLoading = null;
+        reject(new Error("MathJax unavailable"));
+      }
+      function waitReady() {
+        var current = window.MathJax;
+        if (current && current.startup && current.startup.promise) {
+          current.startup.promise.then(function() { resolve(current); }, fail);
+        } else if (current && current.typesetPromise) {
+          resolve(current);
+        } else if ((waited += 50) > 15000) {
+          fail();
+        } else {
+          window.setTimeout(waitReady, 50);
+        }
+      }
+      function addScript(src, onload) {
+        var script = document.createElement("script");
+        script.src = src;
+        script.onload = onload;
+        script.onerror = fail;
+        document.head.appendChild(script);
+      }
+      function loadEngine() {
+        var existing = Array.prototype.some.call(document.scripts, function(script) {
+          return script.src === window.zddMathJaxUrl;
+        });
+        if (existing) waitReady();
+        else addScript(window.zddMathJaxUrl, waitReady);
+      }
+      if (window.MathJax) loadEngine();
+      else addScript(window.zddMathJaxConfigUrl, loadEngine);
+    });
+    return mathJaxLoading;
+  }
+
+  function typesetMath(root) {
+    if (!root || !root.querySelector || !root.querySelector(".arithmatex")) return Promise.resolve();
+    return ensureMathJax().then(function(math) {
+      if (math.typesetClear) math.typesetClear([root]);
+      return math.typesetPromise([root]);
+    }).catch(function() {});
+  }
+  window.zddTypesetMath = typesetMath;
+
+  function statementMatches(items, query) {
+    var terms = normalize(query).split(/\s+/).filter(Boolean);
+    return items.map(function(item) {
+      var head = normalize([item.title, item.name].join(" "));
+      var context = normalize([item.section, item.article, (item.tags || []).join(" ")].join(" "));
+      var body = normalize(item.text);
+      var score = 0;
+      for (var i = 0; i < terms.length; i += 1) {
+        var term = terms[i];
+        if (head.indexOf(term) >= 0) score += 6;
+        else if (context.indexOf(term) >= 0) score += 2;
+        else if (body.indexOf(term) >= 0) score += 1;
+        else return null;
+      }
+      if (item.name) score += 1;
+      return {item: item, score: score};
+    }).filter(Boolean).sort(function(a, b) {
+      return b.score - a.score;
+    }).map(function(match) {
+      return match.item;
+    });
+  }
+
+  function statementResult(item) {
+    var meta = [item.label, item.article, item.section].filter(Boolean).join(" · ");
+    return '<a class="zdd-search-result zdd-statement-result" href="' + escapeHtml(item.url) + '">'
+      + '<span class="zdd-search-title">' + escapeHtml(item.title) + '</span>'
+      + '<span class="zdd-search-preview arithmatex">' + escapeHtml(item.text) + '</span>'
+      + '<span class="zdd-search-meta">' + escapeHtml(meta) + '</span>'
+      + '</a>';
+  }
+
+  function runTheoremSearch(commandLine, query) {
+    renderCommandOutput(commandLine, "Theorem index", '<div class="zdd-command-empty">Loading theorem index…</div>');
+    loadStatements("index").then(function(data) {
+      var matches = statementMatches(data.statements || [], query);
+      var body = matches.length
+        ? '<div class="zdd-command-posts">' + matches.slice(0, 12).map(statementResult).join("") + '</div>'
+          + '<a class="zdd-command-more" href="' + escapeHtml(siteUrl("theorems/?q=" + encodeURIComponent(query))) + '">'
+          + escapeHtml("Open all " + matches.length + " results in the theorem index") + '</a>'
+        : '<div class="zdd-command-empty">No theorem, definition or exercise matches. Try a shorter keyword.</div>';
+      renderCommandOutput(commandLine, matches.length + " statements", body);
+      typesetMath(state.resultBox);
+    }).catch(function() {
+      renderCommandOutput(commandLine, "Theorem index", '<div class="zdd-command-empty">Unable to load the theorem index.</div>');
+    });
+  }
+
+  function parseQuizArgs(arg) {
+    var options = {kinds: null, tag: ""};
+    String(arg || "").split(/\s+/).filter(Boolean).forEach(function(token) {
+      var lowered = normalize(token);
+      if (lowered.indexOf("tag:") === 0) options.tag = lowered.slice(4).replace(/^#/, "");
+      else if (QUIZ_KINDS[lowered]) options.kinds = QUIZ_KINDS[lowered];
+      else if (QUIZ_KINDS[lowered.replace(/s$/, "")]) options.kinds = QUIZ_KINDS[lowered.replace(/s$/, "")];
+    });
+    return options;
+  }
+
+  function quizCard(card) {
+    var recall = !card.answer_html;
+    var question = recall
+      ? '<p class="zdd-quiz-question">' + escapeHtml("回忆这个" + card.label + "的内容：") + '<b>' + escapeHtml(card.name) + '</b></p>'
+      : '<div class="zdd-quiz-statement md-typeset">' + card.html + '</div>';
+    var answerTitle = recall ? card.label + "内容" : (card.answer_title || "证明");
+    var answer = recall ? card.html : card.answer_html;
+    return '<article class="zdd-quiz-card" data-kind="' + escapeHtml(card.kind) + '">'
+      + '<header class="zdd-quiz-header"><span class="zdd-quiz-kind">' + escapeHtml(card.label) + '</span>'
+      + '<span class="zdd-quiz-title">' + escapeHtml(recall ? "" : card.title) + '</span></header>'
+      + question
+      + '<div class="zdd-quiz-answer md-typeset" hidden>'
+      + '<div class="zdd-quiz-answer-title">' + escapeHtml(answerTitle) + '</div>' + answer + '</div>'
+      + '<footer class="zdd-quiz-actions">'
+      + '<button type="button" class="zdd-quiz-button" data-zdd-quiz-reveal aria-expanded="false" data-answer-label="' + escapeHtml(answerTitle) + '">' + escapeHtml("显示" + answerTitle) + '</button>'
+      + '<button type="button" class="zdd-quiz-button" data-zdd-quiz-next>下一题</button>'
+      + '<a class="zdd-quiz-source" href="' + escapeHtml(card.url) + '">' + escapeHtml("原文：" + card.article) + '</a>'
+      + '</footer></article>';
+  }
+
+  function runQuiz(commandLine, arg) {
+    var options = parseQuizArgs(arg);
+    state.lastQuiz = commandLine;
+    renderCommandOutput(commandLine, "Quiz", '<div class="zdd-command-empty">Shuffling cards…</div>');
+    loadStatements("quiz").then(function(data) {
+      var pool = (data.cards || []).filter(function(card) {
+        if (options.kinds && options.kinds.indexOf(card.kind) < 0) return false;
+        if (options.tag && (card.tags || []).map(normalize).indexOf(options.tag) < 0) return false;
+        return true;
+      });
+      var card = randomPost(pool);
+      if (!card) {
+        renderCommandOutput(commandLine, "No card found", '<div class="zdd-command-empty">Try <code>/quiz</code>, <code>/quiz theorem</code> or check the tag name.</div>');
+        return;
+      }
+      renderCommandOutput(commandLine, pool.length + " cards in this deck", quizCard(card));
+      typesetMath(state.resultBox);
+    }).catch(function() {
+      renderCommandOutput(commandLine, "Quiz", '<div class="zdd-command-empty">Unable to load quiz cards.</div>');
+    });
+  }
+
   function runCommand(line) {
     var commandLine = String(line || "").trim();
     var parts = commandLine.split(/\s+/);
@@ -669,6 +861,17 @@
 
     if (name === "/kill") {
       killPage();
+      return;
+    }
+
+    if (name === "/thm") {
+      if (!arg) navigate(siteUrl("theorems/"));
+      else runTheoremSearch(commandLine, arg);
+      return;
+    }
+
+    if (name === "/quiz") {
+      runQuiz(commandLine, arg);
       return;
     }
 
@@ -891,6 +1094,23 @@
         if (event.target.closest("[data-zdd-search-retry]")) {
           input.focus();
           requestResults(state.retryAction);
+          return;
+        }
+        var reveal = event.target.closest("[data-zdd-quiz-reveal]");
+        if (reveal) {
+          var card = reveal.closest(".zdd-quiz-card");
+          var answer = card && card.querySelector(".zdd-quiz-answer");
+          if (answer) {
+            answer.hidden = !answer.hidden;
+            reveal.setAttribute("aria-expanded", String(!answer.hidden));
+            reveal.textContent = (answer.hidden ? "显示" : "隐藏") + reveal.getAttribute("data-answer-label");
+            if (!answer.hidden) typesetMath(answer);
+          }
+          return;
+        }
+        if (event.target.closest("[data-zdd-quiz-next]")) {
+          input.focus();
+          if (state.lastQuiz) runCommand(state.lastQuiz);
           return;
         }
         var suggestion = event.target.closest(".zdd-command-suggestion");

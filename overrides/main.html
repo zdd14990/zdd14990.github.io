@@ -3,6 +3,7 @@
 {% set zdd_description = page.meta.description if page and page.meta and page.meta.description else config.site_description %}
 {% set zdd_is_article = page and page.url and page.url.startswith("blog/") and page.url != "blog/" %}
 {% set zdd_share_image = config.site_url ~ config.extra.meta.site_image %}
+{% set zdd_mathjax_cdn = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" %}
 
 {% block site_meta %}
 {{ super() }}
@@ -63,6 +64,10 @@
   <script>
     window.zddContentCatalogUrl = "{{ 'assets/zdd-content-catalog.json' | url }}";
     window.zddPublicSearchIndexUrl = "{{ 'assets/zdd-public-search-index.json' | url }}";
+    window.zddStatementsUrl = "{{ 'assets/zdd-statements.json' | url }}";
+    window.zddQuizUrl = "{{ 'assets/zdd-quiz.json' | url }}";
+    window.zddMathJaxConfigUrl = "{{ 'javascripts/mathjax.js' | url }}";
+    window.zddMathJaxUrl = "{{ zdd_mathjax_cdn }}";
   </script>
 
   <meta property="og:site_name" content="{{ config.site_name }}">
@@ -131,7 +136,7 @@
 {% block scripts %}
 {% if page and page.meta.reading_math %}
   <script src="{{ 'javascripts/mathjax.js' | url }}"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+  <script defer src="{{ zdd_mathjax_cdn }}"></script>
 {% endif %}
   {{ super() }}
 {% for asset in zdd_assets %}

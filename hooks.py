@@ -5,6 +5,8 @@ import re
 
 from blog_taxonomy import article_tags
 from blog_content import begin_build, end_build, content_store, normalize_metadata
+from blog_links import backlink_map
+from blog_statements import extract_statements, statement_records
 from blog_text import article_description, rendered_headings
 from site_catalog import course_for_source, refresh_site_catalog
 from pathlib import Path
@@ -138,6 +140,23 @@ def _set_course_navigation(page, config):
     }
 
 
+def _set_backlinks(page, config):
+    source = page.file.src_path.replace("\\", "/")
+    page.meta.pop("backlinks", None)
+    if not source.startswith("blog/") or source.endswith("index.md"):
+        return
+    store = content_store(config["docs_dir"])
+    referrers = backlink_map(store).get(source, [])
+    if referrers:
+        page.meta["backlinks"] = [
+            {
+                "title": store.read(Path(config["docs_dir"]) / referrer).title,
+                "url": get_relative_url(referrer[:-3] + "/", page.url),
+            }
+            for referrer in referrers
+        ]
+
+
 def on_page_markdown(markdown, page, config, files):
     source = page.file.src_path.replace("\\", "/")
     assets = _as_list(page.meta.get("zdd_assets"))
@@ -149,6 +168,7 @@ def on_page_markdown(markdown, page, config, files):
     if source.startswith("blog/") and not source.endswith("index.md"):
         page.meta.update(normalize_metadata(page.meta, source))
     _set_course_navigation(page, config)
+    _set_backlinks(page, config)
     if page.file.src_path.replace('\\', '/').startswith('blog/'):
         published, modified = article_dates(page.meta.get('date'), page.meta.get('updated'))
         page.meta['reading_date'] = published
@@ -178,5 +198,9 @@ def on_page_content(html, page, config, files):
     page.meta['reading_math'] = bool(page.meta.get("code_notes")) or page_needs_math(html, page.file.src_path.replace('\\', '/'))
     source = page.file.src_path.replace("\\", "/")
     if source.startswith("blog/") and not source.endswith("index.md"):
-        content_store(config["docs_dir"]).rendered_headings[source] = rendered_headings(html)
+        store = content_store(config["docs_dir"])
+        store.rendered_headings[source] = rendered_headings(html)
+        html, items = extract_statements(html)
+        store.statements[source] = statement_records(
+            items, page.title, "/" + page.url, source, page.meta.get("tags", []))
     return html

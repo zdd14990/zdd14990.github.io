@@ -197,3 +197,31 @@ test("command completion uses the catalog without downloading the passage index"
   assert.equal(f.requests(), 1);
   assert.equal(f.box.rows.length, 2);
 });
+
+test("/thm searches statement names first and /quiz filters the card deck", async () => {
+  const statements = {statements: [
+    {id: "a#thm-1", kind: "theorem", label: "定理", title: "Hahn–Banach 定理", name: "Hahn–Banach 定理", text: "延拓", url: "/fa/#thm-1", article: "FA", section: "", tags: []},
+    {id: "b#def-1", kind: "definition", label: "定义", title: "定义 1", name: "", text: "由 Hahn–Banach 得到", url: "/fa/#def-1", article: "FA", section: "", tags: []}]};
+  const quiz = {cards: [
+    {id: "c#def-1", kind: "definition", label: "定义", title: "紧算子", name: "紧算子", html: "<p>body</p>", url: "/c/#def-1", article: "C", tags: ["operator-theory"]},
+    {id: "d#thm-1", kind: "lemma", label: "引理", title: "Zorn", name: "Zorn", html: "<p>stmt</p>", answer_title: "证明", answer_html: "<p>proof</p>", url: "/d/#thm-1", article: "D", tags: []}]};
+  const f = fixture(async url => ok(String(url).includes("quiz") ? quiz : statements));
+  f.window.zddStatementsUrl = "/assets/zdd-statements.json";
+  f.window.zddQuizUrl = "/assets/zdd-quiz.json";
+  f.type("/thm hahn"); for (let i = 0; i < 5; i++) await tick(); f.input.emit("keydown", {key: "Enter"});
+  for (let i = 0; i < 5; i++) await tick();
+  const titles = [...f.box.innerHTML.matchAll(/zdd-search-title">([^<]+)</g)].map(m => m[1]);
+  assert.deepEqual(titles, ["Hahn–Banach 定理", "定义 1"]);
+  assert.match(f.box.innerHTML, /theorems\/\?q=hahn/);
+
+  f.type("/quiz theorem"); for (let i = 0; i < 5; i++) await tick(); f.input.emit("keydown", {key: "Enter"});
+  for (let i = 0; i < 5; i++) await tick();
+  assert.match(f.box.innerHTML, /1 cards in this deck/);
+  assert.match(f.box.innerHTML, /data-kind="lemma"/);
+  assert.match(f.box.innerHTML, /<div class="zdd-quiz-answer md-typeset" hidden>/);
+
+  f.type("/quiz tag:operator-theory"); for (let i = 0; i < 5; i++) await tick(); f.input.emit("keydown", {key: "Enter"});
+  for (let i = 0; i < 5; i++) await tick();
+  assert.match(f.box.innerHTML, /回忆这个定义的内容：<b>紧算子<\/b>/);
+  assert.match(f.box.innerHTML, /紧算子/);
+});

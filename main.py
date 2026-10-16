@@ -402,6 +402,65 @@ def _tag_explorer():
 """
 
 
+STATEMENT_INDEX_FIELDS = ("id", "kind", "label", "title", "name", "url", "article", "section", "tags")
+STATEMENT_TEXT_LIMIT = 240
+
+
+def _truncate_math_text(text, limit):
+    r"""Shorten text without leaving an unclosed \( or \[ formula behind."""
+    if len(text) <= limit:
+        return text
+    cut = text[:limit]
+    for opener, closer in ((r"\(", r"\)"), (r"\[", r"\]")):
+        if cut.count(opener) > cut.count(closer):
+            cut = cut[:cut.rindex(opener)]
+    return cut.rstrip() + "…"
+
+
+def _statement_payloads():
+    """Split extracted statements into a light index and the quiz card deck."""
+    store = content_store()
+    order = {article["src_path"]: index for index, article in enumerate(
+        sorted(_article_data(), key=lambda item: item["src_path"]))}
+    records = [
+        record
+        for source in sorted(store.statements, key=lambda item: order.get(item, len(order)))
+        for record in store.statements[source]
+    ]
+    index = []
+    cards = []
+    for record in records:
+        item = {key: record[key] for key in STATEMENT_INDEX_FIELDS}
+        item["text"] = _truncate_math_text(record["text"], STATEMENT_TEXT_LIMIT)
+        index.append(item)
+        has_answer = bool(record.get("answer_html"))
+        recall = bool(record["name"]) and record["kind"] != "problem"
+        if has_answer or recall:
+            card = {key: record[key] for key in ("id", "kind", "label", "title", "name", "html", "url", "article", "tags")}
+            if has_answer:
+                card["answer_title"] = record["answer_title"]
+                card["answer_html"] = record["answer_html"]
+            cards.append(card)
+    return (
+        {"version": 1, "count": len(index), "statements": index},
+        {"version": 1, "count": len(cards), "cards": cards},
+    )
+
+
+def _statement_index_shell():
+    return """
+<div class="zdd-statement-index" data-zdd-statements>
+  <form class="zdd-statement-controls" role="search" onsubmit="return false">
+    <input type="search" data-zdd-statement-query placeholder="搜索定理、定义、习题，如：Hahn-Banach" aria-label="搜索定理、定义与习题" autocomplete="off">
+    <div class="zdd-statement-kinds" role="group" aria-label="类型筛选"></div>
+  </form>
+  <p class="zdd-statement-summary" role="status" aria-live="polite">正在加载索引…</p>
+  <ol class="zdd-statement-list"></ol>
+  <button type="button" class="zdd-statement-more" hidden>显示更多</button>
+</div>
+"""
+
+
 def _exclude_sitemap_urls(site_dir, site_url, excluded_paths):
     sitemap_path = Path(site_dir) / "sitemap.xml"
     if not sitemap_path.exists() or not excluded_paths:
@@ -459,6 +518,11 @@ def on_post_build(env=None, config=None, **kwargs):
     catalog_output = Path(site_dir) / "assets" / "zdd-content-catalog.json"
     catalog_output.write_text(json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    statement_index, quiz_deck = _statement_payloads()
+    for name, payload in (("zdd-statements.json", statement_index), ("zdd-quiz.json", quiz_deck)):
+        (Path(site_dir) / "assets" / name).write_text(
+            json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
     extra = config.get("extra", {}) if hasattr(config, "get") else getattr(config, "extra", {})
     site_url = config.get("site_url", "") if hasattr(config, "get") else getattr(config, "site_url", "")
     _exclude_sitemap_urls(site_dir, site_url, extra.get("sitemap_exclude", []))
@@ -497,3 +561,7 @@ def define_env(env):
     @env.macro
     def tag_explorer():
         return _tag_explorer()
+
+    @env.macro
+    def statement_index():
+        return _statement_index_shell()

@@ -28,4 +28,4 @@ class MathProbe(HTMLParser):
 
 
 def page_needs_math(content, source):
-    return source in ('lab/tex.md', 'lab/diagram.md') or MathProbe(content).has_math
+    return source in ('lab/tex.md', 'lab/diagram.md', 'theorems/index.md') or MathProbe(content).has_math
