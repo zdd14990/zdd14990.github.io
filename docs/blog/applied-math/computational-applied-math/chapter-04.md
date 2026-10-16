@@ -8,7 +8,8 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - ode
+  - asymptotic-analysis
 ---
 
 # 第四章：线性微分方程的局部分析：非正则奇点与渐近关系 { #top }

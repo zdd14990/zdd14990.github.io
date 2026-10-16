@@ -1,5 +1,6 @@
 ---
 title: Common Families of Distributions
+description: "数理统计课程第三章：常见分布族，离散均匀、超几何、二项、Poisson、负二项、Gamma、正态、Beta 与 Cauchy 分布。"
 date: 2026-07-01
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

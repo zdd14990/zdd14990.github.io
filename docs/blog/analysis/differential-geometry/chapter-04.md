@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
 ---
 
 # 第四章：微分形式的应用 { #top }

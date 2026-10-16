@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
 ---
 
 # 第六章：曲线的微分几何 { #top }

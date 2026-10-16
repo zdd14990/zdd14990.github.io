@@ -1,5 +1,6 @@
 ---
 title: Convergences
+description: "概率论课程第二章：随机变量的各种收敛、Helly 选择原理、弱收敛判据与一致可积性。"
 date: 2026-07-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

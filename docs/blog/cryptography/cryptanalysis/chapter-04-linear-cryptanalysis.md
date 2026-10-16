@@ -1,13 +1,12 @@
 ---
 title: 分组密码的线性分析及相关分析方法
+description: "分组密码的线性分析：多重与多维线性分析、零相关线性分析、差分-线性分析与密钥差分不变偏差。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 分组密码的线性分析及相关分析方法

@@ -1,5 +1,6 @@
 ---
 title: GTM295 Chapter 8
+description: "Le Gall GTM295 第 8 章习题解答：概率论基础。"
 date: 2026-07-06
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - gtm295
   - exercises
 ---

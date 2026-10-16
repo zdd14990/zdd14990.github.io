@@ -1,13 +1,12 @@
 ---
 title: 分组密码各种分析方法的等价性
+description: "分组密码分析方法的等价性：不可能差分、零相关线性壳与积分区分器之间的关系。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 分组密码各种分析方法的等价性

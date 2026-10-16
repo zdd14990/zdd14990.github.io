@@ -1,14 +1,12 @@
 ﻿---
 title: 凸优化课程作业
+description: "凸优化课程作业合集 PDF，提供在线预览与下载。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - 凸优化
-tags:
-  - applied-math
-  - convex-optimization
 ---
 <div style="height: 800px; width: 100%;">
     <embed src="../../../assets/convex-optimization-hw-1.pdf" type="application/pdf" width="100%" height="100%">

@@ -1,5 +1,6 @@
 ---
 title: Numerical Pde Exercises
+description: "应用数学博资考练习：差分格式的相容性、稳定性与收敛性等数值 PDE 习题与解答。"
 date: 2026-02-07
 hide:
   - navigation
@@ -7,8 +8,7 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - exercises
 ---
 ## 数值 PDE
 !!! problem "Autumn, 2023"

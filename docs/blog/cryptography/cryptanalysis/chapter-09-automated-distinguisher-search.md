@@ -1,13 +1,12 @@
 ---
 title: 区分器的自动化搜索
+description: "区分器的自动化搜索：用 MILP 与 SAT 建模搜索差分、线性、不可能差分、零相关与分离特性区分器。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 区分器的自动化搜索

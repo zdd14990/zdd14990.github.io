@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - commutative-algebra
 ---
 
 # 交换代数 { #top }

@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（七）：Broadcasting 的反向传播
+description: "Autograd 源码学习（七）：把 broadcasting 看作线性映射，理解 unbroadcast 如何保证梯度回到输入的 shape。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

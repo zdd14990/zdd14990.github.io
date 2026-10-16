@@ -5,10 +5,9 @@ description: The Hamiltonian energy space, the linear Klein–Gordon group, and 
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - klein-gordon
   - course

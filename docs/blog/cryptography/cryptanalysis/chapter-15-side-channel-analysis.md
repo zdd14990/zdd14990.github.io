@@ -1,13 +1,12 @@
 ---
 title: 侧信道分析概述
+description: "侧信道分析概述：时间攻击、功耗泄露采集、简单与差分功耗分析、相关功耗分析与模板攻击。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 侧信道分析概述

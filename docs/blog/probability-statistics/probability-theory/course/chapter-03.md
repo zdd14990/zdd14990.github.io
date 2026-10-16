@@ -1,5 +1,6 @@
 ---
 title: Law of Large Numbers
+description: "概率论课程第三章：弱大数定律与强大数定律、截断法、三级数定理。"
 date: 2026-07-06
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

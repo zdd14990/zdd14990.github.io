@@ -8,7 +8,7 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - asymptotic-analysis
 ---
 
 # 第五章：渐近级数 { #top }

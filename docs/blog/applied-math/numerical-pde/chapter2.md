@@ -1,14 +1,12 @@
 ﻿---
 title: 第二章：抛物型方程的有限差分法
+description: "PDE 数值解第二章：抛物型方程的显式、隐式与线方法差分格式，高维问题与能量稳定性分析。"
 date: 2025-11-23
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 # 第二章：抛物型方程的有限差分法
 

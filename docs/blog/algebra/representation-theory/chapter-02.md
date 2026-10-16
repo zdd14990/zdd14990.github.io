@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - representation-theory
 ---
 
 # 第二章：表示理论的一般结论 { #top }

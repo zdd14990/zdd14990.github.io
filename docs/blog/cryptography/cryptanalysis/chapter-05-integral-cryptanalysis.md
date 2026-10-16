@@ -1,13 +1,12 @@
 ---
 title: 积分分析
+description: "积分分析：基本原理、向量化与比特级的分离特性、攻击流程与复杂度。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 积分分析

@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（十）：高阶自动微分与 Nested Tracing
+description: "Autograd 源码学习（十）：嵌套 Box 与 nested tracing，理解高阶自动微分如何对求导程序再求导。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

@@ -1,14 +1,12 @@
 ﻿---
 title: 几何对偶框架
+description: "凸优化笔记第四章：最小公共点与最大相交点的几何对偶框架、极小极大问题与零和博弈。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - 凸优化
-tags:
-  - applied-math
-  - convex-optimization
 ---
 # 几何对偶框架
 

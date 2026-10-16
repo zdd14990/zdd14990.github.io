@@ -1,13 +1,12 @@
 ---
 title: 消息认证码的安全性分析概述
+description: "消息认证码安全性分析：伪造攻击、区分攻击、选择性与通用性伪造及密钥恢复攻击。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 消息认证码的安全性分析概述

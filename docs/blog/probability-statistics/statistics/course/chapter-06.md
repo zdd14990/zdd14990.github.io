@@ -1,5 +1,6 @@
 ---
 title: Principles of Data Reduction
+description: "数理统计课程第六章：数据约简原理，充分统计量、极小充分性、辅助统计量与完备性。"
 date: 2026-07-04
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

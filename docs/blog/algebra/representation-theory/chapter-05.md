@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - representation-theory
 ---
 
 # 第五章：对称群 S_n 的表示 { #top }

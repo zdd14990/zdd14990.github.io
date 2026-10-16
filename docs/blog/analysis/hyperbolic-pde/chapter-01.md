@@ -5,10 +5,9 @@ description: Picard iteration, continuous dependence, continuation, and the grad
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - dynamical-systems
   - course

@@ -1,14 +1,12 @@
 ---
 title: Numerical Linear Algebra
+description: "数值线性代数复习：范数与谱半径、LU/QR/SVD 分解、迭代法与非线性方程求解。"
 date: 2025-12-11
 hide:
   - navigation
 categories:
   - 应用数学
   - 应用数学博资考
-tags:
-  - applied-math
-  - applied-math-exam
 ---
 # Numerical Linear Algebra
 

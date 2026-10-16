@@ -1,5 +1,6 @@
 ---
 title: 人工智能博士资格考试复习资料
+description: "人工智能博士资格考试复习资料：覆盖机器学习理论、深度学习与强化学习、人工智能中的优化方法和自然语言处理，含讲义、历年真题与模拟卷。"
 date: 2026-07-27
 hide:
   - navigation
@@ -7,9 +8,6 @@ categories:
   - 博资考复习资料
   - AI 博资考
 tags:
-  - qualification-exam
-  - review-materials
-  - ai-exam
   - machine-learning
 ---
 

@@ -1,13 +1,12 @@
 ---
 title: 分组密码的差分分析及相关分析方法
+description: "分组密码的差分分析：截断差分、飞去来器与矩形攻击、不可能差分、相关密钥差分及复杂度分析。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 分组密码的差分分析及相关分析方法

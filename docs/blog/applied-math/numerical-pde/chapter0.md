@@ -1,14 +1,12 @@
 ﻿---
 title: Chapter0
+description: "PDE 数值解预备章：二阶 PDE 的分类与 Fourier 分析。"
 date: 2025-11-20
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 ### 二阶PDE的分类
 

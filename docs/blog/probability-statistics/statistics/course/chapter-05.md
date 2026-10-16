@@ -1,5 +1,6 @@
 ---
 title: Properties of a Random Sample
+description: "数理统计课程第五章：随机样本的性质、抽样分布、次序统计量与收敛概念。"
 date: 2026-07-01
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

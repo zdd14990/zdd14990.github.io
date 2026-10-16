@@ -1,14 +1,12 @@
 ﻿---
 title: 练习题集
+description: "应用数学博资考练习题集目录：逼近与插值、数值代数、数值积分、数值 ODE/PDE、渐近分析与凸优化。"
 date: 2026-01-07
 hide:
   - navigation
 categories:
   - 应用数学
   - 应用数学博资考
-tags:
-  - applied-math
-  - applied-math-exam
 ---
 # 练习题集
 ---

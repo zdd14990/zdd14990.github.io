@@ -8,9 +8,6 @@ hide:
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 
 # PDE 数值解大作业 { #top }

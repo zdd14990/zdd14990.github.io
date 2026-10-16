@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（十四）：Mini Autograd：实现与源码对读
+description: "Autograd 源码学习（十四）：实现一个标量 Mini Autograd，并与 HIPS/autograd 的 Box、VJPNode 设计对读。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

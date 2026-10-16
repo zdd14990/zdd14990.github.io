@@ -8,7 +8,8 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - galois-theory
+  - field-theory
 ---
 
 # 第五章：有限域、分圆域与 Kummer 理论 { #top }

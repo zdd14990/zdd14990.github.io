@@ -1,14 +1,12 @@
 ﻿---
 title: 习题 2
+description: "PDE 数值解习题 2：热方程无量纲化与抛物型方程差分格式的稳定性、收敛性习题解答。"
 date: 2025-12-23
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 # 习题 2
 

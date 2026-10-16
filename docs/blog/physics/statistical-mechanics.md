@@ -1,12 +1,11 @@
 ---
 title: 统计力学复习笔记
+description: "统计力学复习笔记：微正则、正则与巨正则系综，配分函数与热力学量，理想气体与量子气体、黑体辐射。"
 date: 2026-01-01
 hide:
   - navigation
 categories:
   - 物理
-tags:
-  - physics
 ---
 
 # 统计力学复习笔记

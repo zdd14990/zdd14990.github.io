@@ -1,5 +1,6 @@
 ---
 title: Markov Chains
+description: "概率论课程第六章：Markov 链的平稳测度、可逆性、生灭链、击中时、遍历定理、收敛定理与常返性。"
 date: 2026-07-24
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

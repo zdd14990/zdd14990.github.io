@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - representation-theory
 ---
 
 # 第四章：有限群的表示：一些进阶结论 { #top }

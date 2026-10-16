@@ -5,10 +5,9 @@ description: Equilibria, linearized stability, nonlinear Lyapunov functions, and
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - dynamical-systems
   - course

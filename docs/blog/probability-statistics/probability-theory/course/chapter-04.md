@@ -1,5 +1,6 @@
 ---
 title: Central Limit Theorem
+description: "概率论课程第四章：特征函数、反演与唯一性、Lévy 连续性定理、中心极限定理、Lindeberg-Feller 定理与 Poisson 收敛。"
 date: 2026-07-06
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

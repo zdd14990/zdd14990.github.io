@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（三）：从 grad 开始追踪完整调用链
+description: "Autograd 源码学习（三）：从 grad(f) 开始追踪参数适配、装箱、primitive 调用到 VJP 查询的完整调用链。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

@@ -1,14 +1,12 @@
 ﻿---
 title: 凸优化
+description: "凸优化笔记第三章：共轭凸函数与共轭定理。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - 凸优化
-tags:
-  - applied-math
-  - convex-optimization
 ---
 # 凸优化
 

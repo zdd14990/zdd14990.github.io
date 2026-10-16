@@ -8,7 +8,8 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - ode
+  - asymptotic-analysis
 ---
 
 # 第三章：线性微分方程的局部分析：常点与正则奇点 { #top }

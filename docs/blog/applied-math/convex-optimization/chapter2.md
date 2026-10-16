@@ -1,14 +1,12 @@
 ﻿---
 title: 凸多面体
+description: "凸优化笔记第二章：超平面、支撑与分离定理、真分离与非垂直超平面定理。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - 凸优化
-tags:
-  - applied-math
-  - convex-optimization
 ---
 # 凸多面体
 

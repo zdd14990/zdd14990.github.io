@@ -1,13 +1,12 @@
 ---
 title: 分组密码工作模式的攻击概述
+description: "分组密码工作模式的攻击：ECB、CBC 的选择密文与通用攻击、OFB、CTR 及初始向量的安全要求。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 分组密码工作模式的攻击概述

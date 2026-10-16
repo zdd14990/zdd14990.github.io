@@ -1,14 +1,12 @@
 ---
 title: Deep Learning Crash Course
+description: "AI 博资考深度学习速通：Transformer 与注意力、反向传播与优化、CNN、VAE、Normalizing Flow、Diffusion、Flow Matching 与强化学习，附真题。"
 date: 2026-02-21
 hide:
   - navigation
 categories:
   - 应用数学
   - AI 博资考
-tags:
-  - ai-exam
-  - applied-math
 ---
 ## 深度学习速通
 

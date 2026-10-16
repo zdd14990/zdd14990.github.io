@@ -5,10 +5,9 @@ description: Characteristic Fourier surfaces, spacetime estimates, wave-packet s
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - harmonic-analysis
   - wave-packets

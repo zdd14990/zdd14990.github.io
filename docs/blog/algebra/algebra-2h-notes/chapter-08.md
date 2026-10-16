@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - commutative-algebra
 ---
 
 # 第八章：局部化与整相关性 { #top }

@@ -1,5 +1,6 @@
 ---
 title: Probability Space and Random Variables
+description: "概率论课程第一章：概率空间、随机变量与分布。"
 date: 2026-07-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

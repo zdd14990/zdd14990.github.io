@@ -1,5 +1,6 @@
 ---
 title: Numerical Integration Exercises
+description: "应用数学博资考练习：周期函数积分、求积公式与误差分析等数值积分习题与解答。"
 date: 2026-01-07
 hide:
   - navigation
@@ -7,8 +8,7 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - exercises
 ---
 ## 数值积分
 

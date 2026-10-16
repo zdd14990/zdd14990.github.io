@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - representation-theory
 ---
 
 # 第六章：GL₂(𝔽_q) 与 SL₂(𝔽_q) 的表示 { #top }

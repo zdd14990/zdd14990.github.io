@@ -8,7 +8,8 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - galois-theory
+  - field-theory
 ---
 
 # 第一章：域 { #top }

@@ -8,7 +8,8 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - galois-theory
+  - field-theory
 ---
 
 # 第四章：Galois 扩张与 Galois 对应 { #top }

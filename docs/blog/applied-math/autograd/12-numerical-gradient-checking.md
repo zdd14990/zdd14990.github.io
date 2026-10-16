@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（十二）：Numerical Gradient Checking
+description: "Autograd 源码学习（十二）：make_numerical_jvp、check_jvp 与 check_vjp，用有限差分独立验证梯度。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

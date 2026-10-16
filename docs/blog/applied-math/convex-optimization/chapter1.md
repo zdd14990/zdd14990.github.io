@@ -1,14 +1,12 @@
 ﻿---
 title: 凸分析
+description: "凸优化笔记第一章：凸集与凸函数、可微凸函数、局部与全局最小值及渐近序列。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - 凸优化
-tags:
-  - applied-math
-  - convex-optimization
 ---
 # 凸分析
 

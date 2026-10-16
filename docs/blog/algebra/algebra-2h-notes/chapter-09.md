@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - commutative-algebra
 ---
 
 # 第九章：Noether 模与 Artin 模 { #top }

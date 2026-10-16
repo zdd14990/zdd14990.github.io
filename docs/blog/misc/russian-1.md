@@ -1,12 +1,13 @@
 ---
 title: 俄语 1 笔记
+description: "俄语 1 学习笔记：字母表与发音、名词的性与数、人称与物主代词、形容词以及动词第一、第二变位法。"
 date: 2026-06-03
 hide:
   - navigation
 categories:
   - 其他
 tags:
-  - misc
+  - russian
 ---
 # 俄语1
 

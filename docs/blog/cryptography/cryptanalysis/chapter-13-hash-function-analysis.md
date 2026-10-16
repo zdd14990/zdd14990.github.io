@@ -1,13 +1,12 @@
 ---
 title: 杂凑函数的安全性分析概述
+description: "杂凑函数安全性分析：生日攻击、常见结构、原像与第二原像攻击、碰撞攻击、反弹攻击与消息修改。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 杂凑函数的安全性分析概述

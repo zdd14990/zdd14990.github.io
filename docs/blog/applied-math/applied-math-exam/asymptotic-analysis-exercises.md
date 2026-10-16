@@ -1,5 +1,6 @@
 ---
 title: Asymptotic Analysis Exercises
+description: "应用数学博资考练习：渐近分析与摄动方法相关习题与解答。"
 date: 2026-02-17
 hide:
   - navigation
@@ -7,8 +8,8 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - asymptotic-analysis
+  - exercises
 ---
 ## 渐进分析
 !!! problem "Autumn, 2023"

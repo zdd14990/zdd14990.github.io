@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
 ---
 
 # 第三章：微分形式及流形上的积分 { #top }

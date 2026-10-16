@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（四）：tracer.py 与动态计算图
+description: "Autograd 源码学习（四）：tracer.py 中的 Box、trace 边界与 primitive 包装，以及动态计算图如何建立。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

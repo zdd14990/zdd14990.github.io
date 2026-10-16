@@ -1,5 +1,6 @@
 ---
 title: Probability Theory
+description: "数理统计课程第一章：样本空间、σ-代数与概率函数，条件概率与 Bayes 公式、独立性、随机变量与分布函数。"
 date: 2026-07-01
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

@@ -8,7 +8,7 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - ode
 ---
 
 # 第一章：常微分方程基础 { #top }

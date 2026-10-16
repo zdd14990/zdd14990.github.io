@@ -1,5 +1,6 @@
 ---
 title: GTM295 Chapter 11
+description: "Le Gall GTM295 第 11 章习题解答：条件化与条件期望。"
 date: 2026-07-06
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - gtm295
   - exercises
 ---

@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
 ---
 
 # 第五章：流形上的微积分 { #top }

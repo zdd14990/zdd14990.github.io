@@ -13,11 +13,11 @@ class BlogContentTests(unittest.TestCase):
         end_build()
 
     def test_yaml_forms_share_normalized_metadata(self):
-        inline = '---\ntitle: "Title: with punctuation"\ntags: [math, "two words", math]\ncategories: Research\ndate: 2026-09-01\nupdated: 2026-09-02\n---\n\nBody\n'
-        block = '---\ntitle: "Title: with punctuation"\ntags:\n  - math\n  - two words\ncategories:\n  - Research\ndate: "2026-09-01"\nupdated: "2026-09-02"\n---\n\nBody\n'
+        inline = '---\ntitle: "Title: with punctuation"\ntags: [math, "two-words", math]\ncategories: Research\ndate: 2026-09-01\nupdated: 2026-09-02\n---\n\nBody\n'
+        block = '---\ntitle: "Title: with punctuation"\ntags:\n  - math\n  - two-words\ncategories:\n  - Research\ndate: "2026-09-01"\nupdated: "2026-09-02"\n---\n\nBody\n'
         self.assertEqual(parse_document(inline), parse_document(block))
         metadata, body = parse_document(inline)
-        self.assertEqual(metadata['tags'], ['math', 'two words'])
+        self.assertEqual(metadata['tags'], ['math', 'two-words'])
         self.assertEqual(metadata['date'], '2026-09-01')
         self.assertEqual(body, 'Body\n')
 
@@ -28,7 +28,8 @@ class BlogContentTests(unittest.TestCase):
         self.assertEqual(body, 'Body\n')
 
     def test_invalid_metadata_names_the_source(self):
-        for fields in ('tags: {math: true}', 'tags: [math, 42]', 'tags: false', 'categories: 0', 'title: 42', 'date: 2026-02-30',
+        for fields in ('tags: {math: true}', 'tags: [math, 42]', 'tags: false', 'tags: [two words]', 'tags: [Math]',
+                       'tags: ["$x$ notes"]', 'categories: 0', 'title: 42', 'date: 2026-02-30',
                        'date: 2026-09-02\nupdated: 2026-09-01', 'updated: 2026-09-01', 'tags: [broken'):
             with self.subTest(fields=fields), self.assertRaisesRegex(ValueError, 'blog/example.md'):
                 parse_document('---\n' + fields + '\n---\nBody', 'blog/example.md')

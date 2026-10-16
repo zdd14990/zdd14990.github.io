@@ -1,5 +1,6 @@
 ---
 title: Optimization Methods Crash Course
+description: "AI 博资考优化方法速通：光滑性与强凸性、SGD 与方差分解、近端算子与非扩张性、Nesterov 加速梯度。"
 date: 2026-02-21
 hide:
   - navigation
@@ -7,8 +8,7 @@ categories:
   - 应用数学
   - AI 博资考
 tags:
-  - ai-exam
-  - applied-math
+  - optimization
 ---
 ## 优化方法速通
 

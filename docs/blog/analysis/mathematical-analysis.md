@@ -1,12 +1,13 @@
 ---
 title: 数分
+description: "数学分析复习笔记：确界定理、Cauchy 准则、区间套、连续函数性质、微分中值定理、Taylor 公式与积分，参考梅加强《数学分析》。"
 date: 2026-06-20
 hide:
   - navigation
 categories:
   - 分析
 tags:
-  - analysis
+  - mathematical-analysis
 ---
 
 # 数分

@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（五）：Reverse Mode 的核心实现
+description: "Autograd 源码学习（五）：make_vjp、VJPNode、defvjp 与 backward_pass，梳理 reverse mode 的核心实现。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

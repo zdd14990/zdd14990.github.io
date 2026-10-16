@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（二）：JVP、VJP 与两种自动微分模式
+description: "Autograd 源码学习（二）：从 Jacobian 出发理解 JVP 与 VJP，以及前向与反向两种自动微分模式。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

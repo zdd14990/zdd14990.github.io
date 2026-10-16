@@ -8,7 +8,8 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
+  - lie-groups
 ---
 
 # 第二章：特殊函数构造、向量场与李群 { #top }

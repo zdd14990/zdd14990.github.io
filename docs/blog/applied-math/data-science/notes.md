@@ -1,5 +1,6 @@
 ---
 title: 数据科学专题：集中不等式与熵方法
+description: "数据科学专题笔记：累积量生成函数、sub-Gaussian/sub-Exponential 变量、尾部概率与集中不等式、熵方法。"
 date: 2025-11-27
 hide:
   - navigation
@@ -7,8 +8,8 @@ categories:
   - 应用数学
   - 数据科学专题
 tags:
-  - applied-math
-  - data-science
+  - concentration-inequalities
+  - probability
 ---
 记录累积量生成函数（CGF）、尾部概率与集中不等式、二次型、Lipschitz 函数、熵方法及矩阵集中不等式。
 

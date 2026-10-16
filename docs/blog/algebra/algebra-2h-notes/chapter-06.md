@@ -8,7 +8,8 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - galois-theory
+  - field-theory
 ---
 
 # 第六章：根式可解性 { #top }

@@ -1,14 +1,12 @@
 ﻿---
 title: Chapter1
+description: "PDE 数值解第一章：椭圆型方程的有限差分与有限体积法、误差与稳定性分析、M-矩阵及线性系统迭代求解。"
 date: 2025-11-21
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 首先我们给出推广的定义。考虑高维 PDE
 

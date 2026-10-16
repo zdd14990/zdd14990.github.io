@@ -1,13 +1,12 @@
 ---
 title: 序列密码的经典安全性分析技术
+description: "序列密码的经典安全性分析：Berlekamp-Massey 算法、布尔函数相关性、Walsh-Hadamard 变换与相关攻击。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 序列密码的经典安全性分析技术

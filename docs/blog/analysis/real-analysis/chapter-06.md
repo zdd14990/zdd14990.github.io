@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - measure-theory
 ---
 
 # 第六章：外测度、预测度和积测度 { #top }

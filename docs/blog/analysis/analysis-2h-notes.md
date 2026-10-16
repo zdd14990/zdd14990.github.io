@@ -1,12 +1,13 @@
 ---
 title: 分析2-H笔记
+description: "分析2-H 课程笔记 PDF，提供在线预览与完整下载。"
 date: 2025-11-19
 hide:
   - navigation
 categories:
   - 分析
 tags:
-  - analysis
+  - mathematical-analysis
 ---
 <div style="height: 800px; width: 100%;">
     <embed src="../../assets/analysis-2h-notes.pdf" type="application/pdf" width="100%" height="100%">

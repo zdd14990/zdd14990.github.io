@@ -1,14 +1,12 @@
 ---
 title: Machine Learning Crash Course
+description: "AI 博资考机器学习理论速通：PAC 学习、VC 维、偏差-方差、Rademacher 复杂度、SVM 与核方法、AdaBoost 和在线学习，附真题。"
 date: 2026-02-21
 hide:
   - navigation
 categories:
   - 应用数学
   - AI 博资考
-tags:
-  - ai-exam
-  - applied-math
 ---
 ## 机器学习
 

@@ -1,5 +1,6 @@
 ---
 title: Approximation Interpolation Exercises
+description: "应用数学博资考练习：函数逼近与插值、非线性方程求根相关习题与解答。"
 date: 2026-01-07
 hide:
   - navigation
@@ -7,8 +8,7 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - exercises
 ---
 ## 函数逼近与插值
 

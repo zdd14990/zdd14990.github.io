@@ -8,9 +8,6 @@ hide:
 categories:
   - 应用数学
   - 数据科学专题
-tags:
-  - applied-math
-  - data-science
 ---
 
 # 大作业 { #top }

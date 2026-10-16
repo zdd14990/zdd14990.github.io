@@ -1,5 +1,6 @@
 ---
 title: 概率论与数理统计博士资格考试复习资料
+description: "概率论与数理统计博士资格考试复习资料：覆盖概率论基础与极限定理、随机过程和数理统计，含讲义、历年真题与模拟卷。"
 date: 2026-07-27
 hide:
   - navigation
@@ -7,10 +8,8 @@ categories:
   - 博资考复习资料
   - 概统
 tags:
-  - qualification-exam
-  - review-materials
-  - probability-statistics
   - probability
+  - statistics
 ---
 
 # 概率论与数理统计博士资格考试复习资料

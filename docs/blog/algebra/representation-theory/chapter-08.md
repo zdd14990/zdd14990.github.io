@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - representation-theory
 ---
 
 # 第八章：Okounkov–Vershik 对 S_n 表示的新方法 { #top }

@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - differential-geometry
 ---
 
 # 第一章：微分流形与切向量 { #top }

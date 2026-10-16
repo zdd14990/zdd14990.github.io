@@ -5,10 +5,9 @@ description: Energy conservation, defocusing global evolution, focusing small da
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - klein-gordon
   - scattering

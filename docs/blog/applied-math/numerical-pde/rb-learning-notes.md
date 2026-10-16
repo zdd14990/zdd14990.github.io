@@ -9,8 +9,6 @@ categories:
   - 应用数学
   - PDE 数值解
 tags:
-  - applied-math
-  - numerical-pde
   - fortran
   - heat-equation
   - fgt

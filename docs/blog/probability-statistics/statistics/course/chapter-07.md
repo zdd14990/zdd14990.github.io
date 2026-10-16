@@ -1,5 +1,6 @@
 ---
 title: Point Estimation
+description: "数理统计课程第七章：点估计，矩估计、极大似然估计、均方误差、偏差与无偏性。"
 date: 2026-07-04
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

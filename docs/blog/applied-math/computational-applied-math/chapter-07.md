@@ -8,7 +8,8 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - pde
+  - numerical-methods
 ---
 
 # 第七章：PDE 数值解 { #top }

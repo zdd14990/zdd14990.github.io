@@ -1,12 +1,13 @@
 ---
 title: 量子力学
+description: "量子力学笔记：谱理论、算符自伴性、一维定态问题、对称性与 Wigner 定理、角动量与 Clebsch-Gordan 耦合。"
 date: 2026-05-10
 hide:
   - navigation
 categories:
   - 物理
 tags:
-  - physics
+  - spectral-theory
 ---
 # 量子力学
 

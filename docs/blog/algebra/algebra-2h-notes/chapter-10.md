@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - commutative-algebra
 ---
 
 # 第十章：Dedekind 整环与完备性 { #top }

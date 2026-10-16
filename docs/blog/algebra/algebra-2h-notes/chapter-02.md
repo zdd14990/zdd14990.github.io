@@ -8,7 +8,8 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - galois-theory
+  - field-theory
 ---
 
 # 第二章：尺规作图与分裂域 { #top }

@@ -8,7 +8,7 @@ hide:
 categories:
   - 其他
 tags:
-  - misc
+  - history-of-mathematics
 ---
 
 # 数学史论文（二）：费马大定理 { #top }

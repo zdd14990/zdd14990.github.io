@@ -1,12 +1,13 @@
 ---
 title: 数学史论文
+description: "数学史课程论文合集：三篇论文的 PDF 预览与下载，其中《费马大定理》和偏微分方程数值解演变史另有网页版。"
 date: 2026-07-07
 hide:
   - navigation
 categories:
   - 其他
 tags:
-  - misc
+  - history-of-mathematics
 ---
 
 # 数学史论文 { #top }

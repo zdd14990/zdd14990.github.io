@@ -5,10 +5,9 @@ description: Dyadic reconstruction, almost orthogonality, Bernstein inequalities
 hide:
   - navigation
 categories:
-  - Analysis
+  - 分析
   - Hyperbolic PDEs
 tags:
-  - analysis
   - hyperbolic-pde
   - harmonic-analysis
   - littlewood-paley

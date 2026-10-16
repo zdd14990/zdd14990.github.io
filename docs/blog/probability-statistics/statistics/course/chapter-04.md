@@ -1,5 +1,6 @@
 ---
 title: Multiple Random Variables
+description: "数理统计课程第四章：多维随机变量的联合、边缘与条件分布，条件期望与条件方差、独立性。"
 date: 2026-07-01
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

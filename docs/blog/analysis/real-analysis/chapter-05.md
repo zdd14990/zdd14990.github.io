@@ -8,7 +8,7 @@ hide:
 categories:
   - 分析
 tags:
-  - analysis
+  - measure-theory
 ---
 
 # 第五章：收敛模式 { #top }

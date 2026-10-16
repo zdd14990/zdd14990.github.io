@@ -1,5 +1,6 @@
 ---
 title: 周期积分方程
+description: "论文笔记：二维双周期 Laplace 与 Stokes 边值问题的统一积分方程方法。"
 date: 2026-06-01
 hide:
   - navigation
@@ -7,7 +8,8 @@ categories:
   - 应用数学
   - 论文笔记
 tags:
-  - applied-math
+  - integral-equations
+  - pde
 ---
 # A Unified Integral Equation Scheme for Doubly Periodic Laplace and Stokes Boundary Value Problems in Two Dimensions
 

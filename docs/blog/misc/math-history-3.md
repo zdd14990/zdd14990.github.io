@@ -8,7 +8,7 @@ hide:
 categories:
   - 其他
 tags:
-  - misc
+  - history-of-mathematics
 ---
 
 # 数学史论文（三）：从手算到超算——偏微分方程数值解的演变史 { #top }

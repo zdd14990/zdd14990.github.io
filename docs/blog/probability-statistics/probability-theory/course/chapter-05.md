@@ -1,5 +1,6 @@
 ---
 title: Conditional Expectation
+description: "概率论课程第五章：条件期望的性质、条件 Jensen 不等式、条件概率与正则条件分布。"
 date: 2026-07-23
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - course
 ---
 

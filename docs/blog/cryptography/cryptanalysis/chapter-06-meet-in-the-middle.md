@@ -1,13 +1,12 @@
 ---
 title: 中间相遇攻击
+description: "中间相遇攻击：基于值与集合映射关系的相遇函数、区分器与密钥恢复，以及时间、数据与存储复杂度。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 中间相遇攻击

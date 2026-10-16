@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习系列总览
+description: "Autograd 源码学习系列总览：阅读动机、源码版本、学习路线、仓库结构、实验代码与最终应能回答的问题。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

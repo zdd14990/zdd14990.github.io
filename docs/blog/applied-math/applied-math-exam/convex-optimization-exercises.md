@@ -1,5 +1,6 @@
 ---
 title: Convex Optimization Exercises
+description: "应用数学博资考练习：线性规划、对偶与凸优化相关习题与解答。"
 date: 2026-02-17
 hide:
   - navigation
@@ -7,8 +8,8 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - optimization
+  - exercises
 ---
 ## 凸优化
 !!! problem "Autumn, 2023"

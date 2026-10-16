@@ -1,14 +1,12 @@
 ﻿---
 title: 习题 1
+description: "PDE 数值解习题 1：网格函数与离散范数、椭圆型方程差分格式的误差与稳定性习题解答。"
 date: 2025-12-17
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 # 习题 1
 

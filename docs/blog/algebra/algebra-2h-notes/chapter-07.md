@@ -8,7 +8,7 @@ hide:
 categories:
   - 代数
 tags:
-  - algebra
+  - commutative-algebra
 ---
 
 # 第七章：环与模 { #top }

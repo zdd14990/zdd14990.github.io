@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（八）：Forward Mode 与 JVPNode
+description: "Autograd 源码学习（八）：make_jvp、JVPNode 与 defjvp，看 forward mode 如何在建图时执行链式法则。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

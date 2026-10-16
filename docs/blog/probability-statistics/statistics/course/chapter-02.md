@@ -1,5 +1,6 @@
 ---
 title: Transformation and expectation
+description: "数理统计课程第二章：随机变量的变换、期望、矩与矩母函数。"
 date: 2026-07-01
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

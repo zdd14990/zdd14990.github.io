@@ -8,9 +8,6 @@ hide:
 categories:
   - 物理
   - 电动力学
-tags:
-  - electrodynamics
-  - physics
 ---
 
 # 电动力学期中cheatsheet { #top }

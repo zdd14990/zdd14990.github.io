@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（一）：自动微分与计算图
+description: "Autograd 源码学习（一）：对比数值、符号与自动微分，用计算图和前向/反向求值轨迹理解梯度来源。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

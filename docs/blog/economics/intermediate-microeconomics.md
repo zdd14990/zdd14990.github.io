@@ -8,7 +8,7 @@ hide:
 categories:
   - 经济学
 tags:
-  - economics
+  - microeconomics
 ---
 
 # 中级微观经济学 { #top }

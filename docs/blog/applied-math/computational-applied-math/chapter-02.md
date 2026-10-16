@@ -8,7 +8,7 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - difference-equations
 ---
 
 # 第二章：差分方程 { #top }

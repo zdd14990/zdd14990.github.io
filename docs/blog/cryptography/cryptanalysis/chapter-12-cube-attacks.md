@@ -1,13 +1,12 @@
 ---
 title: 序列密码的立方攻击
+description: "序列密码的立方攻击：布尔函数代数标准型、Möbius 变换、立方攻击原理、动态立方攻击与零化技术。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 序列密码的立方攻击

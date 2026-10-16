@@ -1,5 +1,6 @@
 ---
 title: GTM295 Chapter 10
+description: "Le Gall GTM295 第 10 章习题解答：随机变量的收敛。"
 date: 2026-07-06
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 概率论
 tags:
-  - probability-statistics
-  - probability-theory
   - gtm295
   - exercises
 ---

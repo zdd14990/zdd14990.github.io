@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（九）：为什么机器学习偏爱 Reverse Mode
+description: "Autograd 源码学习（九）：从执行次数与存储代价比较两种模式，解释机器学习为何偏爱 reverse mode。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

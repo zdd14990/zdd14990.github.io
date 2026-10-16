@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（十一）：Jacobian、Hessian 与算子组合
+description: "Autograd 源码学习（十一）：jacobian、hessian、make_hvp、elementwise_grad 与 value_and_grad 的算子组合。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

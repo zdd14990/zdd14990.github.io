@@ -1,5 +1,6 @@
 ---
 title: Hypothesis Testing
+description: "数理统计课程第八章：假设检验，原假设与备择假设、拒绝域、似然比检验、Bayes 检验与两类错误。"
 date: 2026-07-04
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 概统
   - 统计
 tags:
-  - probability-statistics
-  - statistics
   - course
 ---
 

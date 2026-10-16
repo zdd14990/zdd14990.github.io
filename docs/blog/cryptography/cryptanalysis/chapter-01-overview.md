@@ -1,13 +1,11 @@
 ---
 title: 密码分析学概述
+description: "密码分析学概述：Kerckhoffs 准则、无条件安全与计算安全、各类算法的攻击目标和密码分析的一般模型。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
 date: 2026-07-24
 ---
 

@@ -8,7 +8,6 @@ categories:
   - 分析
   - 泛函分析
 tags:
-  - analysis
   - functional-analysis
   - weak-topology
   - convexity

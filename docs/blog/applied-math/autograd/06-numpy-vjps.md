@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（六）：NumPy Primitive 与 VJP
+description: "Autograd 源码学习（六）：NumPy primitive 的一元、二元与 sum 的 VJP 规则如何登记和应用。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

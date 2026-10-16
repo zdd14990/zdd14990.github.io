@@ -1,14 +1,12 @@
 ﻿---
 title: 第四章：有限元理论与有限元方法
+description: "PDE 数值解第四章：变分问题与 Lax-Milgram 定理、Sobolev 空间、Ritz-Galerkin 方法与有限元误差分析。"
 date: 2025-12-01
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 # 第四章：有限元理论与有限元方法
 

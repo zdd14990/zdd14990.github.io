@@ -1,5 +1,6 @@
 ---
 title: Autograd 源码学习（十三）：自定义 Primitive
+description: "Autograd 源码学习（十三）：自定义 primitive 与 VJP 的注册、closure 捕获以及与高阶导数的边界。"
 date: 2026-09-05
 hide:
   - navigation
@@ -7,8 +8,6 @@ categories:
   - 应用数学
   - Autograd 源码学习
 tags:
-  - autograd
-  - automatic-differentiation
   - python
 ---
 

@@ -8,7 +8,7 @@ hide:
 categories:
   - 应用数学
 tags:
-  - applied-math
+  - optimization
 ---
 
 # 第六章：凸优化 { #top }

@@ -1,14 +1,12 @@
 ﻿---
 title: 第三章：双曲型方程的有限差分法
+description: "PDE 数值解第三章：双曲型方程的特征线、输运与波动方程差分格式、数值耗散色散、算子分裂与守恒律。"
 date: 2025-11-25
 hide:
   - navigation
 categories:
   - 应用数学
   - PDE 数值解
-tags:
-  - applied-math
-  - numerical-pde
 ---
 # 第三章：双曲型方程的有限差分法
 

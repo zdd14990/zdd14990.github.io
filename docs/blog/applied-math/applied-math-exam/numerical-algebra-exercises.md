@@ -1,5 +1,6 @@
 ---
 title: Numerical Algebra Exercises
+description: "应用数学博资考练习：Hessenberg 化、矩阵分解与特征值算法等数值代数习题与解答。"
 date: 2026-02-14
 hide:
   - navigation
@@ -7,8 +8,7 @@ categories:
   - 应用数学
   - 应用数学博资考
 tags:
-  - applied-math
-  - applied-math-exam
+  - exercises
 ---
 ## 数值代数
 !!! problem "Autumn, 2023"

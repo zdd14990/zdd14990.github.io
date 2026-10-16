@@ -1,13 +1,12 @@
 ---
 title: 恩尼格玛密码机的破解
+description: "恩尼格玛密码机的结构与破解：明密文对应猜测、扰频器与接线板设置的恢复以及密钥恢复攻击。"
 hide:
   - navigation
 categories:
   - 密码学
   - 密码分析
-tags:
-  - cryptography
-  - cryptanalysis
+date: 2026-07-24
 ---
 
 # 恩尼格玛密码机的破解
