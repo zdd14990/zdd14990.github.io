@@ -3,170 +3,41 @@ import hashlib
 import gzip
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
 from xml.etree import ElementTree
 
-from blog_taxonomy import article_tags
-from markdown.extensions.toc import slugify, unique
-from scripts.refresh_pixiv_cache import publish_cached_rankings
+# The macros plugin loads this file directly; console entry points may omit
+# the project directory from sys.path, so local helper imports need it here.
+PROJECT_ROOT = Path(__file__).resolve().parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-DATE_RE = re.compile(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', re.MULTILINE)
-FRONTMATTER_RE = re.compile(r"^\ufeff?---\s*\n(.*?)\n---\s*\n", re.S)
-HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*$")
-HEADING_ATTR_RE = re.compile(r"\s+\{[^}]*#([A-Za-z0-9_.:-]+)[^}]*\}\s*$")
-FENCE_RE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
+from blog_content import content_store, parse_document
+from blog_text import (
+    article_description, plain_markdown as _plain_markdown,
+    chunk_passage_text as _chunk_passage_text, display_chunks as _display_chunks,
+    markdown_passages as _markdown_passages, render_math_text as _render_math_text,
+    first_content_block as _first_content_block,
+)
+from scripts.refresh_pixiv_cache import publish_cached_rankings
+from site_catalog import SITE_CATALOG, course_for_folder
+
 CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
 )
 SEARCH_TEXT_LIMIT = 12000
-PASSAGE_CHAR_LIMIT = 900
-PASSAGE_OVERLAP = 120
-DISPLAY_NAMES = {
-    "analysis": "分析",
-    "algebra": "代数",
-    "probability-statistics": "概统",
-    "statistics": "统计",
-    "probability-theory": "概率论",
-    "course": "课程",
-    "gtm295": "GTM295",
-    "qualification-exam-review": "博资考复习资料",
-    "cryptography": "密码学",
-    "cryptanalysis": "密码分析学",
-    "applied-math": "应用数学",
-    "numerical-pde": "PDE 数值解",
-    "convex-optimization": "凸优化",
-    "data-science": "数据科学专题",
-    "applied-math-exam": "应用数学博资考",
-    "ai-exam": "AI 博资考",
-    "paper-notes": "论文笔记",
-    "physics": "物理",
-    "electrodynamics": "电动力学",
-    "economics": "经济学",
-    "misc": "其他",
-}
-TOP_ORDER = [
-    "analysis",
-    "algebra",
-    "probability-statistics",
-    "qualification-exam-review",
-    "cryptography",
-    "course",
-    "gtm295",
-    "ai-exam",
-    "numerical-pde",
-    "convex-optimization",
-    "data-science",
-    "applied-math-exam",
-    "paper-notes",
-    "physics",
-    "economics",
-    "misc",
-]
-FLATTEN_ROOTS = {"applied-math"}
-QUALIFICATION_REVIEW_ROOT = "qualification-exam-review"
-QUALIFICATION_REVIEW_PAGES = {
-    "probability-statistics-qualification-exam-review": "probability-statistics",
-    "ai-qualification-exam-review": "ai-exam",
-    "applied-mathematics-qualification-exam-review": "applied-math-exam",
-}
-
-LAB_ITEMS = [
-    {
-        "slug": "diagram",
-        "title": "Commutative Diagram",
-        "description": "Build commutative diagrams visually and export TikZ-CD.",
-        "date": "2026-08-10",
-        "tags": ["math", "diagram", "tikz-cd"],
-        "status": "stable",
-        "featured": True,
-    },
-    {
-        "slug": "dungeon",
-        "title": "Dungeon Seed",
-        "description": "Generate Isaac-like floors and guess the hidden rooms.",
-        "date": "2026-08-10",
-        "tags": ["procedural-generation", "seed", "visualization"],
-        "status": "stable",
-        "featured": True,
-    },
-    {
-        "slug": "tex",
-        "title": "LaTeX Playground",
-        "description": "Write a formula and render it immediately with the site's existing MathJax setup.",
-        "date": "2026-08-10",
-        "tags": ["math", "latex"],
-        "status": "stable",
-        "featured": True,
-    },
-    {
-        "slug": "plot",
-        "title": "Function Plotter",
-        "description": "Plot common functions with a small expression parser and no eval().",
-        "date": "2026-08-10",
-        "tags": ["math", "visualization"],
-        "status": "experimental",
-        "featured": True,
-    },
-    {
-        "slug": "life",
-        "title": "Game of Life",
-        "description": "A minimal, keyboard-friendly implementation of Conway's cellular automaton.",
-        "date": "2026-08-10",
-        "tags": ["simulation", "cellular-automata"],
-        "status": "stable",
-        "featured": True,
-    },
-    {
-        "slug": "fourier",
-        "title": "Fourier Series Visualizer",
-        "description": "Watch partial sums approach a square wave as the number of terms changes.",
-        "date": "2026-08-10",
-        "tags": ["math", "fourier", "interactive-widget"],
-        "status": "stable",
-        "featured": True,
-    },
-]
-
-
-def _docs_dir():
-    return Path("docs").resolve()
 
 
 def _strip_frontmatter(content):
-    return FRONTMATTER_RE.sub("", content, count=1)
-
-
-def _read_text(path):
-    return path.read_text(encoding="utf-8", errors="ignore").lstrip("\ufeff")
-
-
-def _parse_list_meta(meta, key):
-    match = re.search(rf"^{re.escape(key)}:\s*\n((?:\s+- .+\n?)+)", meta, re.M)
-    if not match:
-        return []
-    values = []
-    for line in match.group(1).splitlines():
-        item = line.strip()
-        if item.startswith("- "):
-            values.append(item[2:].strip().strip('"\''))
-    return values
-
-
-def _parse_scalar_meta(meta, key):
-    match = re.search(rf"^{re.escape(key)}:\s*(.*?)\s*$", meta, re.M)
-    if not match:
-        return ""
-    return match.group(1).strip().strip('"\'')
+    return parse_document(content)[1]
 
 
 def _meta_and_body(path):
-    content = _read_text(path)
-    match = FRONTMATTER_RE.match(content)
-    if match:
-        return match.group(1), content[match.end():]
-    return "", content
+    article = content_store().read(path)
+    return dict(article.metadata), article.body
 
 
 def _word_count(markdown):
@@ -222,237 +93,36 @@ def _article_url(src_path):
     return "/" + src_path[:-3].replace("\\", "/") + "/"
 
 
-def _plain_markdown(text):
-    text = re.sub(r"```[\s\S]*?```", " ", text)
-    text = re.sub(r"~~~[\s\S]*?~~~", " ", text)
-    text = re.sub(r"!\[[^\]]*\]\([^)]+\)", " ", text)
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = re.sub(r"^\s*#{1,6}\s*", "", text, flags=re.M)
-    text = re.sub(r"^\s*!!!.*$", "", text, flags=re.M)
-    text = re.sub(r"^\s*(?:[-+*]|\d+[.)])\s+", "", text, flags=re.M)
-    text = re.sub(r"[*_`>#|{}\[\]]", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
-
-
-def _chunk_passage_text(text, limit=PASSAGE_CHAR_LIMIT, overlap=PASSAGE_OVERLAP):
-    text = _plain_markdown(text)
-    if not text:
-        return []
-    if len(text) <= limit:
-        return [text]
-
-    chunks = []
-    start = 0
-    sentence_marks = "。！？.!?；;"
-    while start < len(text):
-        end = min(len(text), start + limit)
-        if end < len(text):
-            floor = start + int(limit * 0.62)
-            sentence_end = max(text.rfind(mark, floor, end) for mark in sentence_marks)
-            if sentence_end >= floor:
-                end = sentence_end + 1
-            else:
-                word_end = text.rfind(" ", floor, end)
-                if word_end >= floor:
-                    end = word_end
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
-        if end >= len(text):
-            break
-        next_start = max(0, end - overlap)
-        if next_start <= start:
-            next_start = end
-        space = text.find(" ", next_start, min(end, next_start + overlap))
-        start = space + 1 if space >= 0 else next_start
-    return chunks
-
-
-def _heading_data(raw_heading, used_ids):
-    heading = re.sub(r"\s+#+\s*$", "", raw_heading.strip())
-    custom_match = HEADING_ATTR_RE.search(heading)
-    custom_id = custom_match.group(1) if custom_match else ""
-    if custom_match:
-        heading = heading[:custom_match.start()].strip()
-    heading = _plain_markdown(heading)
-    anchor = unique(custom_id or slugify(heading, "-"), used_ids)
-    return heading, anchor
-
-
-def _markdown_passages(document_id, document_url, document_title, body):
-    used_ids = set()
-    heading_stack = {}
-    sections = []
-    current = {
-        "section": document_title,
-        "anchor": "",
-        "heading_level": 0,
-        "breadcrumb": [],
-        "lines": [],
-    }
-    active_fence = ""
-
-    def flush():
-        text = "\n".join(current["lines"]).strip()
-        chunks = _chunk_passage_text(text)
-        if not chunks and current["heading_level"]:
-            chunks = [current["section"]]
-        if chunks:
-            sections.append({
-                "section": current["section"],
-                "anchor": current["anchor"],
-                "heading_level": current["heading_level"],
-                "breadcrumb": current["breadcrumb"],
-                "chunks": chunks,
-            })
-
-    for line in body.splitlines():
-        fence_match = FENCE_RE.match(line)
-        if active_fence:
-            if fence_match and fence_match.group(1).startswith(active_fence[0]) and len(fence_match.group(1)) >= len(active_fence):
-                active_fence = ""
-            continue
-        if fence_match:
-            active_fence = fence_match.group(1)
-            continue
-
-        heading_match = HEADING_RE.match(line)
-        if not heading_match:
-            current["lines"].append(line)
-            continue
-
-        level = len(heading_match.group(1))
-        heading, anchor = _heading_data(heading_match.group(2), used_ids)
-        if level > 3:
-            current["lines"].append(heading)
-            continue
-
-        flush()
-        for stacked_level in list(heading_stack):
-            if stacked_level >= level:
-                del heading_stack[stacked_level]
-        heading_stack[level] = heading
-        current = {
-            "section": heading or document_title,
-            "anchor": anchor,
-            "heading_level": level,
-            "breadcrumb": [heading_stack[key] for key in sorted(heading_stack)],
-            "lines": [],
-        }
-    flush()
-
-    passages = []
-    passage_index = 0
-    for section in sections:
-        for chunk_index, chunk in enumerate(section["chunks"]):
-            anchor = section["anchor"]
-            passages.append({
-                "id": f"{document_id}:{anchor or 'document'}:{chunk_index}",
-                "documentId": document_id,
-                "section": section["section"],
-                "breadcrumb": section["breadcrumb"],
-                "text": chunk,
-                "url": f"{document_url}#{anchor}" if anchor else document_url,
-                "location": {
-                    "anchor": anchor,
-                    "headingLevel": section["heading_level"],
-                    "passageIndex": passage_index,
-                    "chunkIndex": chunk_index,
-                },
-            })
-            passage_index += 1
-    return passages
-
-
-def _render_math_text(text, limit=180):
-    parts = re.split(r"(\$\$[\s\S]*?\$\$|\$[^$\n]+\$)", text)
-    out = []
-    used = 0
-    for part in parts:
-        if not part or used >= limit:
-            continue
-        if part.startswith("$$") and part.endswith("$$"):
-            formula = html.escape(part[2:-2].strip())
-            out.append(f'<span class="arithmatex">\\[{formula}\\]</span>')
-            used += 8
-        elif part.startswith("$") and part.endswith("$"):
-            formula = html.escape(part[1:-1].strip())
-            out.append(f'<span class="arithmatex">\\({formula}\\)</span>')
-            used += 4
-        else:
-            cleaned = _plain_markdown(part)
-            if not cleaned:
-                continue
-            remaining = limit - used
-            piece = cleaned[:remaining]
-            used += len(piece)
-            out.append(html.escape(piece))
-    preview = " ".join(out).strip()
-    if used >= limit:
-        preview += "..."
-    return preview or "暂无预览"
-
-
-def _first_content_block(body):
-    body = re.sub(r"```[\s\S]*?```", " ", body)
-    blocks = [block.strip() for block in re.split(r"\n\s*\n", body) if block.strip()]
-    for block in blocks:
-        if (
-            block.startswith("#")
-            or block.startswith("<div")
-            or "<embed" in block
-            or "application/pdf" in block
-            or block.startswith("[点击下载")
-            or re.fullmatch(r"\[[^\]]+\]\([^)]+\.pdf(?:[?#][^)]*)?\)(?:\{[^}]*\})?", block, re.I)
-            or re.fullmatch(r"-{3,}", block)
-            or re.match(r"^(title|date|categories|tags):", block, re.I)
-        ):
-            continue
-        return block
-    return ""
-
-
-def article_description(body, limit=160):
-    description = _plain_markdown(_first_content_block(body))
-    if len(description) <= limit:
-        return description
-    shortened = description[: limit - 1].rstrip(" ,.;:。，；：")
-    return shortened + "…"
-
-
 def _article_data():
-    docs_dir = _docs_dir()
-    blog_dir = docs_dir / "blog"
+    store = content_store()
+    if store.articles is not None:
+        return store.articles
     articles = []
-    for path in sorted(blog_dir.rglob("*.md")):
-        if path.name == "index.md":
-            continue
-        meta, body = _meta_and_body(path)
-        rel = path.relative_to(docs_dir).as_posix()
+    for source in store.article_sources():
+        path, meta, body = source.path, source.metadata, source.body
+        rel = source.src_path
         src_path = rel
-        title = _parse_scalar_meta(meta, "title") or path.stem.replace("-", " ").title()
-        date = _parse_scalar_meta(meta, "date")
+        title = source.title
+        date = meta["date"]
         published_at = _date_obj(date)
-        tags = article_tags(_parse_list_meta(meta, "tags"), src_path)
-        categories = _parse_list_meta(meta, "categories")
-        content = _read_text(path)
+        tags = meta["tags"]
+        categories = meta["categories"]
         search_text = _plain_markdown(body)
         parts = rel.split("/")
         folder_parts = parts[1:-1]
-        if folder_parts == [QUALIFICATION_REVIEW_ROOT]:
-            section = QUALIFICATION_REVIEW_PAGES.get(path.stem)
+        if folder_parts == [SITE_CATALOG["qualification_review_root"]]:
+            section = SITE_CATALOG["qualification_review_pages"].get(path.stem)
             if section:
                 folder_parts.append(section)
         elif folder_parts and folder_parts[0] == "probability-statistics":
-            folder_parts.insert(0, QUALIFICATION_REVIEW_ROOT)
+            folder_parts.insert(0, SITE_CATALOG["qualification_review_root"])
         elif (
             len(folder_parts) > 1
             and folder_parts[0] == "applied-math"
             and folder_parts[1] in {"ai-exam", "applied-math-exam"}
         ):
-            folder_parts = [QUALIFICATION_REVIEW_ROOT, *folder_parts[1:]]
-        elif len(folder_parts) > 1 and folder_parts[0] in FLATTEN_ROOTS:
+            folder_parts = [SITE_CATALOG["qualification_review_root"], *folder_parts[1:]]
+        elif len(folder_parts) > 1 and folder_parts[0] in SITE_CATALOG["flatten_roots"]:
             folder_parts = folder_parts[1:]
         articles.append({
             "path": path,
@@ -461,17 +131,20 @@ def _article_data():
             "title": title,
             "date": date,
             "published": published_at is not None,
-            "sort_key": published_at or datetime.fromtimestamp(path.stat().st_mtime),
-            "modified": date,
+            "sort_key": published_at or datetime.min,
+            "modified": meta["updated"] or date,
             "created": date,
             "categories": categories,
             "tags": tags,
-            "words": _word_count(content),
-            "description": article_description(body),
+            "words": _word_count(body),
+            "description": meta.get("description") or article_description(body),
             "preview": _render_math_text(_first_content_block(body)),
             "search_text": search_text[:SEARCH_TEXT_LIMIT],
             "folder_parts": folder_parts,
+            "_source": source.text,
+            "_body": body,
         })
+    store.articles = articles
     return articles
 
 
@@ -498,7 +171,7 @@ def _post_card(article, extra_class=""):
 def _lab_catalog():
     cards = []
     for item in sorted(
-        LAB_ITEMS,
+        SITE_CATALOG["labs"],
         key=lambda value: (not value.get("featured", False), value.get("date", ""), value["title"]),
     ):
         tags = "".join(
@@ -557,25 +230,28 @@ def _collect_articles(node):
     return items
 
 
-def _render_tree(node, level=0):
+def _render_tree(node, level=0, folder_parts=()):
     html_parts = []
     folder_keys = [key for key in node.keys() if key != "_articles"]
-    folder_keys.sort(key=lambda k: (TOP_ORDER.index(k) if k in TOP_ORDER else 99, DISPLAY_NAMES.get(k, k)))
+    folder_keys.sort(key=lambda k: (SITE_CATALOG["top_order"].index(k) if k in SITE_CATALOG["top_order"] else 99, SITE_CATALOG["display_names"].get(k, k)))
 
     for key in folder_keys:
         child = node[key]
+        child_parts = (*folder_parts, key)
+        course = course_for_folder(child_parts)
+        folder_id = f' id="{course["anchor"]}"' if course else ""
         articles = _collect_articles(child)
         stats = _folder_stats(articles)
-        name = DISPLAY_NAMES.get(key, key.replace("-", " ").title())
+        name = SITE_CATALOG["display_names"].get(key, key.replace("-", " ").title())
         date_range = f" · {stats['created']} - {stats['updated']}" if stats["created"] != "-" else ""
         html_parts.append(f"""
-<details class="zdd-catalog-folder" data-level="{level}">
+<details class="zdd-catalog-folder" data-level="{level}"{folder_id}>
   <summary>
     <span class="zdd-folder-name">{html.escape(name)}</span>
     <span class="zdd-folder-meta">{stats['count']} 篇{date_range} · {_format_words(stats['words'])}</span>
   </summary>
   <div class="zdd-folder-content"><div>
-    {_render_tree(child, level + 1)}
+    {_render_tree(child, level + 1, child_parts)}
   </div></div>
 </details>
 """)
@@ -591,20 +267,20 @@ def _render_tree(node, level=0):
 def _article_subtitle(article):
     if article["categories"]:
         return " / ".join(article["categories"])
-    labels = [DISPLAY_NAMES.get(part, part.replace("-", " ").title()) for part in article["folder_parts"]]
+    labels = [SITE_CATALOG["display_names"].get(part, part.replace("-", " ").title()) for part in article["folder_parts"]]
     return " / ".join(labels)
 
 
-def _public_search_index():
+def _public_search_index(compact=False):
     documents = []
     passages = []
+    store = content_store()
     articles = _article_data()
     neighbors = _chapter_neighbors(articles)
     for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True):
         adjacent = neighbors.get(article["src_path"], {})
         document_id = article["src_path"][:-3]
-        source_text = _read_text(article["path"])
-        _, body = _meta_and_body(article["path"])
+        source_text, body = article["_source"], article["_body"]
         documents.append({
             "id": document_id,
             "type": "post",
@@ -623,12 +299,13 @@ def _public_search_index():
             "categories": article["categories"],
             "tags": article["tags"],
             "content": article["search_text"],
-            "source": _strip_frontmatter(source_text)[:3000],
+            "source": body[:3000],
             "has_pdf": bool(re.search(r"(\.pdf\b|application/pdf|<embed)", source_text, re.I)),
         })
-        passages.extend(_markdown_passages(document_id, article["url"], article["title"], body))
+        passages.extend(_markdown_passages(document_id, article["url"], article["title"], body,
+                                          headings=store.rendered_headings.get(article["src_path"])))
 
-    for item in LAB_ITEMS:
+    for item in SITE_CATALOG["labs"]:
         document_id = f"lab:{item['slug']}"
         url = f"/lab/{item['slug']}/"
         documents.append({
@@ -668,6 +345,8 @@ def _public_search_index():
             },
         })
     documents.sort(key=lambda item: item.get("date", ""), reverse=True)
+    if compact:
+        documents = [_catalog_document(item) for item in documents]
     index = {
         "scope": "public",
         "version": 2,
@@ -684,8 +363,12 @@ def _public_search_index():
     return index
 
 
+def _catalog_document(document):
+    return {key: value for key, value in document.items() if key not in {"content", "source"}}
+
+
 def _search_index_items():
-    return _public_search_index()["documents"]
+    return _public_search_index(compact=True)["documents"]
 
 
 def _tag_explorer():
@@ -763,10 +446,19 @@ def on_post_build(env=None, config=None, **kwargs):
         site_dir = config["site_dir"]
     except (KeyError, TypeError):
         site_dir = config.site_dir
-    public_index = _public_search_index()
+    public_index = _public_search_index(compact=True)
     public_output = Path(site_dir) / "assets" / "zdd-public-search-index.json"
     public_output.parent.mkdir(parents=True, exist_ok=True)
-    public_output.write_text(json.dumps(public_index, ensure_ascii=False), encoding="utf-8")
+    public_output.write_text(json.dumps(public_index, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+    catalog = {
+        "scope": "public",
+        "version": 1,
+        "contentHash": public_index["contentHash"],
+        "documents": public_index["documents"],
+    }
+    catalog_output = Path(site_dir) / "assets" / "zdd-content-catalog.json"
+    catalog_output.write_text(json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     legacy_output = Path(site_dir) / "assets" / "zdd-search-data.json"
     legacy_output.write_text(json.dumps(public_index["documents"], ensure_ascii=False), encoding="utf-8")

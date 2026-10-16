@@ -4,11 +4,43 @@ import os
 import re
 
 from blog_taxonomy import article_tags
-from main import article_description
+from blog_content import begin_build, end_build, content_store, normalize_metadata
+from blog_text import article_description, rendered_headings
+from site_catalog import course_for_source, refresh_site_catalog
+from pathlib import Path
 from mkdocs.utils import get_relative_url
+from reading_features import article_dates, page_needs_math
+from code_notes import add_code_notes, prune_note_toc
 
 
 PDF_EMBED_RE = re.compile(r'(<embed\s+[^>]*?src=")([^"]+\.pdf)("[^>]*>)', re.IGNORECASE)
+
+
+def on_pre_build(config):
+    refresh_site_catalog(config["docs_dir"])
+    begin_build(config["docs_dir"])
+
+
+def on_page_read_source(page, config):
+    source = page.file.src_path.replace("\\", "/")
+    if source.startswith("blog/") and not source.endswith("index.md"):
+        return content_store(config["docs_dir"]).read(page.file.abs_src_path).text
+    return None
+
+
+def on_post_build(config):
+    end_build()
+
+
+def on_build_error(error):
+    end_build()
+
+
+def on_serve(server, config, builder):
+    root = Path(__file__).resolve().parent
+    server.watch(str(root / "data" / "site-catalog.json"), builder)
+    return server
+
 def _fix_pdf_embed_paths(markdown, page, config):
     docs_dir = os.path.abspath(config["docs_dir"])
     page_dir = os.path.dirname(page.file.abs_src_path)
@@ -77,7 +109,50 @@ def _set_article_description(markdown, page):
     page.meta["description"] = description
 
 
+def _set_course_navigation(page, config):
+    source = page.file.src_path.replace("\\", "/")
+    page.meta.pop("course_navigation", None)
+    course = course_for_source(source)
+    if course is None:
+        return
+    chapters = course["chapters"]
+    position = chapters.index(source)
+
+    def chapter_link(index):
+        if not 0 <= index < len(chapters):
+            return None
+        path = chapters[index]
+        article = content_store(config["docs_dir"]).read(Path(config["docs_dir"]) / path)
+        return {
+            "title": article.title,
+            "url": get_relative_url(path[:-3] + "/", page.url),
+        }
+
+    page.meta["course_navigation"] = {
+        "title": course.get("title") or course["id"],
+        "position": position + 1,
+        "total": len(chapters),
+        "catalog_url": get_relative_url("blog/", page.url) + "#" + course["anchor"],
+        "previous": chapter_link(position - 1),
+        "next": chapter_link(position + 1),
+    }
+
+
 def on_page_markdown(markdown, page, config, files):
+    source = page.file.src_path.replace("\\", "/")
+    assets = _as_list(page.meta.get("zdd_assets"))
+    registry = config.get("extra", {}).get("page_assets", {})
+    for asset in assets:
+        if asset not in registry:
+            raise ValueError(f"{source}: unknown page asset {asset!r}")
+    page.meta["zdd_assets"] = list(dict.fromkeys(assets))
+    if source.startswith("blog/") and not source.endswith("index.md"):
+        page.meta.update(normalize_metadata(page.meta, source))
+    _set_course_navigation(page, config)
+    if page.file.src_path.replace('\\', '/').startswith('blog/'):
+        published, modified = article_dates(page.meta.get('date'), page.meta.get('updated'))
+        page.meta['reading_date'] = published
+        page.meta['reading_updated'] = modified if modified != published else ''
     _set_article_description(markdown, page)
     markdown = _fix_pdf_embed_paths(markdown, page, config)
 
@@ -94,3 +169,14 @@ def on_page_markdown(markdown, page, config, files):
             page.meta['hide'].append('navigation')
             
     return _append_taxonomy(markdown, page)
+
+
+def on_page_content(html, page, config, files):
+    html = add_code_notes(html, page.meta.get("code_notes"))
+    if page.meta.get("code_notes"):
+        prune_note_toc(html, page.toc)
+    page.meta['reading_math'] = bool(page.meta.get("code_notes")) or page_needs_math(html, page.file.src_path.replace('\\', '/'))
+    source = page.file.src_path.replace("\\", "/")
+    if source.startswith("blog/") and not source.endswith("index.md"):
+        content_store(config["docs_dir"]).rendered_headings[source] = rendered_headings(html)
+    return html
