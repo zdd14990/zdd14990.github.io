@@ -697,39 +697,6 @@
       return;
     }
 
-    if (name === "/pixiv") {
-      var r18 = normalize(arg) === "r18";
-      var label = r18 ? "Pixiv R18 排行榜" : "Pixiv 排行榜";
-      var dataUrl = r18 ? "assets/pixiv-r18-ranking.json" : "assets/pixiv-ranking.json";
-      renderCommandOutput(commandLine, label, '<div class="zdd-command-empty">Fetching...</div>');
-      fetch(siteUrl(dataUrl), {credentials: "same-origin", cache: "no-store"})
-        .then(function(response) {
-          if (!response.ok) throw new Error("No ranking data");
-          return response.json();
-        })
-        .then(function(items) {
-          var pixivCore = window.ZddPixivCore;
-          if (!pixivCore || !Array.isArray(items)) throw new Error("Invalid ranking data");
-          var validItems = items.map(pixivCore.normalizeItem).filter(Boolean);
-          if (!validItems.length) throw new Error("Empty ranking");
-          var picked = validItems[Math.floor(Math.random() * validItems.length)];
-          var imgSrc = pixivCore.imageUrl(picked.id);
-          var title = escapeHtml(picked.title || "Untitled");
-          var link = pixivCore.artworkUrl(picked.id);
-          renderCommandOutput(commandLine, label,
-            '<a class="zdd-pixiv-card" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">'
-            + '<img src="' + escapeHtml(imgSrc) + '" alt="' + title + '" loading="lazy">'
-            + '<span class="zdd-pixiv-title">' + title + '</span>'
-            + '</a>'
-          );
-        })
-        .catch(function(err) {
-          renderCommandOutput(commandLine, label, '<div class="zdd-command-empty">No ranking data available. Try building locally with a PIXIV_SESSION.</div>');
-        });
-      return;
-    }
-
-
     renderCommandOutput(commandLine, "Unknown command", '<div class="zdd-command-empty">Command not found. Try <code>/help</code> or <code>/help advanced</code>.</div>');
   }
 

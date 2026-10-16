@@ -22,7 +22,6 @@ from blog_text import (
     markdown_passages as _markdown_passages, render_math_text as _render_math_text,
     first_content_block as _first_content_block,
 )
-from scripts.refresh_pixiv_cache import publish_cached_rankings
 from site_catalog import SITE_CATALOG, course_for_folder
 
 CHAPTER_RE = re.compile(
@@ -462,7 +461,6 @@ def on_post_build(env=None, config=None, **kwargs):
 
     legacy_output = Path(site_dir) / "assets" / "zdd-search-data.json"
     legacy_output.write_text(json.dumps(public_index["documents"], ensure_ascii=False), encoding="utf-8")
-    publish_cached_rankings(site_dir)
     extra = config.get("extra", {}) if hasattr(config, "get") else getattr(config, "extra", {})
     site_url = config.get("site_url", "") if hasattr(config, "get") else getattr(config, "site_url", "")
     _exclude_sitemap_urls(site_dir, site_url, extra.get("sitemap_exclude", []))

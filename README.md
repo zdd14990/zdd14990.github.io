@@ -29,22 +29,12 @@ python -m pip install -r requirements.txt
 # 本地预览 (http://127.0.0.1:8000)
 mkdocs serve
 
-# 生产构建（只读取已有 Pixiv 缓存，不访问 Pixiv 网络）
+# 生产构建
 mkdocs build --strict
 
 # 部署到 GitHub Pages
 mkdocs gh-deploy
 ```
-
-## 数据刷新
-
-Pixiv 排行缓存只会通过显式命令刷新，普通预览和构建不会修改源缓存：
-
-```bash
-python scripts/refresh_pixiv_cache.py
-```
-
-R18 排行需要在当前进程环境中提供 `PIXIV_SESSION`。不要把会话值写入 Git 或命令输出；没有该变量时，刷新命令会保留已有的 R18 缓存。
 
 ## 项目结构
 
@@ -60,7 +50,7 @@ zdd/
 │   ├── javascripts/       # 自定义 JS（命令搜索、MathJax 等）
 │   └── stylesheets/       # 自定义 CSS
 ├── mkdocs.yml             # 站点配置
-├── main.py                # 自定义宏（blog catalog、标签探索、Pixiv 集成等）
+├── main.py                # 自定义宏（blog catalog、标签探索等）
 ├── blog_content.py        # 统一文章元数据校验与单次构建缓存
 ├── blog_text.py           # 正文摘要、搜索分段和公式展示文本
 ├── site_catalog.py        # 分类、实验与课程清单校验
@@ -68,7 +58,7 @@ zdd/
 ├── blog_taxonomy.py       # 页面与索引共用的标签规则
 ├── hooks.py               # 构建钩子（搜索索引预处理、页面后处理）
 ├── overrides/             # 主题覆写（main.html 等）
-├── scripts/               # Pixiv 缓存、Personal OS 数据等辅助脚本
+├── scripts/               # Personal OS 数据、站点检查等辅助脚本
 ├── requirements.txt       # 固定版本的直接构建依赖
 └── site/                  # 构建输出（由 mkdocs 生成）
 ```

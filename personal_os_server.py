@@ -209,7 +209,6 @@ def ensure_site(site_root: Path, rebuild: bool) -> None:
     if index.exists() and not rebuild:
         return
     environment = os.environ.copy()
-    environment["ZDD_SKIP_PIXIV"] = "1"
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     command = [sys.executable, "-m", "mkdocs", "build", "--clean", "--site-dir", str(site_root)]
     subprocess.run(command, cwd=PROJECT_ROOT, env=environment, check=True)
