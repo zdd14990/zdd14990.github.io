@@ -1,0 +1,122 @@
+/* Code is unchanged; annotations borrow their content from the article. */
+.md-typeset code[data-zdd-code] {
+  display: block;
+  position: relative;
+  padding-left: 3.4em;
+  white-space: pre;
+  line-height: 1.7;
+}
+.zdd-code-line {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  min-height: 1.7em;
+  width: max-content;
+  min-width: 100%;
+  white-space: pre;
+  scroll-margin-top: 6rem;
+}
+.zdd-code-line::before {
+  content: attr(data-line);
+  position: absolute;
+  width: 2.7em;
+  right: calc(100% + .7em);
+  text-align: right;
+  color: var(--md-default-fg-color--light);
+  opacity: .46;
+  font-size: .8em;
+  line-height: 2.125;
+  user-select: none;
+  pointer-events: none;
+}
+.zdd-code-line[data-zdd-note] { cursor: help; }
+.zdd-code-line[data-zdd-note]::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  left: -.45em;
+  top: 0;
+  bottom: 0;
+  background: var(--zdd-reading-link);
+  opacity: .2;
+}
+.zdd-code-line.is-note-active { background: color-mix(in srgb, var(--zdd-reading-link) 8%, transparent); }
+.zdd-code-line.is-note-active::after { opacity: .8; }
+.zdd-code-line[data-zdd-note]:focus-visible { outline: 1px solid var(--zdd-reading-link); outline-offset: 2px; }
+.zdd-code-note[hidden] { display: none !important; }
+body.article-layout .zdd-code-note {
+  position: fixed;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  width: 432px;
+  max-height: min(560px, calc(100dvh - 110px));
+  margin: 0;
+  border: 1px solid var(--zdd-surface-border);
+  border-radius: 10px;
+  background: var(--zdd-article-bg);
+  color: var(--md-default-fg-color);
+  box-shadow: 0 9px 32px #10283824;
+  font-family: var(--zdd-reading-font);
+  font-size: 15px;
+  line-height: 1.8;
+  text-align: left;
+}
+.zdd-code-note-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 13px 12px 12px 19px;
+  border-bottom: 1px solid var(--zdd-surface-border);
+}
+.zdd-code-note-header > #zdd-code-note-title {
+  flex: 1;
+  min-width: 0;
+  padding-right: 7px;
+  color: var(--md-default-fg-color) !important;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+.zdd-code-note-header button {
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.zdd-code-note-header button:hover, .zdd-code-note-header button[aria-pressed="true"] { color: var(--zdd-reading-link); background: var(--md-code-bg-color); }
+.zdd-code-note-header svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.zdd-code-note-body { min-height: 0; padding: 16px 20px 19px; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.zdd-code-note-body > :first-child { margin-top: 0; }
+.zdd-code-note-body > :last-child { margin-bottom: 0; }
+.zdd-code-note-body p { margin: 0 0 .8em; }
+.zdd-code-note-body h4 { margin: 1.3em 0 .7em; padding-top: 1em; border-top: 1px solid var(--zdd-surface-border); font-size: 1em; }
+.zdd-code-note-body code { padding: .1em .3em; font-size: .84em; white-space: normal; overflow-wrap: anywhere; }
+.zdd-code-note-body pre { margin: .6em 0 1em; }
+.zdd-code-note-body pre code { display: block; padding: .75em; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+.zdd-code-note-body .arithmatex { max-width: 100%; }
+.zdd-code-note-body div.arithmatex { overflow-x: auto; padding: .35em 0; margin: .35em 0 1em; scrollbar-width: thin; }
+.zdd-code-note-body mjx-container[display="true"] { margin: .35em 0 !important; font-size: 100% !important; }
+.zdd-code-note-body :is(ul,ol) { margin-left: .35em; padding-left: 1.05em; }
+.zdd-code-note-body li { margin-bottom: .45em; }
+.zdd-code-note-body strong { font-weight: 600; }
+.zdd-code-note-table { max-width: 100%; overflow-x: auto; }
+.zdd-code-note-body table:not([class]) { font-size: .83em; margin: .4em 0 1em; }
+.zdd-code-note-body :is(th,td) { padding: .5em .65em; }
+.zdd-code-note :focus-visible { outline: 2px solid var(--zdd-reading-link); outline-offset: 2px; }
+@media (max-width: 760px) {
+  body.article-layout .zdd-code-note { max-height: min(55dvh, 520px); border-radius: 10px; font-size: 15px; }
+  .zdd-code-note-body { padding: 14px 17px 17px; }
+  .zdd-code-note-header { padding: 10px 10px 10px 17px; }
+  .md-typeset code[data-zdd-code] { padding-left: 2.8em; }
+}
+@media print {
+  .zdd-code-note { display: none !important; }
+  .zdd-code-line[data-zdd-note]::after { display: none; }
+}

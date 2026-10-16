@@ -7,6 +7,8 @@
 })(typeof window !== "undefined" ? window : globalThis, function() {
   "use strict";
 
+  var preparedIndexes = new WeakMap();
+
   function normalize(text) {
     return String(text || "").toLocaleLowerCase();
   }
@@ -16,7 +18,8 @@
       .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
       .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
       .replace(/(?:https?:\/\/|www\.)\S+/g, " ")
-      .replace(/[`*_>#|{}\[\]]/g, " ")
+      .replace(/^\s{0,3}(?:>\s*)+/gm, " ")
+      .replace(/[`*#|{}\[\]]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
   }
@@ -32,9 +35,7 @@
     });
   }
 
-  function countOccurrences(text, term) {
-    var haystack = normalize(text);
-    var needle = normalize(term);
+  function countOccurrences(haystack, needle) {
     var count = 0;
     var from = 0;
     if (!needle) return count;
@@ -136,6 +137,45 @@
     return snippet;
   }
 
+  function makeDisplaySnippet(text, terms, maxLength) {
+    var math = /(?<!\\)\$\$[\s\S]*?(?<!\\)\$\$|(?<![\\$])\$(?:\\.|[^$\\\n])+\$(?!\$)|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g;
+    var original = String(text || "");
+    var limit = Math.max(80, Number(maxLength) || 240);
+    var matchIndex = Math.max(0, snippetMatch(original, terms));
+    var start = original.length <= limit ? 0 : Math.max(0, matchIndex - Math.round(limit * 0.34));
+    if (original.length > limit) start = sentenceStart(original, matchIndex, start);
+    var preferredEnd = Math.min(original.length, start + limit);
+    var end = preferredEnd === original.length ? preferredEnd : sentenceEnd(original, preferredEnd);
+    end = Math.min(end, start + limit + 80);
+    var match;
+    // Select the original neighborhood before shortening math. Otherwise omitted
+    // formulas pull unrelated later paragraphs into the same visual budget.
+    while ((match = math.exec(original))) {
+      if (start > match.index && start < math.lastIndex) start = match.index;
+      if (end > match.index && end < math.lastIndex) end = math.lastIndex;
+    }
+    var windowText = original.slice(start, end);
+    var source = "";
+    var cursor = 0;
+    math.lastIndex = 0;
+    while ((match = math.exec(windowText))) {
+      source += cleanText(windowText.slice(cursor, match.index)) + " ";
+      var formula = match[0].replace(/\s+/g, " ");
+      var matched = terms.filter(function(term) {
+        return firstMatch(formula, [term]) >= 0 || firstMatch(cleanText(formula), [term]) >= 0;
+      });
+      var label;
+      if (matched.length && formula.length <= 160) label = formula;
+      else if (matched.length) label = "〔公式中匹配：" + matched.join("、") + "〕";
+      else if (formula.length <= 20 && !/[\\{}]/.test(formula)) label = formula;
+      else label = "〔公式〕";
+      source += label + " ";
+      cursor = math.lastIndex;
+    }
+    source += cleanText(windowText.slice(cursor));
+    return (start > 0 ? "…" : "") + source.trim() + (end < original.length ? "…" : "");
+  }
+
   function highlightRanges(text, terms) {
     var source = String(text || "");
     var normalized = normalize(source);
@@ -208,11 +248,31 @@
     };
   }
 
-  function fieldScore(fields, terms, rawQuery) {
+  function prepareIndex(index) {
+    var cached = preparedIndexes.get(index);
+    if (cached && cached.documents === index.documents && cached.passages === index.passages
+        && cached.documentCount === (index.documents || []).length && cached.passageCount === (index.passages || []).length) return cached;
+    var documents = documentMap(index.documents);
+    var rows = [];
+    (index.passages || []).forEach(function(passage) {
+      var document = documents[passage.documentId];
+      if (!document) return;
+      var fields = searchableFields(document, passage);
+      var normalized = {};
+      Object.keys(fields).forEach(function(key) { normalized[key] = normalize(fields[key]); });
+      rows.push({document: document, passage: passage, fields: fields, normalized: normalized,
+        aggregate: Object.keys(normalized).map(function(key) { return normalized[key]; }).join(" ")});
+    });
+    cached = {documents: index.documents, passages: index.passages, documentCount: (index.documents || []).length,
+      passageCount: (index.passages || []).length, rows: rows};
+    preparedIndexes.set(index, cached);
+    return cached;
+  }
+
+  function fieldScore(fields, aggregate, terms, rawQuery) {
     var score = 0;
-    var aggregate = Object.keys(fields).map(function(key) { return fields[key]; }).join(" ");
     var query = normalize(rawQuery).trim();
-    if (!terms.every(function(term) { return normalize(aggregate).indexOf(term) >= 0; })) return -1;
+    if (!terms.every(function(term) { return aggregate.indexOf(term) >= 0; })) return -1;
 
     terms.forEach(function(term) {
       score += countOccurrences(fields.title, term) * 18;
@@ -222,11 +282,11 @@
       score += countOccurrences(fields.taxonomy, term) * 5;
       score += Math.min(8, countOccurrences(fields.text, term)) * 2;
     });
-    if (query && normalize(fields.section).indexOf(query) >= 0) score += 42;
-    if (query && normalize(fields.title).indexOf(query) >= 0) score += 30;
-    if (query && normalize(fields.text).indexOf(query) >= 0) score += 26;
-    else if (query && normalize(aggregate).indexOf(query) >= 0) score += 7;
-    if (terms.every(function(term) { return normalize(fields.text).indexOf(term) >= 0; })) score += 6;
+    if (query && fields.section.indexOf(query) >= 0) score += 42;
+    if (query && fields.title.indexOf(query) >= 0) score += 30;
+    if (query && fields.text.indexOf(query) >= 0) score += 26;
+    else if (query && aggregate.indexOf(query) >= 0) score += 7;
+    if (terms.every(function(term) { return fields.text.indexOf(term) >= 0; })) score += 6;
     return score;
   }
 
@@ -246,14 +306,14 @@
     var terms = queryTerms(query);
     if (!index || index.scope !== expectedScope || !terms.length) return [];
 
-    var documents = documentMap(index.documents);
+    var prepared = prepareIndex(index);
     var candidates = [];
-    (index.passages || []).forEach(function(passage) {
+    prepared.rows.forEach(function(row) {
+      var passage = row.passage;
       if (settings.documentId && passage.documentId !== settings.documentId) return;
-      var document = documents[passage.documentId];
-      if (!document) return;
-      var fields = searchableFields(document, passage);
-      var score = fieldScore(fields, terms, query);
+      var document = row.document;
+      var fields = row.fields;
+      var score = fieldScore(row.normalized, row.aggregate, terms, query);
       if (score < 0) return;
 
       var passageField = [fields.section, fields.breadcrumb, fields.text].join(" ");
@@ -277,6 +337,7 @@
         subtitle: document.subtitle || "",
         section: section,
         snippet: makeSnippet(snippetSource(fields, terms), terms, settings.snippetLength || 240),
+        displayText: snippetSource(fields, terms) === fields.text ? passage.displayText : undefined,
         highlights: terms.slice(),
         url: buildLocatedUrl(passage.url || document.url, query),
         location: passage.location || {},
@@ -302,6 +363,11 @@
       if ((counts[result.documentId] || 0) >= perDocument) return false;
       seen[key] = true;
       counts[result.documentId] = (counts[result.documentId] || 0) + 1;
+      // Keep the legacy snippet as the deduplication key, then change display only.
+      if (result.displayText !== undefined) {
+        result.snippet = makeDisplaySnippet(result.displayText, terms, settings.snippetLength || 240);
+      }
+      delete result.displayText;
       results.push(result);
       return results.length >= limit;
     });
@@ -313,6 +379,7 @@
     cleanText: cleanText,
     queryTerms: queryTerms,
     makeSnippet: makeSnippet,
+    makeDisplaySnippet: makeDisplaySnippet,
     highlightParts: highlightParts,
     buildLocatedUrl: buildLocatedUrl,
     search: search

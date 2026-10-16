@@ -1,6 +1,7 @@
 ---
 title: Commutative Diagram
 description: Build commutative diagrams visually and export TikZ-CD.
+zdd_assets: [diagram]
 hide:
   - navigation
   - toc
@@ -89,6 +90,3 @@ Build visually. Export as TikZ-CD.
     </form>
   </dialog>
 </div>
-
-<script src="../../javascripts/diagram-core.js" defer></script>
-<script src="../../javascripts/diagram-editor.js" defer></script>

@@ -1,0 +1,9 @@
+{% set course = page.meta.course_navigation %}
+<nav class="zdd-course-navigation" aria-label="{{ course.title }}章节导航">
+  <a href="{{ course.catalog_url }}">{{ course.title }} · 系列目录</a>
+  <span class="zdd-course-position">第 {{ course.position }} / {{ course.total }} 章</span>
+  <div class="zdd-course-neighbors">
+    {% if course.previous %}<a href="{{ course.previous.url }}" rel="prev">← 上一章：{{ course.previous.title }}</a>{% endif %}
+    {% if course.next %}<a href="{{ course.next.url }}" rel="next">下一章：{{ course.next.title }} →</a>{% endif %}
+  </div>
+</nav>

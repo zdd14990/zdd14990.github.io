@@ -1,0 +1,106 @@
+/* Article TOC layout, mobile dialog and anchor offsets. */
+.md-sidebar { background: none; box-shadow: none; z-index: 10; }
+.md-sidebar--secondary .md-sidebar__scrollwrap { padding: 0; margin: 0; scrollbar-width: thin; }
+.md-sidebar--secondary .md-nav--secondary { background: var(--zdd-surface); color: var(--zdd-surface-ink); border: 1px solid var(--zdd-surface-border); border-radius: 8px; padding: 0.7rem; }
+.md-sidebar--secondary .md-nav--secondary .md-nav__title { background: transparent; box-shadow: none; position: static; margin: 0 0 0.35rem; padding: 0.2rem 0.4rem; height: auto; }
+.md-sidebar--secondary .md-nav--secondary .md-nav__link { color: var(--zdd-surface-ink); }
+.md-sidebar--secondary .md-nav--secondary .md-nav__link--active { color: var(--zdd-reading-link, var(--md-typeset-a-color)); font-weight: 700; }
+
+/* A hidden horizontal overflow created a non-scrolling sticky container. */
+body.article-layout {
+    overflow-x: clip;
+    overflow-y: visible;
+}
+
+@media screen and (min-width: 60em) {
+    body.article-layout .md-sidebar--secondary {
+        position: sticky !important;
+        top: 4rem !important;
+        align-self: flex-start;
+        padding: 0;
+        height: auto !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap {
+        margin: 0 !important;
+        max-height: calc(100vh - 5rem) !important;
+        max-height: calc(100dvh - 5rem) !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar {
+        display: block;
+        width: 5px !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-nav--secondary {
+        margin: 0 !important;
+        border-radius: 8px !important;
+        padding: 0.7rem !important;
+        font-size: 0.7rem;
+        box-shadow: none !important;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-nav__link {
+        line-height: 1.5;
+    }
+}
+
+.zdd-toc-toggle { display: none; }
+.zdd-toc-toggle[hidden] { display: none !important; }
+@media screen and (max-width: 59.984375em) {
+    .zdd-toc-toggle {
+        display: grid;
+        place-items: center;
+        position: fixed;
+        right: 1rem;
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--zdd-surface-border);
+        background: var(--zdd-surface, #fff);
+        color: var(--zdd-surface-ink, #253743);
+        box-shadow: 0 2px 12px #0002;
+        z-index: 20;
+        cursor: pointer;
+    }
+}
+
+.zdd-toc-dialog {
+    width: min(28rem, calc(100% - 1.5rem));
+    max-height: min(80dvh, 36rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--zdd-surface-border);
+    border-radius: 8px;
+    background: var(--md-default-bg-color, #fff);
+    color: var(--md-default-fg-color, #253743);
+    overscroll-behavior: contain;
+}
+.zdd-toc-dialog::backdrop { background: #0007; }
+.zdd-toc-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--md-default-bg-color, #fff);
+    border-bottom: 1px solid var(--zdd-surface-border);
+    z-index: 1;
+}
+.zdd-toc-header button { width: 2rem; height: 2rem; cursor: pointer; }
+.zdd-toc-list { list-style: none; margin: 0; padding: 0.4rem 0.8rem 0.8rem; }
+.zdd-toc-list a { display: block; padding: 0.5rem; font-size: 0.8rem; line-height: 1.5; overflow-wrap: anywhere; }
+.zdd-toc-list li { padding-left: calc(var(--zdd-toc-level, 0) * 0.6rem); }
+.zdd-toc-list a[aria-current] { color: var(--md-accent-fg-color); border-left: 3px solid currentColor; }
+.zdd-toc-list a:hover { background: var(--md-code-bg-color); }
+.zdd-toc-list a:focus-visible, .zdd-toc-toggle:focus-visible, .zdd-toc-header button:focus-visible { outline: 2px solid var(--md-accent-fg-color); outline-offset: 2px; }
+
+body.article-layout .md-typeset :is(h2, h3, h4, h5, h6)[id] {
+    scroll-margin-top: 4rem;
+}

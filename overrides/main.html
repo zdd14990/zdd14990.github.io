@@ -2,15 +2,57 @@
 {% set zdd_assets = page.meta.zdd_assets if page and page.meta and page.meta.zdd_assets else [] %}
 {% set zdd_description = page.meta.description if page and page.meta and page.meta.description else config.site_description %}
 {% set zdd_is_article = page and page.url and page.url.startswith("blog/") and page.url != "blog/" %}
+{% set zdd_share_image = config.site_url ~ config.extra.meta.site_image %}
+
+{% block site_meta %}
+{{ super() }}
+  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL({{ (config.extra.scope | d(base_url)) | tojson }}, location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+{% endblock %}
+
+{% block header %}
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', {{ ('article-layout' if zdd_is_article else 'home-layout' if page and page.is_homepage else 'blog-index-layout' if page and page.url == 'blog/' else 'tag-layout' if page and page.url.startswith('tags/') else 'os-layout' if page and page.url.startswith('os/') else 'lab-layout' if page and page.url.startswith('lab/') else 'zdd-page-layout') | tojson }});
+    try {
+      var preset = localStorage.getItem('zdd.themePreset');
+      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
+    } catch (error) {}
+  </script>
+  {{ super() }}
+{% endblock %}
 
 {% block extrahead %}
 {{ super() }}
-{% if "personal-os" in zdd_assets %}
-  <link rel="stylesheet" href="{{ 'stylesheets/personal-os.css' | url }}">
+{% if page and page.meta.code_notes %}
+  <link rel="stylesheet" href="{{ 'stylesheets/code-notes.css' | url }}">
 {% endif %}
-{% if page and page.url == "lab/dungeon/" %}
-  <link rel="stylesheet" href="{{ 'stylesheets/dungeon-lab.css' | url }}">
-{% endif %}
+  <link rel="stylesheet" href="{{ 'assets/fonts/wenkai/result.css' | url }}">
+{% for asset in zdd_assets %}
+{% for style in config.extra.page_assets[asset].get('styles', []) %}
+  <link rel="stylesheet" href="{{ style | url }}">
+{% endfor %}
+{% endfor %}
 {% if not page %}
   <meta name="robots" content="noindex, nofollow">
 {% elif page.meta and page.meta.robots %}
@@ -20,6 +62,7 @@
 {% endif %}
   <script>
     window.zddSearchDataUrl = "{{ 'assets/zdd-search-data.json' | url }}";
+    window.zddContentCatalogUrl = "{{ 'assets/zdd-content-catalog.json' | url }}";
     window.zddPublicSearchIndexUrl = "{{ 'assets/zdd-public-search-index.json' | url }}";
   </script>
 
@@ -27,10 +70,11 @@
   <meta property="og:url" content="{{ page.canonical_url }}">
   <meta property="og:title" content="{{ page.title }} - {{ config.site_name }}">
   <meta property="og:description" content="{{ zdd_description }}">
-  <meta property="og:image" content="{{ config.site_url }}assets/cover.jpg">
+  <meta property="og:image" content="{{ zdd_share_image }}">
 {% if zdd_is_article and page.meta.date %}
   <meta property="article:published_time" content="{{ page.meta.date }}">
 {% endif %}
+{% if zdd_is_article and page.meta.reading_updated %}<meta property="article:modified_time" content="{{ page.meta.reading_updated }}">{% endif %}
 {% if zdd_is_article and page.meta.tags %}
 {% for tag in page.meta.tags %}
   <meta property="article:tag" content="{{ tag }}">
@@ -42,7 +86,7 @@
   <meta property="twitter:url" content="{{ page.canonical_url }}">
   <meta name="twitter:title" content="{{ page.title }} - {{ config.site_name }}">
   <meta name="twitter:description" content="{{ zdd_description }}">
-  <meta name="twitter:image" content="{{ config.site_url }}assets/cover.jpg">
+  <meta name="twitter:image" content="{{ zdd_share_image }}">
 {% if zdd_is_article %}
   <script type="application/ld+json">
   {
@@ -52,12 +96,13 @@
     "description": {{ zdd_description | tojson }},
     "url": {{ page.canonical_url | tojson }},
     "mainEntityOfPage": {{ page.canonical_url | tojson }},
-    "image": {{ (config.site_url ~ 'assets/cover.jpg') | tojson }},
+    "image": {{ zdd_share_image | tojson }},
     "author": {
       "@type": "Person",
       "name": {{ config.site_author | tojson }}
     }{% if page.meta.date %},
-    "datePublished": {{ (page.meta.date | string) | tojson }}{% endif %}{% if page.meta.tags %},
+    "datePublished": {{ (page.meta.date | string) | tojson }}{% endif %}{% if page.meta.reading_updated %},
+    "dateModified": {{ page.meta.reading_updated | tojson }}{% endif %}{% if page.meta.tags %},
     "keywords": {{ page.meta.tags | tojson }}{% endif %}
   }
   </script>
@@ -91,13 +136,37 @@
 
 
 {% block scripts %}
+{% if page and page.meta.reading_math %}
+  <script src="{{ 'javascripts/mathjax.js' | url }}"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+{% endif %}
   {{ super() }}
-{% if "personal-os" in zdd_assets %}
-  <script src="{{ 'javascripts/personal-os-core.js' | url }}"></script>
-  <script src="{{ 'javascripts/personal-os.js' | url }}"></script>
-{% endif %}
-{% if "interactive-widgets" in zdd_assets %}
-  <script src="{{ 'javascripts/interactive-widgets.js' | url }}"></script>
-{% endif %}
+{% for asset in zdd_assets %}
+{% for script in config.extra.page_assets[asset].get('scripts', []) %}
+  <script defer src="{{ script | url }}"></script>
+{% endfor %}
+{% endfor %}
   <script src="{{ 'javascripts/site-shell.js' | url }}"></script>
+{% if zdd_is_article %}
+  {% include 'partials/reading-dialogs.html' %}
+  <script src="{{ 'javascripts/reading.js' | url }}"></script>
+{% if page.meta.code_notes %}
+  <script src="{{ 'javascripts/code-notes.js' | url }}"></script>
+{% endif %}
+{% endif %}
+{% if zdd_is_article and page.toc and 'toc' not in page.meta.get('hide', []) %}
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    {% include ".icons/material/format-list-bulleted.svg" %}
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        {% include ".icons/material/close.svg" %}
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="{{ 'javascripts/article-toc.js' | url }}"></script>
+{% endif %}
 {% endblock %}

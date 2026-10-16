@@ -1,6 +1,7 @@
 ---
 title: Function Plotter
 description: Plot common one-variable functions without eval().
+zdd_assets: [plot]
 hide:
   - navigation
   - toc
@@ -41,5 +42,3 @@ Plot a real-valued function of (x). The parser supports arithmetic, powers, `pi`
     <span>Scroll the range slider to zoom.</span>
   </div>
 </div>
-
-<script src="../../javascripts/lab-plot.js" defer></script>

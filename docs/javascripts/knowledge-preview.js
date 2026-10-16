@@ -28,29 +28,9 @@
 
   function loadIndex() {
     if (state.indexPromise) return state.indexPromise;
-    if (window.zddContentIndexPromise) {
-      state.indexPromise = window.zddContentIndexPromise;
-      return state.indexPromise;
-    }
-
-    var embedded = document.getElementById("zdd-search-data");
-    if (embedded) {
-      try {
-        state.indexPromise = Promise.resolve(JSON.parse(embedded.textContent || "[]"));
-        window.zddContentIndexPromise = state.indexPromise;
-        return state.indexPromise;
-      } catch (error) {}
-    }
-
-    var source = window.zddSearchDataUrl || "/assets/zdd-search-data.json";
-    state.indexPromise = fetch(source, {credentials: "same-origin"})
-      .then(function(response) {
-        if (!response.ok) throw new Error("Preview data unavailable");
-        return response.json();
-      })
-      .then(function(items) { return Array.isArray(items) ? items : []; })
-      .catch(function() { return []; });
-    window.zddContentIndexPromise = state.indexPromise;
+    state.indexPromise = window.ZddContentData.loadCatalog()
+      .then(function(catalog) { return catalog.documents; })
+      .catch(function() { state.indexPromise = null; return []; });
     return state.indexPromise;
   }
 

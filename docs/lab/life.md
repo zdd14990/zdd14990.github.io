@@ -1,6 +1,7 @@
 ---
 title: Game of Life
 description: A minimal Conway's Game of Life experiment.
+zdd_assets: [life]
 hide:
   - navigation
   - toc
@@ -31,5 +32,3 @@ Conway's cellular automaton needs only two rules: neighbors determine survival, 
     <span data-life-population>Population 0</span>
   </div>
 </div>
-
-<script src="../../javascripts/lab-life.js" defer></script>

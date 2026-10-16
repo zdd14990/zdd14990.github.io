@@ -1,6 +1,7 @@
 ---
 title: LaTeX Playground
 description: Write and render a display-math formula with MathJax.
+zdd_assets: [tex]
 hide:
   - navigation
   - toc
@@ -34,5 +35,3 @@ Write a formula and see the display-math result immediately. This reuses the sam
     </div>
   </div>
 </div>
-
-<script src="../../javascripts/lab-tex.js" defer></script>

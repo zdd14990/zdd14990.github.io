@@ -5,6 +5,18 @@
   var presetKey = "zdd.themePreset";
   var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
+  function safeGet(key) {
+    try { return localStorage.getItem(key); } catch (error) { return null; }
+  }
+
+  function safeSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) {}
+  }
+
+  function safeRemove(key) {
+    try { localStorage.removeItem(key); } catch (error) {}
+  }
+
   function classifyPage() {
     var path = window.location.pathname.replace(/^\/+/, "").replace(/\/index\.html$/, "").replace(/\/$/, "");
     var parts = path.split("/").filter(Boolean);
@@ -37,7 +49,7 @@
 
   function readJson(key, fallback) {
     try {
-      return JSON.parse(localStorage.getItem(key) || "null") || fallback;
+      return JSON.parse(safeGet(key) || "null") || fallback;
     } catch (error) {
       return fallback;
     }
@@ -47,7 +59,7 @@
     presetClasses.forEach(function(name) {
       document.body.classList.remove(name);
     });
-    var preset = localStorage.getItem(presetKey);
+    var preset = safeGet(presetKey);
     if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
       document.body.classList.add("zdd-theme-" + preset);
     }
@@ -65,7 +77,7 @@
       return entry && entry.url && entry.url !== item.url;
     });
     history.push(item);
-    localStorage.setItem(historyKey, JSON.stringify(history.slice(-30)));
+    safeSet(historyKey, JSON.stringify(history.slice(-30)));
   }
 
   window.zddReadArticleHistory = function() {
@@ -74,9 +86,9 @@
 
   window.zddSetThemePreset = function(preset) {
     if (preset) {
-      localStorage.setItem(presetKey, preset);
+      safeSet(presetKey, preset);
     } else {
-      localStorage.removeItem(presetKey);
+      safeRemove(presetKey);
     }
     applyPreset();
   };
@@ -84,10 +96,11 @@
   function refreshPageState() {
     classifyPage();
     document.body.classList.remove("zdd-zen");
-    localStorage.removeItem("zdd.zen");
+    safeRemove("zdd.zen");
     applyPreset();
     rememberArticle();
     attachCatalogAnimations(document);
+    revealCourseCatalog();
     updateReadingProgress();
   }
 
@@ -108,6 +121,18 @@
     var scrolled = scrollHeight > 0 ? Math.min(100, Math.max(0, scrollTop / scrollHeight * 100)) : 0;
     progressBar.style.width = scrolled + "%";
   }
+
+  function revealCourseCatalog() {
+    if (window.location.hash !== "#probability-theory-course") return;
+    var target = document.getElementById("probability-theory-course");
+    if (!target) return;
+    for (var folder = target; folder; folder = folder.parentElement) {
+      if (folder.matches("details.zdd-catalog-folder")) folder.open = true;
+    }
+    requestAnimationFrame(function() { target.scrollIntoView({block: "start"}); });
+  }
+
+  window.addEventListener("hashchange", revealCourseCatalog);
 
   function attachCatalogAnimations(root) {
     var folders = (root || document).querySelectorAll(".zdd-catalog-folder");
