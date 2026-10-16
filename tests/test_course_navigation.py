@@ -38,15 +38,37 @@ class CourseNavigationTests(unittest.TestCase):
                     else:
                         self.assertIsNone(nav[key])
 
-    def test_pilot_does_not_expand_to_other_articles_or_new_chapters(self):
+    def test_unlisted_articles_and_missing_chapters_have_no_course_navigation(self):
         for source in [
-            'blog/applied-math/autograd/01-ad-and-computational-graph.md',
-            'blog/probability-statistics/statistics/course/chapter-01.md',
+            'blog/applied-math/numerical-pde/exercise1.md',
+            'blog/applied-math/convex-optimization/homework.md',
             PROBABILITY_COURSE_CHAPTERS[0].replace('01.md', '07.md'),
         ]:
             page = self.page(source)
             _set_course_navigation(page, {'docs_dir': ROOT / 'docs'})
             self.assertNotIn('course_navigation', page.meta)
+
+    def test_every_course_links_all_chapters_in_order(self):
+        for course in SITE_CATALOG['courses']:
+            chapters = course['chapters']
+            for i, source in enumerate(chapters):
+                with self.subTest(course=course['id'], source=source):
+                    page = self.page(source)
+                    _set_course_navigation(page, {'docs_dir': ROOT / 'docs'})
+                    nav = page.meta['course_navigation']
+                    self.assertEqual((nav['position'], nav['total']), (i + 1, len(chapters)))
+                    self.assertTrue(nav['catalog_url'].endswith('#' + course['anchor']))
+                    self.assertEqual(nav['previous'] is None, i == 0)
+                    self.assertEqual(nav['next'] is None, i == len(chapters) - 1)
+
+    def test_every_course_anchor_appears_once_in_catalog(self):
+        tree = {}
+        for article in _article_data():
+            _tree_insert(tree, article)
+        rendered = _render_tree(tree)
+        for course in SITE_CATALOG['courses']:
+            with self.subTest(course=course['id']):
+                self.assertEqual(rendered.count(f'id="{course["anchor"]}"'), 1)
 
     def test_catalog_target_is_unique_and_contains_all_six_chapters(self):
         tree = {}
@@ -66,11 +88,13 @@ class CourseNavigationTests(unittest.TestCase):
             '/blog/applied-math/numerical-pde/exercise1/',
         )
 
-    def test_convex_last_chapter_has_no_self_next_link(self):
-        text = (ROOT / 'docs/blog/applied-math/convex-optimization/chapter4.md').read_text(encoding='utf-8')
-        self.assertNotIn('](chapter4.md)', text)
-        self.assertIn('](chapter3.md)', text)
-
+    def test_generated_navigation_replaced_hand_written_buttons(self):
+        for course in SITE_CATALOG['courses']:
+            for source in course['chapters']:
+                with self.subTest(source=source):
+                    text = (ROOT / 'docs' / source).read_text(encoding='utf-8')
+                    self.assertNotIn('octicons-arrow-left-24', text)
+                    self.assertNotIn('下一篇 :octicons-arrow-right-24:', text)
 
 if __name__ == '__main__':
     unittest.main()
