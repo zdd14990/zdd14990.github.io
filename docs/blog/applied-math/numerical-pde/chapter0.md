@@ -185,7 +185,7 @@ $$
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;" markdown="1">
 
-[ :octicons-arrow-left-24: 返回目录 ](/blog/){ .md-button }
+[ :octicons-arrow-left-24: 返回目录 ](../../index.md){ .md-button }
 
 [ 下一章：椭圆 PDE 的有限差分法 :octicons-arrow-right-24: ](chapter1.md){ .md-button .md-button--primary }
 

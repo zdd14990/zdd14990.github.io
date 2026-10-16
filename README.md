@@ -32,8 +32,8 @@ mkdocs serve
 # 生产构建
 mkdocs build --strict
 
-# 部署到 GitHub Pages
-mkdocs gh-deploy
+# 部署：推送到 main 后 CI 通过检查会自动发布到 gh-pages；如需手动发布：
+mkdocs gh-deploy --strict --force --no-history
 ```
 
 ## 项目结构
@@ -104,7 +104,7 @@ updated: 2026-09-07
 
 页面的 `zdd_assets` 对应 `mkdocs.yml` 中的 `extra.page_assets`，统一声明所需样式与脚本，资源只加载到使用它们的页面。未知资源名称会让构建失败。预览自动监听课程清单变化；修改共享 Python 构建模块后需重启预览。
 
-GitHub Actions 在 push 和 pull request 时检查 Python 依赖一致性、执行严格构建，并确认构建没有改写已跟踪的源文件。
+GitHub Actions 在 push 和 pull request 时检查 Python 依赖一致性、执行严格构建，并确认构建没有改写已跟踪的源文件。main 分支的检查全部通过后，`deploy` 任务执行 `mkdocs gh-deploy --no-history` 发布到 `gh-pages`（只保留最新一次构建，避免分支体积持续增长）。
 构建后还会检查生成的导航链接、搜索锚点、页面资源、SEO 数据一致性、运行时校验和，以及公开输出没有混入私有资料索引。
 
 ```bash
