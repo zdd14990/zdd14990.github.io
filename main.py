@@ -459,8 +459,6 @@ def on_post_build(env=None, config=None, **kwargs):
     catalog_output = Path(site_dir) / "assets" / "zdd-content-catalog.json"
     catalog_output.write_text(json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
-    legacy_output = Path(site_dir) / "assets" / "zdd-search-data.json"
-    legacy_output.write_text(json.dumps(public_index["documents"], ensure_ascii=False), encoding="utf-8")
     extra = config.get("extra", {}) if hasattr(config, "get") else getattr(config, "extra", {})
     site_url = config.get("site_url", "") if hasattr(config, "get") else getattr(config, "site_url", "")
     _exclude_sitemap_urls(site_dir, site_url, extra.get("sitemap_exclude", []))
