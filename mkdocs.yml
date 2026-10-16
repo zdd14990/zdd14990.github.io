@@ -37,9 +37,7 @@ theme:
     logo: material/cat
     repo: fontawesome/brands/github
   
-  font:
-    text: Roboto
-    code: JetBrains Mono
+  font: false
   
   # 强制生成 404 页面
   static_templates:
@@ -67,6 +65,7 @@ theme:
   features:
     - navigation.top
     - navigation.tracking
+    - toc.follow
     - navigation.indexes
     - navigation.expand
     - search.highlight
@@ -75,6 +74,23 @@ theme:
 
 # 社交链接与元数据配置
 extra:
+  page_assets:
+    personal-os:
+      styles: [stylesheets/personal-os.css]
+      scripts: [javascripts/personal-os-core.js, javascripts/personal-os.js]
+    interactive-widgets:
+      scripts: [javascripts/interactive-widgets.js]
+    diagram:
+      scripts: [javascripts/diagram-core.js, javascripts/diagram-editor.js]
+    life:
+      scripts: [javascripts/lab-life.js]
+    tex:
+      scripts: [javascripts/lab-tex.js]
+    plot:
+      scripts: [javascripts/lab-plot.js]
+    isaac-dungeon:
+      styles: [stylesheets/dungeon-lab.css]
+      scripts: [javascripts/isaac-dungeon.js]
   sitemap_exclude:
     - 404/
     - 404.html
@@ -88,23 +104,25 @@ extra:
     site_name: zdd'blog
     site_description: zdd'blog
     site_author: zdd
-    # ✅ 这里指定一张静态图片作为分享封面 (建议找一张好看的图放进 docs/assets/ 命名为 cover.jpg)
-    # 如果没有 cover.jpg，暂时用头像 avatar.jpg 代替，总比没有强
-    site_image: assets/avatar.jpg 
+    # 页面分享元数据统一使用此封面。
+    site_image: assets/cover.jpg
 
 # CSS 样式
 extra_css:
+  - stylesheets/theme-tokens.css
   - stylesheets/extra.css
   - stylesheets/solid-background.css
+  - stylesheets/site-layout.css
+  - stylesheets/article-toc.css
   - stylesheets/knowledge-playground.css
+  - stylesheets/reading.css
 
 # JavaScript
 extra_javascript:
-  - javascripts/mathjax.js
   # - javascripts/click_effect.js
-  - https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
   - javascripts/funny_title.js
   - javascripts/theme-fade.js
+  - javascripts/zdd-content-data.js
   - javascripts/zdd-search-core.js
   - javascripts/zdd-pixiv-core.js
   - javascripts/zdd-command-search.js
