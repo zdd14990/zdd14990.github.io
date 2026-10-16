@@ -100,7 +100,11 @@ updated: 2026-09-07
 
 文章预览和命令导航共享 `zdd-content-catalog.json` 轻量目录。全文检索才请求 `zdd-public-search-index.json`，目录与正文索引通过内容哈希校验版本一致性。搜索字段在浏览器内按索引对象缓存，避免每次输入重新清洗全部段落；更新索引时应替换索引或段落数组。站点不再启用 MkDocs 自带的 search 插件，也不再输出兼容用的 `zdd-search-data.json`，全文检索只有这一套索引。
 
-课程上下篇通过 `data/site-catalog.json` 中的 `courses` 定义。每条课程声明源目录、章节顺序、目录树路径和锚点，构建会检查章节存在且没有重复；初始配置保留概率论六章试点。命令 `/next` 和 `/prev` 继续按文件夹顺序工作。
+课程上下篇通过 `data/site-catalog.json` 中的 `courses` 定义。每条课程声明源目录、章节顺序、目录树路径和锚点，构建会检查章节存在且没有重复。命令 `/next` 和 `/prev` 继续按文件夹顺序工作。
+
+文章中的 `!!! theorem`、`!!! definition`、`!!! problem` 块在构建时自动获得锚点（如 `#thm-3`），并汇总为 `zdd-statements.json`（`/theorems/` 索引与 `/thm` 命令）和 `zdd-quiz.json`（`/quiz` 复习卡片，紧随其后的 `??? proof` / `??? solution` 作为答案）。文章底部的“引用了本文的笔记”由站内 `.md` 相对链接自动计算。
+
+文章页默认启用 giscus 评论（GitHub Discussions 的 Announcements 分类，按路径映射），配置位于 `mkdocs.yml` 的 `extra.giscus`；单篇文章可用 `comments: false` 关闭。
 
 页面的 `zdd_assets` 对应 `mkdocs.yml` 中的 `extra.page_assets`，统一声明所需样式与脚本，资源只加载到使用它们的页面。未知资源名称会让构建失败。预览自动监听课程清单变化；修改共享 Python 构建模块后需重启预览。
 
