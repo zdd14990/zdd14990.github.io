@@ -57,7 +57,10 @@
       card.style.width = "calc(100% - 20px)";
       return;
     }
+    // Prefer the right margin, narrowing the card to fit it when needed.
     var width = Math.min(432, innerWidth - 32);
+    var margin = innerWidth - code.right - 28;
+    if (margin < width + 24 && margin >= 300) width = margin - 24;
     card.style.width = width + "px";
     card.style.bottom = "";
     var height = card.getBoundingClientRect().height;

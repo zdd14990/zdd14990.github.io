@@ -39,7 +39,7 @@
     {name: "/life", syntax: "/life", kind: "jump", category: "Tools", desc: "Open Conway's Game of Life."},
     {name: "/diagram", syntax: "/diagram", kind: "jump", category: "Tools", desc: "Open the commutative diagram editor."},
     {name: "/dungeon", syntax: "/dungeon [seed]", kind: "jump", category: "Tools", fill: "/dungeon ", desc: "Open Isaac Map Lab, optionally with a seed."},
-    {name: "/theme", syntax: "/theme [light|dark|ocean|terminal|cat]", kind: "view", category: "Site", fill: "/theme ", desc: "Switch the color theme."},
+    {name: "/theme", syntax: "/theme [light|dark]", kind: "view", category: "Site", fill: "/theme ", desc: "Switch the color theme."},
     {name: "/count", syntax: "/count", kind: "stats", category: "Site", desc: "Show content, category, tag, word and PDF counts."},
     {name: "/log", syntax: "/log", kind: "query", category: "Site", advanced: true, desc: "Show recent update notes."},
     {name: "/ip", syntax: "/ip", kind: "query", category: "Site", advanced: true, desc: "Show your visitor IP address."},
@@ -320,7 +320,7 @@
     }
     var themeCommand = raw.match(/^\/theme\s+([^\s]*)$/i);
     if (themeCommand) {
-      renderSuggestionPanel("/theme ", themeCommand[1], "/theme <preset>", ["light", "dark", "ocean", "terminal", "cat"], "", "theme");
+      renderSuggestionPanel("/theme ", themeCommand[1], "/theme <preset>", ["light", "dark"], "", "theme");
       return true;
     }
     return false;
@@ -460,11 +460,6 @@
     var normalized = normalize(mode || "");
     var current = document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark" : "light";
     if (!normalized) normalized = current === "dark" ? "light" : "dark";
-    var preset = "";
-    if (normalized === "ocean" || normalized === "terminal" || normalized === "cat") {
-      preset = normalized;
-      normalized = normalized === "terminal" ? "dark" : "light";
-    }
     var scheme = normalized === "dark" ? "slate" : "default";
     var primary = normalized === "dark" ? "black" : "blue";
     var media = normalized === "dark" ? "(prefers-color-scheme: dark)" : "(prefers-color-scheme: light)";
@@ -485,8 +480,7 @@
       palette.checked = true;
       palette.dispatchEvent(new Event("change", {bubbles: true}));
     }
-    if (window.zddSetThemePreset) window.zddSetThemePreset(preset);
-    return preset || normalized;
+    return normalized;
   }
 
   function killPage() {

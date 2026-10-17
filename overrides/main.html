@@ -35,10 +35,6 @@
   <script>
     document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
     document.body.classList.add('zdd-minimal-layout', {{ ('article-layout' if zdd_is_article else 'home-layout' if page and page.is_homepage else 'blog-index-layout' if page and page.url == 'blog/' else 'tag-layout' if page and page.url.startswith('tags/') else 'os-layout' if page and page.url.startswith('os/') else 'lab-layout' if page and page.url.startswith('lab/') else 'zdd-page-layout') | tojson }});
-    try {
-      var preset = localStorage.getItem('zdd.themePreset');
-      if (['cat', 'ocean', 'terminal'].indexOf(preset) !== -1) document.body.classList.add('zdd-theme-' + preset);
-    } catch (error) {}
   </script>
   {{ super() }}
 {% endblock %}

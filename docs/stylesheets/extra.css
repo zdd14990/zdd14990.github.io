@@ -38,63 +38,12 @@ code, kbd, pre {
    ========================================================================== */
 
 /* 1. 容器位置 (固定在右下角) */
-.simple-player-floating {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 99999; 
-}
 
 /* 2. 按钮外观 */
-.player-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    
-    /* 居中图标 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* 磨砂玻璃 */
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    
-    /* 关键：鼠标放上去是手指形状，不再是十字箭头 */
-    cursor: pointer; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.player-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.player-icon svg {
-    stroke: #555;
-    transition: stroke 0.3s;
-}
 
 /* 3. 暗色模式适配 */
-[data-md-color-scheme="slate"] .player-icon {
-    background: rgba(46, 48, 62, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-[data-md-color-scheme="slate"] .player-icon svg {
-    stroke: #ddd;
-}
 
 /* 4. 旋转动画 */
-.player-icon.playing {
-    animation: rotate-player 3s linear infinite;
-    border-color: #e67e96; 
-}
-.player-icon.playing svg {
-    stroke: #e67e96;
-}
 
 @keyframes rotate-player {
     from { transform: rotate(0deg); }
@@ -102,12 +51,6 @@ code, kbd, pre {
 }
 
 /* 5. 移动端适配 (稍微抬高，避免挡住底部操作条) */
-@media (max-width: 768px) {
-    .simple-player-floating {
-        bottom: 80px;
-        right: 15px;
-    }
-}
 /* ==========================================================================
    2. 全局背景图 (核心修复)
    ========================================================================== */
@@ -116,7 +59,6 @@ code, kbd, pre {
    请确保文件名完全匹配
 */
 
-
 /* ==========================================================================
    3. 磨砂玻璃容器 (让文字清晰)
    ========================================================================== */
@@ -124,22 +66,6 @@ code, kbd, pre {
 /* ==========================================
    打字机特效
    ========================================== */
-.typing-container {
-    display: inline-block;
-}
-
-.typing-text {
-    overflow: hidden; /* 隐藏溢出部分 */
-    border-right: 2px solid #e67e96; /* 光标颜色 */
-    white-space: nowrap; /* 不换行 */
-    margin: 0 auto;
-    letter-spacing: 0.1em; /* 字间距 */
-    
-    /* 动画：打字(2秒) + 光标闪烁 */
-    animation: 
-        typing 2s steps(8, end), /* 这里的 steps(9) 对应你的字数(9个字)，请根据字数调整 */
-        blink-caret 0.75s step-end infinite;
-}
 
 /* 打字动画：宽度从0变到100% */
 @keyframes typing {
@@ -159,53 +85,12 @@ code, kbd, pre {
 /* ==========================================
    首页名片卡 (3D 特效修复版)
    ========================================== */
-.profile-card {
-    flex: 0 0 280px;
-    background-color: var(--md-default-bg-color);
-    border-radius: 20px;
-    padding: 30px 20px;
-    text-align: center;
-    border: 1px solid rgba(0,0,0,0.05);
-    /* overflow: hidden; <--- 罪魁祸首在这里，把它删了 */
-    
-    /* --- 3D 核心设置 --- */
-    transform-style: preserve-3d;
-    z-index: 10;
-    
-    /* ✅ 关键修改：
-       1. 移除了 transform 0s !important (让 JS 库接管动画)
-       2. 加入 will-change 提升性能
-    */
-    transition: box-shadow 0.3s ease; 
-    will-change: transform;
-    
-    /* 确保没有 animation 干扰 */
-    animation: none !important; 
-}
 
 /* 悬停时的阴影增强 (让浮动感更强) */
-.profile-card:hover {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
-}
 
 /* 暗色模式适配 */
-[data-md-color-scheme="slate"] .profile-card {
-    background-color: #2e303e;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
 
 /* 让内部元素产生位移 (增强 3D 层次感) */
-.avatar-wrapper {
-    transform: translateZ(50px); /* 头像浮得最高 */
-}
-.profile-info {
-    transform: translateZ(30px); /* 文字浮在中间 */
-}
-.visitor-badge, .stats-row, .action-buttons {
-    transform: translateZ(20px); /* 按钮浮得低一点 */
-}
-
 
 /* ==========================================
    自定义滚动条 (Webkit内核: Chrome, Edge, Safari)
@@ -282,65 +167,12 @@ code, kbd, pre {
    ========================================== */
 
 /* 1. 封面容器：占满屏幕高度，减去顶部导航栏高度 */
-.landing-cover {
-    position: relative;
-    width: 100vw;
-    height: calc(100vh - 60px); /* 减去 header 高度，防止溢出 */
-    
-    /* 强制突破 MkDocs 容器限制，全宽显示 */
-    margin-left: 50%;
-    transform: translateX(-50%);
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    
-    /* 背景图设置 (这里你可以换一张更震撼的大图) */
-    /* 如果不设，它会复用 body 的背景，也很和谐 */
-    /* background-image: url('../assets/hero_bg.jpg'); */
-    /* background-size: cover; background-position: center; */
-}
 
 /* 2. 封面内容微调 */
-.cover-title {
-    font-size: 3rem !important; /* 超大标题 */
-    font-weight: 800 !important;
-    margin-bottom: 1rem !important;
-    /* 渐变文字效果 */
-    background: linear-gradient(to right, #e67e96, #5e72e4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.cover-slogan {
-    font-size: 1.5rem !important;
-    color: var(--md-default-fg-color--light);
-    font-style: italic;
-    margin-bottom: 3rem !important;
-}
 
 /* 3. 按钮组间距 */
-.cover-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
 
 /* 4. 向下滚动箭头动画 */
-.scroll-down-indicator {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--md-default-fg-color--light);
-    animation: bounce 2s infinite;
-    cursor: pointer;
-    opacity: 0.7;
-}
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
@@ -352,190 +184,34 @@ code, kbd, pre {
    调整下方内容布局
    ========================================== */
 /* 给下方的内容加一点上边距，防止紧贴封面 */
-.hero-layout {
-    margin-top: 60px !important;
-    padding-bottom: 40px; /* 底部留白 */
-}
 
 /* ==========================================================================
    6. 首页大屏特效 (宽松版 - 这里的数字控制间距)
    ========================================================================== */
 
 /* 1. 浮空的英雄大标题 (Z弟弟的数理秘密花园) */
-.home-hero-title {
-    font-size: 3rem !important; /* 稍微再大一点 */
-    font-weight: 800 !important;
-    
-    /* --- 关键修改：加大间距 --- */
-    margin-top: 200px !important;    /* 顶部留空：原60px -> 改为120px (往下挪) */
-    margin-bottom: 40px !important;  /* 两行字中间的空隙：原20px -> 改为40px */
-    
-    text-align: center;
-    line-height: 1.2;
-    
-    /* 渐变色文字 */
-    background: linear-gradient(to right, #e67e96, #5e72e4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    
-    /* 文字投影 */
-    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-    
-    /* 进场动画 */
-    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
 
 /* 2. 浮空的副标题 (按理来讲...) */
-.home-hero-subtitle {
-    font-size: 1.5rem !important;
-    text-align: center;
-    font-style: italic;
-    
-    /* --- 关键修改：加大底部间距 --- */
-    margin-bottom: 200px !important; /* 下方留空：原50px -> 改为100px (离磨砂卡片更远) */
-    
-    /* 亮色模式字色 */
-    color: #444; 
-    text-shadow: 0 2px 10px rgba(255,255,255, 0.8);
-    
-    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
-}
 
 /* 暗色模式适配 */
-[data-md-color-scheme="slate"] .home-hero-subtitle {
-    color: #ddd;
-    text-shadow: 0 2px 10px rgba(0,0,0, 0.8);
-}
 
 /* 3. 手动构建的磨砂玻璃盒子 */
-.home-glass-wrapper {
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    padding: 40px;
-    margin: 80px auto 60px auto !important; /* 底部增加一点外边距，防止贴底 */
-    max-width: 1100px; 
-    
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    
-    animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s backwards;
-}
 
 /* 暗色模式下的磨砂盒子 */
-[data-md-color-scheme="slate"] .home-glass-wrapper {
-    background-color: rgba(30, 32, 48, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-}
 
 /* 移动端适配 */
-@media (max-width: 768px) {
-    .home-hero-title { 
-        font-size: 2rem !important; 
-        margin-top: 80px !important;    /* 移动端稍微紧凑一点，不然首屏全是空白 */
-        margin-bottom: 30px !important; 
-    }
-    .home-hero-subtitle { 
-        font-size: 1.1rem !important; 
-        margin-bottom: 60px !important; 
-    }
-    .home-glass-wrapper { padding: 20px; }
-}
 /* ==========================================
    首页卡片样式 (紧凑精致版)
    ========================================== */
-.recent-post-list {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important; /* 卡片间距从 15px -> 12px */
-    margin-top: 20px;
-}
-
-.post-card-item {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important; 
-    padding: 0 !important;
-}
-
-.post-card-link {
-    display: block !important;
-    text-decoration: none !important;
-    
-    /* 卡片外观 */
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 10px; /* 圆角稍小一点 */
-    padding: 12px 16px;  /* 内边距缩小，更紧凑 */
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-}
-
-.post-card-link:hover {
-    transform: translateY(-2px);
-    background: rgba(230, 126, 150, 0.1);
-    border-color: rgba(230, 126, 150, 0.4);
-    box-shadow: 0 4px 12px rgba(230, 126, 150, 0.15);
-}
 
 /* 标题 */
-.post-card-title {
-    display: flex !important;
-    align-items: center; 
-    gap: 6px;
-    
-    /* 字号从 1.15rem -> 1.0rem */
-    font-size: 1.0rem !important; 
-    font-weight: 700 !important;
-    color: var(--md-default-fg-color) !important;
-    margin-bottom: 4px !important; /* 间距减小 */
-}
-.post-card-title .icon { font-size: 0.9rem; } /* 图标也缩小 */
+ /* 图标也缩小 */
 
 /* 日期 */
-.post-card-meta {
-    display: flex !important;
-    align-items: center; 
-    gap: 5px;
-    
-    /* 字号从 0.85rem -> 0.75rem */
-    font-size: 0.75rem !important; 
-    color: rgba(0, 0, 0, 0.55) !important;
-    margin-bottom: 8px !important; /* 间距减小 */
-    font-family: "JetBrains Mono", monospace;
-    font-weight: 500;
-}
-.post-card-meta .icon { font-size: 0.75rem; }
 
 /* 预览文字 */
-.post-card-preview {
-    display: block !important;
-    
-    /* 字号从 0.95rem -> 0.85rem */
-    font-size: 0.85rem !important; 
-    color: rgba(0, 0, 0, 0.7) !important;
-    line-height: 1.5 !important; /* 行高微调 */
-    
-    /* 多行省略 */
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
 
 /* 暗色模式适配 */
-[data-md-color-scheme="slate"] .post-card-link {
-    background: rgba(30, 32, 48, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-[data-md-color-scheme="slate"] .post-card-meta {
-    color: rgba(255, 255, 255, 0.55) !important;
-}
-[data-md-color-scheme="slate"] .post-card-preview {
-    color: rgba(255, 255, 255, 0.65) !important;
-}
 
 /* ==========================================
    图片美化与图注
@@ -559,9 +235,6 @@ code, kbd, pre {
 
 /* 2. 自动图注 (利用 title 属性) */
 /* 语法：![Alt](image.jpg "这里是图注") */
-.md-content img[title] + em {
-    display: none; /* 隐藏默认的 em */
-}
 
 /* 利用伪元素显示 title 内容 - 需要一点 trick，
    但 MkDocs Material 默认并不直接把 title 渲染成紧跟的元素。
@@ -597,15 +270,8 @@ mjx-container[display="true"] {
    页脚净化
    ========================================== */
 /* 隐藏 "Made with..." 这一行 */
-.md-footer-copyright__text .md-footer-copyright__citation {
-    display: none;
-}
 
 /* 调整版权文字居中 */
-.md-footer-copyright {
-    text-align: center;
-    width: 100%;
-}
 
 /* ==========================================================================
    Minimal 2026 layout
@@ -626,12 +292,6 @@ body.tag-layout .md-main__inner {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-}
-
-body.home-layout .md-content__inner > h1,
-body.blog-index-layout .md-source-file,
-body.tag-layout .md-source-file {
-    display: none !important;
 }
 
 body.article-layout .md-sidebar--primary {
@@ -710,11 +370,6 @@ body.article-layout .md-sidebar--primary {
 .minimal-search-ghost[hidden] {
     display: block;
     visibility: hidden;
-}
-
-.minimal-recent {
-    width: min(820px, 100%);
-    margin-top: 4rem;
 }
 
 .minimal-recent h2,
@@ -873,27 +528,11 @@ body.tag-layout .md-content {
     font-size: 0.72rem;
 }
 
-.zdd-category-chip {
-    background: rgba(83, 106, 112, 0.12);
-    color: var(--zdd-ink);
-    padding: 0.28rem 0.78rem;
-    font-size: 0.82rem;
-    font-weight: 800;
-}
-
 .zdd-article-taxonomy {
     margin-top: 3rem;
     padding-top: 1.2rem;
     border-top: 1px solid var(--zdd-line);
 }
-
-.zdd-taxonomy-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.65rem;
-}
-
 
 [data-md-color-scheme="slate"] .zdd-post-card,
 [data-md-color-scheme="slate"] .zdd-catalog-folder,
@@ -1015,23 +654,6 @@ body.tag-layout .md-content {
     color: inherit;
 }
 
-.zdd-search-target {
-    scroll-margin-top: 5.5rem;
-    border-radius: 0.3rem;
-    outline: 0.16rem solid color-mix(in srgb, var(--md-accent-fg-color) 48%, transparent);
-    outline-offset: 0.28rem;
-    transition: outline-color 0.35s ease;
-}
-
-.zdd-search-empty {
-    padding: 0.9rem 1rem;
-    border: 1px dashed var(--zdd-line);
-    border-radius: 8px;
-    color: var(--zdd-muted);
-    font-size: 0.82rem;
-    text-align: left;
-}
-
 [data-md-color-scheme="slate"] .zdd-search-result {
     background: rgba(30, 32, 48, 0.68);
 }
@@ -1083,11 +705,6 @@ body.tag-layout .md-content {
     color: var(--zdd-card-ink) !important;
 }
 
-body.home-layout .zdd-post-meta span:nth-child(2) {
-    display: none !important;
-}
-
-
 /* ==========================================================================
    Deployed contrast fix
    ========================================================================== */
@@ -1105,22 +722,11 @@ body.home-layout .zdd-post-meta span:nth-child(2) {
     opacity: 0.95 !important;
 }
 
-.minimal-recent h2 {
-    color: #effaff !important;
-    text-shadow: 0 2px 12px rgba(0, 28, 64, 0.7);
-}
-
 body.home-layout .zdd-post-card,
 body.blog-index-layout .zdd-post-card,
 body.blog-index-layout .zdd-catalog-folder {
     background: rgba(246, 252, 255, 0.99) !important;
 }
-
-body.home-layout .minimal-recent h2 {
-    color: #1d485c !important;
-    text-shadow: none !important;
-}
-
 
 /* Keyboard selection keeps ordinary search results as tabbable links. */
 .md-typeset a.zdd-search-result.is-active, .zdd-search-result.is-active,
@@ -1128,5 +734,3 @@ body.home-layout .minimal-recent h2 {
     outline: 2px solid var(--md-primary-fg-color);
     outline-offset: -2px;
 }
-.zdd-search-retry { margin: 0.4rem; padding: 0.4rem 0.8rem; border: 1px solid currentColor; border-radius: 4px; color: inherit; background: transparent; cursor: pointer; font: inherit; }
-.zdd-search-retry:focus-visible { outline: 2px solid var(--md-primary-fg-color); outline-offset: 2px; }

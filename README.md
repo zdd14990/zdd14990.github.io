@@ -90,9 +90,8 @@ updated: 2026-09-07
 - `docs/stylesheets/solid-background.css` 保留导航和页眉配色；`extra.css` 保留既有组件样式。
 - `docs/stylesheets/reading.css` 负责固定正文排版、日期、表格和图片弹窗。
 - MathJax 仅在具有公式的页面和需要动态公式的实验工具中加载；含公式摘要的文章目录也会加载。
-- 文楷固定为 `lxgw-wenkai-screen-web@1.522.0`，位于 `docs/assets/fonts/wenkai/`，附 `OFL.txt` 和 SHA-256 清单。单字体族的 244 个 WOFF2 分片与样式表共约 13.35 MB，浏览器仅请求当前文字需要的分片。
-
-需要重新取得同一版本字体时，可显式运行 `python scripts/vendor_reading_font.py`。普通构建和 CI 不运行下载脚本。
+- `docs/stylesheets/editorial.css` 最后加载，定义全站纸墨配色、衬线排版、章首页、编号定理与插图；文章结构由 `book_layout.py` 在构建时生成。
+- 正文字体为思源宋体（Noto Serif SC），经 jsDelivr 的 `@fontsource/noto-serif-sc` 按 unicode-range 分片加载，不可用时回落到系统宋体。
 
 ### CI 构建检查
 

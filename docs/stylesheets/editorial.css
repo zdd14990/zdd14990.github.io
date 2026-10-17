@@ -728,3 +728,43 @@ body .md-typeset .zdd-catalog-folder[data-level="1"] { border-top-color: var(--e
 body .md-typeset .zdd-catalog-folder { padding: 0 !important; margin: 0 !important; }
 body .md-typeset .zdd-catalog-folder:not([open]) > .zdd-folder-content { display: none; }
 body .md-typeset .admonition:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) > .admonition-title { margin: 0 0 0.2em !important; }
+
+/* ---------- Blog catalog: rows sit evenly between their rules ---------- */
+body .md-typeset .zdd-blog-catalog,
+body .md-typeset .zdd-catalog-posts { gap: 0 !important; row-gap: 0 !important; }
+body .md-typeset .zdd-catalog-folder > summary { align-items: center; margin: 0 !important; }
+body .md-typeset .zdd-catalog-folder[open] > .zdd-folder-content { padding-bottom: 0.8rem; }
+
+/* ---------- Code ---------- */
+body .md-typeset .highlight,
+body .md-typeset pre > code { border-radius: 0 !important; }
+body .md-typeset pre > code { font-size: 0.68rem; line-height: 1.7; }
+
+/* Annotated listings have line numbers, so long lines can wrap with a
+   hanging indent instead of hiding behind a horizontal scrollbar. */
+body .md-typeset code[data-zdd-code] { white-space: pre-wrap; }
+body .md-typeset code[data-zdd-code] .zdd-code-line {
+    width: 100%;
+    padding-left: 4ch;
+    text-indent: -4ch;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+body .md-typeset code[data-zdd-code] .zdd-code-line::before { text-indent: 0; }
+
+html body.article-layout .zdd-code-note {
+    border: 1px solid var(--ed-rule-strong);
+    border-radius: 0;
+    background: var(--ed-paper);
+    box-shadow: none;
+    font-family: var(--ed-serif);
+}
+html body.article-layout .zdd-code-note-header { border-bottom-color: var(--ed-rule); }
+body.article-layout .zdd-code-note-header > #zdd-code-note-title { font-weight: 700; }
+
+/* Plain listings use the margin column on wide screens. */
+@media screen and (min-width: 76.25em) {
+    body.article-layout .md-content__inner > .highlight:not(:has(code[data-zdd-code])) {
+        margin-right: calc(-1 * var(--ed-margin));
+    }
+}

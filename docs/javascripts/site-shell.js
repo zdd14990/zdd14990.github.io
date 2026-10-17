@@ -2,8 +2,6 @@
   "use strict";
 
   var historyKey = "zdd.articleHistory";
-  var presetKey = "zdd.themePreset";
-  var presetClasses = ["zdd-theme-cat", "zdd-theme-ocean", "zdd-theme-terminal"];
 
   function safeGet(key) {
     try { return localStorage.getItem(key); } catch (error) { return null; }
@@ -55,16 +53,6 @@
     }
   }
 
-  function applyPreset() {
-    presetClasses.forEach(function(name) {
-      document.body.classList.remove(name);
-    });
-    var preset = safeGet(presetKey);
-    if (preset && presetClasses.indexOf("zdd-theme-" + preset) >= 0) {
-      document.body.classList.add("zdd-theme-" + preset);
-    }
-  }
-
   function rememberArticle() {
     if (!document.body.classList.contains("article-layout")) return;
     var titleNode = document.querySelector(".md-content__inner h1");
@@ -84,20 +72,12 @@
     return readJson(historyKey, []);
   };
 
-  window.zddSetThemePreset = function(preset) {
-    if (preset) {
-      safeSet(presetKey, preset);
-    } else {
-      safeRemove(presetKey);
-    }
-    applyPreset();
-  };
-
   function refreshPageState() {
     classifyPage();
     document.body.classList.remove("zdd-zen");
     safeRemove("zdd.zen");
-    applyPreset();
+    // The colour presets were retired with the editorial theme.
+    safeRemove("zdd.themePreset");
     rememberArticle();
     attachCatalogAnimations(document);
     revealCourseCatalog();

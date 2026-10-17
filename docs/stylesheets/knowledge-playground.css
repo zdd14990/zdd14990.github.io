@@ -227,10 +227,6 @@ body.lab-layout .md-content__inner {
   font-size: 0.72rem;
 }
 
-.zdd-lab-status-line[data-state="error"] {
-  color: var(--zdd-playground-error);
-}
-
 .zdd-plot-stage,
 .zdd-life-stage {
   position: relative;
@@ -453,66 +449,12 @@ body.lab-layout .md-content__inner {
   border-color: var(--zdd-playground-line);
 }
 
-.zdd-diagram-node[aria-pressed="true"] {
-  border-color: var(--zdd-playground-accent);
-  outline: 1px solid var(--zdd-playground-accent);
-  outline-offset: 0.15rem;
-}
-
-.zdd-diagram-node[data-connecting="true"] {
-  border-style: dashed;
-}
-
 .zdd-diagram-node .arithmatex,
 .zdd-diagram-node mjx-container {
   max-width: 100%;
   margin: 0 !important;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.zdd-diagram-node-input {
-  position: relative;
-  z-index: 5;
-  width: calc(100% - 0.8rem);
-  min-height: 2.15rem;
-  box-sizing: border-box;
-  padding: 0.3rem 0.45rem;
-  color: var(--zdd-playground-ink);
-  background: var(--zdd-playground-panel);
-  border: 1px solid var(--zdd-playground-accent);
-  border-radius: 0.2rem;
-  font: 0.78rem/1.4 var(--md-code-font-family, monospace);
-}
-
-.zdd-diagram-handle {
-  position: absolute;
-  z-index: 6;
-  display: grid;
-  place-items: center;
-  width: 1.35rem;
-  height: 1.35rem;
-  padding: 0;
-  color: var(--zdd-playground-accent);
-  background: var(--zdd-playground-panel);
-  border: 1px solid var(--zdd-playground-line);
-  border-radius: 50%;
-  font: 700 0.68rem/1 sans-serif;
-  cursor: pointer;
-}
-
-.zdd-diagram-handle[data-direction="u"] { top: 0.12rem; left: calc(50% - 0.675rem); }
-.zdd-diagram-handle[data-direction="d"] { bottom: 0.12rem; left: calc(50% - 0.675rem); }
-.zdd-diagram-handle[data-direction="l"] { left: 0.12rem; top: calc(50% - 0.675rem); }
-.zdd-diagram-handle[data-direction="r"] { right: 0.12rem; top: calc(50% - 0.675rem); }
-
-.zdd-diagram-handle:hover,
-.zdd-diagram-handle:focus-visible {
-  color: var(--zdd-playground-panel);
-  background: var(--zdd-playground-accent);
-  border-color: var(--zdd-playground-accent);
-  outline: 0.12rem solid var(--zdd-playground-accent);
-  outline-offset: 0.1rem;
 }
 
 .zdd-diagram-svg {
@@ -533,21 +475,6 @@ body.lab-layout .md-content__inner {
   vector-effect: non-scaling-stroke;
 }
 
-.zdd-diagram-edge[data-style="dashed"] {
-  stroke-dasharray: 5 4;
-}
-
-.zdd-diagram-edge[data-style="equal"] {
-  stroke-width: 4.5;
-}
-
-.zdd-diagram-edge-equal-gap {
-  fill: none;
-  stroke: var(--zdd-playground-panel);
-  stroke-width: 1.7;
-  vector-effect: non-scaling-stroke;
-}
-
 .zdd-diagram-edge-hit {
   fill: none;
   stroke: transparent;
@@ -561,11 +488,6 @@ body.lab-layout .md-content__inner {
   outline: none;
 }
 
-.zdd-diagram-edge-group[data-selected="true"] .zdd-diagram-edge {
-  color: var(--zdd-playground-accent);
-  stroke-width: 2.4;
-}
-
 .zdd-diagram-edge-label {
   fill: var(--zdd-playground-ink);
   stroke: var(--zdd-playground-panel);
@@ -577,33 +499,6 @@ body.lab-layout .md-content__inner {
 
 .zdd-diagram-hint {
   margin: 0.55rem 0 0;
-}
-
-.zdd-diagram-inspector-fields {
-  display: grid;
-  gap: 0.7rem;
-}
-
-.zdd-diagram-inspector-field {
-  display: grid;
-  gap: 0.28rem;
-  margin: 0;
-  color: var(--zdd-playground-muted);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.025em;
-  text-transform: uppercase;
-}
-
-.zdd-diagram-inspector-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.42rem;
-  margin-top: 0.8rem;
-}
-
-.zdd-diagram-inspector-actions .zdd-lab-button {
-  width: 100%;
 }
 
 .zdd-diagram-edge-list-wrap {
@@ -830,102 +725,8 @@ body.lab-layout .md-content__inner {
   font-size: 0.7rem;
 }
 
-.zdd-interactive-status[data-state="error"],
-.zdd-interactive-error {
-  color: var(--zdd-playground-error);
-}
-
 /* Internal article previews are fixed overlays, so showing one never changes
    article layout or intercepts the original link click. */
-.zdd-knowledge-preview[hidden] {
-  display: none;
-}
-
-.zdd-knowledge-preview {
-  position: fixed;
-  z-index: 25;
-  width: min(21rem, calc(100vw - 1.5rem));
-  box-sizing: border-box;
-  padding: 0.85rem 0.95rem;
-  color: var(--zdd-playground-ink);
-  background: var(--zdd-playground-panel);
-  border: 1px solid var(--zdd-playground-line);
-  border-radius: 0.3rem;
-  box-shadow: 0 10px 28px rgba(18, 70, 104, 0.14);
-  opacity: 0;
-  transform: translateY(3px);
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-body[data-md-color-scheme="slate"] .zdd-knowledge-preview {
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
-}
-
-.zdd-knowledge-preview.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.zdd-knowledge-preview-title {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--zdd-playground-ink);
-  font-size: 0.86rem;
-  line-height: 1.35;
-}
-
-.zdd-knowledge-preview-description {
-  display: -webkit-box;
-  overflow: hidden;
-  margin: 0;
-  color: var(--zdd-playground-muted);
-  font-size: 0.73rem;
-  line-height: 1.5;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-}
-
-.zdd-knowledge-preview-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.55rem;
-  margin-top: 0.6rem;
-  color: var(--zdd-playground-muted);
-  font-size: 0.64rem;
-}
-
-.zdd-knowledge-preview-open {
-  display: inline-block;
-  margin-top: 0.65rem;
-  color: var(--zdd-playground-accent) !important;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.zdd-knowledge-preview-open::after {
-  content: " →";
-}
-
-.zdd-knowledge-preview-open:focus-visible {
-  outline: 0.14rem solid var(--zdd-playground-accent);
-  outline-offset: 0.16rem;
-}
-
-.zdd-command-group + .zdd-command-group {
-  margin-top: 0.65rem;
-  padding-top: 0.45rem;
-  border-top: 1px solid var(--zdd-playground-line);
-}
-
-.zdd-command-group-title {
-  padding: 0.3rem 0.65rem 0.2rem;
-  color: var(--zdd-playground-muted);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
 @media screen and (max-width: 48em) {
   .zdd-lab-tool-grid {
