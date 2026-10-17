@@ -1,0 +1,1259 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第三章：线性微分方程的近似解法。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-03/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第三章：线性微分方程的局部分析：常点与正则奇点 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-03/">
+  <meta property="og:title" content="第三章：线性微分方程的局部分析：常点与正则奇点 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第三章：线性微分方程的近似解法。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="ode">
+
+  <meta property="article:tag" content="asymptotic-analysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-03/">
+  <meta name="twitter:title" content="第三章：线性微分方程的局部分析：常点与正则奇点 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第三章：线性微分方程的近似解法。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e09\u7ae0\uff1a\u7ebf\u6027\u5fae\u5206\u65b9\u7a0b\u7684\u5c40\u90e8\u5206\u6790\uff1a\u5e38\u70b9\u4e0e\u6b63\u5219\u5947\u70b9",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u4e09\u7ae0\uff1a\u7ebf\u6027\u5fae\u5206\u65b9\u7a0b\u7684\u8fd1\u4f3c\u89e3\u6cd5\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-03/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-03/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["ode", "asymptotic-analysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 线性微分方程的近似解法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 线性微分方程的近似解法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 齐次线性方程的奇点分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 齐次线性方程常点附近的局部级数展开
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 齐次线性方程正则奇点附近的局部级数展开
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 二阶方程的 Frobenius 方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 情形 II(b)(ii)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 情形 II(a)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 情形 II(b)(i)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.8 高阶方程的 Frobenius 级数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.9 齐次线性方程非正则奇点处的局部级数展开
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 3 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">03</div>
+    <h1 id="top"><span class="book-visually-hidden">第 3 章：</span>线性微分方程的局部分析：常点与正则奇点</h1>
+  </div>
+  <p class="book-standfirst">当精确解无法获得或过于复杂时，需采用近似方法。局部分析是基础步骤，旨在用初等函数在单点邻域内近似表示解。这些局部结果可通过全局分析拼接，形成解在整个区间上的均匀近似，为困难方程提供了实用且高效的初步处理工具。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>6,726 字 · 约 19 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>线性微分方程的近似解法</h2>
+<h3 id="s1-1">1.1 齐次线性方程的奇点分类</h3>
+<p>本章沿用第一章的齐次线性微分方程形式：</p>
+<div class="arithmatex">\[
+y^{(n)}(x) + p_{n-1}(x)y^{(n-1)}(x) + \cdots + p_1(x)y'(x) + p_0(x)y(x) = 0, \tag{3.1.1}
+\]</div>
+<p>其中 <span class="arithmatex">\(y^{(k)}(x) = d^k y/dx^k\)</span>。下述分类方案要求系数函数 <span class="arithmatex">\(p_0, \cdots, p_{n-1}\)</span> 在复平面上有定义。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>若系数函数 <span class="arithmatex">\(p_0(x), \cdots, p_{n-1}(x)\)</span> 均在复平面点 <span class="arithmatex">\(x_0 \neq \infty\)</span>的邻域解析，则称 <span class="arithmatex">\(x_0\)</span> 为 (3.1.1) 的<strong>常点(ordinary point)</strong>。</p>
+</div>
+<p>Fuchs (1866) 证明了在常点邻域内(3.1.1) 的所有 <span class="arithmatex">\(n\)</span> 个线性无关解均解析。进一步，若在常点 <span class="arithmatex">\(x_0\)</span> 将解展为Taylor级数 <span class="arithmatex">\(y(x) = \sum_{i=0}^{\infty} a_i (x - x_0)^i\)</span>，则收敛半径至少等于复平面上距最近系数函数奇点的距离。解的奇点位置必与某系数函数奇点重合。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span><span class="book-name">例</span></p>
+<p>方程 <span class="arithmatex">\((x^2 + 1)y' + 2xy = 0\)</span> 以 <span class="arithmatex">\(0\)</span> 为常点。解 <span class="arithmatex">\(y = (x^2 + 1)^{-1}\)</span> 的Taylor级数收敛半径为 <span class="arithmatex">\(1\)</span>，恰为 (3.1.1) 形式下系数奇点 <span class="arithmatex">\(x = \pm i\)</span> 到常点的最小距离。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span></p>
+<p>若系数 <span class="arithmatex">\(p_0(x), \cdots, p_{n-1}(x)\)</span> 不全解析，但函数 <span class="arithmatex">\((x - x_0)^n p_0(x)\)</span>, <span class="arithmatex">\((x - x_0)^{n-1} p_1(x), \cdots\)</span>, <span class="arithmatex">\((x - x_0) p_{n-1}(x)\)</span> 均在 <span class="arithmatex">\(x_0\neq \infty\)</span>邻域解析，则称 <span class="arithmatex">\(x_0\)</span> 为 (3.1.1) 的<strong>正则奇点(regular singular point)</strong>。</p>
+</div>
+<p>(3.1.1) 的解在正则奇点可能解析；若非解析，其奇性必为极点、代数或对数支点。Fuchs 证明：至少存在一个形式如下的解：</p>
+<div class="arithmatex">\[
+y = (x - x_0)^\alpha A(x), \tag{3.1.2}
+\]</div>
+<p>其中 <span class="arithmatex">\(\alpha\)</span> 为<strong>指标指数(indicial exponent)</strong>，<span class="arithmatex">\(A(x)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 解析，且其Taylor级数收敛半径至少等于复平面上距最近系数奇点的距离。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.4</span><span class="book-name">例</span></p>
+<p>方程 <span class="arithmatex">\(y' = y / \sinh x\)</span> 在 <span class="arithmatex">\(0\)</span> 处有正则奇点。解 <span class="arithmatex">\(y(x) = c \tanh (x/2)\)</span>在 <span class="arithmatex">\(x=0\)</span> 解析，但在 <span class="arithmatex">\(x = \pm i\pi\)</span> 有极点。故 <span class="arithmatex">\(y(x)\)</span> Taylor展开的收敛半径为 <span class="arithmatex">\(\pi\)</span>，即系数函数 <span class="arithmatex">\(1/\sinh x\)</span> 奇点到常点的最小距离。</p>
+</div>
+<p>若 (3.1.1) 阶数 <span class="arithmatex">\(n \geq 2\)</span>，则存在第二个线性无关解，形式为以下两种之一：</p>
+<div class="arithmatex">\[
+y = (x - x_0)^\beta B(x) \tag{3.1.3}
+\]</div>
+<p>或</p>
+<div class="arithmatex">\[
+y = (x - x_0)^\alpha A(x) \ln (x - x_0) + C(x)(x - x_0)^\gamma. \tag{3.1.4}
+\]</div>
+<p>(3.1.3) 和 (3.1.4) 是 Euler 方程解在指标指数无重根和有重根情形的推广。<span class="arithmatex">\(A(x)\)</span> 与 (3.1.2) 中函数相同，<span class="arithmatex">\(B(x)\)</span> 和 <span class="arithmatex">\(C(x)\)</span> 为新解析函数，收敛半径同样受限于最近系数奇点距离。</p>
+<p>一般地，每个新线性无关解对应一个新解析函数，并伴有一个新指标指数或额外的 <span class="arithmatex">\(\ln (x - x_0)\)</span> 幂次。因此，第 <span class="arithmatex">\(n\)</span> 个解的最复杂形式为：</p>
+<div class="arithmatex">\[
+y(x) = (x - x_0)^\delta \prod_{i=0}^{n-1} [\ln (x - x_0)]^i A_i(x), \tag{3.1.5}
+\]</div>
+<p>所有函数 <span class="arithmatex">\(A_i(x)\)</span> 均在 <span class="arithmatex">\(x_0\)</span> 解析。反之，Fuchs 证明，若所有 <span class="arithmatex">\(n\)</span> 个解均具有 (3.1.2) 至 (3.1.5) 的形式，则 <span class="arithmatex">\(x_0\)</span> 至多为方程的正则奇点。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.5</span></p>
+<p>若点 <span class="arithmatex">\(x_0 \neq \infty\)</span>既非常点也非正则奇点，则称为 (3.1.1) 的<strong>非正则奇点(irregular singular point)</strong>。</p>
+</div>
+<p>虽无完备理论，但可断言在非正则奇点处，至少存在一个解不满足(3.1.2) 至 (3.1.5) 的形式。</p>
+<p>至此有限复平面内的点分类已完成，对于无穷远点 <span class="arithmatex">\(x_0 = \infty\)</span>，通过反演变换</p>
+<div class="arithmatex">\[
+x = \frac{1}{t}, \quad \frac{d}{dx} = -t^2 \frac{d}{dt}, \quad \frac{d^2}{dx^2} = t^4 \frac{d^2}{dt^2} + 2t^3 \frac{d}{dt},
+\tag{3.1.6}
+\]</div>
+<p>将无穷远点解析映射至原点，再对 <span class="arithmatex">\(t=0\)</span> 分类。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.6</span></p>
+<p>若 <span class="arithmatex">\(t=0\)</span> 分别为常点、正则奇点或非正则奇点，则对应称 <span class="arithmatex">\(x_0 = \infty\)</span> 为<strong>常点</strong>、<strong>正则奇点</strong>或<strong>非正则奇点</strong>。</p>
+</div>
+<p>以下示例展示解在常点、正则奇点及非正则奇点附近的行为。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.7</span><span class="book-name">例（常点、正则奇点与非正则奇点对比</span></p>
+<p>考虑方程：</p>
+<div class="arithmatex">\[
+\frac{dy}{dx} - \frac{1}{2}y = 0, \tag{3.1.7}
+\]</div>
+<div class="arithmatex">\[
+\frac{dy}{dx} - \frac{1}{2x}y = 0, \tag{3.1.8}
+\]</div>
+<div class="arithmatex">\[
+\frac{dy}{dx} - \frac{1}{2x^2}y = 0. \tag{3.1.9}
+\]</div>
+<p>变换 <span class="arithmatex">\(x = 1/t\)</span> 得新方程：<span class="arithmatex">\(dy/dt + y/2t^2 = 0\)</span>, <span class="arithmatex">\(dy/dt + y/2t = 0\)</span>, <span class="arithmatex">\(dy/dt + y/2 = 0\)</span>。</p>
+<p>(3.1.7) 除 <span class="arithmatex">\(\infty\)</span>（非正则奇点）外均为常点。解 <span class="arithmatex">\(y(x) = e^{-x/2}\)</span> 解析，但在 <span class="arithmatex">\(x=\infty\)</span> 有本性奇点。</p>
+<p>(3.1.8) 除 <span class="arithmatex">\(0\)</span> 和 <span class="arithmatex">\(\infty\)</span>（正则奇点）外均为常点。解 <span class="arithmatex">\(y(x) = x^{-1/2}\)</span> 解析，但在 <span class="arithmatex">\(x=0\)</span> 和 <span class="arithmatex">\(x=\infty\)</span> 有支点。</p>
+<p>(3.1.9) 除 <span class="arithmatex">\(0\)</span>（非正则奇点）外均为常点。解 <span class="arithmatex">\(y(x) = e^{1/(2x)}\)</span> 在扩充复平面解析，但在 <span class="arithmatex">\(x=0\)</span> 有本性奇点。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.8</span><span class="book-name">例（常点处的Taylor级数</span></p>
+<p>方程 <span class="arithmatex">\(y' + y/(x-1) = 0\)</span> 在 <span class="arithmatex">\(1\)</span> 和 <span class="arithmatex">\(\infty\)</span> 有正则奇点。解 <span class="arithmatex">\(y(x) = (x-1)^{-1}\)</span> 在 <span class="arithmatex">\(x=1\)</span> 有极点，在 <span class="arithmatex">\(\infty\)</span> 解析。解在 <span class="arithmatex">\(x=0\)</span> 的Taylor级数 <span class="arithmatex">\(y(x) = \sum_{k=0}^{\infty} x^k\)</span> 收敛半径为 <span class="arithmatex">\(1\)</span>（距正则奇点 <span class="arithmatex">\(x=1\)</span> 的距离）。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.9</span><span class="book-name">例（收敛范围超越最近奇点的Taylor解</span></p>
+<p>方程 <span class="arithmatex">\((x-1)(2x-1)y'' + 2xy' - 2y = 0\)</span> 在 <span class="arithmatex">\(1/2, 1, \infty\)</span> 有正则奇点。一解 <span class="arithmatex">\(y(x) = 1/(x-1)\)</span> 在常点 <span class="arithmatex">\(x=0\)</span> 的Taylor展开可超越最近奇点 <span class="arithmatex">\(x=1/2\)</span>，但在 <span class="arithmatex">\(|x|=1\)</span> 处发散。线性无关解 <span class="arithmatex">\(y(x) = x\)</span> 在 <span class="arithmatex">\(x=0\)</span> 的Taylor级数对所有 <span class="arithmatex">\(x\)</span> 收敛。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.10</span><span class="book-name">例（非正则奇点附近的本性奇性</span></p>
+<p>方程 <span class="arithmatex">\(y' + 3y/2x + y/4x^3 = 0\)</span> 在 <span class="arithmatex">\(0\)</span> 有非正则奇点，在 <span class="arithmatex">\(\infty\)</span> 有正则奇点。两线性无关解为 <span class="arithmatex">\(y(x) = \sin x^{-1/2}\)</span> 和 <span class="arithmatex">\(y(x) = \cos x^{-1/2}\)</span>。前者在原点有本性奇点（含 <span class="arithmatex">\(x=0\)</span> 和 <span class="arithmatex">\(x=\infty\)</span> 的支点），后者无支割线且在 <span class="arithmatex">\(x=\infty\)</span> 解析。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.11</span><span class="book-name">例（奇点附近的解析解</span></p>
+<p>在正则或非正则奇点处，一个甚至多个线性无关解可能解析。</p>
+<p>方程 <span class="arithmatex">\(y'' + (1-x)y'/x - y/x^2 = 0\)</span> 在 <span class="arithmatex">\(0\)</span> 有正则奇点，在 <span class="arithmatex">\(\infty\)</span> 有非正则奇点。解 <span class="arithmatex">\(y(x) = (e^x-1-x)/x\)</span> 在 <span class="arithmatex">\(x=0\)</span> 解析，但在 <span class="arithmatex">\(\infty\)</span> 有本性奇点；线性无关解 <span class="arithmatex">\(y(x) = (1+x)/x\)</span> 在 <span class="arithmatex">\(x=0\)</span> 有极点，在 <span class="arithmatex">\(\infty\)</span> 解析。1.3 节例 1.10 的方程</p>
+<div class="arithmatex">\[
+y'' - \frac{1+x}{x}y' + \frac{1}{x}y = 0, \tag{3.1.10}
+\]</div>
+<p>在 <span class="arithmatex">\(0\)</span> 有正则奇点，在 <span class="arithmatex">\(\infty\)</span> 有非正则奇点。但两线性无关解</p>
+<div class="arithmatex">\[
+y(x) = e^x, \quad y(x) = 1+x \tag{3.1.11}
+\]</div>
+<p>均在 <span class="arithmatex">\(x=0\)</span> 解析（前者在 <span class="arithmatex">\(\infty\)</span> 有本性奇点，后者在 <span class="arithmatex">\(\infty\)</span> 有极点）。一般地，所有线性无关解在正则奇点可能解析，但在非正则奇点至少有一解奇异。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.12</span><span class="book-name">例（自变量变换消除奇点</span></p>
+<p>方程 <span class="arithmatex">\(y' - 2x^{-1/2}y = 0\)</span> 在 <span class="arithmatex">\(0\)</span> 的非正则奇点可通过新自变量 <span class="arithmatex">\(t = x^{1/2}\)</span> 消除。新方程 <span class="arithmatex">\(dy/dt - y = 0\)</span> 在 <span class="arithmatex">\(t=0\)</span> 为常点。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.13</span><span class="book-name">例（因变量变换消除奇点</span></p>
+<p>方程</p>
+<div class="arithmatex">\[
+y'' + \frac{2}{x}y' - y = 0 \tag{3.1.12}
+\]</div>
+<p>在 <span class="arithmatex">\(0\)</span> 有正则奇点，在 <span class="arithmatex">\(\infty\)</span> 有非正则奇点。变换 <span class="arithmatex">\(y(x) = w(x)/x\)</span> 可消除 <span class="arithmatex">\(x=0\)</span> 奇点，但新方程 <span class="arithmatex">\(w'' - w = 0\)</span> 仍在 <span class="arithmatex">\(\infty\)</span> 有非正则奇点。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.14</span><span class="book-name">例（转换为线性系统消除奇点</span></p>
+<p>(3.1.12) 的奇点可消除，因两解在 <span class="arithmatex">\(x=0\)</span> 的奇性阶数相同：<span class="arithmatex">\(y \sim c_1/x, \, y \sim c_2 e^x / x\)</span>。但对 (3.1.10)（解 <span class="arithmatex">\(y = e^x\)</span> 和 <span class="arithmatex">\(y = 1+x\)</span> 均在 <span class="arithmatex">\(x=0\)</span> 解析），难以直接消除其正则奇点。唯一方法是转换为线性系统：</p>
+<div class="arithmatex">\[
+y'(x) = a(x)y(x) + b(x)z(x), \quad z'(x) = c(x)y(x) + d(x)z(x). \tag{3.1.13}
+\]</div>
+<p>若二阶微分方程通解在 <span class="arithmatex">\(x=0\)</span> 解析，则存在形如 (3.1.13) 的等价齐次线性系统，其系数在 <span class="arithmatex">\(x=0\)</span> 解析。(3.1.10) 的适当系统为 <span class="arithmatex">\(y' = y + z, \, z' = 0\)</span>。<strong>能否找到另一系数解析的等价系统？</strong></p>
+</div>
+<h3 id="s1-2">1.2 齐次线性方程常点附近的局部级数展开</h3>
+<p>当精确显式解未知时，为获得常点处的级数解，我们将Taylor级数 <span class="arithmatex">\(y(x) = \sum_{n=0}^{\infty} a_n (x - x_0)^n\)</span> 代入微分方程，并通过递推关系确定系数 <span class="arithmatex">\(a_n\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.15</span><span class="book-name">例（一阶微分方程的Taylor级数解</span></p>
+<p>考虑初值问题 <span class="arithmatex">\(y' = 2xy\)</span> [<span class="arithmatex">\(y(0) = 1\)</span>]。因 <span class="arithmatex">\(x=0\)</span> 是常点，设解 <span class="arithmatex">\(y(x) = \sum_{n=0}^{\infty} a_n x^n\)</span>，则：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} n a_n x^{n-1} = 2x \sum_{n=0}^{\infty} a_n x^n= 2 \sum_{n=0}^{\infty} a_{n-2} x^{n-1}.
+\]</div>
+<p>由Taylor系数唯一性，得：</p>
+<div class="arithmatex">\[
+n a_n = 0, \quad n=0,1;
+\]</div>
+<div class="arithmatex">\[
+n a_n = 2a_{n-2}, \quad n=2,3,\cdots
+\]</div>
+<p>由 <span class="arithmatex">\(n=0\)</span> 知 <span class="arithmatex">\(a_0\)</span> 为任意常数；由 <span class="arithmatex">\(n=1\)</span> 知 <span class="arithmatex">\(a_1=0\)</span>；解得 <span class="arithmatex">\(a_{2n} = a_0 / n!\)</span> (<span class="arithmatex">\(n \geq 1\)</span>)，<span class="arithmatex">\(a_{2n+1} = 0\)</span> (<span class="arithmatex">\(n \geq 1\)</span>)。故 <span class="arithmatex">\(y'=2xy\)</span> 的通解为：</p>
+<div class="arithmatex">\[
+y(x) = a_0 \sum_{n=0}^{\infty} \frac{x^{2n}}{n!} = a_0 e^{x^2}.
+\]</div>
+<p>可代回方程验证。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.16</span><span class="book-name">例（Airy 方程在 <span class="arithmatex">\(x=0\)</span> 的局部分析）</span></p>
+<p>为求 Airy 方程 (<a href="../chapter-01/">1.4.8</a>)<span class="arithmatex">\(y'' = xy\)</span>在 <span class="arithmatex">\(x=0\)</span> 附近的局部行为，代入级数 <span class="arithmatex">\(y(x) = \sum_{n=0}^{\infty} a_n x^n\)</span> 得：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} a_n n(n-1) x^{n-2} = \sum_{n=0}^{\infty} a_n x^{n+1}.
+\]</div>
+<p>联立系数：</p>
+<div class="arithmatex">\[
+a_n n(n-1) = 0, \quad n=0,1,2;
+\]</div>
+<div class="arithmatex">\[
+a_n n(n-1) = a_{n-3}, \quad n=3,4,\cdots
+\]</div>
+<p><span class="arithmatex">\(n=0,1\)</span> 时得 <span class="arithmatex">\(a_0, a_1\)</span> 任意，<span class="arithmatex">\(a_2=0\)</span>，解得：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+a_{3n} &amp;= \frac{a_0}{3^n n!  3^n (n - \frac{1}{3})(n - 1 - \frac{1}{3}) \cdots (\frac{2}{3})} = \frac{a_0 \Gamma(\frac{2}{3})}{9^n n!   \Gamma(n + \frac{2}{3})},\\
+a_{3n+1} &amp;= \frac{a_0}{3^n n!  3^n (n - \frac{1}{3})(n - 1 + \frac{1}{3}) \cdots (\frac{4}{3})} = \frac{a_1 \Gamma(\frac{4}{3})}{9^n n!   \Gamma(n + \frac{4}{3})}.\\
+a_{3n+2}&amp;=0
+\end{aligned}
+\]</div>
+<p>定义 <span class="arithmatex">\(c_1 = a_0 \Gamma(\frac{2}{3})\)</span>, <span class="arithmatex">\(c_2 = a_1 \Gamma(\frac{4}{3})\)</span>，则 Airy 方程通解为：</p>
+<div class="arithmatex">\[
+y(x) = c_1 \sum_{n=0}^{\infty} \frac{x^{3n}}{9^n n!  \Gamma(n + \frac{2}{3})} + c_2 \sum_{n=0}^{\infty} \frac{x^{3n+1}}{9^n n!  \Gamma(n + \frac{4}{3})}.
+\]</div>
+<p>此通解可通过快速收敛的Taylor展开近似表示于所有有限 <span class="arithmatex">\(x\)</span>。定义两个特解（Airy 函数）：</p>
+<div class="arithmatex">\[
+\text{Ai}(x) \equiv 3^{-2/3} \sum_{n=0}^{\infty} \frac{x^{3n}}{9^n n!  \Gamma(n + \frac{2}{3})} - 3^{-4/3} \sum
+_{n=0}^{\infty} \frac{x^{3n+1}}{9^n n!  \Gamma(n + \frac{4}{3})}, \tag{3.2.1}
+\]</div>
+<div class="arithmatex">\[
+\text{Bi}(x) \equiv 3^{-1/6} \sum_{n=0}^{\infty} \frac{x^{3n}}{9^n n!  \Gamma(n + \frac{2}{3})} + 3^{-5/6} \sum_{n=0}^{\infty} \frac{x^{3n+1}}{9^n n!  \Gamma(n + \frac{4}{3})}. \tag{3.2.2}
+\]</div>
+<p>当 <span class="arithmatex">\(|x|\)</span> 不大时，(3.2.1) 和 (3.2.2) 的Taylor级数仅需几项即可高精度逼近 Airy 函数（误差估计见问题 3.7）。</p>
+</div>
+<h3 id="s1-3">1.3 齐次线性方程正则奇点附近的局部级数展开</h3>
+<p>若尝试用 Taylor 级数表示解在正则奇点附近的局部行为，会发生什么？</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.17</span><span class="book-name">例（正则奇点处Taylor级数表示的失效</span></p>
+<p>对方程 <span class="arithmatex">\(y'' + y/4x^2 = 0\)</span> 在 <span class="arithmatex">\(x=0\)</span> 处寻求Taylor级数解 <span class="arithmatex">\(y = \sum_{n=0}^\infty a_n x^n\)</span>。代入方程并逐项微分后，得到关于 <span class="arithmatex">\(a_n\)</span> 的方程组：<span class="arithmatex">\((n - \frac{1}{2})^2 a_n = 0\)</span> (<span class="arithmatex">\(n = 0, 1, 2, \cdots\)</span>)。其解为 <span class="arithmatex">\(a_n = 0\)</span>，仅得到平凡解 <span class="arithmatex">\(y(x) = 0\)</span>。此方法无效。</p>
+</div>
+<p>上例中 Taylor 级数失效的原因是：Taylor级数不足以描述解在正则奇点附近的局部行为。但是 3.1 节 Fuchs 定理告诉我们解具有比Taylor级数更一般的结构：若 <span class="arithmatex">\(x_0\)</span> 是齐次线性微分方程的正则奇点，则至少存在一个形如 (3.1.2) 的解：<span class="arithmatex">\(y(x) = (x - x_0)^\alpha A(x)\)</span>，其中 <span class="arithmatex">\(A(x)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 解析。若 <span class="arithmatex">\(\alpha\)</span> 非整数，解在 <span class="arithmatex">\(x_0\)</span> 有代数支点；若 <span class="arithmatex">\(\alpha\)</span> 为负整数，则有极点；若 <span class="arithmatex">\(\alpha = 0, 1, 2, \cdots\)</span>，则解在 <span class="arithmatex">\(x_0\)</span> 解析。<span class="arithmatex">\(n\)</span> 阶方程的其余 <span class="arithmatex">\(n-1\)</span> 个线性无关解可能具有 (3.1.3)、(3.1.4) 或 (3.1.5) 的形式，故可能含对数支点。</p>
+<p>因 <span class="arithmatex">\(A(x)\)</span> 解析，故可展为Taylor级数：</p>
+<div class="arithmatex">\[
+y(x) = (x - x_0)^\alpha A(x) = (x - x_0)^\alpha \sum_{n=0}^{\infty} a_n (x - x_0)^n. \tag{3.3.1}
+\]</div>
+<p>称 (3.3.1) 右侧为 <strong>Frobenius 级数</strong>，<span class="arithmatex">\(\alpha\)</span> 为 <strong>指标指数</strong>。通常假设 Frobenius 级数中 <span class="arithmatex">\(a_0 \neq 0\)</span>（通过适当选择 <span class="arithmatex">\(\alpha\)</span> 实现）。Taylor级数是 Frobenius 级数的特例。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.18</span><span class="book-name">例（正则奇点处的局部分析</span></p>
+<p>对上例的方程，在 <span class="arithmatex">\(x_0 = 0\)</span> 处尝试 (3.3.1) 的 Frobenius 级数，得：</p>
+<div class="arithmatex">\[
+\left[ (n+\alpha)(n+\alpha-1) + \frac{1}{4} \right] a_n = 0 \quad (n = 0, 1, 2, \cdots).
+\]</div>
+<p>由 <span class="arithmatex">\(a_0 \neq 0\)</span> 得：</p>
+<div class="arithmatex">\[
+\alpha(\alpha-1) + \frac{1}{4} = 0 \implies \alpha = \frac{1}{2}.
+\]</div>
+<p>代入 <span class="arithmatex">\(\alpha = \frac{1}{2}\)</span> 后，其余方程给出 <span class="arithmatex">\(a_1 = a_2 = \cdots = 0\)</span>。故 Frobenius 级数 <span class="arithmatex">\(y(x) = a_0 \sqrt{x}\)</span>（<span class="arithmatex">\(a_0\)</span> 任意），此为精确解。</p>
+<p>由 1.4 节 Euler 方程的研究，知该方程的第二个解为 <span class="arithmatex">\(y(x) = b \sqrt{x} \ln x\)</span>（不具有 (3.3.1) 形式）。一般理论仅保证存在一个 Frobenius 级数形式的解，其余解可能更复杂。</p>
+</div>
+<p>下面我们将详述 Fuchs 和 Frobenius 提出的系统方法，用于计算指标指数 <span class="arithmatex">\(\alpha\)</span> 和展开系数 <span class="arithmatex">\(a_n\)</span>。此方法亦可求解形如 (3.1.4) 和 (3.1.5) 的含对数解，方法的核心是判断其余解应取 (3.1.2)-(3.1.5) 中何种形式的准则。</p>
+<h3 id="s1-4">1.4 二阶方程的 Frobenius 方法</h3>
+<p>若微分方程</p>
+<div class="arithmatex">\[
+y'' + \frac{p(x)}{x-x_0}y' + \frac{q(x)}{(x-x_0)^2}y = 0 \tag{3.3.2}
+\]</div>
+<p>在 <span class="arithmatex">\(x_0\)</span> 有正则奇点，则 <span class="arithmatex">\(p(x)\)</span> 和 <span class="arithmatex">\(q(x)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 解析。故可将 <span class="arithmatex">\(p(x)\)</span> 和 <span class="arithmatex">\(q(x)\)</span> 展为 <span class="arithmatex">\(x_0\)</span> 处的Taylor级数：</p>
+<div class="arithmatex">\[
+p(x) = \sum_{n=0}^{\infty} p_n (x - x_0)^n, \quad q(x) = \sum_{n=0}^{\infty} q_n (x - x_0)^n.
+\]</div>
+<p>代入 (3.3.2) 并将 Frobenius 级数解 (3.3.1) 代入，对比系数得：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;(x-x_0)^{\alpha-2}: \quad [\alpha^2 + (p_0 - 1)\alpha + q_0]a_0 = 0,\tag{18} \\
+&amp;(x-x_0)^{\alpha+n-2}: \quad [(\alpha+n)^2 + (p_0-1)(\alpha+n) + q_0]a_n \\
+&amp;\qquad\qquad\qquad\qquad = -\sum_{k=0}^{n-1} [(\alpha+k)p_{n-k} + q_{n-k}]a_k, \quad n=1,2,\cdots.\tag{19}
+\end{align*}
+\]</div>
+<p>因 <span class="arithmatex">\(a_0 \neq 0\)</span>，(18) 要求 <span class="arithmatex">\(\alpha\)</span> 为指标多项式 <span class="arithmatex">\(P(\alpha)\)</span> 的根：</p>
+<div class="arithmatex">\[
+P(\alpha) = \alpha^2 + (p_0 - 1)\alpha + q_0. \tag{3.3.4}
+\]</div>
+<p>对每个 <span class="arithmatex">\(\alpha\)</span> 值，需由递推关系 (19) 解出 <span class="arithmatex">\(a_n\)</span>（以 <span class="arithmatex">\(a_0\)</span> 表示）。仅当 <span class="arithmatex">\(P(\alpha+n) \neq 0\)</span> 时，(19) 可递推求解 <span class="arithmatex">\(a_n\)</span>。若此条件对所有正整数 <span class="arithmatex">\(n\)</span> 成立，则级数 (3.3.1) 的收敛半径至少等于 <span class="arithmatex">\(p(x)\)</span> 或 <span class="arithmatex">\(q(x)\)</span> 的最小复奇点距离。设 <span class="arithmatex">\(\alpha_1\)</span> 和 <span class="arithmatex">\(\alpha_2\)</span> 为指标多项式 <span class="arithmatex">\(P(\alpha)\)</span> 的两根满足 <span class="arithmatex">\(\operatorname{Re} \alpha_1 \geq \operatorname{Re} \alpha_2\)</span>。取 <span class="arithmatex">\(\alpha = \alpha_1\)</span> 时，因 <span class="arithmatex">\(\alpha_2\)</span> 是 <span class="arithmatex">\(P(\alpha)\)</span> 的唯一另一根，故 <span class="arithmatex">\(P(\alpha_1 + n) \neq 0\)</span>（<span class="arithmatex">\(n=1,2,\cdots\)</span>），此即 Frobenius 级数解恒存在的原因。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.19</span><span class="book-name">例（<span class="arithmatex">\(\nu\)</span> 阶修正 Bessel 方程）</span></p>
+<p>修正Bessel方程</p>
+<div class="arithmatex">\[
+y'' + \frac{1}{x}y' - \left(1 + \frac{\nu^2}{x^2}\right)y = 0 \tag{3.3.5}
+\]</div>
+<p>在 <span class="arithmatex">\(x=0\)</span> 有正则奇点。代入 Frobenius 级数 <span class="arithmatex">\(y = \sum_{n=0}^{\infty} a_n x^{\alpha+n}\)</span> 得：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} (\alpha+n)(\alpha+n-1)a_n x^{\alpha+n-2} + \sum_{n=0}^{\infty} (\alpha+n)a_n x^{\alpha+n-2} - \sum_{n=0}^{\infty} a_n x^{\alpha+n} - \nu^2 \sum_{n=0}^{\infty} a_n x^{\alpha+n-2} = 0.
+\]</div>
+<p>将 <span class="arithmatex">\(\sum_{n=0}^{\infty} a_n x^{\alpha+n}\)</span> 改写为 <span class="arithmatex">\(\sum_{n=1}^{\infty} a_{n-1} x^{\alpha+n-2}\)</span>，联立 <span class="arithmatex">\(x\)</span> 的幂次系数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;x^{\alpha-2}: \quad (\alpha^2 - \nu^2)a_0 = 0, \\
+&amp;x^{\alpha-1}: \quad [(\alpha+1)^2 - \nu^2]a_1 = 0, \\
+&amp;x^{\alpha+n-2}: \quad [(\alpha+n)^2 - \nu^2]a_n = a_{n-1}, \quad n=2,3,\cdots.
+\end{aligned}\tag{3.3.6}
+\]</div>
+<p>由 <span class="arithmatex">\(a_0 \neq 0\)</span>，<span class="arithmatex">\(\alpha\)</span> 须满足指标方程 <span class="arithmatex">\(P(\alpha) = \alpha^2 - \nu^2 = 0\)</span>，故 <span class="arithmatex">\(\alpha = \pm \nu\)</span>。不妨设 <span class="arithmatex">\(\operatorname{Re} \nu \geq 0\)</span>，则 <span class="arithmatex">\(\alpha_1 = \nu\)</span>，<span class="arithmatex">\(\alpha_2 = -\nu\)</span>。因 <span class="arithmatex">\(P(\alpha_1 + n) \neq 0\)</span>（<span class="arithmatex">\(n=1,2,\cdots\)</span>），可由 (3.3.6) 解得 <span class="arithmatex">\(a_1 = a_3 = \cdots = 0\)</span>，</p>
+<div class="arithmatex">\[
+a_{2n} = \frac{a_{2n-2}}{2^2 n(\nu + n)} = \frac{a_{2n-4}}{2^4 n(n-1)(\nu + n)(\nu + n - 1)} = \cdots = \frac{a_0 \Gamma(\nu + 1)}{2^{2n} n!  \Gamma(\nu + n + 1)}. \tag{3.3.7}
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+y(x) = a_0 \Gamma(\nu + 1) x^\nu \sum_{n=0}^{\infty} \frac{(x/2)^{2n}}{n!  \Gamma(\nu + n + 1)}.
+\]</div>
+<p>取 <span class="arithmatex">\(a_0 = 2^{-\nu} / \Gamma(\nu + 1)\)</span>，即得修正Bessel函数 <span class="arithmatex">\(I_\nu(x)\)</span> 的 Frobenius 级数：</p>
+<div class="arithmatex">\[
+I_\nu(x) = \sum_{n=0}^{\infty} \frac{(x/2)^{2n + \nu}}{n!  \Gamma(\nu + n + 1)}. \tag{3.3.8}
+\]</div>
+<p>比值判别法表明级数收敛半径无穷，对应 (3.3.5) 在有限复平面仅 <span class="arithmatex">\(x=0\)</span> 一个奇点。</p>
+<p>当 <span class="arithmatex">\(\nu\)</span> 非整数时，取 <span class="arithmatex">\(\alpha = -\nu\)</span> 可得第二解。若 <span class="arithmatex">\(2\nu\)</span> 亦非整数，则 <span class="arithmatex">\(P(-\nu + n) \neq 0\)</span>（对所有正整数 <span class="arithmatex">\(n\)</span>），故存在第二个 Frobenius 级数。只要 <span class="arithmatex">\(2\nu\)</span> 非偶数，由 (3.3.7) 可确定 <span class="arithmatex">\(a_n\)</span>，且 <span class="arithmatex">\(I_{-\nu}(x)\)</span> 的级数 (3.3.8) 收敛。当 <span class="arithmatex">\(\nu\)</span> 非整数时，因 <span class="arithmatex">\(I_\nu(x)\)</span> 与 <span class="arithmatex">\(I_{-\nu}(x)\)</span> 的首项幂次不同，二者线性无关。</p>
+<p>故当 <span class="arithmatex">\(\nu \neq 0,1,2,3,\cdots\)</span> 时，Frobenius 方法给出完备的线性无关解集。当 <span class="arithmatex">\(\nu\)</span> 为整数时，求第二解较复杂，本节后续将阐明相应方法。</p>
+</div>
+<p>总的来说，对二阶方程 (3.3.2)，若指标指数差 <span class="arithmatex">\(\alpha_1 - \alpha_2\)</span> 非整数，则取 <span class="arithmatex">\(\alpha = \alpha_1\)</span> 和 <span class="arithmatex">\(\alpha = \alpha_2\)</span> 可构造两个线性无关的 Frobenius 级数解。若 <span class="arithmatex">\(\alpha_1 = \alpha_2\)</span>，则取 <span class="arithmatex">\(\alpha = \alpha_2\)</span> 仅得与第一解成比例的解，需进一步分析求第二解。若 <span class="arithmatex">\(\alpha_1 - \alpha_2 = N\)</span>为正整数，则当 <span class="arithmatex">\(n=N\)</span> 时递推关系 (19) 化为：</p>
+<div class="arithmatex">\[
+0 \cdot a_N = -\sum_{k=0}^{N-1} [(\alpha + k)p_{N-k} + q_{N-k}]a_k. \tag{3.3.9}
+\]</div>
+<p>此时有两种可能：</p>
+<ol>
+<li>
+<p>若 (3.3.9) 右端非零，则 <span class="arithmatex">\(a_N\)</span> 不存在，需额外方法求第二线性无关解；</p>
+</li>
+<li>
+<p>若 (3.3.9) 右端恰为零，则方程退化为恒等式 <span class="arithmatex">\(0=0\)</span>，<span class="arithmatex">\(a_N\)</span> 为任意常数。递推关系可越过 <span class="arithmatex">\(n=N\)</span> 继续求解 <span class="arithmatex">\(a_{N+1}, a_{N+2}, \cdots\)</span>，得到含两个任意常数 <span class="arithmatex">\(a_0\)</span> 和 <span class="arithmatex">\(a_N\)</span> 的第二线性无关解。</p>
+</li>
+</ol>
+<p>综上我们有分类：</p>
+<ul>
+<li>
+<p>I <span class="arithmatex">\(\alpha_1 \neq \alpha_2\)</span> 且 <span class="arithmatex">\(\alpha_1 - \alpha_2\)</span> 非整数：存在两个 Frobenius 级数解。</p>
+</li>
+<li>
+<p>II <span class="arithmatex">\(\alpha_1 - \alpha_2 = N = 0,1,2,\cdots\)</span>，分两子类：</p>
+<ul>
+<li>
+<p>(a) <span class="arithmatex">\(\alpha_1 = \alpha_2\)</span>：仅一个 Frobenius 级数解。</p>
+</li>
+<li>
+<p>(b) <span class="arithmatex">\(\alpha_1 - \alpha_2 = 1,2,3,\cdots\)</span>，再分两情形：</p>
+<ul>
+<li>(i) (3.3.9) 右端非零：仅一个 Frobenius 级数解。</li>
+<li>(ii) (3.3.9) 右端为零：存在两个 Frobenius 级数解。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="s1-5">1.5 情形 II(b)(ii)</h3>
+<p>此情形由 (3.3.9) 右端为零刻画，确保存在指标指数 <span class="arithmatex">\(\alpha_2\)</span> 的 Frobenius 级数解。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.20</span><span class="book-name">例（常点处的 Frobenius 级数</span></p>
+<p>在微分方程的常点 <span class="arithmatex">\(x_0\)</span> 应用 Frobenius 理论。此时 <span class="arithmatex">\(p_0 = q_0 = 0\)</span>，指标方程为 <span class="arithmatex">\(P(\alpha) = \alpha(\alpha-1) = 0\)</span>，指标指数 <span class="arithmatex">\(\alpha_1=1\)</span>, <span class="arithmatex">\(\alpha_2=0\)</span>。对应解：</p>
+<p><span class="arithmatex">\(\alpha_1=1\)</span>：解为Taylor级数 <span class="arithmatex">\(y(x) = \sum_{n=0}^{\infty} a_n (x-x_0)^{n+1}\)</span>，满足初值 <span class="arithmatex">\(y(x_0)=0\)</span>, <span class="arithmatex">\(y'(x_0)=a_0 \neq 0\)</span>。</p>
+<p><span class="arithmatex">\(\alpha_2=0\)</span>：存在形式 (3.3.1) 的第二解，亦为Taylor级数。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.21</span><span class="book-name">例（半整数阶修正Bessel方程</span></p>
+<p>修正Bessel方程 (3.3.5) 中取 <span class="arithmatex">\(\nu = \frac{1}{2}, \frac{3}{2}, \frac{5}{2}, \cdots\)</span>（半整数），则指标指数差 <span class="arithmatex">\(\alpha_1 - \alpha_2 = 2\nu = 1,3,5,\cdots\)</span>。此处 <span class="arithmatex">\(p_0=1\)</span>, <span class="arithmatex">\(q_0=-\nu^2\)</span>，其余 <span class="arithmatex">\(p_n=q_n=0\)</span>（<span class="arithmatex">\(n \geq 1\)</span>）。可证(3.3.9) 右端为零，故两解均有 Frobenius 级数展开，即 (3.3.8) 给出的 <span class="arithmatex">\(I_\nu(x)\)</span> 和 <span class="arithmatex">\(I_{-\nu}(x)\)</span>。</p>
+</div>
+<h3 id="s1-6">1.6 情形 II(a)</h3>
+<p>将 <span class="arithmatex">\(a_n\)</span> 视为 <span class="arithmatex">\(a_0\)</span> 和 <span class="arithmatex">\(\alpha\)</span> 的函数，记所得 Frobenius 级数为：</p>
+<div class="arithmatex">\[
+y(x,\alpha) = (x - x_0)^\alpha \sum_{n=0}^{\infty} a_n(\alpha) (x - x_0)^n. \tag{3.3.10}
+\]</div>
+<p>注意：仅当 <span class="arithmatex">\(\alpha = \alpha_1\)</span> 时 <span class="arithmatex">\(y(x,\alpha)\)</span> 才是 (3.3.2) 的解。</p>
+<p>定义微分算子：</p>
+<div class="arithmatex">\[
+L \equiv \frac{d^2}{dx^2} + \frac{p(x)}{x-x_0} \frac{d}{dx} + \frac{q(x)}{(x-x_0)^2}.
+\]</div>
+<p>(3.3.2) 的解满足 <span class="arithmatex">\(Ly(x) = 0\)</span>。由构造，<span class="arithmatex">\(a_n(\alpha)\)</span> 满足递推关系 (19)，故 <span class="arithmatex">\(y(x,\alpha)\)</span> 在 <span class="arithmatex">\(\alpha \neq \alpha_1\)</span> 时满足：</p>
+<div class="arithmatex">\[
+Ly(x,\alpha) = a_0 (x - x_0)^{\alpha-2} P(\alpha). \tag{3.3.11}
+\]</div>
+<p>取 <span class="arithmatex">\(\alpha = \alpha_1\)</span> 时，(3.3.11) 右端为零，<span class="arithmatex">\(y(x,\alpha_1)\)</span> 即为 Frobenius 级数解。但若对 (3.3.11) 关于 <span class="arithmatex">\(\alpha\)</span> 求导后取 <span class="arithmatex">\(\alpha = \alpha_1\)</span>，因 <span class="arithmatex">\(\alpha_1 = \alpha_2\)</span> 时 <span class="arithmatex">\(P(\alpha) = (\alpha - \alpha_1)^2\)</span>，右端仍为零。因此，<span class="arithmatex">\(\left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1}\)</span> 是 (3.3.2) 的新解：</p>
+<div class="arithmatex">\[
+L \left[ \left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1} \right] = 0.
+\]</div>
+<p>对 (19) 关于 <span class="arithmatex">\(\alpha\)</span> 求导，得新解形式：</p>
+<div class="arithmatex">\[
+\left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1} = y(x,\alpha_1) \ln (x - x_0) + \sum_{n=0}^{\infty} b_n (x - x_0)^{\alpha_1 + n}, \tag{3.3.12}
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+b_n = \left. \frac{\partial}{\partial \alpha} a_n(\alpha) \right|_{\alpha=\alpha_1}. \tag{3.3.13}
+\]</div>
+<p>由此得到正则奇点附近两个线性无关解的级数展开，(3.3.12) 的收敛半径至少等于方程 (3.3.2) 的最近奇点距离。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.22</span><span class="book-name">例（零阶修正Bessel方程</span></p>
+<p>(3.3.5) 中取 <span class="arithmatex">\(\nu=0\)</span>，指标多项式 <span class="arithmatex">\(P(\alpha)=\alpha^2\)</span> 在 <span class="arithmatex">\(\alpha=0\)</span> 有二重根。第一解 (3.3.8) 为：</p>
+<div class="arithmatex">\[
+I_0(x) = \sum_{n=0}^{\infty} \frac{(x/2)^{2n}}{(n!)^2}. \tag{3.3.14}
+\]</div>
+<p>线性无关解形如 (3.3.12)。由 (3.3.6)得：<span class="arithmatex">\(a_0(\alpha)=a_0\)</span>, <span class="arithmatex">\(a_{2k+1}(\alpha)=0\)</span> (<span class="arithmatex">\(k=0,1,2,\cdots\)</span>)，且</p>
+<div class="arithmatex">\[
+a_{2n}(\alpha) = \frac{a_0}{2^{2n} (\alpha + 2n)^2 (\alpha + 2n - 2)^2 \cdots (\alpha + 2)^2}, \quad n \geq 1.
+\]</div>
+<p>故 <span class="arithmatex">\(b_0 = \left. \frac{\partial }{\partial \alpha}a_0(\alpha) \right|_{\alpha=0} = 0\)</span>，<span class="arithmatex">\(b_{2k+1}=0\)</span>，且</p>
+<div class="arithmatex">\[
+b_{2n} = \left. \frac{\partial }{\partial \alpha} a_{2n}(\alpha)\right|_{\alpha=0} = -\frac{a_0}{2^{2n} (n!)^2} \left( 1 + \frac{1}{2} + \cdots + \frac{1}{n} \right), \quad n \geq 1.
+\]</div>
+<p>代入 (3.3.12) 得 <span class="arithmatex">\(I_0(x)\)</span> 的线性无关解：</p>
+<div class="arithmatex">\[
+\left. \frac{\partial }{\partial \alpha}y(x,\alpha) \right|_{\alpha=0} = a_0 \ln x \sum_{n=0}^{\infty} \frac{(x/2)^{2n}}{(n!)^2} - a_0 \sum_{n=1}^{\infty} \frac{(x/2)^{2n}}{(n!)^2} \left( 1 + \frac{1}{2} + \cdots + \frac{1}{n} \right).
+\]</div>
+<p>取 <span class="arithmatex">\(a_0=-1\)</span> 并加上<span class="arithmatex">\(\ln 2 - \gamma\)</span> 倍的<span class="arithmatex">\(I_0(x)\)</span>得特解 <span class="arithmatex">\(K_0(x)\)</span>：</p>
+<div class="arithmatex">\[
+K_0(x) = -(\ln \frac{x}{2} + \gamma) I_0(x) + \sum_{n=1}^{\infty} \frac{(x/2)^{2n}}{(n!)^2} \left( 1 + \frac{1}{2} + \cdots + \frac{1}{n} \right). \tag{3.3.15}
+\]</div>
+<p>如此定义 <span class="arithmatex">\(K_0(x)\)</span> 的原因是其在 <span class="arithmatex">\(x \to \infty\)</span> 有优美的渐近行为，后文我们将提到。</p>
+</div>
+<h3 id="s1-7">1.7 情形 II(b)(i)</h3>
+<p>当 <span class="arithmatex">\(\alpha_1 - \alpha_2 = N\)</span>且 (3.3.9) 右端非零时，尝试类似情形 II(a) 的方法。对 (3.3.11) 关于 <span class="arithmatex">\(\alpha\)</span> 求导后取 <span class="arithmatex">\(\alpha = \alpha_1\)</span>，得 <span class="arithmatex">\(\left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1}\)</span> 满足非齐次方程：</p>
+<div class="arithmatex">\[
+L \left[ \left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1} \right] = a_0 P'(\alpha_1)(x - x_0)^{\alpha_2 + N - 2}. \tag{3.3.16}
+\]</div>
+<p>为构造齐次方程 (3.3.2) 的解，需先求 (3.3.16) 的第二个特解。可证存在标准 Frobenius 展开的特解：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} c_n (x - x_0)^{\alpha_2 + n}. \tag{3.3.17}
+\]</div>
+<p>代入 (3.3.16) 并联立 <span class="arithmatex">\((x - x_0)^{\alpha_2 + n - 2}\)</span> 系数：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;(x - x_0)^{\alpha_2 - 2}: \quad P(\alpha_2)c_0 = 0, \tag{34}\\
+&amp;(x - x_0)^{\alpha_2 + n - 2}: \quad P(\alpha_2 + n)c_n + \sum_{k=0}^{n-1} [(\alpha_2 + k)p_{n-k} + q_{n-k}]c_k = 0, \quad n \neq 0,N,\tag{35} \\
+&amp;(x - x_0)^{\alpha_2 + N - 2}: \quad P(\alpha_2 + N)c_N + \sum_{k=0}^{N-1} [(\alpha_2 + k)p_{N-k} + q_{N-k}]c_k = a_0 P'(\alpha_1). \tag{36}
+\end{align*}
+\]</div>
+<p>因 <span class="arithmatex">\(P(\alpha_2 + N) = 0\)</span>，(36) 不决定 <span class="arithmatex">\(c_N\)</span>，而给出约束：</p>
+<div class="arithmatex">\[
+a_0 = \frac{1}{P'(\alpha_1)} \sum_{k=0}^{N-1} [(\alpha_2 + k)p_{N-k} + q_{N-k}]c_k. \tag{3.3.19}
+\]</div>
+<p>构造 (3.3.2) 的第二解 <span class="arithmatex">\(y(x)\)</span> 为两非齐次解之差：</p>
+<div class="arithmatex">\[
+y(x) = \sum_{n=0}^{\infty} c_n (x - x_0)^{\alpha_2 + n} - \left. \frac{\partial}{\partial \alpha} y(x,\alpha) \right|_{\alpha=\alpha_1}. \tag{3.3.20}
+\]</div>
+<p>其中系数 <span class="arithmatex">\(c_n\)</span> 满足 (35)；<span class="arithmatex">\(c_0\)</span> 和 <span class="arithmatex">\(c_N\)</span> 任意，(3.3.19) 决定 <span class="arithmatex">\(a_0\)</span>。展开式 (3.3.20) 的收敛半径至少为 <span class="arithmatex">\(p(x)\)</span> 和 <span class="arithmatex">\(q(x)\)</span> 的最近奇点距离。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.23</span><span class="book-name">例（整数阶修正Bessel方程（<span class="arithmatex">\(\nu=1\)</span>））</span></p>
+<p>当 <span class="arithmatex">\(\nu=1\)</span> 时，(3.3.5) 的一解为 Frobenius 级数 <span class="arithmatex">\(I_1(x)\)</span>。取 <span class="arithmatex">\(c_0=1\)</span>, <span class="arithmatex">\(c_2 = \frac{1}{2} - \frac{1}{2}\ln 2 - \frac{\gamma}{4}\)</span>，定义修正Bessel函数 <span class="arithmatex">\(K_1(x)\)</span>：</p>
+<div class="arithmatex">\[
+K_1(x) = \left( \gamma + \ln \frac{x}{2} \right) I_1(x) + \frac{1}{x} - \frac{x}{4} - \sum_{n=1}^{\infty} \frac{(x/2)^{2n}}{n! (n+1)!} \left( \sum_{k=1}^{n} \frac{1}{k} + \frac{1}{2n+2} \right). \tag{3.3.21}
+\]</div>
+</div>
+<p>至此，我们完整叙述了二阶方程的 Frobenius 方法。</p>
+<h3 id="s1-8">1.8 高阶方程的 Frobenius 级数</h3>
+<p>Frobenius 方法可推广至 <span class="arithmatex">\(n\)</span> 阶齐次线性微分方程在正则奇点 <span class="arithmatex">\(x_0\)</span> 的情形：</p>
+<div class="arithmatex">\[
+\frac{d^n y}{dx^n} + \frac{q_{n-1}(x)}{x - x_0} \frac{d^{n-1} y}{dx^{n-1}} + \cdots + \frac{q_0(x)}{(x - x_0)^n} y = 0,
+\]</div>
+<p>其中 <span class="arithmatex">\(q_0(x), \cdots, q_{n-1}(x)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 解析。指标方程为：</p>
+<div class="arithmatex">\[
+\alpha(\alpha-1)\cdots(\alpha-n+1) + q_{n-1}(x_0)\alpha(\alpha-1)\cdots(\alpha-n+2) + \cdots + q_0(x_0) = 0.
+\]</div>
+<p>若 <span class="arithmatex">\(n\)</span> 个根 <span class="arithmatex">\(\alpha\)</span> 的差非整数，则存在 <span class="arithmatex">\(n\)</span> 个形如 (3.3.1) 的线性无关解，否则需推广至 (3.1.4) 或 (3.1.5) 的形式。</p>
+<h3 id="s1-9">1.9 齐次线性方程非正则奇点处的局部级数展开</h3>
+<p>前两节方法的固化风格反映了理论的完备性，几乎没有想象性数学的空间。但从此处开始，风格转变。分析非正则奇点附近解的局部行为需发展全新数学工具，整体构成近似演算体系。</p>
+<p>本节将看到，描述非正则奇点附近解局部行为的公式是 Frobenius 级数的推广，如同 Frobenius 级数是Taylor级数的推广。</p>
+<p>首先我们来看 Frobenius 级数为何不足以描述非正则奇点附近行为。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.24</span><span class="book-name">例</span></p>
+<p>微分方程 <span class="arithmatex">\(y' = x^{1/2} y\)</span> 在 <span class="arithmatex">\(x=0\)</span> 有非正则奇点。解 <span class="arithmatex">\(y(x)\)</span> 可表为 <span class="arithmatex">\(x=0\)</span> 处的收敛级数：</p>
+<div class="arithmatex">\[
+y(x) = a_0 e^{2x^{3/2}/3} = a_0 \sum_{n=0}^{\infty} \frac{(2x^{3/2}/3)^n}{n!},
+\]</div>
+<p>此级数并非 Frobenius 级数。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.25</span><span class="book-name">例</span></p>
+<p>微分方程</p>
+<div class="arithmatex">\[
+x^3 y'' = y \tag{3.4.1}
+\]</div>
+<p>若存在形式解 <span class="arithmatex">\(y = \sum_{n=0}^{\infty} a_n x^{\alpha+n}\)</span>（<span class="arithmatex">\(a_0 \neq 0\)</span>），则</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} (\alpha+n)(\alpha+n-1) a_n x^{\alpha+n+1} = \sum_{n=0}^{\infty} a_n x^{\alpha+n}.
+\]</div>
+<p>联立 <span class="arithmatex">\(x^\alpha\)</span> 项系数得 <span class="arithmatex">\(a_0 = 0\)</span>，矛盾！</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.26</span><span class="book-name">例</span></p>
+<p>方程</p>
+<div class="arithmatex">\[
+x^2 y'' + (1 + 3x)y' + y = 0 \tag{3.4.2}
+\]</div>
+<p>在 <span class="arithmatex">\(0\)</span> 有非正则奇点。代入 <span class="arithmatex">\(y = \sum_{n=0}^{\infty} a_n x^{\alpha+n}\)</span>：</p>
+<div class="arithmatex">\[
+x^2 \sum_{n=0}^{\infty} (\alpha+n)(\alpha+n-1)a_n x^{\alpha+n-2} + (1+3x) \sum_{n=0}^{\infty} (\alpha+n)a_n x^{\alpha+n-1} + \sum_{n=0}^{\infty} a_n x^{\alpha+n} = 0.
+\]</div>
+<p>联立 <span class="arithmatex">\(x\)</span> 幂次系数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;x^{\alpha-1}: \quad \alpha a_0 = 0, \\
+&amp;x^{\alpha+n}: \quad (\alpha+n+1)a_{n+1} + (\alpha+n+1)^2 a_n = 0, \quad n=0,1,\cdots
+\end{aligned}
+\]</div>
+<p>因 Frobenius 级数要求 <span class="arithmatex">\(a_0 \neq 0\)</span>，指标方程为 <span class="arithmatex">\(\alpha=0\)</span>。解得 <span class="arithmatex">\(a_{n+1} = -(n+1)a_n\)</span>，故 <span class="arithmatex">\(a_n = (-1)^n n!  a_0\)</span>，解为：</p>
+<div class="arithmatex">\[
+y(x) = a_0 \sum_{n=0}^{\infty} (-1)^n n!  x^n. \tag{3.4.3}
+\]</div>
+<p>该级数收敛半径为零，对所有 <span class="arithmatex">\(x \neq 0\)</span> 发散，矛盾！</p>
+</div>
+<p>发散级数 (3.4.3) 是应用数学中常见的级数展开——<strong>渐近级数</strong>。其虽发散，但可得到微分方程解的精确近似。</p>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-02/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第二章：差分方程</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-04/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第四章：线性微分方程的局部分析：非正则奇点与渐近关系</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 3 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">应用数学</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=ode">#ode</a><a class="zdd-end-chip" href="../../../../tags/?tag=asymptotic-analysis">#asymptotic-analysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-04/">第四章：线性微分方程的局部分析：非正则奇点与渐近关系</a></li><li><a href="../chapter-05/">第五章：渐近级数</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

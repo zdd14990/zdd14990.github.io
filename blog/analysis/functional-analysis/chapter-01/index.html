@@ -1,0 +1,2196 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="以弱收敛与谱理论所需的工具为目标，学习网、紧性、Stone–Weierstrass、测度及 Stieltjes 积分。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-01/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：拓扑、测度与函数逼近 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-01/">
+  <meta property="og:title" content="第一章：拓扑、测度与函数逼近 - zdd14990">
+  <meta property="og:description" content="以弱收敛与谱理论所需的工具为目标，学习网、紧性、Stone–Weierstrass、测度及 Stieltjes 积分。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="topology">
+
+  <meta property="article:tag" content="measure-theory">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-01/">
+  <meta name="twitter:title" content="第一章：拓扑、测度与函数逼近 - zdd14990">
+  <meta name="twitter:description" content="以弱收敛与谱理论所需的工具为目标，学习网、紧性、Stone–Weierstrass、测度及 Stieltjes 积分。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u62d3\u6251\u3001\u6d4b\u5ea6\u4e0e\u51fd\u6570\u903c\u8fd1",
+    "description": "\u4ee5\u5f31\u6536\u655b\u4e0e\u8c31\u7406\u8bba\u6240\u9700\u7684\u5de5\u5177\u4e3a\u76ee\u6807\uff0c\u5b66\u4e60\u7f51\u3001\u7d27\u6027\u3001Stone\u2013Weierstrass\u3001\u6d4b\u5ea6\u53ca Stieltjes \u79ef\u5206\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-01/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-01/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "topology", "measure-theory", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-01" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 这一章要解决什么问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 从序列到网
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 从序列到网">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 为什么只用序列可能不够
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 子网与紧性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 乘积紧性与无限求和
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 连续函数怎样逼近
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 连续函数怎样逼近">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 等度连续与 Arzelà–Ascoli
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Stone–Weierstrass 定理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 测度与积分的最小工具箱
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 测度与积分的最小工具箱">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 从集合大小到函数积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 \(L^p\) 范数与常用不等式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Radon–Nikodym 定理的含义
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Stieltjes 积分与 Riesz 表示
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Stieltjes 积分与 Riesz 表示">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 递增函数如何编码测度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 连续泛函与测度
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 网的基本性质与极限定理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 网的基本性质与极限定理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用邻域组织极限
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 紧性、局部紧性与连续函数空间
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 紧性、局部紧性与连续函数空间">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        紧性提供聚点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从局部估计到连续函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-4-19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        在紧集上截断和延拓
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-4-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一致范数中的紧性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 函数代数与测度表示
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 函数代数与测度表示">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用代数生成测试函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        积分、密度与范数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-6-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从绝对连续到积分对偶
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        连续测试确定测度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-7-19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        何时可以交换积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 单调函数、有界变差与 Stieltjes 积分
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 单调函数、有界变差与 Stieltjes 积分">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        跳跃与累积函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-9-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从有限增量定义积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-1-10-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把泛函恢复成累积函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 2 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="chapter-01"><span class="book-visually-hidden">第 1 章：</span>拓扑、测度与函数逼近</h1>
+  </div>
+  <p class="book-standfirst">后面我们会遇到两类极限：一类是函数或算子在某种拓扑下的极限，另一类是有限和变成积分的极限。前者需要拓扑与紧性，后者需要测度与函数逼近。本章把这些工具放在同一条线索里。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>6,543 字 · 约 19 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>这一章要解决什么问题</h2>
+<p><span class="arithmatex">\(L^p\)</span> 范数描述积分误差，控制收敛给出交换极限与积分的条件，Stieltjes 积分同时容纳连续分布与原子质量。Riesz 表示定理把“对测试函数的线性作用”解释成一个测度。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>从序列到网</h2>
+<h3 id="section-2-1">2.1 为什么只用序列可能不够</h3>
+<p>在度量空间中，<span class="arithmatex">\(x\in\overline A\)</span> 等价于存在 <span class="arithmatex">\(A\)</span> 中的序列趋于 <span class="arithmatex">\(x\)</span>，因为可以依次在 <span class="arithmatex">\(B(x,1/n)\)</span> 中取点。一般拓扑空间未必有这样一列能够代表所有邻域的球。因此，序列可能看不到全部闭包。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.1</span><span class="book-name">序列看不到的闭包点</span></p>
+<p>设 <span class="arithmatex">\(J\)</span> 不可数，在乘积空间 <span class="arithmatex">\(\{0,1\}^J\)</span> 中，令 <span class="arithmatex">\(A\)</span> 为只有有限个坐标等于 <span class="arithmatex">\(1\)</span> 的元素。全为 <span class="arithmatex">\(1\)</span> 的元素属于 <span class="arithmatex">\(\overline A\)</span>：任一基本邻域只规定有限个坐标。</p>
+<p>但 <span class="arithmatex">\(A\)</span> 中任一序列的非零坐标并集至多可数，因而该序列不可能逐坐标收敛到全为 <span class="arithmatex">\(1\)</span> 的元素。</p>
+</div>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span><span class="book-name">有向集与网</span></p>
+<p>有向集是非空集合 <span class="arithmatex">\(D\)</span> 连同一个自反、传递的关系 <span class="arithmatex">\(\preceq\)</span>，且任意 <span class="arithmatex">\(\alpha,\beta\)</span> 都有共同上界 <span class="arithmatex">\(\gamma\)</span>。</p>
+<p><strong>网</strong>是映射 <span class="arithmatex">\(D\to X\)</span>，记为 <span class="arithmatex">\((x_\alpha)_{\alpha\in D}\)</span>。称 <span class="arithmatex">\(x_\alpha\to x\)</span>，若对 <span class="arithmatex">\(x\)</span> 的每个邻域 <span class="arithmatex">\(U\)</span>，存在 <span class="arithmatex">\(\alpha_0\)</span>，使 <span class="arithmatex">\(\alpha\succeq\alpha_0\)</span> 时 <span class="arithmatex">\(x_\alpha\in U\)</span>。</p>
+</div>
+<p>指标不一定是一维时间。例如所有有限子集按包含关系构成有向集，可以用来描述“逐渐加入所有坐标”。网中的“最终”指某个尾部内始终成立；“频繁”指每个尾部都能找到满足条件的项，两者不能混用。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span><span class="book-name">网刻画闭包与连续性</span></p>
+<p><span class="arithmatex">\(x\in\overline A\)</span> 当且仅当存在 <span class="arithmatex">\(A\)</span> 中的网收敛到 <span class="arithmatex">\(x\)</span>。映射 <span class="arithmatex">\(f:X\to Y\)</span> 连续，当且仅当对每个收敛网 <span class="arithmatex">\(x_\alpha\to x\)</span> 都有 <span class="arithmatex">\(f(x_\alpha)\to f(x)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若 <span class="arithmatex">\(A\)</span> 中的网趋于 <span class="arithmatex">\(x\)</span>，每个邻域最终都包含网的项，因此都与 <span class="arithmatex">\(A\)</span> 相交。</p>
+<p>反过来，对 <span class="arithmatex">\(x\in\overline A\)</span>，使用指标集</p>
+<div class="arithmatex">\[
+D=\{(U,a):U\text{ 是 }x\text{ 的邻域},\ a\in U\cap A\},
+\]</div>
+<p>按 <span class="arithmatex">\(U\)</span> 的反向包含排序，即 <span class="arithmatex">\((U,a)\preceq(V,b)\)</span> 当 <span class="arithmatex">\(V\subset U\)</span>。令 <span class="arithmatex">\(x_{(U,a)}=a\)</span>，则这个网趋于 <span class="arithmatex">\(x\)</span>。这种写法也避免了为每个邻域同时任意选点。</p>
+<p>连续映射保持收敛网，由逆像邻域的定义立即得到。若 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(x\)</span> 不连续，存在 <span class="arithmatex">\(f(x)\)</span> 的邻域 <span class="arithmatex">\(V\)</span>，使每个 <span class="arithmatex">\(x\)</span> 的邻域 <span class="arithmatex">\(U\)</span> 都有 <span class="arithmatex">\(a\in U\)</span> 满足 <span class="arithmatex">\(f(a)\notin V\)</span>。同样构造网便得到 <span class="arithmatex">\(a_\alpha\to x\)</span>，而 <span class="arithmatex">\(f(a_\alpha)\)</span> 不趋于 <span class="arithmatex">\(f(x)\)</span>。</p>
+</details>
+<h3 id="section-2-2">2.2 子网与紧性</h3>
+<p>我们采用如下子网约定：<span class="arithmatex">\(y_\beta=x_{h(\beta)}\)</span>，其中 <span class="arithmatex">\(h:E\to D\)</span> 单调，且对任意 <span class="arithmatex">\(\alpha\in D\)</span>，存在 <span class="arithmatex">\(\beta_0\)</span> 使 <span class="arithmatex">\(\beta\succeq\beta_0\)</span> 时 <span class="arithmatex">\(h(\beta)\succeq\alpha\)</span>。它保证子网最终进入原网的每一个尾部。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.4</span><span class="book-name">紧性</span></p>
+<p>拓扑空间 <span class="arithmatex">\(X\)</span> 紧，若它的每个开覆盖都有有限子覆盖。等价地，每族具有有限交性质的闭集都有非空交。</p>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.5</span><span class="book-name">紧性的网刻画</span></p>
+<p><span class="arithmatex">\(X\)</span> 紧，当且仅当 <span class="arithmatex">\(X\)</span> 中每个网都有收敛子网。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(X\)</span> 紧，对网 <span class="arithmatex">\(x_\alpha\)</span> 定义尾部闭包</p>
+<div class="arithmatex">\[
+F_\alpha=\overline{\{x_\beta:\beta\succeq\alpha\}}.
+\]</div>
+<p>有向性保证 <span class="arithmatex">\(F_\alpha\)</span> 具有有限交性质，于是存在 <span class="arithmatex">\(x\in\bigcap_\alpha F_\alpha\)</span>。这表示网频繁进入 <span class="arithmatex">\(x\)</span> 的每个邻域。</p>
+<p>用三元组 <span class="arithmatex">\((\alpha,U,\beta)\)</span> 作指标，其中 <span class="arithmatex">\(U\)</span> 是 <span class="arithmatex">\(x\)</span> 的邻域、<span class="arithmatex">\(\beta\succeq\alpha\)</span> 且 <span class="arithmatex">\(x_\beta\in U\)</span>；同时要求 <span class="arithmatex">\(\alpha\)</span> 增大、<span class="arithmatex">\(U\)</span> 缩小、<span class="arithmatex">\(\beta\)</span> 增大。频繁进入的性质保证此指标集有向。映射到 <span class="arithmatex">\(\beta\)</span> 得到趋于 <span class="arithmatex">\(x\)</span> 的子网。</p>
+<p>反过来，若闭集族 <span class="arithmatex">\((F_i)\)</span> 有有限交性质却交为空，用“有限指标集 <span class="arithmatex">\(J\)</span> 与其交中的点 <span class="arithmatex">\(x\)</span>”作指标，按 <span class="arithmatex">\(J\)</span> 增大排序。所得网最终留在每一个 <span class="arithmatex">\(F_i\)</span>。任何收敛子网的极限都必须属于所有 <span class="arithmatex">\(F_i\)</span>，与交为空矛盾。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">紧性与列紧性</p>
+<p>在度量空间中，紧性等价于每个序列有收敛子列，也等价于完备且全有界。全有界是指对每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，空间可由有限个半径 <span class="arithmatex">\(\varepsilon\)</span> 的球覆盖。</p>
+<p>一般拓扑空间中不能直接把上述定理中的“网”替换成“序列”。第二章的弱-* 紧性正需要这个区别。</p>
+</div>
+<h3 id="section-2-3">2.3 乘积紧性与无限求和</h3>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.6</span><span class="book-name">Tychonoff 定理</span></p>
+<p>任意一族紧空间的乘积，在乘积拓扑下紧。乘积拓扑的基本邻域只约束有限个坐标。</p>
+</div>
+<details class="proof">
+<summary>证明的组织方式：超滤子</summary>
+<p>一个滤子是对有限交和向上包含封闭、且不包含空集的集合族；极大的滤子称超滤子。用 Zorn 引理，每个具有有限交性质的集合族能扩张成超滤子。</p>
+<p>在紧空间中，超滤子内集合的闭包具有有限交性质，故有共同点 <span class="arithmatex">\(x\)</span>。若 <span class="arithmatex">\(x\)</span> 的某邻域 <span class="arithmatex">\(U\)</span> 不属于超滤子，极大性给出其补集属于超滤子，与 <span class="arithmatex">\(x\)</span> 属于该闭补集矛盾。故超滤子趋于 <span class="arithmatex">\(x\)</span>。</p>
+<p>给乘积空间上的超滤子，将它投到每个坐标，得到趋于某个 <span class="arithmatex">\(x_j\)</span> 的超滤子。有限多个坐标邻域的逆像均在原超滤子中，其交也在，因此原超滤子趋于 <span class="arithmatex">\((x_j)\)</span>。这证明乘积紧性。一般形式中同时选择各个 <span class="arithmatex">\(x_j\)</span> 使用选择公理。</p>
+</details>
+<p>对任意指标集 <span class="arithmatex">\(J\)</span>，非负和定义为</p>
+<div class="arithmatex">\[
+\sum_{j\in J}a_j=\sup_{F\subset J,\ F\text{ 有限}}\sum_{j\in F}a_j.
+\]</div>
+<p>若该和有限，只有至多可数个 <span class="arithmatex">\(a_j\)</span> 非零，因为对每个正整数 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\{j:a_j\ge1/n\}\)</span> 必须有限。对于 Banach 空间中的向量，<span class="arithmatex">\(\sum_j\|x_j\|&lt;\infty\)</span> 保证有限子集部分和构成 Cauchy 网，进而收敛。注意：一般条件收敛级数并不定义与次序无关的和。</p>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>连续函数怎样逼近</h2>
+<h3 id="section-3-1">3.1 等度连续与 Arzelà–Ascoli</h3>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">Arzelà–Ascoli 定理：紧度量空间版本</span></p>
+<p>设 <span class="arithmatex">\(K\)</span> 是紧度量空间。集合 <span class="arithmatex">\(\mathcal{F}\subset C(K)\)</span> 在一致范数下相对紧，当且仅当它逐点有界且等度连续。</p>
+<p>等度连续指：对每个 <span class="arithmatex">\(x\in K\)</span> 和 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，存在 <span class="arithmatex">\(x\)</span> 的邻域 <span class="arithmatex">\(U\)</span>，使所有 <span class="arithmatex">\(f\in\mathcal F\)</span>、<span class="arithmatex">\(y\in U\)</span> 都有 <span class="arithmatex">\(|f(y)-f(x)|&lt;\varepsilon\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>先证明充分性。等度连续与 <span class="arithmatex">\(K\)</span> 的紧性给出有限个点 <span class="arithmatex">\(x_1,\ldots,x_m\)</span> 及覆盖它们的邻域，使每个 <span class="arithmatex">\(f\)</span> 在各邻域内的振荡小于 <span class="arithmatex">\(\varepsilon\)</span>。各 <span class="arithmatex">\(f(x_j)\)</span> 有界，把这些有限维取值用有限个小网格逼近。</p>
+<p>两个函数若在这些点的值差小于 <span class="arithmatex">\(\varepsilon\)</span>，则任意点处的值差小于 <span class="arithmatex">\(3\varepsilon\)</span>。因此 <span class="arithmatex">\(\mathcal F\)</span> 全有界。<span class="arithmatex">\(C(K)\)</span> 完备，故其闭包紧。</p>
+<p>必要性：一致范数下的紧集有有限 <span class="arithmatex">\(\varepsilon\)</span> 网。有限个连续函数共同具有局部连续模，再用一致误差控制余下函数，得到等度连续；逐点有界则由 <span class="arithmatex">\(|f(x)|\le\|f\|_\infty\)</span> 得到。</p>
+</details>
+<h3 id="section-3-2">3.2 Stone–Weierstrass 定理</h3>
+<p>我们希望用简单函数刻画一个泛函。若简单函数在一致范数下稠密，有界泛函便由这些函数上的值唯一决定。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.2</span><span class="book-name">函数代数与自伴性</span></p>
+<p><span class="arithmatex">\(\mathcal A\subset C(K,\mathbb C)\)</span> 是函数代数，若对线性组合和乘积封闭。它自伴，若 <span class="arithmatex">\(f\in\mathcal A\)</span> 蕴含 <span class="arithmatex">\(\overline f\in\mathcal A\)</span>。它分离点，若对不同 <span class="arithmatex">\(x,y\)</span> 存在 <span class="arithmatex">\(f\in\mathcal A\)</span> 使 <span class="arithmatex">\(f(x)\ne f(y)\)</span>。</p>
+</div>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.3</span><span class="book-name">Stone–Weierstrass 定理</span></p>
+<p>设 <span class="arithmatex">\(K\)</span> 紧 Hausdorff。实函数代数若含常数并分离点，则在 <span class="arithmatex">\(C(K,\mathbb R)\)</span> 中一致稠密。复函数代数还需自伴，此时在 <span class="arithmatex">\(C(K,\mathbb C)\)</span> 中一致稠密。</p>
+</div>
+<details class="proof">
+<summary>证明：从代数变成格，再从局部拼成全局</summary>
+<p>设 <span class="arithmatex">\(\mathcal B\)</span> 是实代数的一致闭包。先说明 <span class="arithmatex">\(f\in\mathcal B\)</span> 蕴含 <span class="arithmatex">\(|f|\in\mathcal B\)</span>。在包含 <span class="arithmatex">\(f(K)\)</span> 的实紧区间上，用实多项式一致逼近 <span class="arithmatex">\(|t|\)</span>，代入 <span class="arithmatex">\(f\)</span> 即可。这里使用一元 Weierstrass 定理，其区间版本可由下面的 Bernstein 多项式直接证明。</p>
+<p>因此 <span class="arithmatex">\(\mathcal B\)</span> 对 <span class="arithmatex">\(\max(f,g)\)</span> 和 <span class="arithmatex">\(\min(f,g)\)</span> 封闭。给定 <span class="arithmatex">\(h\in C(K,\mathbb R)\)</span>，利用分离点与常数，可对每对 <span class="arithmatex">\(x,y\)</span> 找 <span class="arithmatex">\(f_{xy}\in\mathcal A\)</span>，满足 <span class="arithmatex">\(f_{xy}(x)=h(x)\)</span>、<span class="arithmatex">\(f_{xy}(y)=h(y)\)</span>。</p>
+<p>固定 <span class="arithmatex">\(x\)</span>。由连续性，<span class="arithmatex">\(f_{xy}&gt;h-\varepsilon\)</span> 在 <span class="arithmatex">\(y\)</span> 的某邻域成立。有限多个这样的邻域覆盖 <span class="arithmatex">\(K\)</span>，取相应函数的最大值得 <span class="arithmatex">\(g_x\in\mathcal B\)</span>，使 <span class="arithmatex">\(g_x&gt;h-\varepsilon\)</span> 处处成立，而 <span class="arithmatex">\(g_x(x)=h(x)\)</span>。</p>
+<p>又有 <span class="arithmatex">\(g_x&lt;h+\varepsilon\)</span> 在 <span class="arithmatex">\(x\)</span> 的某邻域成立。用这些邻域的有限子覆盖，取相应 <span class="arithmatex">\(g_x\)</span> 的最小值 <span class="arithmatex">\(g\)</span>，便有 <span class="arithmatex">\(h-\varepsilon&lt;g&lt;h+\varepsilon\)</span>。故 <span class="arithmatex">\(h\in\mathcal B\)</span>。</p>
+<p>复数情形，自伴性使实部和虚部仍在代数中。实值部分分离点，分别逼近目标函数的实部和虚部即可。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.4</span><span class="book-name">Bernstein 多项式与两个重要稠密性</span></p>
+<p>对 <span class="arithmatex">\(f\in C[0,1]\)</span>，定义</p>
+<div class="arithmatex">\[
+B_nf(x)=\sum_{k=0}^nf(k/n)\binom nkx^k(1-x)^{n-k}.
+\]</div>
+<p>将权重看成参数为 <span class="arithmatex">\((n,x)\)</span> 的二项分布，<span class="arithmatex">\(k/n\)</span> 的均值为 <span class="arithmatex">\(x\)</span>、方差至多 <span class="arithmatex">\(1/(4n)\)</span>。把 <span class="arithmatex">\(|k/n-x|&lt;\delta\)</span> 的项和其余项分开，前者由一致连续性控制，后者由方差估计控制，因此 <span class="arithmatex">\(B_nf\to f\)</span> 一致。</p>
+<p>故多项式在 <span class="arithmatex">\(C[a,b]\)</span> 中稠密。在圆周 <span class="arithmatex">\(\mathbb T\)</span> 上，<span class="arithmatex">\(z^n\)</span>、<span class="arithmatex">\(n\in\mathbb Z\)</span> 的有限线性组合构成含常数、自伴且分离点的代数，故三角多项式一致稠密。</p>
+</div>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>测度与积分的最小工具箱</h2>
+<h3 id="section-4-1">4.1 从集合大小到函数积分</h3>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span><span class="book-name">测度空间</span></p>
+<p><span class="arithmatex">\(\sigma\)</span>-代数 <span class="arithmatex">\(\mathcal M\)</span> 是对补集与可数并封闭、含全集的集合族。测度 <span class="arithmatex">\(\mu:\mathcal M\to[0,\infty]\)</span> 满足 <span class="arithmatex">\(\mu(\varnothing)=0\)</span> 和可数可加性。</p>
+<p>若 <span class="arithmatex">\(X\)</span> 可写为可数个有限测度集合的并，则称 <span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限。拓扑空间上由开集生成的 <span class="arithmatex">\(\sigma\)</span>-代数称 Borel <span class="arithmatex">\(\sigma\)</span>-代数。</p>
+</div>
+<p>对非负简单函数 <span class="arithmatex">\(s=\sum_j a_j\mathbf1_{E_j}\)</span>，其积分是 <span class="arithmatex">\(\sum_j a_j\mu(E_j)\)</span>；对一般非负可测函数 <span class="arithmatex">\(f\)</span>，定义为所有 <span class="arithmatex">\(0\le s\le f\)</span> 的简单函数积分的上确界。实或复函数通过正负部分、实虚部分积分，绝对可积时不产生 <span class="arithmatex">\(\infty-\infty\)</span> 的问题。</p>
+<p>单点测度 <span class="arithmatex">\(\delta_x\)</span> 满足 <span class="arithmatex">\(\int f\,\mathrm{d}\delta_x=f(x)\)</span>。它是测度，并不是一个“单点无穷大、其余为零”的普通可积函数。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span><span class="book-name">三个极限定理</span></p>
+<p><strong>单调收敛</strong>：若 <span class="arithmatex">\(0\le f_n\uparrow f\)</span>，则 <span class="arithmatex">\(\int f_n\uparrow\int f\)</span>。</p>
+<p><strong>Fatou 引理</strong>：若 <span class="arithmatex">\(f_n\ge0\)</span>，则 <span class="arithmatex">\(\int\liminf f_n\le\liminf\int f_n\)</span>。</p>
+<p><strong>控制收敛</strong>：若 <span class="arithmatex">\(f_n\to f\)</span> 几乎处处，且 <span class="arithmatex">\(|f_n|\le g\)</span>、<span class="arithmatex">\(g\in L^1\)</span>，则 <span class="arithmatex">\(\int|f_n-f|\to0\)</span>，从而 <span class="arithmatex">\(\int f_n\to\int f\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明与三者之间的关系</summary>
+<p>单调收敛中，显然 <span class="arithmatex">\(\lim\int f_n\le\int f\)</span>。取简单函数 <span class="arithmatex">\(0\le s\le f\)</span> 和 <span class="arithmatex">\(0&lt;c&lt;1\)</span>。在 <span class="arithmatex">\(s&gt;0\)</span> 的部分，集合 <span class="arithmatex">\(\{f_n\ge cs\}\)</span> 递增到全集，故 <span class="arithmatex">\(\lim\int f_n\ge c\int s\)</span>。令 <span class="arithmatex">\(c\uparrow1\)</span>，再对 <span class="arithmatex">\(s\)</span> 取上确界，得到反向不等式。</p>
+<p>Fatou 引理中，令 <span class="arithmatex">\(g_n=\inf_{k\ge n}f_k\)</span>，则 <span class="arithmatex">\(g_n\uparrow\liminf f_n\)</span>，而 <span class="arithmatex">\(\int g_n\le\inf_{k\ge n}\int f_k\)</span>，应用单调收敛即可。</p>
+<p>控制收敛中，<span class="arithmatex">\(|f|\le g\)</span>，对非负函数 <span class="arithmatex">\(2g-|f_n-f|\)</span> 用 Fatou 引理，得到</p>
+<div class="arithmatex">\[
+2\int g\le2\int g-\limsup_n\int|f_n-f|.
+\]</div>
+<p>因此最后一个上极限为零。注意支配函数必须可积，且不能依赖 <span class="arithmatex">\(n\)</span>。</p>
+</details>
+<p>在 <span class="arithmatex">\(\sigma\)</span>-有限测度空间的乘积上，对于非负函数，Tonelli 定理允许交换重积分，即使积分为无穷大；对于绝对可积函数，Fubini 定理允许交换积分次序。两者的适用条件不同，后面处理积分核时必须检查。</p>
+<h3 id="section-4-2">4.2 <span class="arithmatex">\(L^p\)</span> 范数与常用不等式</h3>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.3</span><span class="book-name"><span class="arithmatex">\(L^p\)</span> 空间</span></p>
+<p>对 <span class="arithmatex">\(1\le p&lt;\infty\)</span>，</p>
+<div class="arithmatex">\[
+\|f\|_p=\left(\int|f|^p\,\mathrm{d}\mu\right)^{1/p},
+\qquad L^p=\{f:\|f\|_p&lt;\infty\}/\text{几乎处处相等}.
+\]</div>
+<p><span class="arithmatex">\(\|f\|_\infty=\operatorname*{ess\,sup}|f|\)</span>，即允许忽略零测集后的最小上界。实质上界与逐点上界不能混用。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.4</span><span class="book-name">Hölder 与 Minkowski 不等式</span></p>
+<p>若 <span class="arithmatex">\(1/p+1/q=1\)</span>，则 <span class="arithmatex">\(\int|fg|\le\|f\|_p\|g\|_q\)</span>。对 <span class="arithmatex">\(1\le p\le\infty\)</span>，有 <span class="arithmatex">\(\|f+g\|_p\le\|f\|_p+\|g\|_p\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>当 <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> 时，Young 不等式 <span class="arithmatex">\(ab\le a^p/p+b^q/q\)</span> 可由凸函数 <span class="arithmatex">\(a\mapsto a^p/p-ab\)</span> 的最小值证明。将 <span class="arithmatex">\(f,g\)</span> 分别除以其非零范数后积分，得到 Hölder。端点情形直接由 <span class="arithmatex">\(|g|\le\|g\|_\infty\)</span> 几乎处处得到。</p>
+<p>对 <span class="arithmatex">\(1&lt;p&lt;\infty\)</span>，先用 <span class="arithmatex">\(|f+g|^p\le2^{p-1}(|f|^p+|g|^p)\)</span> 保证可积，再写</p>
+<div class="arithmatex">\[
+\int|f+g|^p\le\int(|f|+|g|)|f+g|^{p-1}
+\le(\|f\|_p+\|g\|_p)\|f+g\|_p^{p-1}.
+\]</div>
+<p>除以右端范数的幂即可；<span class="arithmatex">\(p=1,\infty\)</span> 直接证明。<span class="arithmatex">\(p=q=2\)</span> 时 Hölder 就是 Cauchy–Schwarz。</p>
+</details>
+<h3 id="section-4-3">4.3 Radon–Nikodym 定理的含义</h3>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.5</span><span class="book-name">Radon–Nikodym 定理</span></p>
+<p>设 <span class="arithmatex">\(\mu,\nu\)</span> 是同一可测空间上的 <span class="arithmatex">\(\sigma\)</span>-有限正测度，且 <span class="arithmatex">\(\nu\ll\mu\)</span>，即 <span class="arithmatex">\(\mu(E)=0\)</span> 蕴含 <span class="arithmatex">\(\nu(E)=0\)</span>。则存在几乎处处唯一的非负可测函数 <span class="arithmatex">\(g\)</span>，使</p>
+<div class="arithmatex">\[
+\nu(E)=\int_Eg\,\mathrm{d}\mu.
+\]</div>
+<p>写作 <span class="arithmatex">\(g=\mathrm{d}\nu/\mathrm{d}\mu\)</span>。有限有符号或复测度也有相应版本，密度可为实值或复值。</p>
+</div>
+<details class="proof">
+<summary>有限正测度情形：用 Hilbert 空间解释密度的产生</summary>
+<p>使用 Hilbert 空间的 Riesz 表示定理。令 <span class="arithmatex">\(\lambda=\mu+\nu\)</span>，则</p>
+<div class="arithmatex">\[
+F(f)=\int f\,\mathrm{d}\nu,
+\qquad |F(f)|\le\sqrt{\nu(X)}\|f\|_{L^2(\lambda)}.
+\]</div>
+<p>Riesz 定理给出 <span class="arithmatex">\(h\in L^2(\lambda)\)</span>，使 <span class="arithmatex">\(F(f)=\int hf\,\mathrm{d}\lambda\)</span>。用示性函数测试可知 <span class="arithmatex">\(0\le h\le1\)</span>，于是 <span class="arithmatex">\(\mathrm{d}\nu=h\,\mathrm{d}\lambda\)</span>，<span class="arithmatex">\(\mathrm{d}\mu=(1-h)\,\mathrm{d}\lambda\)</span>。</p>
+<p>在 <span class="arithmatex">\(E=\{h=1\}\)</span> 上，<span class="arithmatex">\(\mu(E)=0\)</span>；绝对连续性推出 <span class="arithmatex">\(\nu(E)=0\)</span>，从而 <span class="arithmatex">\(\lambda(E)=0\)</span>。因此可定义 <span class="arithmatex">\(g=h/(1-h)\)</span>，并得到 <span class="arithmatex">\(\mathrm{d}\nu=g\,\mathrm{d}\mu\)</span>。</p>
+<p>一般 <span class="arithmatex">\(\sigma\)</span>-有限情形，将空间分割为两种测度都有限的可数个集合，逐块应用上述证明并拼接密度。唯一性用集合 <span class="arithmatex">\(\{g_1&gt;g_2+1/n\}\)</span> 测试即可。有符号测度再对正负部分分别使用此结论。</p>
+</details>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>Stieltjes 积分与 Riesz 表示</h2>
+<h3 id="section-5-1">5.1 递增函数如何编码测度</h3>
+<p>设 <span class="arithmatex">\(F:\mathbb R\to\mathbb R\)</span> 递增且右连续。其 Lebesgue–Stieltjes 测度由</p>
+<div class="arithmatex">\[
+\mu_F((a,b])=F(b)-F(a)
+\]</div>
+<p>确定。先在半开区间上定义长度，随后通过外测度构造扩张到 Borel 集。右连续性正是这一扩张所需的端点连续性。</p>
+<div class="admonition note">
+<p class="admonition-title">端点与跳跃</p>
+<p><span class="arithmatex">\(\mu_F(\{x\})=F(x)-F(x-)\)</span>，所以跳跃对应原子。在紧区间 <span class="arithmatex">\([a,b]\)</span> 上用 <span class="arithmatex">\(F(x)=\mu([a,x])\)</span> 时，还必须指定 <span class="arithmatex">\(F(a-)=0\)</span>，这样端点 <span class="arithmatex">\(a\)</span> 的质量才不会丢失。</p>
+<p>两个只相差常数的递增函数在开区间内给出同一增量测度。讨论分布函数的唯一性时应先固定归一化。</p>
+</div>
+<p>递增函数的左右极限存在，不连续点至多可数：对每个 <span class="arithmatex">\(n\)</span>，跳跃大小至少 <span class="arithmatex">\(1/n\)</span> 的点在有界区间内只有有限个，再作可数并。积分 <span class="arithmatex">\(\int f\,\mathrm{d}F\)</span> 就是 <span class="arithmatex">\(\int f\,\mathrm{d}\mu_F\)</span>；这同时包含连续密度和离散求和。</p>
+<h3 id="section-5-2">5.2 连续泛函与测度</h3>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span><span class="book-name">Radon 测度</span></p>
+<p>在局部紧 Hausdorff 空间上，正 Radon 测度在紧集上有限，并具有适当的内外正则性：集合的质量可由内部紧集逼近，或由外部开集逼近。这里使用正则 Borel 测度的约定。</p>
+</div>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span><span class="book-name">Riesz–Markov 表示定理</span></p>
+<p>在局部紧 Hausdorff 空间 <span class="arithmatex">\(X\)</span> 上，<span class="arithmatex">\(C_0(X)\)</span> 表示在无穷远处趋于零的连续函数，赋一致范数。每个 <span class="arithmatex">\(\Lambda\in C_0(X)^*\)</span> 对应唯一的有限正则实或复 Borel 测度 <span class="arithmatex">\(\mu\)</span>，使</p>
+<div class="arithmatex">\[
+\Lambda(f)=\int_X f\,\mathrm{d}\mu,
+\qquad \|\Lambda\|=|\mu|(X).
+\]</div>
+<p>正泛函对应正测度。对 <span class="arithmatex">\(C_c(X)\)</span> 上的正泛函也有局部有限版本，但此时测度总质量不必有限。</p>
+</div>
+<details class="proof">
+<summary>正泛函的构造：从开集恢复测度</summary>
+<p>在紧空间上，正性先给出 <span class="arithmatex">\(|\Lambda(f)|\le\Lambda(1)\|f\|_\infty\)</span>。对开集 <span class="arithmatex">\(U\)</span> 定义</p>
+<div class="arithmatex">\[
+m(U)=\sup\{\Lambda(f):f\in C(X),\ 0\le f\le1,\ \operatorname{supp}f\subset U\}.
+\]</div>
+<p>用紧集上的有限开覆盖和连续单位分解，可证明 <span class="arithmatex">\(m\)</span> 对开覆盖次可加；对互不相交开集，支撑函数相加给出可加性。再定义</p>
+<div class="arithmatex">\[
+\mu^*(E)=\inf\left\{\sum_n m(U_n):E\subset\bigcup_n U_n,\ U_n\text{ 开}\right\}.
+\]</div>
+<p>外测度扩张定理给出 Borel 测度 <span class="arithmatex">\(\mu\)</span>。支撑函数与紧集分离的性质保证 <span class="arithmatex">\(\mu(U)=m(U)\)</span> 及正则性。对 <span class="arithmatex">\(0\le f\in C(X)\)</span>，按函数值把值域切成宽度 <span class="arithmatex">\(\varepsilon\)</span> 的层，分别用内外逼近估计各层，可把 <span class="arithmatex">\(\int f\,\mathrm{d}\mu\)</span> 与 <span class="arithmatex">\(\Lambda(f)\)</span> 的误差控制在 <span class="arithmatex">\(\varepsilon\Lambda(1)\)</span> 以内。令 <span class="arithmatex">\(\varepsilon\to0\)</span> 得到表示式。</p>
+<p>唯一性来自开集的上述恢复公式。一般有界实泛函拆成两个正泛函，复泛函再拆实虚部；总变差给出范数等式。局部紧情形在紧支撑上作相同构造，再用 <span class="arithmatex">\(C_c(X)\)</span> 在 <span class="arithmatex">\(C_0(X)\)</span> 中的稠密性扩张。</p>
+<p>此构造使用的外测度扩张定理是测度论基础：可数次覆盖定义外测度，满足 Carathéodory 分割等式的集合构成 <span class="arithmatex">\(\sigma\)</span>-代数，外测度在其上可数可加。后续主要使用上面明确写出的表示式和范数等式。</p>
+</details>
+<p>第四章会在紧区间上给出另一条证明路线：先将泛函限制到多项式，通过有限维矩问题构造离散测度，再取弱-* 极限。两种路线分别强调扩张和逼近。</p>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>网的基本性质与极限定理</h2>
+<p>预序允许两个不同指标互相小于对方；证明通常只使用尾部和共同上界，并不需要反对称性。</p>
+<h3 id="topic-1-2-1">用邻域组织极限</h3>
+<p>序列把“足够靠后”固定为自然数顺序。网允许把有限测试集、邻域和精度本身作为指标，因此能够同时控制无限多个坐标。下面先建立它与闭包、连续性之间的关系，再检查积分极限需要的可数性。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.1</span><span class="book-name">预序</span></p>
+<p>集合 <span class="arithmatex">\(I\)</span> 上的关系 <span class="arithmatex">\(\leq\)</span> 称为预序，若 <span class="arithmatex">\(\alpha\leq\alpha\)</span>，且 <span class="arithmatex">\(\alpha\leq\beta\leq\gamma\)</span> 蕴含 <span class="arithmatex">\(\alpha\leq\gamma\)</span>。记 <span class="arithmatex">\(I_{\geq\beta}=\{\alpha:\beta\leq\alpha\}\)</span>。</p>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.2</span><span class="book-name">有向集与网</span></p>
+<p>预序集 <span class="arithmatex">\(I\)</span> 称为有向集，若任意两个元素有共同上界。网是以非空有向集为定义域的映射 <span class="arithmatex">\(\alpha\mapsto x_\alpha\)</span>；序列是指标集为 <span class="arithmatex">\(\mathbb N\)</span> 的特例。邻域族按反向包含排序也是有向集。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.3</span><span class="book-name">乘积预序</span></p>
+<p>在 <span class="arithmatex">\(I\times J\)</span> 上规定 <span class="arithmatex">\((\alpha,\beta)\leq(\alpha',\beta')\)</span> 当且仅当 <span class="arithmatex">\(\alpha\leq\alpha'\)</span> 且 <span class="arithmatex">\(\beta\leq\beta'\)</span>。预序集的乘积仍为预序集，有向集的有限乘积仍为有向集。</p>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.4</span><span class="book-name">子集构成的有向集</span></p>
+<p><span class="arithmatex">\(2^X\)</span> 表示 <span class="arithmatex">\(X\)</span> 的全部子集，<span class="arithmatex">\(\operatorname{fin}(2^X)\)</span> 表示其有限子集族。两者按包含关系排序均为有向集，共同上界可取并集。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.5</span><span class="book-name">最终与频繁</span></p>
+<p>性质 <span class="arithmatex">\(P(\alpha)\)</span> 最终成立，指存在 <span class="arithmatex">\(\alpha_0\)</span> 使所有 <span class="arithmatex">\(\alpha\geq\alpha_0\)</span> 均满足它；频繁成立，指对每个 <span class="arithmatex">\(\alpha_0\)</span> 都存在 <span class="arithmatex">\(\alpha\geq\alpha_0\)</span> 满足它。最终成立蕴含频繁成立，反向一般不成立。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.6</span><span class="book-name">网的收敛</span></p>
+<p>在拓扑空间 <span class="arithmatex">\(X\)</span> 中，<span class="arithmatex">\(x_\alpha\to x\)</span> 指对 <span class="arithmatex">\(x\)</span> 的每个邻域 <span class="arithmatex">\(U\)</span>，网最终位于 <span class="arithmatex">\(U\)</span>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.7</span><span class="book-name">单调网</span></p>
+<p>在扩充实数 <span class="arithmatex">\([-\infty,+\infty]\)</span> 的序拓扑下，递增网趋于全部项的上确界，递减网趋于全部项的下确界。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.12</summary>
+<p>令 <span class="arithmatex">\(s=\sup_\alpha x_\alpha\)</span>。任意 <span class="arithmatex">\(a&lt;s\)</span> 都有某项 <span class="arithmatex">\(x_{\alpha_0}&gt;a\)</span>，递增性使所有后续项落在 <span class="arithmatex">\((a,s]\)</span>，所以趋于 <span class="arithmatex">\(s\)</span>；无穷端点的序邻域同样适用。递减情形将上确界换成下确界。</p>
+</details>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.8</span><span class="book-name">Cauchy 网</span></p>
+<p>度量空间中的网是 Cauchy 网，若对每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，存在 <span class="arithmatex">\(\alpha_0\)</span>，使 <span class="arithmatex">\(\alpha,\beta\geq\alpha_0\)</span> 时 <span class="arithmatex">\(d(x_\alpha,x_\beta)&lt;\varepsilon\)</span>。这等价于乘积指标上的网 <span class="arithmatex">\(d(x_\alpha,x_\beta)\)</span> 趋于零。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.9</span><span class="book-name">收敛与 Cauchy 性</span></p>
+<p>度量空间中的收敛网必为 Cauchy 网。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.14</summary>
+<p>若 <span class="arithmatex">\(x_\alpha\to x\)</span>，给定 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，充分大的 <span class="arithmatex">\(\alpha,\beta\)</span> 均满足距离 <span class="arithmatex">\(x\)</span> 小于 <span class="arithmatex">\(\varepsilon/2\)</span>。三角不等式给 <span class="arithmatex">\(d(x_\alpha,x_\beta)&lt;\varepsilon\)</span>，正是 Cauchy 条件。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.10</span><span class="book-name">完备空间中的 Cauchy 网</span></p>
+<p>若度量空间完备，则其中每个 Cauchy 网均收敛。因此，用序列定义的度量完备性也足以处理网。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.15</summary>
+<p>递归选递增指标 <span class="arithmatex">\(\alpha_n\)</span>，使 <span class="arithmatex">\(\alpha,\beta\geq\alpha_n\)</span> 时距离小于 <span class="arithmatex">\(2^{-n}\)</span>。序列 <span class="arithmatex">\(x_{\alpha_n}\)</span> Cauchy，由完备性趋于某个 <span class="arithmatex">\(x\)</span>。对 <span class="arithmatex">\(\alpha\geq\alpha_n\)</span>，有 <span class="arithmatex">\(d(x_\alpha,x)\leq2^{-n}+d(x_{\alpha_n},x)\)</span>，所以整个网趋于 <span class="arithmatex">\(x\)</span>。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.11</span><span class="book-name">Hausdorff 性</span></p>
+<p>拓扑空间是 Hausdorff 空间，当且仅当每个网至多有一个极限。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.16</summary>
+<p>Hausdorff 空间中，不同点有不交邻域，网不能最终同时进入两个不交集合，所以极限唯一。反向若两个不同点的每对邻域都相交，以邻域对按缩小排序，在各交中选一点得到同时趋于两点的网，违反唯一性。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.12</span><span class="book-name">闭包</span></p>
+<p><span class="arithmatex">\(x\in\overline A\)</span> 当且仅当存在 <span class="arithmatex">\(A\)</span> 中的网收敛到 <span class="arithmatex">\(x\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.17</summary>
+<p>闭包条件使每个 <span class="arithmatex">\(x\)</span> 的邻域都碰到 <span class="arithmatex">\(A\)</span>，按邻域缩小排序并从交中选点，得到趋于 <span class="arithmatex">\(x\)</span> 的网。反向，趋于 <span class="arithmatex">\(x\)</span> 的 <span class="arithmatex">\(A\)</span> 中网使每个邻域最终含有 <span class="arithmatex">\(A\)</span> 的点，故 <span class="arithmatex">\(x\in\overline A\)</span>。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.13</span><span class="book-name">连续性的网刻画</span></p>
+<p>对映射 <span class="arithmatex">\(f:X\to Y\)</span> 和 <span class="arithmatex">\(x\in X\)</span>，以下等价：<span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(x\)</span> 连续；每个 <span class="arithmatex">\(x_\alpha\to x\)</span> 都满足 <span class="arithmatex">\(f(x_\alpha)\to f(x)\)</span>；每个取值于 <span class="arithmatex">\(X\setminus\{x\}\)</span> 且趋于 <span class="arithmatex">\(x\)</span> 的网都满足后一性质。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.18</summary>
+<p>连续性使目标邻域的原像含源邻域，因此保持网极限。若不连续，取 <span class="arithmatex">\(f(x)\)</span> 的邻域 <span class="arithmatex">\(W\)</span>，使每个 <span class="arithmatex">\(x\)</span> 邻域 <span class="arithmatex">\(U\)</span> 都含某个 <span class="arithmatex">\(x_U\)</span> 满足 <span class="arithmatex">\(f(x_U)\notin W\)</span>；这些点自动不同于 <span class="arithmatex">\(x\)</span>，按邻域缩小组成趋于 <span class="arithmatex">\(x\)</span> 的网，却不保持极限。所以连删去 <span class="arithmatex">\(x\)</span> 的测试版本也足够。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.14</span><span class="book-name">连续映射与闭包</span></p>
+<p>若 <span class="arithmatex">\(f:X\to Y\)</span> 连续，则对任意 <span class="arithmatex">\(A\subset X\)</span>，<span class="arithmatex">\(f(\overline A)\subset\overline{f(A)}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.19</summary>
+<p>对 <span class="arithmatex">\(x\in\overline A\)</span>，1.2.17 给 <span class="arithmatex">\(A\)</span> 中趋于 <span class="arithmatex">\(x\)</span> 的网，连续性使像网趋于 <span class="arithmatex">\(f(x)\)</span>。再用闭包刻画，得 <span class="arithmatex">\(f(x)\in\overline{f(A)}\)</span>。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.15</span><span class="book-name">同胚</span></p>
+<p>双射 <span class="arithmatex">\(f:X\to Y\)</span> 是同胚，当且仅当对任意网及任意 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(x_\alpha\to x\)</span> 等价于 <span class="arithmatex">\(f(x_\alpha)\to f(x)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.20</summary>
+<p>同胚及其逆连续，故双向保持极限。反向网等价使 <span class="arithmatex">\(f\)</span> 与 <span class="arithmatex">\(f^{-1}\)</span> 都由 1.2.18 判为连续，因此为同胚。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.16</span><span class="book-name">拓扑由收敛网确定</span></p>
+<p>同一集合上的两个拓扑相等，当且仅当它们的网及其极限完全相同。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.21</summary>
+<p>拓扑相同时收敛当然相同。反向，对集合的恒等双射，网极限相同意味着两个方向均连续；因此两个拓扑相同。</p>
+</details>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.17</span><span class="book-name">第一可数性</span></p>
+<p>空间在 <span class="arithmatex">\(x\)</span> 处第一可数，指 <span class="arithmatex">\(x\)</span> 有可数邻域基：存在邻域 <span class="arithmatex">\(U_n\)</span>，使每个邻域包含某个 <span class="arithmatex">\(U_n\)</span>。可将它改成递减邻域基。每一点都满足此性质时称空间第一可数。</p>
+</div>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.18</span><span class="book-name">共尾子集</span></p>
+<p><span class="arithmatex">\(E\subset I\)</span> 称为共尾子集，若每个 <span class="arithmatex">\(\alpha\in I\)</span> 都有 <span class="arithmatex">\(\beta\in E\)</span> 满足 <span class="arithmatex">\(\alpha\leq\beta\)</span>。</p>
+</div>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.19</span><span class="book-name">子网</span></p>
+<p>若 <span class="arithmatex">\(h:J\to I\)</span> 单调且像共尾，则 <span class="arithmatex">\((x_{h(\beta)})_{\beta\in J}\)</span> 称为 <span class="arithmatex">\((x_\alpha)_{\alpha\in I}\)</span> 的子网。单调性下，共尾条件等价于对每个 <span class="arithmatex">\(\alpha\)</span>，<span class="arithmatex">\(h(\beta)\geq\alpha\)</span> 最终成立。</p>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.20</span><span class="book-name">子网保持极限</span></p>
+<p>若 <span class="arithmatex">\(x_\alpha\to x\)</span>，则其每个子网也趋于 <span class="arithmatex">\(x\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.28</summary>
+<p>给定极限的邻域，原网在某个尾部全部进入它。子网的指标映射最终大于该尾部起点，故子网也最终进入此邻域。</p>
+</details>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.21</span><span class="book-name">聚点</span></p>
+<p>对网 <span class="arithmatex">\((x_\alpha)\)</span>，以下等价：<span class="arithmatex">\(x\)</span> 是某个子网的极限；网频繁进入 <span class="arithmatex">\(x\)</span> 的每个邻域；<span class="arithmatex">\(x\in\bigcap_\alpha\overline{\{x_\beta:\beta\geq\alpha\}}\)</span>。满足这些条件的点称为聚点。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.29</summary>
+<p>子网趋于 <span class="arithmatex">\(x\)</span> 使原网在每个尾部仍碰到每个 <span class="arithmatex">\(x\)</span> 邻域，这与 <span class="arithmatex">\(x\)</span> 位于每个尾集闭包等价。反向，按“尾部起点、邻域”对排序，选择足够大的原指标且该项落在指定邻域；可把所选指标也纳入排序，得到满足共尾条件的子网。它最终进入每个邻域，所以趋于 <span class="arithmatex">\(x\)</span>。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.22</span><span class="book-name">序列聚点</span></p>
+<p>第一可数空间中，<span class="arithmatex">\(x\)</span> 是序列的聚点，当且仅当存在该序列的子列趋于 <span class="arithmatex">\(x\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.30</summary>
+<p>取 <span class="arithmatex">\(x\)</span> 的递减可数邻域基 <span class="arithmatex">\(U_n\)</span>。聚点条件保证每个 <span class="arithmatex">\(U_n\)</span> 在任意序列尾部都有项，递归选 <span class="arithmatex">\(k_n&gt;k_{n-1}\)</span> 使 <span class="arithmatex">\(x_{k_n}\in U_n\)</span>，得到收敛子列。反向子列是子网，故其极限是聚点。</p>
+</details>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.23</span><span class="book-name">指标的无穷远点</span></p>
+<p>令 <span class="arithmatex">\(I^*=I\cup\{\infty\}\)</span>，规定所有 <span class="arithmatex">\(\alpha\leq\infty\)</span>。在 <span class="arithmatex">\(I^*\)</span> 上，以各 <span class="arithmatex">\(\{\alpha\}\)</span> 及 <span class="arithmatex">\(I^*_{\geq\alpha}\)</span> 为拓扑基；其中 <span class="arithmatex">\(\alpha\)</span> 为孤立点，趋于 <span class="arithmatex">\(\infty\)</span> 表示最终超过每个给定指标。</p>
+</div>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.24</span><span class="book-name">第一可数有向集</span></p>
+<p>称 <span class="arithmatex">\(I\)</span> 第一可数，若 <span class="arithmatex">\(I^*\)</span> 在 <span class="arithmatex">\(\infty\)</span> 处第一可数。以下等价：该性质成立；<span class="arithmatex">\(I\)</span> 有可数共尾子集；存在递增且共尾的指标序列 <span class="arithmatex">\((\alpha_n)\)</span>，即指标网有序列子网。</p>
+</div>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.25</span><span class="book-name">以指标序列检测极限</span></p>
+<p>若 <span class="arithmatex">\(I\)</span> 第一可数，则 <span class="arithmatex">\(x_\alpha\to x\)</span> 当且仅当每个满足 <span class="arithmatex">\(\alpha_n\to\infty\)</span> 的指标序列均满足 <span class="arithmatex">\(x_{\alpha_n}\to x\)</span>。这里不要求所测试的每个序列单调。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.36</summary>
+<p>正向由指标序列共尾性直接得到。反向若原网不收敛，某邻域外的指标构成共尾子集。取递增共尾指标基 <span class="arithmatex">\(\beta_n\)</span>，每次选择 <span class="arithmatex">\(\alpha_n\geq\beta_n\)</span> 且 <span class="arithmatex">\(x_{\alpha_n}\)</span> 在该邻域外，便得到 <span class="arithmatex">\(\alpha_n\to\infty\)</span> 的反例序列。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.26</span><span class="book-name">单调收敛的网形式</span></p>
+<p>设 <span class="arithmatex">\(I\)</span> 第一可数，<span class="arithmatex">\(f_\alpha\)</span> 是递增的非负可测函数网。则逐点上确界 <span class="arithmatex">\(f=\sup_\alpha f_\alpha\)</span> 可测，且 <span class="arithmatex">\(\int f\,d\mu=\lim_\alpha\int f_\alpha\,d\mu\)</span>，两边允许为 <span class="arithmatex">\(+\infty\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.37</summary>
+<p>取递增共尾指标序列 <span class="arithmatex">\(\alpha_n\)</span>，则点态上确界等于 <span class="arithmatex">\(\sup_nf_{\alpha_n}\)</span>，故可测。普通单调收敛给 <span class="arithmatex">\(\int f=\lim_n\int f_{\alpha_n}\)</span>；积分网递增，共尾子序列的上确界等于整个网的上确界，得到所述网极限。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.27</span><span class="book-name">控制收敛的网形式</span></p>
+<p>设 <span class="arithmatex">\(I\)</span> 第一可数，复可测函数 <span class="arithmatex">\(f_\alpha\)</span> 逐点趋于 <span class="arithmatex">\(f\)</span>，并存在 <span class="arithmatex">\(g\in L^1(\mu)\)</span> 使所有 <span class="arithmatex">\(|f_\alpha|\leq g\)</span>。则 <span class="arithmatex">\(f\)</span> 可测、可积，且 <span class="arithmatex">\(\int|f_\alpha-f|\,d\mu\to0\)</span>，从而积分收敛。允许统一删去一个零测集后要求这些条件。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.38</summary>
+<p>共尾序列先使极限 <span class="arithmatex">\(f\)</span> 可测并满足 <span class="arithmatex">\(|f|\leq g\)</span>。对任意 <span class="arithmatex">\(\alpha_n\to\infty\)</span>，普通控制收敛给 <span class="arithmatex">\(\int|f_{\alpha_n}-f|\to0\)</span>。1.2.36 将全部此类序列测试转成积分网趋零；再由积分差绝对值至多为误差积分得积分收敛。所有几乎处处条件可在同一个零测集外处理。</p>
+</details>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.28</span><span class="book-name">Fatou 不等式的网形式</span></p>
+<p>设 <span class="arithmatex">\(I\)</span> 第一可数，非负可测函数 <span class="arithmatex">\(f_\alpha\)</span> 逐点趋于 <span class="arithmatex">\(f\)</span>。则 <span class="arithmatex">\(f\)</span> 可测且 <span class="arithmatex">\(\int f\,d\mu\leq\liminf_\alpha\int f_\alpha\,d\mu\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.39</summary>
+<p>共尾序列保证 <span class="arithmatex">\(f\)</span> 可测。令 <span class="arithmatex">\(L=\liminf_\alpha\int f_\alpha\)</span>；若 <span class="arithmatex">\(L&lt;\infty\)</span>，按递增共尾指标基选择 <span class="arithmatex">\(\alpha_n\)</span>，使 <span class="arithmatex">\(\int f_{\alpha_n}\leq L+1/n\)</span>（必要时先取尾部下确界）。普通 Fatou 给 <span class="arithmatex">\(\int f\leq\liminf_n\int f_{\alpha_n}\leq L\)</span>。若 <span class="arithmatex">\(L=\infty\)</span>，不等式直接成立。</p>
+</details>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.29</span><span class="book-name">无序求和</span></p>
+<p>赋范空间中，族 <span class="arithmatex">\((v_i)_{i\in I}\)</span> 的和定义为网 <span class="arithmatex">\(\sum_{i\in F}v_i\)</span> 的极限，其中 <span class="arithmatex">\(F\)</span> 遍历 <span class="arithmatex">\(I\)</span> 的有限子集并按包含关系排序。存在此极限时称该族可求和。</p>
+</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.30</span><span class="book-name">非负族的和</span></p>
+<p>对 <span class="arithmatex">\(a_i\in[0,+\infty]\)</span>，定义 <span class="arithmatex">\(\sum_{i\in I}a_i=\sup_{F\subset I,\,F\text{ 有限}}\sum_{i\in F}a_i\)</span>。和有限时称此非负族绝对收敛。</p>
+</div>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.31</span><span class="book-name">向量族的绝对收敛</span></p>
+<p>族 <span class="arithmatex">\((v_i)\)</span> 绝对收敛，指 <span class="arithmatex">\(\sum_i\|v_i\|&lt;\infty\)</span>。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.32</span><span class="book-name">绝对收敛族的支集</span></p>
+<p>绝对收敛向量族中，<span class="arithmatex">\(v_i\ne0\)</span> 的指标至多可数。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.45</summary>
+<p>若 <span class="arithmatex">\(\sum_i\|v_i\|&lt;\infty\)</span>，则对每个 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\|v_i\|\geq1/n\)</span> 的指标只能有限，否则有限部分和无界。所有非零项的指标是这些有限集的可数并，所以至多可数。</p>
+</details>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.33</span><span class="book-name">Banach 空间中的绝对收敛</span></p>
+<p>完备赋范空间中，绝对收敛族可无序求和，且 <span class="arithmatex">\(\|\sum_i v_i\|\leq\sum_i\|v_i\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.2.46</summary>
+<p>给定 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，范数和的定义给有限 <span class="arithmatex">\(F_0\)</span>，使其外全部范数的和小于 <span class="arithmatex">\(\varepsilon\)</span>。任意包含 <span class="arithmatex">\(F_0\)</span> 的两个有限部分和之差范数至多为外部范数和，所以有限子集指标下的部分和是 Cauchy 网。完备性及 1.2.15 给无序和，有限和的三角不等式在极限中给所述范数界。</p>
+</details>
+<details class="proof">
+<summary>Cauchy 网、可数化与无序求和的证明</summary>
+<p>对 Cauchy 网，递归选取递增指标 <span class="arithmatex">\(\alpha_n\)</span>，使 <span class="arithmatex">\(\alpha,\beta\geq\alpha_n\)</span> 时距离小于 <span class="arithmatex">\(2^{-n}\)</span>。序列 <span class="arithmatex">\(x_{\alpha_n}\)</span> 是 Cauchy 序列，由完备性有极限 <span class="arithmatex">\(x\)</span>；三角不等式再推出整个网趋于 <span class="arithmatex">\(x\)</span>。不要求这些指标共尾。</p>
+<p>第一可数有向集的可数共尾子集可逐次用共同上界改成递增共尾序列。网极限若失败，从每个递增共尾指标之后选取一个落在固定邻域之外的项，就得到反例指标序列。这证明 1.2.36；沿递增共尾序列应用通常的单调收敛、控制收敛和 Fatou 定理，再用 1.2.36，得到相应的网形式。</p>
+<p>若 <span class="arithmatex">\(\sum_i\|v_i\|&lt;\infty\)</span>，每个集合 <span class="arithmatex">\(\{i:\|v_i\|\geq1/n\}\)</span> 都有限，其并包含全部非零项。有限和网的尾部差由未加入项的范数和控制，因而是 Cauchy 网；完备性给出极限及范数估计。没有完备性时，极限可能只存在于完备化中。</p>
+</details>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>紧性、局部紧性与连续函数空间</h2>
+<p>一般拓扑中需要网，度量空间中常能还原为序列；局部紧 Hausdorff 条件则让紧支集函数能够分离点、截断函数和表示测度。</p>
+<h3 id="topic-1-3-1">紧性提供聚点</h3>
+<p>得到逐点有界还不足以取得极限；需要一个把无限近似留在同一空间里的紧性条件。开覆盖、闭集交和网聚点是这件事的三种表达。可数性条件则说明什么时候能把子网换成子列。</p>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.1</span><span class="book-name">紧性的等价条件</span></p>
+<p><span class="arithmatex">\(X\)</span> 紧，当且仅当每个递增开集网 <span class="arithmatex">\(U_\alpha\)</span> 若并为 <span class="arithmatex">\(X\)</span>，就有某个 <span class="arithmatex">\(U_\alpha=X\)</span>；也当且仅当每个递减的非空闭集网都有非空交。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.1</summary>
+<p>对递增开覆盖，紧性给有限子覆盖，有向性再给一个同时包含这些开集的项，故该项已为全空间。反向，把任意开覆盖的有限并作为递增网，存在覆盖全空间的一项就给有限子覆盖。取补集使递增开集条件与递减非空闭集条件互相等价。</p>
+</details>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.2</span><span class="book-name">紧性与聚点</span></p>
+<p><span class="arithmatex">\(X\)</span> 紧，当且仅当其中每个网都有聚点。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.2</summary>
+<p>紧时，各尾集闭包具有有限交性质，故共同交非空，交中点由 1.2.29 是聚点。反向若一开覆盖没有有限子覆盖，按有限子覆盖排序，在各有限并外选一点。任何候选聚点都位于某个覆盖开集，而网最终避开它，矛盾。因此空间紧。</p>
+</details>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.3</span><span class="book-name">可分、第二可数与 Lindelöf</span></p>
+<p>有可数稠密子集称可分；有可数拓扑基称第二可数；每个开覆盖都有可数子覆盖称 Lindelöf。</p>
+</div>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.4</span><span class="book-name">可数性条件的关系</span></p>
+<p>第二可数空间既可分又是 Lindelöf 空间。度量空间可分当且仅当第二可数。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.5</summary>
+<p>从可数拓扑基的每个非空元素选点，得到可数稠密集；从每个被某个覆盖开集包含的基元素选一个覆盖成员，得到可数子覆盖。可分度量空间中，稠密集为中心、有理半径的球组成可数基；第二可数推出可分已证明。</p>
+</details>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.5</span><span class="book-name">列紧性</span></p>
+<p>每个序列都有收敛子列的空间称列紧。第一可数空间中，这等价于每个序列有聚点。</p>
+</div>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.6</span><span class="book-name">第二可数空间的紧性</span></p>
+<p>第二可数拓扑空间紧当且仅当列紧。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.7</summary>
+<p>第二可数蕴含第一可数，紧性使序列有聚点，再由 1.2.30 给收敛子列。反向，Lindelöf 将开覆盖化为可数覆盖；若其前 <span class="arithmatex">\(n\)</span> 项从不覆盖全空间，在外选 <span class="arithmatex">\(x_n\)</span>。列紧给收敛子列，极限所属的某覆盖开集会最终包含该子列，却又被足够后面的所有所选项避开，矛盾。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.7</span><span class="book-name">度量空间的紧性</span></p>
+<p>度量空间紧当且仅当列紧。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.8</summary>
+<p>列紧度量空间必全有界，否则可选两两距离有正下界的序列；也必完备，因为 Cauchy 序列的收敛子列决定整个序列极限。全有界使空间可分，故第二可数，1.3.7 给紧性。反向紧空间同样全有界，因而第二可数，再用该定理得列紧。</p>
+</details>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.8</span><span class="book-name">唯一聚点判据</span></p>
+<p>在紧 Hausdorff 空间中，网趋于 <span class="arithmatex">\(x\)</span>、<span class="arithmatex">\(x\)</span> 是该网唯一聚点、该网的每个收敛子网都以 <span class="arithmatex">\(x\)</span> 为极限，三者等价。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.9</summary>
+<p>收敛网的聚点在 Hausdorff 空间只能是极限。若唯一聚点为 <span class="arithmatex">\(x\)</span> 却不收敛，取始终在某邻域外的子网；闭的邻域补集紧，给另一个聚点，矛盾。每个聚点又都是收敛子网的极限，所以后两个条件等价。</p>
+</details>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.9</span><span class="book-name">网的上、下极限</span></p>
+<p>扩充实数网的聚点集非空且闭，定义 <span class="arithmatex">\(\liminf x_\alpha\)</span> 为其最小元，<span class="arithmatex">\(\limsup x_\alpha\)</span> 为其最大元。</p>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.10</span><span class="book-name">尾部公式</span></p>
+<p>令 <span class="arithmatex">\(a_\alpha=\inf_{\beta\geq\alpha}x_\beta\)</span>、<span class="arithmatex">\(b_\alpha=\sup_{\beta\geq\alpha}x_\beta\)</span>。则 <span class="arithmatex">\(a_\alpha\)</span> 递增趋于 <span class="arithmatex">\(\liminf x_\alpha\)</span>，<span class="arithmatex">\(b_\alpha\)</span> 递减趋于 <span class="arithmatex">\(\limsup x_\alpha\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.3.12</summary>
+<p>尾部缩小使下确界递增、上确界递减。应用 1.2.12，二者极限分别为其上确界和下确界，按定义就是 <span class="arithmatex">\(\liminf\)</span> 和 <span class="arithmatex">\(\limsup\)</span>。</p>
+</details>
+<h3 id="topic-1-4-1">从局部估计到连续函数</h3>
+<p>度量完备性控制 Cauchy 过程，拓扑紧性控制聚点，两者作用不同。接下来把这些性质与半连续函数、乘积拓扑联系起来，随后用局部紧性构造能够截断和拼接的连续函数。</p>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.11</span><span class="book-name">Lipschitz 映射</span></p>
+<p>度量空间间的映射满足 <span class="arithmatex">\(d_Y(f(x),f(y))\leq C d_X(x,y)\)</span> 时称为 <span class="arithmatex">\(C\)</span>-Lipschitz 映射。</p>
+</div>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.12</span><span class="book-name">等价度量</span></p>
+<p>同一集合上的度量 <span class="arithmatex">\(d_1,d_2\)</span> 若存在 <span class="arithmatex">\(a,b&gt;0\)</span> 使 <span class="arithmatex">\(a d_1\leq d_2\leq b d_1\)</span>，称为等价度量。它们给出相同拓扑和相同 Cauchy 网。</p>
+</div>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.13</span><span class="book-name">有限乘积度量</span></p>
+<p>对有限个度量空间，<span class="arithmatex">\(d_\infty(x,y)=\max_jd_j(x_j,y_j)\)</span> 和 <span class="arithmatex">\(d_p(x,y)=(\sum_j d_j(x_j,y_j)^p)^{1/p}\)</span>（<span class="arithmatex">\(1\leq p&lt;\infty\)</span>）都是乘积度量，彼此等价。</p>
+</div>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.14</span><span class="book-name">拉回拓扑</span></p>
+<p>映射 <span class="arithmatex">\(f:X\to Y\)</span> 在 <span class="arithmatex">\(X\)</span> 上诱导的拉回拓扑由所有 <span class="arithmatex">\(f^{-1}(U)\)</span>（<span class="arithmatex">\(U\)</span> 在 <span class="arithmatex">\(Y\)</span> 中开）组成。此拓扑下 <span class="arithmatex">\(x_\alpha\to x\)</span> 当且仅当 <span class="arithmatex">\(f(x_\alpha)\to f(x)\)</span>。</p>
+</div>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.15</span><span class="book-name">完备子空间</span></p>
+<p>度量空间的完备子空间必闭；完备度量空间的闭子空间必完备。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.6</summary>
+<p>若点在完备子空间闭包内，选该子空间中距离点小于 <span class="arithmatex">\(1/n\)</span> 的序列；它 Cauchy，在子空间收敛，极限唯一使原点也属于子空间。因此子空间闭。反向，闭子空间中的 Cauchy 序列在完备母空间收敛，闭性保证极限仍在其中。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.16</span><span class="book-name">紧子集与闭子集</span></p>
+<p>Hausdorff 空间的紧子集必闭；紧空间的闭子集必紧。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.7</summary>
+<p>对紧集外的点，用 Hausdorff 不交邻域分别分离该点与紧集每个点；紧集的有限子覆盖使外点有一个邻域完全避开紧集，故紧集闭。闭子集的开覆盖补上它的开补集便覆盖母紧空间，有限子覆盖给子集紧。</p>
+</details>
+<div id="def-29" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.17</span><span class="book-name">半连续性</span></p>
+<p><span class="arithmatex">\(f:X\to[-\infty,+\infty]\)</span> 下半连续，指每个 <span class="arithmatex">\(\{x:f(x)&gt;a\}\)</span> 都开；上半连续，指每个 <span class="arithmatex">\(\{x:f(x)&lt;a\}\)</span> 都开。等价地，<span class="arithmatex">\(-f\)</span> 下半连续就是 <span class="arithmatex">\(f\)</span> 上半连续。</p>
+</div>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.18</span><span class="book-name">下半连续函数的上确界</span></p>
+<p>任意族下半连续函数的逐点上确界仍下半连续。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.10</summary>
+<p>有 <span class="arithmatex">\(\{\sup_i f_i&gt;a\}=\bigcup_i\{f_i&gt;a\}\)</span>，右侧开，正是下半连续的定义。允许扩充实值时同样成立。</p>
+</details>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.19</span><span class="book-name">半连续性的网刻画</span></p>
+<p><span class="arithmatex">\(f\)</span> 下半连续当且仅当每个 <span class="arithmatex">\(x_\alpha\to x\)</span> 均有 <span class="arithmatex">\(f(x)\leq\liminf f(x_\alpha)\)</span>；也等价于每个这样的网均有 <span class="arithmatex">\(f(x)\leq\limsup f(x_\alpha)\)</span>。第一可数空间中，只需检验序列。上半连续的陈述反向。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.11</summary>
+<p>下半连续时，对 <span class="arithmatex">\(a&lt;f(x)\)</span>，开集 <span class="arithmatex">\(\{f&gt;a\}\)</span> 最终含收敛网，所以 <span class="arithmatex">\(\liminf f(x_\alpha)\geq a\)</span>，令 <span class="arithmatex">\(a\uparrow f(x)\)</span>。反向若不下半连续，可在每个邻域中选 <span class="arithmatex">\(f\leq a&lt;f(x)\)</span> 的点形成收敛网，连 <span class="arithmatex">\(\limsup\)</span> 版本也违反。第一可数时取可数邻域基即可用序列替代。取负号得到上半连续版本。</p>
+</details>
+<div id="def-30" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.20</span><span class="book-name">乘积拓扑</span></p>
+<p><span class="arithmatex">\(\prod_{i\in I}X_i\)</span> 的乘积拓扑由有限柱集生成：基本开集只对有限多个坐标规定开集，其余坐标不受限制。</p>
+</div>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.21</span><span class="book-name">逐坐标收敛</span></p>
+<p>乘积空间中的网收敛，当且仅当每个坐标网都收敛到对应坐标。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.14</summary>
+<p>坐标投影连续，故乘积收敛推出坐标收敛。反向每个乘积基本邻域只限制有限个坐标；对这有限个坐标分别取最终指标，有向性给共同上界，整个网便最终进入基本邻域。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.22</span><span class="book-name">映入乘积的连续性</span></p>
+<p>映射 <span class="arithmatex">\(f:Y\to\prod_iX_i\)</span> 连续，当且仅当每个坐标映射 <span class="arithmatex">\(\pi_i\circ f\)</span> 连续。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.15</summary>
+<p>若 <span class="arithmatex">\(f\)</span> 连续，复合坐标投影连续。反向，基本开集只涉及有限坐标，其原像是有限个坐标开集原像的交，仍开，所以 <span class="arithmatex">\(f\)</span> 连续。</p>
+</details>
+<div id="prop-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.23</span><span class="book-name">可数乘积</span></p>
+<p>可数个第二可数空间的乘积第二可数；可数个可度量空间的乘积可度量。可取 <span class="arithmatex">\(d(x,y)=\sum_{n\geq1}2^{-n}\min\{1,d_n(x_n,y_n)\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.16</summary>
+<p>有限坐标集合及每个坐标的可数基选择总共只有可数种，构成乘积可数基。给出的加权距离由有限部分与小尾部估计验证三角不等式及正定性；固定有限坐标距离小时总距离小，反向总距离小时各固定坐标距离小，故诱导乘积拓扑。</p>
+</details>
+<div id="thm-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.24</span><span class="book-name">Tychonoff 定理</span></p>
+<p>任意族紧空间的乘积，在乘积拓扑下紧。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.17</summary>
+<p>对任意网，考虑“在部分坐标上是该网聚点”的部分点，按扩充坐标且保留原值排序。链的并仍是部分聚点，因为一个乘积基本邻域只涉及有限坐标，它们同时包含于链的某一项，原网频繁进入该邻域。Zorn 引理给极大部分聚点。</p>
+<p>若遗漏某坐标，先取子网使已有坐标趋于该部分点，再由遗漏坐标的紧性取进一步子网使该坐标也收敛。所得扩充点仍是聚点，违反极大性。故极大点包含全部坐标，原网有聚点，1.3.2 给紧性。可数个第二可数紧因子的情形还可依次取坐标收敛子列再取对角线，直接得到列紧与紧。</p>
+</details>
+<h3 id="topic-1-4-19">在紧集上截断和延拓</h3>
+<p>相对紧邻域使连续函数的支集留在有限范围内。Urysohn 函数控制“在哪里为一、在哪里为零”，单位分解把局部构造相加，Tietze 延拓则保持紧集上的既有函数值。</p>
+<div id="def-31" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.25</span><span class="book-name">相对紧性</span></p>
+<p>子集 <span class="arithmatex">\(A\)</span> 称为相对紧，记 <span class="arithmatex">\(A\Subset X\)</span>，若其闭包紧。在 Hausdorff 空间中，这等价于 <span class="arithmatex">\(A\)</span> 包含于某个紧子集。</p>
+</div>
+<div id="prop-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.26</span><span class="book-name">度量空间中的相对紧性</span></p>
+<p>度量空间的 <span class="arithmatex">\(A\)</span> 相对紧，当且仅当 <span class="arithmatex">\(A\)</span> 中每个网在 <span class="arithmatex">\(X\)</span> 中有聚点；也当且仅当 <span class="arithmatex">\(A\)</span> 中每个序列在 <span class="arithmatex">\(X\)</span> 中有聚点。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.22</summary>
+<p>闭包紧当然使 <span class="arithmatex">\(A\)</span> 中网、序列有聚点。反向若只知序列条件，对 <span class="arithmatex">\(\overline A\)</span> 中序列 <span class="arithmatex">\(x_n\)</span> 选 <span class="arithmatex">\(a_n\in A\)</span> 使 <span class="arithmatex">\(d(x_n,a_n)&lt;1/n\)</span>，其收敛子列也使对应 <span class="arithmatex">\(x_n\)</span> 收敛；故闭包列紧，从而紧。网条件更强，包含序列条件，所以同样推出相对紧。</p>
+</details>
+<div id="prop-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.27</span><span class="book-name">局部紧性的继承</span></p>
+<p>局部紧 Hausdorff 空间的开子空间、闭子空间仍是局部紧 Hausdorff 空间。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.23</summary>
+<p>开子空间中，每点可取闭包包含于该开集的相对紧邻域；这由局部紧 Hausdorff 的缩小邻域性质得到。闭子空间与母空间紧邻域闭包相交，得到紧邻域。Hausdorff 性在子空间中保留。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.28</span><span class="book-name">紧集的相对紧邻域</span></p>
+<p>在局部紧 Hausdorff 空间中，若紧集 <span class="arithmatex">\(K\)</span> 包含于开集 <span class="arithmatex">\(W\)</span>，则存在开集 <span class="arithmatex">\(U\)</span> 使 <span class="arithmatex">\(K\subset U\Subset W\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.24</summary>
+<p>对 <span class="arithmatex">\(K\)</span> 每个点取闭包紧且包含于 <span class="arithmatex">\(W\)</span> 的开邻域，有限子覆盖后令 <span class="arithmatex">\(U\)</span> 为它们的并。其闭包包含于有限个紧闭包的并，故紧且包含于 <span class="arithmatex">\(W\)</span>，得到 <span class="arithmatex">\(K\subset U\Subset W\)</span>。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.29</span><span class="book-name">紧集的分离</span></p>
+<p>局部紧 Hausdorff 空间中，两个不相交紧集有不相交的开邻域。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.25</summary>
+<p>Hausdorff 空间中紧集与集外点可用有限子覆盖分离。对第二个紧集的各点使用此分离，再有限选取，取适当邻域的并和交，得到两个不相交开邻域。</p>
+</details>
+<div id="thm-23" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.30</span><span class="book-name">紧支集 Urysohn 函数</span></p>
+<p>在局部紧 Hausdorff 空间中，给定紧集 <span class="arithmatex">\(K\subset W\)</span>，其中 <span class="arithmatex">\(W\)</span> 开，存在 <span class="arithmatex">\(f\in C_c(X,[0,1])\)</span>，使 <span class="arithmatex">\(f=1\)</span> 于 <span class="arithmatex">\(K\)</span> 且 <span class="arithmatex">\(\operatorname{supp}f\subset W\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.26</summary>
+<p>先取 <span class="arithmatex">\(K\subset U\Subset W\)</span>。紧 Hausdorff 空间正规：两个不交闭集都是紧集，可用 1.4.25 分离。正规空间中递归对二进有理数取开集 <span class="arithmatex">\(V_r\)</span>，使 <span class="arithmatex">\(\overline{V_r}\subset V_s\)</span> 当 <span class="arithmatex">\(r&lt;s\)</span>，并夹住需要分离的两个闭集。令 <span class="arithmatex">\(g(x)=\inf\{r:x\in V_r\}\)</span>；嵌套闭包条件使 <span class="arithmatex">\(\{g&lt;a\}\)</span> 与 <span class="arithmatex">\(\{g&gt;a\}\)</span> 均开，所以 <span class="arithmatex">\(g\)</span> 连续，并在两个闭集上分别为零、一。</p>
+<p>将此构造用于紧空间 <span class="arithmatex">\(\overline U\)</span> 中的 <span class="arithmatex">\(K\)</span> 和边界 <span class="arithmatex">\(\overline U\setminus U\)</span>，取函数在前者为一、后者为零。零延拓到 <span class="arithmatex">\(X\)</span> 连续，支集包含于 <span class="arithmatex">\(\overline U\subset W\)</span>，得到紧支集函数。</p>
+</details>
+<div id="thm-24" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.31</span><span class="book-name">有限单位分解</span></p>
+<p>若紧集 <span class="arithmatex">\(K\)</span> 被开集 <span class="arithmatex">\(U_1,\ldots,U_n\)</span> 覆盖，则存在 <span class="arithmatex">\(h_i\in C_c(U_i,[0,1])\)</span>，零延拓到 <span class="arithmatex">\(X\)</span> 后满足 <span class="arithmatex">\(\sum_i h_i\leq1\)</span>，并在 <span class="arithmatex">\(K\)</span> 上满足 <span class="arithmatex">\(\sum_i h_i=1\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.28</summary>
+<p>缩小有限覆盖，取紧集 <span class="arithmatex">\(K_i\subset U_i\)</span> 仍覆盖 <span class="arithmatex">\(K\)</span>，并取 Urysohn 函数 <span class="arithmatex">\(g_i\in C_c(U_i,[0,1])\)</span>，在 <span class="arithmatex">\(K_i\)</span> 上为一。令 <span class="arithmatex">\(h_i=g_i/\max(1,\sum_jg_j)\)</span>。分母连续且不为零，支集仍在 <span class="arithmatex">\(U_i\)</span>，总和至多一；在 <span class="arithmatex">\(K\)</span> 上分子总和至少一，因此总和恰为一。</p>
+</details>
+<div id="thm-25" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.32</span><span class="book-name">紧集上的连续函数延拓</span></p>
+<p>局部紧 Hausdorff 空间中，紧集 <span class="arithmatex">\(K\)</span> 上的实或复连续函数 <span class="arithmatex">\(f\)</span> 可延拓为 <span class="arithmatex">\(\widetilde f\in C_c(X)\)</span>，且 <span class="arithmatex">\(\|\widetilde f\|_\infty=\|f\|_\infty\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.29</summary>
+<p>在含 <span class="arithmatex">\(K\)</span> 的紧邻域上使用正规性。实 <span class="arithmatex">\(|f|\leq M\)</span> 时，可用 Urysohn 函数在 <span class="arithmatex">\(f\leq-M/3\)</span> 与 <span class="arithmatex">\(f\geq M/3\)</span> 两闭集间构造 <span class="arithmatex">\(|g_0|\leq M/3\)</span>，使 <span class="arithmatex">\(|f-g_0|\leq2M/3\)</span> 于 <span class="arithmatex">\(K\)</span>。对残差反复进行，得到一致收敛的连续级数 <span class="arithmatex">\(\sum g_n\)</span>，范数和至多 <span class="arithmatex">\(M\)</span>，在 <span class="arithmatex">\(K\)</span> 上等于 <span class="arithmatex">\(f\)</span>。乘以在 <span class="arithmatex">\(K\)</span> 为一的紧支集截断函数，得到紧支集延拓。</p>
+<p>复情形先分别延拓实部、虚部，再用径向投影 <span class="arithmatex">\(z\mapsto z\min(1,M/|z|)\)</span> 控制模；投影在原 <span class="arithmatex">\(f\)</span> 值域上固定，零点取零。故最大范数不超过 <span class="arithmatex">\(M\)</span>，限制又达到原最大值，所以相等。</p>
+</details>
+<h3 id="topic-1-4-31">一致范数中的紧性</h3>
+<p>无穷远消失允许用紧支集截断控制尾部。对函数族，一致紧性还需要同一个连续性尺度：这就是等度连续，它把有限个采样点的误差推广到整个紧集。</p>
+<div id="def-32" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.33</span><span class="book-name">无穷远消失的连续函数</span></p>
+<p>对赋范空间 <span class="arithmatex">\(V\)</span>，<span class="arithmatex">\(C_0(X,V)\)</span> 是满足如下条件的连续函数：每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span> 都有紧集 <span class="arithmatex">\(K\)</span>，使 <span class="arithmatex">\(x\notin K\)</span> 时 <span class="arithmatex">\(\|f(x)\|&lt;\varepsilon\)</span>。赋予一致范数；<span class="arithmatex">\(C_0(X,E)\)</span> 表示取值于 <span class="arithmatex">\(E\subset V\)</span> 的此类函数。非紧局部紧 Hausdorff 空间中，这等价于在一点紧化上令 <span class="arithmatex">\(f(\infty)=0\)</span> 后连续。</p>
+</div>
+<div id="def-33" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.34</span><span class="book-name">等度连续</span></p>
+<p>族 <span class="arithmatex">\(\mathcal F\subset C(X,V)\)</span> 等度连续，指对每个 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，存在同一个邻域 <span class="arithmatex">\(U\)</span>，使全部 <span class="arithmatex">\(f\in\mathcal F\)</span> 和 <span class="arithmatex">\(y\in U\)</span> 均满足 <span class="arithmatex">\(\|f(y)-f(x)\|&lt;\varepsilon\)</span>。</p>
+</div>
+<div id="thm-26" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.35</span><span class="book-name">等度连续族的极限</span></p>
+<p>等度连续函数网的逐点极限连续；若定义域紧，收敛进一步是一致收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.36</summary>
+<p>固定 <span class="arithmatex">\(x\)</span>，用等度连续性控制邻近点对所有函数的差，再对 <span class="arithmatex">\(x\)</span> 的逐点极限取极限，得到极限函数在 <span class="arithmatex">\(x\)</span> 连续。紧域上取有限个这种邻域中心，逐点收敛在有限中心同时最终成立；把任一点误差拆成与中心的两次等度连续误差及中心极限误差，便得到统一范数误差趋零。</p>
+</details>
+<div id="thm-27" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.36</span><span class="book-name">Arzelà–Ascoli 定理</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 局部紧 Hausdorff，<span class="arithmatex">\(\mathcal F\subset C_0(X,\mathbb F)\)</span>，<span class="arithmatex">\(\mathbb F=\mathbb R\)</span> 或 <span class="arithmatex">\(\mathbb C\)</span>。若它等度连续、在每一点的取值集合有界，且一致在无穷远消失，则它在一致范数下相对紧。最后一条件指：每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span> 都有同一个紧集 <span class="arithmatex">\(K\)</span>，使所有 <span class="arithmatex">\(f\in\mathcal F\)</span> 在 <span class="arithmatex">\(K\)</span> 外满足 <span class="arithmatex">\(|f|&lt;\varepsilon\)</span>；<span class="arithmatex">\(X\)</span> 紧时自动满足。</p>
+</div>
+<details class="proof">
+<summary>证明 1.4.37</summary>
+<p>每点取值集合的闭包紧，Tychonoff 使所有坐标取值的乘积紧，所以任意函数网有逐点收敛子网。等度连续使极限连续并在每个紧集上一致收敛。统一无穷远消失性质还使极限属于 <span class="arithmatex">\(C_0\)</span>，并使紧集外误差统一小；结合紧集内一致收敛，得到全空间一致收敛。因此每个网都有一致范数聚点，证明相对紧。</p>
+</details>
+<details class="proof">
+<summary>局部截断与一般 Ascoli 定理</summary>
+<p>紧集的每一点有闭包紧的邻域；有限覆盖并结合 Hausdorff 空间中紧集可分离的性质，得到 <span class="arithmatex">\(K\subset U\Subset W\)</span>。在紧闭包内应用 Urysohn 引理，零延拓得到紧支集截断函数。对有限覆盖先取局部截断函数，再归一化，得到单位分解。实函数先在紧邻域内作保范数延拓；复函数可先分别延拓实、虚部，再将值投影到半径 <span class="arithmatex">\(\|f\|_\infty\)</span> 的闭圆盘，乘上等于一的截断函数。</p>
+<p>Ascoli 定理的关键是将问题缩到有限个采样点。紧集上，等度连续给出有限邻域覆盖，逐点有界给出采样值的有限 <span class="arithmatex">\(\varepsilon\)</span> 网，两者合起来给出函数族的一致范数有限网。在同一个紧集外，函数族同时小于 <span class="arithmatex">\(\varepsilon\)</span>，故得到全空间上的全有界性。<span class="arithmatex">\(C_0(X,\mathbb F)\)</span> 完备，所以闭包紧。也可以用乘积紧性先抽取逐点收敛子网，再由等度连续和统一截断把收敛升级为一致收敛。</p>
+</details>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>函数代数与测度表示</h2>
+<p>逼近理论提供足够丰富的测试函数；表示理论将测试函数上的线性作用恢复为测度。涉及局部紧空间时，以下均假设它是 Hausdorff 空间。</p>
+<h3 id="topic-1-5-1">用代数生成测试函数</h3>
+<p>多项式和指数函数容易计算，但测试所有连续函数更适合判断测度和极限。Stone–Weierstrass 给出从前一种测试扩充到后一种测试的条件，其中复共轭封闭性负责保留实值函数的逼近。</p>
+<div id="def-34" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span><span class="book-name">代数</span></p>
+<p>域 <span class="arithmatex">\(\mathbb F\)</span> 上的代数是向量空间 <span class="arithmatex">\(A\)</span> 配备结合的双线性乘法。乘法交换时称交换代数；存在 <span class="arithmatex">\(1\)</span> 满足 <span class="arithmatex">\(1a=a1=a\)</span> 时称含幺代数。子代数是乘法封闭的线性子空间，含幺子代数还须包含同一单位元。</p>
+</div>
+<div id="def-35" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.2</span><span class="book-name">星代数</span></p>
+<p>复星代数具有共轭线性的映射 <span class="arithmatex">\(a\mapsto a^*\)</span>，满足 <span class="arithmatex">\((ab)^*=b^*a^*\)</span>、<span class="arithmatex">\((a^*)^*=a\)</span>；含幺时 <span class="arithmatex">\(1^*=1\)</span>。对星运算封闭的子代数称星子代数。实代数中的对应运算为线性。</p>
+</div>
+<div id="def-36" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.3</span><span class="book-name">分离点</span></p>
+<p>映射族 <span class="arithmatex">\(\mathcal F\)</span> 分离点，指对任意 <span class="arithmatex">\(x\ne y\)</span>，有 <span class="arithmatex">\(f\in\mathcal F\)</span> 满足 <span class="arithmatex">\(f(x)\ne f(y)\)</span>；等价于联合映射 <span class="arithmatex">\(x\mapsto(f(x))_{f\in\mathcal F}\)</span> 单射。</p>
+</div>
+<div id="thm-28" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.4</span><span class="book-name">紧空间上的 Stone–Weierstrass 定理</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 紧 Hausdorff，<span class="arithmatex">\(S\subset C(X,\mathbb F)\)</span> 包含常数 <span class="arithmatex">\(1\)</span> 并分离点，则由 <span class="arithmatex">\(S\)</span> 生成的含幺星代数在 <span class="arithmatex">\(C(X,\mathbb F)\)</span> 中一致稠密。实系数可限制为 <span class="arithmatex">\(\mathbb Q\)</span>，复系数可限制为 <span class="arithmatex">\(\mathbb Q+i\mathbb Q\)</span>，仍有相同的稠密性。</p>
+</div>
+<details class="proof">
+<summary>证明 1.5.12</summary>
+<p>先看实代数的一致闭包 <span class="arithmatex">\(A\)</span>。对有界实函数，多项式可一致逼近绝对值，所以 <span class="arithmatex">\(A\)</span> 对 <span class="arithmatex">\(\max,\min\)</span> 封闭。点分离及常数使任意两点 <span class="arithmatex">\(x,y\)</span> 可由某个 <span class="arithmatex">\(h_{x,y}\in A\)</span> 同时匹配目标连续函数 <span class="arithmatex">\(f\)</span> 的值。固定 <span class="arithmatex">\(x\)</span>，有限覆盖后对这些函数取最大值，得到在全空间高于 <span class="arithmatex">\(f-\varepsilon\)</span>、在 <span class="arithmatex">\(x\)</span> 附近低于 <span class="arithmatex">\(f+\varepsilon\)</span> 的函数；再对有限个 <span class="arithmatex">\(x\)</span> 的邻域覆盖取最小值，得到全空间误差小于 <span class="arithmatex">\(\varepsilon\)</span> 的 <span class="arithmatex">\(A\)</span> 元素。因此实闭包为全部连续函数。</p>
+<p>复星代数的实值部分仍分离点，分别逼近实部、虚部即可。有限多项式的系数可由有理数或有理复数逼近，所以限制系数不改变一致闭包。</p>
+</details>
+<div id="thm-29" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.5</span><span class="book-name">局部紧版本</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 局部紧，<span class="arithmatex">\(S\subset C_0(X,\mathbb F)\)</span> 分离点，且每个 <span class="arithmatex">\(x\)</span> 都有 <span class="arithmatex">\(f\in S\)</span> 满足 <span class="arithmatex">\(f(x)\ne0\)</span>，则 <span class="arithmatex">\(S\)</span> 生成的星代数在 <span class="arithmatex">\(C_0(X,\mathbb F)\)</span> 中一致稠密，特别能够一致逼近全部紧支集连续函数。</p>
+</div>
+<details class="proof">
+<summary>证明 1.5.13</summary>
+<p>在一点紧化 <span class="arithmatex">\(X^\infty\)</span> 上给代数添加常数。原点分离仍成立，无共同零点保证每个原点都与无穷远点分离。紧版本给所有连续函数的一致逼近；对在无穷远为零的目标，减去逼近函数在无穷远的值，便得到原不含常数代数中的逼近。误差至多增至两倍，仍趋零。</p>
+</details>
+<div id="thm-30" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.6</span><span class="book-name">紧空间的可数性判据</span></p>
+<p>紧 Hausdorff 空间 <span class="arithmatex">\(X\)</span> 的以下条件等价：可度量；第二可数；存在可数个连续实或复函数分离点；<span class="arithmatex">\(C(X,\mathbb F)\)</span> 在一致范数下可分。</p>
+</div>
+<details class="proof">
+<summary>证明 1.5.14</summary>
+<p>可度量紧空间全有界，有限小球网给第二可数。第二可数及紧 Hausdorff 正规性允许为可数基的适当闭包包含对选 Urysohn 函数，得到可数分离点函数族。该族将 <span class="arithmatex">\(X\)</span> 连续单射到可数个紧区间的乘积，紧到 Hausdorff 的连续单射是同胚，乘积可度量，所以 <span class="arithmatex">\(X\)</span> 可度量。</p>
+<p>可数分离族的有理星多项式由 Stone–Weierstrass 组成 <span class="arithmatex">\(C(X)\)</span> 的可数稠密子集。反向若 <span class="arithmatex">\(C(X)\)</span> 可分，稠密函数族也分离点：先用连续函数分离两点，再一致逼近并保留值差。故四条件等价。</p>
+</details>
+<h3 id="topic-1-6-1">积分、密度与范数</h3>
+<p>积分把点态信息转成整体估计；零测集上的差异应被商掉，才能得到真正的范数空间。密度表示回答测度怎样相互比较，随后简单函数逼近与完备性使极限仍是可积函数。</p>
+<div id="prop-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.7</span><span class="book-name">积分为零</span></p>
+<p>非负可测函数 <span class="arithmatex">\(f\)</span> 满足 <span class="arithmatex">\(\int f\,d\mu=0\)</span> 当且仅当 <span class="arithmatex">\(f=0\)</span> 几乎处处。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.1</summary>
+<p><span class="arithmatex">\(\int f=0\)</span> 使 <span class="arithmatex">\(\mu\{f\geq1/n\}\leq n\int f=0\)</span>，这些集合的并包含所有 <span class="arithmatex">\(f&gt;0\)</span> 的点，故几乎处处为零。反向零测集外为零的非负函数积分为零。</p>
+</details>
+<div id="def-37" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.8</span><span class="book-name">正泛函与简单函数</span></p>
+<p>在包含非负函数的实或复函数空间上，线性泛函 <span class="arithmatex">\(\Lambda\)</span> 正，指 <span class="arithmatex">\(f\geq0\)</span> 时 <span class="arithmatex">\(\Lambda(f)\geq0\)</span>。简单函数是有限个可测集示性函数的线性组合。</p>
+</div>
+<div id="def-38" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.9</span><span class="book-name">Dirac 测度</span></p>
+<p>点 <span class="arithmatex">\(x\)</span> 的 Dirac 测度定义为 <span class="arithmatex">\(\delta_x(E)=1\)</span>（<span class="arithmatex">\(x\in E\)</span>）或 <span class="arithmatex">\(0\)</span>（<span class="arithmatex">\(x\notin E\)</span>），它可定义于全部子集，且 <span class="arithmatex">\(\int f\,d\delta_x=f(x)\)</span>。</p>
+</div>
+<div id="def-39" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.10</span><span class="book-name">测度的支集</span></p>
+<p>设空间第二可数，或空间局部紧且测度为 Radon 测度。定义 <span class="arithmatex">\(\operatorname{supp}\mu\)</span> 为每个邻域都有正测度的点的集合。它闭，补集测度为零，是承载全部测度的最小闭集。</p>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.11</span><span class="book-name">有限支集</span></p>
+<p>在上述条件下，测度具有有限支集，当且仅当它是有限个点质量的和 <span class="arithmatex">\(\sum_j a_j\delta_{x_j}\)</span>，其中 <span class="arithmatex">\(a_j\in(0,+\infty]\)</span>；若测度有限或为 Radon 测度，则全部系数有限。零测度对应空和。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.5</summary>
+<p>有限点质量和的支集恰是系数正的那些点。反向有限支集外测度为零，在每个支集点定义 <span class="arithmatex">\(a_j=\mu(\{x_j\})\)</span>，可测集与此有限集相交便得测度表达。支集点质量不能为零，否则可用不含其他支集点的邻域排除它。有限测度显然排除无穷系数；Radon 测度对紧单点有限也排除无穷系数。</p>
+</details>
+<div id="def-40" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.12</span><span class="book-name">推前测度</span></p>
+<p>可测映射 <span class="arithmatex">\(\Phi:X\to Y\)</span> 的推前测度为 <span class="arithmatex">\(\Phi_*\mu(E)=\mu(\Phi^{-1}E)\)</span>，并满足 <span class="arithmatex">\(\int_Yg\,d(\Phi_*\mu)=\int_Xg\circ\Phi\,d\mu\)</span>，适用于非负或可积函数。适用支集定义时，<span class="arithmatex">\(\Phi\)</span> 的本质值域定义为 <span class="arithmatex">\(\operatorname{supp}(\Phi_*\mu)\)</span>。</p>
+</div>
+<div id="def-41" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.13</span><span class="book-name">可测同构与拉回测度</span></p>
+<p>双射 <span class="arithmatex">\(\Phi:X\to Y\)</span> 及其逆均可测时称可测同构；两边取 Borel 结构时称 Borel 同构。对 <span class="arithmatex">\(Y\)</span> 上的测度 <span class="arithmatex">\(\nu\)</span>，其拉回为 <span class="arithmatex">\(\Phi^*\nu=(\Phi^{-1})_*\nu\)</span>。</p>
+</div>
+<h3 id="topic-1-6-9">从绝对连续到积分对偶</h3>
+<p>绝对连续只说明零测集被保留，Radon–Nikodym 进一步把这种关系写成乘以一个函数。对偶表示利用这个密度，把抽象泛函恢复为积分；两处构造都需要说明密度的可积性和唯一性。</p>
+<div id="def-42" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.14</span><span class="book-name">绝对连续与密度</span></p>
+<p><span class="arithmatex">\(\nu\ll\mu\)</span> 指 <span class="arithmatex">\(\mu(E)=0\)</span> 蕴含 <span class="arithmatex">\(\nu(E)=0\)</span>。非负可测函数 <span class="arithmatex">\(g\)</span> 若满足 <span class="arithmatex">\(\nu(E)=\int_Eg\,d\mu\)</span> 对全部可测集成立，称为 Radon–Nikodym 密度，记 <span class="arithmatex">\(g=d\nu/d\mu\)</span>；等价地，全部非负可测 <span class="arithmatex">\(f\)</span> 满足 <span class="arithmatex">\(\int f\,d\nu=\int fg\,d\mu\)</span>。</p>
+</div>
+<div id="thm-31" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.15</span><span class="book-name">Radon–Nikodym 定理</span></p>
+<p>对两个 <span class="arithmatex">\(\sigma\)</span>-有限正测度 <span class="arithmatex">\(\mu,\nu\)</span>，<span class="arithmatex">\(\nu\ll\mu\)</span> 当且仅当存在上述密度。密度在 <span class="arithmatex">\(\mu\)</span>-几乎处处意义下唯一。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.12</summary>
+<p>先在两测度都有限的情形令 <span class="arithmatex">\(\psi=\mu+\nu\)</span>。<span class="arithmatex">\(L^2(\psi)\)</span> 上 <span class="arithmatex">\(\xi\mapsto\int\xi\,d\mu\)</span> 有界，由第三章独立的 Hilbert 表示定理得 <span class="arithmatex">\(d\mu=a\,d\psi\)</span>；测试指标及正性给 <span class="arithmatex">\(0\leq a\leq1\)</span>。同理 <span class="arithmatex">\(d\nu=b\,d\psi\)</span>。<span class="arithmatex">\(\nu\ll\mu\)</span> 使 <span class="arithmatex">\(\psi\ll\mu\)</span>，所以 <span class="arithmatex">\(a=0\)</span> 的集合为 <span class="arithmatex">\(\psi\)</span> 零测集；在其外令 <span class="arithmatex">\(h=b/a\)</span>，该零测集上取零，便有 <span class="arithmatex">\(d\nu=h\,d\mu\)</span>。</p>
+<p><span class="arithmatex">\(\sigma\)</span>-有限情形将空间分成两测度同时有限的可数块，逐块拼接密度。反向密度积分显然消去所有 <span class="arithmatex">\(\mu\)</span> 零测集。若两密度表示相同，测试其差正、负部分的分层集合，得到它们几乎处处相同。此证明用到 <span class="arithmatex">\(L^2\)</span> 完备性和第三章的表示定理，可在学完该表示后回到这里核对。</p>
+</details>
+<div id="thm-32" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.16</span><span class="book-name">简单函数的稠密性</span></p>
+<p>对 <span class="arithmatex">\(1\leq p&lt;\infty\)</span>，可积简单函数在 <span class="arithmatex">\(L^p(\mu)\)</span> 中稠密；有限测度集的示性函数的线性张成稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.13</summary>
+<p>先截断 <span class="arithmatex">\(f\)</span> 的值及有限测度支撑，再将其值域划分成小网格，得到简单函数 <span class="arithmatex">\(s_n\)</span> 逐点趋于 <span class="arithmatex">\(f\)</span>，误差被可积的固定倍数 <span class="arithmatex">\(|f|^p\)</span> 控制。控制收敛给 <span class="arithmatex">\(\|s_n-f\|_p\to0\)</span>。也可对非负部分用递增简单逼近；其中非零水平集的测度由 <span class="arithmatex">\(L^p\)</span> 可积性有限，故这些可积简单函数正是所述指标线性组合。</p>
+</details>
+<div id="thm-33" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.17</span><span class="book-name">定理 1.6.14：<span class="arithmatex">\(L^p\)</span> 的完备性</span></p>
+<p>对 <span class="arithmatex">\(1\leq p\leq\infty\)</span>，<span class="arithmatex">\(L^p(\mu)\)</span> 是 Banach 空间。每个在 <span class="arithmatex">\(L^p\)</span> 中收敛的序列都有一个几乎处处收敛到同一极限的子列。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.14</summary>
+<p>对 <span class="arithmatex">\(p&lt;\infty\)</span>，从 Cauchy 序列取子列使 <span class="arithmatex">\(\|f_{n_{k+1}}-f_{n_k}\|_p\leq2^{-k}\)</span>。Minkowski 与单调收敛使 <span class="arithmatex">\(\sum_k|f_{n_{k+1}}-f_{n_k}|\)</span> 在 <span class="arithmatex">\(L^p\)</span> 中，故几乎处处有限。差级数点态给极限 <span class="arithmatex">\(f\)</span>，Fatou 与尾部范数和给 <span class="arithmatex">\(\|f-f_{n_k}\|_p\to0\)</span>，Cauchy 性恢复整个序列的范数极限。</p>
+<p><span class="arithmatex">\(p=\infty\)</span> 时删去可数个零测集后，各差的本质上界可作为逐点界，同一差级数一致收敛，得到 <span class="arithmatex">\(L^\infty\)</span> 极限。若原序列已范数收敛，用相同可和子列构造或 Chebyshev 与可和误差，便得到几乎处处趋于同一极限的子列。</p>
+</details>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.18</span><span class="book-name">对偶范数公式</span></p>
+<p>设 <span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限测度，<span class="arithmatex">\(1\leq p\leq\infty\)</span>，<span class="arithmatex">\(1/p+1/q=1\)</span>。对非负可测 <span class="arithmatex">\(f\)</span>，<span class="arithmatex">\(\|f\|_p=\sup\{\int fg\,d\mu:g\geq0\text{ 可积简单},\ \|g\|_q\leq1\}\)</span>，允许无穷值。对复可测 <span class="arithmatex">\(f\)</span>，相应公式为 <span class="arithmatex">\(\|f\|_p=\sup\int|fg|\,d\mu\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.15</summary>
+<p>Hölder 给上界。<span class="arithmatex">\(1&lt;p&lt;\infty\)</span> 且 <span class="arithmatex">\(0&lt;\|f\|_p&lt;\infty\)</span> 时，理想测试为 <span class="arithmatex">\(g=f^{p-1}/\|f\|_p^{p-1}\)</span>；将 <span class="arithmatex">\(f\)</span> 截到有限测度块及有限值后，再以简单函数逼近测试并归一化，逼近此等号。<span class="arithmatex">\(p=1\)</span> 用有限测度块上的指标逼近 <span class="arithmatex">\(1\)</span>；<span class="arithmatex">\(p=\infty\)</span> 在 <span class="arithmatex">\(\{f&gt;\|f\|_\infty-\varepsilon\}\)</span> 内取有限正测度子集，再以归一化指标测试。<span class="arithmatex">\(\sigma\)</span>-有限性保证该子集存在。无穷范数通过递增截断得到任意大测试值。复情形应用于 <span class="arithmatex">\(|f|\)</span>。</p>
+</details>
+<div id="thm-34" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.19</span><span class="book-name">积分表示对偶</span></p>
+<p>设 <span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限测度，<span class="arithmatex">\(1&lt;p\leq\infty\)</span> 且 <span class="arithmatex">\(1/p+1/q=1\)</span>。则每个 <span class="arithmatex">\(L^q(\mu)\)</span> 上的有界线性泛函唯一写成 <span class="arithmatex">\(\Lambda(g)=\int fg\,d\mu\)</span>，其中 <span class="arithmatex">\(f\in L^p(\mu)\)</span>，并有 <span class="arithmatex">\(\|\Lambda\|=\|f\|_p\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.6.16</summary>
+<p>Hölder 与 1.6.15 先给积分映射等距。为证明满射，对实泛函定义正、负部分</p>
+<div class="arithmatex">\[
+\Lambda_\pm(g)=\sup_{0\leq h\leq g}(\pm\Lambda(h)),\qquad g\geq0.
+\]</div>
+<p>它们非负且由 <span class="arithmatex">\(\|\Lambda\|\|g\|_q\)</span> 控制。若 <span class="arithmatex">\(h\leq f+g\)</span>，拆为 <span class="arithmatex">\(h_1=fh/(f+g)\)</span>、<span class="arithmatex">\(h_2=gh/(f+g)\)</span>（零分母取零），可证可加性；以 <span class="arithmatex">\(h\leftrightarrow g-h\)</span> 得 <span class="arithmatex">\(\Lambda=\Lambda_+-\Lambda_-\)</span>。所以只需表示正泛函。</p>
+<p>有限测度块上令 <span class="arithmatex">\(\nu(E)=\Lambda_+(\mathbf1_E)\)</span>。不交并的指标部分和在 <span class="arithmatex">\(L^q\)</span> 收敛（<span class="arithmatex">\(q&lt;\infty\)</span>），故 <span class="arithmatex">\(\nu\)</span> 可数可加且绝对连续于 <span class="arithmatex">\(\mu\)</span>。Radon–Nikodym 给密度 <span class="arithmatex">\(f_+\)</span>；简单函数测试及 1.6.15 给 <span class="arithmatex">\(\|f_+\|_p\leq\|\Lambda_+\|\)</span>。简单函数在 <span class="arithmatex">\(L^q\)</span> 稠密遂给全部表示。一般空间分成可数有限块并拼接，范数公式保证全局密度仍在 <span class="arithmatex">\(L^p\)</span>。对实、虚两部分组合给复泛函，唯一性由等距映射的单射得到。</p>
+</details>
+<h3 id="topic-1-7-1">连续测试确定测度</h3>
+<p>在局部紧空间上，连续紧支集函数能探测开集中的紧部分。正则性保证这些测试没有遗漏测度信息；Lusin 和稠密性定理再把可测函数与连续函数连接起来。</p>
+<div id="def-43" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.20</span><span class="book-name">内、外正则性</span></p>
+<p>Borel 集 <span class="arithmatex">\(E\)</span> 内正则，指 <span class="arithmatex">\(\mu(E)=\sup\{\mu(K):K\subset E,\ K\text{ 紧}\}\)</span>；外正则，指 <span class="arithmatex">\(\mu(E)=\inf\{\mu(U):E\subset U,\ U\text{ 开}\}\)</span>。</p>
+</div>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.21</span><span class="book-name">开集的连续测试</span></p>
+<p>局部紧空间中，对开集 <span class="arithmatex">\(U\)</span>，<span class="arithmatex">\(\sup_{K\subset U,\,K\text{ 紧}}\mu(K)=\sup\{\int f\,d\mu:f\in C_c(U,[0,1])\}\)</span>。因此开集内正则等价于其测度等于右侧上确界。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.2</summary>
+<p>每个 <span class="arithmatex">\(0\leq f\leq1\)</span> 的积分至多为其紧支集的测度，所以右侧不超过左侧。反向对任意紧 <span class="arithmatex">\(K\subset U\)</span>，Urysohn 函数取 <span class="arithmatex">\(f=1\)</span> 于 <span class="arithmatex">\(K\)</span>、支撑于 <span class="arithmatex">\(U\)</span>，得到 <span class="arithmatex">\(\mu(K)\leq\int f\)</span>。取上确界得等号。</p>
+</details>
+<div id="def-44" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.22</span><span class="book-name">Radon 测度</span></p>
+<p>局部紧空间上的正 Borel 测度称 Radon 测度，若它在全部 Borel 集外正则、在开集内正则，并在紧集上有限。后一条件保证每个紧支集连续函数可积。</p>
+</div>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.23</span><span class="book-name">锥上的线性延拓</span></p>
+<p>设实向量空间 <span class="arithmatex">\(V\)</span> 由锥 <span class="arithmatex">\(K\)</span> 张成，<span class="arithmatex">\(\Gamma:K\to W\)</span> 可加且对非负标量齐次。则 <span class="arithmatex">\(\Gamma\)</span> 唯一延拓为 <span class="arithmatex">\(V\)</span> 到实向量空间 <span class="arithmatex">\(W\)</span> 的线性映射：<span class="arithmatex">\(\widetilde\Gamma(u-v)=\Gamma(u)-\Gamma(v)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.5</summary>
+<p>若 <span class="arithmatex">\(u-v=u'-v'\)</span>，则 <span class="arithmatex">\(u+v'=u'+v\)</span>，可加性给 <span class="arithmatex">\(\Gamma(u)-\Gamma(v)=\Gamma(u')-\Gamma(v')\)</span>，所以延拓良定义。逐项检查加法、正缩放，再取负号得实线性。锥张成使每个向量有这种表达，故延拓唯一。</p>
+</details>
+<div id="thm-35" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.24</span><span class="book-name">正泛函的 Riesz–Markov 表示</span></p>
+<p>局部紧空间 <span class="arithmatex">\(X\)</span> 上，每个正线性泛函 <span class="arithmatex">\(\Lambda:C_c(X)\to\mathbb F\)</span> 唯一表示为 <span class="arithmatex">\(\Lambda(f)=\int f\,d\mu\)</span>，其中 <span class="arithmatex">\(\mu\)</span> 为正 Radon 测度。其一致范数算子界为 <span class="arithmatex">\(\mu(X)\)</span>，可为无穷；泛函有界当且仅当测度有限。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.6</summary>
+<p>构造从开集开始：</p>
+<div class="arithmatex">\[
+m(U)=\sup\{\Lambda(f):f\in C_c(U),\ 0\leq f\leq1\},\qquad
+\mu^*(E)=\inf_{U\supset E,\ U\text{ 开}}m(U).
+\]</div>
+<p>正性先给固定紧支集上的局部界：若 <span class="arithmatex">\(h=1\)</span> 于该紧集，则 <span class="arithmatex">\(|\Lambda(f)|\leq\|f\|_\infty\Lambda(h)\)</span>。有限单位分解将任意测试函数的紧支集拆到开覆盖中，证明 <span class="arithmatex">\(m\)</span> 对开覆盖次可加；对不交开集，把其测试函数相加得到反向有限可加，再由上确界得可数可加。于是 <span class="arithmatex">\(\mu^*\)</span> 是外测度。</p>
+<p>紧集与其外开集可用 Urysohn 函数分离，以上两种不等式使开集满足 Carathéodory 可测性判据；故所有 Borel 集可测。开集测度等于 <span class="arithmatex">\(m(U)\)</span>，对紧集有限，且开集内正则由测试函数的紧支集得到，外正则由定义得到。由层集分割与上下简单阶梯夹逼，可得 <span class="arithmatex">\(\int f\,d\mu=\Lambda(f)\)</span> 对 <span class="arithmatex">\(f\geq0\)</span> 连续紧支集成立：每个层集上的紧支集测试给下估计，开层集覆盖与单位分解给上估计，二者误差由层值网格宽度乘支集邻域的有限质量控制。锥延拓再给实、复函数。</p>
+<p>唯一性由 1.7.2：连续测试确定每个开集测度，再由外正则确定 Borel 测度。最后 <span class="arithmatex">\(|\Lambda(f)|\leq\|f\|_\infty\mu(X)\)</span>；开集 <span class="arithmatex">\(X\)</span> 的连续测试上确界又等于 <span class="arithmatex">\(\mu(X)\)</span>，所以范数恰为总质量。</p>
+</details>
+<div id="thm-36" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.25</span><span class="book-name">有限测度集的正则性</span></p>
+<p>Radon 测度及其完备化中，每个有限测度的可测集都内、外正则。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.7</summary>
+<p>对有限测度 Borel 集 <span class="arithmatex">\(E\)</span>，外正则取有限测度开集 <span class="arithmatex">\(U\supset E\)</span>，使 <span class="arithmatex">\(\mu(U\setminus E)&lt;\delta\)</span>；开集内正则取紧 <span class="arithmatex">\(L\subset U\)</span>，使 <span class="arithmatex">\(\mu(U\setminus L)&lt;\delta\)</span>。再外正则取开集 <span class="arithmatex">\(V\supset U\setminus E\)</span>，使 <span class="arithmatex">\(\mu(V)&lt;2\delta\)</span>。则 <span class="arithmatex">\(K=L\setminus V\)</span> 紧且包含于 <span class="arithmatex">\(E\)</span>，并有 <span class="arithmatex">\(\mu(E\setminus K)\leq\mu(U\setminus L)+\mu(V)&lt;3\delta\)</span>。这给紧内近似，外近似已由定义得到。完备化集合与 Borel 集只差零测集；零测集的任意小开覆盖使相同内、外估计继续成立。</p>
+</details>
+<div id="thm-37" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.26</span><span class="book-name">第二可数空间的 Radon 判据</span></p>
+<p>在第二可数局部紧空间上，正 Borel 测度是 Radon 测度，当且仅当每个紧集的测度有限。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.8</summary>
+<p>必要性来自 Radon 定义。反向，<span class="arithmatex">\(\Lambda(f)=\int f\,d\mu\)</span> 在每个紧支集上有限且正，1.7.6 给 Radon 测度 <span class="arithmatex">\(\nu\)</span>。第二可数局部紧空间的每个开集可由递增紧集耗尽，Urysohn 函数给 <span class="arithmatex">\(0\leq f_n\uparrow\mathbf1_U\)</span>，单调收敛得 <span class="arithmatex">\(\mu(U)=\nu(U)\)</span>。</p>
+<p>对 <span class="arithmatex">\(\nu(E)&lt;\infty\)</span> 的 Borel 集，正则性取 <span class="arithmatex">\(K\subset E\subset U\)</span> 使 <span class="arithmatex">\(\nu(U\setminus K)\)</span> 小；<span class="arithmatex">\(U\setminus K\)</span> 开，且两测度在开集及紧集上相等，故夹逼得 <span class="arithmatex">\(\mu(E)=\nu(E)\)</span>。最后用可数紧耗尽截断一般 <span class="arithmatex">\(E\)</span>，每块有限，再取单调极限。因此 <span class="arithmatex">\(\mu=\nu\)</span>，是 Radon 测度。</p>
+</details>
+<div id="thm-38" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.27</span><span class="book-name">Lusin 定理</span></p>
+<p>设 <span class="arithmatex">\(\mu\)</span> 为 Radon 测度或其完备化，<span class="arithmatex">\(f\)</span> 为实或复可测函数，<span class="arithmatex">\(A\)</span> 可测且 <span class="arithmatex">\(\mu(A)&lt;\infty\)</span>。对每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，存在紧集 <span class="arithmatex">\(K\subset A\)</span>，使 <span class="arithmatex">\(\mu(A\setminus K)&lt;\varepsilon\)</span> 且 <span class="arithmatex">\(f|_K\)</span> 连续；因此有 <span class="arithmatex">\(g\in C_c(X)\)</span> 在 <span class="arithmatex">\(K\)</span> 上与 <span class="arithmatex">\(f\)</span> 相等。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.9</summary>
+<p>先把 <span class="arithmatex">\(f\)</span> 以可测简单函数 <span class="arithmatex">\(s_n\)</span> 逐点逼近。对每个 <span class="arithmatex">\(k\)</span>，集合 <span class="arithmatex">\(E_{k,N}=\{x\in A:\sup_{n\geq N}|s_n(x)-f(x)|&gt;1/k\}\)</span> 随 <span class="arithmatex">\(N\)</span> 递减到空集；因 <span class="arithmatex">\(\mu(A)&lt;\infty\)</span>，可选 <span class="arithmatex">\(N_k\)</span> 使其测度小于 <span class="arithmatex">\(\varepsilon2^{-k-3}\)</span>。删去这些集合的并，便得到大子集上的一致收敛，这也是此处所需的 Egorov 论证。</p>
+<p>每个 <span class="arithmatex">\(s_n\)</span> 的有限层集用正则性取紧内近似，损失质量控制为 <span class="arithmatex">\(\varepsilon2^{-n-3}\)</span>，令其有限并为 <span class="arithmatex">\(K_n\)</span>；互不相交紧集可用开邻域分离，故 <span class="arithmatex">\(s_n|_{K_n}\)</span> 连续。再取一致收敛大集的紧内近似 <span class="arithmatex">\(K_0\)</span>，令 <span class="arithmatex">\(K=K_0\cap\bigcap_{n\geq1}K_n\)</span>。它是紧集中的闭集，故紧；总损失小于 <span class="arithmatex">\(\varepsilon\)</span>。<span class="arithmatex">\(s_n|_K\)</span> 连续且一致趋于 <span class="arithmatex">\(f|_K\)</span>，所以后者连续。Tietze 延拓给 <span class="arithmatex">\(g\in C_c\)</span>。</p>
+</details>
+<div id="thm-39" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.28</span><span class="book-name">定理 1.7.10：连续函数的 <span class="arithmatex">\(L^p\)</span> 稠密性</span></p>
+<p>对 Radon 测度或其完备化以及 <span class="arithmatex">\(1\leq p&lt;\infty\)</span>，<span class="arithmatex">\(C_c(X)\)</span> 在 <span class="arithmatex">\(L^p(X,\mu)\)</span> 中稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.10</summary>
+<p>先由简单函数稠密性归约到有限测度集 <span class="arithmatex">\(E\)</span> 的指标。正则性取紧 <span class="arithmatex">\(K\subset E\subset U\)</span>，使 <span class="arithmatex">\(\mu(U\setminus K)&lt;\varepsilon\)</span>，再取 <span class="arithmatex">\(0\leq h\leq1\)</span>、<span class="arithmatex">\(h=1\)</span> 于 <span class="arithmatex">\(K\)</span>、支撑于 <span class="arithmatex">\(U\)</span>。则 <span class="arithmatex">\(\|h-\mathbf1_E\|_p^p\leq\mu(U\setminus K)&lt;\varepsilon\)</span>。线性组合后得到全部 <span class="arithmatex">\(L^p\)</span> 稠密性。</p>
+</details>
+<div id="thm-40" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.29</span><span class="book-name">光滑函数的稠密性</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 是 <span class="arithmatex">\(\mathbb R^n\)</span> 中的开集，或有边界或无边界的 <span class="arithmatex">\(C^k\)</span> 流形，<span class="arithmatex">\(k\in\mathbb N\cup\{\infty\}\)</span>，则对 Radon 测度以及 <span class="arithmatex">\(1\leq p&lt;\infty\)</span>，<span class="arithmatex">\(C_c^k(X)\)</span> 在 <span class="arithmatex">\(L^p(X,\mu)\)</span> 中稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.11</summary>
+<p>紧支集连续函数可在包含其支集的有限坐标图中用光滑或 <span class="arithmatex">\(C^k\)</span> 单位分解拆开；各坐标内作小尺度卷积并适当截断，在流形边界处先连续延拓到坐标半空间外，得到同支集邻域中的 <span class="arithmatex">\(C^k\)</span> 一致逼近。该邻域紧、Radon 质量有限，一致误差乘质量的 <span class="arithmatex">\(1/p\)</span> 次方控制 <span class="arithmatex">\(L^p\)</span> 误差。结合 1.7.10 即得结论。</p>
+</details>
+<div id="thm-41" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.30</span><span class="book-name">阶梯函数的稠密性</span></p>
+<p>在 <span class="arithmatex">\(\mathbb R\)</span> 上的 Radon 测度及 <span class="arithmatex">\(1\leq p&lt;\infty\)</span> 情形，左右连续阶梯函数中属于 <span class="arithmatex">\(L^p\)</span> 的函数分别稠密。有限线性组合 <span class="arithmatex">\(\mathbf1_{(-\infty,b]}\)</span> 或 <span class="arithmatex">\(\mathbf1_{(-\infty,b)}\)</span> 中属于 <span class="arithmatex">\(L^p\)</span> 的函数也分别稠密；无穷测度时不要求每个单独的半直线示性函数可积。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.13</summary>
+<p>对连续紧支集函数取包含支集的有限区间，再分成小区间，左右端点取样分别给两种半连续阶梯；一致连续性使误差一致趋零，紧区间质量有限使其 <span class="arithmatex">\(L^p\)</span> 趋零。有限区间指标可写成同类两个半直线指标的差，故每个可积阶梯属于所述线性张成。即使半直线单项不可积，其差仍可积，不影响此结论。</p>
+</details>
+<div id="thm-42" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.31</span><span class="book-name">定理 1.7.14：<span class="arithmatex">\(L^p\)</span> 的可分性</span></p>
+<p>第二可数局部紧空间上，对 Radon 测度及 <span class="arithmatex">\(1\leq p&lt;\infty\)</span>，<span class="arithmatex">\(L^p(X,\mu)\)</span> 可分。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.14</summary>
+<p>取可数相对紧拓扑基，用 Urysohn 函数从可数基包含对构造可数连续分离族。对每个紧耗尽邻域，Stone–Weierstrass 的有理星多项式加紧支集截断给可数一致稠密函数族；紧集质量有限使其也是相应 <span class="arithmatex">\(L^p\)</span> 近似。结合 <span class="arithmatex">\(C_c\)</span> 稠密性和可数耗尽，得到全空间的可数 <span class="arithmatex">\(L^p\)</span> 稠密子集。</p>
+</details>
+<div id="def-45" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.32</span><span class="book-name">复测度与符号测度</span></p>
+<p>有限正测度的有限个复线性组合称复测度，实线性组合称符号测度。它们具有有限全变差，可对有界可测函数积分。</p>
+</div>
+<div id="def-46" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.33</span><span class="book-name">复 Radon 测度</span></p>
+<p>有限正 Radon 测度的有限个复线性组合称复 Radon 测度；实系数时称符号 Radon 测度。</p>
+</div>
+<div id="thm-43" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.34</span><span class="book-name">有界泛函的测度表示</span></p>
+<p>局部紧空间 <span class="arithmatex">\(X\)</span> 上，每个 <span class="arithmatex">\(C_c(X)\)</span> 一致范数下的有界实或复线性泛函唯一由有限符号或复 Radon 测度表示为 <span class="arithmatex">\(\Lambda(f)=\int f\,d\mu\)</span>。它延拓到 <span class="arithmatex">\(C_0(X)\)</span>，且范数为全变差 <span class="arithmatex">\(|\mu|(X)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.17</summary>
+<p>实泛函的正部分定义为 <span class="arithmatex">\(\Lambda_+(f)=\sup_{0\leq g\leq f}\Lambda(g)\)</span>，<span class="arithmatex">\(f\geq0\)</span>，负部分类似。用 <span class="arithmatex">\(h\leq f+g\)</span> 的连续拆分（在零分母处取零）证明可加性；由一致范数界保持有界，并有 <span class="arithmatex">\(\Lambda=\Lambda_+-\Lambda_-\)</span>。正 Riesz–Markov 表示给两个有限正测度，因此得到符号测度。复情形拆实、虚部。</p>
+<p>Hölder 给泛函范数至多为全变差。反向，用测度的相位及 Lusin–Tietze 在大质量紧集上逼近相位，得到模至多一的连续紧支集测试，使积分任意接近全变差，故范数等号。连续测试唯一确定各测度，表示也唯一；<span class="arithmatex">\(C_c\)</span> 在 <span class="arithmatex">\(C_0\)</span> 一致稠密保证延拓唯一。</p>
+</details>
+<h3 id="topic-1-7-19">何时可以交换积分</h3>
+<p>两个变量的积分公式先在矩形指标上成立，再扩到简单函数和一般函数。非负函数可由 Tonelli 处理；有符号或复函数则需要绝对可积，才能避免把无穷量相减。</p>
+<div id="def-47" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.35</span><span class="book-name">乘积 Radon 测度</span></p>
+<p>对局部紧空间上的正 Radon 测度 <span class="arithmatex">\(\mu,\nu\)</span>，乘积测度 <span class="arithmatex">\(\mu\times\nu\)</span> 是由 <span class="arithmatex">\(f\in C_c(X\times Y)\)</span> 上的正泛函 <span class="arithmatex">\(f\mapsto\int_X\int_Y f(x,y)\,d\nu(y)\,d\mu(x)\)</span> 表示的 Radon 测度；交换积分次序给出同一泛函。讨论完备可测函数时取此测度的完备化。</p>
+</div>
+<div id="thm-44" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.36</span><span class="book-name">Tonelli 定理</span></p>
+<p>若 <span class="arithmatex">\(\mu,\nu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限测度，<span class="arithmatex">\(f\geq0\)</span> 对乘积测度或其完备化可测，则几乎所有截面可测，截面积分是几乎处处确定的非负可测函数，且 <span class="arithmatex">\(\int f\,d(\mu\times\nu)=\int_X\int_Y f\,d\nu\,d\mu=\int_Y\int_X f\,d\mu\,d\nu\)</span>，允许值 <span class="arithmatex">\(+\infty\)</span>。不可测的例外截面可约定其积分为零。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.21</summary>
+<p>先对矩形指标，公式就是乘积测度的定义；对非负简单函数由线性得到。单调类定理把矩形验证扩到全部乘积可测集，随后非负简单函数递增逼近与单调收敛给一般非负函数。完备化只增加包含在乘积零测集中的差；对该零测集先应用公式，得几乎所有截面零测，所以改动不影响几乎处处的截面及积分。<span class="arithmatex">\(\sigma\)</span>-有限性通过可数有限测度矩形耗尽确保上述构造和 Fubini 型截面判据适用。</p>
+</details>
+<div id="thm-45" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.37</span><span class="book-name">Fubini 定理</span></p>
+<p>在上述 <span class="arithmatex">\(\sigma\)</span>-有限条件下，若复函数 <span class="arithmatex">\(f\in L^1(\mu\times\nu)\)</span>，则几乎所有截面可积，两种截面积分属于相应的 <span class="arithmatex">\(L^1\)</span> 空间，且两种迭代积分均等于乘积积分。例外截面取积分为零。</p>
+</div>
+<details class="proof">
+<summary>证明 1.7.22</summary>
+<p>对 <span class="arithmatex">\(|f|\)</span> 用 Tonelli，双积分有限，故几乎所有截面绝对可积，截面积分的绝对值也有可积控制。将实部、虚部分别拆成正负部分，对四个非负函数应用 Tonelli，再相减合并，得到全部迭代积分等式。</p>
+</details>
+<details class="proof">
+<summary>测度表示、稠密性与交换积分</summary>
+<p>对开集 <span class="arithmatex">\(U\)</span>，将 <span class="arithmatex">\(\mu(U)\)</span> 定义为所有支集位于 <span class="arithmatex">\(U\)</span>、值在 <span class="arithmatex">\([0,1]\)</span> 的连续测试函数的泛函值上确界。单位分解给出开覆盖上的可数次可加性所需估计，外逼近构造外测度，紧支集截断保证紧集有限和开集内正则。先对非负紧支集连续函数作值域分层，再取极限，得到积分表示；开集的测试公式保证唯一性。</p>
+<p>内、外正则性给出 <span class="arithmatex">\(K\subset E\subset U\)</span> 且 <span class="arithmatex">\(\mu(U\setminus K)\)</span> 任意小。用 <span class="arithmatex">\(K\)</span> 与 <span class="arithmatex">\(U\)</span> 之间的截断函数近似 <span class="arithmatex">\(\mathbf1_E\)</span>，误差的 <span class="arithmatex">\(L^p\)</span> 范数至多为 <span class="arithmatex">\(\mu(U\setminus K)^{1/p}\)</span>。简单函数稠密性遂推出 <span class="arithmatex">\(C_c\)</span> 稠密。流形中用坐标图、单位分解和卷积磨光得到光滑稠密性。第二可数性让这些截断函数来自可数集合，有理系数线性组合便给出可分性。</p>
+<p>Tonelli 的证明先从矩形示性函数开始，利用单调类推广到非负简单函数，再用单调收敛推广到全部非负可测函数。对完备化只须另处理一个乘积零测集，它的截面几乎处处为零测集。Fubini 对 <span class="arithmatex">\(|f|\)</span> 应用 Tonelli，证明截面可积，再分别对实、虚部的正、负部分积分。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>单调函数、有界变差与 Stieltjes 积分</h2>
+<p>设 <span class="arithmatex">\(I\)</span> 为有非空内部的实区间，<span class="arithmatex">\(a=\inf I\)</span>、<span class="arithmatex">\(b=\sup I\)</span>。单调一律指非减。记 <span class="arithmatex">\(I_{\leq t}=I\cap(-\infty,t]\)</span>，其余不等号同理。单调函数在内部有左右极限；令 <span class="arithmatex">\(\Omega_\rho\)</span> 为它在 <span class="arithmatex">\((a,b)\)</span> 内的连续点集合，特意不包含端点。</p>
+<h3 id="topic-1-8-1">跳跃与累积函数</h3>
+<p>累积函数的跳跃记录点质量，连续部分记录其余质量。单调性使跳跃点至多可数，但单独改变一个点的取值未必改变连续测试积分，因此需要明确右连续正规化和端点约定。</p>
+<div id="prop-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.1</span><span class="book-name">单调函数的间断点</span></p>
+<p><span class="arithmatex">\(I\setminus\Omega_\rho\)</span> 至多可数。内部间断点的跳跃区间 <span class="arithmatex">\((\rho(x-),\rho(x+))\)</span> 两两不交，每个非空区间可配一个有理数；端点至多再增加两个点。</p>
+</div>
+<details class="proof">
+<summary>证明 1.8.1</summary>
+<p>内部间断点的左右极限不相等，跳跃开区间非空；单调性使不同点的跳跃区间互不相交。每个区间选一个有理数，给间断点到有理数的单射，因此至多可数。端点至多另加两个。</p>
+</details>
+<div id="def-48" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.2</span><span class="book-name">右连续正规化</span></p>
+<p>定义 <span class="arithmatex">\(\widetilde\rho(x)=\rho(x+)\)</span>（<span class="arithmatex">\(x&lt;b\)</span>），若 <span class="arithmatex">\(b\in I\)</span> 则定义 <span class="arithmatex">\(\widetilde\rho(b)=\rho(b)\)</span>。它单调，并在所有可取右极限的点右连续。</p>
+</div>
+<div id="prop-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.3</span><span class="book-name">单调函数的几乎相等</span></p>
+<p>两个单调函数 <span class="arithmatex">\(\rho_1,\rho_2\)</span> 的以下条件等价：存在稠密集 <span class="arithmatex">\(E\subset I\)</span> 使二者在 <span class="arithmatex">\(E\)</span> 上相等；<span class="arithmatex">\(\Omega_{\rho_1}=\Omega_{\rho_2}\)</span> 且二者在该集合上相等；二者的右连续正规化在 <span class="arithmatex">\(I_{&lt;b}\)</span> 上相等。满足这些条件时称二者几乎相等。若 <span class="arithmatex">\(b\in I\)</span>，该定义本身不要求 <span class="arithmatex">\(\rho_1(b)=\rho_2(b)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.8.3</summary>
+<p>若在稠密集相等，对内部点从左右选稠密集点趋近，夹逼使两个函数的左右极限分别相同；因此连续点相同且这些点上值相同。连续点集本身稠密，又给反向稠密集。右连续正规化的值是共同右极限，所以前两条件推出第三；反向正规化相同也使左右极限相同，在连续点还原原值。闭右端的单独取值未被这些内部极限确定，所以需另行保存。</p>
+</details>
+<h3 id="topic-1-9-1">从有限增量定义积分</h3>
+<p>Stieltjes 和只使用分割上的累积增量。连续性控制不同标记点带来的误差，单调性控制所有增量的总和。下面的端点结论用这两种控制说明哪些函数值会被积分保留。</p>
+<div id="def-49" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.4</span><span class="book-name">分划</span></p>
+<p>对有界区间 <span class="arithmatex">\(J\)</span>，令端点为 <span class="arithmatex">\(a&lt;b\)</span>。分划是有限序列 <span class="arithmatex">\(a=a_0&lt;a_1&lt;\cdots&lt;a_n=b\)</span>，即使端点不在 <span class="arithmatex">\(J\)</span> 也保留它们。网格宽度为 <span class="arithmatex">\(\max_j(a_j-a_{j-1})\)</span>；包含更多分点称加细，全部分划按加细构成有向集。</p>
+</div>
+<div id="def-50" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.5</span><span class="book-name">带标记分划</span></p>
+<p>分划的每个小区间选择标记 <span class="arithmatex">\(\xi_j\in(a_{j-1},a_j]\)</span>，得到带标记分划 <span class="arithmatex">\((\sigma,\xi)\)</span>。标记选择不改变连续被积函数的积分极限。</p>
+</div>
+<div id="def-51" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.6</span><span class="book-name">向量值 Stieltjes 积分</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 为 Banach 空间、<span class="arithmatex">\(f\in C([a,b],V)\)</span>、<span class="arithmatex">\(\rho\)</span> 单调。带标记和为 <span class="arithmatex">\(S(f,\rho;\sigma,\xi)=\sum_jf(\xi_j)(\rho(a_j)-\rho(a_{j-1}))\)</span>。其分划加细极限定义 <span class="arithmatex">\(\int_{(a,b]}f\,d\rho\)</span>；闭区间约定 <span class="arithmatex">\(\int_{[a,b]}f\,d\rho=f(a)\rho(a)+\int_{(a,b]}f\,d\rho\)</span>。一致连续性和总增量界保证极限存在。</p>
+</div>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.7</span><span class="book-name">左端取值不影响闭区间积分</span></p>
+<p>若两个单调函数在 <span class="arithmatex">\((a,b]\)</span> 上相同，即使在 <span class="arithmatex">\(a\)</span> 处不同，对任意连续 <span class="arithmatex">\(V\)</span> 值函数的闭区间 Stieltjes 积分也相同；左端附加项与首个增量中的差异在极限中相消。</p>
+</div>
+<details class="proof">
+<summary>证明 1.9.9</summary>
+<p>设两函数在左端的差为 <span class="arithmatex">\(c\)</span>，除此处相同。闭区间和的左端附加项差为 <span class="arithmatex">\(f(a)c\)</span>，首个区间增量项的差为 <span class="arithmatex">\(-f(\xi_1)c\)</span>，其余项差为零。网格趋零时 <span class="arithmatex">\(\xi_1\to a\)</span>，连续性使总差 <span class="arithmatex">\((f(a)-f(\xi_1))c\to0\)</span>，所以闭区间积分相同。</p>
+</details>
+<div id="def-52" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.8</span><span class="book-name">区间上的紧支集积分</span></p>
+<p>对 <span class="arithmatex">\(f\in C_c(I,V)\)</span> 及非负单调 <span class="arithmatex">\(\rho\)</span>，选择包含支集的紧子区间 <span class="arithmatex">\(J\subset I\)</span>，按闭区间约定定义 <span class="arithmatex">\(\int_If\,d\rho\)</span>。若支集不碰区间端点则可以扩大 <span class="arithmatex">\(J\)</span>，积分值与选择无关。</p>
+</div>
+<div id="thm-46" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.9</span><span class="book-name">正规化不改变积分</span></p>
+<p>若 <span class="arithmatex">\(\rho_1,\rho_2\)</span> 几乎相等，且在 <span class="arithmatex">\(b\in I\)</span> 时还满足 <span class="arithmatex">\(\rho_1(b)=\rho_2(b)\)</span>，则全部 <span class="arithmatex">\(f\in C_c(I,V)\)</span> 的 Stieltjes 积分相等。</p>
+</div>
+<details class="proof">
+<summary>证明 1.9.11</summary>
+<p>先由 1.9.9 排除左端值差。对紧支集函数选择包含支集的有限区间，端点可在两函数相等的稠密连续点集中选；若碰到右端则使用额外右端相等条件。取网格足够细且所有分点均属于相等集，两份 Stieltjes 和完全相同。积分与和的误差各至多为 <span class="arithmatex">\(f\)</span> 的区间振荡乘 <span class="arithmatex">\(\rho_i\)</span> 的总增量；一致连续使该误差趋零，所以两积分相同。</p>
+</details>
+<div id="thm-47" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.10</span><span class="book-name">积分确定累积函数</span></p>
+<p>若 <span class="arithmatex">\(a\notin I\)</span>，另要求两个非负单调函数在 <span class="arithmatex">\(a\)</span> 的右极限为零。则它们对全部标量 <span class="arithmatex">\(C_c(I)\)</span> 函数的积分相等，当且仅当它们几乎相等，并且 <span class="arithmatex">\(b\in I\)</span> 时在 <span class="arithmatex">\(b\)</span> 取相同值。</p>
+</div>
+<details class="proof">
+<summary>证明 1.9.12</summary>
+<p>正向已由 1.9.11。反向先右连续正规化。若左端不属于区间，取 <span class="arithmatex">\(v&lt;x&lt;y\)</span> 并选连续截断 <span class="arithmatex">\(\mathbf1_{[v,x]}\leq\phi_{v,y}\leq\mathbf1_{(a,y]}\)</span>。Stieltjes 增量估计给积分与 <span class="arithmatex">\(\rho(x)\)</span> 的差至多为 <span class="arithmatex">\(\rho(v)+\rho(y)-\rho(x)\)</span>；令 <span class="arithmatex">\(v\downarrow a\)</span>、<span class="arithmatex">\(y\downarrow x\)</span>，左端归一化及右连续性恢复 <span class="arithmatex">\(\rho(x)\)</span>。</p>
+<p>若左端包含，用在 <span class="arithmatex">\([a,x]\)</span> 为一、在 <span class="arithmatex">\(y\)</span> 后为零的截断，误差只剩 <span class="arithmatex">\(\rho(y)-\rho(x)\)</span>。若 <span class="arithmatex">\(x=b\)</span> 为包含的右端，只需从左端截断并趋向全区间；两端都包含时 <span class="arithmatex">\(\int1\,d\rho=\rho(b)\)</span>。因此全部右连续值和实际右端值均由连续测试恢复，得到几乎相等及端点条件。</p>
+</details>
+<h3 id="topic-1-10-1">把泛函恢复成累积函数</h3>
+<p>连续测试确定测度后，沿区间累计质量就得到积分函数。右连续性与左端归一化使这个表示唯一；有界变差把同样的构造扩到符号和复泛函。</p>
+<div id="thm-48" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.11</span><span class="book-name">正泛函的累积函数表示</span></p>
+<p><span class="arithmatex">\(C_c(I)\)</span> 上有界正线性泛函与有界、非负、单调、右连续的函数 <span class="arithmatex">\(\rho:I\to\mathbb R\)</span> 一一对应；若 <span class="arithmatex">\(a\notin I\)</span>，要求 <span class="arithmatex">\(\rho(a+)=0\)</span>。对应关系为 <span class="arithmatex">\(\Lambda(f)=\int_If\,d\rho\)</span>。由代表测度给出 <span class="arithmatex">\(\rho(x)=\mu(I_{\leq x})\)</span>，并有 <span class="arithmatex">\(\|\Lambda\|=\sup_I\rho\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 1.10.1</summary>
+<p>正 Riesz–Markov 给有限测度 <span class="arithmatex">\(\mu\)</span>，令 <span class="arithmatex">\(\rho(x)=\mu(I_{\leq x})\)</span>。有限性和测度从上连续使它右连续，若左端不包含则从下耗尽给 <span class="arithmatex">\(\rho(a+)=0\)</span>。连续函数的 Stieltjes 和与按区间增量的测度简单近似一致，误差由一致连续性控制，所以表示成立。</p>
+<p>反向右连续单调 <span class="arithmatex">\(\rho\)</span> 的增量在半开区间定义测度，左端原子按闭区间约定加入，标准外测度延拓给 Borel 测度；有界性保证有限。1.9.12 给唯一，连续正测试逼近整个区间使范数等于总质量 <span class="arithmatex">\(\sup_I\rho\)</span>。</p>
+</details>
+<div id="def-53" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.12</span><span class="book-name">有界变差函数</span></p>
+<p>实或复函数称有界变差，若它是有限个有界非负单调函数的实或复线性组合。等价地，函数有界且分划变差 <span class="arithmatex">\(\sup_\sigma\sum_j|\rho(a_j)-\rho(a_{j-1})|\)</span> 有限。积分按线性组合定义，与分解无关。</p>
+</div>
+<div id="thm-49" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.13</span><span class="book-name">一般泛函的 Stieltjes 表示</span></p>
+<p><span class="arithmatex">\(C_c(I)\)</span> 一致范数下的每个有界实或复线性泛函均表示为 <span class="arithmatex">\(\Lambda(f)=\int_If\,d\rho\)</span>，其中 <span class="arithmatex">\(\rho\)</span> 为实或复有界变差函数。可唯一选取右连续代表，并在左端不属于 <span class="arithmatex">\(I\)</span> 时要求 <span class="arithmatex">\(\rho(a+)=0\)</span>；它由符号或复代表测度的累积函数给出。</p>
+</div>
+<details class="proof">
+<summary>证明 1.10.4</summary>
+<p>一般 Riesz–Markov 先给唯一有限符号或复测度 <span class="arithmatex">\(\mu\)</span>，取累积函数 <span class="arithmatex">\(\rho(x)=\mu(I_{\leq x})\)</span>。任意有限分割的变差和至多为 <span class="arithmatex">\(|\mu|(I)\)</span>，故 <span class="arithmatex">\(\rho\)</span> 有界变差，有限测度的连续性给右连续及左端归一化。将测度拆成有限个正测度，并逐项使用 1.10.1，得到 Stieltjes 表示。反向有界变差函数分解为实部、虚部各自的两个单调函数，得到有限复测度；代表测度唯一性和累积恢复保证归一化代表唯一。</p>
+</details>
+<details class="proof">
+<summary>Stieltjes 和的收敛及端点约定</summary>
+<p>令 <span class="arithmatex">\(\omega_f(\delta)=\sup\{\|f(x)-f(y)\|:|x-y|\leq\delta\}\)</span>。两个充分细的带标记分划可用共同加细比较，其和之差不超过 <span class="arithmatex">\(2\omega_f(\delta)(\rho(b)-\rho(a))\)</span>，趋于零。因此这些和构成 Cauchy 网，Banach 完备性给出积分。非负 <span class="arithmatex">\(\rho\)</span> 的闭区间积分满足 <span class="arithmatex">\(\|\int_{[a,b]}f\,d\rho\|\leq\|f\|_\infty\rho(b)\)</span>。</p>
+<p>单调函数的右连续正规化只改变至多可数个点；在连续被积函数下，分划两侧夹逼说明它不改变积分，但必须保留实际右端点的累积质量。左端附加项代表此前累积的全部质量，故左端值改变时首段增量恰好补偿。对开左端用 <span class="arithmatex">\(\rho(a+)=0\)</span> 固定累积函数的常数歧义。</p>
+<p>最后由 Riesz–Markov 表示取得测度，定义 <span class="arithmatex">\(\rho(x)=\mu(I_{\leq x})\)</span>。测度从上连续保证右连续，区间增量给出积分一致性。一般有界泛函先分解为有限个正泛函，再对累积函数作相同线性组合，得到有界变差表示。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.1</span><span class="book-name">收敛与紧性</span></p>
+<p>证明任意收敛序列连同其极限构成紧集。再解释为什么同一结论不能不加讨论地推广为“收敛网的所有项连同极限紧”。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>在开覆盖中，含极限的开集覆盖序列的尾部，余下有限个点各选一个开集即可。</p>
+<p>一般有向集在某尾部之外可以有无限多项，甚至非常大的非紧集合。例如指标集 <span class="arithmatex">\(\mathbb R\)</span> 按通常顺序，令 <span class="arithmatex">\(x_t=t\)</span> 当 <span class="arithmatex">\(t&lt;0\)</span>、<span class="arithmatex">\(x_t=0\)</span> 当 <span class="arithmatex">\(t\ge0\)</span>。网趋于 <span class="arithmatex">\(0\)</span>，但所有项组成 <span class="arithmatex">\((-\infty,0]\)</span>，并不紧。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.2</span><span class="book-name">跳跃与积分</span></p>
+<p>设 <span class="arithmatex">\(\mu=\tfrac12\delta_0+\tfrac12\delta_1\)</span>。写出 <span class="arithmatex">\(F(x)=\mu(( -\infty,x])\)</span>，并计算 <span class="arithmatex">\(\int x^2\,\mathrm{d}F(x)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x&lt;0\)</span> 时为 <span class="arithmatex">\(0\)</span>，在 <span class="arithmatex">\(0\le x&lt;1\)</span> 时为 <span class="arithmatex">\(1/2\)</span>，在 <span class="arithmatex">\(x\ge1\)</span> 时为 <span class="arithmatex">\(1\)</span>。积分为 <span class="arithmatex">\(\tfrac12\cdot0^2+\tfrac12\cdot1^2=1/2\)</span>。若把积分误写成 <span class="arithmatex">\(\int x^2F'(x)\,\mathrm{d}x\)</span>，几乎处处为零的导数会丢失全部原子。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.3</span><span class="book-name">控制收敛的条件</span></p>
+<p>在 <span class="arithmatex">\((0,1)\)</span> 上令 <span class="arithmatex">\(f_n=n\mathbf1_{(0,1/n)}\)</span>。说明它几乎处处趋于零，但积分不趋于零，并说明不存在共同的可积支配函数。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对每个 <span class="arithmatex">\(x&gt;0\)</span>，充分大的 <span class="arithmatex">\(n\)</span> 有 <span class="arithmatex">\(1/n&lt;x\)</span>，故 <span class="arithmatex">\(f_n(x)=0\)</span>。但 <span class="arithmatex">\(\int_0^1f_n=1\)</span>。若有共同的可积支配函数，控制收敛定理会推出积分趋于零，产生矛盾。</p>
+</details>
+<p>序列与一般网使用不同的可数性条件；逐点极限与积分极限需要额外估计相连接；密度表示与含原子的 Stieltjes 表示则对应不同的参考测度。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-00/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第零章：泛函分析的主线与记号</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：赋范空间与对偶空间</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 2 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">分析</span><span class="zdd-end-chip is-category">泛函分析</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=topology">#topology</a><a class="zdd-end-chip" href="../../../../tags/?tag=measure-theory">#measure-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

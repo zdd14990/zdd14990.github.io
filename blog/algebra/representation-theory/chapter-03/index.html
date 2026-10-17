@@ -1,0 +1,1207 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="表示论笔记第三章：Maschke 定理、特征、表示的对偶和张量积、特征的正交性、酉表示与 Maschke 定理的另一个对复表示的证明、矩阵元素的正交性、特征表、Frobeniu 行列式。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-03/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第三章：有限群的表示：一些基本结论 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-03/">
+  <meta property="og:title" content="第三章：有限群的表示：一些基本结论 - zdd14990">
+  <meta property="og:description" content="表示论笔记第三章：Maschke 定理、特征、表示的对偶和张量积、特征的正交性、酉表示与 Maschke 定理的另一个对复表示的证明、矩阵元素的正交性、特征表、Frobeniu 行列式。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="representation-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-03/">
+  <meta name="twitter:title" content="第三章：有限群的表示：一些基本结论 - zdd14990">
+  <meta name="twitter:description" content="表示论笔记第三章：Maschke 定理、特征、表示的对偶和张量积、特征的正交性、酉表示与 Maschke 定理的另一个对复表示的证明、矩阵元素的正交性、特征表、Frobeniu 行列式。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e09\u7ae0\uff1a\u6709\u9650\u7fa4\u7684\u8868\u793a\uff1a\u4e00\u4e9b\u57fa\u672c\u7ed3\u8bba",
+    "description": "\u8868\u793a\u8bba\u7b14\u8bb0\u7b2c\u4e09\u7ae0\uff1aMaschke \u5b9a\u7406\u3001\u7279\u5f81\u3001\u8868\u793a\u7684\u5bf9\u5076\u548c\u5f20\u91cf\u79ef\u3001\u7279\u5f81\u7684\u6b63\u4ea4\u6027\u3001\u9149\u8868\u793a\u4e0e Maschke \u5b9a\u7406\u7684\u53e6\u4e00\u4e2a\u5bf9\u590d\u8868\u793a\u7684\u8bc1\u660e\u3001\u77e9\u9635\u5143\u7d20\u7684\u6b63\u4ea4\u6027\u3001\u7279\u5f81\u8868\u3001Frobeniu \u884c\u5217\u5f0f\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-03/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-03/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["representation-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Maschke 定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 特征
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 表示的对偶和张量积
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 特征的正交性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 酉表示与 Maschke 定理的另一个对复表示的证明
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 矩阵元素的正交性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 特征表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Frobeniu 行列式
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#representation-theory">表示论</a>
+    <span>Part 3 of 8</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">03</div>
+    <h1 id="top"><span class="book-visually-hidden">第 3 章：</span>有限群的表示：一些基本结论</h1>
+  </div>
+  <p class="book-standfirst">设 <span class="arithmatex">\(V\)</span> 是有限群 <span class="arithmatex">\(G\)</span> 的有限维表示，则其特征 <span class="arithmatex">\(\chi_V:G\rightarrow k\)</span> 定义为 <span class="arithmatex">\(\chi_V(g)=\mathrm{Tr}\big|_V(\rho(g))\)</span>。显然 <span class="arithmatex">\(V\)</span> 作为 <span class="arithmatex">\(k[G]\)</span> 的表示的特征限制在 <span class="arithmatex">\(G\)</span> 上就得到了 <span class="arithmatex">\(\chi_V(g)\)</span>。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>4,133 字 · 约 12 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>Maschke 定理</h2>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.1</span><span class="book-name">Maschke</span></p>
+<p>设 <span class="arithmatex">\(G\)</span> 是有限群，<span class="arithmatex">\(k\)</span> 是域且 <span class="arithmatex">\(\mathrm{char}k\nmid \left|G\right|\)</span>，则：</p>
+<ul>
+<li>
+<p>代数 <span class="arithmatex">\(k[G]\)</span> 是半单的。</p>
+</li>
+<li>
+<p>存在同构 <span class="arithmatex">\(\psi:k[G]\rightarrow \bigoplus_i \mathrm{End}V_i,g\mapsto \bigoplus_i g\big|_{V_i}\)</span>，其中 <span class="arithmatex">\(V_i\)</span> 是 <span class="arithmatex">\(G\)</span> 的不可约表示。特别的，这是一个 <span class="arithmatex">\(G\)</span> 的表示的同构。因此，<span class="arithmatex">\(k[G]\)</span> 的正则表示可以分解成不可约表示的直和：<span class="arithmatex">\(\bigoplus_i\dim(V_i)V_i\)</span>，于是我们有“平方和公式”：</p>
+<div class="arithmatex">\[
+\left|G\right|=\sum_i \dim (V_i)^2
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由<strong>命题 2.4</strong>，<span class="arithmatex">\((1)\Longrightarrow(2)\)</span>。下面我们来证明 <span class="arithmatex">\((1)\)</span>。</p>
+<p>只需要证明对 <span class="arithmatex">\(G\)</span> 的任意有限维表示 <span class="arithmatex">\(V\)</span> 与其子表示 <span class="arithmatex">\(W\)</span>，存在子表示 <span class="arithmatex">\(W'\subset V\)</span> 满足 <span class="arithmatex">\(V=W\oplus W'\)</span> 在表示的意义下成立。</p>
+<p>取任意 <span class="arithmatex">\(\widehat{W}\)</span> 使得作为向量空间 <span class="arithmatex">\(V=W\oplus \widehat{W}\)</span>。设 <span class="arithmatex">\(P\)</span> 为 <span class="arithmatex">\(V\rightarrow W\)</span> 的投影算子满足 <span class="arithmatex">\(P\big|_W=\mathrm{Id}\)</span> 且 <span class="arithmatex">\(P\big|_{\widehat{W}}=0\)</span>。令</p>
+<div class="arithmatex">\[
+\overline{P}:=\frac{1}{\left|G\right|}\sum_{g\in G} \rho(g)P\rho(g^{-1})
+\]</div>
+<p>其中 <span class="arithmatex">\(\rho(g)\)</span> 是 <span class="arithmatex">\(g\)</span> 在 <span class="arithmatex">\(V\)</span> 上的作用，令 <span class="arithmatex">\(W':=\ker \overline{P}\)</span>。则 <span class="arithmatex">\(\overline{P}\big|_W=\mathrm{Id}\)</span> 且 <span class="arithmatex">\(\overline{P}(V)\subseteq W\)</span>。故 <span class="arithmatex">\(\overline{P} ^2=\overline{P}\)</span>，进而 <span class="arithmatex">\(\overline{P}\)</span> 是垂直于 <span class="arithmatex">\(W'\)</span> 的投影，于是作为向量空间 <span class="arithmatex">\(V=W\oplus W'\)</span>。进一步对 <span class="arithmatex">\(h\in G,y\in W'\)</span> ，我们有</p>
+<div class="arithmatex">\[
+\overline{P}\rho(h)y=\frac{1}{\left|G\right|}\sum_{g\in G} \rho(g)P\rho(g^{-1}h)y=\frac{1}{\left|G\right|}\sum_{l\in G} \rho(hl)P\rho(l^{-1})y=\rho(h)\overline{P}y
+\]</div>
+<p>故 <span class="arithmatex">\(\rho(h)y\in \ker\overline{P}=W'\)</span>，于是 <span class="arithmatex">\(W'\)</span> 是 <span class="arithmatex">\(G-\)</span>不变子空间，故作为表示 <span class="arithmatex">\(V=W\oplus \overline{W}\)</span>。</p>
+</details>
+<p><strong>定理 3.1</strong>反过来也是成立的。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.2</span></p>
+<p>若 <span class="arithmatex">\(k[G]\)</span> 是半单的，则 <span class="arithmatex">\(\mathrm{char}k\nmid \left|G\right|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(k[G]=\bigoplus_{i=1}^r \mathrm{End} V_i\)</span>，其中 <span class="arithmatex">\(V_i\)</span> 是所有不可约表示，且 <span class="arithmatex">\(V_1=k\)</span> 为一维平凡表示。则</p>
+<div class="arithmatex">\[
+k[G]=k\oplus \bigoplus_{i=1}^r \mathrm{End} V_i=k\oplus \bigoplus_{i=2}^r d_iV_i
+\]</div>
+<p>其中 <span class="arithmatex">\(d_i=\dim V_i\)</span>。由 Schur 引理，</p>
+<div class="arithmatex">\[
+\mathrm{Hom}_{k[G]}(k,k[G])=k\Lambda,\mathrm{Hom}_{k[G]}(k[G],k)=k\epsilon
+\]</div>
+<p>其中表示间的非零同态  <span class="arithmatex">\(\epsilon:k[G]\rightarrow k\)</span>,<span class="arithmatex">\(\Lambda:k\rightarrow k[G]\)</span> 在差一个倍数意义下唯一。取 <span class="arithmatex">\(\epsilon(g)=1,\forall g\in G\)</span>，取 <span class="arithmatex">\(\Lambda(1)=\sum_{g\in G}g\)</span>，则</p>
+<div class="arithmatex">\[
+\epsilon\circ \Lambda(1)=\epsilon(\sum_{g\in G}g)=\sum_{g\in G} 1=\left|G\right|
+\]</div>
+<p>若 <span class="arithmatex">\(\left|G\right|=0\)</span> 则 <span class="arithmatex">\(\Lambda\)</span> 无左逆，即任意 <span class="arithmatex">\(a\in k\)</span>，<span class="arithmatex">\((a\epsilon)\circ \Lambda(1)=0\)</span>，矛盾！</p>
+</details>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.3</span></p>
+<p>设 <span class="arithmatex">\(G\)</span> 指数为 <span class="arithmatex">\(p^n\)</span>，证明 <span class="arithmatex">\(G\)</span> 在特征为 <span class="arithmatex">\(p\)</span> 的域 <span class="arithmatex">\(k\)</span> 上的表示平凡。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>特征</h2>
+<p>特征函数是<strong>中心函数(central function)</strong> 或 <strong>类函数(class function)</strong>：<span class="arithmatex">\(\chi_V(g)\)</span> 由 <span class="arithmatex">\(g\)</span> 的共轭类唯一确定，即 <span class="arithmatex">\(\chi_V(hgh^{-1})=\chi_V(g)\)</span>。</p>
+<p>记 <span class="arithmatex">\(F_c(G,k)=\left\{f:G\rightarrow k\Big| f(hgh^{-1})=f(g),\forall g,h\in G)\right\}\subset F(G,k)=\left\{f:G\rightarrow k \right\}\)</span></p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span></p>
+<p>若 <span class="arithmatex">\(\mathrm{char}k\nmid \left|G\right|\)</span>，则 <span class="arithmatex">\(G\)</span> 的不可约表示的特征构成了 <span class="arithmatex">\(F_c(G,k)\)</span> 的一组基。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由 Maschke 定理知，<span class="arithmatex">\(k[G]\)</span> 是半单的，故由<strong>定理 2.4</strong>知这些特征是线性独立的且为 <span class="arithmatex">\((A/[A,A])^*\)</span> 的基，其中 <span class="arithmatex">\(A=k[G]\)</span>。又注意到作为 <span class="arithmatex">\(k\)</span> 上的向量空间</p>
+<div class="arithmatex">\[
+\begin{aligned}
+(A/[A,A])^*&amp;\cong \left\{\varphi\in \mathrm{Hom}_k(k[G],k)\Big| gh-hg\in \ker \varphi \forall g,h \in G\right\}\\
+&amp;\cong \left\{f\in F(G,k)\Big| f(gh)=f(hg)\forall g,h\in G\right\}\\
+\end{aligned}
+\]</div>
+<p>此即 <span class="arithmatex">\(F_c(G,k)\)</span>。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.2</span></p>
+<p>若在 <span class="arithmatex">\(k\)</span> 上 <span class="arithmatex">\(\left|G\right|\neq 0\)</span>，则 <span class="arithmatex">\(G\)</span> 的表示的同构类数等于 <span class="arithmatex">\(G\)</span> 的共轭类数。</p>
+</div>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.3</span></p>
+<p>若在 <span class="arithmatex">\(k\)</span> 上 <span class="arithmatex">\(\left|G\right|= 0\)</span>，对任意 <span class="arithmatex">\(G\)</span> 的不可约表示 <span class="arithmatex">\(V,W\)</span>，<span class="arithmatex">\(\chi_V=\chi_W\Longleftrightarrow V\cong W\)</span>。</p>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.4</span></p>
+<p>若在 <span class="arithmatex">\(k\)</span> 上 <span class="arithmatex">\(\left|G\right|= 0\)</span>，则 <span class="arithmatex">\(G\)</span> 的表示的同构类数严格小于 <span class="arithmatex">\(G\)</span> 的共轭类数。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>表示的对偶和张量积</h2>
+<p>若 <span class="arithmatex">\(V\)</span> 是群 <span class="arithmatex">\(G\)</span> 的表示，则 <span class="arithmatex">\(V^*\)</span> 同样也是表示，由</p>
+<div class="arithmatex">\[
+\rho_{V^*}(g)=(\rho_V(g))^{-1}=(\rho_V(g)^{-1})^T=\rho_V(g^{-1})^T
+\]</div>
+<p>给出，即 <span class="arithmatex">\((\rho_{V^*}(g)f)(v)=f(\rho_V(g^{-1})v)\)</span>，其特征 <span class="arithmatex">\(\chi_{V^*}(g)=\chi_V(g^{-1})\)</span>。</p>
+<p>我们有 <span class="arithmatex">\(\chi_V(g)=\sum \lambda_i\)</span>，其中 <span class="arithmatex">\(\lambda_i\)</span> 为 <span class="arithmatex">\(g\)</span> 在 <span class="arithmatex">\(V\)</span> 中的特征值。这些特征值必定为单位根，因为 <span class="arithmatex">\(\rho(g)^{\left|G\right|}=\rho(g^{\left|G\right|})=\rho(e)=\mathrm{Id}\)</span>。故对复表示</p>
+<div class="arithmatex">\[
+\chi_{V^*}(g)=\chi_V(g^{-1})=\sum \lambda_i^{-1}=\sum \overline{\lambda_i}=\overline{\sum \lambda_i}=\overline{\chi_V(g)}
+\]</div>
+<p>特别的，<span class="arithmatex">\(V\cong  V^*\)</span> 当且仅当 <span class="arithmatex">\(\chi_V(g)\in \mathbb{R},\forall g\in G\)</span>。</p>
+<p>若 <span class="arithmatex">\(V,W\)</span> 为 <span class="arithmatex">\(G\)</span> 的表示，则 <span class="arithmatex">\(V\otimes W\)</span> 当然也是表示，由</p>
+<div class="arithmatex">\[
+\rho_{V\otimes W}(g)=\rho_V(g)\otimes\rho_W(g)
+\]</div>
+<p>给出。因此 <span class="arithmatex">\(\chi_{V\otimes W}(g)=\chi_V(g)\chi_W(g)\)</span>。</p>
+<p>一个有趣的问题是将 <span class="arithmatex">\(V\otimes W\)</span> 分解成不可约表示的直和，我们下面将会提到。</p>
+<h2 id="s4"><span class="book-secnum">§ 04</span>特征的正交性</h2>
+<p>我们在 <span class="arithmatex">\(F_c(G,\mathbb{C})\)</span> 上定义一个 Hermitian 内积：</p>
+<div class="arithmatex">\[
+(f_1,f_2)=\frac{1}{\left|G\right|} \sum_{g\in G} f_1(g)\overline{f_2(g)}
+\]</div>
+<p>下面的定理说明 <span class="arithmatex">\(G\)</span> 的不可约表示的特征在上述内积下是 <span class="arithmatex">\(F_c(G,\mathbb{C})\)</span> 的一组正交基。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span></p>
+<p>对任意表示 <span class="arithmatex">\(V,W\)</span>，</p>
+<div class="arithmatex">\[
+(\chi_V,\chi_W)=\dim \mathrm{Hom}_G(W,V)
+\]</div>
+<p>且当 <span class="arithmatex">\(V,W\)</span> 均为不可约表示时</p>
+<div class="arithmatex">\[
+(\chi_V,\chi_W)=\begin{cases}
+1, V\cong W\\
+0, V\ncong W\\
+\end{cases}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由定义</p>
+<div class="arithmatex">\[
+(\chi_V,\chi_W)=\frac{1}{\left|G\right|}\sum_{g\in G}\chi_V(g)\overline{\chi_W(g)}=\frac{1}{\left|G\right|}\sum_{g\in G}\chi_V(g){\chi_{W^*}(g)}=\frac{1}{\left|G\right|}\sum_{g\in G}\chi_{V\otimes W^*}(g)=\mathrm{Tr}\big|_{V\otimes W^*}(P)
+\]</div>
+<p>其中 <span class="arithmatex">\(P=\frac{1}{\left|G\right|}\sum_{g\in G}g\in Z(\mathbb{C}[G])\)</span>。若 <span class="arithmatex">\(X\)</span> 是 <span class="arithmatex">\(G\)</span> 的不可约表示，由 Schur 引理知 <span class="arithmatex">\(P\)</span> 在 <span class="arithmatex">\(X\)</span> 上作用为标量，则</p>
+<div class="arithmatex">\[
+P\big|_X=\begin{cases}
+\mathrm{Id} ,X=\mathbb{C}\\
+0,X\neq \mathbb{C}\\
+\end{cases}
+\]</div>
+<p>第二个情形中 <span class="arithmatex">\(\mathrm{Tr}(P\big|_X)= \frac{1}{\left|G\right|}\sum_{g\in G}\chi_X(g)=(\chi_X,\chi_\mathbb{C})=0\)</span>，故作用的标量为 0。因此，对于任何表示 <span class="arithmatex">\(X\)</span>，算子 <span class="arithmatex">\(P\big|_X\)</span> 都是作用在 <span class="arithmatex">\(X\)</span> 中 <span class="arithmatex">\(G-\)</span> 不变元素构成的子空间 <span class="arithmatex">\(X^G\)</span> 上的 <span class="arithmatex">\(G-\)</span>不变投影算子。于是</p>
+<div class="arithmatex">\[
+\mathrm{Tr}\big|_{V\otimes W^*}(P)=\dim \mathrm{Hom}_G(\mathbb{C},V\otimes W^*)=\dim(V\otimes W^*)^G=\dim \mathrm{Hom}_G(W,V)
+\]</div>
+</details>
+<p>该定理给了一个强力的方法判断一个有限群的表示是否是不可约的：<span class="arithmatex">\(V\)</span> 不可约当且仅当 <span class="arithmatex">\((\chi_V,\chi_V)=1\)</span>。</p>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 4.2</span></p>
+<p>设 <span class="arithmatex">\(G\)</span> 是有限群，令 <span class="arithmatex">\(V_i\)</span> 是其不可约表示。对每个 <span class="arithmatex">\(i\)</span>，定义</p>
+<div class="arithmatex">\[
+\psi_i=\frac{\dim V_i}{\left|G\right|}\sum_{g\in G} \chi_{V_i}(g)\cdot g^{-1}\in \mathbb{C}[G]
+\]</div>
+<ul>
+<li>证明 <span class="arithmatex">\(\psi_i\)</span> 在 <span class="arithmatex">\(V_j\)</span> 上作用为 <span class="arithmatex">\(\delta_{ij}\)</span>。</li>
+<li>证明 <span class="arithmatex">\(\psi_i\)</span> 是<strong>幂等的(idempotents)</strong>，即 <span class="arithmatex">\(\psi_i^2=\psi_i\)</span>，且 <span class="arithmatex">\(\psi_i\psi_j=0,\forall i\neq j\)</span>。</li>
+</ul>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.3</span></p>
+<p>令 <span class="arithmatex">\(g,h\in G\)</span>，记 <span class="arithmatex">\(Z_g\)</span> 是 <span class="arithmatex">\(g\)</span> 在 <span class="arithmatex">\(G\)</span> 中的中心化子，则</p>
+<div class="arithmatex">\[
+\sum_V\chi_V(g)\overline{\chi_V(h)}=\begin{cases}
+\left|Z_g\right|, g,h \text{共轭}\\
+0,otherwise\\
+\end{cases}
+\]</div>
+<p>其中求和符号对所有不可约表示 <span class="arithmatex">\(V\)</span> 求和。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由上知 <span class="arithmatex">\(\overline{\chi_V(h)}=\chi_{V^*}(h)\)</span>，故结合 Maschke 定理原式<span class="arithmatex">\(=\)</span></p>
+<div class="arithmatex">\[
+\sum_V\chi_V(g)\chi_{V^*}(h)=\mathrm{Tr}\big|_{\bigoplus_V V\otimes V^*}(g\otimes h)=\mathrm{Tr}\big|_{\bigoplus_V \mathrm{End}V}(x\mapsto gxh^{-1})=\mathrm{Tr}\big|_{\mathbb{C}[G]}(x\mapsto gxh^{-1})
+\]</div>
+<p>其中第二个等号是因为</p>
+<div class="arithmatex">\[
+\begin{aligned}
+V\otimes V^*&amp;\cong \mathrm{End} V\\
+x\otimes y&amp;\mapsto (\varphi_{x,y}:v\mapsto (y,v)\cdot x)\\
+\end{aligned}
+\]</div>
+<p>又</p>
+<div class="arithmatex">\[
+\begin{aligned}
+(g\otimes h)(x\otimes y)(v)=(\rho_V(g)x\otimes \rho_{V^*}(h)y)(v)&amp;=\left&lt;\rho_{V^*}(h)y,v\right&gt;\cdot \rho_V(g)x\\
+&amp;=\left&lt;y,\rho_{V}(h^{-1})v\right&gt;\cdot \rho_V(g)x
+\end{aligned}
+\]</div>
+<p>故 <span class="arithmatex">\((g\otimes h)(\varphi_{x,y})=g\circ \varphi_{x,y} \circ h^{-1}\)</span></p>
+<p>若 <span class="arithmatex">\(g,h\)</span> 不共轭，则该迹显然为 <span class="arithmatex">\(0\)</span>(考虑 <span class="arithmatex">\(x\mapsto gxh^{-1}\)</span> 在群元素构成的基下对应的矩阵对角线为 <span class="arithmatex">\(0\)</span>)。另一方面，若 <span class="arithmatex">\(g,h\)</span> 共轭，则迹为满足 <span class="arithmatex">\(x=gxh^{-1}\)</span> 的元素 <span class="arithmatex">\(x\)</span> 的个数，即中心化子 <span class="arithmatex">\(Z_g\)</span> 的元素个数。</p>
+</details>
+<h2 id="s5"><span class="book-secnum">§ 05</span>酉表示与 Maschke 定理的另一个对复表示的证明</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span></p>
+<p>一个群 <span class="arithmatex">\(G\)</span> 的有限维<strong>酉(unitary)</strong>表示为一个有限维复向量空间 <span class="arithmatex">\(V\)</span> 伴有 <span class="arithmatex">\(G-\)</span>不变正定的 Hermitian 形式 <span class="arithmatex">\((\text{ },\text{ })\)</span>，这里 <span class="arithmatex">\(G-\)</span>不变指对任意 <span class="arithmatex">\(g\in G\)</span>，<span class="arithmatex">\((\rho_V(g)v,\rho_V(g)w)=(v,w)\)</span>。</p>
+</div>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span></p>
+<p>若 <span class="arithmatex">\(G\)</span> 有限，则任意 <span class="arithmatex">\(G\)</span> 的有限维表示均有一个酉结构。若该表示为不可约的，则这个结构在相差一个正倍数的关系下是唯一的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对任意 <span class="arithmatex">\(V\)</span> 上的正定 Hermitian 形式 <span class="arithmatex">\(B\)</span>，定义</p>
+<div class="arithmatex">\[
+\overline{B}(v,w)=\sum_{g\in G}B(\rho_V(g)v,\rho_V(g)w)
+\]</div>
+<p>则 <span class="arithmatex">\(\overline{B}\)</span> 是 <span class="arithmatex">\(V\)</span> 上的正定 Hermitian 形式，且 <span class="arithmatex">\(\rho_V(g)\)</span> 是酉算子。若 <span class="arithmatex">\(V\)</span> 是不可约表示，对 <span class="arithmatex">\(V\)</span> 的两个正定 Hermitian 形式 <span class="arithmatex">\(B_1,B_2\)</span>，则 <span class="arithmatex">\(B_1(v,w)=B_2(Av,w)\)</span> 对某个同态 <span class="arithmatex">\(A:V\rightarrow V\)</span> 成立。由 Schur 引理，<span class="arithmatex">\(A=\lambda Id\)</span>，且显然 <span class="arithmatex">\(\lambda&gt;0\)</span>，得证。</p>
+</details>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.3</span></p>
+<p>任意群 <span class="arithmatex">\(G\)</span> 的有限维酉表示 <span class="arithmatex">\(V\)</span> 是完全可约的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>令 <span class="arithmatex">\(W\)</span> 为 <span class="arithmatex">\(V\)</span> 的子表示。令 <span class="arithmatex">\(W^\bot\)</span> 为 <span class="arithmatex">\(W\)</span> 在 <span class="arithmatex">\(V\)</span> 中对 Hermitian 内积的正交补。则 <span class="arithmatex">\(W^\bot\)</span> 为 <span class="arithmatex">\(W\)</span> 的子表示，且 <span class="arithmatex">\(V=W\oplus W^\bot\)</span>。这表明 <span class="arithmatex">\(V\)</span> 是完全可约的。</p>
+</details>
+<p>考虑 <span class="arithmatex">\(G=\mathbb{Z}\cap \mathbb{C}^2,n(a,b):=(a+nb,b)\)</span>，则该表示不可分解，但不是不可约的，其上没有酉结构。</p>
+<h2 id="s6"><span class="book-secnum">§ 06</span>矩阵元素的正交性</h2>
+<p>设 <span class="arithmatex">\(V\)</span> 为有限群 <span class="arithmatex">\(G\)</span> 的不可约表示，令 <span class="arithmatex">\(v_1,\cdots,v_n\)</span> 为 <span class="arithmatex">\(V\)</span> 的正交基(在 Hermitian 形式下)。<span class="arithmatex">\(V\)</span> 的<strong>矩阵元素(matrix elements)</strong> <span class="arithmatex">\(t_{ij}^V(x)=(\rho_V(x)v_i,v_j)\)</span>。</p>
+<p>回忆在 <span class="arithmatex">\(F(G,\mathbb{C})\)</span> 上定义的形式 <span class="arithmatex">\((f,g)=\frac{1}{\left|G\right|}\sum _{x\in G}f(x)\overline{g(x)}\)</span></p>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.1</span></p>
+<p><span class="arithmatex">\(V,W\)</span> 是不可约表示，</p>
+<div class="arithmatex">\[
+(t^V_{ij},t^W_{i'j'})=\begin{cases}
+0,V\ncong W\\
+\delta_{ii'}\delta_{jj'}\cdot \frac{1}{\dim V},V\cong W\\
+\end{cases}
+\]</div>
+<p>即 <span class="arithmatex">\(G\)</span> 的不可约表示的矩阵元素构成了一组 <span class="arithmatex">\(F(G,\mathbb{C})\)</span> 的正交基。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\left\{v_i\right\},\left\{w_i\right\}\)</span> 分别为 <span class="arithmatex">\(V,W\)</span> 在对应正定不变 Hermitian 形式下的正交基。取 <span class="arithmatex">\(w^*_i:u\mapsto (u,w_i)\in W^*\)</span>。</p>
+<p>断言：这给出了一个 <span class="arithmatex">\(W^*\)</span> 上的酉结构，<span class="arithmatex">\((gw)^*=g\cdot w^*\)</span>。</p>
+<p>则对 <span class="arithmatex">\(x\in G\)</span> 我们有 <span class="arithmatex">\((xw^*_i,w^*_j)=\overline{(xw_i,w_j)}\)</span>，于是我们有</p>
+<div class="arithmatex">\[
+(t^V_{ij},t^W_{i'j'})=\left|G\right|^{-1}\sum_{x\in G}(xv_i,v_j)\overline{(xw_{i'},w_{j'})}=\left|G\right|^{-1}\sum_{x\in G} (xv_i,v_j)(xw^*_{i'},w^*_{j'})=(P(v_i\otimes w^*_i),v_j\otimes w^*_{j'})
+\]</div>
+<p>其中 <span class="arithmatex">\(P=\frac{1}{\left|G\right|}\sum_{x\in G} x\)</span>。若 <span class="arithmatex">\(V\ncong W\)</span>，由于 <span class="arithmatex">\(P\)</span> 投影到平凡表示，而该表示在 <span class="arithmatex">\(V\otimes W\)</span> 中并不存在，故上式为 <span class="arithmatex">\(0\)</span>。若 <span class="arithmatex">\(V\cong W\)</span>，<span class="arithmatex">\((t_{ij}^V,t_{i'j'}^V)=(P(v_i\otimes v_{i'}^*),v_j\otimes v_{j'}^*)\)</span>，注意到 <span class="arithmatex">\((V\otimes V^*)^G\)</span> 由单位向量 <span class="arithmatex">\(f:=\frac{1}{\sqrt{\dim V}}\sum_{i} v_i\otimes v_i^*\)</span> 生成，故 <span class="arithmatex">\((V\otimes V^*)^G\cong \mathbb{C}\)</span>。故 <span class="arithmatex">\(P(v_i\otimes v^*_{i'})=(v_i\otimes v_{i'}^*,f)\cdot f=\frac{1}{\sqrt{\dim V}}\cdot f\cdot \delta_{ii'}\)</span>，故</p>
+<div class="arithmatex">\[
+(t_{ij}^V,t_{i'j'}^V)=\frac{1}{\sqrt{\dim V}}\delta_{ii'} (f,v_j\otimes v^*_{j'})=\frac{1}{\dim V} \delta_{ii'}\delta_{jj'}
+\]</div>
+<p>由于 <span class="arithmatex">\(\dim F(G,\mathbb{C})=\left|G\right|=\sum_V (\dim V)^2\)</span>，故确实为 基。</p>
+</details>
+<h2 id="s7"><span class="book-secnum">§ 07</span>特征表</h2>
+<p>在本节中，<span class="arithmatex">\(k = \mathbb{C}\)</span>，<span class="arithmatex">\(G\)</span> 是一个有限群。</p>
+<p><span class="arithmatex">\(G\)</span> 的特征表结构如下：</p>
+<div class="arithmatex">\[
+\begin{array}{|c|c|c|c|c|}
+\hline
+G &amp; g_1 &amp; g_2 &amp; \cdots &amp; g_i\\
+\hline
+\# &amp; &amp; &amp; &amp;\\
+\hline
+V_1 \, (\text{平凡}) &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\
+\hline
+V_2 &amp; \dim V_2 &amp; &amp; &amp;  \\
+\hline
+\vdots &amp; \vdots &amp; &amp; &amp;  \\
+\hline
+V_i&amp; \dim V_i &amp; &amp; &amp;\chi_V(g_i)   \\
+\hline
+\end{array}
+\]</div>
+<p>其中第一行为 <span class="arithmatex">\(G\)</span> 的共轭类，第二行为对应共轭类的元素个数。</p>
+<p>已证明结论：</p>
+<ul>
+<li>
+<p>正交关系：</p>
+<div class="arithmatex">\[
+\frac{1}{|G|} \sum_{g \in G} \chi_{V_i}(g) \overline{\chi_{V_j}(g)}
+= \frac{1}{|G|} \sum_{C_i} |C_i| \chi_{V_i}(g) \overline{\chi_{V_j}(g)}
+= \begin{cases}
+1 &amp; \text{若 } V_i = V_j \\
+0 &amp; \text{otherwise}
+\end{cases}
+\]</div>
+</li>
+<li>
+<p>特征标和关系：</p>
+<div class="arithmatex">\[
+\sum_{V_i} \chi_{V_i}(g) \cdot \overline{\chi_{V_j}(h)}
+=
+\begin{cases}
+|Z_g| &amp; \text{若 } g \text{ 与 } h \text{ 共轭} \\
+0 &amp; \text{otherwise}
+\end{cases}
+\]</div>
+</li>
+</ul>
+<p>我们来看一些简单的例子：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(G=S_3\)</span></p>
+<div class="arithmatex">\[
+\begin{array}{|c|c|c|c|}
+\hline
+S_3 &amp; \mathrm{Id} &amp; (12) &amp; (123)\\
+\hline
+\# &amp;1 &amp; 3&amp; 2\\
+\hline
+\mathbb{C} &amp; 1 &amp; 1 &amp; 1  \\
+\hline
+\text{sign} &amp; 1 &amp; -1&amp; 1 \\
+\hline
+\mathbb{C}^2 &amp; 2 &amp;0 &amp; 1 \\
+\hline
+\end{array}
+\]</div>
+<p>这里 <span class="arithmatex">\(S_3\curvearrowright \mathbb{C}^2=\left\{(x_1,x_2,x_3)\in \mathbb{C}^3\Big| x_1+x_2+x_3=0\right\}\)</span>。</p>
+<p><strong>断言：</strong></p>
+<div class="arithmatex">\[
+S_n\curvearrowright \mathbb{C}^{n-1}=\left\{(x_1,\cdots,x_n)\in \mathbb{C}^{n}\Big| x_1+\cdots+x_n=0\right\}
+\]</div>
+<p>为不可约表示，这称为 <span class="arithmatex">\(S_n\)</span> 的<strong>标准表示(standard representation)</strong>。</p>
+<p><strong>断言：</strong>若 <span class="arithmatex">\(V\)</span> 是不可约表示，则 <span class="arithmatex">\(V\otimes \text{sign}\)</span> 也是不可约表示。由 <span class="arithmatex">\(\chi_{V\otimes \text{sign}}(g)=\chi_V\cdot (-1)^{\text{l}(g)}\)</span> 即得。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(G=S_4\)</span></p>
+<div class="arithmatex">\[
+\begin{array}{|c|c|c|c|c|c|}
+\hline
+S_4 &amp; \mathrm{Id} &amp; (12) &amp; (12)(34)&amp;(123)&amp;(1234)\\
+\hline
+\# &amp;1 &amp; 6&amp;3&amp;8&amp;6\\
+\hline
+\mathbb{C} &amp; 1 &amp; 1 &amp; 1&amp; 1&amp; 1  \\
+\hline
+\text{sign} &amp; 1 &amp; -1&amp; 1 &amp; -1&amp; 1 \\
+\hline
+\mathbb{C}^3 &amp; 3&amp;1 &amp; -1&amp;0 &amp;-1 \\
+\hline
+\mathbb{C}^3\otimes \text{sign} &amp; 3&amp;-1 &amp; 1&amp;0 &amp;1 \\
+\hline
+\mathbb{C}^2 &amp; 2&amp;0 &amp; 2&amp;-1 &amp;0 \\
+\hline
+\end{array}
+\]</div>
+<p>最后一个由 <span class="arithmatex">\(H:=\left\{\mathrm{Id},(12)(34),(13)(24),(14)(23)\right\}\triangleleft S_4\)</span> 与 <span class="arithmatex">\(S_4\twoheadrightarrow  S_4/H\cong S_3\)</span> 给出。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(G=A_4\)</span></p>
+<div class="arithmatex">\[
+\begin{array}{|c|c|c|c|c|}
+\hline
+A_4 &amp; \mathrm{Id} &amp;(123) &amp;(132)&amp;(12)(34)\\
+\hline
+\# &amp;1 &amp; 4 &amp;4&amp;3\\
+\hline
+\mathbb{C} &amp; 1 &amp; 1 &amp; 1&amp; 1  \\
+\hline
+\mathbb{C}_\omega&amp; 1 &amp; \omega&amp; \omega^2 &amp; 1 \\
+\hline
+\mathbb{C}_\omega^2&amp; 1 &amp; \omega^2&amp; \omega &amp; 1 \\
+\hline
+\mathbb{C}^3 &amp; 3&amp;0 &amp;0 &amp;-1 \\
+\hline
+\end{array}
+\]</div>
+</li>
+</ul>
+<p>我们可以通过特征表来计算 <span class="arithmatex">\(V_i\otimes V_j=\sum N_{ij}^k V_k\)</span> 中的系数 <span class="arithmatex">\(N_{ij}^k=(\chi_i\chi_j,\chi_k)\)</span>。</p>
+<h2 id="s8"><span class="book-secnum">§ 08</span>Frobeniu 行列式</h2>
+<p>设 <span class="arithmatex">\(G\)</span> 是有限群，<span class="arithmatex">\(\left\{x_g\Big| g\in G\right\}\)</span> 为变量。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span></p>
+<p>考虑 <span class="arithmatex">\(\left|G\right|\times \left|G\right|\)</span> 矩阵 <span class="arithmatex">\(X_G\)</span>，其中 <span class="arithmatex">\(a_{g,h}:=x_{g^{-1}h}\)</span>，称 <span class="arithmatex">\(\det(X_G)\)</span> 为 <strong>Frobenius 行列式</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.2</span><span class="book-name">例</span></p>
+<p>考虑 <span class="arithmatex">\(G=C_n=\left&lt;r\Big| r^n=1\right&gt;\)</span>，则</p>
+<div class="arithmatex">\[
+X_G=\left( \begin{matrix}
+x_0&amp;        x_1&amp;        \cdots&amp;     x_{n-1}\\
+x_{n-1}&amp;        x_0&amp;        \cdots&amp;     x_{n-2}\\
+\vdots&amp;     \vdots&amp;     \ddots&amp;     \vdots\\
+x_1&amp;        x_2&amp;        \cdots&amp;     x_0\\
+\end{matrix} \right)
+\]</div>
+<p><strong>断言：</strong></p>
+<div class="arithmatex">\[
+\begin{aligned}
+\det(X_{c_n})&amp;=\prod_{j=0}^{n-1}(\sum_{k=0}^{n-1}\zeta^{jk}x_k),\zeta=e^{2\pi j/n}\\
+&amp;=\prod_{j=0}^{n-1}(\sum_{k=0}^{n-1}\chi_j(r^k)x_k),\chi_j \text{为第} j \text{个不可约表示}\\
+\end{aligned}
+\]</div>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.3</span><span class="book-name">Dedekind</span></p>
+<p>设 <span class="arithmatex">\(G\)</span> 是有限群，则</p>
+<div class="arithmatex">\[
+\det X_G=\prod_\chi (\prod_{g\in G} \chi(g)x_g)
+\]</div>
+<p><span class="arithmatex">\(\chi\)</span> 对所有 <span class="arithmatex">\(G\rightarrow \mathbb{C}^*\)</span> 的群同态求和。</p>
+</div>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.4</span><span class="book-name">Frobenius</span></p>
+<p>存在互不成比例的不可约多项式 <span class="arithmatex">\(P_j(x)\)</span> 满足：</p>
+<div class="arithmatex">\[
+\det X_G=\prod_{j=1}^{r} P_j(x)^{\deg P_j}
+\]</div>
+<p>其中 <span class="arithmatex">\(r\)</span> 为 <span class="arithmatex">\(G\)</span> 的共轭类数。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>先证明一个引理：</p>
+<div class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.5</span></p>
+<p>设 <span class="arithmatex">\(Y=(y_{ij})\)</span>，则 <span class="arithmatex">\(\det Y\)</span> 在 <span class="arithmatex">\(\left\{y_{ij}\right\}\)</span> 上为不可约多项式。</p>
+</div>
+<details class="proof">
+<summary>引理的证明</summary>
+<p>设 <span class="arithmatex">\(X=t\cdot \mathrm{Id} +\sum_{i=1}^n x_i E_{i,i+1}\)</span>，其中下标模 <span class="arithmatex">\(n\)</span> 理解，<span class="arithmatex">\(E_{i,j}\)</span> 是初等矩阵。则 <span class="arithmatex">\(\det(X)=t^n-(-1)^nx_1\cdots x_n\)</span> 显然不可约。因此，行列式 <span class="arithmatex">\(\det(Y)\)</span> 是不可约的（这是因为当 <span class="arithmatex">\(Y\)</span> 特化为 <span class="arithmatex">\(X\)</span> 时行列式保持不可约性，且齐次多项式的不可约因子本身必须是齐次的，因此无法通过特化得到非零常数）。</p>
+</details>
+<p>回到原题。令 <span class="arithmatex">\(V = \mathbb{C}[G]\)</span> 为群 <span class="arithmatex">\(G\)</span> 的正则表示。考虑</p>
+<div class="arithmatex">\[
+L(\mathbf{x}) = \sum_{g \in G} x_g \rho(g),
+\]</div>
+<p>其中 <span class="arithmatex">\(\rho(g) \in \text{End}(V)\)</span> 由 <span class="arithmatex">\(g\)</span> 诱导。<span class="arithmatex">\(L(\mathbf{x})\)</span> 作用于元素 <span class="arithmatex">\(h \in G\)</span> 的结果为</p>
+<div class="arithmatex">\[
+L(\mathbf{x})h = \sum_{g \in G} x_g \rho(g)h = \sum_{g \in G} x_g gh = \sum_{z \in G} x_{zh^{-1}} z.
+\]</div>
+<p>因此，线性算子 <span class="arithmatex">\(L(\mathbf{x})\)</span> 在基 <span class="arithmatex">\(g_1, g_2, \ldots, g_n\)</span> 下的矩阵为 <span class="arithmatex">\(X_G\)</span> 的列置换矩阵，故其行列式至多相差一个符号。</p>
+<p>根据 Maschke 定理，我们有</p>
+<div class="arithmatex">\[
+\det\nolimits_V L(\mathbf{x}) = \prod_{i=1}^r \left( \det\nolimits_{V_i} L(\mathbf{x}) \right)^{\dim V_i},
+\]</div>
+<p>其中 <span class="arithmatex">\(V_i\)</span> 是 <span class="arithmatex">\(G\)</span> 的不可约表示。令 <span class="arithmatex">\(P_i = \det_{V_i} L(\mathbf{x})\)</span>。设 <span class="arithmatex">\(\{e_{im}\}\)</span> 为 <span class="arithmatex">\(V_i\)</span> 的基，<span class="arithmatex">\(E_{i,j,k} \in \text{End}(V_i)\)</span> 为这些基下的矩阵单位元。则 <span class="arithmatex">\(\{E_{i,jk}\}\)</span> 构成 <span class="arithmatex">\(\mathbb{C}[G]\)</span> 的一组基，且</p>
+<div class="arithmatex">\[
+L(\mathbf{x})|_{V_i} = \sum_{j,k} y_{i,jk} E_{i,jk},
+\]</div>
+<p>其中 <span class="arithmatex">\(y_{i,j,k}\)</span> 是 <span class="arithmatex">\(\mathbb{C}[G]\)</span> 上通过线性变换与 <span class="arithmatex">\(x_g\)</span> 关联的新坐标。于是</p>
+<div class="arithmatex">\[
+P_i(\mathbf{x}) = \det\nolimits_{V_i} L(\mathbf{x}) = \det (y_{i,jk}).
+\]</div>
+<p>因此，由引理 <span class="arithmatex">\(P_i\)</span> 是不可约的且互不成比例（因为它们依赖于不同的变量集合 <span class="arithmatex">\(y_{i,jk}\)</span>）。定理得证。</p>
+</details>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="representation-theory.pdf" href="../../../../assets/representation-theory.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="表示论章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-02/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第二章：表示理论的一般结论</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-04/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第四章：有限群的表示：一些进阶结论</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#representation-theory">表示论 · 第 3 / 8 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">代数</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=representation-theory">#representation-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1750 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="表示论笔记第五章：对称函数、S_n 表示的分类定理、对称群 S_n的表示的分类定理的证明、诱导表示、表示环和对称函数、A_n 的表示、Schur-Weyl 对偶。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第五章：对称群 S_n 的表示 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-05/">
+  <meta property="og:title" content="第五章：对称群 S_n 的表示 - zdd14990">
+  <meta property="og:description" content="表示论笔记第五章：对称函数、S_n 表示的分类定理、对称群 S_n的表示的分类定理的证明、诱导表示、表示环和对称函数、A_n 的表示、Schur-Weyl 对偶。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="representation-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-05/">
+  <meta name="twitter:title" content="第五章：对称群 S_n 的表示 - zdd14990">
+  <meta name="twitter:description" content="表示论笔记第五章：对称函数、S_n 表示的分类定理、对称群 S_n的表示的分类定理的证明、诱导表示、表示环和对称函数、A_n 的表示、Schur-Weyl 对偶。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e94\u7ae0\uff1a\u5bf9\u79f0\u7fa4 S_n \u7684\u8868\u793a",
+    "description": "\u8868\u793a\u8bba\u7b14\u8bb0\u7b2c\u4e94\u7ae0\uff1a\u5bf9\u79f0\u51fd\u6570\u3001S_n \u8868\u793a\u7684\u5206\u7c7b\u5b9a\u7406\u3001\u5bf9\u79f0\u7fa4 S_n\u7684\u8868\u793a\u7684\u5206\u7c7b\u5b9a\u7406\u7684\u8bc1\u660e\u3001\u8bf1\u5bfc\u8868\u793a\u3001\u8868\u793a\u73af\u548c\u5bf9\u79f0\u51fd\u6570\u3001A_n \u7684\u8868\u793a\u3001Schur-Weyl \u5bf9\u5076\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-05/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-05/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["representation-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 对称函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. \(S_n\) 表示的分类定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 对称群 \(S_n\)的表示的分类定理的证明
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 诱导表示
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 表示环和对称函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. \(A_n\) 的表示
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Schur-Weyl 对偶
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#representation-theory">表示论</a>
+    <span>Part 5 of 8</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">05</div>
+    <h1 id="top"><span class="book-visually-hidden">第 5 章：</span>对称群 S_n 的表示</h1>
+  </div>
+  <p class="book-standfirst">回忆 <span class="arithmatex">\(\forall \lambda\in P(n),P_\lambda=S_{\lambda_1}\times S_{\lambda_2}\times \cdots \times S_{\lambda_2}\subseteq S_n\)</span></p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>4,565 字 · 约 13 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>对称函数</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>一个<strong>划分(partition)</strong>为任意(有限或无限)非负整数序列 <span class="arithmatex">\(\lambda=(\lambda_1,\lambda_2,\cdots)\)</span> 满足 <span class="arithmatex">\(\lambda_1\ge \lambda_2\ge \cdots\)</span> 且仅含有限多个非零元。有时我们将 <span class="arithmatex">\(\lambda\)</span> 记作 <span class="arithmatex">\((1^{m_1}2^{m_2}\cdots)\)</span>，其中 <span class="arithmatex">\(m_i=\#\left\{j\Big| \lambda_{j}=i\right\}\)</span>。仅当两个划分仅相差末尾的 <span class="arithmatex">\(0\)</span> 时，称这两个划分相等，例如 <span class="arithmatex">\((3,1)=(3,1,0)=(3,1,0,0,\cdots)\)</span></p>
+<p>定义 <span class="arithmatex">\(\lambda\)</span> 的<strong>长度(length)</strong> <span class="arithmatex">\(l(\lambda):=\#\left\{i\Big| \lambda_i\neq 0\right\}\)</span>，<span class="arithmatex">\(\lambda\)</span> 的<strong>权(weight)</strong> <span class="arithmatex">\(\left|\lambda\right|:=\sum \lambda_i\)</span>。</p>
+<p>若 <span class="arithmatex">\(\left|\lambda\right|=n\)</span>，我们称 <span class="arithmatex">\(\lambda\)</span> 为一个 <span class="arithmatex">\(n\)</span> 的划分，这样的划分构成集合 <span class="arithmatex">\(P_n\)</span>，记 <span class="arithmatex">\(P:=\bigcup_n P_n\)</span>。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span></p>
+<p><span class="arithmatex">\(P\)</span> 上的<strong>优于</strong>关系：<span class="arithmatex">\(\lambda\trianglerighteq \mu\)</span> 当且仅当 <span class="arithmatex">\(\left|\lambda\right|=\left|\mu \right|\)</span> 且 <span class="arithmatex">\(\lambda_1+\cdots+\lambda_i\ge \mu_1+\cdots+\mu_i,\forall i\ge 1\)</span>。</p>
+<p><span class="arithmatex">\(\lambda\triangleright \mu\)</span> 当且仅当 <span class="arithmatex">\(\lambda\trianglerighteq \mu\)</span> 且 <span class="arithmatex">\(\lambda \neq \mu\)</span>。</p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span></p>
+<p><span class="arithmatex">\(\lambda\)</span> 的<strong>Young 图</strong>定义为</p>
+<div class="arithmatex">\[
+Y_\lambda=\left\{(i,j)\in \mathbb{Z}^2\Big| 1\le j \le \lambda_i\right\}
+\]</div>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p><span class="arithmatex">\(\lambda\)</span> 的<strong>共轭划分</strong> <span class="arithmatex">\(\lambda'\)</span> 定义为</p>
+<div class="arithmatex">\[
+\lambda_j':=\#\left\{(i,j)\in Y_\lambda\Big| i\ge 1\right\}
+\]</div>
+<p>等价的，<span class="arithmatex">\(Y_{\lambda'}\)</span> 与 <span class="arithmatex">\(Y_\lambda\)</span> 关于对角线对称。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.5</span></p>
+<div class="arithmatex">\[
+\lambda \trianglerighteq \mu\Longleftrightarrow \mu'\trianglerighteq \lambda'
+\]</div>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.6</span></p>
+<div class="arithmatex">\[
+\wedge _n:=\mathbb{Z}[x_1,\cdots,x_n]^{S_n}=\bigoplus_{r\ge 0} \wedge _n^r
+\]</div>
+<p>为 <span class="arithmatex">\(n\)</span> 元对称多项式，其中 <span class="arithmatex">\(\wedge _n^r\)</span> 为 <span class="arithmatex">\(r\)</span> 次齐次 <span class="arithmatex">\(n\)</span> 元多项式。</p>
+</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.7</span></p>
+<p>对每个 <span class="arithmatex">\(\alpha =(\alpha_1,\cdots,\alpha_n)\in \mathbb{N}^n\)</span>，令 <span class="arithmatex">\(x^\alpha:=x_1^{\alpha_1}\cdots x_n^{\alpha_n}\)</span>。令 <span class="arithmatex">\(\lambda\)</span> 为划分满足 <span class="arithmatex">\(l(\lambda)\le n\)</span>，定义</p>
+<div class="arithmatex">\[
+m_\lambda(x_1,\cdots,x_n)=\sum_\alpha x^\alpha
+\]</div>
+<p>其中求和号对所有 <span class="arithmatex">\(\lambda=(\lambda_1,\lambda_2,\cdots,\lambda_n)\)</span> 的不同排列求和。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.8</span></p>
+<ul>
+<li><span class="arithmatex">\(\left\{m_\lambda\Big| l(\lambda)\le n\right\}\)</span> 为 <span class="arithmatex">\(\wedge _n\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+<li><span class="arithmatex">\(\left\{m_\lambda\Big| l(\lambda)\le n,\left|\lambda\right|=r\right\}\)</span> 为 <span class="arithmatex">\(\wedge _n^r\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+<li>当 <span class="arithmatex">\(n\ge r\)</span> 时 <span class="arithmatex">\(\left\{m_\lambda\Big| \left|\lambda\right|=r\right\}\)</span> 为 <span class="arithmatex">\(\wedge _n^r\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+</ul>
+</div>
+<p>通常，使用无限多个变量的对称函数更为方便。对分次环存在满射</p>
+<div class="arithmatex">\[
+\wedge ^{n+1}\rightarrow \wedge ^n,x_{n+1}\mapsto 0
+\]</div>
+<p>由定义</p>
+<div class="arithmatex">\[
+m_\lambda(x_1,\cdots,x_{n+1})\mapsto\begin{cases}
+m_\lambda(x_1,\cdots,x_n)&amp;,l(\lambda)\le n\\
+0&amp;,l(\lambda)&gt;n
+\end{cases}
+\]</div>
+<p>将其限制在 <span class="arithmatex">\(r\)</span> 次多项式上就有 <span class="arithmatex">\(\wedge _{n+1}\twoheadrightarrow \wedge _{n}^r\)</span> 且当 <span class="arithmatex">\(r\le n\)</span> 时为双射。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.9</span></p>
+<p>定义 <span class="arithmatex">\(\wedge ^r:=\mathop {\underleftarrow{\lim}}\limits_ {n} \wedge _n^r,\forall r\ge 0\)</span>，<span class="arithmatex">\(\wedge :=\bigoplus_{r\ge 0} \wedge ^r\)</span>。由定义，<span class="arithmatex">\(\wedge ^r\)</span> 中的元素形如 <span class="arithmatex">\(f=(f_n)_{n\ge 0}\)</span>，其中 <span class="arithmatex">\(f_n\in \wedge _n^r\)</span> 满足 <span class="arithmatex">\(f_{n+1}\big|_{x_{n+1}=0}=f_n\)</span>。<span class="arithmatex">\(\wedge\)</span> 为对称函数环。</p>
+</div>
+<p>由于当 <span class="arithmatex">\(r\le n\)</span> 时 <span class="arithmatex">\(\wedge _{n+1}^r\mapsto \wedge _n^r\)</span> 为同构，故此时投影 <span class="arithmatex">\(\rho_n^r:\wedge ^r\mapsto \wedge _n^r,f\mapsto f_n\)</span> 为同构。</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.10</span></p>
+<p>令 <span class="arithmatex">\(m_\lambda:=(\rho_n^r)^{-1}(m_\lambda(x_1,\cdots,x_n))\in \wedge  ^r\)</span>，其中 <span class="arithmatex">\(\left|\lambda\right|=r\)</span>，<span class="arithmatex">\(m_\lambda\)</span> 称作<strong>对称单项式(monomial symmetric functions)</strong>。</p>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.11</span></p>
+<ul>
+<li><span class="arithmatex">\(\left\{m_\lambda\Big| \left|\lambda\right|=r\right\}\)</span> 为 <span class="arithmatex">\(\wedge ^r\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+<li><span class="arithmatex">\(\left\{m_\lambda\right\}\)</span> 是 <span class="arithmatex">\(\wedge\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+</ul>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.12</span><span class="book-name">初等对称多项式</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\forall r\in \mathbb{Z}_{\ge 0}\)</span>，令</p>
+<div class="arithmatex">\[
+e_r:=m_{(1^r)}=\sum_{i_1&lt;\cdots&lt;i_r} x_{i_1}\cdots x_{i_r},r_0:=1
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall \lambda\in P\)</span>，定义</p>
+<div class="arithmatex">\[
+e_\lambda:=e_{\lambda_1}\cdot e_{\lambda_2} \cdots
+\]</div>
+</li>
+</ul>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.13</span></p>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+E(t):=\sum_{r\ge 0}e_r t^r =\prod_{i\ge 1}(1+x_i t)
+$$
+</code></pre></div>
+<ul>
+<li><span class="arithmatex">\(\left\{e_\lambda\Big| \lambda \in P\right\}\)</span> 是 <span class="arithmatex">\(\wedge\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span> 是显然的。</p>
+<p><span class="arithmatex">\((2)\)</span> <strong>提示：</strong>证明</p>
+<div class="arithmatex">\[
+e_{\lambda'}=m_\lambda+\sum_{\mu\triangleleft \lambda} a_{\lambda,\mu }m_\mu，a_{\lambda,\mu}\in \mathbb{Z}_{\ge 0}
+\]</div>
+</details>
+<p>于是 <span class="arithmatex">\(\wedge =\mathbb{Z}[e_1,e_2,\cdots]\)</span> 且 <span class="arithmatex">\(\left\{e_1,e_2,\cdots\right\}\)</span> 在 <span class="arithmatex">\(\mathbb{Z}\)</span> 上线性独立。</p>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.14</span><span class="book-name">完全对称多项式</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\forall r\in \mathbb{Z}_{\ge 0}\)</span>，令</p>
+<div class="arithmatex">\[
+h_r:=m_{(1^r)}=\sum_{i_1\le\cdots\le i_r} x_{i_1}\cdots x_{i_r},h_0:=1
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall \lambda\in P\)</span>，定义</p>
+<div class="arithmatex">\[
+h_\lambda:=h_{\lambda_1}\cdot h_{\lambda_2} \cdots
+\]</div>
+</li>
+</ul>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.15</span></p>
+<p>对 <span class="arithmatex">\(\wedge =\mathbb{Z}[e_1,e_2,\cdots]\)</span>，令 <span class="arithmatex">\(\omega:\wedge \rightarrow\wedge ,e_r\mapsto h_r\)</span> 为环同态。</p>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.16</span></p>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+H(t):=\sum_{r\ge 0} h_r t ^r =\prod_{i\ge 1} (1-x_it)^{-1}
+$$
+</code></pre></div>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+\sum_{r=0}^n (-1)^r e_r h_{n-r}=0,\forall n\ge 1
+$$
+</code></pre></div>
+<ul>
+<li><span class="arithmatex">\(\left\{h_\lambda\Big| \lambda \in P\right\}\)</span> 是 <span class="arithmatex">\(\wedge\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：由 <span class="arithmatex">\(\frac{1}{1-x_it}=\sum_{n\ge 0} x_i^n t^n\)</span> 即得。</p>
+<p><span class="arithmatex">\((2)\)</span>：由 <span class="arithmatex">\(E(-t)H(t)=1\)</span> 即得。</p>
+<p><span class="arithmatex">\((3)\)</span>：由 <span class="arithmatex">\((2)\)</span> 知 <span class="arithmatex">\(\omega(h_r)=e_r\)</span>，于是 <span class="arithmatex">\(\omega^2=1\)</span>，即 <span class="arithmatex">\(\omega\)</span> 是 <span class="arithmatex">\(\wedge\)</span> 上的对合元，结合 <span class="arithmatex">\(\omega(e_r)=h_r\)</span> 即证。</p>
+</details>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.17</span><span class="book-name">等幂和</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\forall r\ge 1\)</span>，令</p>
+<div class="arithmatex">\[
+P_r:=m_(r)=\sum_i x_i^r
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall \lambda\in P\)</span>，定义</p>
+<div class="arithmatex">\[
+P_\lambda:=P_{\lambda_1}\cdot P_{\lambda_2}\cdots
+\]</div>
+</li>
+</ul>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.18</span></p>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+P(t):=\sum_{r\ge 1} P_r \cdot t^{r-1}=\sum_i \frac{x_i}{1-x_i t}
+$$
+</code></pre></div>
+<ul>
+<li><span class="arithmatex">\(\left\{P_\lambda\Big| \lambda\in P\right\}\)</span> 是 <span class="arithmatex">\(\wedge _\mathbb{Q}:=\mathbb{Q}\otimes_\mathbb{Z} \wedge\)</span> 的 <span class="arithmatex">\(\mathbb{Q}-\)</span>基。</li>
+</ul>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+\omega(P_r)=(-1)^{r-1}P_r,\omega(P_\lambda)=(-1)^{\left|\lambda\right|-l(\lambda)}P_\lambda
+$$
+</code></pre></div>
+<ul>
+<li>
+<p>对 <span class="arithmatex">\(\lambda=(1^{m_1}2^{m_2}\cdots)\)</span>，定义 <span class="arithmatex">\(z_\lambda=\prod_{r\ge 1} (r^{m_r}\cdot m_r!)\)</span>，则</p>
+<div class="arithmatex">\[
+h_n=\sum_{\left|\lambda\right|=n} z_\lambda^{-1}\cdot P_\lambda
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：显然。</p>
+<p><span class="arithmatex">\((2)\)</span>：回忆 <span class="arithmatex">\(H(t)=\prod_{i\ge 1} \frac{1}{1-x_it}\)</span>，故 <span class="arithmatex">\(P(t)=\frac{H'(t)}{H(t)}\)</span>，于是 <span class="arithmatex">\(H'(t)=P(t)H(t)\)</span>，此即 <span class="arithmatex">\(nh_n=\sum_{r=1}^nP_rh_{n-r}\)</span>，故 <span class="arithmatex">\(h_n\in \mathbb{Q}[P_1,\cdots,P_n],P_n\in \mathbb{Z}[h_1,\cdots,h_n]\)</span>，故 <span class="arithmatex">\(\mathbb{Q}[P_1,\cdots,P_n]=\mathbb{Q}[h_1,\cdots,h_n]\)</span>，于是 <span class="arithmatex">\(\wedge_\mathbb{Q}=\mathbb{Q}[P_1,P_2,\cdots]\)</span> 且 <span class="arithmatex">\(\wedge^r_\mathbb{Q}=\mathrm{Span}_{\mathbb{Q}} \left\{P_\lambda\Big| \left|\lambda\right|=r\right\}=\mathrm{Span}_{\mathbb{Q}} \left\{h_\lambda\Big| \left|\lambda\right|=r\right\}\)</span>，由于 <span class="arithmatex">\(\dim \wedge^r_\mathbb{Q} =\left\{\lambda \Big| \left|\lambda\right|=r\right\}\)</span>，故 <span class="arithmatex">\(\left\{P_\lambda\Big| \lambda\in P\right\}\)</span> 是 <span class="arithmatex">\(\wedge_\mathbb{Q}\)</span> 的 <span class="arithmatex">\(\mathbb{Q}-\)</span>基。</p>
+<p><span class="arithmatex">\((3)\)</span>：回忆 <span class="arithmatex">\(E(t)=\prod_{i\ge 1} (1+x_it)\)</span>，故 <span class="arithmatex">\(P(-t)=\sum_i \frac{x_i}{1+x_it}=\frac{E'(t)}{E(t)}\)</span>，结合 <span class="arithmatex">\(P(t)=\frac{H'(t)}{H(t)}\)</span> 与 <span class="arithmatex">\(\omega(e_r)=h_r\)</span> 知 <span class="arithmatex">\(\omega(P(-t))=P(t)\)</span>，即 <span class="arithmatex">\(\omega(P_r)=(-1)^{r-1}P_r\)</span>。</p>
+<p><span class="arithmatex">\((4)\)</span>：<span class="arithmatex">\(P(t)=\frac{\mathrm{d}}{\mathrm{d} t}(\log H(t))\)</span>，故</p>
+<div class="arithmatex">\[
+H(t)=\exp (\sum_{r\ge 1} \frac{P_r t^r}{r})=\prod_{r\ge 1} \exp (\frac{P_rt^r}{r})=\prod_{r\ge 1} (\sum_{m_r\ge 0} \frac{1}{m_r !}(\frac{P_rt}{r})^{m_r})
+\]</div>
+<p>对应系数即证。</p>
+</details>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.19</span><span class="book-name">标量乘法</span></p>
+<p>设 <span class="arithmatex">\(x=(x_1,x_2,\cdots),y=(y_1,y_2,\cdots)\)</span> 为两个独立变量列。<span class="arithmatex">\(\forall f\in \wedge\)</span>，记 <span class="arithmatex">\(f(x),f(y),f(xy)\)</span> 为对应的对称函数。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.20</span></p>
+<div class="arithmatex">\[
+P_n(xy)=\sum_{i,j} (x_iy_j)^n =P_n(x)P_n(y)
+\]</div>
+<p>进一步有 <span class="arithmatex">\(P_\lambda(xy)=P_\lambda(x)P_\lambda(y)\)</span></p>
+</div>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.21</span></p>
+<div class="arithmatex">\[
+\prod(x,y):=\prod_{i,j} (1-x_iy_j)^{-1}
+\]</div>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.22</span></p>
+<div class="arithmatex">\[
+\prod (x,y)=\sum_\lambda z_\lambda^{-1} P_\lambda(x)P_\lambda(y)=\sum_\lambda h_\lambda(x)m_\lambda(y)=\sum_\lambda m_\lambda(x)h_\lambda(y)
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由于 <span class="arithmatex">\(\sum_{r\ge 0} h_rt^r=\prod_{i\ge 1} (1-x_it)^{-1}\)</span>，故</p>
+<div class="arithmatex">\[
+\prod (x,y)=\sum_{n\ge 0}h_n(xy)=\sum_\lambda z_\lambda^{-1} P_\lambda(xy)=\sum_\lambda z_\lambda^{-1}P_\lambda (x)P_\lambda(y)5
+\]</div>
+<p>另一方面我们有</p>
+<div class="arithmatex">\[
+\prod (x,y)=\prod_j H(y_j)=\prod _j (\sum_{\alpha_j\ge 0} h_{\alpha_j}(x)y_j^{\alpha_j})=\sum_\lambda h_\lambda(x)m_\lambda(y)=\sum_\lambda m_\lambda(x)h_\lambda(y)
+\]</div>
+</details>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.23</span></p>
+<p>定义<span class="arithmatex">\(\left&lt;-,-\right&gt;:\wedge  \times \wedge  \rightarrow \mathbb{Z}\)</span> 满足       <span class="arithmatex">\(\left&lt;h_\lambda,m_\mu\right&gt;=\delta_{\lambda\mu}\)</span>。</p>
+</div>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.24</span></p>
+<p><span class="arithmatex">\(\forall n\ge 0\)</span>，<span class="arithmatex">\(\left\{u_\lambda\right\},\left\{v_\lambda\right\}\)</span> 是 <span class="arithmatex">\(\wedge ^n_\mathbb{Q}\)</span> 的 <span class="arithmatex">\(\mathbb{Q}-\)</span>基，则</p>
+<div class="arithmatex">\[
+\left&lt;u_\lambda,v_\mu\right&gt; =\delta_{\lambda\mu} \Longleftrightarrow \sum_\lambda u_\lambda(x)v_\lambda(y)=\prod(x,y)
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(u_\lambda=\sum_\rho a_{\lambda,\rho}h_\rho,v_\mu =\sum_\sigma b_{\mu ,\sigma} m_\sigma\)</span>，则</p>
+<div class="arithmatex">\[
+\left&lt;u_\lambda,v_\mu\right&gt;=\delta_{\lambda,\mu}\Longleftrightarrow \sum_\rho a_{\lambda,\rho}b_{\mu,\rho}=\delta_{\lambda,\mu}
+\]</div>
+<div class="arithmatex">\[
+\sum u_\lambda(x)v_\lambda (y)=\prod (x,y)=\sum h_\rho(x)m_\rho(y)\Longleftrightarrow \sum_\lambda a_{\lambda,\rho}b_{\lambda,\sigma}=\delta_{\rho,\sigma}
+\]</div>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.25</span></p>
+<p>-</p>
+<div class="highlight"><pre><span></span><code>$$
+\left&lt;P_\lambda,P_\mu\right&gt;=\delta_{\lambda\mu}z_\lambda
+$$
+
+于是 $\left&lt;-,-\right&gt;$ 是对称的且正定。
+</code></pre></div>
+<ul>
+<li>
+<p><span class="arithmatex">\(\omega\)</span> 是等距同构，即 <span class="arithmatex">\(\forall f,g\in \wedge\)</span>，有</p>
+<div class="arithmatex">\[
+\left&lt;\omega f,\omega g\right&gt;=\left&lt;f,g\right&gt;
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：由 <span class="arithmatex">\(\prod (x,y)=\sum z_\lambda^{-1}P_\lambda(x)P_\lambda(y)\)</span> 与<strong>引理 4.7</strong>即证。</p>
+<p><span class="arithmatex">\((2)\)</span>：由 <span class="arithmatex">\((1)\)</span> 与 <span class="arithmatex">\(\omega(P_r)=(-1)^{r-1}P_r\)</span> 即证。</p>
+</details>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.26</span><span class="book-name">Schur 多项式</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\forall \alpha=(\alpha_1,\alpha_2,\cdots)\in \mathbb{Z}_{\ge 0}^n\)</span>，令</p>
+<div class="arithmatex">\[
+a_\alpha:=\det(x_i^{\alpha_j})_{1\le i,j\le n}=\sum_{\sigma\in S_n} \varepsilon(\sigma)\cdot \sigma(x^\alpha)
+\]</div>
+<p>其中 <span class="arithmatex">\(\varepsilon(\sigma)=\mathrm{sgn} (\sigma),x^\alpha=x_1^{\alpha_1}\cdots x_n^{\alpha_n}\)</span></p>
+</li>
+<li>
+<p>对 <span class="arithmatex">\(\lambda=(\lambda_1,\cdots,\lambda_n)\in P\)</span>，定义 Schur 多项式</p>
+<div class="arithmatex">\[
+S_\lambda(x_1,\cdots,x_n)=a_{\lambda+\delta}/a_\delta
+\]</div>
+<p>其中 <span class="arithmatex">\(\delta=(n-1,n-2,\cdots,2,1,0)\)</span>。</p>
+</li>
+</ul>
+</div>
+<p>由 Vandermonde 行列式知 <span class="arithmatex">\(a_\delta=\prod_{i&lt;j} (x_i-x_j)\)</span>。</p>
+<p><span class="arithmatex">\(a_{\lambda+\delta}\)</span> 被 <span class="arithmatex">\(a_\delta\)</span> 整除，于是 <span class="arithmatex">\(S_\lambda\in \wedge _n^{\left|\lambda\right|}\)</span>，进一步有存在 Schur 多项式 <span class="arithmatex">\(S_\lambda\in \wedge\)</span> 使得 <span class="arithmatex">\(S_\lambda\big|_{x_{n+1}=x_{n+2}=\cdots=0}=S_\lambda(x_1,\cdots,x_n)\)</span> 对任意 <span class="arithmatex">\(n\ge l(\lambda)\)</span> 成立。</p>
+<p><span class="arithmatex">\(S_\lambda(x_1,\cdots,x_n)=a_{\lambda+\delta}/a_\delta\)</span> 对 <span class="arithmatex">\(\lambda=(\lambda_1,\cdots,\lambda_n)\in \mathbb{Z}_{\ge 0}^n\)</span> 也适用，这是因为 <span class="arithmatex">\(a_{\lambda+\delta}=\varepsilon(\sigma)a_{\sigma(\lambda+\delta)}\)</span>，且 <span class="arithmatex">\(S_\lambda=0\)</span> 当且仅当 <span class="arithmatex">\(\lambda+\delta\)</span> 有两个相等的项。</p>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.27</span></p>
+<p>对任意 <span class="arithmatex">\(\lambda\in P\)</span>，存在 <span class="arithmatex">\(K_{\lambda,\mu}\in \mathbb{Z}\)</span> 满足</p>
+<div class="arithmatex">\[
+S_\lambda=m_\lambda +\sum_{\mu\triangleleft \lambda} K_{\lambda,\mu} m_\mu
+\]</div>
+<p>于是 <span class="arithmatex">\(\left\{ S_\lambda \Big| \lambda \in P\right\}\)</span> 是 <span class="arithmatex">\(\wedge\)</span> 的 <span class="arithmatex">\(\mathbb{Z}-\)</span>基。这里的 <span class="arithmatex">\(K_{\lambda,\mu}\in \mathbb{Z}_{\ge 0}\)</span> 称作 Kostka 数。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>考虑 <span class="arithmatex">\(n\)</span> 个变量的情形，<span class="arithmatex">\(n\ge \left|\lambda\right|\)</span>。</p>
+<div class="arithmatex">\[
+m_\lambda\cdot a_\delta=\sum_{\substack{\mu \text{ 为 }\lambda \text{ 的任一排列}\\ \sigma \in S_n}} \varepsilon(\sigma) x^{\mu +\sigma(\delta)}=\sum_{\mu,\sigma} \varepsilon(\sigma) x^{\sigma(\mu+\delta)}=\sum_\mu a_{\mu+\delta}
+\]</div>
+<p>这意味着</p>
+<div class="arithmatex">\[
+m_\lambda=\sum_{\substack{\mu \text{ 为 }\lambda \text{ 的任一排列}}} x^{\mu}=\sum_{\mu} x^{\sigma(\mu)},\forall \sigma \in S_n
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+m_\lambda=\sum_{\mu \text{ 为 }\lambda \text{ 的任一排列}} S_\mu\in \wedge _n
+\]</div>
+<p>对 <span class="arithmatex">\(n\ge \left|\lambda\right|\)</span> 成立，故在 <span class="arithmatex">\(\wedge\)</span> 中同样成立。由上文知要么 <span class="arithmatex">\(S_\mu=0\)</span>，要么 <span class="arithmatex">\(s_\mu=\varepsilon(\sigma)\cdot s_v\)</span>，其中 <span class="arithmatex">\(v\in P\)</span> 且 <span class="arithmatex">\(v+\delta=\sigma(\mu+\delta)\)</span> 对任意 <span class="arithmatex">\(\sigma\in S_n\)</span>。由于 <span class="arithmatex">\(\mu\)</span> 是 <span class="arithmatex">\(\lambda\)</span> 的任一排列，故 <span class="arithmatex">\(v\trianglelefteq \lambda\)</span>，因此</p>
+<div class="arithmatex">\[
+m_\lambda=S_\lambda+\sum_{v\triangleleft \lambda} a_{\lambda,v} S_v
+\]</div>
+</details>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.28</span></p>
+<p>对任意 <span class="arithmatex">\(\lambda,\mu\in P\)</span>，有</p>
+<div class="arithmatex">\[
+\left&lt;S_\lambda,S_\mu\right&gt;=\delta_{\lambda,\mu}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>只需证</p>
+<div class="arithmatex">\[
+\sum_\lambda S_\lambda(x)S_\lambda(y)=\prod (x,y)
+\]</div>
+<p>考虑 Cauchy 行列式我们有</p>
+<div class="arithmatex">\[
+\det \left(\frac{1}{x_i+y_j}\right)_{1\le i,j\le n}=\frac{a_\delta(x)a_\delta(y)}{\prod_{1\le i,j\le n} (x_i+y_j)}
+\]</div>
+<p>在上式中用 <span class="arithmatex">\(-x_i^{-1}\)</span> 替换掉 <span class="arithmatex">\(x_i\)</span> 得</p>
+<div class="arithmatex">\[
+\det \left(\frac{1}{1-x_iy_j}\right)_{1\le i,j\le n}={a_\delta(x)a_\delta(y)}{\prod (x,y)}
+\]</div>
+<p>另一方面我们有</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\det \left(\frac{1}{1-x_iy_j}\right)_{1\le i,j\le n}&amp;=\det \left(\sum_{\alpha\ge 0}x_i^{\alpha_j}y_j^{\alpha_j}\right)\\
+&amp;=\sum_{\alpha=(\alpha_1,\cdots,\alpha_n)\in \mathbb{Z}^n_{\ge 0}} a_\alpha(x)\cdot y^\alpha\\
+&amp;=\sum_{\substack{\lambda\in P\\l(\lambda)\le n}} \sum_{\substack{\alpha\in \sigma(\lambda+\delta)\\\sigma\in S_n}} \varepsilon (\sigma)\cdot a_{\lambda+\delta}(x)\cdot \sigma(y^{\lambda+\delta})\\
+&amp;=\sum_{\substack{\lambda\in P\\l(\lambda)\le n}} a_{\lambda+\delta}(x)\sum_{\sigma\in S_n} \varepsilon (\sigma)\cdot \sigma(y^{\lambda+\delta})\\
+&amp;=\sum_{\substack{\lambda\in P\\l(\lambda)\le n}} a_{\lambda+\delta}(x)a_{\lambda+\delta}(y)\\
+\end{aligned}
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+\prod(x,y)=\sum_{\lambda\in P,l(\lambda)\le n} S_\lambda(x)S_\lambda(y)
+\]</div>
+<p>令 <span class="arithmatex">\(n\rightarrow \infty\)</span> 即证。</p>
+</details>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.29</span><span class="book-name">Jacobi-Trudy 等式/Giambelli 公式</span></p>
+<ul>
+<li>
+<p>对 <span class="arithmatex">\(\forall \lambda\in P,l(\lambda)\le n\)</span>，有</p>
+<div class="arithmatex">\[
+S_\lambda=\det (h_{\lambda_i-i+j})_{1\le i,j\le n}
+\]</div>
+<p>这里约定对 <span class="arithmatex">\(r&lt;0\)</span>，<span class="arithmatex">\(h_r=0\)</span>。</p>
+</li>
+<li>
+<p>对 <span class="arithmatex">\(\forall \lambda\in P,l(\lambda')\le m\)</span>，有</p>
+<div class="arithmatex">\[
+S_\lambda=\det (e_{\lambda'_i-i+j})_{1\le i,j\le m}
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：对 <span class="arithmatex">\(x=(x_1,\cdots,x_n),y=(y_1,\cdots,y_n)\)</span>，回忆我们有</p>
+<div class="arithmatex">\[
+H(t)=\sum_{r\ge 0} h_r(x)t^r=\prod_i \frac{1}{1-x_it}
+\]</div>
+<p>带入</p>
+<div class="arithmatex">\[
+\prod{\left( x,y \right) =\prod_{i,j}{\frac{1}{1-x_iy_j}=\prod_{i=1}^n{H\left( y_j \right)}}}
+\]</div>
+<p>我们有：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\prod\left( x,y \right) \cdot a_{\delta}\left( y \right) &amp;=\det \left( y_{i}^{n-j}\cdot H\left( y_i \right) \right) \\
+&amp;=\det \left( \sum_{\alpha _j\ge 0}{h_{\alpha _j}\left( x \right) y_{i}^{n-j+\alpha _j}} \right) \\
+&amp;=\sum_{\alpha =\left( \alpha _1,\cdots ,\alpha _n \right) \in \mathbb{Z} _{\ge 0}^{n}}{h_{\alpha}\left( x \right) \cdot a_{\alpha +\delta}\left( y \right)}
+\end{aligned}
+\]</div>
+<p>对于 <span class="arithmatex">\(\lambda\in P\)</span>，<span class="arithmatex">\(l(\lambda)\le n\)</span>，<span class="arithmatex">\(\prod (x,y)\cdot a_\delta (y)\)</span> 中 <span class="arithmatex">\(a_{\lambda+\delta }(y)\)</span> 的系数为</p>
+<div class="arithmatex">\[
+\sum_{\sigma \in S_n}\mathrm{sgn}(\sigma)\cdot h_{\sigma(\lambda+\delta)-\delta}=\det(h_{\lambda_i-i+j})_{1\le i,j\le n}
+\]</div>
+<p>而</p>
+<div class="arithmatex">\[
+\prod (x,y)a_\delta(y)=\sum_{\mu \in P,l(\mu)\le n} S_\mu(x)S_\mu(y)a_\delta(y)=\sum_{\mu \in P,l(\mu)\le n} S_\mu(x)a_{\mu+\delta}(y)
+\]</div>
+<p>其中 <span class="arithmatex">\(a_{\lambda+\delta }(y)\)</span> 的系数为  <span class="arithmatex">\(S_\lambda(x)\)</span>，由此即证。</p>
+<p><span class="arithmatex">\((2)\)</span>：先证明如下引理</p>
+<div class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.30</span></p>
+<p>设 <span class="arithmatex">\(\lambda = (\lambda_1, \ldots, \lambda_n)\)</span> 和 <span class="arithmatex">\(\mu = (\mu_1, \ldots, \mu_m) = \lambda\)</span>（蕴含 <span class="arithmatex">\(\lambda_1 = m, \mu_1 = n\)</span>），则集合：</p>
+<div class="arithmatex">\[
+\{\lambda_i + n + 1 - i \mid 1 \leq i \leq n\} \quad \text{和} \quad \{n + j - \mu_j \mid 1 \leq j \leq m\}
+\]</div>
+<p>构成集合 <span class="arithmatex">\(\{1, 2, \cdots, n+m\}\)</span> 的一个不交并。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>画出 Young 表的对角线即证。</p>
+</details>
+<p>设 <span class="arithmatex">\(A, B \in \operatorname{Mat}_r(\mathbb{C})\)</span>，且 <span class="arithmatex">\(A\cdot B = c\cdot I_r\)</span>=。令 <span class="arithmatex">\((s, s')\)</span> 和 <span class="arithmatex">\((t, t')\)</span> 为 <span class="arithmatex">\((1, 2, \cdots, n)\)</span> 的置换，满足 <span class="arithmatex">\(\left|s\right|=\left|t\right|= k\)</span>。定义<span class="arithmatex">\(A_{S,T} = \det\left(a_{s_i,t_j}\right)_{i,j}\)</span>。类似地定义 <span class="arithmatex">\(B_{T',S'}\)</span>，则有：</p>
+<div class="arithmatex">\[
+c^{r-k} A_{S,T} = \sigma \cdot \det(A) \cdot B_{T',S'}
+\]</div>
+<p>其中 <span class="arithmatex">\(\sigma\)</span> 是两个置换的 <span class="arithmatex">\(\mathrm{sgn}\)</span> 乘积。这是因为考虑三个置换矩阵 <span class="arithmatex">\(P, Q,\)</span> 满足</p>
+<div class="arithmatex">\[
+PAQ = \begin{pmatrix}
+A_1 &amp; A_2 \\
+A_3 &amp; A_4
+\end{pmatrix}, \quad \det A_1 = A_{S,T}
+\]</div>
+<div class="arithmatex">\[
+Q^{-1} B P^{-1} = \begin{pmatrix}
+B_1 &amp; B_2 \\
+B_3 &amp; B_4
+\end{pmatrix}, \quad B_{T',S'} = \det B_{4}
+\]</div>
+<div class="arithmatex">\[
+\begin{pmatrix}
+A_1 &amp; A_2 \\
+A_3 &amp; A_4
+\end{pmatrix}
+\begin{pmatrix}
+I_{k} &amp; B_2 \\
+0 &amp; B_4
+\end{pmatrix} =
+\begin{pmatrix}
+A_1 &amp; 0 \\
+A_3 &amp; cI_{r-k}
+\end{pmatrix}
+\]</div>
+<p>对上述等式两边取行列式即得。</p>
+<p>需证明：</p>
+<div class="arithmatex">\[
+S_n = \det \left( e_{\lambda_i'-i+j} \right)_{1\le i,j\le m}
+\]</div>
+<p>定义下三角矩阵 <span class="arithmatex">\(H=(h_{i-j})_{1\le i,j\le N}\)</span> 和 <span class="arithmatex">\(E=((-1)^{i-j}e_{i-j})_{1\le i,j\le N}\)</span>，其中 <span class="arithmatex">\(N=n+m\)</span>，<span class="arithmatex">\(H,E\)</span> 是上对角矩阵且对角线为 1。回忆我们有</p>
+<div class="arithmatex">\[
+\sum_{r=0}^{n} (-1)^re_r h_{h-r} = 0, \quad \forall n \geq 1
+\]</div>
+<p>从而有：</p>
+<div class="arithmatex">\[
+H \cdot E = I_{N}
+\]</div>
+<p>对以下序列应用引理：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+S &amp;= (\lambda_1 + n, \cdots, \lambda_i + n+1-i, \cdots, \lambda_n+1)\\
+T &amp;= (n, n-1, \cdots, n-j+1, \cdots, 1)\\
+S'&amp; = (n+1-\mu_1, \cdots, n+i-\mu_i, \cdots,n+m-\mu_m)\\
+T' &amp;= (n+1, \cdots, n+j, \cdots, n+m)\\
+\end{aligned}
+\]</div>
+<p>则有：</p>
+<div class="arithmatex">\[
+H_{S,T} = \det \left(h_{\lambda_i-i+j}\right) = S_\lambda
+\]</div>
+<div class="arithmatex">\[
+\begin{aligned}
+E_{T',S'} &amp;= \det\left( (-1)^{i-j+\mu_j}e_{\mu_j+i-j}\right)_{1\le i, j\le m}\\
+&amp;=(-1)^{\sum (\mu_j-j)+\sum i}\det \left(e_{\mu_j+i-j}\right)_{1\le i,j\le m}\\
+&amp;=(-1)^{\left|\lambda\right|}\det (e_{\mu_i+j-i})_{1\le i,j\le m}\\
+\end{aligned}
+\]</div>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.31</span></p>
+<div class="arithmatex">\[
+\omega(S_\lambda)=S_{\lambda'}
+\]</div>
+</div>
+<p>考虑 <span class="arithmatex">\(S_\lambda\cdot S_\mu =\sum_\nu c_{\lambda\mu}^\nu S_\nu\)</span>，<span class="arithmatex">\(c_{\lambda\mu}^\nu \in \mathbb{Z}\)</span> 称为 Littlewood-Richardson 常数。我们之后会证明 <span class="arithmatex">\(c_{\lambda\mu}^\nu\in \mathbb{Z}_{\ge 0}\)</span>。</p>
+<p>令 <span class="arithmatex">\(\mu=(r)\)</span>，则 <span class="arithmatex">\(S_{\mu}=h_r\)</span>，我们有如下公式：</p>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.32</span><span class="book-name">Pieri 公式</span></p>
+<div class="arithmatex">\[
+S_\lambda \cdot h_r=\sum_\lambda S_\lambda
+\]</div>
+<p>这里求和遍历满足 <span class="arithmatex">\(\lambda\setminus \mu\)</span> 是水平 <span class="arithmatex">\(r-\)</span>条(horizontal r-strip)的分拆 <span class="arithmatex">\(\lambda\)</span>。即 <span class="arithmatex">\(\lambda\)</span> 的 Young 图包含了 <span class="arithmatex">\(\mu\)</span> 的 Young 表且仅相差 <span class="arithmatex">\(r\)</span> 个方格，且这 <span class="arithmatex">\(r\)</span> 个方格两两均不同列，即 <span class="arithmatex">\(\lambda_1\ge \mu_1\ge \lambda_2\ge \mu_2\ge\cdots \ge \lambda_l\ge \mu_l\ge 0,\left|\lambda\right|=\left|\mu\right|+r\)</span>。</p>
+</div>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.33</span></p>
+<p>设 <span class="arithmatex">\(K_{\lambda,\mu}\)</span> 为满足以下条件的填法数目：用 <span class="arithmatex">\(\mu_1\)</span> 个 <span class="arithmatex">\(1\)</span>，<span class="arithmatex">\(\mu_2\)</span> 个 <span class="arithmatex">\(2\)</span>，<span class="arithmatex">\(\cdots\)</span>，<span class="arithmatex">\(\mu_l\)</span> 个 <span class="arithmatex">\(l\)</span> 填充 Young 表 <span class="arithmatex">\(Y(\lambda)\)</span> 的方框，使得每行的数字非递减且每列的数字严格递增。</p>
+</div>
+<p><strong>注：</strong>此类填法被称为分拆 <span class="arithmatex">\(\lambda\)</span> 上类型为 <span class="arithmatex">\(\mu\)</span> 的半标准 Young 表。</p>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.34</span></p>
+<ul>
+<li><span class="arithmatex">\(K_{\lambda,\mu}\in\mathbb{Z}_{\ge 0}\)</span></li>
+<li><span class="arithmatex">\(K_{\lambda,\lambda}=1\)</span></li>
+<li><span class="arithmatex">\(K_{\lambda,\mu}\neq 0\Longrightarrow \mu \trianglelefteq \lambda\)</span></li>
+<li><span class="arithmatex">\(K_{\lambda,(1^n)}=\#\left\{Y(\lambda) \text{的标准 Young 表}\right\}\)</span>。即将 <span class="arithmatex">\(\left\{1,2,\cdots,n\right\}\)</span> 填入 <span class="arithmatex">\(Y(\lambda)\)</span> 满足每行每列的数字严格递增的填法数。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<div class="arithmatex">\[
+h_\mu=\sum_\lambda K_{\lambda,\mu}S_\lambda=h_{\mu_1}\cdots h_{\mu_l}=S_{(\mu_1)}h_{\mu_2}\cdots h_{\mu_l}
+\]</div>
+<p>再用</p>
+<div class="arithmatex">\[
+S_\mu\cdot h_r=\sum_{\substack{\lambda\\ \lambda-\mu \text{ 为水平 }r-\text{条}}}S_\lambda
+\]</div>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span><span class="arithmatex">\(S_n\)</span> 表示的分类定理</h2>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>设 <span class="arithmatex">\(\lambda \in P(n)\)</span> 是一个 <span class="arithmatex">\(n\)</span> 的分划。<span class="arithmatex">\(Y_\lambda\)</span> 是其 Young 表，标准填充 Young 表 <span class="arithmatex">\(T_\lambda\)</span> 为将 <span class="arithmatex">\(\left\{1,2,\cdots,n\right\}\)</span> 填入 <span class="arithmatex">\(Y(\lambda)\)</span> 满足每行每列的数字严格递增的填法。对这个标准填充 <span class="arithmatex">\(T_\lambda\)</span> 定义<strong>列子群(row subgroup)</strong></p>
+<div class="arithmatex">\[
+P_\lambda:=\left\{g\in S_n\Big| i \text{ 与 } g(i) \text{ 在同一行 },\forall 1\le i\le n\right\}
+\]</div>
+<p><strong>行子群(column subgroup)</strong></p>
+<div class="arithmatex">\[
+Q_\lambda:=\left\{g\in S_n\Big| i \text{ 与 } g(i) \text{ 在同一列 },\forall 1\le i\le n\right\}
+\]</div>
+</div>
+<p><strong>注：</strong> <span class="arithmatex">\(P_\lambda\cap Q_\lambda=\left\{1\right\}\)</span>。</p>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span></p>
+<p>定义 <strong>Young 投影子(projectors)</strong>，</p>
+<div class="arithmatex">\[
+a_\lambda:=\sum_{g\in P_\lambda} g,b_\lambda:=\sum_{g\in Q_\lambda} \varepsilon(g)\cdot g,c_\lambda:=a_\lambda b_\lambda
+\]</div>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span></p>
+<p><span class="arithmatex">\(V_\lambda:=\mathbb{C}[S_n]\cdot c_\lambda\)</span> 在左乘运算下为 <span class="arithmatex">\(S_n\)</span> 的不可约表示。任意 <span class="arithmatex">\(S_n\)</span> 的不可约表示同构于某个 <span class="arithmatex">\(V_\lambda\)</span>。</p>
+</div>
+<p><strong>注：</strong><span class="arithmatex">\(V_\lambda\)</span> 称为 <strong>Specht 模</strong>。</p>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.4</span></p>
+<p>任意 <span class="arithmatex">\(S_n\)</span> 的不可约表示可以由有理数构成的矩阵集合给出。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>对称群 <span class="arithmatex">\(S_n\)</span>的表示的分类定理的证明</h2>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 3.1</span></p>
+<p>存在线性函数 <span class="arithmatex">\(l_\lambda:\mathbb{C}[S_n]\rightarrow \mathbb{C}\)</span> 满足对任意 <span class="arithmatex">\(x\in \mathbb{C}[S_n]\)</span>，有</p>
+<div class="arithmatex">\[
+a_\lambda\cdot x \cdot b_\lambda=l_\lambda(x)\cdot c_\lambda
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若 <span class="arithmatex">\(g \in P_\lambda Q_\lambda\)</span>，则 <span class="arithmatex">\(g\)</span> 可唯一表示为 <span class="arithmatex">\(pq\)</span>（其中 <span class="arithmatex">\(p \in P_\lambda\)</span>，<span class="arithmatex">\(q \in Q_\lambda\)</span>），故 <span class="arithmatex">\(a_\lambda g b_\lambda = (-1)^q c_\lambda\)</span>。因此，只需证明：若置换 <span class="arithmatex">\(g \notin P_\lambda Q_\lambda\)</span>，则 <span class="arithmatex">\(a_\lambda g b_\lambda = 0\)</span>。</p>
+<p>要证明这一点，只需找到一个对换 <span class="arithmatex">\(t\)</span> 满足 <span class="arithmatex">\(t \in P_\lambda\)</span> 且 <span class="arithmatex">\(g^{-1} t g \in Q_\lambda\)</span>；此时</p>
+<div class="arithmatex">\[
+a_\lambda g b_\lambda = a_\lambda t g b_\lambda = a_\lambda g \cdot (g^{-1} t g) \cdot b_\lambda = -a_\lambda g b_\lambda,
+\]</div>
+<p>故 <span class="arithmatex">\(a_\lambda g b_\lambda = 0\)</span>。换言之，我们需要找到两个元素 <span class="arithmatex">\(i,j\)</span>，它们在 <span class="arithmatex">\(T = T_\lambda\)</span> 的同一行中，且在 <span class="arithmatex">\(T' = gT\)</span> 的同一列中（其中 <span class="arithmatex">\(gT\)</span> 是与 <span class="arithmatex">\(T\)</span> 形状相同的 Young 表，由置换 <span class="arithmatex">\(g\)</span> 置换 <span class="arithmatex">\(T\)</span> 的元素得到）。因此，只需证明：若不存在这样的元素对，则 <span class="arithmatex">\(g \in P_\lambda Q_\lambda\)</span>，即存在 <span class="arithmatex">\(p \in P_\lambda\)</span>，<span class="arithmatex">\(q' \in Q'_\lambda := g Q_\lambda g^{-1}\)</span> 使得 <span class="arithmatex">\(pT = q' T'\)</span>（此时 <span class="arithmatex">\(g = p q^{-1}\)</span>，且 <span class="arithmatex">\(q = g^{-1} q' g \in Q_\lambda\)</span>）。</p>
+<p><span class="arithmatex">\(T\)</span> 第一行中的任意两个元素在 <span class="arithmatex">\(T'\)</span> 中必处于不同列，因此存在 <span class="arithmatex">\(q'_1 \in Q'_\lambda\)</span> 将这些元素全部移到第一行。于是存在 <span class="arithmatex">\(p_1 \in P_\lambda\)</span> 使得 <span class="arithmatex">\(p_1 T\)</span> 与 <span class="arithmatex">\(q'_1 T'\)</span> 的第一行相同。</p>
+<p>对第二行执行相同步骤，找到元素 <span class="arithmatex">\(p_2, q'_2\)</span> 使得 <span class="arithmatex">\(p_2 p_1 T\)</span> 与 <span class="arithmatex">\(q'_2 q'_1 T'\)</span> 的前两行相同。依此类推，可构造出所需的元素 <span class="arithmatex">\(p, q'\)</span>。得证。</p>
+</details>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.2</span><span class="book-name">Lexicographic 序</span></p>
+<p>对 <span class="arithmatex">\(\lambda,\mu\in P(n)\)</span>，定义 <span class="arithmatex">\(\lambda&gt;\mu\)</span> 当且仅当 <span class="arithmatex">\(\lambda_i-\mu_i\)</span> 的第一个非零元是正的。</p>
+</div>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 3.3</span></p>
+<p>若 <span class="arithmatex">\(\lambda&gt;\mu\)</span>，则</p>
+<div class="arithmatex">\[
+a_\lambda \mathbb{C}[S_n]b_\mu=0
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>与前一个引理类似，只需证明：对任意 <span class="arithmatex">\(g \in S_n\)</span>，存在对换 <span class="arithmatex">\(t \in P_\lambda\)</span> 使得 <span class="arithmatex">\(g^{-1} t g \in Q_\mu\)</span>。</p>
+<p>设 <span class="arithmatex">\(T = T_\lambda\)</span> 且 <span class="arithmatex">\(T' = gT_\mu\)</span>。我们断言存在两个整数，它们既在 <span class="arithmatex">\(T\)</span> 的同一行中，又在 <span class="arithmatex">\(T'\)</span> 的同一列中。事实上，若 <span class="arithmatex">\(\lambda_1 &gt; \mu_1\)</span>，由抽屉原理（仅看第一行即得）可知这一点显然成立。反之，若 <span class="arithmatex">\(\lambda_1 = \mu_1\)</span>，则如前一个引理的证明，可找到元素 <span class="arithmatex">\(p_1 \in P_\lambda\)</span>、<span class="arithmatex">\(q'_1 \in g Q_\mu g^{-1}\)</span>，使得 <span class="arithmatex">\(p_1 T\)</span> 与 <span class="arithmatex">\(q'_1 T'\)</span> 的第一行相同；对第二行重复该论证，依此类推。最终，在完成 <span class="arithmatex">\(i-1\)</span> 步后，必有 <span class="arithmatex">\(\lambda_i &gt; \mu_i\)</span>，这意味着第一个表格第 <span class="arithmatex">\(i\)</span> 行中存在两个元素在第二个表格的同一列中，得证。</p>
+</details>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 3.4</span></p>
+<ul>
+<li>对任意 <span class="arithmatex">\(\lambda\in P(n)\)</span>，<span class="arithmatex">\(V_\lambda\)</span> 是 <span class="arithmatex">\(S_n\)</span> 的不可约表示。</li>
+<li>对任意 <span class="arithmatex">\(\lambda\neq \mu\in P(n)\)</span>，则 <span class="arithmatex">\(V_\lambda\ncong V_\mu\)</span>。</li>
+</ul>
+</div>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 3.5</span></p>
+<div class="arithmatex">\[
+c_\lambda ^2=\frac{n!}{\dim V_\lambda} \cdot c_\lambda
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><strong>引理 5.4</strong> 表明 <span class="arithmatex">\(c_\lambda^2\)</span> 与 <span class="arithmatex">\(c_\lambda\)</span> 成比例。此外，易见 <span class="arithmatex">\(c_\lambda\)</span> 在正则表示中的迹为 <span class="arithmatex">\(n!\)</span>（因 <span class="arithmatex">\(c_\lambda\)</span> 中单位元的系数为 1）。由此可得所述结论。</p>
+</details>
+<h2 id="s4"><span class="book-secnum">§ 04</span>诱导表示</h2>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span></p>
+<div class="arithmatex">\[
+M_\lambda:=\mathrm{Ind}_{P_\lambda}^{S_n} (\text{trival})=\mathrm{Ind}_{P_\lambda}^{S_n}\mathbb{C}
+\]</div>
+</div>
+<p><strong>注：</strong>回忆 <span class="arithmatex">\(a_n=\sum_{g\in P_\lambda} g\)</span> ，故 <span class="arithmatex">\(M_\lambda=\mathbb{C}[S_n]\otimes _{\mathbb{C}[P_\lambda]}\mathbb{C}\cong \mathbb{C}[S_n]a_\lambda\)</span></p>
+<div id="lem-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 4.2</span></p>
+<p>设 <span class="arithmatex">\(A\)</span> 为含幺代数，<span class="arithmatex">\(e\in A\)</span> 为一幂等元，即 <span class="arithmatex">\(e^2=e\)</span>。则对任意 <span class="arithmatex">\(A-\)</span>模 <span class="arithmatex">\(M\)</span>，有</p>
+<div class="arithmatex">\[
+\mathrm{Hom}_A(Ae,M)\cong eM
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>任意 <span class="arithmatex">\(f\in \mathrm{Hom}_A(Ae,M)\)</span> 由 <span class="arithmatex">\(f(e)=f(e^2)=ef(e)\in eM\)</span> 唯一确定。</p>
+</details>
+<p>又注意到 <span class="arithmatex">\(\frac{1}{\left|P_\lambda\right|}\sum_{g\in P_\lambda} g=\frac{1}{\left|P_\lambda\right|}a_\lambda\in \mathbb{C}[S_n]\)</span> 是幂等元，故：</p>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.3</span></p>
+<p>若 <span class="arithmatex">\(\mu&lt;\lambda\)</span>，则 <span class="arithmatex">\(\mathrm{Hom}_{\mathbb{C}[S_n]}(M_\lambda,V_\mu)=0\)</span>，<span class="arithmatex">\(\dim\mathrm{Hom}_{\mathbb{C}[S_n]}(M_\lambda,V_\lambda)=1\)</span>。于是 <span class="arithmatex">\(M_\lambda=\bigoplus_{\mu\ge \lambda} k_{\mu,\lambda}V_\mu\)</span>，其中 <span class="arithmatex">\(k_{\mu,\lambda}\in \mathbb{Z}_{\ge 0},k_{\lambda,\lambda}=1\)</span>。</p>
+</div>
+<p><strong>注：</strong>回忆 <span class="arithmatex">\(s_\lambda=m_\lambda+\sum_{\mu \triangleleft \lambda}K_{\lambda,\mu} m_\mu\in \wedge\)</span>，我们将会证明 <span class="arithmatex">\(k_{\mu,\lambda}=K_{\mu,\lambda}\)</span>。</p>
+<details class="proof">
+<summary>证明</summary>
+<p>由引理，</p>
+<div class="arithmatex">\[
+\mathrm{Hom}_{\mathbb{C}[S_n]} (M_\lambda,V_\mu)=a_\lambda \mathbb{C}[S_n]a_\mu b_\mu=\begin{cases}
+0 &amp;,\lambda&gt;\mu\\
+\mathbb{C}\cdot c_\lambda &amp;,\lambda=\mu\\
+\end{cases}
+\]</div>
+<p>最后一个等号由<strong>引理 5.4</strong>与<strong>引理 5.5</strong>给出。</p>
+</details>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.4</span></p>
+<p>对 <span class="arithmatex">\(\mu=(1^{m_1}2^{m_2}\cdots)\in P(n)\)</span>，设 <span class="arithmatex">\(C_\mu\subset S_n\)</span> 为有 <span class="arithmatex">\(m_i\)</span> 个长度为 <span class="arithmatex">\(i\)</span> 的循环的的共轭类。对任意 <span class="arithmatex">\(S_n\)</span> 的表示 <span class="arithmatex">\(V\)</span>，<span class="arithmatex">\(\chi_V(C_\mu):=\chi_V(g)\)</span>，其中 <span class="arithmatex">\(g\in C_\mu\)</span>。</p>
+</div>
+<p>回忆 <span class="arithmatex">\(P_\mu(x)=P_{\mu_1}\cdot P_{\mu_2}\cdots\)</span> 为对称等幂和函数。对任意多项式 <span class="arithmatex">\(f\)</span> 与 <span class="arithmatex">\(\alpha=(\alpha_1,\cdots,\alpha_l)\in \mathbb{Z}_{\ge 0}^l\)</span>，记 <span class="arithmatex">\([x^\alpha](f)\)</span> 为 <span class="arithmatex">\(f\)</span> 中 <span class="arithmatex">\(x^\alpha\)</span> 的系数。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.5</span></p>
+<p>表示 <span class="arithmatex">\(M_\lambda\)</span> 的特征在共轭类 <span class="arithmatex">\(C_\mu\)</span> 上取值为</p>
+<div class="arithmatex">\[
+\chi_{M_\lambda} (C_\mu)=[x^\lambda](P_\mu)
+\]</div>
+</div>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 4.6</span></p>
+<p>我们有</p>
+<div class="arithmatex">\[
+P_\mu=\sum_\lambda \chi_{M_\lambda}(C_\mu)\cdot m_\lambda,h_\lambda=\sum_\mu \frac{1}{z_\mu} \chi_{M_\lambda}(C_\mu)\cdot P_\mu
+\]</div>
+<p>其中 <span class="arithmatex">\(\mu=(1^{m_1}2^{m_2}\cdots),z_\mu=\prod_{r\ge 1} (r^{m_r}\cdot m_r!)=\# Z_{S_n}(g),g\in C_\mu\)</span></p>
+</div>
+<h2 id="s5"><span class="book-secnum">§ 05</span>表示环和对称函数</h2>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span></p>
+<p><span class="arithmatex">\(R_n:=\)</span> <span class="arithmatex">\(S_n\)</span> 的不可约表示的同构类上的自由阿贝尔群。</p>
+</div>
+<p><strong>注：</strong><span class="arithmatex">\(S_n\)</span> 的表示 <span class="arithmatex">\(V\)</span> 给出了 <span class="arithmatex">\(R_n\)</span> 上一个元素 <span class="arithmatex">\([V]\)</span>，等价地，<span class="arithmatex">\(R_n=\)</span> <span class="arithmatex">\(S_n\)</span> 的表示的 Grothendieck 群 <span class="arithmatex">\(:= \left\{\text{同构类} [V]\right\}/\left\{[V\oplus W]=[V]\oplus [W]\right\}\)</span></p>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.2</span></p>
+<div class="arithmatex">\[
+R:=\bigoplus_{n\ge 0} R_n
+\]</div>
+<p>其中 <span class="arithmatex">\(R_0=\mathbb{Z}\)</span>，伴有 <span class="arithmatex">\(R_n\times R_m\rightarrow R_{n+m},[V]\cdot [W]=[\mathrm{Ind}_{S_n\times S_m}^{S_{n+m}} V\otimes W]\)</span>。这里 <span class="arithmatex">\(S_n=\left\{1,2,\cdots,n\right\}\)</span> 的置换 <span class="arithmatex">\(\subseteq S_{n+m}\)</span>，<span class="arithmatex">\(S_m=\left\{n+1,\cdots,n+m\right\}\)</span> 的置换 <span class="arithmatex">\(\subseteq S_{n+m}\)</span>，<span class="arithmatex">\(S_n\times S_m \curvearrowright  V\otimes W\)</span> 由 <span class="arithmatex">\((\sigma \times \tau )(v\otimes w)=\sigma v\otimes \tau w\)</span> 给出。</p>
+</div>
+<p>容易验证 <span class="arithmatex">\((R,\circ )\)</span> 为有结合律交换律的含幺分次环。</p>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.3</span></p>
+<div class="arithmatex">\[
+\begin{aligned}
+\left&lt;-,-\right&gt;:R\times R&amp;\rightarrow \mathbb{Z}\\
+([V],[W])&amp;\mapsto \begin{cases}
+\frac{1}{n!}\sum_{g\in S_n} \chi_V(g)\cdot \overline{\chi_W(g)}&amp;,[V],[W]\in R_n\\
+0&amp;,otherwise
+\end{cases}
+\end{aligned}
+\]</div>
+</div>
+<p><strong>注：</strong>由于 <span class="arithmatex">\(S_n\)</span> 的任意不可约表示 <span class="arithmatex">\(V_\lambda\)</span> 都有 <span class="arithmatex">\(\chi_{V_\lambda}(g)\in \mathbb{R}\)</span>，故</p>
+<div class="arithmatex">\[
+\begin{aligned}
+([V],[W])=&amp;\frac{1}{n!}\sum_{g\in S_n} \chi_V(g)\cdot \chi_W(g)\\
+(\left|z_\mu\right|\cdot \left|C_\mu\right|=\left|S_n\right|)=&amp;\sum_{\mu\in P(n)} \frac{1}{z_\mu} \chi_V(C_\mu)\chi_W(C_\mu)
+\end{aligned}
+\]</div>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.4</span></p>
+<p>定义可加同态</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\varphi:\wedge &amp;\rightarrow R\\
+h_\lambda &amp;\mapsto [M_\lambda]\\
+\end{aligned}
+\]</div>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.5</span></p>
+<ul>
+<li><span class="arithmatex">\(\varphi\)</span> 是环同态，且 <span class="arithmatex">\(\varphi\)</span> 是两者的等距变换。</li>
+<li><span class="arithmatex">\(\varphi(s_\lambda)=V_\lambda\)</span>，其中 <span class="arithmatex">\(s_\lambda\)</span> 是 Schur 多项式。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：回忆 <span class="arithmatex">\(\Lambda = \mathbb{Z}[h_1, h_2, \dots]\)</span>，<span class="arithmatex">\(\{ h_\lambda \mid \lambda \in P \}\)</span> 为 <span class="arithmatex">\(\Lambda\)</span> 的 <span class="arithmatex">\(\mathbb{Z}\)</span>-基。<span class="arithmatex">\(\varphi(h_n) = M_{(n)} = \mathbb{C}_n\)</span> 为 <span class="arithmatex">\(S_n\)</span> 的平凡表示。于是，要证 <span class="arithmatex">\(\varphi\)</span> 是环同态，只需证 <span class="arithmatex">\(\varphi(h_\lambda) = \varphi(h_{\lambda_1} \cdots h_{\lambda_l}) = \varphi(h_{\lambda_1}) \cdots \varphi(h_{\lambda_l})\)</span>。即 <span class="arithmatex">\(M_\lambda \cong \mathbb{C}_{\lambda_1} \circ \mathbb{C}_{\lambda_2} \circ \cdots \circ \mathbb{C}_{\lambda_l}\)</span>，其中 <span class="arithmatex">\(\lambda = (\lambda_1 \ge \cdots \ge \lambda_l &gt; 0)\)</span>  。</p>
+<p>由定义</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb{C}_{\lambda_1} \circ \mathbb{C}_{\lambda_2}&amp; = \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1} \times S_{\lambda_2}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2}]} \mathbb{C} \\
+\mathbb{C}_{\lambda_1} \circ \mathbb{C}_{\lambda_2} \circ \mathbb{C}_{\lambda_3} &amp;= \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1 + \lambda_2} \times S_{\lambda_3}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2 + \lambda_3}]} \left( \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1} \times S_{\lambda_2}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2}]} \mathbb{C} \right) \\
+&amp;= \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1 + \lambda_2} \times S_{\lambda_3}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2 + \lambda_3}]} \left( \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1} \times S_{\lambda_2} \times S_{\lambda_3}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2} \times S_{\lambda_3}]} \mathbb{C} \right) \\
+&amp;= \mathrm{Ind}_{\mathbb{C}[S_{\lambda_1} \times S_{\lambda_2} \times S_{\lambda_3}]}^{\mathbb{C}[S_{\lambda_1 + \lambda_2 + \lambda_3}]} \mathbb{C}\\
+&amp;\cdots\\
+\mathbb{C}_{\lambda_1} \circ \mathbb{C}_{\lambda_2} \circ \cdots \circ \mathbb{C}_{\lambda_l} &amp;\cong M_\lambda
+\end{aligned}
+\]</div>
+<p>故 <span class="arithmatex">\(\varphi\)</span> 是环同态。由于 <span class="arithmatex">\([M_\lambda]=\sum_{\mu\ge \lambda} k_{\mu,\lambda}[V_\mu],k_{\lambda,\lambda}=1\)</span>，故 <span class="arithmatex">\(\left\{[M_\lambda]\Big| \lambda\in P\right\}\)</span> 为 <span class="arithmatex">\(R\)</span> 的基。故 <span class="arithmatex">\(\varphi\)</span> 是 <span class="arithmatex">\(\mathbb{Z}-\)</span>代数的同构。</p>
+<p>对另一论断，我们构造逆映射</p>
+<div class="arithmatex">\[
+\psi:R\rightarrow \land \otimes \mathbb{Q}
+\]</div>
+<p>回忆我们有</p>
+<div class="arithmatex">\[
+h_\lambda=\sum_\mu \frac{1}{z_\mu }\chi_{M_\lambda}(C_\mu)P_\mu
+\]</div>
+<p>于是，定义</p>
+<div class="arithmatex">\[
+\psi([V])=\sum_\mu \frac{1}{z_\mu}\chi_V(C_\mu)P_\mu
+\]</div>
+<p>则 <span class="arithmatex">\(\psi\circ \varphi\)</span> 为 <span class="arithmatex">\(\land\)</span> 到 <span class="arithmatex">\(\land\otimes \mathbb{Q}\)</span> 的嵌入。但 <span class="arithmatex">\(\varphi\)</span> 是同构，故 <span class="arithmatex">\(\psi\)</span> 是逆同构。要证明 <span class="arithmatex">\(\varphi\)</span> 是等距变换，只需证 <span class="arithmatex">\(\psi\)</span> 是等距变换。</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\left&lt;\psi([V]),\psi([W])\right&gt;&amp;=\sum_{\lambda,\mu} \frac{1}{z_\lambda\cdot z_\mu}\chi_V(C_\lambda)\chi_W(C_\mu)\left&lt;P_\lambda,P_\mu\right&gt;\\
+&amp;=\sum_\lambda \frac{1}{z_\lambda}\chi_V(C_\lambda)\chi_W(C_\mu)\\
+&amp;=([V],[W])\\
+\end{aligned}
+\]</div>
+<p><span class="arithmatex">\((2)\)</span>：回忆我们有</p>
+<div class="arithmatex">\[
+h_\lambda=S_\lambda+\sum_{v\triangleright\lambda} K_{v\lambda}s_v
+\]</div>
+<div class="arithmatex">\[
+[M_\lambda]=[V_\lambda]+\sum_{v&gt;\lambda}k_{v,\lambda}[V_v]
+\]</div>
+<p>回忆 <span class="arithmatex">\(v\triangleright \lambda\)</span> 当且仅当 <span class="arithmatex">\(\left|v\right|=\left|\lambda\right|,v_1+\cdots+v_i\ge \lambda_1+\cdots+\lambda_i,\forall i\)</span>。于是，<span class="arithmatex">\(v\triangleright \lambda\Longrightarrow v&gt; \lambda\)</span>。故</p>
+<div class="arithmatex">\[
+\varphi(S_\lambda)=[V_\lambda]+\sum_v m_{v\lambda}[V_v]
+\]</div>
+<p>其中 <span class="arithmatex">\(m_{v,\lambda}\)</span> 为整数，由 <span class="arithmatex">\(\varphi\)</span> 是等距变换知</p>
+<div class="arithmatex">\[
+1+\sum_v m_{v,\lambda}^2=(\varphi(S_\lambda),\varphi(S_\lambda))=(S_\lambda,S_\lambda)=1
+\]</div>
+<p>故 <span class="arithmatex">\(\varphi(S_\lambda)=[V_\lambda]\)</span>。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.6</span></p>
+<p><span class="arithmatex">\(K_{\lambda,\mu}=k_{\lambda,\mu}\in \mathbb{Z}_{\ge 0}\)</span></p>
+</div>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.7</span></p>
+<div class="arithmatex">\[
+P_\mu =\sum_\lambda \chi_{V_\lambda} (C_\mu)\cdot s_\lambda
+\]</div>
+<p>或等价的，</p>
+<div class="arithmatex">\[
+s_\lambda=\sum_\mu \frac{1}{z_\mu} \chi_{V_\lambda}(C_\mu)P_\mu
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由 <span class="arithmatex">\(\psi([V_\lambda])=S_\lambda\)</span> 即得。</p>
+</details>
+<div id="cor-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.8</span></p>
+<p>回忆 Littlewood-Richardson 常数定义为</p>
+<div class="arithmatex">\[
+S_\lambda S_\mu =\sum_v\nu c^\nu_{\lambda\mu }S_\nu
+\]</div>
+<p>我们有 <span class="arithmatex">\(c^\nu_{\lambda\mu }\in \mathbb{Z}_{\ge 0}\)</span></p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由前述命题知</p>
+<div class="arithmatex">\[
+\mathrm{Ind}_{S_{\left|\lambda\right|}\times S_{\left|\mu\right|}}^{S_{\left|\lambda\right|+\left|\mu\right|}}(V_\lambda\times V_\mu)=\bigoplus_v c_{\lambda\mu}^v V_v\Longrightarrow c_{\lambda,\mu}^v\in \mathbb{Z}_{\ge 0}
+\]</div>
+</details>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.9</span></p>
+<p>对 <span class="arithmatex">\(S_n\)</span> 的表示 <span class="arithmatex">\(V\)</span> 定义其 Frobenius 特征为</p>
+<div class="arithmatex">\[
+F_V(x):=\sum_\mu \frac{1}{z_\mu}\chi_V(c_\mu )\cdot P_\mu\in \wedge _\mathbb{Q}
+\]</div>
+<p>则我们已有</p>
+<div class="arithmatex">\[
+F_{M_\lambda}(x)=h_\lambda(x)\qquad F_{V_\lambda}(x)=s_\lambda(x)
+\]</div>
+</div>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.10</span></p>
+<p>对 <span class="arithmatex">\(\lambda\in P(n),N\ge l(\lambda),\delta=(N-1,N-2,\cdots,1,0)\)</span>，则</p>
+<div class="arithmatex">\[
+\chi_{V_\lambda}(c_\mu )=[\prod_{i=1}^N x_i^{\lambda_i+N-i}](\prod_{1\le i&lt;j\le N} (x_i-x_j)\cdots P_\mu (x_1,\cdots,x_N))
+\]</div>
+</div>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.11</span></p>
+<p>对 Young 图 <span class="arithmatex">\(Y_\lambda\)</span> 中的格 <span class="arithmatex">\((i,j)\)</span>，定义</p>
+<div class="arithmatex">\[
+h(i,j):=\# \left\{(i',j')\in Y_\lambda\Big| i'\ge i,j'=j \text{ 或 } i'=i,j'\ge j \right\}
+\]</div>
+</div>
+<div id="cor-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.12</span><span class="book-name">hook length fomula</span></p>
+<div class="arithmatex">\[
+\dim V_\lambda=\frac{n!}{\prod_{(i,j)\in Y_\lambda}h(i,j)}
+\]</div>
+</div>
+<p>回忆 <span class="arithmatex">\(\wedge\)</span> 上的对合 <span class="arithmatex">\(\omega\)</span>，<span class="arithmatex">\(\omega(e_\lambda)=f_\lambda,\omega(P_\lambda)=(-1)^{\left|\lambda\right|-l(\lambda)}P_\lambda\)</span>。</p>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.13</span></p>
+<p>定义加法对合</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\omega:R_n&amp;\rightarrow R_n\\
+[v]&amp;\mapsto [v\otimes \text{sign}]\\
+\end{aligned}
+\]</div>
+</div>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.14</span></p>
+<p><span class="arithmatex">\(\psi :R\rightarrow \wedge\)</span> 与 <span class="arithmatex">\(\omega\)</span> 可交换。</p>
+</div>
+<div id="cor-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.15</span></p>
+<div class="arithmatex">\[
+V_\lambda \otimes \text{sign} \cong V_{\lambda'}
+\]</div>
+</div>
+<h2 id="s6"><span class="book-secnum">§ 06</span><span class="arithmatex">\(A_n\)</span> 的表示</h2>
+<p>交错群 <span class="arithmatex">\(A_n=\left\{\text{偶置换}\right\}\triangleleft S_n\)</span>，指数为 2。</p>
+<div id="lem-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 6.1</span></p>
+<div class="arithmatex">\[
+\mathrm{Ind}_{A_n}^{S_n} \mathbb{C}\cong \mathbb{C}\oplus \text{sign}
+\]</div>
+</div>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.2</span></p>
+<p><span class="arithmatex">\(\lambda\in P(n)\)</span>,<span class="arithmatex">\(V_\lambda\)</span> 为 <span class="arithmatex">\(S_n\)</span> 的 Specht 模。则</p>
+<ul>
+<li>若 <span class="arithmatex">\(\lambda\neq \lambda'\)</span> 则 <span class="arithmatex">\(\mathrm{Res}_{A_n}^{S_n} V_\lambda\)</span> 是不可约的。</li>
+<li>若 <span class="arithmatex">\(\lambda=\lambda'\)</span> 则 <span class="arithmatex">\(\mathrm{Res}_{A_n}^{S_n} V_\lambda \cong W_\lambda \oplus W_{\lambda}'\)</span>，其中 <span class="arithmatex">\(W_\lambda,W_{\lambda}'\)</span> 是不同构的 <span class="arithmatex">\(A_n\)</span> 的不可约表示，满足对任意 <span class="arithmatex">\(S_n\)</span> 中的奇置换 <span class="arithmatex">\(w\in S_n\)</span>，有 <span class="arithmatex">\(w(W_\lambda)=W'_\lambda\)</span>。</li>
+<li><span class="arithmatex">\(A_n\)</span> 的任意不可约复表示均出现在某个 <span class="arithmatex">\(V_\lambda\)</span> 中，且 <span class="arithmatex">\(\lambda\)</span> 在取转置的意义下唯一确定。</li>
+</ul>
+</div>
+<h2 id="s7"><span class="book-secnum">§ 07</span>Schur-Weyl 对偶</h2>
+<p>先来考虑 <span class="arithmatex">\(\mathfrak{gl}(V)\)</span> 的情形。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">双中心化子定理(double centralizer theorem</span></p>
+<p>设 <span class="arithmatex">\(E\)</span> 是 <span class="arithmatex">\(k\)</span> 上的有限维向量空间。<span class="arithmatex">\(A,B\subseteq \mathrm{End}(E)\)</span> 为子代数，且 <span class="arithmatex">\(A\)</span> 是半单的，<span class="arithmatex">\(B=\mathrm{End}_A(E)\)</span>，则</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(A=\mathrm{End}_B(E)\)</span>。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(B\)</span> 是半单的。</p>
+</li>
+<li>
+<p>作为 <span class="arithmatex">\(A\otimes B\)</span> 的表示</p>
+<div class="arithmatex">\[
+E=\bigoplus_i V_i\oplus W_i
+\]</div>
+<p>其中 <span class="arithmatex">\(\left\{V_i\right\}\)</span> 为所有 <span class="arithmatex">\(A\)</span> 的不可约表示<span class="arithmatex">\(:=\mathrm{Irr}(A)\)</span>，<span class="arithmatex">\(\left\{W_i\right\}\)</span> 为所有 <span class="arithmatex">\(B\)</span> 的不可约表示<span class="arithmatex">\(:=\mathrm{Irr}(B)\)</span>    。特别的，存在 <span class="arithmatex">\(\mathrm{Irr}(A)\)</span> 与 <span class="arithmatex">\(\mathrm{Irr}(B)\)</span> 间的自然双射。</p>
+</li>
+</ul>
+</div>
+<p>将该定理应用在 <span class="arithmatex">\(E=V^{\otimes n}\)</span> 上，其中 <span class="arithmatex">\(V\)</span> 是 <span class="arithmatex">\(\mathbb{C}\)</span> 上的有限维向量空间。<span class="arithmatex">\(S_n\)</span> 在 <span class="arithmatex">\(E\)</span> 上作用为自然的交换。定义 <span class="arithmatex">\(A:=\mathrm{Im}(\mathbb{C}[S_n]\rightarrow \mathrm{End}(E))\)</span>。回忆 <span class="arithmatex">\(\mathfrak{gl}(V):=\text{李代数}(\mathrm{End}(V),[-,-])\)</span>，其中 <span class="arithmatex">\([a,b]=ab-ba\)</span>。</p>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.2</span></p>
+<p>代数 <span class="arithmatex">\(B=\mathrm{End}_A(E)\)</span> 是泛包络代数 <span class="arithmatex">\(\mathcal{U}(\mathfrak{gl}(V))\)</span> 在其对 <span class="arithmatex">\(E=V^{\otimes n}\)</span> 的自然作用下的像。即 <span class="arithmatex">\(B\)</span> 由</p>
+<div class="arithmatex">\[
+\Delta_n(n):=b\otimes 1\otimes \cdots \otimes 1+1\otimes b\otimes1 \otimes \cdots \otimes 1+\cdots+1\otimes 1\otimes \cdots \otimes 1\otimes b
+\]</div>
+<p>生成，其中 <span class="arithmatex">\(b\in \mathfrak{gl}(V)\)</span>。</p>
+</div>
+<div id="lem-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 7.3</span></p>
+<p><span class="arithmatex">\(\mathrm{char}k=0\)</span>。</p>
+<ul>
+<li>任意 <span class="arithmatex">\(k\)</span> 上有限维向量空间 <span class="arithmatex">\(U\)</span>，<span class="arithmatex">\(S^nU\)</span> 由 <span class="arithmatex">\(u\otimes \cdots \otimes u,u\in U\)</span> 生成。</li>
+<li>任意 <span class="arithmatex">\(k\)</span> 上代数 <span class="arithmatex">\(A\)</span>，<span class="arithmatex">\(S^nA\)</span> 由 <span class="arithmatex">\(\Delta_n(a),a\in A\)</span> 生成。</li>
+</ul>
+</div>
+<p>回忆我们有若 <span class="arithmatex">\(A=\mathrm{Im}(\mathbb{C}[S_n]\rightarrow \mathrm{End}(V^{\otimes n}))\)</span> 且 <span class="arithmatex">\(\mathbb{C}[S_n]\)</span> 半单，则有 <span class="arithmatex">\(A\)</span> 是半单的。结合双中心化子定理我们有：</p>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.4</span><span class="book-name">Schur-Weyl 对偶</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\mathbb{C}[S_n]\)</span> 的像 <span class="arithmatex">\(A\)</span> 和 <span class="arithmatex">\(\mathcal{U}(\mathfrak{gl}(V))\)</span> 的像 <span class="arithmatex">\(B\)</span> 在 <span class="arithmatex">\(\mathrm{End}(V^{\otimes n})\)</span> 中互为中心化子。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(A\)</span>,<span class="arithmatex">\(B\)</span> 均为半单的。特别的，<span class="arithmatex">\(V^{\otimes n}\)</span> 是半单的 <span class="arithmatex">\(\mathfrak{gl}(V)-\)</span>模。</p>
+</li>
+<li>
+<p>作为 <span class="arithmatex">\(A\otimes B-\)</span>模，</p>
+<div class="arithmatex">\[
+V^{\otimes n}=\bigoplus_{\lambda\in P(n)} V_\lambda\otimes L_\lambda
+\]</div>
+<p>其中 <span class="arithmatex">\(V_\lambda\)</span> 是 <span class="arithmatex">\(S_n\)</span> 的 Specht 模，<span class="arithmatex">\(L_\lambda\)</span> 是 <span class="arithmatex">\(\mathfrak{gl}(V)\)</span> 的不相交的不可约表示或 0。</p>
+</li>
+</ul>
+</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 7.5</span></p>
+<ul>
+<li>当 <span class="arithmatex">\(\lambda=(n)\)</span> 时，<span class="arithmatex">\(V_{(n)}=S_n\)</span> 的平凡表示。<span class="arithmatex">\(L_\lambda=\mathrm{Hom}_{S_n}(\mathbb{C},V^{\otimes n})=(V^{\otimes n})^{S_n}=S^nV\)</span></li>
+<li>当 <span class="arithmatex">\(\lambda=(1^n)\)</span> 时，<span class="arithmatex">\(V_{(1^n)}=S_n\)</span> 的符号表示。<span class="arithmatex">\(L_\lambda=\mathrm{Hom}_{S_n}(\text{sign},V^{\otimes n})=\wedge^nV\)</span></li>
+</ul>
+</div>
+<p>下面我们来考虑 <span class="arithmatex">\(L_\lambda\)</span> 的特征。令 <span class="arithmatex">\(N=\dim V_\lambda\)</span>，令 <span class="arithmatex">\(x_1,\cdots,x_N\)</span> 为 <span class="arithmatex">\(g\in \mathrm{GL}(V)\)</span> 的特征根，我们希望计算特征 <span class="arithmatex">\(\chi_{L_\lambda}(g)\)</span>。由 Schur-Weyl 知 <span class="arithmatex">\(V^{\otimes n}=\bigoplus_{\lambda\in P(n)} V_\lambda\otimes L_\lambda\)</span>，取 <span class="arithmatex">\(s\in S_n\)</span>，设 <span class="arithmatex">\(s\in c_\mu=\mu=(1^{m_1}2^{m_2}\cdots )\)</span> 的共轭类。</p>
+<div id="lem-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 7.6</span></p>
+<div class="arithmatex">\[
+\mathrm{Tr}_{V\otimes n}(g^{\otimes n} s)=\prod_m P_m(x_1,\cdots,x_m)^{i_m}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\left\{e_1,\cdots,e_N\right\}\)</span> 是 <span class="arithmatex">\(V\)</span> 的标准基，<span class="arithmatex">\(ge_i=\sum_j g_{ji}e_j\)</span>。设 <span class="arithmatex">\((12\cdots m)\in S_n\)</span> 是长为 <span class="arithmatex">\(m\)</span> 的循环，</p>
+<div class="arithmatex">\[
+g^{\otimes m}(12\cdots m)(e_{i_1}\otimes \cdots \otimes e_{i_m})=ge_{i_m}\otimes ge_{i_1} \otimes \cdots \otimes ge_{i_{m-1}}
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathrm{Tr}_{V\otimes m}(g^{\otimes m}(j_1\cdots j_m))&amp;=\sum_{1\le i_1,\cdots,i_m\le N} g_{i_mi_1}g_{i_1i_2}\cdots g_{i_{m-1}i_m}\\
+&amp;=\mathrm{Tr}(g^m)=(x_1^m+\cdots+x_N^m)=P_m(x_1,\cdots,x_N)\\
+\end{aligned}
+\]</div>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.7</span><span class="book-name">Weyl 特征公式</span></p>
+<p><span class="arithmatex">\(L_\lambda=0\)</span> 当且仅当 <span class="arithmatex">\(N&lt;l(\lambda)\)</span>。若 <span class="arithmatex">\(N\ge l(\lambda)\)</span>，则</p>
+<div class="arithmatex">\[
+\chi_{L_\lambda}(g)=s_\lambda(x_1,\cdots,x_N)
+\]</div>
+</div>
+<div id="cor-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.8</span></p>
+<div class="arithmatex">\[
+\dim h_\lambda=\prod_{1\le i&lt;j\le N} \frac{\lambda_i-\lambda_j+j-i}{j-i}
+\]</div>
+</div>
+<div id="cor-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.9</span></p>
+<div class="arithmatex">\[
+L_{\lambda+(1^N)}\cong L_\lambda \otimes \wedge^N V
+\]</div>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="representation-theory.pdf" href="../../../../assets/representation-theory.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="表示论章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第四章：有限群的表示：一些进阶结论</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第六章：GL₂(𝔽_q) 与 SL₂(𝔽_q) 的表示</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#representation-theory">表示论 · 第 5 / 8 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">代数</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=representation-theory">#representation-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

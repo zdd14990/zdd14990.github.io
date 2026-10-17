@@ -1,0 +1,1406 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第二章：差分、初等差分方程、齐次线性差分方程、常数系数方程、线性无关性与Wronskian、Wronskian的递推关系、初值问题与边值问题、降阶法。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-02/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第二章：差分方程 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-02/">
+  <meta property="og:title" content="第二章：差分方程 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第二章：差分、初等差分方程、齐次线性差分方程、常数系数方程、线性无关性与Wronskian、Wronskian的递推关系、初值问题与边值问题、降阶法。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="difference-equations">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-02/">
+  <meta name="twitter:title" content="第二章：差分方程 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第二章：差分、初等差分方程、齐次线性差分方程、常数系数方程、线性无关性与Wronskian、Wronskian的递推关系、初值问题与边值问题、降阶法。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e8c\u7ae0\uff1a\u5dee\u5206\u65b9\u7a0b",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u4e8c\u7ae0\uff1a\u5dee\u5206\u3001\u521d\u7b49\u5dee\u5206\u65b9\u7a0b\u3001\u9f50\u6b21\u7ebf\u6027\u5dee\u5206\u65b9\u7a0b\u3001\u5e38\u6570\u7cfb\u6570\u65b9\u7a0b\u3001\u7ebf\u6027\u65e0\u5173\u6027\u4e0eWronskian\u3001Wronskian\u7684\u9012\u63a8\u5173\u7cfb\u3001\u521d\u503c\u95ee\u9898\u4e0e\u8fb9\u503c\u95ee\u9898\u3001\u964d\u9636\u6cd5\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-02/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-02/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["difference-equations"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 差分
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 初等差分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 齐次线性差分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 常数系数方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 线性无关性与Wronskian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Wronskian的递推关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 初值问题与边值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 降阶法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 欧拉方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 生成函数法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 特征值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 非齐次线性差分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. 参数变异法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 降阶法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 待定系数法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 非线性差分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 2 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">02</div>
+    <h1 id="top"><span class="book-visually-hidden">第 2 章：</span>差分方程</h1>
+  </div>
+  <p class="book-standfirst">差分方程的研究基于离散微积分概念，旨在总结其求解的基本方法。其常用于计算递归定义的量，例如：Taylor 级数或 Fourier 展开的第 <span class="arithmatex">\(n\)</span> 项系数，通过余子式展开的 <span class="arithmatex">\(n \times n\)</span> 矩阵的行列式。在数值分析中，差分方程频繁出现于用离散系统逼近连续系统的场景。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>3,020 字 · 约 9 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>差分</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>定义在整数集上的函数将每个整数 <span class="arithmatex">\(n\)</span> 映射到数 <span class="arithmatex">\(a_n\)</span>，函数 <span class="arithmatex">\(a_n\)</span> 的离散导数定义为：</p>
+<div class="arithmatex">\[
+D a_n \equiv a_{n+1} - a_n.
+\]</div>
+<p>二阶导数 <span class="arithmatex">\(D^2 a_n\)</span> 是导数的导数：</p>
+<div class="arithmatex">\[
+D^2 a_n = (a_{n+2} - a_{n+1}) - (a_{n+1} - a_n) = a_{n+2} - 2a_{n+1} + a_n.
+\]</div>
+<p><span class="arithmatex">\(k\)</span> 阶导数通过连续取 <span class="arithmatex">\(k\)</span> 次导数定义。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span></p>
+<p>函数 <span class="arithmatex">\(a_n\)</span> 的离散原函数（或离散积分） <span class="arithmatex">\(b_n\)</span> 定义为和式：</p>
+<div class="arithmatex">\[
+b_n = \sum_{j=n_0}^n a_j.
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.3</span><span class="book-name">例</span></p>
+<p>连续函数 <span class="arithmatex">\(f(x) = x^k\)</span> 对应的离散函数为：</p>
+<div class="arithmatex">\[
+f_n = n(n+1)\cdots(n+k-1)
+\]</div>
+<ul>
+<li>
+<p><strong>连续导数</strong>：<span class="arithmatex">\(f'(x) = kx^{k-1}\)</span></p>
+</li>
+<li>
+<p><strong>离散导数</strong>：</p>
+<div class="arithmatex">\[
+f_{n+1} - f_n = k \cdot (n+1)(n+2)\cdots(n+k-1)
+\]</div>
+<p>含 <span class="arithmatex">\(k-1\)</span> 个因子。</p>
+</li>
+</ul>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>初等差分方程</h2>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>同 1.1节 <span class="arithmatex">\(N\)</span> 阶微分方程的定义，<span class="arithmatex">\(N\)</span> 阶差分方程的自然定义为：</p>
+<div class="arithmatex">\[
+a_n^{(N)} = F\left[n, a_n, a_n^{(1)}, \cdots, a_n^{(N-1)}\right]
+\]</div>
+<p>其中 <span class="arithmatex">\(a_n^{(j)}\)</span> 是 <span class="arithmatex">\(a_n\)</span> 的<span class="arithmatex">\(j\)</span>阶离散导数。为避免 <span class="arithmatex">\(a_n, a_{n+1}, \cdots\)</span> 的重复，采用更简洁的常规定义：</p>
+<div class="arithmatex">\[
+a_{n+N} = G[n, a_n, a_{n+1}, \cdots, a_{n+N-1}]
+\tag{2.2.1}
+\]</div>
+<p>此形式可显式转换为离散导数形式。</p>
+</div>
+<p><span class="arithmatex">\(N\)</span>阶差分方程(2.2.1)的通解含<span class="arithmatex">\(N\)</span>个独立参数 <span class="arithmatex">\(c_1, c_2, \cdots, c_N\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span><span class="book-name">例（阶乘函数</span></p>
+<p>一阶线性齐次差分方程 <span class="arithmatex">\(a_{n+1} = n a_n\)</span> 的解为：</p>
+<div class="arithmatex">\[
+a_n = c_1 (n-1)!
+\]</div>
+<p>其中常数 <span class="arithmatex">\(c_1\)</span> 为求和常数。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.3</span><span class="book-name">例（伽马函数 <span class="arithmatex">\(\Gamma(z)\)</span>）</span></p>
+<p>Gamma 函数是最广泛使用的高等超越函数。当 <span class="arithmatex">\(z = n\)</span> 为正整数时，<span class="arithmatex">\(\Gamma(n) = (n-1)!\)</span>。对 <span class="arithmatex">\(\operatorname{Re} z &gt; 0\)</span>，其积分定义为：</p>
+<div class="arithmatex">\[
+\Gamma(z) = \int_0^\infty e^{-t} t^{z-1} dt
+\tag{2.2.2}
+\]</div>
+<p>其满足差分方程：</p>
+<div class="arithmatex">\[
+\Gamma(z+1) = z\Gamma(z)
+\tag{2.2.3}
+\]</div>
+<p>此差分方程可将<span class="arithmatex">\(\Gamma(z)\)</span>解析延拓至 <span class="arithmatex">\(\operatorname{Re} z \leq 0\)</span>。Γ(z)是复平面上的单值解析函数，在 <span class="arithmatex">\(z = 0, -1, -2, \cdots\)</span> 处有单极点。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span><span class="book-name">例（一阶线性齐次方程</span></p>
+<p>方程 <span class="arithmatex">\(a_{n+1} = p(n)a_n\)</span> 的解为乘积形式：</p>
+<div class="arithmatex">\[
+a_{n} = a_1 \prod_{j=1}^{n-1} p(j)
+\tag{2.2.4}
+\]</div>
+<p>其中 <span class="arithmatex">\(a_1\)</span> 为任意常数。类比微分方程 <span class="arithmatex">\(y' = p(x)y\)</span> 的解为：</p>
+<div class="arithmatex">\[
+y(x) = y(0) \exp \left( \int_0^x p(t)  dt \right)
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.5</span><span class="book-name">例（一阶线性非齐次方程</span></p>
+<p>解方程 <span class="arithmatex">\(a_{n+1} = p(n)a_n + q(n)\)</span> 需用求和因子：</p>
+<div class="arithmatex">\[
+\left[ \prod_{j=1}^n p(j) \right]^{-1}
+\]</div>
+<p>乘两边得：</p>
+<div class="arithmatex">\[
+\frac{a_{n+1}}{\prod_{j=1}^n p(j)} - \frac{a_n}{\prod_{j=1}^{n-1} p(j)} = \frac{q(n)}{\prod_{j=1}^n p(j)}
+\]</div>
+<p>左式为离散导数。从1到 <span class="arithmatex">\(n-1\)</span> 求和得解：</p>
+<div class="arithmatex">\[
+a_n = \prod_{j=1}^{n-1} p(j) \left[ \sum_{k=1}^{n-1} \frac{q(k)}{\prod_{j=1}^k p(j)} + a_1 \right], \quad n \geq 2
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.6</span><span class="book-name">例（带边界条件的一阶方程</span></p>
+<p>要求方程 <span class="arithmatex">\(a_{n+1} = \frac{n}{n+1} a_n + \frac{n-1}{(n+1)^2(n+2)(n+3)}\)</span> 在 <span class="arithmatex">\(n=0\)</span> 处有界。乘求和因子 <span class="arithmatex">\(n+1\)</span> 后求和得通解：</p>
+<div class="arithmatex">\[
+a_n = \frac{a_1 + \frac{1}{6}}{n} - \frac{1}{(n+1)(n+2)} \quad (n&gt;0)
+\]</div>
+<p>由 <span class="arithmatex">\(a_0\)</span> 有界得 <span class="arithmatex">\(a_1 = -\frac{1}{6}\)</span>，故唯一解：</p>
+<div class="arithmatex">\[
+a_n = -\frac{1}{(n+1)(n+2)} \quad (n \geq 0)
+\]</div>
+<p>类比微分方程 <span class="arithmatex">\(y' + (\cot x)y = -1\)</span> 在 <span class="arithmatex">\(x=0\)</span> 处有界的解为：</p>
+<div class="arithmatex">\[
+y(x) = \frac{\cos x - 1}{\sin x}
+\]</div>
+</div>
+<p>非线性差分方程通常难解，但以下特例可求显式解。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.7</span><span class="book-name">例（<span class="arithmatex">\(a_{n+1} = a_n^2\)</span>）</span></p>
+<p>取对数得线性方程：</p>
+<div class="arithmatex">\[
+\ln a_{n+1} = 2 \ln a_n \implies \ln a_n = 2^{n-1} \ln a_1 \implies a_n = a_1^{2^{n-1}}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.8</span><span class="book-name">例（<span class="arithmatex">\(a_{n+2} = a_{n+1}^2 / a_n\)</span>）</span></p>
+<p>取对数得：</p>
+<div class="arithmatex">\[
+\ln a_{n+2} - 2 \ln a_{n+1} + \ln a_n = 0
+\]</div>
+<p>二阶离散导数为零。两次求和得：</p>
+<div class="arithmatex">\[
+\ln a_n = c_1 n + c_2 \implies a_n = e^{c_1 n + c_2}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.9</span><span class="book-name">例（<span class="arithmatex">\(a_{n+1} = 2a_n^2 - 1\)</span>）</span></p>
+<div class="arithmatex">\[
+a_n =
+\begin{cases}
+\cos \left( 2^{n-1} \cos^{-1} a_1 \right), &amp; |a_1| \leq 1 \\
+\cosh \left( 2^{n-1} \cosh^{-1} a_1 \right), &amp; |a_1| \geq 1
+\end{cases}
+\]</div>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>齐次线性差分方程</h2>
+<p><span class="arithmatex">\(N\)</span>阶齐次线性差分方程的一般形式为：</p>
+<div class="arithmatex">\[
+a_{n+N} + p_{N-1}(n)a_{n+N-1} + \cdots + p_0(n)a_n = 0
+\tag{2.3.1}
+\]</div>
+<p>其中 <span class="arithmatex">\(p_0, p_1, \cdots, p_{N-1}\)</span> 为 <span class="arithmatex">\(n\)</span> 的任意函数。与微分方程类似，(2.3.1)的通解是其<span class="arithmatex">\(N\)</span>个线性无关解的任意线性组合。</p>
+<h2 id="s4"><span class="book-secnum">§ 04</span>常数系数方程</h2>
+<p>当系数 <span class="arithmatex">\(p_j\)</span> 与 <span class="arithmatex">\(n\)</span> 无关时，称为常数系数方程。借鉴微分方程解法，指数形式解 <span class="arithmatex">\(a_n = r^n\)</span>，代入(2.3.1)得特征方程：</p>
+<div class="arithmatex">\[
+r^N + p_{N-1}r^{N-1} + \cdots + p_0 = 0
+\tag{2.3.2}
+\]</div>
+<p>若特征根 <span class="arithmatex">\(r_1, r_2, \cdots, r_N\)</span> 互异，则通解为 <span class="arithmatex">\(a_n = \sum_{k=1}^N c_k r_k^n\)</span>。若 <span class="arithmatex">\(r_1\)</span> 为 <span class="arithmatex">\(m\)</span> 重根，则对应解为 <span class="arithmatex">\(r_1^n, n r_1^n, \cdots, n^{m-1} r_1^n\)</span>。</p>
+<h2 id="s5"><span class="book-secnum">§ 05</span>线性无关性与Wronskian</h2>
+<p>函数集 <span class="arithmatex">\(\{a_n, b_n, \cdots\}\)</span> 在区间 <span class="arithmatex">\(n_1 \leq n \leq n_2\)</span> 线性无关当且仅当方程 <span class="arithmatex">\(k_1a_n+k_2b_n+\cdots = 0\)</span> 仅有零解。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span></p>
+<p>离散Wronskian（Casoratian）定义为：</p>
+<div class="arithmatex">\[
+W_n = \det
+\begin{pmatrix}
+a_n &amp; b_n &amp; \cdots \\
+a_{n+1} &amp; b_{n+1} &amp; \cdots \\
+\vdots &amp; \vdots &amp; \ddots
+\end{pmatrix}
+\tag{2.3.3}
+\]</div>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.2</span></p>
+<p>函数集线性相关当且仅当对所有 <span class="arithmatex">\(n\)</span> 有 <span class="arithmatex">\(W_n \equiv 0\)</span>。</p>
+</div>
+<h2 id="s6"><span class="book-secnum">§ 06</span>Wronskian的递推关系</h2>
+<p>对<span class="arithmatex">\(N\)</span>阶齐次线性差分方程，解的Wronskian满足一阶方程（类比Abel公式）：</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.1</span><span class="book-name">例（二阶方程情形</span></p>
+<p>设 <span class="arithmatex">\(a_n, b_n\)</span> 为方程</p>
+<div class="arithmatex">\[
+a_{n+2} + p_1(n)a_{n+1} + p_0(n)a_n = 0
+\tag{2.3.4}
+\]</div>
+<p>的解，则：</p>
+<div class="arithmatex">\[
+W_{n+1} = W_n p_0(n) \implies W_n = W_{n_0} \prod_{j=n_0}^{n-1} p_0(j)
+\tag{2.3.5}
+\]</div>
+<p>当 <span class="arithmatex">\(p_0(n) \neq 0\)</span> 时，非零Wronskian保持非零。</p>
+</div>
+<h2 id="s7"><span class="book-secnum">§ 07</span>初值问题与边值问题</h2>
+<p><span class="arithmatex">\(N\)</span>阶齐次线性差分方程的通解含<span class="arithmatex">\(N\)</span>个参数，可通过两种方式确定：</p>
+<ol>
+<li>
+<p><strong>初值问题</strong>：在定义域 <span class="arithmatex">\(n_1 \leq n \leq n_2\)</span> 内指定单点 <span class="arithmatex">\(n_0\)</span> 的<span class="arithmatex">\(N\)</span>个离散导数值（或<span class="arithmatex">\(N\)</span>个连续函数值）。解存在唯一的充要条件：</p>
+<ul>
+<li><span class="arithmatex">\(n_0\)</span> 处Wronskian非零</li>
+<li><span class="arithmatex">\(p_0(n)\)</span> 在 <span class="arithmatex">\(n_1 \leq n \leq n_0\)</span> 非零</li>
+</ul>
+</li>
+<li>
+<p><strong>边值问题</strong>：在定义域内任意点指定<span class="arithmatex">\(N\)</span>个函数值或导数值。解的存在唯一性无简单判别准则。</p>
+</li>
+</ol>
+<h2 id="s8"><span class="book-secnum">§ 08</span>降阶法</h2>
+<p>若已知方程的一个特解 <span class="arithmatex">\(A_n\)</span>，可通过代换</p>
+<div class="arithmatex">\[
+a_n = A_n x_n
+\tag{2.3.6}
+\]</div>
+<p>将方程降阶。</p>
+<h2 id="s9"><span class="book-secnum">§ 09</span>欧拉方程</h2>
+<p>回顾1.4节，除常数系数微分方程外，还有一类可求解的方程称为欧拉方程。欧拉微分方程的形式为：</p>
+<div class="arithmatex">\[
+x^N \frac{d^N}{dx^N} y + p_{N-1}x^{N-1} \frac{d^{N-1}}{dx^{N-1}} y + \cdots + p_1 x \frac{dy}{dx} + p_0 y = 0
+\tag{2.3.7}
+\]</div>
+<p>其中 <span class="arithmatex">\(p_0, p_1, \cdots, p_{N-1}\)</span> 是常数。为构造欧拉方程的差分方程类比，回顾2.1节例 2.1中 <span class="arithmatex">\(x\)</span> 幂的离散类比：<span class="arithmatex">\(x \leftrightarrow n, \quad x^2 \leftrightarrow n(n+1), \quad x^3 \leftrightarrow n(n+1)(n+2), \quad \cdots, \quad x^N \leftrightarrow n(n+1)(n+2) \cdots (n+N-1).\)</span>我们利用 Gamma 函数重写：</p>
+<div class="arithmatex">\[
+\frac{\Gamma(n+N)}{\Gamma(n)} = n(n+1)(n+2) \cdots (n+N-1)
+\tag{2.3.8}
+\]</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span><span class="book-name">离散欧拉方程</span></p>
+<p>定义离散欧拉方程为：</p>
+<div class="arithmatex">\[
+\frac{\Gamma(n+N)}{\Gamma(n)} a_n^{(N)} + p_{N-1} \frac{\Gamma(n+N-1)}{\Gamma(n)} a_n^{(N-1)} + \cdots + p_1 n a_n^{(1)} + p_0 a_n = 0
+\tag{2.3.9}
+\]</div>
+</div>
+<p>现回顾欧拉微分方程(2.3.7)的解法，取代换</p>
+<div class="arithmatex">\[
+y(x) = x^r
+\tag{2.3.10}
+\]</div>
+<p>将方程(2.3.7)化为关于 <span class="arithmatex">\(r\)</span> 的方程：</p>
+<div class="arithmatex">\[
+r(r-1)(r-2) \cdots (r-N+1) + p_{N-1} r(r-1) (r-2) \cdots (r-N+2) + \cdots + p_1 r + p_0 = 0.
+\tag{2.3.11}
+\]</div>
+<p>为求解离散欧拉方程(2.3.9)，需对实数 <span class="arithmatex">\(r\)</span> 代换 <span class="arithmatex">\(x^r\)</span> 的离散类比。定义 <span class="arithmatex">\(x^r\)</span> 的离散类比为 <span class="arithmatex">\(\Gamma(n+r)/\Gamma(n)\)</span>。其一阶离散导数为：</p>
+<div class="arithmatex">\[
+\frac{\Gamma(n+r+1)}{\Gamma(n+1)} - \frac{\Gamma(n+r)}{\Gamma(n)} = \frac{r}{n} \frac{\Gamma(n+r)}{\Gamma(n)},
+\]</div>
+<p>此即 <span class="arithmatex">\(r x^r / x\)</span> 的离散类比。二阶导数为：<span class="arithmatex">\(r(r-1)\frac{\Gamma(n+r)}{\Gamma(n) n (n+1)},\)</span>对应 <span class="arithmatex">\(r(r-1) x^r / x^2\)</span>。<span class="arithmatex">\(N\)</span> 阶导数为：</p>
+<div class="arithmatex">\[
+\left[ \frac{r(r-1)\cdots(r-N+1)}{\Gamma(n+N)/\Gamma(n)} \right] \left[ \frac{\Gamma(n+r)}{\Gamma(n)} \right],
+\]</div>
+<p>对应 <span class="arithmatex">\(r(r-1)\cdots(r-N+1) x^r / x^N\)</span>。将 <span class="arithmatex">\(a_n = \Gamma(n+r)/\Gamma(n)\)</span> 代入(2.3.9)得关于 <span class="arithmatex">\(r\)</span> 的多项式方程：</p>
+<div class="arithmatex">\[
+r(r-1)\cdots(r-N+1) + p_{N-1} r(r-1)\cdots(r-N+2) + \cdots + p_1 r + p_0 = 0.
+\tag{2.3.12}
+\]</div>
+<p>此方程的根决定(2.3.9)的解。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.2</span><span class="book-name">例（离散欧拉方程求解</span></p>
+<ul>
+<li>
+<p>(a) 求解欧拉方程：</p>
+<div class="arithmatex">\[
+n(n + 1)a_n^{(2)} + n a_n^{(1)} - \frac{1}{4}a_n = 0
+\tag{2.3.13}
+\]</div>
+<p>代换 <span class="arithmatex">\(a_n = \Gamma(n + r)/\Gamma(n)\)</span> 得特征方程：<span class="arithmatex">\(r^2 - \frac{1}{4} = 0\)</span>根为 <span class="arithmatex">\(r_1 = \frac{1}{2},\, r_2 = -\frac{1}{2}\)</span>。通解为：</p>
+<div class="arithmatex">\[
+a_n = c_1 \frac{\Gamma(n + \frac{1}{2})}{\Gamma(n)} + c_2 \frac{\Gamma(n - \frac{1}{2})}{\Gamma(n)}
+\]</div>
+</li>
+<li>
+<p>(b) 求解欧拉方程：</p>
+<div class="arithmatex">\[
+n(n + 1)a_n^{(2)} + \frac{1}{4}a_n = 0
+\tag{2.3.14}
+\]</div>
+<p>同上代换得特征方程：<span class="arithmatex">\(r^2 - r + \frac{1}{4} = 0\)</span>有二重根 <span class="arithmatex">\(r = \frac{1}{2}\)</span>，仅得一个特解：</p>
+<div class="arithmatex">\[
+a_n = \frac{\Gamma(n + \frac{1}{2})}{\Gamma(n)}
+\]</div>
+<p>设 <span class="arithmatex">\(a_n = \varphi(n) \frac{\Gamma(n + \frac{1}{2})}{\Gamma(n)}\)</span>，通过降阶法得：<span class="arithmatex">\(\varphi(n) = \sum_{k=1}^{n} \frac{1}{k - \frac{1}{2}}\)</span>，通解为：</p>
+<div class="arithmatex">\[
+a_n=c_1\frac{\Gamma(n + \frac{1}{2})}{\Gamma(n)}+c_2 \varphi(n)\frac{\Gamma(n + \frac{1}{2})}{\Gamma(n)}
+\tag{2.3.15}
+\]</div>
+</li>
+</ul>
+</div>
+<h2 id="s10"><span class="book-secnum">§ 10</span>生成函数法</h2>
+<p>若差分方程的解 <span class="arithmatex">\(a_n\)</span> 是 <span class="arithmatex">\(F(x)\)</span> Taylor展开的第 <span class="arithmatex">\(n\)</span> 项系数，则 <span class="arithmatex">\(F(x)\)</span> 可能满足易解的微分方程。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.1</span><span class="book-name">例（生成函数法求解差分方程</span></p>
+<p>解差分方程：</p>
+<div class="arithmatex">\[
+(n+1)(n+2)a_{n+2} - 2(n+1)a_{n+1} - 3a_n = 0, \quad n \geq 0
+\tag{2.3.16}
+\]</div>
+<p>初值条件：<span class="arithmatex">\(a_0 = 2, \, a_1 = 2\)</span>。定义生成函数：<span class="arithmatex">\(F(x) = \sum_{n=0}^{\infty} a_n x^n\)</span>，逐项求导得：</p>
+<div class="arithmatex">\[
+F'(x) = \sum_{n=0}^{\infty} (n+1)a_{n+1} x^n, \quad
+F''(x) = \sum_{n=0}^{\infty} (n+2)(n+1)a_{n+2} x^n
+\]</div>
+<p>代入(2.3.16)得微分方程：</p>
+<div class="arithmatex">\[
+F''(x) - 2F'(x) - 3F(x) = 0
+\]</div>
+<p>初值条件：<span class="arithmatex">\(F(0) = 2, \, F'(0) = 2\)</span>。解得：</p>
+<div class="arithmatex">\[
+F(x) = e^{3x} + e^{-x}
+\]</div>
+<p>由 Taylor 公式得到</p>
+<div class="arithmatex">\[
+a_n = \left. \frac{1}{n!} \frac{d^n}{dx^n} F(x) \right|_{x=0} = \frac{3^n + (-1)^n}{n!}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.2</span><span class="book-name">例（降阶的生成函数法</span></p>
+<p>二阶差分方程：</p>
+<div class="arithmatex">\[
+a_{n+2} = a_{n+1} + (n+1)a_n, \quad a_0 = a_1 = 1
+\tag{2.3.17}
+\]</div>
+<p>定义生成函数：</p>
+<div class="arithmatex">\[
+F(x) = \sum_{n=0}^{\infty} \frac{a_n x^n}{n!}
+\]</div>
+<p>将(2.3.17)乘以 <span class="arithmatex">\(\frac{x^{n+1}}{(n+1)!}\)</span> 后求和得微分方程：</p>
+<div class="arithmatex">\[
+F'(x) - 1 = (F(x) - 1) + xF(x) \implies F'(x) = (x + 1)F(x)
+\]</div>
+<p>初值条件 <span class="arithmatex">\(F(0) = 1\)</span>，解得：</p>
+<div class="arithmatex">\[
+F(x) = e^{x + \frac{x^2}{2}}
+\]</div>
+<p>最终解为：</p>
+<div class="arithmatex">\[
+a_n = \left. \frac{d^n}{dx^n} e^{x + \frac{x^2}{2}} \right|_{x=0}
+\]</div>
+</div>
+<h2 id="s11"><span class="book-secnum">§ 11</span>特征值问题</h2>
+<p>与微分方程类似，差分方程也存在边值问题以确定特征值和特征函数。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 11.1</span><span class="book-name">例</span></p>
+<p>考虑差分方程：</p>
+<div class="arithmatex">\[
+(n + 8)(n + 2)a_{n+2} - (n + 1)(2n + 11)a_{n+1} + (n + 1)(n + 2)a_n = E a_{n+1}
+\tag{2.3.18}
+\]</div>
+<p>满足边界条件：</p>
+<div class="arithmatex">\[
+a_{-1} &lt; \infty
+\tag{2.3.19}
+\]</div>
+<div class="arithmatex">\[
+S = \sum_{n=0}^{\infty} a_n &lt; \infty
+\tag{2.3.20}
+\]</div>
+<p>仅当参数 <span class="arithmatex">\(E\)</span> 取特定值（特征值）时，方程组(2.3.18)-(2.3.20)有解，下面我们来逐步分析。</p>
+<p>代入 <span class="arithmatex">\(n = -1\)</span> 得：<span class="arithmatex">\(7a_1 = E a_0 \implies a_1 = \frac{E}{7} a_0\)</span>，这表明以 <span class="arithmatex">\(a_0, a_1\)</span> 为初值，序列由递推唯一确定。不妨 <span class="arithmatex">\(a_0 = 1\)</span>，则序列完全由 <span class="arithmatex">\(E\)</span> 决定。</p>
+<p>在 <span class="arithmatex">\(n \to \infty\)</span> 时有渐近形式：</p>
+<div class="arithmatex">\[
+a_n = c_1(E)n^{-3+\sqrt{2+E}} \text{ 或 } c_2(E)n^{-3-\sqrt{2+E}}
+\tag{2.3.21}
+\]</div>
+<p>当 <span class="arithmatex">\(E \geq 2\)</span> 时，仅当 <span class="arithmatex">\(c_1(E) = 0\)</span> 时级数收敛；当 <span class="arithmatex">\(E &lt; 2\)</span> 时，级数可能收敛。</p>
+<p>对(2.3.18)从 <span class="arithmatex">\(n = -1\)</span> 到 <span class="arithmatex">\(\infty\)</span> 求和得</p>
+<div class="arithmatex">\[
+2 \sum_{n=0}^{\infty} a_n = 2S
+\tag{2.3.22}
+\]</div>
+<p>故有 <span class="arithmatex">\(E=2\)</span> 或 <span class="arithmatex">\(S=0\)</span>。</p>
+<ul>
+<li>
+<p><strong><span class="arithmatex">\(E = 2\)</span> 的特征函数</strong>：</p>
+<div class="arithmatex">\[
+a_n = \frac{720}{(n+2)(n+3)(n+4)(n+5)(n+6)}
+\tag{2.3.23}
+\]</div>
+</li>
+<li>
+<p><strong><span class="arithmatex">\(E = -1\)</span> 的特征函数</strong>：</p>
+<div class="arithmatex">\[
+a_n = \frac{(1 - 3n/2) \cdot 720}{(n+2)(n+3)(n+4)(n+5)(n+6)}
+\tag{2.3.24}
+\]</div>
+</li>
+<li>
+<p><strong><span class="arithmatex">\(E = -2\)</span> 的特征函数</strong>：</p>
+<div class="arithmatex">\[
+a_n = \frac{(n^2 - 13n + 6) \cdot 120}{(n+2)(n+3)(n+4)(n+5)(n+6)}
+\tag{2.3.25}
+\]</div>
+</li>
+</ul>
+<p>不同特征值 <span class="arithmatex">\(E_a \neq E_b\)</span> 对应的特征函数 <span class="arithmatex">\(a_n, b_n\)</span> 满足正交关系：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{\infty} (n+2)(n+3)(n+4)(n+5)(n+6) a_n b_n = 0
+\tag{2.3.26}
+\]</div>
+<p>可通过直接计算验证(2.3.23)-(2.3.25)满足此条件。</p>
+</div>
+<h2 id="s12"><span class="book-secnum">§ 12</span>非齐次线性差分方程</h2>
+<p>非齐次线性差分方程的通解由特解与对应齐次方程通解的线性组合构成。求解方法与微分方程类似。</p>
+<h2 id="s13"><span class="book-secnum">§ 13</span>参数变异法</h2>
+<p>参数变异法用于构造 <span class="arithmatex">\(N\)</span> 阶非齐次差分方程</p>
+<div class="arithmatex">\[
+a_{n+N} + p_{N-1}(n)a_{n+N-1} + \cdots + p_1(n)a_{n+1} + p_0(n)a_n = q(n) \tag{2.4.1}
+\]</div>
+<p>的解，其解的基为相关联的齐次方程</p>
+<div class="arithmatex">\[
+a_{n+N} + p_{N-1}(n)a_{n+N-1} + \cdots + p_1(n)a_{n+1} + p_0(n)a_n = 0 \tag{2.4.2}
+\]</div>
+<p>的 <span class="arithmatex">\(N\)</span> 个线性无关解。此处展示二阶方程的求解过程。设 <span class="arithmatex">\(A_n\)</span> 和 <span class="arithmatex">\(B_n\)</span> 是方程</p>
+<div class="arithmatex">\[
+a_{n+2} + p_1(n)a_{n+1} + p_0(n)a_n = 0 \tag{2.4.3}
+\]</div>
+<p>的两个已知线性无关解。为求解</p>
+<div class="arithmatex">\[
+a_{n+2} + p_1(n)a_{n+1} + p_0(n)a_n = q(n), \tag{2.4.4}
+\]</div>
+<p>我们寻求形如</p>
+<div class="arithmatex">\[
+a_n = A_nx_n + B_ny_n \tag{2.4.5}
+\]</div>
+<p>的解 <span class="arithmatex">\(a_n\)</span>。将 (2.4.5) 代入 (2.4.4) 得</p>
+<div class="arithmatex">\[
+A_{n+2}x_{n+2} + B_{n+2}y_{n+2} + p_1(n)A_{n+1}x_{n+1} + p_1(n)B_{n+1}y_{n+1} + p_0(n)A_nx_n + p_0(n)B_ny_n = q(n).
+\]</div>
+<p>利用 <span class="arithmatex">\(A_n\)</span> 和 <span class="arithmatex">\(B_n\)</span> 满足 (2.4.3) 的性质，可从此方程中消去 <span class="arithmatex">\(A_{n+2}\)</span> 和 <span class="arithmatex">\(B_{n+2}\)</span>，得到：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+- x_{n+2}p_1(n)A_{n+1} &amp;- x_{n+2}p_0(n)A_n - y_{n+2}p_1(n)B_{n+1} - y_{n+2}p_0(n)B_n \\
+&amp;+ p_1(n)A_{n+1}x_{n+1} + p_1(n)B_{n+1}y_{n+1} + p_0(n)A_nx_n + p_0(n)B_ny_n = q(n).
+\end{aligned}
+\tag{2.4.6}
+\]</div>
+<p>至此，我们视 <span class="arithmatex">\(x_n\)</span> 和 <span class="arithmatex">\(y_n\)</span> 为 <span class="arithmatex">\(n\)</span> 的两个独立函数。保持 <span class="arithmatex">\(x_n\)</span> 任意性，施加约束</p>
+<div class="arithmatex">\[
+A_{n+1}(x_{n+2} - x_{n+1}) + B_{n+1}(y_{n+2} - y_{n+1}) = 0 \tag{2.4.7}
+\]</div>
+<p>(2.4.6)化简为：</p>
+<div class="arithmatex">\[
+- A_np_0(n)(x_{n+2} - x_{n+1}) - p_0(n)B_n(y_{n+2} - y_{n+1}) = q(n). \tag{2.4.8}
+\]</div>
+<p>联立 (2.4.7) 和 (2.4.8) 解得 <span class="arithmatex">\(x_{n+1} - x_n\)</span> 和 <span class="arithmatex">\(y_{n+1} - y_n\)</span>：</p>
+<div class="arithmatex">\[
+x_{n+2} - x_{n+1} = -\frac{q(n)B_{n+1}}{p_0(n)W_n},
+\]</div>
+<div class="arithmatex">\[
+y_{n+2} - y_{n+1} = \frac{q(n)A_{n+1}}{p_0(n)W_n},
+\]</div>
+<p>其中 <span class="arithmatex">\(W_n = A_nB_{n+1} - B_nA_{n+1}\)</span> 为齐次方程两解的 Wronskian 行列式。由此得到通解 <span class="arithmatex">\(a_n\)</span>：</p>
+<div class="arithmatex">\[
+a_n = c_1A_n + c_2B_n - A_n\sum^{n-2}\frac{q(j)B_{j+1}}{W_{j+1}} + B_n\sum^{n-2}\frac{q(j)A_{j+1}}{W_{j+1}}, \tag{2.4.9}
+\]</div>
+<p>此处求和下限保留任意性，<span class="arithmatex">\(c_1\)</span> 和 <span class="arithmatex">\(c_2\)</span> 为任意常数，并利用了关系式 <span class="arithmatex">\(W_{j+1} = p_0(j)W_j\)</span> 。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 13.1</span><span class="book-name">例（二阶方程的参数变异法</span></p>
+<p>考虑方程</p>
+<div class="arithmatex">\[
+(n + 4)a_{n+2} + a_{n+1} - (n + 1)a_n = 1.
+\tag{2.4.10}
+\]</div>
+<p>的特解。系数函数 <span class="arithmatex">\(p_1(n) = 1/(n + 4)\)</span>，<span class="arithmatex">\(p_0(n) = -(n + 1)/(n + 4)\)</span>，<span class="arithmatex">\(q(n) = 1/(n + 4)\)</span>。两个线性无关解已知：</p>
+<div class="arithmatex">\[
+A_n = \frac{1}{(n + 1)(n + 2)},
+\]</div>
+<div class="arithmatex">\[
+B_n = \frac{(-1)^{n+1}(2n + 3)}{4(n + 1)(n + 2)}.
+\]</div>
+<p>利用 <span class="arithmatex">\(A_n\)</span> 和 <span class="arithmatex">\(B_n\)</span> 的表达式计算 Wronskian 行列式 <span class="arithmatex">\(W_n\)</span>：</p>
+<div class="arithmatex">\[
+W_n = A_n B_{n+1} - B_n A_{n+1}
+= \frac{(-1)^n}{(n + 1)(n + 2)(n + 3)}.
+\]</div>
+<p>由此可得</p>
+<div class="arithmatex">\[
+\frac{B_{n+1}}{W_{n+1}} = -\frac{(n + 4)(2n + 5)}{4}, \quad \frac{A_{n+1}}{W_{n+1}} = (-1)^{n+1}(n + 4).
+\]</div>
+<p>将上述结果代入 (2.4.9) 得特解公式：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+a_n &amp;= -A_n \sum_{j=0}^{n-2} \frac{q(j)B_{j+1}}{W_{j+1}} + B_n \sum_{j=0}^{n-2} \frac{q(j)A_{j+1}}{W_{j+1}}\\
+&amp;= \frac{1}{4(n + 1)(n + 2)} \left[ (n + 1)^2 + (2n + 3) \frac{1 + (-1)^n}{2} \right].\\
+\end{aligned}
+\]</div>
+<p>可舍弃括号中的 <span class="arithmatex">\((-1)^n (2n + 3)\)</span> 项，因其与齐次方程的解 <span class="arithmatex">\(B_n\)</span> 成比例；亦可舍弃括号中的常数项，因其与 <span class="arithmatex">\(A_n\)</span> 成比例。最终得特解 <span class="arithmatex">\(a_n = n(n + 3)/[4(n + 1)(n + 2)]\)</span>。易验证此解满足 (2.4.10)。</p>
+<p>通解：</p>
+<div class="arithmatex">\[
+a_n = c_1 \frac{1}{(n + 1)(n + 2)} + c_2 \frac{(-1)^{n+1}(2n + 3)}{4(n + 1)(n + 2)} + \frac{n(n + 3)}{4(n + 1)(n + 2)}.
+\]</div>
+</div>
+<h2 id="s14"><span class="book-secnum">§ 14</span>降阶法</h2>
+<p>若已知 <span class="arithmatex">\(N\)</span> 阶齐次线性差分方程的一个解，可用降阶法分离该解并将方程降至 <span class="arithmatex">\(N-1\)</span> 阶。降阶法亦适用于非齐次方程。对于二阶方程</p>
+<div class="arithmatex">\[
+a_{n+2} + p_1(n)a_{n+1} + p_0(n)a_n = q(n), \tag{2.4.11}
+\]</div>
+<p>设 <span class="arithmatex">\(A_n\)</span> 是相关联齐次方程的已知解。仿照 (2.3.6)，寻求形如</p>
+<div class="arithmatex">\[
+a_n = x_n A_n \tag{2.4.12}
+\]</div>
+<p>的非齐次方程通解。将 (2.4.12) 代入 (2.4.11) 得</p>
+<div class="arithmatex">\[
+A_{n+2}(x_{n+2} - x_{n+1}) - p_0(n)A_n(x_{n+1} - x_n) = q(n). \tag{2.4.13}
+\]</div>
+<p>此式为关于差分 <span class="arithmatex">\(x_n^{(1)} = x_{n+1} - x_n\)</span> 的一阶非齐次方程。</p>
+<h2 id="s15"><span class="book-secnum">§ 15</span>待定系数法</h2>
+<p>待定系数法并非一种通用方法，该方法极少适用于更复杂类型的方程，故此处不赘述。</p>
+<h2 id="s16"><span class="book-secnum">§ 16</span>非线性差分方程</h2>
+<p>除已提及的方法外，非线性差分方程求显式解的方法极少，下例简要概述几种应用较广的方法。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 16.1</span><span class="book-name">例（代换法</span></p>
+<p>方程 <span class="arithmatex">\(a_{n+1} = 2a_n(1 - a_n)\)</span> 可通过代换 <span class="arithmatex">\(a_n = (1 - b_n)/2\)</span> 求解。新方程 <span class="arithmatex">\(b_{n+1} = b_n^2\)</span> 的解为 <span class="arithmatex">\(b_n = b_1^{(2^{n-1})}\)</span>。因此，</p>
+<div class="arithmatex">\[
+a_n = \frac{1 - (1 - 2a_1)^{2^{n-1}}}{2}.
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 16.2</span><span class="book-name">例（利用非线性函数关系求解方程</span></p>
+<p>方程 <span class="arithmatex">\(a_{n+1} = 4a_n^3 - 3a_n\)</span>（<span class="arithmatex">\(|a_0| \leq 1\)</span>）可通过代换 <span class="arithmatex">\(a_n = \cos \theta_n\)</span> 简化为 <span class="arithmatex">\(\cos \theta_{n+1} = \cos 3\theta_n\)</span>。故解为 <span class="arithmatex">\(a_n = \cos (3^n \cos^{-1} a_0)\)</span>。若 <span class="arithmatex">\(|a_0| &gt; 1\)</span>，如何求解此差分方程？</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 16.3</span><span class="book-name">例（生成函数法</span></p>
+<p>卷积方程</p>
+<div class="arithmatex">\[
+a_{n+1} = K \sum_{j=0}^n a_j a_{n-j}, \quad a_0 = 1, \tag{2.5.1}
+\]</div>
+<p>最适合通过生成函数 <span class="arithmatex">\(f(x) = \sum_{n=0}^\infty a_n x^n\)</span> 求解。将 (2.5.1) 乘以 <span class="arithmatex">\(x^n\)</span> 并对 <span class="arithmatex">\(n = 0\)</span> 至 <span class="arithmatex">\(\infty\)</span> 求和，得 <span class="arithmatex">\(f(x)\)</span> 的方程：</p>
+<div class="arithmatex">\[
+\frac{f(x) - 1}{x} = K[f(x)]^2.
+\]</div>
+<p>解为 <span class="arithmatex">\(f(x) = (1 \pm \sqrt{1 - 4xK})/2xK\)</span>，为确保 <span class="arithmatex">\(f(0) = a_0 = 1\)</span> 需取负号。Taylor 展开得到：</p>
+<div class="arithmatex">\[
+f(x) = \sum_{n=0}^\infty \frac{(4xK)^n \Gamma(n + \frac{1}{2})}{(n + 1)!  \Gamma(\frac{1}{2})},
+\]</div>
+<p>故 <span class="arithmatex">\(x^n\)</span> 的系数 <span class="arithmatex">\(a_n\)</span> 为</p>
+<div class="arithmatex">\[
+a_n = \frac{(4K)^n \Gamma(n + \frac{1}{2})}{(n + 1)!  \Gamma(\frac{1}{2})}.
+\]</div>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-01/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第一章：常微分方程基础</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-03/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第三章：线性微分方程的局部分析：常点与正则奇点</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 2 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">应用数学</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=difference-equations">#difference-equations</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

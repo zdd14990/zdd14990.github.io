@@ -1,0 +1,1705 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从变分与矩问题理解对偶空间，证明有界映射的扩张、完备性、Banach–Alaoglu 及常见空间的对偶关系。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-02/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第二章：赋范空间与对偶空间 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-02/">
+  <meta property="og:title" content="第二章：赋范空间与对偶空间 - zdd14990">
+  <meta property="og:description" content="从变分与矩问题理解对偶空间，证明有界映射的扩张、完备性、Banach–Alaoglu 及常见空间的对偶关系。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="duality">
+
+  <meta property="article:tag" content="weak-convergence">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-02/">
+  <meta name="twitter:title" content="第二章：赋范空间与对偶空间 - zdd14990">
+  <meta name="twitter:description" content="从变分与矩问题理解对偶空间，证明有界映射的扩张、完备性、Banach–Alaoglu 及常见空间的对偶关系。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e8c\u7ae0\uff1a\u8d4b\u8303\u7a7a\u95f4\u4e0e\u5bf9\u5076\u7a7a\u95f4",
+    "description": "\u4ece\u53d8\u5206\u4e0e\u77e9\u95ee\u9898\u7406\u89e3\u5bf9\u5076\u7a7a\u95f4\uff0c\u8bc1\u660e\u6709\u754c\u6620\u5c04\u7684\u6269\u5f20\u3001\u5b8c\u5907\u6027\u3001Banach\u2013Alaoglu \u53ca\u5e38\u89c1\u7a7a\u95f4\u7684\u5bf9\u5076\u5173\u7cfb\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-02/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-02/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "duality", "weak-convergence", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-02" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 从变分到线性泛函
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 有界映射的基本性质
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 有界映射的基本性质">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 线性时，连续等价于有界
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 多线性映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 稠密子空间上的扩张
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 完备性在什么地方起作用
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 常见对偶空间与矩问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 常见对偶空间与矩问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 数列空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 \(L^p\) 空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 矩问题的统一表述
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 弱-* 拓扑与紧性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 具体的弱-* 极限
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 具体的弱-* 极限">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 数列与函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 测度、分布函数与有限和
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 赋范空间、延拓与对偶的完整表述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 赋范空间、延拓与对偶的完整表述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从范数到算子范数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多线性估计的缩放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把稠密数据延拓到全空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        完备性怎样经过对偶
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 弱-* 拓扑与测度极限的精确条件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 弱-* 拓扑与测度极限的精确条件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        只观察有限个测试值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把弱-* 收敛写成积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        无穷坐标与有限截断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-9-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        累积函数的紧性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-2-10-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        测度也能由有限和逼近
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 3 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">02</div>
+    <h1 id="chapter-02"><span class="book-visually-hidden">第 2 章：</span>赋范空间与对偶空间</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>6,560 字 · 约 19 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>从变分到线性泛函</h2>
+<p>考虑实值能量</p>
+<div class="arithmatex">\[
+S(u)=\int_a^bL(u,u')\,\mathrm{d}x.
+\]</div>
+<p>沿方向 <span class="arithmatex">\(\eta\)</span> 求导，在光滑性足以交换求导与积分时，</p>
+<div class="arithmatex">\[
+\mathrm{D}S(u)[\eta]
+=\int_a^b(L_u\eta+L_{u'}\eta')\,\mathrm{d}x
+=[L_{u'}\eta]_a^b+\int_a^b\left(L_u-\frac{\mathrm{d}}{\mathrm{d}x}L_{u'}\right)\eta\,\mathrm{d}x.
+\]</div>
+<p>它关于 <span class="arithmatex">\(\eta\)</span> 线性，但不一定只由一个普通函数与 <span class="arithmatex">\(\eta\)</span> 的积分表示：边界项涉及点值。若允许点载荷，还会出现 <span class="arithmatex">\(\eta(c)\)</span>。于是问题是：在我们选择的范数下，哪些线性作用是连续的？它们能怎样表示？</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">范数、Banach 空间与对偶</span></p>
+<p>范数满足正定性、绝对齐次性和三角不等式；只缺少正定性的称半范数。赋范空间 <span class="arithmatex">\(X\)</span> 完备时称 Banach 空间。</p>
+<p>连续对偶是 <span class="arithmatex">\(X^*=\mathcal B(X,\mathbb F)\)</span>，其元素称有界线性泛函。范数为</p>
+<div class="arithmatex">\[
+\|f\|=\sup_{\|x\|\le1}|f(x)|.
+\]</div>
+</div>
+<p>半范数的零空间 <span class="arithmatex">\(N=\{x:p(x)=0\}\)</span> 是线性子空间；在商空间 <span class="arithmatex">\(X/N\)</span> 上，<span class="arithmatex">\(p\)</span> 成为范数。<span class="arithmatex">\(L^p\)</span> 取几乎处处相等的等价类，就是这个思想的具体例子。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>有界映射的基本性质</h2>
+<h3 id="section-2-1">2.1 线性时，连续等价于有界</h3>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">线性映射的连续性</span></p>
+<p>对线性映射 <span class="arithmatex">\(T:X\to Y\)</span>，以下等价：处处连续；在 <span class="arithmatex">\(0\)</span> 连续；存在 <span class="arithmatex">\(C\)</span> 使 <span class="arithmatex">\(\|Tx\|\le C\|x\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>线性给出 <span class="arithmatex">\(T(x+h)-Tx=Th\)</span>，所以只需考虑原点。若在原点连续，可取 <span class="arithmatex">\(\delta&gt;0\)</span>，使 <span class="arithmatex">\(\|z\|&lt;\delta\)</span> 时 <span class="arithmatex">\(\|Tz\|&lt;1\)</span>。对非零 <span class="arithmatex">\(x\)</span> 代入 <span class="arithmatex">\(z=\delta x/(2\|x\|)\)</span>，得到 <span class="arithmatex">\(\|Tx\|\le2\|x\|/\delta\)</span>。</p>
+<p>反向由 <span class="arithmatex">\(\|Tx-Ty\|\le C\|x-y\|\)</span> 直接得到。最小的 <span class="arithmatex">\(C\)</span> 正是算子范数 <span class="arithmatex">\(\|T\|\)</span>。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span><span class="book-name">微分算子的有界性取决于空间</span></p>
+<p><span class="arithmatex">\(D:C^1[0,1]\to C[0,1]\)</span>，<span class="arithmatex">\(Du=u'\)</span>，在定义域使用 <span class="arithmatex">\(\|u\|_{C^1}=\|u\|_\infty+\|u'\|_\infty\)</span> 时有界。</p>
+<p>若定义域改用一致范数，则 <span class="arithmatex">\(u_n(x)=\sin(nx)\)</span> 的函数范数有界，而导数范数为 <span class="arithmatex">\(n\)</span>，故 <span class="arithmatex">\(D\)</span> 无界。不能只凭算子的表达式判断连续性。</p>
+</div>
+<h3 id="section-2-2">2.2 多线性映射</h3>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span><span class="book-name">有界多线性映射</span></p>
+<p>对每个变量分别线性的 <span class="arithmatex">\(A:X_1\times\cdots\times X_m\to Y\)</span>，称其有界，若</p>
+<div class="arithmatex">\[
+\|A(x_1,\ldots,x_m)\|\le C\prod_{j=1}^m\|x_j\|.
+\]</div>
+<p>范数是在每个 <span class="arithmatex">\(\|x_j\|\le1\)</span> 时对输出范数取上确界。该条件等价于联合连续性。</p>
+</div>
+<p>证明联合连续性时，用望远镜展开将 <span class="arithmatex">\(A(x_1,\ldots,x_m)-A(y_1,\ldots,y_m)\)</span> 写成 <span class="arithmatex">\(m\)</span> 项，每项只有一个变量取差。在有界集合上便得到 Lipschitz 估计。反向使用原点邻域中的连续性与各变量缩放。</p>
+<p>固定双线性形式的第一个变量，得到</p>
+<div class="arithmatex">\[
+\mathcal B(X\times Y,\mathbb F)\simeq\mathcal B(X,Y^*).
+\]</div>
+<p>这个等距关系连接“形式”和“算子”。第三章的半双线性形式需要再处理共轭，不能直接当作复双线性形式。</p>
+<h3 id="section-2-3">2.3 稠密子空间上的扩张</h3>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.4</span><span class="book-name">唯一连续扩张</span></p>
+<p>若 <span class="arithmatex">\(E\subset X\)</span> 是稠密线性子空间，<span class="arithmatex">\(Y\)</span> 是 Banach 空间，则每个 <span class="arithmatex">\(T\in\mathcal B(E,Y)\)</span> 唯一扩张为 <span class="arithmatex">\(\widetilde T\in\mathcal B(X,Y)\)</span>，且范数不变。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对 <span class="arithmatex">\(x\in X\)</span> 取 <span class="arithmatex">\(x_n\in E\)</span>、<span class="arithmatex">\(x_n\to x\)</span>。估计</p>
+<div class="arithmatex">\[
+\|Tx_n-Tx_m\|\le\|T\|\|x_n-x_m\|
+\]</div>
+<p>表明 <span class="arithmatex">\(Tx_n\)</span> 是 Cauchy 列，因此在 <span class="arithmatex">\(Y\)</span> 中有极限。定义 <span class="arithmatex">\(\widetilde Tx=\lim Tx_n\)</span>。若换一个逼近列 <span class="arithmatex">\(y_n\)</span>，<span class="arithmatex">\(\|Tx_n-Ty_n\|\to0\)</span>，所以定义与选择无关。</p>
+<p>把线性等式和范数估计取极限，得到线性及 <span class="arithmatex">\(\|\widetilde T\|\le\|T\|\)</span>；限制回 <span class="arithmatex">\(E\)</span> 得反向不等式。稠密性与连续性给出唯一性。</p>
+<p>注意只要求值域完备，不要求 <span class="arithmatex">\(X\)</span> 完备。对标量值泛函，值域的完备性已自动满足，因此 <span class="arithmatex">\(E^*\simeq X^*\)</span>。</p>
+</details>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>完备性在什么地方起作用</h2>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">有界算子空间的完备性</span></p>
+<p>若 <span class="arithmatex">\(Y\)</span> 完备，则 <span class="arithmatex">\(\mathcal B(X,Y)\)</span> 完备。因此 <span class="arithmatex">\(X^*\)</span> 总是 Banach 空间，即使 <span class="arithmatex">\(X\)</span> 不完备。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若 <span class="arithmatex">\(T_n\)</span> 在算子范数下是 Cauchy 列，对每个 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(T_nx\)</span> 在 <span class="arithmatex">\(Y\)</span> 中收敛。令 <span class="arithmatex">\(Tx=\lim_nT_nx\)</span>，则 <span class="arithmatex">\(T\)</span> 线性，且 <span class="arithmatex">\(\|Tx\|\le(\sup_n\|T_n\|)\|x\|\)</span>。</p>
+<p>对充分大的 <span class="arithmatex">\(n,m\)</span>，有 <span class="arithmatex">\(\|(T_n-T_m)x\|\le\varepsilon\|x\|\)</span>。固定 <span class="arithmatex">\(n,x\)</span>，令 <span class="arithmatex">\(m\to\infty\)</span>，再对 <span class="arithmatex">\(\|x\|\le1\)</span> 取上确界，得到 <span class="arithmatex">\(\|T_n-T\|\le\varepsilon\)</span>。</p>
+</details>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.2</span><span class="book-name"><span class="arithmatex">\(L^p\)</span> 与 <span class="arithmatex">\(\ell^p\)</span> 的完备性</span></p>
+<p>对 <span class="arithmatex">\(1\le p\le\infty\)</span>，<span class="arithmatex">\(L^p(\mu)\)</span> 和 <span class="arithmatex">\(\ell^p\)</span> 都是 Banach 空间。</p>
+</div>
+<details class="proof">
+<summary>证明：先取一个误差可求和的子列</summary>
+<p>对 <span class="arithmatex">\(p&lt;\infty\)</span>，从 Cauchy 列中取子列 <span class="arithmatex">\(f_{n_k}\)</span>，使 <span class="arithmatex">\(\|f_{n_{k+1}}-f_{n_k}\|_p\le2^{-k}\)</span>。令</p>
+<div class="arithmatex">\[
+g_N=\sum_{k=1}^N|f_{n_{k+1}}-f_{n_k}|.
+\]</div>
+<p>Minkowski 给出 <span class="arithmatex">\(\|g_N\|_p\le1\)</span>。由单调收敛，<span class="arithmatex">\(g=\lim g_N\in L^p\)</span>，故差分级数几乎处处绝对收敛，定义极限 <span class="arithmatex">\(f\)</span>。</p>
+<p>同样估计尾和，得到 <span class="arithmatex">\(\|f-f_{n_k}\|_p\le\sum_{j\ge k}2^{-j}\)</span>。原列 Cauchy，因而全列趋于 <span class="arithmatex">\(f\)</span>。</p>
+<p>对 <span class="arithmatex">\(p=\infty\)</span>，移去可数个零测集后，Cauchy 列成为一致 Cauchy 列，其逐点极限满足同样的一致估计。计数测度给出 <span class="arithmatex">\(\ell^p\)</span> 的情形。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">两个不同角色</p>
+<p>完备性作为<strong>值域条件</strong>，保证扩张、求和与逐点构造的极限存在；作为<strong>定义域条件</strong>，它在第十章通过 Baire 定理控制整族算子。不要把这两个用途混成一句“泛函分析需要完备空间”。</p>
+</div>
+<p>有限维空间的所有范数等价，因而都是完备的。证明可把任意范数与坐标最大范数比较：三角不等式给出上界，坐标单位球面的紧性和范数正定性给出严格正的下界。</p>
+<p>但无限维闭单位球不再范数紧。Riesz 引理说明：若 <span class="arithmatex">\(M\)</span> 是真闭子空间，<span class="arithmatex">\(0&lt;\theta&lt;1\)</span>，存在单位向量 <span class="arithmatex">\(x\)</span> 使 <span class="arithmatex">\(\operatorname{dist}(x,M)&gt;\theta\)</span>。取 <span class="arithmatex">\(y\notin M\)</span>，令 <span class="arithmatex">\(d=\operatorname{dist}(y,M)&gt;0\)</span>，选 <span class="arithmatex">\(m\in M\)</span> 满足 <span class="arithmatex">\(\|y-m\|&lt;d/\theta\)</span>，再归一化 <span class="arithmatex">\(y-m\)</span> 即可。逐次对有限维张成空间应用此引理，可构造彼此距离大于 <span class="arithmatex">\(\theta\)</span> 的单位向量列。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>常见对偶空间与矩问题</h2>
+<h3 id="section-4-1">4.1 数列空间</h3>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">数列空间的对偶</span></p>
+<p>若 <span class="arithmatex">\(1\le p&lt;\infty\)</span>，<span class="arithmatex">\(1/p+1/q=1\)</span>，则 <span class="arithmatex">\(\ell^p{}^*\simeq\ell^q\)</span>，配对为 <span class="arithmatex">\(f_g(x)=\sum_nx_ng_n\)</span>。此外 <span class="arithmatex">\(c_0^*\simeq\ell^1\)</span>，其中 <span class="arithmatex">\(c_0\)</span> 是趋于零的数列空间。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>Hölder 保证 <span class="arithmatex">\(g\)</span> 定义有界泛函且范数至多为 <span class="arithmatex">\(\|g\|_q\)</span>。给定泛函 <span class="arithmatex">\(f\)</span>，令 <span class="arithmatex">\(g_n=f(e_n)\)</span>，它在有限支撑数列上的作用必为上述和。</p>
+<p>在前 <span class="arithmatex">\(N\)</span> 个坐标上使用有限维 Hölder 等号的取值，得到 <span class="arithmatex">\(\|(g_1,\ldots,g_N)\|_q\le\|f\|\)</span>。对 <span class="arithmatex">\(p=1\)</span> 直接测试每个 <span class="arithmatex">\(e_n\)</span>。令 <span class="arithmatex">\(N\to\infty\)</span> 得 <span class="arithmatex">\(g\in\ell^q\)</span>；有限支撑数列稠密，故表示式扩张到全部 <span class="arithmatex">\(\ell^p\)</span>。</p>
+<p>对 <span class="arithmatex">\(c_0\)</span>，在前 <span class="arithmatex">\(N\)</span> 个坐标取模为 <span class="arithmatex">\(1\)</span>、与 <span class="arithmatex">\(g_n\)</span> 相位抵消的 <span class="arithmatex">\(x_n\)</span>，得到 <span class="arithmatex">\(\sum_{n\le N}|g_n|\le\|f\|\)</span>，所以 <span class="arithmatex">\(g\in\ell^1\)</span>。余下同样由稠密性完成。上述测试也给出范数等式。</p>
+</details>
+<h3 id="section-4-2">4.2 <span class="arithmatex">\(L^p\)</span> 空间</h3>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span><span class="book-name"><span class="arithmatex">\(L^p\)</span> 对偶：<span class="arithmatex">\(\sigma\)</span>-有限测度版本</span></p>
+<p>若 <span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限正测度，<span class="arithmatex">\(1\le p&lt;\infty\)</span>，<span class="arithmatex">\(1/p+1/q=1\)</span>，则</p>
+<div class="arithmatex">\[
+L^p(\mu)^*\simeq L^q(\mu),
+\qquad f_g(u)=\int ug\,\mathrm{d}\mu,
+\qquad \|f_g\|=\|g\|_q.
+\]</div>
+<p>这里使用不带共轭的对偶配对，故 <span class="arithmatex">\(g\mapsto f_g\)</span> 是线性的。若使用 <span class="arithmatex">\(\int\overline g u\)</span>，参数映射则为共轭线性。</p>
+</div>
+<details class="proof">
+<summary>证明：先恢复测度，再恢复密度</summary>
+<p>先假设 <span class="arithmatex">\(\mu(X)&lt;\infty\)</span>。给定 <span class="arithmatex">\(f\in L^p{}^*\)</span>，定义 <span class="arithmatex">\(\nu(E)=f(\mathbf1_E)\)</span>。不交集合的示性函数部分和在 <span class="arithmatex">\(L^p\)</span> 中趋于并集的示性函数，所以 <span class="arithmatex">\(\nu\)</span> 可数可加。</p>
+<p>对有限可测分割 <span class="arithmatex">\((E_j)\)</span>，选择模为 <span class="arithmatex">\(1\)</span> 的常数 <span class="arithmatex">\(a_j\)</span>，使 <span class="arithmatex">\(a_j\nu(E_j)=|\nu(E_j)|\)</span>。于是</p>
+<div class="arithmatex">\[
+\sum_j|\nu(E_j)|
+=f\left(\sum_ja_j\mathbf1_{E_j}\right)
+\le\|f\|\mu(X)^{1/p}.
+\]</div>
+<p>故 <span class="arithmatex">\(\nu\)</span> 是有限变差测度，且 <span class="arithmatex">\(\nu\ll\mu\)</span>。Radon–Nikodym 定理给出密度 <span class="arithmatex">\(g\)</span>，表示式先在简单函数上成立。</p>
+<p>用截断的 Hölder 等号函数测试：当 <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> 时取与 <span class="arithmatex">\(g\)</span> 相位抵消、模为 <span class="arithmatex">\(|g|^{q-1}\mathbf1_{\{|g|\le N\}}\)</span> 的函数，得到截断 <span class="arithmatex">\(L^q\)</span> 范数不超过 <span class="arithmatex">\(\|f\|\)</span>；令 <span class="arithmatex">\(N\to\infty\)</span> 得 <span class="arithmatex">\(g\in L^q\)</span>。对 <span class="arithmatex">\(p=1\)</span>，在 <span class="arithmatex">\(\{|g|&gt;C\}\)</span> 上测试相位函数，得到 <span class="arithmatex">\(|g|\le\|f\|\)</span> 几乎处处。</p>
+<p>简单函数在 <span class="arithmatex">\(L^p\)</span> 中稠密，完成表示与范数等式。一般 <span class="arithmatex">\(\sigma\)</span>-有限情形，先在有限测度块上构造密度，再拼接；对有限个块的联合做同样测试，得到全空间的范数控制。</p>
+</details>
+<div class="admonition warning">
+<p class="admonition-title">端点不能机械套用</p>
+<p>一般不能写 <span class="arithmatex">\(L^\infty{}^*=L^1\)</span> 或 <span class="arithmatex">\(\ell^\infty{}^*=\ell^1\)</span>。无限范数下有限支撑或简单截断通常不稠密，以上证明的关键一步失效。第九章会给出具体的非自反性与额外泛函。</p>
+</div>
+<h3 id="section-4-3">4.3 矩问题的统一表述</h3>
+<p>设测试函数 <span class="arithmatex">\(\phi_1,\phi_2,\ldots\)</span> 张成稠密子空间 <span class="arithmatex">\(E\subset X\)</span>。已知数据 <span class="arithmatex">\(c_j\)</span>，希望存在 <span class="arithmatex">\(f\in X^*\)</span> 满足 <span class="arithmatex">\(f(\phi_j)=c_j\)</span>。</p>
+<p>这些数据先要与线性关系相容：若 <span class="arithmatex">\(\sum a_j\phi_j=0\)</span>，则必须有 <span class="arithmatex">\(\sum a_jc_j=0\)</span>。其次必须满足同一个有界性估计</p>
+<div class="arithmatex">\[
+\left|\sum_ja_jc_j\right|\le C\left\|\sum_ja_j\phi_j\right\|_X.
+\]</div>
+<p>这两个条件让数据在 <span class="arithmatex">\(E\)</span> 上定义有界泛函，连续扩张定理给出唯一的 <span class="arithmatex">\(f\)</span>。若 <span class="arithmatex">\(X=C[a,b]\)</span>，Riesz 表示把 <span class="arithmatex">\(f\)</span> 变成测度；若 <span class="arithmatex">\(X=L^2(\mathbb T)\)</span>，对偶表示把 Fourier 系数变成一个 <span class="arithmatex">\(L^2\)</span> 函数。<strong>矩问题、逼近问题和对偶空间的刻画由同一估计连接起来。</strong></p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>弱-* 拓扑与紧性</h2>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span><span class="book-name">弱-* 收敛</span></p>
+<p>在 <span class="arithmatex">\(X^*\)</span> 上，<span class="arithmatex">\(\sigma(X^*,X)\)</span> 是使所有 <span class="arithmatex">\(f\mapsto f(x)\)</span> 连续的最弱拓扑。网 <span class="arithmatex">\(f_\alpha\overset{*}{\rightharpoonup}f\)</span> 当且仅当对每个 <span class="arithmatex">\(x\in X\)</span>，<span class="arithmatex">\(f_\alpha(x)\to f(x)\)</span>。</p>
+<p>弱-* 邻域只要求有限个测试值接近。算子范数收敛则要求对整个单位球同时控制。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span><span class="book-name">一致有界时，只需检查稠密测试集</span></p>
+<p>设 <span class="arithmatex">\(E\subset X\)</span> 线性稠密，<span class="arithmatex">\(\sup_\alpha\|f_\alpha\|\le M\)</span>。若每个 <span class="arithmatex">\(x\in E\)</span> 的 <span class="arithmatex">\(f_\alpha(x)\)</span> 都有极限，则极限定义某个 <span class="arithmatex">\(f\in X^*\)</span>，且全网弱-* 趋于 <span class="arithmatex">\(f\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>在 <span class="arithmatex">\(E\)</span> 上定义 <span class="arithmatex">\(f(x)=\lim_\alpha f_\alpha(x)\)</span>，则 <span class="arithmatex">\(|f(x)|\le M\|x\|\)</span>，因此唯一扩张到 <span class="arithmatex">\(X\)</span>。给定 <span class="arithmatex">\(x\in X\)</span>，用 <span class="arithmatex">\(y\in E\)</span> 逼近它：</p>
+<div class="arithmatex">\[
+|f_\alpha(x)-f(x)|
+\le2M\|x-y\|+|f_\alpha(y)-f(y)|.
+\]</div>
+<p>先固定充分近的 <span class="arithmatex">\(y\)</span>，再让 <span class="arithmatex">\(\alpha\)</span> 充分大即可。没有共同的 <span class="arithmatex">\(M\)</span>，误差项无法控制。</p>
+</details>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.3</span><span class="book-name">Banach–Alaoglu 定理</span></p>
+<p><span class="arithmatex">\(X^*\)</span> 的闭单位球在弱-* 拓扑下紧。这里不要求 <span class="arithmatex">\(X\)</span> 完备。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>把单位球中的 <span class="arithmatex">\(f\)</span> 视为坐标族 <span class="arithmatex">\((f(x))_{x\in X}\)</span>，它属于紧空间</p>
+<div class="arithmatex">\[
+P=\prod_{x\in X}\{z\in\mathbb F:|z|\le\|x\|\}.
+\]</div>
+<p>Tychonoff 定理给出乘积紧性。线性条件 <span class="arithmatex">\(f(ax+by)=af(x)+bf(y)\)</span> 是闭条件，范数上界也已编码到每个坐标。因此这些条件确定的闭子集正是对偶闭单位球，它紧。继承的乘积拓扑正是弱-* 拓扑。</p>
+</details>
+<p>若 <span class="arithmatex">\(X\)</span> 可分，在单位球内取可数稠密测试点 <span class="arithmatex">\(x_j\)</span>，使用度量</p>
+<div class="arithmatex">\[
+d(f,g)=\sum_{j=1}^\infty2^{-j}\frac{|(f-g)(x_j)|}{1+|(f-g)(x_j)|}
+\]</div>
+<p>即可描述弱-* 拓扑。逐坐标抽子列的对角法给出列紧性。不可分时，一般只能保证收敛子网。</p>
+<p>范数对弱-* 拓扑下半连续：若 <span class="arithmatex">\(f_\alpha\overset{*}{\rightharpoonup}f\)</span>，则</p>
+<div class="arithmatex">\[
+\|f\|\le\liminf_\alpha\|f_\alpha\|.
+\]</div>
+<p>证明对每个单位向量测试，再取上确界即可。弱-* 极限可能丢失范数。若前对偶 <span class="arithmatex">\(X\)</span> 完备，对弱-* 收敛<strong>序列</strong>，范数有界性可由第十章一致有界原理推出；一般赋范前对偶下结论会失败，一般网也不可直接使用这一说法，故本章一直显式要求统一范数界。</p>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>具体的弱-* 极限</h2>
+<h3 id="section-6-1">6.1 数列与函数</h3>
+<p>在有界子集上，<span class="arithmatex">\(\ell^p\)</span>、<span class="arithmatex">\(1&lt;p\le\infty\)</span> 视为 <span class="arithmatex">\(\ell^q{}^*\)</span> 时，弱-* 收敛等价于逐坐标收敛；<span class="arithmatex">\(\ell^1=c_0^*\)</span> 也有相同结论。理由是有限支撑测试向量稠密，再使用上一节的统一范数估计。</p>
+<p>在 <span class="arithmatex">\(L^p\)</span> 中，“逐点”则不能这样直接推广。对 <span class="arithmatex">\(1&lt;p&lt;\infty\)</span>，范数有界且几乎处处收敛的序列确实弱收敛；证明是在有限测度集合上用 Egorov 定理得到大集合上的一致收敛，对小集合用 Hölder 控制，再用简单函数稠密性扩张测试。<span class="arithmatex">\(L^\infty\)</span> 的统一本质上界加几乎处处收敛，由控制收敛直接给出 <span class="arithmatex">\(\sigma(L^\infty,L^1)\)</span> 收敛。</p>
+<p>对 <span class="arithmatex">\(p=1\)</span> 结论失败：第一章的 <span class="arithmatex">\(n\mathbf1_{(0,1/n)}\)</span> 范数为 <span class="arithmatex">\(1\)</span>、几乎处处趋于零，但用常数 <span class="arithmatex">\(1\)</span> 测试积分始终为 <span class="arithmatex">\(1\)</span>。质量集中需要额外的统一可积性条件。</p>
+<p>在 Radon 测度空间中，<span class="arithmatex">\(C_c\)</span> 对有限 <span class="arithmatex">\(L^p\)</span> 范数稠密。这来自对简单函数的逼近：先用正则性把可测集合夹在紧集与开集之间，再用连续支撑函数逼近示性函数。对 <span class="arithmatex">\(L^\infty\)</span>，这种逼近一般只有弱-* 意义；例如阶跃函数通常不能由连续函数在本质上确界范数下逼近。</p>
+<h3 id="section-6-2">6.2 测度、分布函数与有限和</h3>
+<p>对紧区间 <span class="arithmatex">\(K\)</span>，<span class="arithmatex">\(\mu_n\overset{*}{\rightharpoonup}\mu\)</span> 指所有 <span class="arithmatex">\(f\in C(K)\)</span> 满足</p>
+<div class="arithmatex">\[
+\int f\,\mathrm{d}\mu_n\to\int f\,\mathrm{d}\mu.
+\]</div>
+<p>若 <span class="arithmatex">\(\mu_n,\mu\)</span> 为概率测度，弱-* 收敛推出分布函数在极限分布的连续点收敛；反过来，在紧区间上，分布函数在连续点收敛并保持总质量，也推出上述积分收敛。证明用端点均为连续点的区间逼近连续测试函数。跳跃点处不能要求分布函数必然收敛。</p>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">Helly 选择：分布函数版本</span></p>
+<p>紧区间上的一列正测度若总质量一致有界，就有弱-* 收敛子列。相应的递增分布函数，在极限分布函数的连续点收敛。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>在可数稠密点集上逐点抽取子列，再作对角子列，得到各稠密点的取值极限。它们递增，用右极限延拓得到右连续递增函数。</p>
+<p>在延拓函数的连续点，从左右选稠密点夹逼，得到分布函数收敛。区间左端允许出现新原子，必须保留端点质量；总质量也作为一个单独测试值取极限。按第一章构造 Stieltjes 测度，再以连续函数的一致分段逼近证明积分收敛。</p>
+<p>也可直接用 <span class="arithmatex">\(C(K)\)</span> 可分性与 Banach–Alaoglu；正性在极限中保留，因此极限仍是正测度。</p>
+</details>
+<p>有限和怎样变成积分？将 <span class="arithmatex">\(K=[a,b]\)</span> 划成细小的 Borel 分块 <span class="arithmatex">\(E_j\)</span>，每块取 <span class="arithmatex">\(x_j\in E_j\)</span>，定义</p>
+<div class="arithmatex">\[
+\mu_h=\sum_j\mu(E_j)\delta_{x_j}.
+\]</div>
+<p>对 <span class="arithmatex">\(f\in C(K)\)</span>，</p>
+<div class="arithmatex">\[
+\left|\int f\,\mathrm{d}\mu_h-\int f\,\mathrm{d}\mu\right|
+\le\omega_f(h)|\mu|(K)\to0,
+\]</div>
+<p>其中 <span class="arithmatex">\(\omega_f\)</span> 是连续模。一般局部紧空间按“有限测试集与容许误差”作有向指标，也可得到有限原子测度的弱-* 逼近。这比要求在总变差范数下逼近弱得多。</p>
+<div class="admonition warning">
+<p class="admonition-title">非紧空间上的质量逃逸</p>
+<p>在 <span class="arithmatex">\(\mathbb R\)</span> 上，<span class="arithmatex">\(\delta_n\)</span> 对每个 <span class="arithmatex">\(f\in C_0(\mathbb R)\)</span> 的积分趋于零，但每个测度的总质量仍为 <span class="arithmatex">\(1\)</span>。因此 <span class="arithmatex">\(C_0^*\)</span> 弱-* 收敛不能自动保存总质量；在紧空间上常数 <span class="arithmatex">\(1\)</span> 是合法测试函数，便不会发生这个问题。</p>
+</div>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>赋范空间、延拓与对偶的完整表述</h2>
+<p>本节约定 <span class="arithmatex">\(\mathbb F=\mathbb R\)</span> 或 <span class="arithmatex">\(\mathbb C\)</span>，所有线性映射均为 <span class="arithmatex">\(\mathbb F\)</span>-线性。<span class="arithmatex">\(B_V\)</span> 表示闭单位球，算子范数中的上确界可在开球或闭球上取，值相同。</p>
+<h3 id="topic-2-2-1">从范数到算子范数</h3>
+<p>先确认哪些有限维直觉能保留：三角不等式给范数的连续性，线性结构使一点连续等价于统一有界估计。这种估计随后成为延拓和极限的共同依据。</p>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">经典 Riesz–Fréchet 表示</span></p>
+<p>在 <span class="arithmatex">\(L^2([ -\pi,\pi],dm/(2\pi))\)</span> 中，映射 <span class="arithmatex">\(f\mapsto(g\mapsto(2\pi)^{-1}\int_{-\pi}^{\pi}fg\,dm)\)</span> 是到其连续线性对偶的线性等距同构。若采用内积记号，则同一泛函写成 <span class="arithmatex">\(\langle\overline f,g\rangle\)</span>，避免混淆线性与共轭线性。</p>
+</div>
+<details class="proof">
+<summary>证明 2.2.1</summary>
+<p>先证明积分给出的泛函有界：Cauchy–Schwarz 给出 <span class="arithmatex">\(|\int fg\,dm/(2\pi)|\leq\|f\|_2\|g\|_2\)</span>；取 <span class="arithmatex">\(g=\overline f/\|f\|_2\)</span> 又得到范数等式。</p>
+<p>反过来，设 <span class="arithmatex">\(\Lambda\)</span> 是有界泛函。在正交三角函数族 <span class="arithmatex">\(e_k(x)=e^{ikx}\)</span> 上令 <span class="arithmatex">\(a_k=\Lambda(e_k)\)</span>。对有限指标集 <span class="arithmatex">\(F\)</span>，将 <span class="arithmatex">\(g=\sum_{k\in F}\overline{a_k}e_k\)</span> 代入，有 <span class="arithmatex">\(\sum_{k\in F}|a_k|^2\leq\|\Lambda\|(\sum_{k\in F}|a_k|^2)^{1/2}\)</span>，所以 <span class="arithmatex">\((a_k)\in\ell^2\)</span>。由 Riesz–Fischer 定理构造 <span class="arithmatex">\(f\)</span>，令其 Fourier 系数满足 <span class="arithmatex">\(\widehat f(-k)=a_k\)</span>，则积分泛函与 <span class="arithmatex">\(\Lambda\)</span> 在全部三角多项式上相同。三角多项式在 <span class="arithmatex">\(L^2\)</span> 中稠密，两个有界泛函因而相等；同一稠密性给出唯一性。这里 Riesz–Fischer 的证明只使用 <span class="arithmatex">\(L^2\)</span> 完备性，见定理 2.2.12，未使用本结论。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.2</span><span class="book-name">有界逐点极限</span></p>
+<p>设 <span class="arithmatex">\(1&lt;p\leq\infty\)</span>，<span class="arithmatex">\(q\)</span> 为共轭指数。<span class="arithmatex">\([a,b]\)</span> 上一致 <span class="arithmatex">\(L^p\)</span> 有界的序列若逐点趋于 <span class="arithmatex">\(f\)</span>，则 <span class="arithmatex">\(f\in L^p\)</span>，且对每个 <span class="arithmatex">\(g\in L^q\)</span>，<span class="arithmatex">\(\int f_ng\,dm\to\int fg\,dm\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.2.7</summary>
+<p>记 <span class="arithmatex">\(C=\sup_n\|f_n\|_p\)</span>。<span class="arithmatex">\(p&lt;\infty\)</span> 时 Fatou 给出 <span class="arithmatex">\(\|f\|_p\leq C\)</span>；<span class="arithmatex">\(p=\infty\)</span> 时删去可数个零测集后，全部 <span class="arithmatex">\(|f_n|\leq C\)</span>，故 <span class="arithmatex">\(|f|\leq C\)</span>。</p>
+<p>对有限测度集合 <span class="arithmatex">\(E\)</span> 和 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，令 <span class="arithmatex">\(A_n=\{x\in E:|f_n-f|\geq\varepsilon\}\)</span>。逐点收敛及测度从上连续性给出 <span class="arithmatex">\(\mu(A_n)\to0\)</span>。Hölder 不等式于是给出</p>
+<div class="arithmatex">\[
+\int_E|f_n-f|\leq\varepsilon\mu(E)+2C\mu(A_n)^{1/q}.
+\]</div>
+<p>先令 <span class="arithmatex">\(n\to\infty\)</span>，再令 <span class="arithmatex">\(\varepsilon\downarrow0\)</span>，得到对每个示性函数的配对收敛。可积简单函数在 <span class="arithmatex">\(L^q\)</span> 中稠密；若 <span class="arithmatex">\(\|g-s\|_q\)</span> 很小，则 <span class="arithmatex">\(|\int(f_n-f)(g-s)|\leq2C\|g-s\|_q\)</span>。这就把收敛推广到任意 <span class="arithmatex">\(g\in L^q\)</span>。</p>
+</details>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.3</span><span class="book-name">原函数判据</span></p>
+<p>在上述一致有界条件下，<span class="arithmatex">\(f_n\)</span> 在 <span class="arithmatex">\(L^p=(L^q)^*\)</span> 中弱-* 收敛，当且仅当每个 <span class="arithmatex">\(x\in[a,b]\)</span> 的 <span class="arithmatex">\(\int_a^x f_n\,dm\)</span> 有极限。它弱-* 趋于给定 <span class="arithmatex">\(f\)</span>，当且仅当这些极限等于 <span class="arithmatex">\(\int_a^x f\,dm\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.2.8</summary>
+<p>必要性用 <span class="arithmatex">\(g=\mathbf1_{[a,x]}\)</span> 测试。反过来，区间示性函数是两个这种测试函数之差，因此已知极限决定全部阶梯函数上的配对极限。阶梯函数在 <span class="arithmatex">\(L^q([a,b])\)</span> 中稠密，且配对泛函的范数由同一个 <span class="arithmatex">\(C\)</span> 控制。定理 2.6.2 便产生 <span class="arithmatex">\(L^q\)</span> 上的有界极限泛函；<span class="arithmatex">\(L^q\)</span> 对偶表示将它写成某个 <span class="arithmatex">\(f\in L^p\)</span>。若事先给定 <span class="arithmatex">\(f\)</span>，只须比较稠密测试集上的值，便能判定极限是否正是它。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.4</span><span class="book-name">累积函数与弱-* 极限</span></p>
+<p>设 <span class="arithmatex">\(\rho_n:[a,b]\to[0,\infty)\)</span> 单调且一致有界。<span class="arithmatex">\(d\rho_n\to d\rho\)</span> 对全部 <span class="arithmatex">\(C([a,b])\)</span> 测试函数弱-* 收敛，当且仅当 <span class="arithmatex">\(\rho_n(b)\to\rho(b)\)</span> 且在 <span class="arithmatex">\(\rho\)</span> 的每个内部连续点逐点收敛。存在某个这样的极限测度，当且仅当 <span class="arithmatex">\(\rho_n\)</span> 在某个稠密点集及 <span class="arithmatex">\(b\)</span> 处均有逐点极限。</p>
+</div>
+<details class="proof">
+<summary>证明 2.2.9</summary>
+<p>递增累积函数对应正测度，总质量为 <span class="arithmatex">\(\rho_n(b)\)</span>。若测度弱-*收敛，常数函数 <span class="arithmatex">\(1\)</span> 保证总质量收敛。在极限累积函数的内部连续点 <span class="arithmatex">\(x\)</span>，用在 <span class="arithmatex">\(x\)</span> 左右窄带上过渡的连续函数分别从下、从上逼近 <span class="arithmatex">\(\mathbf1_{[a,x]}\)</span>；窄带的极限测度质量趋于零，得到 <span class="arithmatex">\(\rho_n(x)\to\rho(x)\)</span>。</p>
+<p>反过来，选择内部端点均为 <span class="arithmatex">\(\rho\)</span> 连续点的细分划。各分块的质量由累积函数的差确定，最后一块还使用总质量。对连续 <span class="arithmatex">\(g\)</span>，阶梯近似误差不超过 <span class="arithmatex">\(\omega_g(h)\sup_n\rho_n(b)\)</span>，所以分块质量收敛推出 <span class="arithmatex">\(\int g\,d\rho_n\to\int g\,d\rho\)</span>。</p>
+<p>若只知稠密点集和 <span class="arithmatex">\(b\)</span> 处有极限，先以单调性延拓这些值，再取右连续代表；左右夹逼给出其内部连续点上的收敛，右端值由总质量单独保留。前两段便给出极限测度。左端可能产生新原子，不能把左端取值也强行当作必须逐点收敛的量。</p>
+</details>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.5</span><span class="book-name">Riesz–Fischer 定理</span></p>
+<p>每个 <span class="arithmatex">\((c_k)_{k\in\mathbb Z}\in\ell^2(\mathbb Z)\)</span> 都唯一对应某个 <span class="arithmatex">\(f\in L^2([ -\pi,\pi],dm/(2\pi))\)</span>，满足 <span class="arithmatex">\(c_k=(2\pi)^{-1}\int f(x)e^{-ikx}\,dm(x)\)</span>。并有 <span class="arithmatex">\(\|f\|_2^2=\sum_k|c_k|^2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.2.12</summary>
+<p>对有限 <span class="arithmatex">\(F\subset\mathbb Z\)</span>，令 <span class="arithmatex">\(s_F=\sum_{k\in F}c_ke_k\)</span>。正交性给出 <span class="arithmatex">\(\|s_F-s_G\|_2^2=\sum_{k\in F\triangle G}|c_k|^2\)</span>，因此这些有限和是 Cauchy 网；<span class="arithmatex">\(L^2\)</span> 完备性给出极限 <span class="arithmatex">\(f\)</span>。与固定 <span class="arithmatex">\(e_k\)</span> 配对并取极限，得到所需 Fourier 系数。又有 <span class="arithmatex">\(\|f\|_2^2=\lim_F\|s_F\|_2^2=\sum_k|c_k|^2\)</span>。</p>
+<p>若两个函数具有同样的系数，其差与全部三角多项式正交。三角多项式的稠密性使该差为零，从而唯一。这里三角多项式的稠密性来自连续函数的 Fourier 逼近及连续函数在 <span class="arithmatex">\(L^2\)</span> 中的稠密性。</p>
+</details>
+<h3 id="topic-2-3-1">多线性估计的缩放</h3>
+<p>多线性映射需要每个变量各自提供一个范数因子。在零点附近的一次统一控制，通过逐变量缩放便能变成全局乘积估计；半双线性形式也用相同方法处理。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.6</span><span class="book-name">半范数与范数</span></p>
+<p>半范数满足 <span class="arithmatex">\(\|av\|=|a|\|v\|\)</span> 和 <span class="arithmatex">\(\|u+v\|\leq\|u\|+\|v\|\)</span>。若 <span class="arithmatex">\(\|v\|=0\)</span> 还蕴含 <span class="arithmatex">\(v=0\)</span>，则是范数。赋范空间取距离 <span class="arithmatex">\(d(u,v)=\|u-v\|\)</span>；其子空间取限制范数，可分性指此范数拓扑下可分。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.7</span><span class="book-name">消去半范数的零空间</span></p>
+<p><span class="arithmatex">\(V_0=\{v:\|v\|=0\}\)</span> 为线性子空间，商空间有唯一范数 <span class="arithmatex">\(\|v+V_0\|=\|v\|\)</span>。三角不等式保证代表元改变不影响此值。</p>
+</div>
+<details class="proof">
+<summary>证明 2.3.4</summary>
+<p>三角不等式给出 <span class="arithmatex">\(\|u+v\|\leq0\)</span>、<span class="arithmatex">\(\|av\|=0\)</span>，所以零空间线性。若 <span class="arithmatex">\(v-w\in V_0\)</span>，则 <span class="arithmatex">\(\|v\|\leq\|w\|+\|v-w\|=\|w\|\)</span>，交换二者得到 <span class="arithmatex">\(\|v\|=\|w\|\)</span>。故商上的取值良定义；齐次性、三角不等式由原半范数继承，而商范数为零意味着 <span class="arithmatex">\(v\in V_0\)</span>，即零陪集。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.8</span><span class="book-name">Banach 空间</span></p>
+<p>完备的实或复赋范空间称为相应域上的 Banach 空间。</p>
+</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.9</span><span class="book-name">多线性映射及其范数</span></p>
+<p><span class="arithmatex">\(T:V_1\times\cdots\times V_N\to W\)</span> 多线性，指固定其余变量后对每个变量线性。其算子范数为 <span class="arithmatex">\(\|T\|=\sup_{\|v_j\|\leq1}\|T(v_1,\ldots,v_N)\|\)</span>；值有限时称有界，等价于 <span class="arithmatex">\(\|T(v_1,\ldots,v_N)\|\leq\|T\|\prod_j\|v_j\|\)</span>。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.10</span><span class="book-name">算子空间与对偶</span></p>
+<p>记 <span class="arithmatex">\(\mathcal L(V_1\times\cdots\times V_N,W)\)</span> 为全部有界多线性映射。<span class="arithmatex">\(\mathcal L(V)=\mathcal L(V,V)\)</span>，<span class="arithmatex">\(V^*=\mathcal L(V,\mathbb F)\)</span>。算子可逆指存在有界双侧逆 <span class="arithmatex">\(T^{-1}\)</span>。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.11</span><span class="book-name">多线性映射的连续性</span></p>
+<p>多线性映射的以下性质等价：处处连续；在原点连续；有界；在每个有界乘积球上 Lipschitz 连续；在单位乘积球上 Lipschitz 连续。使用最大值乘积度量时，在半径 <span class="arithmatex">\(R\)</span> 的乘积球上 Lipschitz 常数可取 <span class="arithmatex">\(NR^{N-1}\|T\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.3.10</summary>
+<p>原点连续时，存在 <span class="arithmatex">\(\delta&gt;0\)</span>，使全部 <span class="arithmatex">\(\|v_j\|&lt;\delta\)</span> 时 <span class="arithmatex">\(\|T(v_1,\ldots,v_N)\|\leq1\)</span>。将每个非零 <span class="arithmatex">\(v_j\)</span> 缩放到长度 <span class="arithmatex">\(\delta/2\)</span>，多线性性给出 <span class="arithmatex">\(\|T(v_1,\ldots,v_N)\|\leq(2/\delta)^N\prod_j\|v_j\|\)</span>，所以有界。</p>
+<p>反过来，对 <span class="arithmatex">\(u_j,v_j\)</span> 都在半径 <span class="arithmatex">\(R\)</span> 的球中，用逐个替换变量的望远镜分解：</p>
+<div class="arithmatex">\[
+T(u_1,\ldots,u_N)-T(v_1,\ldots,v_N)
+=\sum_{j=1}^NT(v_1,\ldots,v_{j-1},u_j-v_j,u_{j+1},\ldots,u_N).
+\]</div>
+<p>其范数不超过 <span class="arithmatex">\(\|T\|R^{N-1}\sum_j\|u_j-v_j\|\)</span>，这给出局部 Lipschitz 及处处连续。单位乘积球上的 Lipschitz 性也给出原点连续，故全部条件等价。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.12</span><span class="book-name">核是闭子空间</span></p>
+<p>有界线性映射 <span class="arithmatex">\(T:V\to W\)</span> 的核为闭线性子空间。</p>
+</div>
+<details class="proof">
+<summary>证明 2.3.11</summary>
+<p>若 <span class="arithmatex">\(v_\alpha\in\ker T\)</span> 且 <span class="arithmatex">\(v_\alpha\to v\)</span>，连续性给出 <span class="arithmatex">\(Tv=\lim_\alpha Tv_\alpha=0\)</span>，所以核闭。线性性直接给出核对加法和标量乘法封闭。</p>
+</details>
+<h3 id="topic-2-4-2">把稠密数据延拓到全空间</h3>
+<p>稠密子空间决定候选极限的唯一性，目标空间完备保证该候选确实存在。下面分别处理单个算子的延拓、算子族的极限及算子空间自身的完备性，避免把这三个作用混在一起。</p>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.13</span><span class="book-name">稠密子空间上的延拓</span></p>
+<p>若 <span class="arithmatex">\(W\)</span> 完备，<span class="arithmatex">\(U_j\subset V_j\)</span> 为稠密线性子空间，则限制映射 <span class="arithmatex">\(\mathcal L(V_1\times\cdots\times V_N,W)\to\mathcal L(U_1\times\cdots\times U_N,W)\)</span> 为线性等距同构。没有值域完备性时，限制仍等距，但未必满射。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.2</summary>
+<p>对 <span class="arithmatex">\(v_j\in V_j\)</span>，在 <span class="arithmatex">\(U_j\)</span> 内取 <span class="arithmatex">\(u_{j,n}\to v_j\)</span>。各近似序列有界，用上一命题的望远镜估计，<span class="arithmatex">\(T(u_{1,n},\ldots,u_{N,n})\)</span> 是 Cauchy 序列。值域完备使它有极限，定义为 <span class="arithmatex">\(\widetilde T(v_1,\ldots,v_N)\)</span>。</p>
+<p>换一组近似仍由同一估计得到相同极限。对近似式取极限，保留多线性性及 <span class="arithmatex">\(\|\widetilde T(v_\bullet)\|\leq\|T\|\prod_j\|v_j\|\)</span>。限制给出相反的范数不等式，故范数相等。两个连续延拓在稠密乘积上相同便处处相同。若值域不完备，Cauchy 像可能只有完备化中的极限，这正是满射可能失效的步骤。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.14</span><span class="book-name">稠密子空间的对偶</span></p>
+<p>若 <span class="arithmatex">\(U\)</span> 在 <span class="arithmatex">\(V\)</span> 中线性稠密，则限制 <span class="arithmatex">\(V^*\to U^*\)</span> 为线性等距同构。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.3</summary>
+<p>将定理 2.4.2 取 <span class="arithmatex">\(N=1\)</span>、<span class="arithmatex">\(W=\mathbb F\)</span>；标量域完备，所以每个 <span class="arithmatex">\(U\)</span> 上有界泛函唯一保范数延拓到 <span class="arithmatex">\(V\)</span>。限制与延拓互为逆映射，且线性。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.15</span><span class="book-name">稠密测试集足以判定极限</span></p>
+<p>若 <span class="arithmatex">\(E_j\)</span> 线性张成在 <span class="arithmatex">\(V_j\)</span> 中稠密，<span class="arithmatex">\(T_\alpha\)</span> 一致有界，<span class="arithmatex">\(T\)</span> 有界，且 <span class="arithmatex">\(T_\alpha\to T\)</span> 在 <span class="arithmatex">\(E_1\times\cdots\times E_N\)</span> 上逐点成立，则它在全部 <span class="arithmatex">\(V_1\times\cdots\times V_N\)</span> 上逐点成立。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.5</summary>
+<p>先利用多线性性把收敛从各 <span class="arithmatex">\(E_j\)</span> 推广到各自的线性张成。对任意固定的 <span class="arithmatex">\(v_j\)</span>，选择这些张成中的 <span class="arithmatex">\(u_j\)</span> 逼近。统一范数界 <span class="arithmatex">\(C\)</span> 和望远镜分解给出</p>
+<div class="arithmatex">\[
+\|(T_\alpha-T)(v_\bullet)\|
+\leq\|(T_\alpha-T)(u_\bullet)\|+
+(C+\|T\|)R^{N-1}\sum_j\|v_j-u_j\|.
+\]</div>
+<p>先把第二项选到任意小，再让 <span class="arithmatex">\(\alpha\)</span> 足够大使第一项小，即得全空间的逐点收敛。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.16</span><span class="book-name">从稠密测试集构造极限</span></p>
+<p>若再假设 <span class="arithmatex">\(W\)</span> 完备，只要一致有界的 <span class="arithmatex">\(T_\alpha\)</span> 在上述稠密测试集上逐点有极限，就存在有界多线性 <span class="arithmatex">\(T\)</span>，使它在全空间逐点收敛，并有 <span class="arithmatex">\(\|T\|\leq\liminf_\alpha\|T_\alpha\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.6</summary>
+<p>在稠密线性张成上定义 <span class="arithmatex">\(S(u_\bullet)=\lim_\alpha T_\alpha(u_\bullet)\)</span>。线性关系由取极限保留，且 <span class="arithmatex">\(\|S(u_\bullet)\|\leq C\prod_j\|u_j\|\)</span>。定理 2.4.2 将它延拓为 <span class="arithmatex">\(T\)</span>，定理 2.4.5 给出全空间收敛。</p>
+<p>对任意单位球内的 <span class="arithmatex">\(v_j\)</span>，<span class="arithmatex">\(\|T(v_\bullet)\|\leq\liminf_\alpha\|T_\alpha\|\)</span>；在全部这类变量上取上确界，便得范数的下半连续估计。若只在非线性的测试集合上给出极限，先通过多线性关系定义其张成上的值；原来的 <span class="arithmatex">\(T_\alpha\)</span> 自动保证定义与线性表示无关。</p>
+</details>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.17</span><span class="book-name">算子空间的闭性</span></p>
+<p>将有界多线性映射限制到乘积单位球，可将 <span class="arithmatex">\(\mathcal L(V_1\times\cdots\times V_N,W)\)</span> 等距识别为该球上有界 <span class="arithmatex">\(W\)</span> 值函数空间中的闭线性子空间。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.8</summary>
+<p>限制到乘积单位球显然保算子范数。若限制函数一致收敛到 <span class="arithmatex">\(f\)</span>，对一般非零 <span class="arithmatex">\(v_j\)</span> 用齐次性把它们缩放到单位球，再乘回各范数，定义极限映射 <span class="arithmatex">\(T\)</span>。在各变量上对线性关系取极限，可见 <span class="arithmatex">\(T\)</span> 多线性。统一收敛保证它有界并在单位球上等于 <span class="arithmatex">\(f\)</span>，故像为闭子空间。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.18</span><span class="book-name">算子空间的完备性</span></p>
+<p>值域 <span class="arithmatex">\(W\)</span> 完备时，<span class="arithmatex">\(\mathcal L(V_1\times\cdots\times V_N,W)\)</span> 在算子范数下完备。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.9</summary>
+<p>有界函数空间在值域完备时按一致范数完备：一致 Cauchy 序列在每一点有极限，统一 Cauchy 估计再保证一致收敛。定理 2.4.8 将算子空间识别为其中的闭子空间；闭子空间继承完备性。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.19</span><span class="book-name">向量值序列空间</span></p>
+<p>若 <span class="arithmatex">\(W\)</span> 完备，则任意集合 <span class="arithmatex">\(X\)</span> 上的 <span class="arithmatex">\(\ell^p(X,W)\)</span> 对 <span class="arithmatex">\(1\leq p\leq\infty\)</span> 均完备；<span class="arithmatex">\(p&lt;\infty\)</span> 的求和采用有限子集网。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.10</summary>
+<p>设 <span class="arithmatex">\((f_n)\)</span> 为 <span class="arithmatex">\(\ell^p(X,W)\)</span> 的 Cauchy 序列。每个坐标的差都不超过 <span class="arithmatex">\(\|f_n-f_m\|_p\)</span>，所以值域完备性给出 <span class="arithmatex">\(f(x)=\lim_nf_n(x)\)</span>。对有限 <span class="arithmatex">\(F\subset X\)</span>，先在有限和中取极限，得到</p>
+<div class="arithmatex">\[
+\sum_{x\in F}\|f_n(x)-f(x)\|^p
+\leq\liminf_m\|f_n-f_m\|_p^p.
+\]</div>
+<p>再取有限集上确界，便得 <span class="arithmatex">\(f_n-f\in\ell^p\)</span> 及范数收敛，也由三角不等式得到 <span class="arithmatex">\(f\in\ell^p\)</span>。<span class="arithmatex">\(p=\infty\)</span> 时把有限和改为各坐标的上确界，得到一致收敛的同一论证。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.20</span><span class="book-name">对偶总是完备</span></p>
+<p>任意赋范空间 <span class="arithmatex">\(V\)</span> 的连续对偶 <span class="arithmatex">\(V^*\)</span> 都是 Banach 空间，即使 <span class="arithmatex">\(V\)</span> 本身不完备。</p>
+</div>
+<details class="proof">
+<summary>证明 2.4.11</summary>
+<p>在推论 2.4.9 中取一个变量和值域 <span class="arithmatex">\(\mathbb F\)</span>。值域完备即可保证算子空间 <span class="arithmatex">\(V^*\)</span> 完备，原定义域的完备性没有参与证明。</p>
+</details>
+<h3 id="topic-2-5-1">完备性怎样经过对偶</h3>
+<p>有界泛函的数值落在完备标量域，因此对偶空间自动完备。把不同范数或算子空间联系起来时，还须检查作用映射是否有界，才能把这种完备性传过去。</p>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.21</span><span class="book-name">多线性映射的柯里化</span></p>
+<p>映射 <span class="arithmatex">\(T\mapsto[(u_1,\ldots,u_M)\mapsto T(u_1,\ldots,u_M,\cdot,\ldots,\cdot)]\)</span> 给出 <span class="arithmatex">\(\mathcal L(U_1\times\cdots\times U_M\times V_1\times\cdots\times V_N,W)\)</span> 与 <span class="arithmatex">\(\mathcal L(U_1\times\cdots\times U_M,\mathcal L(V_1\times\cdots\times V_N,W))\)</span> 的线性等距同构。</p>
+</div>
+<details class="proof">
+<summary>证明 2.5.1</summary>
+<p>给定 <span class="arithmatex">\(T\)</span>，固定前 <span class="arithmatex">\(M\)</span> 个变量后得到后 <span class="arithmatex">\(N\)</span> 个变量上的有界多线性映射，其范数至多为 <span class="arithmatex">\(\|T\|\prod_{j=1}^M\|u_j\|\)</span>。因此柯里化映射有界多线性。把两组变量分别取单位球并取上确界，得到两种算子范数完全相同。逆映射把内部算子再作用于后面各变量；逐变量线性及同一范数估计证明它确实是逆映射。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.22</span><span class="book-name">双线性形式与对偶值映射</span></p>
+<p><span class="arithmatex">\(\mathcal L(U\times V,\mathbb F)\cong\mathcal L(U,V^*)\)</span>，同构为 <span class="arithmatex">\(T\mapsto[u\mapsto T(u,\cdot)]\)</span>，保持算子范数。</p>
+</div>
+<details class="proof">
+<summary>证明 2.5.2</summary>
+<p>在定理 2.5.1 中取两个变量及标量值域。固定 <span class="arithmatex">\(u\)</span> 后，<span class="arithmatex">\(v\mapsto T(u,v)\)</span> 是 <span class="arithmatex">\(V^*\)</span> 中的元素；两侧范数都是 <span class="arithmatex">\(\sup_{\|u\|,\|v\|\leq1}|T(u,v)|\)</span>，因此同构等距。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.23</span><span class="book-name">具有前对偶的空间</span></p>
+<p>若 <span class="arithmatex">\(V=V_*^*\)</span> 等距识别，则 <span class="arithmatex">\(\mathcal L(V\times V_*,\mathbb F)\cong\mathcal L(V)\)</span> 等距；双线性形式的第二变量作用确定 <span class="arithmatex">\(V\)</span> 中的一个向量。</p>
+</div>
+<details class="proof">
+<summary>证明 2.5.3</summary>
+<p>若 <span class="arithmatex">\(V=V_*^*\)</span>，固定第一个变量 <span class="arithmatex">\(v\)</span> 后，第二变量上的泛函 <span class="arithmatex">\(w\mapsto T(v,w)\)</span> 正好是 <span class="arithmatex">\(V_*^*\)</span> 中的一个元素，即某个 <span class="arithmatex">\(Av\in V\)</span>。双线性性给出 <span class="arithmatex">\(A\)</span> 线性，范数等式给出 <span class="arithmatex">\(\|A\|=\|T\|\)</span>。反过来，有界 <span class="arithmatex">\(A:V\to V\)</span> 定义 <span class="arithmatex">\(T(v,w)=(Av)(w)\)</span>；这两个构造互逆。前对偶条件保证代表向量留在 <span class="arithmatex">\(V\)</span> 中。</p>
+</details>
+<details class="proof">
+<summary>延拓和稠密测试的统一证明</summary>
+<p>先在稠密线性张成上利用多线性性定义极限。用望远镜分解逐个替换变量，每一项由算子范数和其余变量的范数乘积控制。因此在有界集上具有统一误差界。近似各变量后，极限像构成值域中的 Cauchy 网；完备性保证存在。相同估计给出唯一性、保范数及 <span class="arithmatex">\(\|T\|\leq\liminf\|T_\alpha\|\)</span>。算子范数 Cauchy 序列在单位球上一致收敛，极限继续保持多线性关系，故算子空间完备。</p>
+</details>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>弱-* 拓扑与测度极限的精确条件</h2>
+<p>下列 <span class="arithmatex">\(L^p\)</span> 结果假设测度 <span class="arithmatex">\(\sigma\)</span>-有限，<span class="arithmatex">\(1&lt;p\leq\infty\)</span>，<span class="arithmatex">\(1/p+1/q=1\)</span>。<span class="arithmatex">\(p&lt;\infty\)</span> 时这里的弱-* 拓扑与通常的弱拓扑一致；<span class="arithmatex">\(p=\infty\)</span> 时测试空间是 <span class="arithmatex">\(L^1\)</span>。</p>
+<h3 id="topic-2-6-1">只观察有限个测试值</h3>
+<p>弱-* 邻域只控制有限个向量上的泛函值。统一范数界使稠密测试足够，而单位球的紧性允许从近似网中取极限。可分性另提供可数测试，从而恢复子列抽取。</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span><span class="book-name">弱-* 拓扑</span></p>
+<p>将 <span class="arithmatex">\(V^*\)</span> 嵌入 <span class="arithmatex">\(\mathbb F^V\)</span>，其乘积子空间拓扑称 <span class="arithmatex">\(\sigma(V^*,V)\)</span>。网 <span class="arithmatex">\(\varphi_\alpha\to\varphi\)</span> 当且仅当每个 <span class="arithmatex">\(v\in V\)</span> 都有 <span class="arithmatex">\(\varphi_\alpha(v)\to\varphi(v)\)</span>。此拓扑是 Hausdorff 拓扑。</p>
+</div>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.2</span><span class="book-name">弱-* 极限的稠密测试</span></p>
+<p>若 <span class="arithmatex">\(E\)</span> 的线性张成稠密，且 <span class="arithmatex">\(\sup_\alpha\|\varphi_\alpha\|&lt;\infty\)</span>，则存在弱-* 极限当且仅当对全部 <span class="arithmatex">\(v\in E\)</span> 数值 <span class="arithmatex">\(\varphi_\alpha(v)\)</span> 有极限；这些数值也唯一确定极限。</p>
+</div>
+<details class="proof">
+<summary>证明 2.6.2</summary>
+<p>必要性直接由弱-*收敛定义。充分性中，在 <span class="arithmatex">\(\operatorname{span}E\)</span> 上令 <span class="arithmatex">\(\varphi(v)=\lim_\alpha\varphi_\alpha(v)\)</span>。原泛函的线性关系保证它良定义且线性，统一界给出 <span class="arithmatex">\(|\varphi(v)|\leq C\|v\|\)</span>，所以保范数延拓到 <span class="arithmatex">\(V\)</span>。</p>
+<p>任取 <span class="arithmatex">\(v\in V\)</span> 和稠密张成中的 <span class="arithmatex">\(u\)</span>，有 <span class="arithmatex">\(|\varphi_\alpha(v)-\varphi(v)|\leq2C\|v-u\|+|\varphi_\alpha(u)-\varphi(u)|\)</span>。先选 <span class="arithmatex">\(u\)</span>，后选指标，得到弱-*收敛；在稠密集上相同的连续泛函唯一。</p>
+</details>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.3</span><span class="book-name">弱-* 下半连续性</span></p>
+<p>弱-* 收敛网满足 <span class="arithmatex">\(\|\varphi\|\leq\liminf_\alpha\|\varphi_\alpha\|\)</span>。因此对偶范数弱-* 下半连续，闭范数球弱-* 闭。</p>
+</div>
+<details class="proof">
+<summary>证明 2.6.4</summary>
+<p>固定 <span class="arithmatex">\(\|v\|\leq1\)</span>，弱-*收敛给出</p>
+<div class="arithmatex">\[
+|\varphi(v)|=\lim_\alpha|\varphi_\alpha(v)|
+\leq\liminf_\alpha\|\varphi_\alpha\|.
+\]</div>
+<p>右边与 <span class="arithmatex">\(v\)</span> 无关，在单位球上取上确界即得结论。特别地，若每个 <span class="arithmatex">\(\|\varphi_\alpha\|\leq R\)</span>，极限也满足 <span class="arithmatex">\(\|\varphi\|\leq R\)</span>；这说明闭范数球弱-*闭。也可将该球写成闭集的交 <span class="arithmatex">\(\bigcap_{v\in V}\{\varphi:|\varphi(v)|\leq R\|v\|\}\)</span>，直接看见下半连续性。</p>
+</details>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.4</span><span class="book-name">Banach–Alaoglu 定理</span></p>
+<p>任意赋范空间 <span class="arithmatex">\(V\)</span> 的对偶闭单位球弱-* 紧，因而是紧 Hausdorff 空间。这里不要求 <span class="arithmatex">\(V\)</span> 完备。</p>
+</div>
+<details class="proof">
+<summary>证明 2.6.5</summary>
+<p>把 <span class="arithmatex">\(\|\varphi\|\leq1\)</span> 的泛函嵌入 <span class="arithmatex">\(\prod_{v\in V}\{z\in\mathbb F:|z|\leq\|v\|\}\)</span>。各坐标闭圆盘紧，Tychonoff 定理使乘积紧。加法关系 <span class="arithmatex">\(z_{u+v}=z_u+z_v\)</span> 及齐次关系 <span class="arithmatex">\(z_{av}=az_v\)</span> 都是闭条件；满足它们的坐标族恰为范数至多一的线性泛函。因此对偶球是紧乘积的闭子集。继承的坐标拓扑正是弱-*拓扑，且坐标能分离不同泛函，故 Hausdorff。</p>
+</details>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.5</span><span class="book-name">可分前对偶</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 可分，对偶闭单位球的弱-* 拓扑第二可数且可度量，故每个球内序列都有弱-* 收敛子列。</p>
+</div>
+<details class="proof">
+<summary>证明 2.6.6</summary>
+<p>取可数稠密集 <span class="arithmatex">\((v_j)\)</span>。在闭单位球内，仅检查这些坐标即可检查全部向量：任意 <span class="arithmatex">\(v\)</span> 的测试误差不超过 <span class="arithmatex">\(2\|v-v_j\|\)</span> 加上该坐标误差。因此球上的拓扑由可数坐标诱导，可使用</p>
+<div class="arithmatex">\[
+d(\varphi,\psi)=\sum_{j\geq1}2^{-j}
+\frac{|(\varphi-\psi)(v_j)|}{1+|(\varphi-\psi)(v_j)|}.
+\]</div>
+<p>稠密性保证这是真正的度量，有限坐标控制和级数尾项估计证明它给出弱-*拓扑。可数个坐标的有理圆盘构成可数拓扑基；结合弱-*紧性，得到紧度量空间的列紧性。</p>
+</details>
+<h3 id="topic-2-7-1">把弱-* 收敛写成积分</h3>
+<p>在函数空间中，测试值就是积分。半直线指标提供容易计算的测试族，连续函数提供适合拓扑的测试族；把它们扩到全部对偶测试时，都必须用统一范数界控制误差。</p>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.6</span><span class="book-name">有限实直线测度的累积测试</span></p>
+<p>若 <span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\mathbb R\)</span> 上有限 Borel 测度，<span class="arithmatex">\(f_\alpha\)</span> 一致 <span class="arithmatex">\(L^p\)</span> 有界，则其弱-* 收敛当且仅当每个 <span class="arithmatex">\(x\)</span> 的 <span class="arithmatex">\(\int_{(-\infty,x]}f_\alpha\,d\mu\)</span> 有极限；弱-* 趋于 <span class="arithmatex">\(f\)</span> 当且仅当这些极限等于 <span class="arithmatex">\(\int_{(-\infty,x]}f\,d\mu\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.7.1</summary>
+<p>必要性以 <span class="arithmatex">\(\mathbf1_{(-\infty,x]}\in L^q\)</span> 测试。充分性有两种做法。</p>
+<p>第一种直接构造极限。半直线示性函数的线性张成 <span class="arithmatex">\(E\)</span> 在 <span class="arithmatex">\(L^q(\mu)\)</span> 中稠密：差分给出有界半开区间，区间阶梯函数再逼近可积简单函数；有限 Borel 测度的正则性保证这一逼近。假设使 <span class="arithmatex">\(\int f_\alpha g\,d\mu\)</span> 对每个 <span class="arithmatex">\(g\in E\)</span> 有极限，而 Hölder 给出泛函范数统一上界。定理 2.6.2 产生 <span class="arithmatex">\(L^q\)</span> 上的极限泛函，对偶表示再产生 <span class="arithmatex">\(f\in L^p\)</span>。</p>
+<p>第二种先取得候选极限。Banach–Alaoglu 保证有一个弱-*收敛子网 <span class="arithmatex">\(f_{\alpha_\nu}\to f\)</span>。每个半直线测试沿原网已有极限，所以该极限必为 <span class="arithmatex">\(\int_{(-\infty,x]}f\,d\mu\)</span>。因此原网在稠密测试集 <span class="arithmatex">\(E\)</span> 上与 <span class="arithmatex">\(f\)</span> 相配，再以统一范数界推广到全部 <span class="arithmatex">\(L^q\)</span>，得到整个网收敛。两种论证都说明：不是任意一个子网极限便能决定原网，真正起作用的是所有稠密测试值已有极限。</p>
+</details>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.7</span><span class="book-name">几乎处处收敛与弱-* 收敛</span></p>
+<p><span class="arithmatex">\(\sigma\)</span>-有限测度空间中，一致 <span class="arithmatex">\(L^p\)</span> 有界序列若几乎处处趋于 <span class="arithmatex">\(f\)</span>，则 <span class="arithmatex">\(f\in L^p\)</span>，并弱-* 趋于 <span class="arithmatex">\(f\)</span>。结论不能把序列任意换成网，也不能直接把 <span class="arithmatex">\(p\)</span> 改为 <span class="arithmatex">\(1\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.7.2</summary>
+<p>仍记 <span class="arithmatex">\(C=\sup_n\|f_n\|_p\)</span>。Fatou 或本质上界给出 <span class="arithmatex">\(f\in L^p\)</span> 且 <span class="arithmatex">\(\|f\|_p\leq C\)</span>。对有限测度 <span class="arithmatex">\(E\)</span>，令 <span class="arithmatex">\(A_n=\{|f_n-f|\geq\varepsilon\}\cap E\)</span>。集合 <span class="arithmatex">\(\{\sup_{k\geq n}|f_k-f|\geq\varepsilon\}\cap E\)</span> 递减到零测集，所以 <span class="arithmatex">\(\mu(A_n)\to0\)</span>。由此</p>
+<div class="arithmatex">\[
+\int_E|f_n-f|
+\leq\varepsilon\mu(E)+\|f_n-f\|_p\mu(A_n)^{1/q}
+\leq\varepsilon\mu(E)+2C\mu(A_n)^{1/q}.
+\]</div>
+<p>令 <span class="arithmatex">\(n\to\infty\)</span>、再令 <span class="arithmatex">\(\varepsilon\downarrow0\)</span>，得到对每个有限测度示性函数的测试收敛。<span class="arithmatex">\(\sigma\)</span>-有限性让这些示性函数的有限线性组合在 <span class="arithmatex">\(L^q\)</span> 中稠密，统一 Hölder 界完成全部测试。</p>
+<p>这里 <span class="arithmatex">\(q&lt;\infty\)</span>，故小集合的 <span class="arithmatex">\(\mu(A_n)^{1/q}\)</span> 能趋零。<span class="arithmatex">\(p=1\)</span> 时这个机制失效；一般网也没有可数尾部集合递减的论证，不能把证明中的序列直接换成任意网。</p>
+</details>
+<div id="thm-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.8</span><span class="book-name">连续测试函数的有界逼近</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 局部紧 Hausdorff，<span class="arithmatex">\(\mu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限 Radon 测度或其完备化。<span class="arithmatex">\(C_c(X)\)</span> 中 <span class="arithmatex">\(L^p\)</span> 范数至多为一的函数在 <span class="arithmatex">\(L^p\)</span> 闭单位球中弱-* 稠密。<span class="arithmatex">\(p&lt;\infty\)</span> 时可取范数逼近；<span class="arithmatex">\(p=\infty\)</span> 时可取一致范数至多为一的连续函数作弱-* 逼近。</p>
+</div>
+<details class="proof">
+<summary>证明 2.7.4</summary>
+<p><span class="arithmatex">\(p&lt;\infty\)</span> 时，先由 Radon 正则性与连续截断函数得到 <span class="arithmatex">\(C_c\)</span> 在 <span class="arithmatex">\(L^p\)</span> 中的范数稠密性。近似函数若范数略超过一，除以 <span class="arithmatex">\(\max(1,\|u\|_p)\)</span>；缩放误差也趋零，故可一直留在单位球。</p>
+<p><span class="arithmatex">\(p=\infty\)</span> 时先选 <span class="arithmatex">\(|f|\leq1\)</span> 的代表元。只需同时逼近有限个紧支撑连续测试 <span class="arithmatex">\(g_1,\ldots,g_n\)</span>。其支集并 <span class="arithmatex">\(A\)</span> 紧而测度有限，令 <span class="arithmatex">\(M=\sum_i\|g_i\|_\infty\)</span>。Lusin 定理给出紧集 <span class="arithmatex">\(K\subset A\)</span>，使 <span class="arithmatex">\(f|_K\)</span> 连续且 <span class="arithmatex">\(\mu(A\setminus K)&lt;\varepsilon/(2M)\)</span>。Tietze 延拓和紧支撑截断给出 <span class="arithmatex">\(u\in C_c(X)\)</span>，满足 <span class="arithmatex">\(u=f\)</span> 于 <span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(|u|\leq1\)</span>。复数情形可先延拓实虚部，再投影到闭单位圆盘，保持在 <span class="arithmatex">\(K\)</span> 上的值。</p>
+<p>于是 <span class="arithmatex">\(|\int(f-u)g_i\,d\mu|\leq2\|g_i\|_\infty\mu(A\setminus K)&lt;\varepsilon\)</span>。按有限测试集增大、误差减小组织这些 <span class="arithmatex">\(u\)</span> 为网。它们有统一上界，<span class="arithmatex">\(C_c\)</span> 又在 <span class="arithmatex">\(L^1\)</span> 中稠密，故定理 2.6.2 使该网弱-*趋于 <span class="arithmatex">\(f\)</span>。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.9</span><span class="book-name">积分泛函的范数</span></p>
+<p>对 <span class="arithmatex">\(\phi\in L^1(X,\mu)\)</span>，<span class="arithmatex">\(\Lambda(f)=\int f\phi\,d\mu\)</span> 是 <span class="arithmatex">\(C_0(X)\)</span> 上的有界泛函，且 <span class="arithmatex">\(\|\Lambda\|=\int|\phi|\,d\mu\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.7.5</summary>
+<p>Hölder 先给出 <span class="arithmatex">\(\|\Lambda\|\leq\|\phi\|_1\)</span>。令 <span class="arithmatex">\(g=\overline\phi/|\phi|\)</span> 于 <span class="arithmatex">\(\phi\ne0\)</span> 处，在其余点令 <span class="arithmatex">\(g=0\)</span>；实数情形就是符号函数。于是 <span class="arithmatex">\(|g|\leq1\)</span> 且 <span class="arithmatex">\(\int g\phi\,d\mu=\int|\phi|\,d\mu\)</span>。</p>
+<p>由定理 2.7.4，存在一致范数至多一的 <span class="arithmatex">\(u_\alpha\in C_c(X)\)</span>，弱-*趋于 <span class="arithmatex">\(g\)</span>。用合法的 <span class="arithmatex">\(L^1\)</span> 测试 <span class="arithmatex">\(\phi\)</span> 得 <span class="arithmatex">\(\Lambda(u_\alpha)\to\|\phi\|_1\)</span>。这些 <span class="arithmatex">\(u_\alpha\)</span> 也在 <span class="arithmatex">\(C_0\)</span> 单位球内，故 <span class="arithmatex">\(\|\Lambda\|\geq\|\phi\|_1\)</span>，完成范数等式。<span class="arithmatex">\(\phi=0\)</span> 时结论直接成立。</p>
+</details>
+<h3 id="topic-2-8-1">无穷坐标与有限截断</h3>
+<p>有限支集向量提供最直接的稠密测试。坐标极限加上统一范数界可恢复弱-* 极限，但坐标逐点收敛本身不能推出范数收敛，后面的例子会体现这个差别。</p>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.10</span><span class="book-name">有限支集的范数稠密性</span></p>
+<p>对任意集合 <span class="arithmatex">\(X\)</span> 及 <span class="arithmatex">\(1\leq p&lt;\infty\)</span>，有限支集标量函数在 <span class="arithmatex">\(\ell^p(X)\)</span> 中范数稠密。赋予 <span class="arithmatex">\(X\)</span> 离散拓扑后，这些函数恰为 <span class="arithmatex">\(C_c(X)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.8.1</summary>
+<p>若 <span class="arithmatex">\(f\in\ell^p(X)\)</span>，有限子集和 <span class="arithmatex">\(\sum_{x\in F}|f(x)|^p\)</span> 的上确界有限。给定 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，可选有限 <span class="arithmatex">\(F_0\)</span> 使该和与上确界之差小于 <span class="arithmatex">\(\varepsilon^p\)</span>，故 <span class="arithmatex">\(\|f-f\mathbf1_F\|_p&lt;\varepsilon\)</span> 对全部 <span class="arithmatex">\(F\supset F_0\)</span> 成立。离散空间的紧集正是有限集，因此紧支撑连续函数就是有限支集函数。</p>
+</details>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.11</span><span class="book-name">序列空间的积分嵌入</span></p>
+<p>对共轭指数 <span class="arithmatex">\(p,q\)</span>，映射 <span class="arithmatex">\(\Psi:\ell^p(X)\to\ell^q(X)^*\)</span>，<span class="arithmatex">\(\Psi(f)(g)=\sum_{x\in X}f(x)g(x)\)</span>，是线性等距嵌入。</p>
+</div>
+<details class="proof">
+<summary>证明 2.8.3</summary>
+<p>Hölder 给出 <span class="arithmatex">\(\|\Psi(f)\|\leq\|f\|_p\)</span>。<span class="arithmatex">\(1&lt;p&lt;\infty\)</span> 时，在有限集 <span class="arithmatex">\(F\)</span> 上取 <span class="arithmatex">\(g\)</span> 为与 <span class="arithmatex">\(f\)</span> 相位相反、模正比于 <span class="arithmatex">\(|f|^{p-1}\)</span> 的向量并归一化，其配对值为 <span class="arithmatex">\((\sum_F|f|^p)^{1/p}\)</span>；取有限集上确界便得到反向不等式。<span class="arithmatex">\(p=1\)</span> 时用有限集上的相位函数；<span class="arithmatex">\(p=\infty\)</span> 时用单个坐标及趋近于上确界的坐标，仍得范数相等。范数相等也保证单射。</p>
+</details>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.12</span><span class="book-name">定义 2.8.4：<span class="arithmatex">\(\ell^p\)</span> 的弱-* 拓扑</span></p>
+<p>对 <span class="arithmatex">\(1&lt;p\leq\infty\)</span>，经 <span class="arithmatex">\(\Psi\)</span> 拉回 <span class="arithmatex">\(\ell^q(X)^*\)</span> 的弱-* 拓扑；收敛指全部 <span class="arithmatex">\(g\in\ell^q(X)\)</span> 的配对和收敛。</p>
+</div>
+<div id="thm-23" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.13</span><span class="book-name">坐标判据</span></p>
+<p>任意集合上的一致 <span class="arithmatex">\(\ell^p\)</span> 有界网弱-* 收敛，当且仅当每个坐标有极限。逐坐标极限 <span class="arithmatex">\(f\)</span> 自动属于 <span class="arithmatex">\(\ell^p\)</span>，且 <span class="arithmatex">\(\|f\|_p\leq\liminf\|f_\alpha\|_p\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.8.5</summary>
+<p>弱-*收敛必然给出每个坐标收敛，因为单点示性函数是合法测试。反过来，设坐标极限为 <span class="arithmatex">\(f\)</span>。对有限 <span class="arithmatex">\(F\)</span> 取极限，有 <span class="arithmatex">\(\sum_F|f|^p\leq\liminf_\alpha\|f_\alpha\|_p^p\)</span>；<span class="arithmatex">\(p=\infty\)</span> 时逐坐标得到同样的上确界界。因此 <span class="arithmatex">\(f\in\ell^p\)</span>。</p>
+<p>有限支集测试 <span class="arithmatex">\(g\)</span> 的配对只是有限和，故收敛。其余 <span class="arithmatex">\(g\in\ell^q\)</span> 用有限支集逼近；误差由 <span class="arithmatex">\(\|f_\alpha-f\|_p\|g-g_F\|_q\leq2C\|g-g_F\|_q\)</span> 统一控制，得到全部测试的收敛。</p>
+</details>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.14</span><span class="book-name">有限支集的弱-* 稠密性</span></p>
+<p>对 <span class="arithmatex">\(1&lt;p\leq\infty\)</span>，有限支集函数的 <span class="arithmatex">\(\ell^p\)</span> 闭单位球在 <span class="arithmatex">\(\ell^p\)</span> 闭单位球中弱-* 稠密。具体逼近为 <span class="arithmatex">\(f\mathbf1_F\)</span>，其中 <span class="arithmatex">\(F\)</span> 遍历有限子集。特别地，一致范数至多为一的有限支集函数在 <span class="arithmatex">\(\ell^\infty\)</span> 闭单位球中弱-* 稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 2.8.6</summary>
+<p>令 <span class="arithmatex">\(f_F=f\mathbf1_F\)</span>，其中 <span class="arithmatex">\(F\)</span> 按包含关系遍历有限子集。截断不增加 <span class="arithmatex">\(\ell^p\)</span> 范数，而且每个固定坐标最终保留下来。定理 2.8.5 于是给出弱-*收敛。<span class="arithmatex">\(p&lt;\infty\)</span> 时实际上范数收敛；<span class="arithmatex">\(p=\infty\)</span> 时一般只保证弱-*收敛，例如常数函数 <span class="arithmatex">\(1\)</span> 的有限截断与它的无限范数距离始终为一。</p>
+</details>
+<div id="thm-24" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.15</span><span class="book-name">任意指标集上的对偶表示</span></p>
+<p>对 <span class="arithmatex">\(1&lt;p\leq\infty\)</span>，<span class="arithmatex">\(\Psi:\ell^p(X)\to\ell^q(X)^*\)</span> 是线性等距同构，无需 <span class="arithmatex">\(X\)</span> 可数。由 <span class="arithmatex">\(\varphi\)</span> 恢复代表元的方法为 <span class="arithmatex">\(f(x)=\varphi(\mathbf1_{\{x\}})\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.8.7</summary>
+<p>给定 <span class="arithmatex">\(\varphi\in\ell^q(X)^*\)</span>，令 <span class="arithmatex">\(f(x)=\varphi(\mathbf1_{\{x\}})\)</span>。在任意有限 <span class="arithmatex">\(F\)</span> 上，<span class="arithmatex">\(\varphi\)</span> 的限制是有限维积分配对，由命题 2.8.3 的等号测试得到 <span class="arithmatex">\(\|f\mathbf1_F\|_p\leq\|\varphi\|\)</span>。有限集上确界给出 <span class="arithmatex">\(f\in\ell^p\)</span>。</p>
+<p>对有限支集 <span class="arithmatex">\(g\)</span>，线性性使 <span class="arithmatex">\(\varphi(g)=\sum_xf(x)g(x)\)</span>。因 <span class="arithmatex">\(q&lt;\infty\)</span>，这些 <span class="arithmatex">\(g\)</span> 范数稠密；两侧连续，从而对全部 <span class="arithmatex">\(g\)</span> 相等。坐标确定 <span class="arithmatex">\(f\)</span>，范数等式又使同构等距。</p>
+</details>
+<h3 id="topic-2-9-1">累积函数的紧性</h3>
+<p>测度的弱-* 极限只在连续测试上可见。累积函数还会在原子处跳跃，所以不能要求每一点都按同一种方式收敛；Helly 选择和连续点判据把这两种描述对齐。</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.16</span><span class="book-name">稠密集上的单调极限延拓</span></p>
+<p>一致有界非负单调函数网若在稠密集 <span class="arithmatex">\(E\subset I\)</span> 上逐点有极限，则这些极限值可延拓为 <span class="arithmatex">\(I\)</span> 上有界非负单调函数。</p>
+</div>
+<details class="proof">
+<summary>证明 2.9.1</summary>
+<p>令 <span class="arithmatex">\(l(t)=\lim_\alpha\rho_\alpha(t)\)</span> 于 <span class="arithmatex">\(t\in E\)</span>。若 <span class="arithmatex">\(s&lt;t\)</span>，对每个指标都有 <span class="arithmatex">\(\rho_\alpha(s)\leq\rho_\alpha(t)\)</span>，故 <span class="arithmatex">\(l(s)\leq l(t)\)</span>。统一上界在极限中保留。对 <span class="arithmatex">\(x\notin E\)</span>，可定义 <span class="arithmatex">\(\rho(x)=\sup\{l(t):t\in E,\ t&lt;x\}\)</span>；若此集合空，则取不大于全部已有值的非负下界。对 <span class="arithmatex">\(x\in E\)</span> 保留 <span class="arithmatex">\(l(x)\)</span>。这些取值夹在相邻的已有值之间，所以得到有界非负单调延拓。</p>
+</details>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.17</span><span class="book-name">单调函数的几乎收敛</span></p>
+<p>一致有界单调函数网在某个内部稠密集上趋于 <span class="arithmatex">\(\rho\)</span>，当且仅当在 <span class="arithmatex">\(\Omega_\rho\)</span> 的每个点趋于 <span class="arithmatex">\(\rho\)</span>。此时称该网几乎收敛到 <span class="arithmatex">\(\rho\)</span>；这里不是测度论中的几乎处处收敛术语。</p>
+</div>
+<details class="proof">
+<summary>证明 2.9.2</summary>
+<p>假设在某个稠密 <span class="arithmatex">\(E\)</span> 上收敛到 <span class="arithmatex">\(\rho\)</span>。对内部连续点 <span class="arithmatex">\(x\)</span>，选 <span class="arithmatex">\(s,t\in E\)</span>、<span class="arithmatex">\(s&lt;x&lt;t\)</span>；单调性给出 <span class="arithmatex">\(\rho_\alpha(s)\leq\rho_\alpha(x)\leq\rho_\alpha(t)\)</span>。取上下极限，再令 <span class="arithmatex">\(s\uparrow x\)</span>、<span class="arithmatex">\(t\downarrow x\)</span>，连续性使两边都趋于 <span class="arithmatex">\(\rho(x)\)</span>。反过来，单调函数只有至多可数个间断点，其内部连续点稠密，直接取该集即可。</p>
+</details>
+<div id="thm-25" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.18</span><span class="book-name">Helly 选择定理</span></p>
+<p>区间上任意一致有界非负单调函数网都有逐点收敛子网；每个这样的序列都有逐点收敛子列。</p>
+</div>
+<details class="proof">
+<summary>证明 2.9.3</summary>
+<p>网的全部取值落在紧乘积 <span class="arithmatex">\(\prod_{x\in I}[0,C]\)</span> 中；Tychonoff 给出逐坐标收敛子网。单调性和非负性为闭条件，故极限仍具有这些性质。</p>
+<p>对序列，先在可数稠密集及属于 <span class="arithmatex">\(I\)</span> 的端点作对角抽取，得到单调候选极限；左右夹逼使它在每个内部连续点收敛。候选函数的间断点至多可数，再在这些点作一次对角抽取，便使每一个点都有极限。第二次抽取不会破坏已经成立的收敛。</p>
+</details>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.19</span><span class="book-name">Stieltjes 测度的弱-* 收敛</span></p>
+<p>对 <span class="arithmatex">\(\rho_\alpha,\rho\in BV(I)\)</span>，定义 <span class="arithmatex">\(d\rho_\alpha\to d\rho\)</span> 弱-* 收敛，若全部 <span class="arithmatex">\(f\in C_c(I)\)</span> 都满足 <span class="arithmatex">\(\int f\,d\rho_\alpha\to\int f\,d\rho\)</span>。这就是相应积分泛函的弱-* 收敛。</p>
+</div>
+<div id="thm-26" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.20</span><span class="book-name">区间端点与常数歧义</span></p>
+<p>令 <span class="arithmatex">\(a=\inf I,b=\sup I\)</span>。一致有界非负单调 <span class="arithmatex">\(\rho_\alpha\)</span> 满足 <span class="arithmatex">\(d\rho_\alpha\to d\rho\)</span>，当且仅当存在有界常数族 <span class="arithmatex">\(\kappa_\alpha\)</span>，使 <span class="arithmatex">\(\rho_\alpha+\kappa_\alpha\)</span> 几乎收敛到 <span class="arithmatex">\(\rho\)</span>，并在 <span class="arithmatex">\(b\in I\)</span> 时满足 <span class="arithmatex">\(\rho_\alpha(b)+\kappa_\alpha\to\rho(b)\)</span>。若 <span class="arithmatex">\(a\in I\)</span>，要求 <span class="arithmatex">\(\kappa_\alpha=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.9.6</summary>
+<p>先设加常数后的累积函数在极限的内部连续点收敛，并在实际右端保留给定的端点值。对紧支撑连续 <span class="arithmatex">\(g\)</span>，在支集附近选连续点作为细分划端点。分块增量中的常数相消；若左端属于 <span class="arithmatex">\(I\)</span>，闭区间积分还含左端的总累积质量，因此此时必须取 <span class="arithmatex">\(\kappa_\alpha=0\)</span>。右端属于 <span class="arithmatex">\(I\)</span> 且被支集碰到时，最后一块使用单独给出的右端极限。阶梯近似误差由连续模乘统一总变差控制，得到积分收敛。</p>
+<p>反过来，弱-*积分收敛让内部两连续点之间的区间质量收敛：用上下连续截断逼近该区间示性函数，边界没有极限原子，夹逼误差便趋零。若左端属于 <span class="arithmatex">\(I\)</span>，同样测试从左端开始的区间，直接恢复累积值，不能加常数。若左端不属于 <span class="arithmatex">\(I\)</span>，固定一个内部连续点 <span class="arithmatex">\(c\)</span>，取 <span class="arithmatex">\(\kappa_\alpha=\rho(c)-\rho_\alpha(c)\)</span>。区间增量收敛给出其余连续点处的 <span class="arithmatex">\(\rho_\alpha+\kappa_\alpha\to\rho\)</span>；统一有界性使这些常数有界。最后用碰到实际右端的连续截断测试恢复右端取值。</p>
+</details>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.21</span><span class="book-name">Stieltjes 极限的存在判据</span></p>
+<p>在相同条件下，存在有界非负单调 <span class="arithmatex">\(\rho\)</span> 使 <span class="arithmatex">\(d\rho_\alpha\to d\rho\)</span>，当且仅当可选上述有界常数族，让 <span class="arithmatex">\(\rho_\alpha+\kappa_\alpha\)</span> 在某个稠密集上逐点有极限，并在 <span class="arithmatex">\(b\in I\)</span> 时于 <span class="arithmatex">\(b\)</span> 也有极限；<span class="arithmatex">\(a\in I\)</span> 时常数仍须为零。</p>
+</div>
+<details class="proof">
+<summary>证明 2.9.7</summary>
+<p>若极限测度存在，定理 2.9.6 给出常数族以及内部连续点上的收敛，该集稠密，右端条件也随之成立。</p>
+<p>反过来，稠密点上的极限先由引理 2.9.1 延拓为有界单调函数，再由命题 2.9.2 得到连续点收敛，右端值单独保留。左端不在 <span class="arithmatex">\(I\)</span> 时，可从该候选函数中减去其左端右极限，把它规范成非负累积函数；这一常数改变也并入 <span class="arithmatex">\(\kappa_\alpha\)</span>，不改变内部增量。左端在 <span class="arithmatex">\(I\)</span> 时不作此改变。定理 2.9.6 随即产生所需 Stieltjes 极限。</p>
+</details>
+<h3 id="topic-2-10-1">测度也能由有限和逼近</h3>
+<p>有限原子测度把积分变成有限加权求和。其弱-* 逼近依靠连续测试在小邻域内的振荡估计；控制权重的总变差，才能让该构造与范数界相容。</p>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.22</span><span class="book-name">Radon 测度的全变差与拓扑</span></p>
+<p>有限实或复 Radon 测度的范数为 <span class="arithmatex">\(\|\mu\|=\sup\{|\int f\,d\mu|:f\in C_c(X),\ |f|\leq1\}\)</span>。其弱-* 拓扑经 <span class="arithmatex">\(\mu\mapsto[f\mapsto\int f\,d\mu]\)</span> 定义。一致全变差有界时，用 <span class="arithmatex">\(C_c\)</span> 或 <span class="arithmatex">\(C_0\)</span> 测试等价。</p>
+</div>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.23</span><span class="book-name">不交集估计</span></p>
+<p>若 <span class="arithmatex">\(A_1,\ldots,A_k\)</span> 为两两不交 Borel 集，则 <span class="arithmatex">\(\sum_j|\mu(A_j)|\leq\|\mu\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.10.4</summary>
+<p>将 <span class="arithmatex">\(\mu\)</span> 写成有限变差实或复 Radon 测度。对每个 <span class="arithmatex">\(j\)</span> 选择相位 <span class="arithmatex">\(z_j\)</span>，<span class="arithmatex">\(|z_j|=1\)</span> 且 <span class="arithmatex">\(z_j\mu(A_j)=|\mu(A_j)|\)</span>；令 <span class="arithmatex">\(s=\sum_jz_j\mathbf1_{A_j}\)</span>，则 <span class="arithmatex">\(|s|\leq1\)</span>。Radon 正则性允许在 <span class="arithmatex">\(|\mu|\)</span> 意义下将这些有限个示性函数逼近为紧支撑连续函数，并保持模至多一：先取不交紧子集，再取不交开邻域及连续截断。于是 <span class="arithmatex">\(\sum_j|\mu(A_j)|=\int s\,d\mu\)</span> 是单位球内连续测试积分的极限，不超过 <span class="arithmatex">\(\|\mu\|\)</span>。</p>
+</details>
+<div id="thm-27" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.24</span><span class="book-name">有限原子测度逼近</span></p>
+<p>设 <span class="arithmatex">\(\mathbb K=\mathbb R_+,\mathbb R\)</span> 或 <span class="arithmatex">\(\mathbb C\)</span>，<span class="arithmatex">\(D(X,\mathbb K)\)</span> 为 Dirac 测度的有限 <span class="arithmatex">\(\mathbb K\)</span> 线性组合。其全变差闭单位球在相应 Radon 测度的闭单位球中弱-* 稠密。正测度可始终用正系数逼近。</p>
+</div>
+<details class="proof">
+<summary>证明 2.10.5</summary>
+<p>固定有限个 <span class="arithmatex">\(g_i\in C_c(X)\)</span> 与误差 <span class="arithmatex">\(\varepsilon\)</span>。其支集并紧，在这个紧集上取有限 Borel 分块 <span class="arithmatex">\(A_j\)</span>，使每个 <span class="arithmatex">\(g_i\)</span> 在每块的振荡小于 <span class="arithmatex">\(\delta\)</span>；可由连续性及有限开覆盖获得。每块选 <span class="arithmatex">\(x_j\)</span>，令 <span class="arithmatex">\(\nu=\sum_j\mu(A_j)\delta_{x_j}\)</span>。则</p>
+<div class="arithmatex">\[
+\left|\int g_i\,d\mu-\int g_i\,d\nu\right|
+\leq\delta\sum_j|\mu|(A_j)\leq\delta\|\mu\|.
+\]</div>
+<p>命题 2.10.4 使 <span class="arithmatex">\(\|\nu\|\leq\sum_j|\mu(A_j)|\leq\|\mu\|\)</span>。正测度时所有系数非负。按有限测试集和误差组织这些 <span class="arithmatex">\(\nu\)</span> 为网，便得到弱-*逼近，且始终留在所需范数球内。<span class="arithmatex">\(C_0\)</span> 测试可再用紧支撑截断与统一范数界处理。</p>
+</details>
+<div id="thm-28" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.25</span><span class="book-name">全变差的分划公式</span></p>
+<p><span class="arithmatex">\(\|\mu\|=\sup\{\sum_{j=1}^k|\mu(A_j)|:A_j\text{ 为两两不交 Borel 集},\ k&lt;\infty\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 2.10.6</summary>
+<p>命题 2.10.4 先说明右边不超过 <span class="arithmatex">\(\|\mu\|\)</span>。反过来，对任意 <span class="arithmatex">\(f\in C_c(X)\)</span>、<span class="arithmatex">\(|f|\leq1\)</span>，将其值域划成直径小于 <span class="arithmatex">\(\varepsilon\)</span> 的有限小块，拉回为不交 Borel 集 <span class="arithmatex">\(A_j\)</span>，在每块取一个值 <span class="arithmatex">\(z_j\)</span>，<span class="arithmatex">\(|z_j|\leq1\)</span>。简单函数 <span class="arithmatex">\(s=\sum_jz_j\mathbf1_{A_j}\)</span> 一致逼近 <span class="arithmatex">\(f\)</span>，故</p>
+<div class="arithmatex">\[
+\left|\int f\,d\mu\right|
+\leq\left|\sum_jz_j\mu(A_j)\right|+\varepsilon|\mu|(X)
+\leq\sum_j|\mu(A_j)|+\varepsilon|\mu|(X).
+\]</div>
+<p>先令 <span class="arithmatex">\(\varepsilon\downarrow0\)</span>，再对所有连续单位测试函数取上确界，得到反向不等式。此式也说明这里的泛函范数恰等于通常的总变差质量 <span class="arithmatex">\(|\mu|(X)\)</span>。</p>
+</details>
+<details class="proof">
+<summary>有界逼近、Helly 选择与原子测度</summary>
+<p>对逐点极限的 <span class="arithmatex">\(L^p\)</span> 序列，Fatou 不等式先给出极限的范数界。有限测度集上，依测度收敛与 Hölder 估计给出 <span class="arithmatex">\(L^1\)</span> 收敛；再用简单函数稠密性扩大到全部 <span class="arithmatex">\(L^q\)</span> 测试。累积积分判据使用半直线示性函数的稠密线性张成。<span class="arithmatex">\(\ell^p\)</span> 情形更直接：先在每个有限坐标集上取极限得范数界，再由有限支集测试的稠密性推广。</p>
+<p>Helly 的序列版本先在可数稠密点集及存在的端点处对角抽取子列。单调性将极限夹到某个单调函数的全部连续点；间断点至多可数，再抽取一次，便得到每一点的收敛。网版本在有界乘积空间中用紧性。Stieltjes 收敛判据则用上下阶梯函数夹住连续测试函数，端点质量和累积函数的加常数歧义分别处理。</p>
+<p>原子逼近只需控制有限个测试函数。截取一个紧集使遗漏的全变差很小，在紧集上划分为有限个各测试函数振荡很小的 Borel 小块，以每块中的一个点代替整块，并用 <span class="arithmatex">\(\mu(A_j)\)</span> 作为系数。误差由振荡乘全变差控制，而 <span class="arithmatex">\(\sum_j|\mu(A_j)|\leq\|\mu\|\)</span> 保证范数不增加。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.1</span><span class="book-name">不完备的空间</span></p>
+<p>证明 <span class="arithmatex">\(C[0,1]\)</span> 在 <span class="arithmatex">\(L^2\)</span> 范数下不完备。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>用连续的分段线性函数在宽度 <span class="arithmatex">\(1/n\)</span> 的过渡区内逼近 <span class="arithmatex">\(\mathbf1_{[1/2,1]}\)</span>，平方误差至多为 <span class="arithmatex">\(1/n\)</span>，故连续逼近列是 <span class="arithmatex">\(L^2\)</span> Cauchy 列。</p>
+<p>若它在 <span class="arithmatex">\(C[0,1]\)</span> 中有 <span class="arithmatex">\(L^2\)</span> 极限 <span class="arithmatex">\(g\)</span>，则 <span class="arithmatex">\(g\)</span> 几乎处处等于阶跃函数。连续性会使 <span class="arithmatex">\(g\)</span> 在 <span class="arithmatex">\([0,1/2)\)</span> 恒为 <span class="arithmatex">\(0\)</span>、在 <span class="arithmatex">\((1/2,1]\)</span> 恒为 <span class="arithmatex">\(1\)</span>，在 <span class="arithmatex">\(1/2\)</span> 处矛盾。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.2</span><span class="book-name">弱-* 收敛并不意味着范数收敛</span></p>
+<p>在 <span class="arithmatex">\(\ell^\infty=(\ell^1)^*\)</span> 中，证明标准单位向量 <span class="arithmatex">\(e_n\)</span> 弱-* 趋于零，但不在范数下趋于零。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对任意 <span class="arithmatex">\(a\in\ell^1\)</span>，配对为 <span class="arithmatex">\(a_n\to0\)</span>，故弱-* 趋于零。但 <span class="arithmatex">\(\|e_n\|_\infty=1\)</span>。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.3</span><span class="book-name">跳跃点为何特殊</span></p>
+<p>在 <span class="arithmatex">\([-1,1]\)</span> 上令 <span class="arithmatex">\(\mu_n=\delta_{1/n}\)</span>。证明 <span class="arithmatex">\(\mu_n\overset{*}{\rightharpoonup}\delta_0\)</span>，但分布函数在 <span class="arithmatex">\(0\)</span> 不收敛到极限分布函数的值。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对连续 <span class="arithmatex">\(f\)</span>，<span class="arithmatex">\(f(1/n)\to f(0)\)</span>。但 <span class="arithmatex">\(\mu_n([-1,0])=0\)</span>，而 <span class="arithmatex">\(\delta_0([-1,0])=1\)</span>。极限分布函数在 <span class="arithmatex">\(0\)</span> 有跳跃。</p>
+</details>
+<p>关键方法是：先在稠密测试集上理解对象，利用统一估计扩张，再用弱-* 紧性取得极限。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-01/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第一章：拓扑、测度与函数逼近</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-03/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第三章：内积空间与 Hilbert 空间</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 3 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">分析</span><span class="zdd-end-chip is-category">泛函分析</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=duality">#duality</a><a class="zdd-end-chip" href="../../../../tags/?tag=weak-convergence">#weak-convergence</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

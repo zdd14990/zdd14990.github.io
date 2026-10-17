@@ -1,0 +1,1084 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="概率论课程第三章：弱大数定律与强大数定律、截断法、三级数定理。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Law of Large Numbers - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/">
+  <meta property="og:title" content="Law of Large Numbers - zdd14990">
+  <meta property="og:description" content="概率论课程第三章：弱大数定律与强大数定律、截断法、三级数定理。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-06">
+
+
+
+
+  <meta property="article:tag" content="course">
+
+  <meta property="article:tag" content="probability">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/">
+  <meta name="twitter:title" content="Law of Large Numbers - zdd14990">
+  <meta name="twitter:description" content="概率论课程第三章：弱大数定律与强大数定律、截断法、三级数定理。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Law of Large Numbers",
+    "description": "\u6982\u7387\u8bba\u8bfe\u7a0b\u7b2c\u4e09\u7ae0\uff1a\u5f31\u5927\u6570\u5b9a\u5f8b\u4e0e\u5f3a\u5927\u6570\u5b9a\u5f8b\u3001\u622a\u65ad\u6cd5\u3001\u4e09\u7ea7\u6570\u5b9a\u7406\u3002",
+    "url": "https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-03/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-06",
+    "keywords": ["course", "probability"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#law-of-large-numbers" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../../index.html">Home</a>
+      
+      
+        <a href="../../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#weak-law-of-large-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weak Law of Large Numbers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strong-law-of-large-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strong Law of Large Numbers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncation-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Truncation Method
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-series-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three-Series Theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maximal-growth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maximal Growth
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../../#probability-theory-course">概率论课程</a>
+    <span>Part 3 of 6</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="law-of-large-numbers">Law of Large Numbers</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-06">2026-07-06</time></span>
+    
+    <span>783 字 · 约 2 分钟</span>
+  </div>
+  
+</header>
+
+<hr />
+<h2 id="weak-law-of-large-numbers">Weak Law of Large Numbers</h2>
+<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. random variables with finite mean <span class="arithmatex">\(m\)</span>, and set</p>
+<div class="arithmatex">\[
+S_n = \sum_{j=1}^n X_j.
+\]</div>
+<p>The <strong>weak law of large numbers</strong> says that</p>
+<div class="arithmatex">\[
+\frac{S_n}{n} \longrightarrow m
+\quad\text{in probability.}
+\]</div>
+<p>Equivalently, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb{P}\left(\left|\frac{S_n}{n}-m\right|&gt;\varepsilon\right)\longrightarrow 0.
+\]</div>
+<hr />
+<p>Two sequences of random variables <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are called <strong>equivalent</strong> if</p>
+<div class="arithmatex">\[
+\sum_{n=1}^{\infty}\mathbb{P}(X_n\ne Y_n)&lt;\infty.
+\]</div>
+<p>By the Borel-Cantelli lemma, equivalent sequences differ only finitely many times almost surely.</p>
+<p><strong>Lemma.</strong> If <span class="arithmatex">\((X_n)\)</span> and <span class="arithmatex">\((Y_n)\)</span> are equivalent, then</p>
+<div class="arithmatex">\[
+\frac1n\sum_{j=1}^n (X_j-Y_j)\to 0
+\quad\text{almost surely.}
+\]</div>
+<div class="arithmatex">\[
+\frac{1}{n}\sum_{j=1}^n X_j\to X,\text{ in probability} \Longrightarrow \frac{1}{n}\sum_{j=1}^n Y_j\to X,\text{ in probability}.
+\]</div>
+<p>Thus equivalent truncations may be used to prove limit theorems.</p>
+<hr />
+<h2 id="strong-law-of-large-numbers">Strong Law of Large Numbers</h2>
+<p>Let <span class="arithmatex">\((X_n)_{n\ge 1}\)</span> be i.i.d. and set <span class="arithmatex">\(S_n=X_1+\cdots+X_n\)</span>. Then we have:</p>
+<div class="arithmatex">\[
+\mathbb{E}|X_1|&lt;\infty\Longrightarrow
+\frac{S_n}{n}\to \mathbb{E}[X_1]
+\quad\text{almost surely.}
+\]</div>
+<div class="arithmatex">\[
+\mathbb{E}|X_1|=\infty\Longrightarrow \limsup_{n\to\infty}\frac{|S_n|}{n}=\infty
+\quad\text{almost surely.}
+\]</div>
+<hr />
+<h2 id="truncation-method">Truncation Method</h2>
+<p>For <span class="arithmatex">\(A&gt;0\)</span>, define</p>
+<div class="arithmatex">\[
+Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
+\]</div>
+<p>Truncation separates the proof into two parts:</p>
+<ol>
+<li>
+<p>Control the large jumps:</p>
+<div class="arithmatex">\[
+\sum_n \mathbb{P}(|X_n|&gt;A_n)&lt;\infty.
+\]</div>
+</li>
+<li>
+<p>Prove convergence for bounded variables, usually by variance estimates or Kolmogorov inequalities.</p>
+</li>
+</ol>
+<p>This is the standard route from bounded laws to integrable laws.</p>
+<hr />
+<h2 id="three-series-theorem">Three-Series Theorem</h2>
+<p>Let <span class="arithmatex">\((X_n)\)</span> be independent real random variables and fix <span class="arithmatex">\(A&gt;0\)</span>. Put</p>
+<div class="arithmatex">\[
+Y_n = X_n\mathbf{1}_{\{|X_n|\le A\}}.
+\]</div>
+<p>Then <span class="arithmatex">\(\sum_n X_n\)</span> converges almost surely if and only if the following three series converge:</p>
+<div class="arithmatex">\[
+\sum_n \mathbb{P}(|X_n|&gt;A),
+\]</div>
+<div class="arithmatex">\[
+\sum_n \mathbb{E}[Y_n],
+\]</div>
+<div class="arithmatex">\[
+\sum_n \operatorname{Var}(Y_n).
+\]</div>
+<p>The value of <span class="arithmatex">\(A\)</span> is not essential; changing <span class="arithmatex">\(A\)</span> gives an equivalent criterion.</p>
+<p><strong>Proof.</strong> We first establish the maximal inequalities used in the proof.</p>
+<hr />
+<p><strong>Lemma 1:</strong> Let <span class="arithmatex">\(Z_1,\ldots,Z_n\)</span> be independent random variables satisfying</p>
+<div class="arithmatex">\[
+\mathbb E[Z_j]=0,\qquad \mathbb E[Z_j^2]&lt;\infty,
+\]</div>
+<p>and put <span class="arithmatex">\(R_k=\sum_{j=1}^k Z_j\)</span>. Then, for every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P\left(\max_{1\le k\le n}|R_k|\ge\varepsilon\right)
+\le
+\frac{\operatorname{Var}(R_n)}{\varepsilon^2}.
+\]</div>
+<p>For <span class="arithmatex">\(1\le k\le n\)</span>, define the first-exit events</p>
+<div class="arithmatex">\[
+E_k=
+\{|R_1|&lt;\varepsilon,\ldots,|R_{k-1}|&lt;\varepsilon,\ |R_k|\ge\varepsilon\}.
+\]</div>
+<p>The events <span class="arithmatex">\(E_k\)</span> are pairwise disjoint and</p>
+<div class="arithmatex">\[
+\bigcup_{k=1}^n E_k
+=
+\left\{\max_{1\le k\le n}|R_k|\ge\varepsilon\right\}.
+\]</div>
+<p>Since <span class="arithmatex">\(E_k\)</span> and <span class="arithmatex">\(R_k\)</span> depend only on <span class="arithmatex">\(Z_1,\ldots,Z_k\)</span>, while <span class="arithmatex">\(R_n-R_k\)</span> is independent of them and has mean <span class="arithmatex">\(0\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[R_n^2\mathbf 1_{E_k}]
+&amp;=
+\mathbb E[(R_k+R_n-R_k)^2\mathbf 1_{E_k}]\\
+&amp;=
+\mathbb E[R_k^2\mathbf 1_{E_k}]
++
+\mathbb P(E_k)\mathbb E[(R_n-R_k)^2]\\
+&amp;\ge
+\varepsilon^2\mathbb P(E_k).
+\end{aligned}
+\]</div>
+<p>Summing over <span class="arithmatex">\(k\)</span>,</p>
+<div class="arithmatex">\[
+\operatorname{Var}(R_n)
+=
+\mathbb E[R_n^2]
+\ge
+\varepsilon^2
+\mathbb P\left(\max_{1\le k\le n}|R_k|\ge\varepsilon\right),
+\]</div>
+<p>which proves the inequality.</p>
+<p>As a consequence, if <span class="arithmatex">\((Z_n)\)</span> are independent and centered and</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)&lt;\infty,
+\]</div>
+<p>then <span class="arithmatex">\(\sum_n Z_n\)</span> converges almost surely. Indeed, choose <span class="arithmatex">\(N_r\uparrow\infty\)</span> such that</p>
+<div class="arithmatex">\[
+\sum_{j&gt;N_r}\operatorname{Var}(Z_j)\le 2^{-3r}.
+\]</div>
+<p>Kolmogorov's inequality gives</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\sup_{k&gt;N_r}\left|\sum_{j=N_r+1}^k Z_j\right|&gt;2^{-r}
+\right)
+\le
+2^{2r}\sum_{j&gt;N_r}\operatorname{Var}(Z_j)
+\le 2^{-r}.
+\]</div>
+<p>The right-hand side is summable, so the Borel--Cantelli lemma shows that the partial sums of <span class="arithmatex">\(\sum_n Z_n\)</span> satisfy the Cauchy criterion almost surely.</p>
+<hr />
+<p><strong>Lemma 2:</strong> Let <span class="arithmatex">\(Z_1,\ldots,Z_n\)</span> be independent centered random variables satisfying <span class="arithmatex">\(|Z_j|\le C\)</span> a.s., and put <span class="arithmatex">\(R_k=\sum_{j=1}^k Z_j\)</span>. Then</p>
+<div class="arithmatex">\[
+\mathbb P\left(\max_{1\le k\le n}|R_k|\le B\right)
+\le
+\frac{(B+C)^2}{\operatorname{Var}(R_n)}.
+\]</div>
+<p>This centered form is sufficient for the proof below and is slightly sharper than the corresponding estimate stated in the slides.</p>
+<p>Let</p>
+<div class="arithmatex">\[
+E=\left\{\max_{1\le k\le n}|R_k|\le B\right\},
+\qquad
+p=\mathbb P(E),
+\]</div>
+<p>and let <span class="arithmatex">\(E_k\)</span> be the event that <span class="arithmatex">\(R_k\)</span> is the first partial sum to leave <span class="arithmatex">\([-B,B]\)</span>. On <span class="arithmatex">\(E_k\)</span>,</p>
+<div class="arithmatex">\[
+|R_k|\le B+C.
+\]</div>
+<p>As in the proof of Lemma 1,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[R_n^2\mathbf 1_{E_k}]
+&amp;=
+\mathbb E[R_k^2\mathbf 1_{E_k}]
++
+\mathbb P(E_k)\mathbb E[(R_n-R_k)^2]\\
+&amp;\le
+(B+C)^2\mathbb P(E_k)
++
+\operatorname{Var}(R_n)\mathbb P(E_k).
+\end{aligned}
+\]</div>
+<p>Also, <span class="arithmatex">\(|R_n|\le B\)</span> on <span class="arithmatex">\(E\)</span>. Therefore,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\operatorname{Var}(R_n)
+&amp;=
+\mathbb E[R_n^2\mathbf 1_E]
++
+\sum_{k=1}^n\mathbb E[R_n^2\mathbf 1_{E_k}]\\
+&amp;\le
+B^2p+(B+C)^2(1-p)+\operatorname{Var}(R_n)(1-p).
+\end{aligned}
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+p\,\operatorname{Var}(R_n)
+\le
+B^2p+(B+C)^2(1-p)
+\le
+(B+C)^2,
+\]</div>
+<p>which gives the desired inequality.</p>
+<hr />
+<p><strong>Lemma 3:</strong> Let <span class="arithmatex">\((U_n)\)</span> be independent and suppose that <span class="arithmatex">\(|U_n|\le A\)</span> a.s. If</p>
+<div class="arithmatex">\[
+\sum_n U_n
+\]</div>
+<p>converges almost surely, then</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(U_n)&lt;\infty
+\]</div>
+<p>and the numerical series</p>
+<div class="arithmatex">\[
+\sum_n\mathbb E[U_n]
+\]</div>
+<p>converges.</p>
+<p>Let <span class="arithmatex">\((U_n')\)</span> be an independent copy of <span class="arithmatex">\((U_n)\)</span>, defined on a product probability space, and set</p>
+<div class="arithmatex">\[
+Z_n=U_n-U_n'.
+\]</div>
+<p>Then the <span class="arithmatex">\(Z_n\)</span>'s are independent and centered,</p>
+<div class="arithmatex">\[
+|Z_n|\le 2A,
+\qquad
+\operatorname{Var}(Z_n)=2\operatorname{Var}(U_n),
+\]</div>
+<p>and <span class="arithmatex">\(\sum_n Z_n\)</span> converges almost surely.</p>
+<p>Consequently,</p>
+<div class="arithmatex">\[
+\sup_{k&gt;m}\left|\sum_{j=m+1}^k Z_j\right|\to0
+\qquad\text{a.s.}
+\]</div>
+<p>Thus, for all sufficiently large <span class="arithmatex">\(m\)</span> and every <span class="arithmatex">\(n&gt;m\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb P\left(
+\max_{m&lt;k\le n}
+\left|\sum_{j=m+1}^k Z_j\right|\le1
+\right)\ge\frac12.
+\]</div>
+<p>Applying Lemma 2 to <span class="arithmatex">\(Z_{m+1},\ldots,Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\frac12
+\le
+\frac{(1+2A)^2}
+{\sum_{j=m+1}^n\operatorname{Var}(Z_j)}.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\sum_{j=m+1}^n\operatorname{Var}(Z_j)
+\le
+2(1+2A)^2.
+\]</div>
+<p>Letting <span class="arithmatex">\(n\to\infty\)</span>,</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)&lt;\infty,
+\]</div>
+<p>and therefore</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(U_n)&lt;\infty.
+\]</div>
+<p>By Lemma 1,</p>
+<div class="arithmatex">\[
+\sum_n\bigl(U_n-\mathbb E[U_n]\bigr)
+\]</div>
+<p>converges almost surely. Since <span class="arithmatex">\(\sum_nU_n\)</span> also converges almost surely, their difference</p>
+<div class="arithmatex">\[
+\sum_{j=1}^n\mathbb E[U_j]
+=
+\sum_{j=1}^nU_j
+-
+\sum_{j=1}^n\bigl(U_j-\mathbb E[U_j]\bigr)
+\]</div>
+<p>converges. Hence <span class="arithmatex">\(\sum_n\mathbb E[U_n]\)</span> converges.</p>
+<hr />
+<p>"<span class="arithmatex">\(\Longleftarrow\)</span>"</p>
+<p>Assume that</p>
+<div class="arithmatex">\[
+\sum_n\mathbb P(|X_n|&gt;A)&lt;\infty,
+\qquad
+\sum_n\mathbb E[Y_n]\ \text{converges},
+\qquad
+\sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\]</div>
+<p>By the first Borel--Cantelli lemma,</p>
+<div class="arithmatex">\[
+\mathbb P(|X_n|&gt;A\ \text{i.o.})=0,
+\]</div>
+<p>so <span class="arithmatex">\(X_n=Y_n\)</span> eventually almost surely.</p>
+<p>Set</p>
+<div class="arithmatex">\[
+Z_n=Y_n-\mathbb E[Y_n].
+\]</div>
+<p>Then the <span class="arithmatex">\(Z_n\)</span>'s are independent and centered, and</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Z_n)
+=
+\sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\]</div>
+<p>By Lemma 1, <span class="arithmatex">\(\sum_nZ_n\)</span> converges almost surely. Since <span class="arithmatex">\(\sum_n\mathbb E[Y_n]\)</span> converges,</p>
+<div class="arithmatex">\[
+\sum_nY_n
+=
+\sum_nZ_n+\sum_n\mathbb E[Y_n]
+\]</div>
+<p>converges almost surely. Since <span class="arithmatex">\(X_n=Y_n\)</span> eventually,</p>
+<div class="arithmatex">\[
+\sum_nX_n
+\]</div>
+<p>also converges almost surely.</p>
+<hr />
+<p>"<span class="arithmatex">\(\Longrightarrow\)</span>"</p>
+<p>Assume that</p>
+<div class="arithmatex">\[
+\sum_nX_n
+\]</div>
+<p>converges almost surely. Then <span class="arithmatex">\(X_n\to0\)</span> almost surely, so</p>
+<div class="arithmatex">\[
+\mathbb P(|X_n|&gt;A\ \text{i.o.})=0.
+\]</div>
+<p>The events <span class="arithmatex">\(\{|X_n|&gt;A\}\)</span> are independent. By the second Borel--Cantelli lemma,</p>
+<div class="arithmatex">\[
+\sum_n\mathbb P(|X_n|&gt;A)&lt;\infty.
+\]</div>
+<p>Moreover, <span class="arithmatex">\(X_n=Y_n\)</span> eventually almost surely, so <span class="arithmatex">\(\sum_nY_n\)</span> converges almost surely. Since <span class="arithmatex">\(|Y_n|\le A\)</span>, Lemma 3 gives</p>
+<div class="arithmatex">\[
+\sum_n\operatorname{Var}(Y_n)&lt;\infty
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sum_n\mathbb E[Y_n]
+\]</div>
+<p>converges. Thus all three series converge.</p>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\sum_nX_n\text{ converges a.s.}
+\quad\Longleftrightarrow\quad
+\begin{cases}
+\displaystyle \sum_n\mathbb P(|X_n|&gt;A)&lt;\infty,\\[2mm]
+\displaystyle \sum_n\mathbb E[Y_n]\text{ converges},\\[2mm]
+\displaystyle \sum_n\operatorname{Var}(Y_n)&lt;\infty.
+\end{cases}
+\]</div>
+<p>Finally, if the criterion holds for one value of <span class="arithmatex">\(A&gt;0\)</span>, the series <span class="arithmatex">\(\sum_nX_n\)</span> converges almost surely; the necessity part then shows that the criterion holds for every <span class="arithmatex">\(A&gt;0\)</span>.</p>
+<hr />
+<h2 id="maximal-growth">Maximal Growth</h2>
+<p>For i.i.d. nonnegative random variables, the behavior of</p>
+<div class="arithmatex">\[
+\max_{1\le j\le n}X_j
+\]</div>
+<p>is controlled by the tail of <span class="arithmatex">\(X_1\)</span>. In many applications, the largest summand explains why a law of large numbers fails when <span class="arithmatex">\(\mathbb{E}|X_1|=\infty\)</span>.</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="概率论课程章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-02/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Convergences</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-04/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">Central Limit Theorem</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../../#probability-theory-course">概率论课程 · 第 3 / 6 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">概统</span><span class="zdd-end-chip is-category">概率论</span>
+      <a class="zdd-end-chip" href="../../../../../tags/?tag=course">#course</a><a class="zdd-end-chip" href="../../../../../tags/?tag=probability">#probability</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

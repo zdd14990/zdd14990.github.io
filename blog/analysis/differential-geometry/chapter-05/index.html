@@ -1,0 +1,1104 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="微分几何笔记第五章：流形上的微积分。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第五章：流形上的微积分 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-05/">
+  <meta property="og:title" content="第五章：流形上的微积分 - zdd14990">
+  <meta property="og:description" content="微分几何笔记第五章：流形上的微积分。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="differential-geometry">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-05/">
+  <meta name="twitter:title" content="第五章：流形上的微积分 - zdd14990">
+  <meta name="twitter:description" content="微分几何笔记第五章：流形上的微积分。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e94\u7ae0\uff1a\u6d41\u5f62\u4e0a\u7684\u5fae\u79ef\u5206",
+    "description": "\u5fae\u5206\u51e0\u4f55\u7b14\u8bb0\u7b2c\u4e94\u7ae0\uff1a\u6d41\u5f62\u4e0a\u7684\u5fae\u79ef\u5206\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-05/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-05/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["differential-geometry"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 流形上的微积分
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#differential-geometry">微分几何</a>
+    <span>Part 5 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">05</div>
+    <h1 id="top"><span class="book-visually-hidden">第 5 章：</span>流形上的微积分</h1>
+  </div>
+  <p class="book-standfirst">接下来我们来考虑流形上的定向、流形上的积分、带边流形上的积分，介绍 Stokes 定理与高斯绝妙定理。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>4,479 字 · 约 13 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>流形上的微积分</h2>
+<p>先来看看在线性空间中我们是如何定向的：</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">线性空间的定向</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 是一个 <span class="arithmatex">\(n\)</span> 维线性空间，<span class="arithmatex">\(f=(f_1,\cdots,f_n)\)</span> 为 <span class="arithmatex">\(V\)</span> 的一个<strong>标架(frame)</strong>/基(这里称之为标架而不是基意在强调这是一个给定序的基)，称 <span class="arithmatex">\(\left\{V\text{上的标架}\right\}/\sim\)</span> 中一个元素为 <span class="arithmatex">\(V\)</span> 上一个定向，其中 <span class="arithmatex">\(f\sim \tilde{f} \Longleftrightarrow \exists P \in \mathrm{GL}_n(\mathbb{R})\)</span>，<span class="arithmatex">\(\tilde{f}=f\cdot P\)</span>，<span class="arithmatex">\(\det P&gt;0\)</span></p>
+</div>
+<p><span class="arithmatex">\(V\)</span> 上有且仅有两个定向：<span class="arithmatex">\([f=(f_1,\cdots,f_n)],[(f_2,f_1,\cdots,f_n)]\)</span>。</p>
+<p>等价的，我们借助微分形式描述定向：<span class="arithmatex">\((\land^nV^*-\left\{0\right\})/\sim\)</span> 为 <span class="arithmatex">\(V\)</span> 上一个定向，其中 <span class="arithmatex">\(\Omega\sim \tilde{\Omega}\Longleftrightarrow \exists \lambda&gt;0\)</span>，<span class="arithmatex">\(\tilde{\Omega}=\lambda \Omega\)</span>。</p>
+<p>接下来我们来看流形上的定向：</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span><span class="book-name">流形上的定向</span></p>
+<p>称 <span class="arithmatex">\(M\)</span> <strong>可定向(orientable)</strong>，若存在 <span class="arithmatex">\(\left\{(V_\alpha,\psi_\alpha,y_\alpha)\right\}_\alpha\)</span>，其中在 <span class="arithmatex">\(V_\alpha\)</span> 上有 <span class="arithmatex">\(\Gamma(V_\alpha,TM)\)</span> 之标架 <span class="arithmatex">\(f_\alpha=(f_{\alpha,1},\cdots,f_{\alpha,n})\)</span>，在 <span class="arithmatex">\(V_\alpha\cap V_\beta\)</span> 上，存在可逆 <span class="arithmatex">\(P_{\beta\alpha}\)</span> 使得 <span class="arithmatex">\(f_\alpha=f_\beta P_{\beta\alpha}^{-1}\)</span>，<span class="arithmatex">\(\det P_{\beta\alpha}^{-1}&gt;0\)</span>，同样定义 <span class="arithmatex">\(\sim\)</span>，称 <span class="arithmatex">\(\left\{(f_\alpha)_\alpha\right\}/\sim\)</span> 中一个元素为流形 <span class="arithmatex">\(M\)</span> 上一个定向。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.3</span></p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\text{存在}\left\{(V_\alpha,\psi_\alpha,y_\alpha)\right\}_\alpha\text{满足}\det P_{\beta\alpha}^{-1}&gt;0
+\\
+\Longleftrightarrow &amp;\text{存在} \left\{(V_\alpha,\psi_\alpha,z_\alpha)\right\}_\alpha \text{满足} \frac{\partial}{\partial z^\alpha}=\frac{\partial}{\partial z^\beta}J_{\beta\alpha}^{-1},\det J_{\beta\alpha}^{-1}
+\\
+\Longleftrightarrow &amp;\text {存在} \left\{(V_\alpha,\psi_\alpha,z_\alpha)\right\}_\alpha,\Omega_\alpha\in \Gamma (V_\alpha,\land^nT^*M) \text{使得} \Omega_\alpha=\lambda_{\beta\alpha}\Omega_\beta,\lambda_{\beta\alpha}&gt;0
+\\
+\Longleftrightarrow &amp;\text{存在} \Omega\in \Gamma(M,\land^nT^*M)\text{处处非零，称为\textbf{体积形式(Volume form)}}
+\end{aligned}
+\]</div>
+</div>
+<p>下面我们介绍流形上可定向图册的构造方式，这同时可判断可定向图册的存在性：取流形上的 <span class="arithmatex">\(C^{\infty}\)</span> 局部坐标图册，<span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span>，考虑函数族 <span class="arithmatex">\(\left\{\det J_{\beta\alpha }^{-1}\right\}_{\alpha,\beta}\)</span></p>
+<ul>
+<li>
+<p>若 <span class="arithmatex">\(\forall \alpha,\beta\)</span>，<span class="arithmatex">\(\det J_{\beta\alpha}^{-1}&gt;0\)</span>，那么 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span> 自动为可定向图册。</p>
+</li>
+<li>
+<p>若上述条件不满足，考虑在 <span class="arithmatex">\(x_\alpha=(x_\alpha^1,\cdots,x^n_\alpha)\)</span> 上调整顺序，得 <span class="arithmatex">\(z_\alpha=(z_\alpha^1,\cdots,z_\alpha^n)\)</span> 使得 <span class="arithmatex">\(\left\{(U_\alpha,\tilde{\varphi}_\alpha,z_\alpha)\right\}_\alpha\)</span> 为可定向图册，则</p>
+<div class="arithmatex">\[
+\det\left(\frac{\partial z_\beta}{\partial z_\alpha}\right)&gt;0\Longleftrightarrow \det\left(\frac{\partial x_\beta}{\partial x_\alpha}\right)O_\beta O_\alpha^{-1}&gt;0,\forall \alpha,\beta
+\]</div>
+<p>其中  <span class="arithmatex">\(O_\alpha=\det \left(\dfrac{\partial z_\alpha}{\partial x_\alpha}\right)\in \left\{\pm 1\right\}\)</span>。</p>
+<p>则可定向图册 <span class="arithmatex">\(\left\{(U_\alpha,\tilde{\varphi}_\alpha,z_\alpha)\right\}_\alpha\)</span> 存在 <span class="arithmatex">\(\Longleftrightarrow\)</span> 关于 <span class="arithmatex">\(\left\{O_\alpha:U_\alpha\rightarrow \left\{\pm 1\right\}\right\}_\alpha\)</span> 的方程</p>
+<div class="arithmatex">\[
+\det\left(\frac{\partial x_\beta}{\partial x_\alpha}\right)O_\beta O_\alpha^{-1}&gt;0,\forall \alpha,\beta
+\]</div>
+<p>有解。</p>
+</li>
+</ul>
+<p>下面我们看一些自然的可定向流形的构造：</p>
+<ul>
+<li>
+<p>辛流形：<span class="arithmatex">\(\omega\in A^2(M)\)</span>，<span class="arithmatex">\(\mathrm{d} \omega=0\)</span> 非退化 <span class="arithmatex">\(\Longrightarrow\)</span> <span class="arithmatex">\(\omega^n\)</span> 为体积形式。</p>
+</li>
+<li>
+<p>复流形：局部同胚 <span class="arithmatex">\(\mathbb{C}^n\)</span> <span class="arithmatex">\(\left(\left(\dfrac{\partial}{\partial z^\beta},\dfrac{\partial}{\partial \bar{z}^\beta}\right)=\left(\dfrac{\partial}{\partial z^\alpha},\dfrac{\partial}{\partial \bar{z}^\alpha}\right)\cdot P_{\beta\alpha}^{-1}\text{自动满足}\det P_{\beta\alpha}^{-1}\right)\)</span></p>
+<p>注：<span class="arithmatex">\(n\)</span> 维复流形 <span class="arithmatex">\(X\)</span> 上是否存在一个处处非零的全纯微分 <span class="arithmatex">\(n-\)</span>形式 <span class="arithmatex">\(\Longleftrightarrow\)</span> <span class="arithmatex">\(C_1(X)=0\)</span>，读者可自行尝试证明。</p>
+</li>
+<li>
+<p>Riemann manifold：我们将在下面详细说明。</p>
+</li>
+</ul>
+<p>我们首先来定义一个度量：</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p>流形 <span class="arithmatex">\(M\)</span> 上一个度量为一个 <span class="arithmatex">\((0,2)\)</span>型张量</p>
+<div class="arithmatex">\[
+g=\mathrm{d} s^2\in \Gamma(M,\mathrm{Sym}^{\otimes 2}T^*M):\Gamma(M,TM)\otimes \Gamma(M,TM)\rightarrow C^{\infty}(M,\mathbb{R})
+\]</div>
+<p>且满足</p>
+<ul>
+<li>
+<p>对称。</p>
+</li>
+<li>
+<p>正定：<span class="arithmatex">\(\left.g\right|_p(X_p,X_p)\ge 0\)</span> 且取等仅当 <span class="arithmatex">\(X_p=0\in T_pM\)</span></p>
+</li>
+<li>
+<p>双线性：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\left.g\right|_p(\lambda_1X_p+\lambda_2Y_p,\mu_1Z_p+\mu_2W_p)=&amp;\lambda_1\mu_1\left.g\right|_p(X_p,Z_p)+\lambda_1\mu_2\left.g\right|_p(X_p,W_p)
+\\
++&amp;\lambda_2\mu_1\left.g\right|_p(Y_p\text{ },Z_p)+\lambda_2\mu_2\left.g\right|_p(Y_p\text{ },W_p)
+\end{aligned}
+\]</div>
+</li>
+</ul>
+<p>此时称 <span class="arithmatex">\((M,g=\mathrm{d} s^2)\)</span> 为一个 Riemann 流形。</p>
+</div>
+<p>注意，局部在 <span class="arithmatex">\((U,\varphi,x)\)</span> 下，</p>
+<div class="arithmatex">\[
+\left.g\right|_U=\sum_{i,j}g_{ij}(x)\mathrm{d} x^i\otimes \mathrm{d} x^j
+\]</div>
+<p>通过度量可以定义 <span class="arithmatex">\(n-\)</span>形式：</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.5</span></p>
+<p>设 <span class="arithmatex">\(g=\mathrm{d} s^2\)</span> 为 <span class="arithmatex">\(M\)</span> 上一个度量，</p>
+<div class="arithmatex">\[
+\mathrm{Vol}_g:=\left\{\sqrt{\det g_{\alpha,ij}(x)}\mathrm{d} x_\alpha^1\land \cdots \land \mathrm{d} x_\alpha^n\right\}_\alpha
+\]</div>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.6</span></p>
+<p>当 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span> 为可定向图册时，<span class="arithmatex">\(\mathrm{Vol}_g\)</span> 良定且给出处处非 <span class="arithmatex">\(0\)</span> 的 <span class="arithmatex">\(n-\)</span>形式。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>在 <span class="arithmatex">\(U_\alpha\cap U_\beta\)</span> 中，</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathrm{d} x_\beta^1\land \cdots \land \mathrm{d} x_\beta^n&amp;=\det\left(\frac{\partial x_\beta}{\partial x_\alpha}\right)\mathrm{d} x_\alpha^1\land \cdots \land \mathrm{d} x_\alpha^n
+\\
+g_{\beta,\tilde{i}\tilde{j}}(x)&amp;=g_{\alpha,ij}(x)\cdot \frac{\partial x_\alpha^i}{\partial x_\beta^{\tilde{i}}}\cdot \frac{\partial x_\alpha^j}{\partial x_\beta^{\tilde{j}}}
+\\
+\det\left(g_{\beta,\tilde{i}\tilde{j}}(x)\right)&amp;=\det\left(g_{\alpha,ij}(x)\right)\cdot \det\left(\frac{\partial x_\alpha^i}{\partial x_\beta^{\tilde{i}}}\right)\cdot \det\left(\frac{\partial x_\alpha^j}{\partial x_\beta^{\tilde{j}}}\right)
+\\
+\Longrightarrow  \sqrt{\det\left(g_{\beta,\tilde{i}\tilde{j}}(x)\right)}\mathrm{d} x_\beta^1\land \cdots \land \mathrm{d} x_\beta^n&amp;=\left|\det\left(\frac{\partial x_\alpha}{\partial x_\beta}\right)\right|\cdot \det\left(\frac{\partial x_\beta}{\partial x_\alpha}\right) \sqrt{\det\left(g_{\alpha,ij}(x)\right)}\mathrm{d} x_\alpha^1\land \cdots \land \mathrm{d} x_\alpha^n
+\end{aligned}
+\]</div>
+<p>当 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span> 为可定向图册时，</p>
+<div class="arithmatex">\[
+\det\left(\frac{\partial x_\beta}{\partial x_\alpha}\right)&gt;0
+\]</div>
+<p>故 <span class="arithmatex">\(\mathrm{Vol}_g\)</span> 良定，<span class="arithmatex">\(\sqrt{\det\left(g_{\alpha,ij}(x)\right)}&gt;0\Longrightarrow\)</span> 其处处非零。</p>
+</details>
+<p>当 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span> 是否为定向图册未知时，通过构造</p>
+<div class="arithmatex">\[
+O_\alpha:U_\alpha\rightarrow \left\{\pm 1\right\}
+\]</div>
+<p>以及</p>
+<div class="arithmatex">\[
+\left\{O_\alpha\sqrt{\det\left(g_{\alpha,ij}\right)}\mathrm{d} x^1_\alpha\land \cdots\land \mathrm{d} x_\alpha^n\right\}
+\]</div>
+<p>来构造良定且处处非零的 <span class="arithmatex">\(n-\)</span>形式。</p>
+<p>注意！度量的定义不需要定向/可定向图册，但由度量诱导良定的体积形式通常将一个可定向流形上的某局部图册 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span> 的体积形式写为 <span class="arithmatex">\(\left\{O_\alpha\sqrt{\det g_{\alpha,ij}(x)}\mathrm{d} x^1_\alpha\land \cdots\land \mathrm{d} x_\alpha^n\right\}\)</span></p>
+<p>接下来我们考虑流形上的积分。回忆我们在分析中所学的，在欧氏空间中，我们将积分定义成 Riemann 可积。而利用局部平凡化映射，我们可以将流形局部的积分定义为相应的欧氏空间上的积分，这可以由“变量替换”表述，再利用单位分解将局部拼成整体。</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.7</span><span class="book-name">引理（开区域 <span class="arithmatex">\(\Omega\subseteq \mathbb{R}^n\)</span> 上积分变量替换）</span></p>
+<p>设 <span class="arithmatex">\(\Omega_1,\Omega_2\)</span> 为 <span class="arithmatex">\(\mathbb{R}^n\)</span> 上开区域(开集，无边)，<span class="arithmatex">\(\phi:\Omega_1\rightarrow \Omega_2\)</span> 是微分同胚，<span class="arithmatex">\(f\in C^{\infty}(\Omega_2,\mathbb{R})\)</span> 且 <span class="arithmatex">\(\mathrm{supp}f=\left\{x_2\in \Omega_2\Big| f(x_2)\neq 0 \right\}\)</span> 紧，那么</p>
+<div class="arithmatex">\[
+\int_{\Omega_2}f(y)\mathrm{d} y^1\cdots\mathrm{d} y^n=\int_{\Omega_1}f\circ \phi(x)\cdot \left|\det \frac{\partial y}{\partial x}\right|\cdot \mathrm{d} x^1\cdots \mathrm{d}  x^n
+\]</div>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.8</span><span class="book-name">局部的积分</span></p>
+<p>设 <span class="arithmatex">\(f\in C^{\infty}(M,\mathbb{R})\)</span>，<span class="arithmatex">\(\mathrm{supp}f\)</span> 紧，且</p>
+<div class="arithmatex">\[
+\mathrm{supp}f\subseteq (U,\varphi,x)
+\]</div>
+<p>定义</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\int_{(M,[\Omega_M])}f(x)\mathrm{d} x^1\land \cdots \land \mathrm{d} x^n&amp;:=\int_{(U,[\Omega_M])}f(x)\mathrm{d} x^1\land \cdots \land \mathrm{d} x^n
+\\
+&amp;:=\int_{(\varphi(U),[\Omega_M])}(f\mathrm{d} x^1\land \cdots \land \mathrm{d} x^n)\circ \varphi^{-1}
+\\
+(x^k=\pi^k\circ \varphi )&amp;:=\begin{cases}
+\quad\int_{\varphi(U)}f\circ \varphi^{-1}\mathrm{d} \pi^1\cdots \mathrm{d} \pi^n\text{，}\mathrm{d} x^1\land \cdots \land \mathrm{d} x^n \text{ 与 }\Omega_U \text{ 符号一致}\\
+-\int_{\varphi(U)}f\circ \varphi^{-1}\mathrm{d} \pi^1\cdots \mathrm{d} \pi^n\text{，}\mathrm{d} x^1\land \cdots \land \mathrm{d} x^n \text{ 与 }\Omega_U \text{ 符号相反}\\
+\end{cases}
+\end{aligned}
+\]</div>
+</div>
+<p>约定 <span class="arithmatex">\(M\)</span> 上的定向为 <span class="arithmatex">\([\Omega_M]\)</span>，所有局部图均与 <span class="arithmatex">\([\Omega_M]\)</span> 相容。</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.9</span><span class="book-name">局部积分的良定性</span></p>
+<p>设 <span class="arithmatex">\(\left.f_\alpha\right|_{U_\alpha\cap U_\beta }\)</span> 在 <span class="arithmatex">\(U_\alpha\cap U_\beta\)</span> 上具有紧支集，则</p>
+<div class="arithmatex">\[
+\int_{(\varphi_\alpha(U_\alpha\cap U_\beta),[\Omega_M])} (f_\alpha\mathrm{d} x^1_\alpha\land \cdots \land \mathrm{d} x^n_\alpha)\circ \varphi_\alpha^{-1}=\int_{(\varphi_\beta(U_\alpha\cap U_\beta),[\Omega_M])} (f_\beta\mathrm{d} x^1_\beta\land \cdots \land \mathrm{d} x^n_\beta)\circ \varphi_\beta^{-1}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(\left.f_\alpha\right|_{U_\alpha\cap U_\beta }\)</span> 具有紧支集，由 <span class="arithmatex">\(f_\beta =\det \dfrac{\partial x_\alpha}{\partial x_\beta}f_\alpha\)</span>，故 <span class="arithmatex">\(\left.f_\beta\right|_{U_\alpha\cap U_\beta }\)</span>，从而右边有定义。</p>
+<p>设微分同胚 <span class="arithmatex">\(\phi:\varphi_\alpha(U_\alpha\cap U_\beta)\rightarrow \varphi_\beta(U_\alpha\cap U_\beta)\)</span>，由欧式空间开区域上变量替换：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\int_{(\varphi_\beta(U_\alpha\cap U_\beta),[\Omega_M])} f_\beta\circ \varphi_\beta ^{-1}\cdot(\mathrm{d} x^1_\beta\land \cdots \land \mathrm{d} x^n_\beta)\circ \varphi_\beta^{-1}
+\\
+=&amp;\int_{\varphi_\beta(U_\alpha\cap U_\beta)} f_\beta \circ \varphi_\beta^{-1}\mathrm{d} \pi^1_\beta \cdots \mathrm{d} \pi^n_\beta
+\\
+(\text{引理})=&amp;\int_{\varphi_\alpha(U_\alpha\cap U_\beta)} f_\beta \circ \varphi_\beta^{-1}\circ \phi \cdot\left|\det \frac{\partial x_\beta}{\partial x_\alpha}\right|\cdot\mathrm{d} \pi^1_\alpha \cdots  \mathrm{d} \pi^n_\alpha
+\\
+=&amp;\int_{\varphi_\alpha(U_\alpha\cap U_\beta)} f_\beta \circ \varphi_\alpha^{-1} \cdot\det \frac{\partial x_\beta}{\partial x_\alpha}\cdot\mathrm{d} \pi^1_\alpha \cdots  \mathrm{d} \pi^n_\alpha
+\\
+=&amp;\int_{(\varphi_\alpha(U_\alpha\cap U_\beta),[\Omega_M])} (f_\alpha\mathrm{d} x^1_\alpha\land \cdots \land \mathrm{d} x^n_\alpha)\circ \varphi_\alpha^{-1}
+\end{aligned}
+\]</div>
+</details>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.10</span><span class="book-name">定义（流形上 <span class="arithmatex">\(n-\)</span>形式的积分）</span></p>
+<p>设 <span class="arithmatex">\(\omega\in A^n_C(M)\triangleq\left\{\text{具有紧支集的} n-\text{形式}\right\}\)</span>，取流形 <span class="arithmatex">\(M\)</span> 的正则覆盖 <span class="arithmatex">\(\left\{(U_i,\varphi_i,x_i,U_i^{\frac{1}{2}})\right\}_i\)</span>，其与 <span class="arithmatex">\(M\)</span> 上的定向 <span class="arithmatex">\([\Omega_M]\)</span> 相容。作从属于该覆盖的单位分解 <span class="arithmatex">\(\left\{\eta_i\right\}_i\)</span> 使得</p>
+<div class="arithmatex">\[
+\begin{cases}
+\mathrm{supp}\eta_i\subseteq U_i,i=1,2,\cdots,r\\
+\eta_i\Big|_{\mathrm{supp}\omega}=0,i\ge r+1\\
+\end{cases}
+\]</div>
+<p>定义</p>
+<div class="arithmatex">\[
+\int_{(M,[\Omega_M])} \omega:=\sum_i\int_{(U_i,[\Omega_M])} \eta_i\omega
+\]</div>
+</div>
+<p>我们有</p>
+<div class="arithmatex">\[
+\mathrm{supp}(\eta_i\omega )\subseteq \mathrm{supp} \eta_i\cap \mathrm{supp}\omega\begin{cases}
+\subseteq U_i\cap \mathrm{supp}\omega&amp;,i=1,2,\cdots,r\\
+=0&amp;,i\ge r+1
+\end{cases}
+\]</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.11</span></p>
+<ul>
+<li>正则覆盖单位分解存在。</li>
+<li>积分不依赖于正则覆盖及从属于其的单位分解的选取。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>之后再补。</p>
+</details>
+<p>实际计算中，取可定向图册 <span class="arithmatex">\(\left\{(U_\alpha,\varphi_\alpha,x_\alpha)\right\}_\alpha\)</span>，在 <span class="arithmatex">\(U_\alpha\)</span> 上作局部计算，并利用容斥原理得 <span class="arithmatex">\(\cup_\alpha U_\alpha=M\)</span> 上的积分结果。</p>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.12</span></p>
+<p>设 <span class="arithmatex">\((M,[\Omega_M]),(N,[\Omega_N])\)</span> 为定向流形，则</p>
+<ul>
+<li>
+<p>若微分同胚 <span class="arithmatex">\(\phi:M\rightarrow N\)</span> 保持定向结构(<span class="arithmatex">\([\phi^*\Omega_N]=[\Omega_M]\)</span>)，那么 <span class="arithmatex">\(\forall \omega\in A^n_C(N)\)</span>，</p>
+<div class="arithmatex">\[
+\int _{(M,[\Omega_N])}\phi^*\omega=\int _{(N,[\Omega_N])} \omega
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall \omega\in A^n_C(M)\)</span>，</p>
+<div class="arithmatex">\[
+\int _{(N,[\Omega_N])} \omega=(-1)\int _{(M,[\Omega_M])} \omega
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>显然。</p>
+</details>
+<p>下面我们来看带边流形上的积分与 Stokes 定理。在 Riemann 积分中我们定义 <span class="arithmatex">\(\int_{[a,b]}f(x)dx:=\int_{(a,b)}f(x)dx\)</span> 若 <span class="arithmatex">\(f\)</span> 光滑，以及 <span class="arithmatex">\(\int_{[a,b]} F'(x)dx=F(x)\Big|_a^b=F(b)-F(a)\)</span> 若 <span class="arithmatex">\(F'\)</span> 光滑，这可以看成某种定向。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.13</span><span class="book-name">平凡空间</span></p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb{R}_+^n&amp;=\left\{(x^1,\cdots,x^n)\in \mathbb{R}^n\Big| x^n\ge 0\right\}\\
+\partial \mathbb{R}_+^n&amp;=\left\{(x^1,\cdots,x^{n-1},0)\in \mathbb{R}^n\right\}\overset{\text{同胚}}{\simeq} \mathbb{R}^{n-1}
+\end{aligned}
+\]</div>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.14</span><span class="book-name">平凡空间的映射</span></p>
+<p>设 <span class="arithmatex">\(U,V\)</span> 为 <span class="arithmatex">\(\mathbb{R}_+^n\)</span> 的开集(即 <span class="arithmatex">\(U,V\)</span> 为 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中开集 <span class="arithmatex">\(\tilde{U},\tilde{V}\)</span> 与 <span class="arithmatex">\(\mathbb{R}^n_+\)</span> 之交)，<span class="arithmatex">\(f:U\rightarrow V\)</span> 连续，对 <span class="arithmatex">\(\forall p\in U\)</span>，存在开集 <span class="arithmatex">\(p\in \tilde{U}\subseteq\mathbb{R}^n\)</span>，<span class="arithmatex">\(q=f(p)\in \tilde{V}\subseteq \mathbb{R}^n\)</span>，光滑 <span class="arithmatex">\(F:\tilde{U}\rightarrow \tilde{V}\)</span> 满足</p>
+<div class="arithmatex">\[
+F\Big|_{U\cap \tilde{U}}=f\Big|_{U\cap \tilde{U}}
+\]</div>
+<p>那么称 <span class="arithmatex">\(f:U\rightarrow V\)</span> <strong>在 <span class="arithmatex">\(p\)</span> 处光滑</strong>，此时定义 <span class="arithmatex">\(f'(p)=F'(p)\)</span>。</p>
+<p>若 <span class="arithmatex">\(\forall p\in U\)</span>，<span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(p\)</span> 处连续，则称 <span class="arithmatex">\(f\)</span> <strong>光滑</strong>。</p>
+</div>
+<p>读者可自行验证上述定义与 <span class="arithmatex">\(F:\tilde{U}\rightarrow \tilde{V}\)</span> 的选取无关。</p>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.15</span><span class="book-name">平凡空间光滑映射的性质</span></p>
+<ul>
+<li>若开集 <span class="arithmatex">\(\tilde{W}\rightarrow \mathbb{R}^n\)</span>，<span class="arithmatex">\(G:\tilde{W}\rightarrow \mathbb{R}^n\)</span> 光滑且 <span class="arithmatex">\(\left.G\right|_{\tilde{W}\cap \mathbb{R}_+^n}=0\)</span>，那么 <span class="arithmatex">\(\forall p\in \tilde{W}\cap \mathbb{R}_+^n\)</span>，<span class="arithmatex">\(G'(p)=0\)</span>。</li>
+<li>设开集 <span class="arithmatex">\(U\subseteq \mathbb{R}_+^n\)</span>，<span class="arithmatex">\(f:U\rightarrow\mathbb{R}_+^n\)</span> 光滑，若 <span class="arithmatex">\(p\in U^\circ\)</span>，<span class="arithmatex">\(f(p)\in \partial \mathbb{R}_+^n\)</span>，那么 <span class="arithmatex">\(\forall v\in T_p\mathbb{R}_+^n\)</span>，<span class="arithmatex">\(f'(p)(v)\subseteq \partial \mathbb{R}_+^n\subseteq \mathbb{R}^n=T_{f(p)}\mathbb{R}_+^n\)</span></li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：当 <span class="arithmatex">\(p\in (\tilde{W}\cap \mathbb{R}_+^n)^\circ\)</span> 时结论显然。</p>
+<p>当 <span class="arithmatex">\(p\in \partial(\tilde{W}\cap \mathbb{R}_+^n)=\tilde{W}\cap \partial \mathbb{R}_+^n\)</span> 时，选取序列 <span class="arithmatex">\(\left\{p_n\right\}\subseteq (\tilde{W}\cap \mathbb{R}_+^n)^\circ\)</span>，<span class="arithmatex">\(p_n\rightarrow p\)</span>，那么 <span class="arithmatex">\(0=G'(p_n)\rightarrow G'(p)\)</span>。</p>
+<p>综上 <span class="arithmatex">\(G'(p)=0\)</span>。</p>
+<p><span class="arithmatex">\((2)\)</span>：设 <span class="arithmatex">\(\pi:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 为投影映射，那么由于 <span class="arithmatex">\(\forall x\in U\subseteq \mathbb{R}^n_+\)</span>，<span class="arithmatex">\(\pi\circ f(x)\ge 0\)</span>。从而 <span class="arithmatex">\(0\le \pi[f(p+tv)]=\pi[f(p)+f'(p)(tv)+o(tv)]\)</span></p>
+<p>令 <span class="arithmatex">\(t\rightarrow 0^+\)</span>，<span class="arithmatex">\(0\le( \pi(f'(p)(tv))+\pi(o(tv)))/t=\pi(f'(p)(v))\)</span>，令 <span class="arithmatex">\(t\rightarrow 0^-\)</span> 类似的有 <span class="arithmatex">\(0\ge=\pi(f'(p)(v))\)</span>，故 <span class="arithmatex">\(\pi(f'(p)(v))=0\)</span>，即 <span class="arithmatex">\(f'(p)(v)\subseteq \partial \mathbb{R}^n_+\)</span>。</p>
+</details>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.16</span></p>
+<p>设开集 <span class="arithmatex">\(U,V\subseteq \mathbb{R}^n_+\)</span>，<span class="arithmatex">\(f:U\rightarrow V\)</span> 是光滑的微分同胚(<span class="arithmatex">\(F:\tilde{U}\rightarrow \tilde{V}\)</span> 的限制)，那么</p>
+<div class="arithmatex">\[
+\begin{aligned}
+f^\circ :=&amp;\left.f\right|_{U^\circ}:U^\circ \rightarrow V^\circ \\
+\partial f:=&amp;\left.f\right|_{\partial U}:\partial U \rightarrow \partial V
+\end{aligned}
+\]</div>
+<p>均为微分同胚。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>分情况讨论。</p>
+</details>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.17</span><span class="book-name">带边流形</span></p>
+<p>在流形的定义中，以 <span class="arithmatex">\(\mathbb{R}^n_+\)</span> 或 <span class="arithmatex">\(\mathbb{R}^n\)</span> 代替 <span class="arithmatex">\(\mathbb{R}^n\)</span>。</p>
+<p>若对于 <span class="arithmatex">\(p\in M\)</span>，存在 <span class="arithmatex">\(p\in (U,\varphi)\)</span> 使 <span class="arithmatex">\(\varphi(U)\cap \partial \mathbb{R}^n_+=\emptyset\)</span>，那么称 <span class="arithmatex">\(p\)</span> 为 <span class="arithmatex">\(M\)</span> 的内点，记 <span class="arithmatex">\(p\in M^\circ\)</span>。否则称 <span class="arithmatex">\(p\)</span> 为边界点，称 <span class="arithmatex">\(p\in \partial M\)</span>。</p>
+</div>
+<p>注意到 <span class="arithmatex">\(\partial(\partial M)=\emptyset\)</span> 故 <span class="arithmatex">\(\partial M\)</span> 为普通意义下的光滑流形。</p>
+<p>关于流形的性质可直接推广，仅在正则覆盖 <span class="arithmatex">\(\left\{(U_i,\varphi_i,V_i)\right\}\)</span> 做如下修改：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+U_i\cap \partial M&amp;\neq \emptyset\\
+\varphi_i(U_i)&amp;=B_1(0)\cap \mathbb{R}^n_+\\
+\varphi_i(V_i)&amp;=B_{1/2}(0)\cap \mathbb{R}^n_+
+\end{aligned}
+\]</div>
+<p>注意这里 <span class="arithmatex">\(\varphi(\partial U)= \varphi(U)\cap \partial \mathbb{R}^n_+\subseteq \partial \mathbb{R}^n_+\)</span> 是开集。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.18</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(n\)</span> 维带边流形，那么 <span class="arithmatex">\(M\)</span> 上的微分结构确定了 <span class="arithmatex">\(\partial M\)</span> 上的一个微分结构，使 <span class="arithmatex">\(\partial M\)</span> 为 <span class="arithmatex">\(M\)</span> 的正则子流形，记为 <span class="arithmatex">\(i:\partial M\rightarrow M\)</span>。若 <span class="arithmatex">\(M\)</span> 可定向，则 <span class="arithmatex">\(\partial M\)</span> 也可定向，且 <span class="arithmatex">\(M\)</span> 的定向确定的 <span class="arithmatex">\(\partial M\)</span> 的定向。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>注意到，<span class="arithmatex">\(\partial \mathbb{R}^n_+\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 的正则子流形，且与 <span class="arithmatex">\(\mathbb{R}^{n-1}\)</span> 微分同胚，对 <span class="arithmatex">\(M\)</span> 的坐标图 <span class="arithmatex">\((U,\varphi)\)</span>，<span class="arithmatex">\(\left.\varphi\right|_{\partial U}(\partial U)=\varphi(U)\cap \partial \mathbb{R}^n_+\)</span> 为 <span class="arithmatex">\(\partial \mathbb{R}^n_+\)</span> 中开集。从而 <span class="arithmatex">\(\partial M\)</span> 的微分结构可由</p>
+<div class="arithmatex">\[
+\left\{(U_\alpha\cap \partial M,\left.\varphi_\alpha\right|_{U_\alpha\cap \partial M})\right\}_\alpha
+\]</div>
+<p>给出，由<strong>引理 11.3</strong> 即得转移函数光滑，从而 <span class="arithmatex">\(\partial M\)</span> 为 <span class="arithmatex">\(n-1\)</span> 维微分流形。由</p>
+<div class="arithmatex">\[
+\varphi(U\cap \partial M)=\left\{x\in \varphi(U)\Big|x^n=0\right\}
+\]</div>
+<p>得 <span class="arithmatex">\(\partial M\)</span> 为 <span class="arithmatex">\(M\)</span> 的正则子流形，下证 <span class="arithmatex">\(M\)</span> 的定向给出 <span class="arithmatex">\(\partial M\)</span> 的定向。</p>
+<p>设 <span class="arithmatex">\((U,\varphi,x),(V,\psi,y)\)</span> 为 <span class="arithmatex">\(M\)</span> 的含 <span class="arithmatex">\(p\in \partial M\)</span> 的局部坐标图，且 <span class="arithmatex">\(\mathrm{det}(\psi\circ \varphi^{-1})'&gt;0\)</span>。</p>
+<p>由于 <span class="arithmatex">\(x^n\ge 0,y^n\ge 0\)</span>，且由<strong>引理 11.3</strong> 知取等仅当该点<span class="arithmatex">\(\in \partial M\)</span>。故 <span class="arithmatex">\(\psi\circ \varphi^{-1}\)</span> 局部可表为：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;y^l=y^k(x^1,\cdots,x^n),1\le k&lt;n
+\\
+&amp;y^n(x^1,\cdots,x^{n-1},0)=0
+\end{aligned}
+\]</div>
+<p>取 <span class="arithmatex">\(q\in U\cap V\cap \partial M\)</span>，设 <span class="arithmatex">\(\varphi(q)=(a^1,\cdots,a^{n-1},0)\)</span>，</p>
+<div class="arithmatex">\[
+\det \left((\psi\circ \varphi^{-1})\Big|_{\varphi(q)}\right)=\left. \left| \begin{matrix}
+\left( \frac{\partial y^k}{\partial x^l} \right) _{1\le k,l\le n-1}&amp;        \ast\\
+0&amp;      \frac{\partial y^n}{\partial x^n}\\
+\end{matrix} \right| \right|_{\varphi \left( q \right)}
+\]</div>
+<p>考虑函数 <span class="arithmatex">\(f(t)=y^n(a^1,\cdots,a^{n-1},t),t\ge 0\)</span>，那么 <span class="arithmatex">\(f(t)\ge 0,t\ge 0\)</span>，从而</p>
+<div class="arithmatex">\[
+\frac{\partial y^n}{\partial x^n}\Big|_\varphi(q)=f'(0)=\lim_{t\rightarrow 0^+}\frac{f(t)}{t}\ge 0
+\]</div>
+<p>但 <span class="arithmatex">\(\det\left((\psi\circ \varphi^{-1})\Big|_{\varphi(q)}\right)&gt;0\)</span> 必须有 <span class="arithmatex">\(\frac{\partial y^n}{\partial x^n}\Big|_{\varphi(q)}&gt;0\)</span>，继而 <span class="arithmatex">\(\det\left( \frac{\partial y^k}{\partial x^l} \right) _{1\le k,l\le n-1}&gt;0\)</span>，即</p>
+<div class="arithmatex">\[
+\begin{aligned}
+(U\cap \partial M,\left.\varphi\right|_{U\cap \partial M},\left.x\right|_{U\cap \partial M}=(x^1,\cdots,x^{n-1},0))
+\\
+(V\cap \partial M,\left.\psi\right|_{V\cap \partial M},\left.y\right|_{V\cap \partial M}=(y^1,\cdots,y^{n-1},0))\end{aligned}
+\]</div>
+<p>定向相容</p>
+</details>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.19</span><span class="book-name">Stokes</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 可定向，由 <span class="arithmatex">\([\Omega_M]\)</span> 给出，<span class="arithmatex">\(\partial M\)</span> 赋予诱导定向 <span class="arithmatex">\(\Omega_{\partial M}=i_{N_\text{外}}\Omega_M\)</span>。设 <span class="arithmatex">\(\omega\in A_c^{n-1}(M)\)</span>，则</p>
+<div class="arithmatex">\[
+\int_{(M,[\Omega_M])}\mathrm{d} \omega =\int _{(\partial M,[\Omega_{\partial M}])}\omega
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由 <span class="arithmatex">\(\int\)</span> 的线性性，只需证 <span class="arithmatex">\(\mathrm{supp}\)</span> 包含于 <span class="arithmatex">\(M\)</span> 上一个可定向图册中某一个局部图 <span class="arithmatex">\((U,\varphi,x)\)</span> 证明。此时设</p>
+<div class="arithmatex">\[
+\omega=\sum_{k=1}^n (-1)^k \lambda^k \mathrm{d} x^1\land \cdots\land \check{\mathrm{d} x^k}\land \cdots\land \mathrm{d} x^n,\lambda^k\in C^\infty(U)
+\]</div>
+<p>则</p>
+<div class="arithmatex">\[
+\mathrm{d} \omega=\left(\sum_{k=1}^n \frac{\partial \lambda^k}{\partial x^k}\right) \mathrm{d} x^1\land \cdots\land \mathrm{d} x^n
+\]</div>
+<p>从而</p>
+<div class="arithmatex">\[
+\int _M \mathrm{d} \omega =\int _U \mathrm{d} \omega =\int _{\varphi(U)}\left(\sum_{k=1}^n \frac{\partial \lambda^k}{\partial x^k} \mathrm{d} x^1\land \cdots\land \mathrm{d} x^n\right)\circ \varphi^{-1}
+\]</div>
+<ul>
+<li>
+<p><span class="arithmatex">\(U\cap \partial M=\emptyset\)</span>，此时 <span class="arithmatex">\(\varphi(U)\)</span> 为 <span class="arithmatex">\(\mathbb{R}^n\)</span>，不妨设 <span class="arithmatex">\(\varphi(U)\)</span> 包含于正方体 <span class="arithmatex">\(C=\left\{\pi\in \mathbb{R}^n\Big|0\le \pi^k\le 1\right\}\)</span></p>
+<p>由于 <span class="arithmatex">\(\mathrm{supp}\omega\subseteq U\)</span> 为紧集，可将 <span class="arithmatex">\(\lambda^k\circ \varphi^{-1}\)</span> 连续延拓至 <span class="arithmatex">\(C\)</span> 上，且在 <span class="arithmatex">\(\varphi(U)\)</span> 之外为 <span class="arithmatex">\(0\)</span>。</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\int _{\varphi(U)}\left(\sum_{k=1}^n \frac{\partial \lambda^k}{\partial x^k} \mathrm{d} x^1\cdots\mathrm{d} x^n\right)\circ \varphi^{-1}
+\\
+=&amp;\int _{C}\left(\sum_{k=1}^n \frac{\partial \lambda^k}{\partial x^k} \mathrm{d} x^1 \cdots\mathrm{d} x^n\right)\circ \varphi^{-1}
+\\
+=&amp;\sum_{k=1}^n\int _{C}\left( \frac{\partial \lambda^k\circ \varphi^{-1}}{\partial x^k} \mathrm{d} \pi^1 \cdots\mathrm{d} \pi^n\right)
+\\
+=&amp;\sum_{k=1}^n\int_0^1\cdots\int_0^1\left(\lambda^k\circ \varphi^{-1}(\pi^1,\cdots,\pi^n)\right)\Big|_{\pi^k=0}^{1}\mathrm{d} \pi^1 \cdots\check{\mathrm{d} \pi^{k}}\cdots\mathrm{d} \pi^n
+\\
+(\lambda^k \text{在} \partial C \text{上为} 0)=&amp;0
+\end{aligned}
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(U\cap \partial M\neq\emptyset\)</span>，同上作 <span class="arithmatex">\(\varphi(U)\subseteq C^\circ \cup \left\{\pi\in \mathbb{R}\Big| \pi^n=0\right\}\)</span></p>
+<div class="arithmatex">\[
+\begin{aligned}
+\int_M\mathrm{d} \omega=&amp;\int_0^1\cdots\int _0^1 \mathrm{d} \pi^1\cdots\mathrm{d} \pi^{n-1}(0-\lambda^n\circ \varphi^{-1}(\pi^1,\cdots,\pi^n=0))(\text{只有} k=n \text{有贡献})
+\\
+=&amp;\int_{\varphi(\partial M\cap U)}(-1)(\lambda^n\circ \varphi^{-1})\mathrm{d} \pi^1\cdots\mathrm{d} \pi^{n-1}
+\\
+=&amp;\int_{[\partial M\cap U,\Omega_\partial M]}(-1)\lambda^n(-1)^n\mathrm{d} x^1\land\cdots\land\mathrm{d} x^{n-1}
+\\
+=&amp;\int_{[\partial M\cap U,\Omega_\partial M]}(-1)^{n-1}\lambda^n\mathrm{d} x^1\land\cdots\land\mathrm{d} x^{n-1}
+\\
+=&amp;\int_{[\partial M\cap U,\Omega_\partial M]}\omega
+\end{aligned}
+\]</div>
+</li>
+</ul>
+</details>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="differential-geometry-notes.pdf" href="../../../../assets/differential-geometry-notes.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="微分几何章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第四章：微分形式的应用</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第六章：曲线的微分几何</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#differential-geometry">微分几何 · 第 5 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">分析</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=differential-geometry">#differential-geometry</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

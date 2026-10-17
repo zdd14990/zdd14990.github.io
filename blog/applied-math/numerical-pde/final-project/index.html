@@ -1,0 +1,1933 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="PDE 数值解大作业：Helmholtz 方程特征值问题的有限差分离散，以及幂法、反迭代、Shift-and-Invert Lanczos 与 RQI 的实现、复杂度分析和数值实验。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/numerical-pde/final-project/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>PDE 数值解大作业 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/final-project/">
+  <meta property="og:title" content="PDE 数值解大作业 - zdd14990">
+  <meta property="og:description" content="PDE 数值解大作业：Helmholtz 方程特征值问题的有限差分离散，以及幂法、反迭代、Shift-and-Invert Lanczos 与 RQI 的实现、复杂度分析和数值实验。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="numerical-methods">
+
+  <meta property="article:tag" content="pde">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/final-project/">
+  <meta name="twitter:title" content="PDE 数值解大作业 - zdd14990">
+  <meta name="twitter:description" content="PDE 数值解大作业：Helmholtz 方程特征值问题的有限差分离散，以及幂法、反迭代、Shift-and-Invert Lanczos 与 RQI 的实现、复杂度分析和数值实验。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "PDE \u6570\u503c\u89e3\u5927\u4f5c\u4e1a",
+    "description": "PDE \u6570\u503c\u89e3\u5927\u4f5c\u4e1a\uff1aHelmholtz \u65b9\u7a0b\u7279\u5f81\u503c\u95ee\u9898\u7684\u6709\u9650\u5dee\u5206\u79bb\u6563\uff0c\u4ee5\u53ca\u5e42\u6cd5\u3001\u53cd\u8fed\u4ee3\u3001Shift-and-Invert Lanczos \u4e0e RQI \u7684\u5b9e\u73b0\u3001\u590d\u6742\u5ea6\u5206\u6790\u548c\u6570\u503c\u5b9e\u9a8c\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/numerical-pde/final-project/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/numerical-pde/final-project/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["numerical-methods", "pde"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验报告
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="实验报告">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 引言
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 离散化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 基础求解器实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 基础求解器实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幂法 (Power Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反迭代法 (Inverse Iteration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 高级求解器实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 高级求解器实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shift-and-Invert Lanczos 算法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        瑞利商迭代 (RQI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 理论复杂度分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 理论复杂度分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        时间复杂度分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="时间复杂度分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幂法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反迭代法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lanczos 算法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        瑞利商迭代
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        空间复杂度分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 数值实验与结果分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 数值实验与结果分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 1：正确性验证与物理模态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 2：时间复杂度分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 3：RQI 收敛速度测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 4：算法综合对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 结论
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supplement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        补充材料
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="补充材料">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 引言
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 数学推导
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 基础求解器实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 基础求解器实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幂法（Power Method）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="幂法（Power Method）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        算法步骤
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        收敛性分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反迭代法（Inverse Iteration）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="反迭代法（Inverse Iteration）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        算法步骤
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        收敛性分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 理论复杂度分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 理论复杂度分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        时间复杂度分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="时间复杂度分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幂法复杂度详细分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幂法迭代次数分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反迭代法复杂度详细分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        收敛速度对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        空间复杂度分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="空间复杂度分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        存储需求详细分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        空间复杂度总结表
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 结论与展望
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PDF 原文
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PDF 原文">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pdf-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验报告 PDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pdf-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        补充材料 PDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <span>应用数学</span>
+    <span>2026 · 07</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="top">PDE 数值解大作业</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>2,531 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="report">实验报告</h2>
+<h3 id="s1-1">1. 引言</h3>
+<p>Helmholtz 方程是数学物理中描述波动现象的基本方程，在声学、电磁学、量子力学等领域有广泛应用。本报告研究二维 Helmholtz 特征值问题的数值解法，包括数学推导、有限差分离散化、基础求解器实现（幂法和反迭代法）、高级方法（Lanczos 算法和 Rayleigh 商迭代）以及数值实验分析。</p>
+<h3 id="s1-2">2. 离散化</h3>
+<p>考虑二维 Helmholtz 特征值问题：</p>
+<div class="arithmatex">\[
+-\Delta u = \lambda u \quad \text{在} \ \Omega = [0,1] \times [0,1]
+\tag{2}
+\]</div>
+<p>带有 Dirichlet 边界条件：<span class="arithmatex">\(u|_{\partial\Omega} = 0\)</span>。</p>
+<p>我们采用均匀网格离散化的方法：取网格间距 <span class="arithmatex">\(\Delta x = \Delta y = h = \frac{1}{N+1}\)</span>。内部点数共 <span class="arithmatex">\(N^2\)</span> 个。利用五点差分格式，对拉普拉斯算子进行近似：</p>
+<div class="arithmatex">\[
+-\Delta u_{i,j} \approx \frac{4u_{i,j} - u_{i-1,j} - u_{i+1,j} - u_{i,j-1} - u_{i,j+1}}{h^2}
+\]</div>
+<p>令 <span class="arithmatex">\(U\)</span> 为按行优先排列的未知向量，离散化后的特征值问题转化为代数方程：</p>
+<div class="arithmatex">\[
+\mathbf{A} \mathbf{u} = \lambda \mathbf{u}
+\]</div>
+<p>其中 <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{N^2 \times N^2}\)</span> 是稀疏对称矩阵，具有分块三对角结构：</p>
+<div class="arithmatex">\[
+\mathbf{A} = \frac{1}{h^2} (I_N \otimes D_2 + D_2 \otimes I_N)
+\]</div>
+<p>其中 <span class="arithmatex">\(D_2 = \text{tridiag}(-1, 2, -1)\)</span> 是 <span class="arithmatex">\(N \times N\)</span> 的一维拉普拉斯矩阵。</p>
+<h3 id="s1-3">3. 基础求解器实现</h3>
+<h4 id="s1-3-1">幂法 (Power Method)</h4>
+<p>幂法用于求解模最大的特征值。收敛速度取决于最大特征值与次大特征值的比值。</p>
+<p><strong>代码：幂法</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>lambda, v, iter_log<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">power_method_algorithm</span><span class="p">(</span>A, tol, max_iter<span class="p">)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">max_iter</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="n">v_new</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">iter_log</span><span class="p">;</span><span class="w"> </span><span class="n">lambda</span><span class="p">];</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v_new</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">tol</span><span class="p">,</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">end</span>
+</code></pre></div>
+<h4 id="s1-3-2">反迭代法 (Inverse Iteration)</h4>
+<p>反迭代法用于求解最接近给定值 <span class="arithmatex">\(\mu\)</span> 的特征值。利用 LU 分解预处理，其收敛速度通常为线性，但在特征值附近收敛较快。</p>
+<p><strong>代码：反迭代法</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>lambda, v, iter_log<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">inverse_iteration</span><span class="p">(</span>A, mu, tol, max_iter<span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">[</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">lu</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">speye</span><span class="p">(</span><span class="n">n</span><span class="p">));</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">max_iter</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">U</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="p">(</span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">)));</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="n">v_new</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">iter_log</span><span class="p">;</span><span class="w"> </span><span class="n">lambda</span><span class="p">];</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v_new</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">tol</span><span class="p">,</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">end</span>
+</code></pre></div>
+<h3 id="s1-4">4. 高级求解器实现</h3>
+<p>经典的算法倾向于收敛到模最大的特征值。然而，在物理问题中，我们通常关注最小特征值。此外，为了获得极高精度的单个特征值，我们需要更快的局部收敛算法。</p>
+<h4 id="s1-4-1">Shift-and-Invert Lanczos 算法</h4>
+<p>Lanczos 算法是一种迭代方法，用于求解大规模稀疏矩阵的特征值问题和线性方程组。该算法由 Cornelius Lanczos 在 1950 年提出，是 Krylov 子空间方法的重要代表。该算法通过构造一个三对角矩阵，将原矩阵的特征值问题转化为更容易求解的形式。</p>
+<p>设 <span class="arithmatex">\(\mathbf{A}\)</span> 是 <span class="arithmatex">\(n\)</span> 阶实对称矩阵。Lanczos 方法通过从一个随机选取的初始向量 <span class="arithmatex">\(\mathbf{b}_0\)</span> 开始，构建一个子空间 <span class="arithmatex">\(S_j = \text{span}(\mathbf{b}_0, \mathbf{b}_1, \dots, \mathbf{b}_j)\)</span> 。在每一步迭代中，新向量 <span class="arithmatex">\(\mathbf{b}_{j+1}\)</span> 的生成过程可以看作是将 <span class="arithmatex">\(A \mathbf{b}_j\)</span> 投影到已知子空间 <span class="arithmatex">\(S_j\)</span> 上，然后去除该投影分量，从而得到与之前所有向量正交的新向量。</p>
+<p>不同于一般的正交化过程需要与所有之前的向量进行运算，Lanczos 的天才发现在于：对于对称矩阵，每一步迭代只需要通过三项递归式即可保证正交性。</p>
+<p>设第 <span class="arithmatex">\(j\)</span> 步得到的向量为 <span class="arithmatex">\(\mathbf{b}_j\)</span>，我们构建下一个向量 <span class="arithmatex">\(\mathbf{b}_{j+1}\)</span> 为 <span class="arithmatex">\(\mathbf{A} \mathbf{b}_j\)</span> 与前两项的线性组合：</p>
+<div class="arithmatex">\[
+\mathbf{b}_{j+1} = \mathbf{A} \mathbf{b}_j - \alpha_j \mathbf{b}_j - \beta_{j-1} \mathbf{b}_{j-1}
+\]</div>
+<p>其中系数 <span class="arithmatex">\(\alpha_j\)</span> 和 <span class="arithmatex">\(\beta_{j-1}\)</span> 的选取原则是使新向量 <span class="arithmatex">\(\mathbf{b}_{j+1}\)</span> 的模长最小。由此推导出的系数计算公式为：</p>
+<div class="arithmatex">\[
+\alpha_j = \frac{(\mathbf{A} \mathbf{b}_j) \mathbf{b}_j}{\mathbf{b}_j^2}, \quad \beta_{j-1} = \frac{(\mathbf{A} \mathbf{b}_j) \mathbf{b}_{j-1}}{\mathbf{b}_{j-1}^2}
+\]</div>
+<p>经过 <span class="arithmatex">\(n\)</span> 步迭代（或在 <span class="arithmatex">\(m &lt; n\)</span> 步提前终止），我们将得到一组双正交向量 <span class="arithmatex">\(B = [\mathbf{b}_0, \mathbf{b}_1, \dots, \mathbf{b}_{n-1}]\)</span>，使得原矩阵 <span class="arithmatex">\(A\)</span> 被转化为三对角矩阵 <span class="arithmatex">\(T\)</span>：</p>
+<div class="arithmatex">\[
+T = (B^*)^T A B = \begin{pmatrix}
+\alpha_0 &amp; \beta_0 &amp; &amp; \\
+\beta_0 &amp; \alpha_1 &amp; \beta_1 &amp; \\
+&amp; \beta_1 &amp; \ddots &amp; \ddots \\
+&amp; &amp; \ddots &amp; \alpha_{n-1}
+\end{pmatrix}
+\]</div>
+<p>此时，<span class="arithmatex">\(T\)</span> 的特征值即为原矩阵 <span class="arithmatex">\(\mathbf{A}\)</span> 的特征值近似解。</p>
+<p>根据上述推导，我们给出 Lanczos 算法的具体步骤如下：</p>
+<ul>
+<li>初始化：随机选取初始向量 <span class="arithmatex">\(\mathbf{b}_0\)</span>。</li>
+<li><span class="arithmatex">\(\mathbf{b}_1 = \mathbf{A} \mathbf{b}_0 - \alpha_0 \mathbf{b}_0, \quad \text{其中 } \alpha_0 = \frac{(\mathbf{A} \mathbf{b}_0) \mathbf{b}_0}{\mathbf{b}_0^2}\)</span></li>
+<li>对于 <span class="arithmatex">\(j = 1, 2, \dots\)</span>，执行以下步骤：</li>
+<li><span class="arithmatex">\(\mathbf{b}_{j+1} = \mathbf{A} \mathbf{b}_j - \alpha_j \mathbf{b}_j - \beta_{j-1} \mathbf{b}_{j-1}\)</span></li>
+<li><span class="arithmatex">\(\alpha_j = \frac{(\mathbf{A} \mathbf{b}_j) \mathbf{b}_j}{\mathbf{b}_j^2}, \quad \beta_{j-1} = \frac{\mathbf{b}_j^2}{\mathbf{b}_{j-1}^2}\)</span></li>
+<li>终止条件：当 <span class="arithmatex">\(\beta_j = 0\)</span> 时，迭代结束，此时达到了最小多项式的秩 。</li>
+</ul>
+<p><strong>代码：Lanczos</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>evals, T, B<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">lanczos_solver</span><span class="p">(</span>A, v0, m<span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">B</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w"> </span><span class="nb">alpha</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="nb">beta</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">zeros</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">b_curr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v0</span><span class="p">);</span><span class="w"> </span><span class="n">B</span><span class="p">(:,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">b_curr</span><span class="p">;</span><span class="w"> </span><span class="n">b_prev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">beta_prev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nb">j</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">m</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="n">u</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b_curr</span><span class="p">;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nb">alpha</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">b_curr</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="n">r</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">alpha</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b_curr</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">beta_prev</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b_prev</span><span class="p">;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">            </span><span class="n">beta_curr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">beta_curr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-10</span><span class="p">,</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">            </span><span class="nb">beta</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">beta_curr</span><span class="p">;</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">            </span><span class="n">b_next</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">beta_curr</span><span class="p">;</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">            </span><span class="n">B</span><span class="p">(:,</span><span class="w"> </span><span class="nb">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">b_next</span><span class="p">;</span><span class="w"> </span><span class="n">b_prev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">b_curr</span><span class="p">;</span><span class="w"> </span><span class="n">b_curr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">b_next</span><span class="p">;</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">            </span><span class="n">beta_prev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">beta_curr</span><span class="p">;</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="k">end</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">diag</span><span class="p">(</span><span class="nb">alpha</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">diag</span><span class="p">(</span><span class="nb">beta</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">diag</span><span class="p">(</span><span class="nb">beta</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="n">evals</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">sort</span><span class="p">(</span><span class="nb">eig</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="k">end</span>
+</code></pre></div>
+<h4 id="s1-4-2">瑞利商迭代 (RQI)</h4>
+<p>瑞利商迭代（Rayleigh Quotient Iteration）是一种寻找单个特征值的高效算法。其核心思想是在反幂法的基础上，利用当前的瑞利商作为位移。具体步骤如下：</p>
+<ul>
+<li>计算瑞利商：<span class="arithmatex">\(\mu_k = \frac{\mathbf{v}_k^T \mathbf{A} \mathbf{v}_k}{\mathbf{v}_k^T \mathbf{v}_k}\)</span></li>
+<li>求解线性方程组：<span class="arithmatex">\((\mathbf{A} - \mu_k \mathbf{I}) \mathbf{w}_{k+1} = \mathbf{v}_k\)</span></li>
+<li>归一化：<span class="arithmatex">\(\mathbf{v}_{k+1} = \mathbf{w}_{k+1} / \|\mathbf{w}_{k+1}\|\)</span></li>
+</ul>
+<p>对于对称矩阵，RQI 具有立方收敛速度，即误差以 <span class="arithmatex">\(\epsilon_{k+1} \approx C \epsilon_k^3\)</span> 的速度下降。</p>
+<p><strong>代码：RQI</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>lambda, v, iter_log<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">rqi_solver</span><span class="p">(</span>A, v0, tol, max_iter<span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">I</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">speye</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v0</span><span class="p">);</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">max_iter</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">        </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">iter_log</span><span class="p">;</span><span class="w"> </span><span class="n">lambda</span><span class="p">];</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="n">residual</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">residual</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">tol</span><span class="p">,</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="k">end</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="k">try</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">            </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">I</span><span class="p">)</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">        </span><span class="k">catch</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">lambda</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">I</span><span class="p">)</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="k">end</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="k">end</span>
+</code></pre></div>
+<h3 id="s1-5">5. 理论复杂度分析</h3>
+<h4 id="s1-5-1">时间复杂度分析</h4>
+<h5 id="s1-5-1-1">幂法</h5>
+<p>幂法的计算核心在于单步迭代的累积开销与总迭代次数的乘积。在每一次迭代中，主要运算包括稀疏矩阵-向量乘法、向量归一化以及Rayleigh商的计算。针对二维Helmholtz方程的五点差分格式，离散矩阵 <span class="arithmatex">\(A \in \mathbb{R}^{n \times n}\)</span>（其中 <span class="arithmatex">\(n=N^2\)</span>）每行仅有5个非零元素。因此，SpMV操作仅需 <span class="arithmatex">\(5N^2\)</span> 次浮点运算。加上向量归一化（<span class="arithmatex">\(2N^2\)</span>）、Rayleigh商计算（利用中间结果仅需 <span class="arithmatex">\(N^2\)</span>）以及收敛性检查（<span class="arithmatex">\(N^2\)</span>），单步迭代的总计算量约为 <span class="arithmatex">\(9N^2\)</span>，即具有 <span class="arithmatex">\(O(N^2)\)</span> 的线性复杂度。</p>
+<p>然而，幂法的总耗时受限于其收敛速度。收敛率由主特征值与次大特征值的比值 <span class="arithmatex">\(\rho = |\lambda_2/\lambda_1|\)</span> 决定。对于Helmholtz问题，<span class="arithmatex">\(\rho\)</span> 通常接近于1（例如 <span class="arithmatex">\(0.9 \sim 0.98\)</span>），导致收敛缓慢。为达到预设精度 <span class="arithmatex">\(\varepsilon\)</span>，所需迭代次数 <span class="arithmatex">\(k\)</span> 满足 <span class="arithmatex">\(k \approx O(\log(1/\varepsilon))\)</span>。综上所述，幂法的总时间复杂度为 <span class="arithmatex">\(T_{\text{power}}(N) = O(N^2 \log(1/\varepsilon))\)</span>。</p>
+<h5 id="s1-5-1-2">反迭代法</h5>
+<p>反迭代法通过引入位移 <span class="arithmatex">\(\mu\)</span> 显著加速了收敛，但其代价是将简单的矩阵乘法转变为求解线性方程组 <span class="arithmatex">\((A - \mu I) w = v\)</span>。该算法的整体复杂度取决于线性方程组求解器的选择：</p>
+<p>若采用<strong>直接法</strong>（如针对带状矩阵的LU分解），由于矩阵带宽为 <span class="arithmatex">\(N\)</span>，初始的分解过程需要 <span class="arithmatex">\(O(N^4)\)</span> 的运算量。分解完成后，每次迭代中的前向和回代求解仅需 <span class="arithmatex">\(O(N^3)\)</span>。</p>
+<p>若采用<strong>迭代法</strong>（如预条件共轭梯度法 PCG），位移后的矩阵 <span class="arithmatex">\(A - \mu I\)</span> 条件数通常较差（<span class="arithmatex">\(\kappa \approx O(N^2)\)</span>），导致 PCG 内部需要 <span class="arithmatex">\(O(N)\)</span> 次迭代才能收敛。因此，反迭代法外部的每一步实际上消耗了 <span class="arithmatex">\(O(N \cdot N^2) = O(N^3)\)</span> 的计算量。</p>
+<p>尽管单步成本较高，但反迭代法在 <span class="arithmatex">\(\mu\)</span> 接近特征值时表现出二次收敛特性，通常仅需极少的步数即可收敛。因此，其总复杂度通常由求解线性方程组的开销主导。</p>
+<h5 id="s1-5-1-3">Lanczos 算法</h5>
+<p>在单步迭代中，Lanczos 同样以稀疏矩阵-向量乘法（SpMV）为核心，基础开销与幂法相当（<span class="arithmatex">\(O(N^2)\)</span>）。Lanczos 算法通常仅需较小的子空间维数（<span class="arithmatex">\(m \ll N\)</span>）即可精确逼近矩阵谱边缘的特征值（基态或高频态）。最后对 <span class="arithmatex">\(m \times m\)</span> 三对角矩阵求解特征值的开销仅为 <span class="arithmatex">\(O(m^3)\)</span>，相对于大规模矩阵运算可忽略不计。因此，Lanczos 算法的总时间复杂度约为 <span class="arithmatex">\(O(m N^2)\)</span>。它在保持线性复杂度的同时，能比幂法提取更多的谱信息。</p>
+<h5 id="s1-5-1-4">瑞利商迭代</h5>
+<p>瑞利商迭代是反迭代法的变体，其位移量 <span class="arithmatex">\(\lambda_k\)</span> 在每一步都会动态更新。单步开销是 RQI 的主要瓶颈。由于位移 <span class="arithmatex">\(\lambda_k\)</span> 随迭代变化，每一步都必须重新进行矩阵分解。若使用直接法，单步代价高达 <span class="arithmatex">\(O(N^4)\)</span>（分解）或 <span class="arithmatex">\(O(N^3)\)</span>（求解）。</p>
+<p>然而，RQI 的优势在于其惊人的立方收敛速度。对于实对称矩阵，通常仅需 <span class="arithmatex">\(3 \sim 5\)</span> 步即可达到机器精度。极少的迭代次数弥补了昂贵的单步开销。因此，RQI 非常适合在 Lanczos 算法提供良好的初始猜测后，用于特征值的高精度计算。</p>
+<h4 id="s1-5-2">空间复杂度分析</h4>
+<p>空间复杂度的分析主要考量矩阵存储与求解过程中的辅助空间。</p>
+<p>对于矩阵 <span class="arithmatex">\(A\)</span>，利用压缩稀疏行（CSR）格式存储仅需 <span class="arithmatex">\(O(N^2)\)</span> 空间，这远优于稠密格式的 <span class="arithmatex">\(O(N^4)\)</span>，是处理大规模网格的关键。基础向量存储同样维持在 <span class="arithmatex">\(O(N^2)\)</span> 级别。</p>
+<ol>
+<li><strong>幂法与 RQI</strong>：仅需存储当前迭代向量和辅助向量，空间复杂度最低，为 <span class="arithmatex">\(O(N^2)\)</span>。但需注意，若 RQI 使用直接求解器，动态 LU 分解产生的填充元可能导致瞬时空间峰值达到 <span class="arithmatex">\(O(N^3)\)</span>。</li>
+<li><strong>反迭代法</strong>：若使用直接法，LU 分解因子的存储需求为 <span class="arithmatex">\(O(N^3)\)</span>，是内存瓶颈所在。</li>
+<li><strong>Lanczos 算法</strong>：为了在最后一步还原 Ritz 向量（近似特征向量），必须存储整个 Krylov 子空间的基底 <span class="arithmatex">\(B \in \mathbb{R}^{N^2 \times m}\)</span>。随着迭代步数 <span class="arithmatex">\(m\)</span> 的增加，其空间需求线性增长。这是 Lanczos 算法相对于幂法的主要内存代价。</li>
+</ol>
+<p><em>图 1：算法对比 (<span class="arithmatex">\(N\)</span> 为网格边长，矩阵维数 <span class="arithmatex">\(n=N^2\)</span>)</em></p>
+<table>
+<thead>
+<tr>
+<th><strong>算法</strong></th>
+<th><strong>单步时间复杂度</strong></th>
+<th><strong>收敛速度</strong></th>
+<th><strong>总空间复杂度</strong></th>
+<th><strong>适用场景</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>幂法 (稀疏)</strong></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>线性</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>获取模最大特征值</td>
+</tr>
+<tr>
+<td><strong>幂法 (稠密)</strong></td>
+<td><span class="arithmatex">\(O(N^4)\)</span></td>
+<td>线性</td>
+<td><span class="arithmatex">\(O(N^4)\)</span></td>
+<td>不实用</td>
+</tr>
+<tr>
+<td><strong>反迭代 (直接法)</strong></td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td>线性</td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td>中小规模，求特定特征值</td>
+</tr>
+<tr>
+<td><strong>反迭代 (PCG)</strong></td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td>线性</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>超大规模，内存受限时</td>
+</tr>
+<tr>
+<td><strong>Lanczos</strong></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>超线性</td>
+<td><span class="arithmatex">\(O(m N^2)\)</span></td>
+<td>快速获取谱边缘概况</td>
+</tr>
+<tr>
+<td><strong>RQI</strong></td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td>立方</td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td>单特征值高精度计算</td>
+</tr>
+</tbody>
+</table>
+<h3 id="s1-6">6. 数值实验与结果分析</h3>
+<h4 id="s1-6-1">实验 1：正确性验证与物理模态</h4>
+<p>我们首先在 <span class="arithmatex">\(N=40\)</span> 的网格上验证算法的正确性。图 图 2 展示了通过 Lanczos 算法计算得到的基态和最高频模态。基态呈现出光滑的单峰结构。通过与 MATLAB 内置 <code>eigs</code> 函数对比（表 表 3），绝对误差极小，验证了算法实现的正确性。</p>
+<p class="book-figure"><img alt="Lanczos 算法计算得到的基态（左）与高频态（右）波形图" loading="lazy" src="../../../../assets/numerical-pde-project/images/img-01.png" /><span class="book-caption"><b>Fig. 1</b>Lanczos 算法计算得到的基态（左）与高频态（右）波形图</span></p>
+<p><em>图 2：Lanczos 算法计算得到的基态（左）与高频态（右）波形图</em></p>
+<p><em>图 3：Lanczos 计算值与标准值的对比（采用最近邻匹配）</em></p>
+<table>
+<thead>
+<tr>
+<th>特征值类型</th>
+<th>Lanczos (计算值)</th>
+<th>真值 (eigs)</th>
+<th>绝对误差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>低频/基态部分</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>基态+0</td>
+<td>19.729553</td>
+<td>19.729553</td>
+<td>1.67e-12</td>
+</tr>
+<tr>
+<td>基态+1</td>
+<td>49.265992</td>
+<td>49.265992</td>
+<td>1.27e-12</td>
+</tr>
+<tr>
+<td>基态+2</td>
+<td>49.265992</td>
+<td>49.265992</td>
+<td>1.49e-12</td>
+</tr>
+<tr>
+<td>基态+3</td>
+<td>78.802431</td>
+<td>78.802431</td>
+<td>1.05e-10</td>
+</tr>
+<tr>
+<td>基态+4</td>
+<td>98.300761</td>
+<td>98.300761</td>
+<td>2.66e-08</td>
+</tr>
+<tr>
+<td>基态+5</td>
+<td>98.300761</td>
+<td>98.300761</td>
+<td>2.66e-08</td>
+</tr>
+<tr>
+<td><em>高频/最大部分</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>最大-5</td>
+<td>13349.699239</td>
+<td>13349.699239</td>
+<td>4.93e-09</td>
+</tr>
+<tr>
+<td>最大-4</td>
+<td>13349.699239</td>
+<td>13349.699239</td>
+<td>5.01e-09</td>
+</tr>
+<tr>
+<td>最大-3</td>
+<td>13369.197569</td>
+<td>13369.197569</td>
+<td>2.00e-11</td>
+</tr>
+<tr>
+<td>最大-2</td>
+<td>13398.734008</td>
+<td>13398.734008</td>
+<td>1.82e-11</td>
+</tr>
+<tr>
+<td>最大-1</td>
+<td>13398.734008</td>
+<td>13398.734008</td>
+<td>7.28e-12</td>
+</tr>
+<tr>
+<td>最大-0</td>
+<td>13428.270447</td>
+<td>13428.270447</td>
+<td>6.18e-11</td>
+</tr>
+</tbody>
+</table>
+<h4 id="s1-6-2">实验 2：时间复杂度分析</h4>
+<p>我们测试了从 <span class="arithmatex">\(N=20\)</span> 到 <span class="arithmatex">\(N=200\)</span> 不同网格规模下 Lanczos 算法的运行时间。结果如图 图 4 所示。运行时间与 <span class="arithmatex">\(O(N^2)\)</span> 相近，表明算法的线性复杂度非常适合大规模问题。</p>
+<p class="book-figure"><img alt="算法运行时间与矩阵自由度的关系" loading="lazy" src="../../../../assets/numerical-pde-project/images/img-02.png" /><span class="book-caption"><b>Fig. 2</b>算法运行时间与矩阵自由度的关系</span></p>
+<p><em>图 4：算法运行时间与矩阵自由度的关系</em></p>
+<h4 id="s1-6-3">实验 3：RQI 收敛速度测试</h4>
+<p>图 图 5 展示了瑞利商迭代的立方收敛特征。</p>
+<p class="book-figure"><img alt="瑞利商迭代的立方收敛性" loading="lazy" src="../../../../assets/numerical-pde-project/images/img-03.png" /><span class="book-caption"><b>Fig. 3</b>瑞利商迭代的立方收敛性</span></p>
+<p><em>图 5：瑞利商迭代的立方收敛性</em></p>
+<h4 id="s1-6-4">实验 4：算法综合对比</h4>
+<ul>
+<li><strong>求最大特征值</strong>：Lanczos 算法的收敛速度显著快于幂法，表现出超线性收敛特征。</li>
+<li><strong>求特定特征值</strong>：RQI 的收敛速度远超反迭代法，后者仅表现为线性收敛。</li>
+</ul>
+<p class="book-figure"><img alt="对比：(左) 幂法 vs Lanczos；(右) 反迭代 vs RQI" loading="lazy" src="../../../../assets/numerical-pde-project/images/img-04.png" /><span class="book-caption"><b>Fig. 4</b>对比：(左) 幂法 vs Lanczos；(右) 反迭代 vs RQI</span></p>
+<p><em>图 6：对比：(左) 幂法 vs Lanczos；(右) 反迭代 vs RQI</em></p>
+<h3 id="s1-7">7. 结论</h3>
+<p>本项目成功实现并比较了求解二维 Helmholtz 方程特征值问题的多种数值算法。实验结果表明：Lanczos 与 RQI 算法在收敛阶数和计算效率上均优于幂法与反迭代法。实际应用中，建议使用 Lanczos 快速定位，再结合 RQI 进行精确计算。</p>
+<h2 id="supplement">补充材料</h2>
+<h3 id="s2-1">1. 引言</h3>
+<p>Helmholtz方程是数学物理中描述波动现象的基本方程，在声学、电磁学、量子力学等领域有广泛应用。本报告研究二维Helmholtz特征值问题的数值解法，包括数学推导、有限差分离散化、基础求解器实现（幂法和反迭代法）、高级方法（Lanczos算法和Rayleigh商迭代）以及数值实验分析。</p>
+<h3 id="s2-2">2. 数学推导</h3>
+<p>考虑二维Helmholtz特征值问题：</p>
+<div class="arithmatex">\[
+-\Delta u = \lambda u \quad \text{在} \ \Omega = [0,1] \times [0,1]
+\tag{2}
+\]</div>
+<p>带有Dirichlet边界条件：</p>
+<div class="arithmatex">\[
+u|_{\partial\Omega} = 0
+\tag{3}
+\]</div>
+<p>我们采用均匀网格离散化的方法：取 网格间距：<span class="arithmatex">\(\Delta x = \Delta y = h = \frac{1}{N+1}\)</span> 网格点：<span class="arithmatex">\(x_i = i\Delta x, \ y_j = j\Delta y, \ i,j = 0,1,\dots,N+1\)</span>内部点数共<span class="arithmatex">\(N^2\)</span>个。</p>
+<p>利用五点差分格式，对拉普拉斯算子的离散采用中心差分：</p>
+<div class="arithmatex">\[
+-\Delta u(x_i, y_j) \approx -\frac{u_{i+1,j} + u_{i-1,j} + u_{i,j+1} + u_{i,j-1} - 4u_{i,j}}{h^2}
+\tag{4}
+\]</div>
+<p>其中<span class="arithmatex">\(u_{i,j} = u(x_i, y_j)\)</span>。</p>
+<p>令<span class="arithmatex">\(U \in \mathbb{R}^{N^2}\)</span>为按行优先排列的未知向量，离散化后的特征值问题为：</p>
+<div class="arithmatex">\[
+AU = \lambda U
+\tag{5}
+\]</div>
+<p>其中<span class="arithmatex">\(A \in \mathbb{R}^{N^2 \times N^2}\)</span>是稀疏对称矩阵。</p>
+<p>采用行优先排序：</p>
+<div class="arithmatex">\[
+k = i + (j-1)N, \quad i,j = 1,\dots,N
+\tag{6}
+\]</div>
+<p>其中<span class="arithmatex">\((i,j)\)</span>对应网格点<span class="arithmatex">\((x_i, y_j)\)</span>。矩阵<span class="arithmatex">\(A\)</span>的元素为：主对角线：<span class="arithmatex">\(A_{k,k} = \frac{4}{h^2}\)</span> .水平相邻：若<span class="arithmatex">\(i &lt; N\)</span>，则<span class="arithmatex">\(A_{k,k+1} = -\frac{1}{h^2}\)</span>；若<span class="arithmatex">\(i &gt; 1\)</span>，则<span class="arithmatex">\(A_{k,k-1} = -\frac{1}{h^2}\)</span>. 垂直相邻：若<span class="arithmatex">\(j &lt; N\)</span>，则<span class="arithmatex">\(A_{k,k+N} = -\frac{1}{h^2}\)</span>；若<span class="arithmatex">\(j &gt; 1\)</span>，则<span class="arithmatex">\(A_{k,k-N} = -\frac{1}{h^2}\)</span></p>
+<p>矩阵<span class="arithmatex">\(A\)</span>可表示为分块三对角形式：</p>
+<div class="arithmatex">\[
+A = \frac{1}{h^2} \begin{bmatrix}
+T &amp; -I &amp; &amp; \\
+-I &amp; T &amp; -I &amp; \\
+&amp; \ddots &amp; \ddots &amp; \ddots \\
+&amp; &amp; -I &amp; T &amp; -I \\
+&amp; &amp; &amp; -I &amp; T
+\end{bmatrix}
+\tag{7}
+\]</div>
+<p>其中：</p>
+<div class="arithmatex">\[
+T = \begin{bmatrix}
+4 &amp; -1 &amp; &amp; \\
+-1 &amp; 4 &amp; -1 &amp; \\
+&amp; \ddots &amp; \ddots &amp; \ddots \\
+&amp; &amp; -1 &amp; 4 &amp; -1 \\
+&amp; &amp; &amp; -1 &amp; 4
+\end{bmatrix} \in \mathbb{R}^{N \times N}, \quad
+I = \begin{bmatrix}
+1 &amp; &amp; \\
+&amp; \ddots &amp; \\
+&amp; &amp; 1
+\end{bmatrix} \in \mathbb{R}^{N \times N}
+\]</div>
+<h3 id="s2-3">3. 基础求解器实现</h3>
+<h4 id="s2-3-1">幂法（Power Method）</h4>
+<p>幂法用于求解模最大的特征值（主特征值）。</p>
+<h5 id="s2-3-1-1">算法步骤</h5>
+<p><strong>代码：幂法 MATLAB 程序</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>lambda, v, k<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">power_method_algorithm</span><span class="p">(</span>A, epsilon, K<span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">v_old</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">v_old</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_old</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v_old</span><span class="p">);</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">K</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_old</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="n">v_new</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="n">lambda_k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v_new</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v_old</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">epsilon</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">            </span><span class="nb">fprintf</span><span class="p">(</span><span class="s">'在第%d次迭代后收敛\n'</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">);</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">        </span><span class="k">end</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">        </span><span class="n">v_old</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">lambda_k</span><span class="p">;</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">K</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="nb">warning</span><span class="p">(</span><span class="s">'达到最大迭代次数%d，可能未收敛到所需精度'</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">);</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="k">end</span>
+</code></pre></div>
+<h5 id="s2-3-1-2">收敛性分析</h5>
+<ul>
+<li>收敛速度：<span class="arithmatex">\(O\left( \left|\frac{\lambda_2}{\lambda_1}\right|^k \right)\)</span></li>
+<li>每步时间复杂度：矩阵-向量乘法<span class="arithmatex">\(O(N^2)\)</span></li>
+<li>总时间复杂度：<span class="arithmatex">\(O(kN^2)\)</span></li>
+<li>仅适用于<span class="arithmatex">\(|\lambda_1| &gt; |\lambda_2| \ge \cdots\)</span>的情况</li>
+</ul>
+<h4 id="s2-3-2">反迭代法（Inverse Iteration）</h4>
+<p>反迭代法用于求解最接近给定值<span class="arithmatex">\(\mu\)</span>的特征值。</p>
+<h5 id="s2-3-2-1">算法步骤</h5>
+<p><strong>代码：逆幂法 MATLAB 程序</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">function</span><span class="w"> </span><span class="p">[</span>lambda, v, iter_log<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">inverse_iteration</span><span class="p">(</span>A, mu, tol, max_iter<span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">I</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">speye</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="p">[</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">lu</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">I</span><span class="p">);</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">max_iter</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">U</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="p">(</span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">)));</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">v_new</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="o">'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="n">iter_log</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">iter_log</span><span class="p">;</span><span class="w"> </span><span class="n">lambda</span><span class="p">];</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nb">norm</span><span class="p">(</span><span class="n">v_new</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">tol</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="k">end</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">v_new</span><span class="p">;</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="k">end</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="k">end</span>
+</code></pre></div>
+<h5 id="s2-3-2-2">收敛性分析</h5>
+<ul>
+<li>收敛速度：<span class="arithmatex">\(O\left( \left|\frac{\lambda_i - \mu}{\lambda_j - \mu}\right|^k \right)\)</span>，其中<span class="arithmatex">\(\lambda_j\)</span>是第二接近<span class="arithmatex">\(\mu\)</span>的特征值</li>
+<li>每步时间复杂度：求解线性系统<span class="arithmatex">\(O(N^3)\)</span>（直接法）或<span class="arithmatex">\(O(N^2)\)</span>（迭代法+预处理）</li>
+<li>当<span class="arithmatex">\(\mu\)</span>接近特征值时，收敛速度极快（二次收敛）</li>
+</ul>
+<h3 id="s2-4">4. 理论复杂度分析</h3>
+<h4 id="s2-4-1">时间复杂度分析</h4>
+<h5 id="s2-4-1-1">幂法复杂度详细分析</h5>
+<p>幂法的单步迭代包含以下操作：</p>
+<ol>
+<li><strong>矩阵-向量乘法</strong>：<span class="arithmatex">\(w = Av\)</span></li>
+<li><strong>向量归一化</strong>：<span class="arithmatex">\(v_{\text{new}} = w/\|w\|_2\)</span></li>
+<li><strong>Rayleigh商计算</strong>：<span class="arithmatex">\(\lambda = v_{\text{new}}^T A v_{\text{new}}\)</span></li>
+<li><strong>收敛性检查</strong>：<span class="arithmatex">\(\|v_{\text{new}} - v\|_2\)</span></li>
+</ol>
+<p>对于二维Helmholtz离散矩阵<span class="arithmatex">\(A \in \mathbb{R}^{n \times n}\)</span>，其中<span class="arithmatex">\(n = N^2\)</span>，分析各步的浮点操作次数：</p>
+<ol>
+<li>
+<p><strong>矩阵-向量乘法</strong>：矩阵<span class="arithmatex">\(A\)</span>每行最多有5个非零元素（五点差分格式），因此：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{matvec}} = 5n = 5N^2
+\]</div>
+</li>
+<li>
+<p><strong>向量归一化</strong>：需要计算<span class="arithmatex">\(l_2\)</span>范数和<span class="arithmatex">\(n\)</span>次除法：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{norm}} = n + n = 2N^2
+\]</div>
+</li>
+<li>
+<p><strong>Rayleigh商计算</strong>：可重用<span class="arithmatex">\(Av\)</span>的结果，只需计算一次点积：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{rayleigh}} = n = N^2
+\]</div>
+</li>
+<li>
+<p><strong>收敛性检查</strong>：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{check}} = n = N^2
+\]</div>
+</li>
+</ol>
+<p>因此，幂法单次迭代的总浮点操作次数为：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{iter}} = (5 + 2 + 1 + 1)N^2 = 9N^2
+\]</div>
+<h5 id="s2-4-1-2">幂法迭代次数分析</h5>
+<p>幂法的收敛速度由特征值比值<span class="arithmatex">\(\rho = \left|\frac{\lambda_2}{\lambda_1}\right|\)</span>决定。对于Helmholtz离散矩阵，特征值的渐近性质为：</p>
+<div class="arithmatex">\[
+\lambda_1 \approx 2\pi^2, \quad \lambda_{\max} \approx \frac{8}{h^2} = 8(N+1)^2
+\]</div>
+<p>特征值比值的典型范围为<span class="arithmatex">\(\rho \in [0.9, 0.98]\)</span>。</p>
+<p>要达到精度<span class="arithmatex">\(\varepsilon\)</span>所需的迭代次数<span class="arithmatex">\(k\)</span>满足：</p>
+<div class="arithmatex">\[
+\left(\frac{\lambda_2}{\lambda_1}\right)^k \leq \varepsilon \quad \Rightarrow \quad k \geq \frac{\log \varepsilon}{\log \rho}
+\]</div>
+<p>取<span class="arithmatex">\(\rho = 0.95\)</span>，则：</p>
+<div class="arithmatex">\[
+k \approx -20 \log_{10} \varepsilon
+\]</div>
+<p>例如，对于<span class="arithmatex">\(\varepsilon = 10^{-8}\)</span>，<span class="arithmatex">\(k \approx 160\)</span>次迭代。</p>
+<p>因此，幂法的总时间复杂度为：</p>
+<div class="arithmatex">\[
+T_{\text{power}}(N) = 9k N^2 = O(kN^2) = O(N^2 \log(1/\varepsilon))
+\]</div>
+<h5 id="s2-4-1-3">反迭代法复杂度详细分析</h5>
+<p>反迭代法的核心是每步求解线性系统：</p>
+<div class="arithmatex">\[
+(A - \mu I) w = v
+\]</div>
+<p>我们考虑两种求解策略：</p>
+<ol>
+<li>
+<p><strong>直接法（LU/Cholesky分解）</strong>：</p>
+<p>对于带状矩阵<span class="arithmatex">\(A\)</span>（带宽为<span class="arithmatex">\(N\)</span>），分解的复杂度为：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{factor}} = O(n \cdot \text{bandwidth}^2) = O(N^2 \cdot N^2) = O(N^4)
+\]</div>
+<p>每次求解的复杂度（前向/回代）：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{solve}} = O(n \cdot \text{bandwidth}) = O(N^2 \cdot N) = O(N^3)
+\]</div>
+<p>总时间复杂度（一次分解+<span class="arithmatex">\(k\)</span>次求解）：</p>
+<div class="arithmatex">\[
+T_{\text{inv-direct}}(N) = O(N^4 + kN^3)
+\]</div>
+</li>
+<li>
+<p><strong>迭代法（预条件共轭梯度法PCG）</strong>：</p>
+<p>矩阵<span class="arithmatex">\(A - \mu I\)</span>的条件数：</p>
+<div class="arithmatex">\[
+\kappa(A - \mu I) \approx O\left(\frac{\lambda_{\max} - \mu}{\lambda_{\min} - \mu}\right) = O(N^2)
+\]</div>
+<p>PCG的收敛迭代次数：</p>
+<div class="arithmatex">\[
+k_{\text{PCG}} = O\left(\sqrt{\kappa}\right) = O(N)
+\]</div>
+<p>每次PCG迭代的复杂度（矩阵-向量乘法）：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{PCG-iter}} = O(N^2)
+\]</div>
+<p>每次反迭代的PCG求解复杂度：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{PCG-solve}} = k_{\text{PCG}} \times \text{FLOPs}_{\text{PCG-iter}} = O(N \cdot N^2) = O(N^3)
+\]</div>
+<p>预条件构造复杂度：</p>
+<div class="arithmatex">\[
+\text{FLOPs}_{\text{precond}} = O(N^3) \quad (\text{不完全Cholesky分解})
+\]</div>
+<p>总时间复杂度：</p>
+<div class="arithmatex">\[
+T_{\text{inv-PCG}}(N) = O(N^3 + kN^3) = O(kN^3)
+\]</div>
+</li>
+</ol>
+<h5 id="s2-4-1-4">收敛速度对比</h5>
+<p>反迭代法的收敛速度由下式决定：</p>
+<div class="arithmatex">\[
+\left|\frac{\lambda_i - \mu}{\lambda_j - \mu}\right|^k
+\]</div>
+<p>其中<span class="arithmatex">\(\lambda_i\)</span>是最接近<span class="arithmatex">\(\mu\)</span>的特征值，<span class="arithmatex">\(\lambda_j\)</span>是第二接近的特征值。</p>
+<p>当<span class="arithmatex">\(\mu\)</span>接近<span class="arithmatex">\(\lambda_i\)</span>时，收敛速度极快：</p>
+<ul>
+<li>通常只需3-10次迭代即可收敛到机器精度</li>
+<li>局部二次收敛性质</li>
+</ul>
+<h4 id="s2-4-2">空间复杂度分析</h4>
+<h5 id="s2-4-2-1">存储需求详细分析</h5>
+<ol>
+<li>
+<p><strong>矩阵存储</strong>：</p>
+<ul>
+<li>
+<p><strong>稀疏格式（CSR）</strong>：存储非零元素值、列索引和行指针</p>
+<div class="arithmatex">\[
+S_{\text{sparse}} = (5n + n + n) \times \text{sizeof(double)} = 7N^2 \times 8 \text{字节}
+\]</div>
+</li>
+<li>
+<p><strong>稠密格式</strong>：</p>
+<div class="arithmatex">\[
+S_{\text{dense}} = n^2 \times \text{sizeof(double)} = N^4 \times 8 \text{字节}
+\]</div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>向量存储</strong>：</p>
+<div class="arithmatex">\[
+S_{\text{vectors}} = 3n \times \text{sizeof(double)} = 3N^2 \times 8 \text{字节}
+\]</div>
+</li>
+<li>
+<p><strong>分解存储（反迭代直接法）</strong>：</p>
+<div class="arithmatex">\[
+S_{\text{factor}} = O(n \cdot \text{bandwidth}) = O(N^3) \text{字节}
+\]</div>
+</li>
+</ol>
+<h5 id="s2-4-2-2">空间复杂度总结表</h5>
+<p><em>图 7：各算法空间复杂度详细分析</em></p>
+<table>
+<thead>
+<tr>
+<th><strong>算法</strong></th>
+<th><strong>矩阵存储</strong></th>
+<th><strong>向量存储</strong></th>
+<th><strong>分解存储</strong></th>
+<th><strong>总存储</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>幂法（稀疏）</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>-</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+</tr>
+<tr>
+<td>幂法（稠密）</td>
+<td><span class="arithmatex">\(O(N^4)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td>-</td>
+<td><span class="arithmatex">\(O(N^4)\)</span></td>
+</tr>
+<tr>
+<td>反迭代（直接法）</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+<td><span class="arithmatex">\(O(N^3)\)</span></td>
+</tr>
+<tr>
+<td>反迭代（PCG）</td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+<td><span class="arithmatex">\(O(N^2)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="s2-5">5. 结论与展望</h3>
+<p>本报告系统研究了Helmholtz方程特征值问题的数值解法，包括：</p>
+<ol>
+<li>建立了有限差分离散化方法，推导了离散矩阵的构造;</li>
+<li>实现了基础求解器（幂法、反迭代法）的实现;</li>
+<li>分析了各算法的理论复杂度、收敛性和精度;</li>
+</ol>
+<hr />
+<h2 id="pdf">PDF 原文</h2>
+<h3 id="pdf-report">实验报告 PDF</h3>
+<p><a class="md-button" href="../../../../assets/numerical-pde-report.pdf" rel="noopener" target="_blank">打开原文件</a>
+<a class="md-button" download="numerical-pde-report.pdf" href="../../../../assets/numerical-pde-report.pdf">下载 PDF</a></p>
+<p>若下方预览无法显示，可直接打开原文件或下载后阅读。</p>
+<div style="height: 800px; width: 100%;">
+    <embed src="../../../../assets/numerical-pde-report.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<h3 id="pdf-main">补充材料 PDF</h3>
+<p><a class="md-button" href="../../../../assets/numerical-pde-main.pdf" rel="noopener" target="_blank">打开原文件</a>
+<a class="md-button" download="numerical-pde-main.pdf" href="../../../../assets/numerical-pde-main.pdf">下载 PDF</a></p>
+<p>若下方预览无法显示，可直接打开原文件或下载后阅读。</p>
+<div style="height: 800px; width: 100%;">
+    <embed src="../../../../assets/numerical-pde-main.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">应用数学</span><span class="zdd-end-chip is-category">PDE 数值解</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=numerical-methods">#numerical-methods</a><a class="zdd-end-chip" href="../../../../tags/?tag=pde">#pde</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1727 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="证明紧自伴谱定理与 Fredholm 二择一，连接紧预解式、Rellich 紧性、椭圆方程及有限元误差。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-08/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第八章：紧算子、Fredholm 二择一与 PDE - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-08/">
+  <meta property="og:title" content="第八章：紧算子、Fredholm 二择一与 PDE - zdd14990">
+  <meta property="og:description" content="证明紧自伴谱定理与 Fredholm 二择一，连接紧预解式、Rellich 紧性、椭圆方程及有限元误差。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="compact-operators">
+
+  <meta property="article:tag" content="pde">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-08/">
+  <meta name="twitter:title" content="第八章：紧算子、Fredholm 二择一与 PDE - zdd14990">
+  <meta name="twitter:description" content="证明紧自伴谱定理与 Fredholm 二择一，连接紧预解式、Rellich 紧性、椭圆方程及有限元误差。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u516b\u7ae0\uff1a\u7d27\u7b97\u5b50\u3001Fredholm \u4e8c\u62e9\u4e00\u4e0e PDE",
+    "description": "\u8bc1\u660e\u7d27\u81ea\u4f34\u8c31\u5b9a\u7406\u4e0e Fredholm \u4e8c\u62e9\u4e00\uff0c\u8fde\u63a5\u7d27\u9884\u89e3\u5f0f\u3001Rellich \u7d27\u6027\u3001\u692d\u5706\u65b9\u7a0b\u53ca\u6709\u9650\u5143\u8bef\u5dee\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-08/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-08/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "compact-operators", "pde", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-08" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 从边值问题到积分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 紧性、全连续性与有限秩逼近
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 紧性、全连续性与有限秩逼近">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 与弱收敛的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 积分核与 Hilbert–Schmidt 类
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 紧自伴谱定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 紧三角矩阵与非自伴问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Fredholm 二择一
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 紧预解式：无界算子的离散谱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Rellich 紧性与椭圆方程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Rellich 紧性与椭圆方程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 为什么有界区域上有紧嵌入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Poincaré 不等式与 Poisson 问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Lax–Milgram 与 Céa 估计
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 一维 Dirichlet 问题算到底
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 全连续形式、紧算子与有限秩逼近
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 全连续形式、紧算子与有限秩逼近">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        联合弱连续性控制有限截断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用弱紧性取得特征方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把弱输入变成强输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 非零谱、子空间链与 Fredholm 理论
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 非零谱、子空间链与 Fredholm 理论">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-5-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        非零近似谱值必须成为特征值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-6-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        紧性阻止无限严格三角链
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从链稳定到 Fredholm 二择一
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 图像紧性、紧预解式与椭圆问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 图像紧性、紧预解式与椭圆问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        让图像单位球的嵌入变紧
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-9-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用 Fourier 尾部证明 Rellich 紧性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-10-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        绝对可和让极限留在空间中
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-8-A-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        正规紧算子的复谱展开
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 9 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">08</div>
+    <h1 id="chapter-08"><span class="book-visually-hidden">第 8 章：</span>紧算子、Fredholm 二择一与 PDE</h1>
+  </div>
+  <p class="book-standfirst">在 <span class="arithmatex">\((0,1)\)</span> 上，<span class="arithmatex">\(-u''=f\)</span>、<span class="arithmatex">\(u(0)=u(1)=0\)</span> 的逆算子具有 Green 核</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>8,471 字 · 约 24 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>从边值问题到积分方程</h2>
+<div class="arithmatex">\[
+G(x,y)=\min(x,y)-xy,
+\qquad u(x)=\int_0^1G(x,y)f(y)\,\mathrm dy.
+\]</div>
+<p>于是 <span class="arithmatex">\(-u''-\lambda u=f\)</span> 可化为 <span class="arithmatex">\(u-\lambda Ku=Kf\)</span>，其中 <span class="arithmatex">\(K\)</span> 是上面的积分算子。若能理解 <span class="arithmatex">\(K\)</span> 的谱，就能判断原边值问题何时可解。</p>
+<p>核的连续性使积分输出比输入更规整。这种规整性在函数空间中表现为紧性，进而产生离散谱。一维模型将积分方程与紧算子的联系具体算出来。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>紧性、全连续性与有限秩逼近</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">紧算子</span></p>
+<p>有界线性 <span class="arithmatex">\(K:X\to Y\)</span> 称紧，若它把有界集合映为相对紧集合。对于 Banach 空间，等价于每个有界序列 <span class="arithmatex">\((x_n)\)</span> 都有子列使 <span class="arithmatex">\(Kx_{n_j}\)</span> 在范数下收敛。</p>
+</div>
+<p>有限秩算子紧；紧算子的和、与有界算子的左右复合仍紧；紧算子在算子范数下的极限仍紧。最后一点用有限 <span class="arithmatex">\(\varepsilon\)</span> 网证明：先逼近算子，再逼近逼近算子的单位球像。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">Hilbert 空间上的有限秩逼近</span></p>
+<p><span class="arithmatex">\(K:H\to K_1\)</span> 紧，当且仅当它是有限秩算子的算子范数极限。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对紧单位球像，选有限 <span class="arithmatex">\(\varepsilon\)</span> 网 <span class="arithmatex">\(y_1,\ldots,y_m\)</span>，令 <span class="arithmatex">\(P\)</span> 投影到它们的张成空间。每个 <span class="arithmatex">\(Kx\)</span> 距此空间至多 <span class="arithmatex">\(\varepsilon\)</span>，故 <span class="arithmatex">\(\|K-PK\|\le\varepsilon\)</span>，且 <span class="arithmatex">\(PK\)</span> 有限秩。</p>
+<p>反向由范数极限保持紧性。在一般 Banach 值域里，这种有限秩逼近涉及逼近性质，不能不加条件套用。</p>
+</details>
+<h3 id="section-2-1">2.1 与弱收敛的关系</h3>
+<p>Hilbert 空间中，紧算子将有界弱收敛网变为强收敛网。若 <span class="arithmatex">\(x_\alpha\rightharpoonup x\)</span>，但 <span class="arithmatex">\(Kx_\alpha\)</span> 没有强趋于 <span class="arithmatex">\(Kx\)</span>，可选一个始终离 <span class="arithmatex">\(Kx\)</span> 至少 <span class="arithmatex">\(\varepsilon\)</span> 的子网；紧性再给范数收敛子网，它的弱极限又必须是 <span class="arithmatex">\(Kx\)</span>，矛盾。</p>
+<p>反过来，Hilbert 空间中若算子把每个弱收敛序列变为强收敛序列，则它紧：有界序列落在一个可分 Hilbert 子空间内，存在弱收敛子列，输出便有强收敛子列。</p>
+<div class="admonition warning">
+<p class="admonition-title">全连续不总等于紧</p>
+<p>Banach 空间中，“弱收敛序列映为强收敛序列”常称全连续。它在 Hilbert 空间中等价于紧性，但一般不等价。例如 <span class="arithmatex">\(\ell^1\)</span> 有 Schur 性质，其恒等算子满足这项序列性质，却在无限维时不紧。</p>
+</div>
+<p>还可以研究半双线性形式 <span class="arithmatex">\(a(y,x)=\langle y,Kx\rangle\)</span> 在两个弱单位球乘积上的联合连续性。紧 <span class="arithmatex">\(K\)</span> 给出该连续性：把差写成 <span class="arithmatex">\(\langle y_\alpha,K(x_\alpha-x)\rangle+\langle y_\alpha-y,Kx\rangle\)</span>。反向利用弱单位球紧性，把联合连续性转化为对全部单位 <span class="arithmatex">\(y\)</span> 的统一控制，得到 <span class="arithmatex">\(K\)</span> 的弱到强连续性。</p>
+<h3 id="section-2-2">2.2 积分核与 Hilbert–Schmidt 类</h3>
+<p>设 <span class="arithmatex">\(X,Y\)</span> 是 <span class="arithmatex">\(\sigma\)</span>-有限测度空间。若 <span class="arithmatex">\(k\in L^2(X\times Y)\)</span>，则</p>
+<div class="arithmatex">\[
+(Kf)(x)=\int_Yk(x,y)f(y)\,\mathrm d\mu(y),
+\qquad\|Kf\|_2\le\|k\|_{L^2(X\times Y)}\|f\|_2.
+\]</div>
+<p>把核在 <span class="arithmatex">\(L^2\)</span> 中用有限个乘积函数 <span class="arithmatex">\(a_j(x)b_j(y)\)</span> 逼近，产生有限秩算子的范数逼近，所以 <span class="arithmatex">\(K\)</span> 紧。连续核在紧区域上是常见例子。</p>
+<div class="admonition note">
+<p class="admonition-title">两个 Hilbert–Schmidt 用法</p>
+<p>紧自伴算子的对角化常称 Hilbert–Schmidt 定理；Hilbert–Schmidt <strong>算子类</strong>则要求奇异值平方可和。后者比紧性强。例如 <span class="arithmatex">\(Ke_n=n^{-1/2}e_n\)</span> 紧，但 <span class="arithmatex">\(\sum_n\|Ke_n\|^2=\infty\)</span>，并不属于 Hilbert–Schmidt 类。</p>
+</div>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>紧自伴谱定理</h2>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">紧自伴算子的离散谱</span></p>
+<p>设 <span class="arithmatex">\(K=K^*\)</span> 紧。存在非零特征值 <span class="arithmatex">\(\lambda_n\in\mathbb R\)</span> 及标准正交特征向量 <span class="arithmatex">\(e_n\)</span>，使</p>
+<div class="arithmatex">\[
+H=\ker K\oplus\overline{\operatorname{span}\{e_n\}},
+\qquad Kx=\sum_n\lambda_n\langle e_n,x\rangle e_n.
+\]</div>
+<p>每个非零特征值的重数有限；若非零特征值无限多个，则 <span class="arithmatex">\(\lambda_n\to0\)</span>。核可以无限维。</p>
+</div>
+<details class="proof">
+<summary>证明：极值产生第一个特征向量，再递归</summary>
+<p>对自伴 <span class="arithmatex">\(K\)</span>，<span class="arithmatex">\(\|K\|=\sup_{\|x\|=1}|\langle x,Kx\rangle|\)</span>，可由第五章谱演算得到，也可用 Hermitian 形式的极化估计证明。</p>
+<p>若 <span class="arithmatex">\(K\ne0\)</span>，选一列单位向量使二次型的绝对值趋于 <span class="arithmatex">\(\|K\|\)</span>，再固定其正负号。取弱收敛子列 <span class="arithmatex">\(x_n\rightharpoonup x\)</span>；紧性使 <span class="arithmatex">\(Kx_n\to Kx\)</span>，所以二次型趋于 <span class="arithmatex">\(\langle x,Kx\rangle\)</span>。下半连续性给出 <span class="arithmatex">\(\|x\|\le1\)</span>，但达到非零极值迫使 <span class="arithmatex">\(\|x\|=1\)</span>。</p>
+<p>在单位球面上对二次型沿正交方向变分，得到 <span class="arithmatex">\(Kx=\lambda x\)</span>，其中 <span class="arithmatex">\(|\lambda|=\|K\|\)</span>。其正交补约化 <span class="arithmatex">\(K\)</span>，继续递归取得特征向量。</p>
+<p>非零特征空间不能无限维，否则其中的正交单位列被映为距离不趋于零的序列，违反紧性。同样，无穷多个特征值不能保持 <span class="arithmatex">\(|\lambda_n|\ge\varepsilon\)</span>，因此趋于零。</p>
+<p>每一步选择剩余算子的最大绝对特征值，故去掉前 <span class="arithmatex">\(n\)</span> 项后剩余算子的范数趋于零。最终的正交补上 <span class="arithmatex">\(K=0\)</span>，得到展开式。</p>
+</details>
+<p>因此紧自伴算子的非零谱都是特征值，只有 <span class="arithmatex">\(0\)</span> 可能是聚点。紧正规算子也有类似复特征值展开：其 <span class="arithmatex">\(|\lambda|\ge\varepsilon\)</span> 的谱子空间必须有限维，否则该子空间上 <span class="arithmatex">\(K\)</span> 有有界逆而仍紧，迫使恒等算子紧；把这些有限维子空间合起来即可得到正规版本。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>紧三角矩阵与非自伴问题</h2>
+<p>紧算子未必自伴。积分核不对称时，这一点自然发生。若在某正交基下 <span class="arithmatex">\(K\)</span> 是上三角紧矩阵，则对角元 <span class="arithmatex">\(a_{nn}\to0\)</span>，因为 <span class="arithmatex">\(e_n\rightharpoonup0\)</span> 且 <span class="arithmatex">\(Ke_n\to0\)</span>。</p>
+<p>其非零谱恰是非零对角值。理由是有限前缀子空间不变，有限块的特征值就是对角元；另一方面，对充分大 <span class="arithmatex">\(n\)</span>，尾部压缩 <span class="arithmatex">\(C_n=(I-P_n)K(I-P_n)\)</span> 的范数任意小。若 <span class="arithmatex">\(\lambda\ne0\)</span> 不等于任何对角值，分块</p>
+<div class="arithmatex">\[
+\lambda I-K=
+\begin{pmatrix}\lambda I-K_n&amp;-B_n\\0&amp;\lambda I-C_n\end{pmatrix}
+\]</div>
+<p>的两个对角块均可逆，故全算子可逆。</p>
+<p>这里是对已给出的三角表示讨论性质，并非宣称每个紧算子都能由一组特征向量对角化。非正规紧算子可能有 Jordan 型结构，甚至所有非零特征值都不存在。</p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>Fredholm 二择一</h2>
+<p>考虑 <span class="arithmatex">\(A=I-K\)</span>，其中 <span class="arithmatex">\(K\)</span> 紧。方程可能受有限维共振阻碍，但不会出现任意多独立的坏方向。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span><span class="book-name">Hilbert 空间中的 Fredholm 二择一</span></p>
+<p><span class="arithmatex">\(\ker(I-K)\)</span>、<span class="arithmatex">\(\ker(I-K^*)\)</span> 有限维且维数相等，<span class="arithmatex">\(\operatorname{Ran}(I-K)\)</span> 闭，并且</p>
+<div class="arithmatex">\[
+(I-K)u=f\text{ 可解}
+\quad\Longleftrightarrow\quad
+f\perp\ker(I-K^*).
+\]</div>
+<p>若核为零，方程对每个 <span class="arithmatex">\(f\)</span> 有唯一解且逆有界；若核非零，可解时解相差一个核向量。<span class="arithmatex">\(I-\lambda K\)</span> 也有同样结论。</p>
+</div>
+<details class="proof">
+<summary>证明：把困难压到一个有限维块</summary>
+<p>在 Hilbert 空间中选有限秩 <span class="arithmatex">\(F\)</span>，使 <span class="arithmatex">\(K=F+R\)</span>、<span class="arithmatex">\(\|R\|&lt;1\)</span>。则</p>
+<div class="arithmatex">\[
+I-K=(I-R)(I-G),\qquad G=(I-R)^{-1}F
+\]</div>
+<p>有限秩。第一因子有界可逆。令 <span class="arithmatex">\(M=\operatorname{Ran}G\)</span>，按 <span class="arithmatex">\(H=M\oplus M^\perp\)</span> 写</p>
+<div class="arithmatex">\[
+I-G=\begin{pmatrix}I-G_{11}&amp;-G_{12}\\0&amp;I\end{pmatrix}.
+\]</div>
+<p>用有界可逆行变换消去右上块，便得到 <span class="arithmatex">\(\operatorname{diag}(I-G_{11},I)\)</span>。因此核、余核有限维且相等，像闭。乘可逆算子保留这些性质。</p>
+<p>对任意有界算子，<span class="arithmatex">\(\operatorname{Ran}A^\perp=\ker A^*\)</span>；像闭后得到 <span class="arithmatex">\(\operatorname{Ran}A=(\ker A^*)^\perp\)</span>，给出可解条件。核为零时余核也为零，故双射；上述因子分解同时给出有界逆。</p>
+</details>
+<p>在一般 Banach 空间，仍有紧算子的 Riesz–Schauder 二择一：<span class="arithmatex">\(I-K\)</span> 单射当且仅当满射。单射时首先通过紧性证明 <span class="arithmatex">\(\|Ax\|\ge c\|x\|\)</span>。若仍不满射，闭子空间 <span class="arithmatex">\(A^nX\)</span> 严格递减，Riesz 引理可从中取单位向量，使其 <span class="arithmatex">\(K\)</span> 像两两分离，违反紧性。满射而不单射时，对严格递增的 <span class="arithmatex">\(\ker A^n\)</span> 用同样方法得到矛盾。这里不需要假定一般 Banach 紧算子可作有限秩范数逼近。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.2</span><span class="book-name">共振条件</span></p>
+<p>若 <span class="arithmatex">\(K=K^*\)</span> 且 <span class="arithmatex">\(Ke_j=\mu_je_j\)</span>，方程 <span class="arithmatex">\((I-\lambda K)u=f\)</span> 在各谱方向上变为</p>
+<div class="arithmatex">\[
+(1-\lambda\mu_j)u_j=f_j.
+\]</div>
+<p>当 <span class="arithmatex">\(\lambda\mu_j=1\)</span> 时，必须有 <span class="arithmatex">\(f_j=0\)</span>，该方向的解系数任意。这就是抽象正交可解条件。</p>
+</div>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>紧预解式：无界算子的离散谱</h2>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.1</span><span class="book-name">紧预解式</span></p>
+<p>闭算子 <span class="arithmatex">\(A\)</span> 若存在 <span class="arithmatex">\(z\in\rho(A)\)</span> 使 <span class="arithmatex">\((zI-A)^{-1}\)</span> 紧，称具有紧预解式。预解恒等式说明一个预解式紧，就使所有预解式紧。</p>
+<p>在 <span class="arithmatex">\(\rho(A)\ne\varnothing\)</span> 的前提下，等价条件是嵌入 <span class="arithmatex">\(D(A)\)</span> 的图范数空间到 <span class="arithmatex">\(H\)</span> 紧。因为 <span class="arithmatex">\(zI-A\)</span> 给出图空间到 <span class="arithmatex">\(H\)</span> 的有界同构，嵌入与预解式通过这个同构互相转换。自伴算子的非实预解集总非空，可以直接使用此刻画。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.2</span><span class="book-name">图空间紧嵌入仍需检查预解集</span></p>
+<p>在 <span class="arithmatex">\(L^2(0,1)\)</span> 中，取 <span class="arithmatex">\(A=-i\,d/dx\)</span>、<span class="arithmatex">\(D(A)=H^1(0,1)\)</span>，不加边界条件。图空间紧嵌入 <span class="arithmatex">\(L^2\)</span>，但每个 <span class="arithmatex">\(z\in\mathbb C\)</span> 都有非零特征函数 <span class="arithmatex">\(e^{izx}\)</span>，所以 <span class="arithmatex">\(\rho(A)=\varnothing\)</span>。因此不能只凭图空间的紧嵌入就称一个任意闭算子具有紧预解式。</p>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.3</span><span class="book-name">下有界自伴算子的紧谱</span></p>
+<p>若自伴 <span class="arithmatex">\(A\ge cI\)</span> 有紧预解式，则存在正交特征基，特征值具有有限重数，在无限维情形可排序为 <span class="arithmatex">\(\lambda_n\to+\infty\)</span>。定义域为</p>
+<div class="arithmatex">\[
+D(A)=\left\{x:\sum_n\lambda_n^2|\langle e_n,x\rangle|^2&lt;\infty\right\}.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>取 <span class="arithmatex">\(a\)</span> 使 <span class="arithmatex">\(A+aI\ge I\)</span>。<span class="arithmatex">\(R=(A+aI)^{-1}\)</span> 是紧正自伴单射，且像稠密。紧谱定理给出正交特征基，<span class="arithmatex">\(Re_n=\mu_ne_n\)</span>、<span class="arithmatex">\(\mu_n&gt;0\)</span>、<span class="arithmatex">\(\mu_n\to0\)</span>。</p>
+<p>因此 <span class="arithmatex">\(Ae_n=(\mu_n^{-1}-a)e_n\)</span>，得到 <span class="arithmatex">\(\lambda_n\to\infty\)</span>。图范数中的平方和给出定义域。一般不下有界的自伴情形，可使用紧正规预解式，同样得到实离散谱，但只能保证特征值的绝对值趋于无穷。</p>
+</details>
+<p>注意这里的紧算子是预解式，<span class="arithmatex">\(A\)</span> 本身通常无界，不能称它为“紧算子”。</p>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>Rellich 紧性与椭圆方程</h2>
+<h3 id="section-7-1">7.1 为什么有界区域上有紧嵌入</h3>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">Rellich 紧嵌入：Dirichlet 版本</span></p>
+<p>若 <span class="arithmatex">\(\Omega\subset\mathbb R^d\)</span> 有界开，则 <span class="arithmatex">\(H_0^1(\Omega)\hookrightarrow L^2(\Omega)\)</span> 紧。此版本不要求边界光滑。</p>
+</div>
+<details class="proof">
+<summary>证明：零延拓、平移估计与光滑化</summary>
+<p>将 <span class="arithmatex">\(u\in H_0^1\)</span> 零延拓到整空间，所有延拓支撑在同一有界盒子中。由沿线积分和密度有</p>
+<div class="arithmatex">\[
+\|u(\cdot+h)-u\|_2\le|h|\|\nabla u\|_2.
+\]</div>
+<p>因此对标准光滑核 <span class="arithmatex">\(\rho_\varepsilon\)</span>，有 <span class="arithmatex">\(\|u-\rho_\varepsilon*u\|_2\le C\varepsilon\|\nabla u\|_2\)</span>，误差在 <span class="arithmatex">\(H_0^1\)</span> 有界集上统一小。</p>
+<p>固定 <span class="arithmatex">\(\varepsilon\)</span> 后，Cauchy–Schwarz 控制光滑化函数及导数的一致范数，支撑仍在固定紧盒子中，Arzelà–Ascoli 给出相对紧性，进而得到 <span class="arithmatex">\(L^2\)</span> 相对紧性。再让光滑化误差小于任意 <span class="arithmatex">\(\delta\)</span>，原集合全有界，完成证明。</p>
+</details>
+<p>若使用 <span class="arithmatex">\(H^1(\Omega)\)</span> 而非 <span class="arithmatex">\(H_0^1\)</span>，零延拓不再自动合法。常用的 Neumann 版本假设 <span class="arithmatex">\(\Omega\)</span> 有界且边界 Lipschitz，以便使用有界延拓算子。</p>
+<h3 id="section-7-2">7.2 Poincaré 不等式与 Poisson 问题</h3>
+<p>把 <span class="arithmatex">\(\Omega\)</span> 包含在宽度为 <span class="arithmatex">\(L\)</span> 的盒子中，对零延拓的紧支撑光滑函数沿第一坐标积分，Cauchy–Schwarz 给出</p>
+<div class="arithmatex">\[
+\|u\|_2\le L\|\partial_1u\|_2\le L\|\nabla u\|_2,
+\qquad u\in H_0^1(\Omega).
+\]</div>
+<p>这是 Poincaré 不等式。它使梯度能量成为 <span class="arithmatex">\(H_0^1\)</span> 上等价的 Hilbert 范数。</p>
+<p>对 <span class="arithmatex">\(f\in L^2\)</span>，弱解满足</p>
+<div class="arithmatex">\[
+\int_\Omega\overline{\nabla v}\cdot\nabla u
+=\int_\Omega\overline v f,
+\qquad v\in H_0^1.
+\]</div>
+<p>Riesz 或下面的 Lax–Milgram 定理给出唯一 <span class="arithmatex">\(u\)</span> 和能量估计。解算子把 <span class="arithmatex">\(L^2\)</span> 有界集映为 <span class="arithmatex">\(H_0^1\)</span> 有界集，再由 Rellich 得到 <span class="arithmatex">\(L^2\)</span> 中的紧像。因此 <span class="arithmatex">\(A_D^{-1}\)</span> 紧，Dirichlet Laplacian 有正离散特征值及 <span class="arithmatex">\(L^2\)</span> 正交特征基。</p>
+<p>对 Neumann 问题，在连通有界 Lipschitz 区域上常数属于核。方程可解需 <span class="arithmatex">\(\int f=0\)</span>，解需指定均值才能唯一；不连通时须在每个分支满足相应条件。</p>
+<h3 id="section-7-3">7.3 Lax–Milgram 与 Céa 估计</h3>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.2</span><span class="book-name">Lax–Milgram 定理</span></p>
+<p>在 Hilbert 空间 <span class="arithmatex">\(V\)</span> 上，设 <span class="arithmatex">\(a\)</span> 是有界半双线性形式，且</p>
+<div class="arithmatex">\[
+|a(u,v)|\le M\|u\|_V\|v\|_V,
+\qquad\operatorname{Re}a(v,v)\ge\alpha\|v\|_V^2,\quad\alpha&gt;0.
+\]</div>
+<p>则对每个线性 <span class="arithmatex">\(\ell\in V^*\)</span>，存在唯一 <span class="arithmatex">\(u\)</span> 使 <span class="arithmatex">\(a(u,v)=\ell(v)\)</span> 对全部 <span class="arithmatex">\(v\)</span> 成立，且 <span class="arithmatex">\(\|u\|_V\le\|\ell\|/\alpha\)</span>。实空间中去掉实部和共轭即可。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>按第三章的 Riesz 表示，写 <span class="arithmatex">\(a(u,v)=\langle Au,v\rangle\)</span>、<span class="arithmatex">\(\ell(v)=\langle g,v\rangle\)</span>，<span class="arithmatex">\(A\)</span> 是有界线性算子。强制性给出 <span class="arithmatex">\(\|Au\|\ge\alpha\|u\|\)</span>，所以核为零、像闭。</p>
+<p>又有 <span class="arithmatex">\(\operatorname{Re}\langle A^*v,v\rangle=\operatorname{Re}\langle Av,v\rangle\ge\alpha\|v\|^2\)</span>，所以 <span class="arithmatex">\(\ker A^*=0\)</span>，像的正交补为零。像闭且稠密，故等于 <span class="arithmatex">\(V\)</span>。于是 <span class="arithmatex">\(Au=g\)</span> 唯一可解，估计直接由下界得到。</p>
+</details>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.3</span><span class="book-name">Céa 误差估计</span></p>
+<p>若闭子空间 <span class="arithmatex">\(V_h\subset V\)</span> 上的 Galerkin 解满足 <span class="arithmatex">\(a(u_h,v_h)=\ell(v_h)\)</span>，则</p>
+<div class="arithmatex">\[
+\|u-u_h\|_V\le\frac M\alpha\inf_{v_h\in V_h}\|u-v_h\|_V.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>误差 <span class="arithmatex">\(e=u-u_h\)</span> 满足 <span class="arithmatex">\(a(e,v_h)=0\)</span>。对任意 <span class="arithmatex">\(v_h\in V_h\)</span>，</p>
+<div class="arithmatex">\[
+\alpha\|e\|_V^2\le\operatorname{Re}a(e,e)
+=\operatorname{Re}a(e,u-v_h)\le M\|e\|_V\|u-v_h\|_V.
+\]</div>
+<p>约去误差范数并取下确界。对称正形式的能量范数下，最佳逼近常数可取 <span class="arithmatex">\(1\)</span>，就是第三章的正交投影结论。</p>
+</details>
+<p>这与数值 PDE 笔记的关系很具体：空间近似误差由插值估计控制，稳定性由 <span class="arithmatex">\(\alpha\)</span> 控制，两者结合得到整体收敛误差。</p>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>一维 Dirichlet 问题算到底</h2>
+<p>对 <span class="arithmatex">\(A=-u''\)</span>、<span class="arithmatex">\(u(0)=u(1)=0\)</span>，特征基为</p>
+<div class="arithmatex">\[
+e_n(x)=\sqrt2\sin(n\pi x),\qquad\lambda_n=n^2\pi^2.
+\]</div>
+<p>若 <span class="arithmatex">\(f=\sum_nf_ne_n\)</span>，则</p>
+<div class="arithmatex">\[
+u=A^{-1}f=\sum_n\frac{f_n}{n^2\pi^2}e_n,
+\qquad\|u\|_2\le\pi^{-2}\|f\|_2.
+\]</div>
+<p>这与开头的 Green 核表示是同一个逆算子的两种写法。对于 <span class="arithmatex">\((A-\lambda I)u=f\)</span>，若 <span class="arithmatex">\(\lambda=n^2\pi^2\)</span>，需对应 <span class="arithmatex">\(f_n=0\)</span> 才可解；否则按 <span class="arithmatex">\(u_n=f_n/(\lambda_n-\lambda)\)</span> 求解。</p>
+<p>一般椭圆问题未必能显式求特征函数，但紧性仍保证离散谱结构。数值离散得到的矩阵谱，是对这个无限维谱问题的逼近。</p>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>全连续形式、紧算子与有限秩逼近</h2>
+<p>本节 <span class="arithmatex">\(H,K\)</span> 为 Hilbert 空间，<span class="arithmatex">\(V,W\)</span> 为一般赋范空间。Hilbert 空间中紧性、全连续性与有限秩可逼近性等价；一般 Banach 空间中不能不加条件照搬最后一个等价关系。</p>
+<h3 id="topic-8-2-1">联合弱连续性控制有限截断</h3>
+<p>全连续形式在两个弱单位球上联合连续。弱紧性使这种连续性变成对有限矩阵截断的统一控制，平方可积核于是可由有限秩核范数逼近。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span><span class="book-name">全连续形式</span></p>
+<p>半双线性形式 <span class="arithmatex">\(\omega:K\times H\to\mathbb C\)</span> 全连续，指其在两个闭单位球的乘积上，相对于两侧弱拓扑联合连续。此条件自动保证形式有界。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.2</span><span class="book-name">伴随保持全连续性</span></p>
+<p>全连续形式的伴随 <span class="arithmatex">\(\omega^*(\xi,\eta)=\overline{\omega(\eta,\xi)}\)</span> 仍全连续。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.3</summary>
+<p>交换两变量是弱单位球乘积上的连续映射，复共轭是标量连续映射。将它们与原全连续形式复合，得到伴随形式的联合连续性。</p>
+</details>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.3</span><span class="book-name">有限秩形式</span></p>
+<p>有限个形式 <span class="arithmatex">\(\omega_{\psi,\phi}(\eta,\xi)=\langle\eta,\psi\rangle\langle\phi,\xi\rangle\)</span> 的线性组合称有限秩形式，其中 <span class="arithmatex">\(\psi\in K,\phi\in H\)</span>。</p>
+</div>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.4</span><span class="book-name">有限秩形式全连续</span></p>
+<p>每个有限秩形式全连续，因为有限个内积坐标均为弱连续函数。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.5</summary>
+<p>固定向量的内积坐标是弱连续函数；两个标量坐标的乘积连续，有限线性组合仍连续。所以每个有限秩形式全连续。</p>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.5</span><span class="book-name">全连续形式的范数闭性</span></p>
+<p>全连续形式的算子范数收敛网，其极限仍全连续。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.6</summary>
+<p>单位球乘积上 <span class="arithmatex">\(|\omega_\alpha-\omega|\leq\|\omega_\alpha-\omega\|\)</span>，故形式范数收敛就是该紧空间上的一致收敛。连续标量函数的一致极限连续，得到全连续性。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.6</span><span class="book-name">可逼近形式</span></p>
+<p>全连续形式的范数极限称可逼近形式，使用网或序列等价。结合下述有限截断判据，这也等价于能够被有限秩形式范数逼近。</p>
+</div>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.7</span><span class="book-name">可逼近形式全连续</span></p>
+<p>可逼近形式全连续。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.8</summary>
+<p>按可逼近定义取全连续逼近网，直接用 8.2.6；若以有限秩逼近作为等价定义，则先用 8.2.5，再用同一范数闭性。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.8</span><span class="book-name">有限矩阵截断判据</span></p>
+<p>相对于两侧标准正交基，令 <span class="arithmatex">\(\omega_{I,J}(\eta,\xi)=\sum_{i\in I,j\in J}\omega(e_i,f_j)\langle\eta,e_i\rangle\langle f_j,\xi\rangle\)</span>。形式全连续当且仅当 <span class="arithmatex">\(\|\omega-\omega_{I,J}\|\to0\)</span>，其中 <span class="arithmatex">\(I,J\)</span> 遍历有限指标集。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.9</summary>
+<p>有限截断写成 <span class="arithmatex">\(\omega_{I,J}(\eta,\xi)=\omega(P_I\eta,Q_J\xi)\)</span>。正交基完备使 <span class="arithmatex">\(P_I,Q_J\)</span> 强趋于单位，投影自伴且范数至多一，故 8.2.10 给范数收敛。反向，截断有限秩且全连续，范数闭性给原形式全连续。8.2.10 的证明如下，直接使用弱紧性而不依赖此截断结论。</p>
+</details>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.9</span><span class="book-name">全连续形式与强收敛因子</span></p>
+<p>若 <span class="arithmatex">\(A_\alpha^*\to A^*\)</span>、<span class="arithmatex">\(B_\alpha^*\to B^*\)</span> 为 SOT 收敛，且两族一致有界，则对全连续 <span class="arithmatex">\(\omega\)</span>，形式 <span class="arithmatex">\((\eta,\xi)\mapsto\omega(A_\alpha\eta,B_\alpha\xi)\)</span> 范数趋于 <span class="arithmatex">\(\omega(A\eta,B\xi)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.10</summary>
+<p>若范数收敛失败，可选子网和单位向量 <span class="arithmatex">\(\eta_\alpha,\xi_\alpha\)</span> 使误差绝对值有固定正下界。弱单位球的乘积紧，进一步取子网使它们分别弱趋于 <span class="arithmatex">\(\eta,\xi\)</span>。对固定测试 <span class="arithmatex">\(v\)</span>，</p>
+<div class="arithmatex">\[
+\langle v,A_\alpha\eta_\alpha\rangle
+=\langle A_\alpha^*v,\eta_\alpha\rangle
+\to\langle A^*v,\eta\rangle.
+\]</div>
+<p>因为前一因子范数收敛，后一因子一致有界；<span class="arithmatex">\(B_\alpha\xi_\alpha\)</span> 同理。两像网由统一算子界位于固定倍数的弱单位球，全连续性遂给 <span class="arithmatex">\(\omega(A_\alpha\eta_\alpha,B_\alpha\xi_\alpha)\to\omega(A\eta,B\xi)\)</span>。固定 <span class="arithmatex">\(A,B\)</span> 的弱连续性也给 <span class="arithmatex">\(\omega(A\eta_\alpha,B\xi_\alpha)\)</span> 趋于同一值，矛盾。</p>
+</details>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.10</span><span class="book-name">测试可变弱向量</span></p>
+<p>闭单位球中的 <span class="arithmatex">\(\phi_\alpha\)</span> 范数趋于 <span class="arithmatex">\(\phi\)</span>，当且仅当每个同指标、同样位于闭单位球中的弱收敛网 <span class="arithmatex">\(\xi_\alpha\rightharpoonup\xi\)</span> 都满足 <span class="arithmatex">\(\langle\phi_\alpha,\xi_\alpha\rangle\to\langle\phi,\xi\rangle\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.11</summary>
+<p>范数收敛时</p>
+<div class="arithmatex">\[
+|\langle\phi_\alpha,\xi_\alpha\rangle-\langle\phi,\xi\rangle|
+\leq\|\phi_\alpha-\phi\|+|\langle\phi,\xi_\alpha-\xi\rangle|\to0.
+\]</div>
+<p>反向，先取全部常值测试网得 <span class="arithmatex">\(\phi_\alpha\rightharpoonup\phi\)</span>，再取 <span class="arithmatex">\(\xi_\alpha=\phi_\alpha\)</span> 得 <span class="arithmatex">\(\|\phi_\alpha\|^2\to\|\phi\|^2\)</span>。弱收敛与范数收敛的 Hilbert 判据给强收敛。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.11</span><span class="book-name">乘积空间的正交基</span></p>
+<p>若 <span class="arithmatex">\(X,Y\)</span> 局部紧 Hausdorff，<span class="arithmatex">\(\mu,\nu\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限 Radon 测度，则两个 <span class="arithmatex">\(L^2\)</span> 标准正交基的乘积 <span class="arithmatex">\(e_i(x)f_j(y)\)</span> 构成 <span class="arithmatex">\(L^2(X\times Y,\mu\times\nu)\)</span> 的标准正交基。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.12</summary>
+<p>Fubini 使乘积族的内积分解，故标准正交。完备性可先用有限测度矩形指标：这些指标的有限线性组合在乘积 <span class="arithmatex">\(L^2\)</span> 稠密，而各因子可由各自正交基有限和逼近，乘积误差用 <span class="arithmatex">\(\|uv\|_{L^2(\mu\times\nu)}=\|u\|_2\|v\|_2\)</span> 控制。<span class="arithmatex">\(\sigma\)</span>-有限性允许先截到有限测度矩形。故乘积族线性稠密。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.12</span><span class="book-name">平方可积核</span></p>
+<p>在上述测度条件下，<span class="arithmatex">\(K\in L^2(X\times Y)\)</span> 定义的 <span class="arithmatex">\(\omega(f,g)=\int\overline{f(x)}K(x,y)g(y)\,d\mu(x)d\nu(y)\)</span> 全连续，且 <span class="arithmatex">\(\|\omega\|\leq\|K\|_2\)</span>；两种迭代积分均有意义且相同。</p>
+</div>
+<details class="proof">
+<summary>证明 8.2.13</summary>
+<p><span class="arithmatex">\(\bar f(x)g(y)\)</span> 的乘积 <span class="arithmatex">\(L^2\)</span> 范数为 <span class="arithmatex">\(\|f\|_2\|g\|_2\)</span>，Cauchy–Schwarz 使三因子积分绝对可积并给形式范数界。8.2.12 将 <span class="arithmatex">\(K\)</span> 以有限个乘积基函数在 <span class="arithmatex">\(L^2\)</span> 中逼近，对应形式有限秩；误差形式范数至多为核的 <span class="arithmatex">\(L^2\)</span> 误差，所以原形式全连续。绝对可积性同时允许两种迭代次序。</p>
+</details>
+<h3 id="topic-8-3-1">用弱紧性取得特征方向</h3>
+<p>自伴二次型在弱单位球上达到极值，正形式的零向量判据把极值向量变成特征向量。反复在正交补上进行，非零特征值就会趋于零。</p>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.13</span><span class="book-name">Hilbert–Schmidt 自伴谱定理</span></p>
+<p><span class="arithmatex">\(T\)</span> 的形式 Hermitian 且全连续，当且仅当 <span class="arithmatex">\(H\)</span> 有标准正交基 <span class="arithmatex">\((e_n)\cup(f_j)\)</span>，其中 <span class="arithmatex">\(Te_n=\lambda_ne_n\)</span>、<span class="arithmatex">\(\lambda_n\in\mathbb R\setminus\{0\}\)</span>，<span class="arithmatex">\(Tf_j=0\)</span>，非零部分至多可数，若无限则 <span class="arithmatex">\(\lambda_n\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.3.1</summary>
+<p>全连续 Hermitian 形式的 <span class="arithmatex">\(|\langle\xi,T\xi\rangle|\)</span> 在弱紧单位球上达到最大值。若 <span class="arithmatex">\(T\ne0\)</span>，极值向量可归一化为 <span class="arithmatex">\(e_1\)</span>，值为 <span class="arithmatex">\(\lambda_1\ne0\)</span>。选正极值情形，则 <span class="arithmatex">\(\lambda_1 I-T\geq0\)</span> 且在 <span class="arithmatex">\(e_1\)</span> 上二次型为零；正形式 Cauchy–Schwarz 迫使 <span class="arithmatex">\((\lambda_1-T)e_1=0\)</span>。负极值对 <span class="arithmatex">\(-T\)</span> 同理。</p>
+<p><span class="arithmatex">\(e_1^\perp\)</span> 约化 <span class="arithmatex">\(T\)</span>，在该空间重复极值构造，得到标准正交特征序列。若无限，则 <span class="arithmatex">\(e_n\rightharpoonup0\)</span>，全连续性给 <span class="arithmatex">\(\lambda_n=\langle e_n,Te_n\rangle\to0\)</span>。每一步剩余空间的二次型绝对值由当前极值控制，极化估计使剩余算子范数趋零，所以所有 <span class="arithmatex">\(e_n\)</span> 的正交补上 <span class="arithmatex">\(T=0\)</span>。补上其正交基得到结论。</p>
+<p>反向取有限谱截断 <span class="arithmatex">\(T_N=\sum_{n\leq N}\lambda_nP_{e_n}\)</span>，有 <span class="arithmatex">\(\|T-T_N\|\leq\sup_{n&gt;N}|\lambda_n|\to0\)</span>。各截断自伴有限秩，故极限的形式 Hermitian 且全连续。</p>
+</details>
+<h3 id="topic-8-4-1">把弱输入变成强输出</h3>
+<p>Hilbert 单位球弱紧，所以全连续映射等价于紧映射。一般赋范空间中则直接以单位球像的相对紧性定义紧算子，有限秩和范数逼近给出基本例子。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.14</span><span class="book-name">全连续映射</span></p>
+<p>线性 <span class="arithmatex">\(T:H\to K\)</span> 全连续，指其闭单位球上的限制由弱拓扑到值域范数拓扑连续；它自动有界。</p>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.15</span><span class="book-name">有界映射的弱连续性</span></p>
+<p>有界线性 <span class="arithmatex">\(T:H\to K\)</span> 在两侧都取弱拓扑时连续。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.2</summary>
+<p>每个目标弱测试 <span class="arithmatex">\(\eta\)</span> 的复合为 <span class="arithmatex">\(\langle\eta,T\xi\rangle=\langle T^*\eta,\xi\rangle\)</span>，是源空间弱连续函数。弱拓扑由全部这类测试诱导，所以 <span class="arithmatex">\(T\)</span> 弱连续。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.16</span><span class="book-name">形式与映射的全连续性</span></p>
+<p>线性 <span class="arithmatex">\(T:H\to K\)</span> 全连续当且仅当其形式 <span class="arithmatex">\(\omega_T(\eta,\xi)=\langle\eta,T\xi\rangle\)</span> 全连续。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.3</summary>
+<p>若 <span class="arithmatex">\(T\)</span> 将弱单位球连续映到范数空间，两个变量变化时将配对误差拆为弱测试误差与 <span class="arithmatex">\(T\xi\)</span> 的范数误差，得到形式联合连续。反向形式联合连续时，对每个 <span class="arithmatex">\(\xi_\alpha\rightharpoonup\xi\)</span>，向量 <span class="arithmatex">\(T\xi_\alpha\)</span> 弱趋于 <span class="arithmatex">\(T\xi\)</span>，且与任意可变弱单位球测试配对均收敛。缩放后用 8.2.11 得 <span class="arithmatex">\(T\xi_\alpha\to T\xi\)</span> 于范数，故全连续。</p>
+</details>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.17</span><span class="book-name">紧算子</span></p>
+<p>线性 <span class="arithmatex">\(T:V\to W\)</span> 紧，指单位球的像相对紧；等价于每个有界网的像有范数收敛子网，或每个有界序列的像有范数收敛子列。该条件自动保证有界。</p>
+</div>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.18</span><span class="book-name">Hilbert 空间中的三个等价条件</span></p>
+<p><span class="arithmatex">\(T\)</span> 紧、<span class="arithmatex">\(T\)</span> 全连续、<span class="arithmatex">\(\omega_T\)</span> 全连续，三者等价。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.7</summary>
+<p>全连续映射把弱紧单位球连续映到范数紧集，因而紧。反向若 <span class="arithmatex">\(T\)</span> 紧且 <span class="arithmatex">\(\xi_\alpha\rightharpoonup\xi\)</span> 于单位球，若像不范数趋于 <span class="arithmatex">\(T\xi\)</span>，取误差有正下界的子网；紧性再给像的范数收敛子网。8.4.2 强制其弱极限是 <span class="arithmatex">\(T\xi\)</span>，矛盾。故紧蕴含全连续，再用 8.4.3 得三者等价。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.19</span><span class="book-name">紧伴随</span></p>
+<p>Hilbert 空间间紧算子的伴随仍紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.8</summary>
+<p>紧 <span class="arithmatex">\(T\)</span> 的形式全连续，8.2.3 使 <span class="arithmatex">\(T^*\)</span> 的形式全连续，8.4.7 再得 <span class="arithmatex">\(T^*\)</span> 紧。这个证明同时解释了为何此处使用 Hilbert 结构。</p>
+</details>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.20</span><span class="book-name">有限秩算子</span></p>
+<p>有界且像有限维的线性映射称有限秩算子。像有限维的纯代数映射若不连续，不在此定义之内。</p>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.21</span><span class="book-name">有限秩的向量表达</span></p>
+<p>Hilbert 空间间 <span class="arithmatex">\(T\)</span> 有限秩，当且仅当 <span class="arithmatex">\(\omega_T\)</span> 有限秩，也当且仅当 <span class="arithmatex">\(T\xi=\sum_{j=1}^n\psi_j\langle\phi_j,\xi\rangle\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.12</summary>
+<p>有限秩 <span class="arithmatex">\(T\)</span> 的像取标准正交基 <span class="arithmatex">\(\psi_1,\ldots,\psi_n\)</span>，令 <span class="arithmatex">\(\phi_j=T^*\psi_j\)</span>，则 <span class="arithmatex">\(T\xi=\sum_j\psi_j\langle\phi_j,\xi\rangle\)</span>。这种表达立即给有限秩形式。反向给定这种形式表达，非退化内积迫使 <span class="arithmatex">\(T\)</span> 具有对应向量表达，像于是有限维。</p>
+</details>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.22</span><span class="book-name">有限秩即紧</span></p>
+<p>一般赋范空间间的有限秩算子紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.13</summary>
+<p>有限秩有界算子的单位球像有界，位于有限维像空间。8.4.14 给该空间中闭有界集紧，故像相对紧。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.23</span><span class="book-name">有限维范数与紧性</span></p>
+<p>有限维实或复向量空间的全部范数等价；有界闭子集紧，空间完备。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.14</summary>
+<p>取基并以欧氏范数比较。三角不等式给任意范数的欧氏上界；欧氏单位球面紧且范数连续，其正的最小值给下界。范数等价后，欧氏空间的 Heine–Borel 与完备性转移到任意范数。任意两个范数都与欧氏范数等价，故互相等价。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.24</span><span class="book-name">紧算子的范数闭性</span></p>
+<p>若值域 <span class="arithmatex">\(W\)</span> 完备，紧算子网 <span class="arithmatex">\(T_\alpha:V\to W\)</span> 范数趋于 <span class="arithmatex">\(T\)</span>，则 <span class="arithmatex">\(T\)</span> 紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.15</summary>
+<p>给定 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，取紧 <span class="arithmatex">\(T_\alpha\)</span> 使 <span class="arithmatex">\(\|T-T_\alpha\|&lt;\varepsilon/3\)</span>，再用 <span class="arithmatex">\(T_\alpha\)</span> 单位球像的有限 <span class="arithmatex">\(\varepsilon/3\)</span> 网覆盖。相同中心成为 <span class="arithmatex">\(T\)</span> 单位球像的有限 <span class="arithmatex">\(\varepsilon\)</span> 网，故像全有界。目标完备使其闭包完备且全有界，因此紧。</p>
+</details>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.25</span><span class="book-name">可逼近算子</span></p>
+<p>有限秩算子的算子范数闭包中的元素称可逼近算子；用网或序列逼近等价。</p>
+</div>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.26</span><span class="book-name">可逼近性蕴含紧性</span></p>
+<p>值域完备时，每个可逼近算子紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.4.17</summary>
+<p>取有限秩算子网 <span class="arithmatex">\(T_\alpha\)</span> 范数趋于给定可逼近算子 <span class="arithmatex">\(T\)</span>。8.4.13 使每个 <span class="arithmatex">\(T_\alpha\)</span> 紧，目标完备允许应用 8.4.15，故其范数极限 <span class="arithmatex">\(T\)</span> 仍紧。</p>
+</details>
+<details class="proof">
+<summary>从紧性得到有限秩逼近</summary>
+<p>Hilbert 空间中，紧像的有限 <span class="arithmatex">\(\varepsilon\)</span> 网张成有限维子空间 <span class="arithmatex">\(M\)</span>。令 <span class="arithmatex">\(P_M\)</span> 为其投影，则对单位球中的 <span class="arithmatex">\(\xi\)</span>，<span class="arithmatex">\(\|(1-P_M)T\xi\|\leq\varepsilon\)</span>，所以 <span class="arithmatex">\(P_MT\)</span> 有限秩且范数逼近 <span class="arithmatex">\(T\)</span>。伴随紧性后，再在定义域作有限投影，得到两侧有限截断的范数收敛。</p>
+<p>对平方可积核，乘积正交基使核可由有限个乘积函数在 <span class="arithmatex">\(L^2\)</span> 中逼近。核误差控制算子范数误差，因此积分形式是有限秩形式的范数极限。一般赋范空间中的范数闭性则由对角抽取像序列和值域完备性证明；若值域不完备，得到的 Cauchy 极限可能落在完备化中。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>非零谱、子空间链与 Fredholm 理论</h2>
+<h3 id="topic-8-5-3">非零近似谱值必须成为特征值</h3>
+<p>紧性先让像收敛；非零标量再从像与小残差恢复输入的收敛。这就是紧算子把非零近似特征值转成真正特征值的机制。</p>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.1</span><span class="book-name">自伴范数是近似谱值</span></p>
+<p>有界自伴 <span class="arithmatex">\(A\)</span> 的 <span class="arithmatex">\(\|A\|\)</span> 和 <span class="arithmatex">\(-\|A\|\)</span> 中至少一个为近似特征值。</p>
+</div>
+<details class="proof">
+<summary>证明 8.5.3</summary>
+<p>自伴算子的范数等于单位球上二次型绝对值上确界，取单位向量 <span class="arithmatex">\(\xi_n\)</span> 使二次型趋于 <span class="arithmatex">\(\lambda=\|A\|\)</span> 或 <span class="arithmatex">\(-\|A\|\)</span>。正算子 <span class="arithmatex">\(B=\lambda I-A\)</span>（负端点改对 <span class="arithmatex">\(-A\)</span> 处理）满足 <span class="arithmatex">\(\|B\xi\|^2\leq\|B\|\langle\xi,B\xi\rangle\)</span>，故 <span class="arithmatex">\(\|(A-\lambda)\xi_n\|\to0\)</span>。所以至少一个端点是近似特征值。</p>
+</details>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.2</span><span class="book-name">紧算子的近似特征值</span></p>
+<p>对紧 <span class="arithmatex">\(A:V\to V\)</span> 和 <span class="arithmatex">\(\lambda\ne0\)</span>，<span class="arithmatex">\(\lambda\)</span> 为特征值当且仅当为近似特征值；不要求 <span class="arithmatex">\(V\)</span> 完备。</p>
+</div>
+<details class="proof">
+<summary>证明 8.5.4</summary>
+<p>特征值当然是近似特征值。反向取单位 <span class="arithmatex">\(\xi_n\)</span> 使 <span class="arithmatex">\((A-\lambda)\xi_n\to0\)</span>；紧性给子列 <span class="arithmatex">\(A\xi_n\to\eta\)</span>。因 <span class="arithmatex">\(\lambda\ne0\)</span>，<span class="arithmatex">\(\xi_n=\lambda^{-1}[A\xi_n-(A-\lambda)\xi_n]\to\lambda^{-1}\eta\)</span>，极限在空间内且范数为一。连续性给 <span class="arithmatex">\(A\xi=\lambda\xi\)</span>，不需要源空间完备。</p>
+</details>
+<h3 id="topic-8-6-3">紧性阻止无限严格三角链</h3>
+<p>在严格递增或递减子空间链中选近似正交单位向量，三角条件会使它们的像保持分离。紧性不允许这种无限分离，除非相应标量趋于零。</p>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.3</span><span class="book-name">递增链上的三角行为</span></p>
+<p>若闭子空间严格递增 <span class="arithmatex">\(V_0\subsetneq V_1\subsetneq\cdots\)</span>，紧 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\((T-\lambda_n)V_n\subset V_{n-1}\)</span>，则 <span class="arithmatex">\(\lambda_n\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.6.3</summary>
+<p>Riesz 引理选单位 <span class="arithmatex">\(e_n\in V_n\)</span>，使 <span class="arithmatex">\(\operatorname{dist}(e_n,V_{n-1})\geq1/2\)</span>。若 <span class="arithmatex">\(m&lt;n\)</span>，三角条件给 <span class="arithmatex">\(Te_n-Te_m=\lambda_ne_n+v\)</span>，<span class="arithmatex">\(v\in V_{n-1}\)</span>，故 <span class="arithmatex">\(\|Te_n-Te_m\|\geq|\lambda_n|/2\)</span>。若 <span class="arithmatex">\(\lambda_n\)</span> 不趋零，可取其绝对值有正下界的子列，像之间不能 Cauchy，违反紧性。</p>
+<p>Hilbert 空间还可取 <span class="arithmatex">\(e_n\perp V_{n-1}\)</span>，它们标准正交并弱趋零；全连续性使 <span class="arithmatex">\(Te_n\to0\)</span>，而 <span class="arithmatex">\(\|Te_n\|\geq|\lambda_n|\)</span>，直接得到结论。</p>
+</details>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.4</span><span class="book-name">近似正交</span></p>
+<p><span class="arithmatex">\(\xi\)</span> 与子空间 <span class="arithmatex">\(U\)</span> 为 <span class="arithmatex">\(\varepsilon\)</span>-正交，指 <span class="arithmatex">\(\operatorname{dist}(\xi,U)\geq(1-\varepsilon)\|\xi\|\)</span>。</p>
+</div>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.5</span><span class="book-name">Riesz 引理</span></p>
+<p>若 <span class="arithmatex">\(U\)</span> 为真闭线性子空间，给定 <span class="arithmatex">\(\psi\notin U\)</span> 和 <span class="arithmatex">\(0&lt;\varepsilon&lt;1\)</span>，存在非零 <span class="arithmatex">\(\xi\in\psi+U\)</span> 与 <span class="arithmatex">\(U\)</span> 为 <span class="arithmatex">\(\varepsilon\)</span>-正交。</p>
+</div>
+<details class="proof">
+<summary>证明 8.6.5</summary>
+<p>令 <span class="arithmatex">\(d=\operatorname{dist}(\psi,U)&gt;0\)</span>，取 <span class="arithmatex">\(u\in U\)</span> 使 <span class="arithmatex">\(\|\psi-u\|&lt;d/(1-\varepsilon)\)</span>，设 <span class="arithmatex">\(\xi=\psi-u\)</span>。它仍在 <span class="arithmatex">\(\psi+U\)</span>，且 <span class="arithmatex">\(\operatorname{dist}(\xi,U)=d&gt;(1-\varepsilon)\|\xi\|\)</span>，所以满足要求。</p>
+</details>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.6</span><span class="book-name">递减链上的三角行为</span></p>
+<p>若闭子空间严格递减 <span class="arithmatex">\(V_1\supsetneq V_2\supsetneq\cdots\)</span>，紧 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\((T-\lambda_n)V_n\subset V_{n+1}\)</span>，则 <span class="arithmatex">\(\lambda_n\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.6.7</summary>
+<p>选单位 <span class="arithmatex">\(e_n\in V_n\)</span>，距离 <span class="arithmatex">\(V_{n+1}\)</span> 至少为 <span class="arithmatex">\(1/2\)</span>。对 <span class="arithmatex">\(n&lt;m\)</span>，三角条件给 <span class="arithmatex">\(Te_n-Te_m=\lambda_ne_n+v\)</span>，<span class="arithmatex">\(v\in V_{n+1}\)</span>，故距离至少 <span class="arithmatex">\(|\lambda_n|/2\)</span>。若存在绝对值有正下界的无限子列，其紧像不能 Cauchy，矛盾。Hilbert 情形也可将递减链的正交补转成递增链，并对紧伴随用 8.6.3。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.7</span><span class="book-name">非稳定递增链</span></p>
+<p>若递增闭子空间链不最终稳定，且 <span class="arithmatex">\((T-\lambda_n)V_n\subset V_{n-1}\)</span>，则 <span class="arithmatex">\(\liminf_n|\lambda_n|=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.6.9</summary>
+<p>若 <span class="arithmatex">\(\liminf|\lambda_n|&gt;0\)</span>，所有充分大的标量有统一正下界。取所有严格增长位置形成严格递增子链；在增长位置，原三角条件将算子送入前一不同子空间，故 8.6.3 强制该子列标量趋零，矛盾。因此链若不稳定只能有零下极限。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.8</span><span class="book-name">非稳定递减链</span></p>
+<p>若递减闭子空间链不最终稳定，且 <span class="arithmatex">\((T-\lambda_n)V_n\subset V_{n+1}\)</span>，则 <span class="arithmatex">\(\liminf_n|\lambda_n|=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.6.10</summary>
+<p>取所有严格下降位置构成子链，原条件仍将该位置空间送入下一个不同空间。若标量最终有统一正下界，8.6.7 给矛盾；所以不稳定链要求 <span class="arithmatex">\(\liminf|\lambda_n|=0\)</span>。</p>
+</details>
+<h3 id="topic-8-7-1">从链稳定到 Fredholm 二择一</h3>
+<p>核链和像链将单射、满射的失败转成三角链。非零参数使这些链必须稳定，再配合像的正下界与完备性，得到有界逆和有限维障碍。</p>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.9</span><span class="book-name">赋范空间算子的谱</span></p>
+<p>对 <span class="arithmatex">\(T\in\mathcal L(V)\)</span>，定义 <span class="arithmatex">\(\sigma(T)=\{\lambda\in\mathbb F:T-\lambda I\text{ 在 }\mathcal L(V)\text{ 中不可逆}\}\)</span>。实空间时此处只讨论实标量谱，复化后的复谱另行定义。</p>
+</div>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.10</span><span class="book-name">Fredholm 二择一</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 完备、<span class="arithmatex">\(T\)</span> 紧、<span class="arithmatex">\(\lambda\ne0\)</span>，则 <span class="arithmatex">\(\ker(T-\lambda)=0\)</span>、<span class="arithmatex">\(\lambda\notin\sigma(T)\)</span>、<span class="arithmatex">\(\operatorname{ran}(T-\lambda)=V\)</span> 三者等价。故非零谱点恰为非零特征值。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.2</summary>
+<p>令 <span class="arithmatex">\(A=T-\lambda\)</span>。若单射，8.5.4 排除零下界失效，即有 <span class="arithmatex">\(\|A\xi\|\geq c\|\xi\|\)</span>。完备性使各 <span class="arithmatex">\(A^nV\)</span> 闭。若 <span class="arithmatex">\(A\)</span> 不满射，单射性使这些像严格递减，且 <span class="arithmatex">\((T-\lambda)A^nV=A^{n+1}V\)</span>；8.6.7 强制 <span class="arithmatex">\(\lambda=0\)</span>，矛盾。因此满射，正下界给逆有界。</p>
+<p>反向若满射而核非零，可从非零核向量逐次取原像，使 <span class="arithmatex">\(\ker A^n\)</span> 严格递增，违反 8.7.3。可逆自然同时单射、满射，所以三个条件等价。</p>
+</details>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.11</span><span class="book-name">广义特征核稳定</span></p>
+<p>紧 <span class="arithmatex">\(T\)</span> 与 <span class="arithmatex">\(\lambda\ne0\)</span> 存在 <span class="arithmatex">\(n\)</span>，使 <span class="arithmatex">\(\ker(T-\lambda)^n=\ker(T-\lambda)^{n+1}=\cdots\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.3</summary>
+<p>核链闭且递增，满足 <span class="arithmatex">\((T-\lambda)\ker(T-\lambda)^n\subset\ker(T-\lambda)^{n-1}\)</span>。若不最终稳定，8.6.9 使常数序列 <span class="arithmatex">\(|\lambda|\)</span> 的下极限为零，矛盾。一次相等后，对 <span class="arithmatex">\(A\xi\in\ker A^n\)</span> 使用相等条件即可逐步推出后续全部相等。</p>
+</details>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.12</span><span class="book-name">广义特征空间有限维</span></p>
+<p>对每个有限 <span class="arithmatex">\(n\)</span> 和 <span class="arithmatex">\(\lambda\ne0\)</span>，<span class="arithmatex">\(\ker(T-\lambda)^n\)</span> 有限维。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.5</summary>
+<p>特征空间上 <span class="arithmatex">\(T=\lambda I\)</span>，紧性使其单位球紧，Riesz 引理遂迫使它有限维。一般幂展开为 <span class="arithmatex">\((T-\lambda)^n=(-\lambda)^nI+TK\)</span>，其中 <span class="arithmatex">\(K\)</span> 是有界多项式，<span class="arithmatex">\(TK\)</span> 紧。其核正是紧算子 <span class="arithmatex">\(TK\)</span> 的非零特征空间，故也有限维。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.13</span><span class="book-name">单位球的紧性判据</span></p>
+<p>赋范空间有限维当且仅当其闭单位球范数紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.6</summary>
+<p>有限维方向由 8.4.14。若无限维，递归取单位向量与前面有限维张成距离至少 <span class="arithmatex">\(1/2\)</span>；有限维张成闭，Riesz 引理可用。所得单位球内序列两两距离至少 <span class="arithmatex">\(1/2\)</span>，不可能有收敛子列，所以单位球不紧。</p>
+</details>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.14</span><span class="book-name">非零特征值的聚点</span></p>
+<p>紧算子的非零特征值在 <span class="arithmatex">\(\mathbb F\setminus\{0\}\)</span> 中无聚点；无限多个时只能趋于零。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.8</summary>
+<p>若不同非零特征值 <span class="arithmatex">\(\lambda_n\)</span> 聚到非零点，取各特征向量，8.7.9 保证其有限张成 <span class="arithmatex">\(V_n\)</span> 严格递增且闭。有 <span class="arithmatex">\((T-\lambda_n)V_n\subset V_{n-1}\)</span>，8.6.3 强制 <span class="arithmatex">\(\lambda_n\to0\)</span>，矛盾。特征值又被 <span class="arithmatex">\(\|T\|\)</span> 控制，因此每个远离零的区域只有有限多个。</p>
+</details>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.15</span><span class="book-name">不同特征值线性独立</span></p>
+<p>任意线性算子的不同特征值对应的非零特征向量线性独立，无须范数或完备性。</p>
+</div>
+<details class="proof">
+<summary>证明 8.7.9</summary>
+<p>对 <span class="arithmatex">\(n\)</span> 归纳。若 <span class="arithmatex">\(\sum_{j=1}^nc_je_j=0\)</span>，作用 <span class="arithmatex">\(T-\lambda_n\)</span> 得 <span class="arithmatex">\(\sum_{j&lt;n}c_j(\lambda_j-\lambda_n)e_j=0\)</span>。归纳假设及不同特征值给 <span class="arithmatex">\(c_j=0\)</span>，<span class="arithmatex">\(j&lt;n\)</span>；再由原式给 <span class="arithmatex">\(c_n=0\)</span>。</p>
+</details>
+<details class="proof">
+<summary>Riesz 引理与子空间链</summary>
+<p>令 <span class="arithmatex">\(d=\operatorname{dist}(\psi,U)&gt;0\)</span>，取 <span class="arithmatex">\(u\in U\)</span> 使 <span class="arithmatex">\(\|\psi-u\|&lt;d/(1-\varepsilon)\)</span>，令 <span class="arithmatex">\(\xi=\psi-u\)</span>，即得近似正交。对严格递增链，在每个新方向选单位向量 <span class="arithmatex">\(\xi_n\)</span>，与上一子空间距离至少为固定正数。三角条件使不同 <span class="arithmatex">\(T\xi_n\)</span> 的距离由 <span class="arithmatex">\(|\lambda_n|\)</span> 下界控制；若它不趋零，就与紧性矛盾。递减链作相反方向的同一比较。</p>
+<p>将此论证用于 <span class="arithmatex">\(\ker(T-\lambda)^n\)</span> 及闭像链，可排除非零标量下的无限增长或无限下降，得到核稳定和 Fredholm 的单射、满射等价。广义特征空间上 <span class="arithmatex">\(T=\lambda I+N\)</span> 且 <span class="arithmatex">\(N\)</span> 幂零，所以 <span class="arithmatex">\(T\)</span> 有有界的多项式逆；若该空间无限维，单位球会由紧 <span class="arithmatex">\(T\)</span> 和其逆推出紧性，与 Riesz 引理矛盾。</p>
+</details>
+<h2 id="section-11"><span class="book-secnum">§ 11</span>图像紧性、紧预解式与椭圆问题</h2>
+<h3 id="topic-8-8-1">让图像单位球的嵌入变紧</h3>
+<p>无界算子本身不能直接要求单位球像紧，合适对象是图像域到原空间的嵌入。预解式把图像域与原空间同构，因而将这种紧性转成紧预解式。</p>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.1</span><span class="book-name">紧图像投影</span></p>
+<p><span class="arithmatex">\(T:H\to K\)</span> 有紧图像投影，指 <span class="arithmatex">\(\Pi_T:G(T)\to H\)</span> 紧；等价于图像范数下的嵌入 <span class="arithmatex">\(D(T)\hookrightarrow H\)</span> 紧。不预设定义域稠密或图像闭。</p>
+</div>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11.2</span><span class="book-name">在核域上检验图像紧性</span></p>
+<p>若 <span class="arithmatex">\(D_0\)</span> 为 <span class="arithmatex">\(T\)</span> 的核域，则 <span class="arithmatex">\(T\)</span> 有紧图像投影当且仅当 <span class="arithmatex">\(T|_{D_0}\)</span> 有此性质。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.2</summary>
+<p>图像域中的核域图像稠密，图像投影有界且目标 <span class="arithmatex">\(H\)</span> 完备。对该稠密限制使用 8.8.3，恰得到所述等价。</p>
+</details>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 11.3</span><span class="book-name">稠密限制与紧性</span></p>
+<p>若 <span class="arithmatex">\(W\)</span> 完备，<span class="arithmatex">\(A:V\to W\)</span> 有界，<span class="arithmatex">\(U\subset V\)</span> 线性稠密，则 <span class="arithmatex">\(A\)</span> 紧当且仅当 <span class="arithmatex">\(A|_U\)</span> 紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.3</summary>
+<p>紧性当然传到限制。反向，源单位球中每个向量可用 <span class="arithmatex">\(U\)</span> 中范数不超过 <span class="arithmatex">\(1+\delta\)</span> 的向量任意逼近，再用 <span class="arithmatex">\(A\)</span> 有界控制像误差。因此原单位球像的闭包等于限制单位球像的闭包（归一化后令 <span class="arithmatex">\(\delta\to0\)</span>）。后者紧，故原算子紧。</p>
+</details>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11.4</span><span class="book-name">图像紧性的小扰动</span></p>
+<p>若 <span class="arithmatex">\(S\)</span> 为 <span class="arithmatex">\(T\)</span>-有界且相对界小于一，则 <span class="arithmatex">\(T\)</span> 与 <span class="arithmatex">\(T+S\)</span> 同时具有紧图像投影。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.4</summary>
+<p>7.9.7 给 <span class="arithmatex">\(T\)</span> 与 <span class="arithmatex">\(T+S\)</span> 的图像范数等价。两个图像域之间的恒等映射及其逆有界，嵌入到 <span class="arithmatex">\(H\)</span> 只相差这种有界复合。紧算子在有界复合下仍紧，得到同时性。</p>
+</details>
+<div id="thm-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.5</span><span class="book-name">紧预解式的三个判据</span></p>
+<p>假设 <span class="arithmatex">\(T\)</span> 的预解集非空，则 <span class="arithmatex">\(T\)</span> 自动闭，且以下等价：每个预解式紧；某个预解式紧；图像投影紧。满足时称有紧预解式。单独图像紧性不能保证预解集非空。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.5</summary>
+<p>处处有界预解式 <span class="arithmatex">\(R(z,T)\)</span> 的逆图像闭，故 <span class="arithmatex">\(T\)</span> 闭。映射 <span class="arithmatex">\(\xi\mapsto(z-T)\xi\)</span> 从图像域到 <span class="arithmatex">\(H\)</span> 有界可逆：逆的图像范数由 <span class="arithmatex">\(R\)</span> 和 <span class="arithmatex">\(TR=zR-I\)</span> 控制。图像嵌入与 <span class="arithmatex">\(R\)</span> 相差此有界同构，所以某个预解式紧等价于图像嵌入紧。预解式恒等式</p>
+<div class="arithmatex">\[
+R(w,T)=R(z,T)+(z-w)R(w,T)R(z,T)
+\]</div>
+<p>又使一个紧预解式推出每个预解式紧。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 11.6</span><span class="book-name">紧预解式的小扰动</span></p>
+<p>自伴 <span class="arithmatex">\(T\)</span> 与相对界小于一的 <span class="arithmatex">\(T\)</span>-有界 <span class="arithmatex">\(S\)</span>，满足 <span class="arithmatex">\(T\)</span> 有紧预解式当且仅当 <span class="arithmatex">\(T+S\)</span> 有紧预解式；<span class="arithmatex">\(S\)</span> 可不对称。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.6</summary>
+<p>7.9.5 保证 <span class="arithmatex">\(T+S\)</span> 的预解集非空；<span class="arithmatex">\(T\)</span> 自伴也有非空预解集。8.8.4 保持图像嵌入紧性，8.8.5 再将其转成两算子的紧预解式性质。</p>
+</details>
+<div id="thm-23" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.7</span><span class="book-name">正算子的离散谱</span></p>
+<p>正自伴 <span class="arithmatex">\(T\)</span> 有紧预解式，当且仅当 <span class="arithmatex">\(H\)</span> 有至多可数的标准正交特征基，特征值 <span class="arithmatex">\(\lambda_n\geq0\)</span>，若无限则 <span class="arithmatex">\(\lambda_n\to\infty\)</span>。因此空间自动可分，各有限谱值重数有限。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.7</summary>
+<p>取正紧自伴 <span class="arithmatex">\(R=(I+T)^{-1}\)</span>，它单射且像稠密。紧自伴谱定理给标准正交特征基 <span class="arithmatex">\(Re_n=\mu_ne_n\)</span>，<span class="arithmatex">\(\mu_n&gt;0\)</span>，无限时 <span class="arithmatex">\(\mu_n\to0\)</span>；没有零特征空间。故 <span class="arithmatex">\(Te_n=(\mu_n^{-1}-1)e_n\)</span>，这些特征值趋于无穷。反向，在所述特征基上预解式是对角算子，系数 <span class="arithmatex">\((1+\lambda_n)^{-1}\)</span> 趋零，有限截断范数逼近使其紧。</p>
+</details>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 11.8</span><span class="book-name">正幂与紧预解式</span></p>
+<p>正自伴 <span class="arithmatex">\(T\)</span> 对任意 <span class="arithmatex">\(r&gt;0\)</span>，<span class="arithmatex">\(T\)</span> 有紧预解式当且仅当 <span class="arithmatex">\(T^r\)</span> 有紧预解式。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.9</summary>
+<p>若 <span class="arithmatex">\(T\)</span> 有紧预解式，其特征基同时对角化 <span class="arithmatex">\(T^r\)</span>，<span class="arithmatex">\(\lambda_n^r\to\infty\)</span>，故后者也有。反向对 <span class="arithmatex">\(T^r\)</span> 的特征基用 Borel 函数 <span class="arithmatex">\(x^{1/r}\)</span>，得到 <span class="arithmatex">\(T\)</span> 的同一特征基，特征值也趋无穷；再用 8.8.7。</p>
+</details>
+<div id="thm-24" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.9</span><span class="book-name">绝对值与图像紧性</span></p>
+<p>稠密定义且闭的 <span class="arithmatex">\(T:D(T)\subset H\to K\)</span> 的以下条件等价：图像投影紧；<span class="arithmatex">\(T^*T\)</span> 有紧预解式；<span class="arithmatex">\(|T|\)</span> 有紧预解式。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.10</summary>
+<p>极分解给 <span class="arithmatex">\(D(T)=D(|T|)\)</span> 且图像范数相同，所以两个图像嵌入同时紧。<span class="arithmatex">\(|T|\)</span> 正自伴，8.8.5 将其图像紧性化为紧预解式。最后 <span class="arithmatex">\(T^*T=|T|^2\)</span>，8.8.9 给剩余等价。</p>
+</details>
+<div id="thm-25" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.10</span><span class="book-name">无界 Fredholm 二择一</span></p>
+<p>有紧预解式的 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\(\ker T=0\)</span>、<span class="arithmatex">\(T^{-1}\)</span> 处处有界、<span class="arithmatex">\(\operatorname{ran}T=H\)</span> 三者等价。</p>
+</div>
+<details class="proof">
+<summary>证明 8.8.11</summary>
+<p>取预解点 <span class="arithmatex">\(z\)</span>。若 <span class="arithmatex">\(z=0\)</span>，有界逆已存在；否则令 <span class="arithmatex">\(R=(z-T)^{-1}\)</span>，则 <span class="arithmatex">\(T=(zR-I)(z-T)\)</span> 在 <span class="arithmatex">\(D(T)\)</span> 成立。前一因子是紧算子的非零标量扰动，Fredholm 二择一说明其单射、满射、有界可逆等价。后一因子把图像域同构到 <span class="arithmatex">\(H\)</span>，故这些条件转回 <span class="arithmatex">\(T\)</span> 恰是所述三条件。</p>
+</details>
+<h3 id="topic-8-9-1">用 Fourier 尾部证明 Rellich 紧性</h3>
+<p>有界域上的零边界函数可零延拓到大环面。梯度范数控制高频尾部，低频部分有限维；二者结合给紧嵌入，再给 Dirichlet Laplacian 的离散谱。</p>
+<div id="thm-26" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.11</span><span class="book-name">Rellich 紧性</span></p>
+<p>若 <span class="arithmatex">\(\Omega\subset\mathbb R^N\)</span> 为有界开集，则 <span class="arithmatex">\(H_0^1(\Omega)\hookrightarrow L^2(\Omega)\)</span> 紧，因而正 Dirichlet Laplacian <span class="arithmatex">\(-\Delta_D\)</span> 有紧预解式；不要求边界光滑。</p>
+</div>
+<details class="proof">
+<summary>证明 8.9.1</summary>
+<p>先在测试域上把函数零延拓到包含 <span class="arithmatex">\(\Omega\)</span> 的大立方体，再把立方体视为环面。这保持 <span class="arithmatex">\(L^2\)</span> 与梯度范数；图像完备化后也保持。环面的归一化指数构成标准正交基，若 Fourier 系数为 <span class="arithmatex">\(c_n\)</span>，梯度单位球满足</p>
+<div class="arithmatex">\[
+\sum_n(1+|n|^2)|c_n|^2\leq1.
+\]</div>
+<p>因此去掉 <span class="arithmatex">\(|n|\leq R\)</span> 的有限模式后，<span class="arithmatex">\(L^2\)</span> 尾部平方至多 <span class="arithmatex">\((1+R^2)^{-1}\)</span>。有限维截断像有界且相对紧，统一尾部估计使嵌入成为有限秩映射的范数极限，故紧。限制回 <span class="arithmatex">\(\Omega\)</span> 仍紧。8.8.10 将梯度图像紧性化为 <span class="arithmatex">\(-\Delta_D\)</span> 的紧预解式，无须任何边界正则性。</p>
+</details>
+<div id="cor-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 11.12</span><span class="book-name">有界一阶项的紧预解式</span></p>
+<p>令 <span class="arithmatex">\(X_j=\overline{\partial_j|_{C_c^\infty(\Omega)}}\)</span>，<span class="arithmatex">\(M_a\)</span> 表示乘以 <span class="arithmatex">\(a\)</span>。在有界开集 <span class="arithmatex">\(\Omega\)</span> 及有界可测系数条件下，<span class="arithmatex">\(-\Delta_D+\sum_jM_{a_j}X_j+M_b\)</span> 在 <span class="arithmatex">\(D(\Delta_D)\)</span> 上有紧预解式，故它单射当且仅当满射。</p>
+</div>
+<details class="proof">
+<summary>证明 8.9.3</summary>
+<p>一阶有界系数项对 <span class="arithmatex">\(\sqrt{-\Delta_D}\)</span> 相对有界，故对 <span class="arithmatex">\(-\Delta_D\)</span> 有任意小相对界。8.9.1 及 8.8.6 给扰动后紧预解式，再由 8.8.11 得单射等价于满射。</p>
+</details>
+<div id="thm-27" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.13</span><span class="book-name">Poincaré 不等式</span></p>
+<p>有界开集上存在 <span class="arithmatex">\(C_\Omega\)</span> 使 <span class="arithmatex">\(\|u\|_2\leq C_\Omega\|\nabla u\|_2\)</span> 对全部 <span class="arithmatex">\(u\in H_0^1\)</span> 成立。所以 <span class="arithmatex">\(-\Delta_D\)</span> 严格正且满射，逆算子有界且紧。</p>
+</div>
+<details class="proof">
+<summary>证明 8.9.5</summary>
+<p>取包含 <span class="arithmatex">\(\Omega\)</span> 的立方体 <span class="arithmatex">\((-R,R)^N\)</span> 并零延拓测试函数。沿第一坐标有 <span class="arithmatex">\(u(x)=\int_{-R}^{x_1}\partial_1u(s,x')ds\)</span>，Cauchy–Schwarz 后积分得</p>
+<div class="arithmatex">\[
+\|u\|_2^2\leq4R^2\|\partial_1u\|_2^2\leq4R^2\|\nabla u\|_2^2.
+\]</div>
+<p>核域逼近把估计传到 <span class="arithmatex">\(H_0^1\)</span>。这给 <span class="arithmatex">\(-\Delta_D\geq(4R^2)^{-1}I\)</span>，非负谱及正下界使零在预解集，逆有界；Rellich 紧性再使该预解式紧。</p>
+</details>
+<h3 id="topic-8-10-1">绝对可和让极限留在空间中</h3>
+<p>在闭像与商空间的论证中，经常需要把逐次误差加起来。绝对收敛级数判据把这种操作与 Banach 完备性直接联系起来。</p>
+<div id="lem-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 11.14</span><span class="book-name">绝对收敛级数与完备性</span></p>
+<p>赋范空间完备当且仅当每个满足 <span class="arithmatex">\(\sum_n\|v_n\|&lt;\infty\)</span> 的级数均在空间中收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 8.10.1</summary>
+<p>完备时绝对可和级数的部分和是 Cauchy，所以收敛。反向取任意 Cauchy 序列 <span class="arithmatex">\(x_n\)</span>，选子列使 <span class="arithmatex">\(\|x_{n_{k+1}}-x_{n_k}\|\leq2^{-k}\)</span>。差的级数绝对可和而收敛，故子列收敛；Cauchy 性再使整个序列趋于同一极限。</p>
+</details>
+<h3 id="topic-8-A-1">正规紧算子的复谱展开</h3>
+<p>正规性使不同特征空间正交，紧性使非零谱离散。正常谱表示将全部单点投影加起来恢复单位，遂得到复特征值版本的正交展开。</p>
+<div id="lem-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 11.15</span><span class="book-name">A.1：正规特征空间的正交性</span></p>
+<p>有界正规算子的不同特征值的特征空间相互正交。</p>
+</div>
+<details class="proof">
+<summary>证明 8.A.1</summary>
+<p>两特征空间的投影为 <span class="arithmatex">\(\mathbf1_{\{\lambda_j\}}(T)\)</span>，它们的乘积等于不相交指标乘积的演算，故为零。正交投影乘积为零正是两个像空间正交。</p>
+</details>
+<div id="thm-28" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.16</span><span class="book-name">A.2：紧正规谱定理</span></p>
+<p>有界 <span class="arithmatex">\(T\)</span> 紧且正规，当且仅当有标准正交基 <span class="arithmatex">\((e_n)\cup(f_j)\)</span>，<span class="arithmatex">\(Te_n=\lambda_ne_n\)</span>、<span class="arithmatex">\(\lambda_n\in\mathbb C\setminus\{0\}\)</span>，<span class="arithmatex">\(Tf_j=0\)</span>，非零部分至多可数且无限时 <span class="arithmatex">\(\lambda_n\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 8.A.2</summary>
+<p>紧正规算子的非零谱点由近似谱判据及 8.5.4 全是特征值。不同特征空间正交；若非零谱有非零聚点，取对应单位特征向量得到标准正交序列，紧性使其像范数趋零，却等于特征值绝对值，矛盾。故非零谱至多可数且唯一可能聚于零，各特征空间由紧性为有限维。</p>
+<p>正常谱演算将各单点投影与零点投影的和强收敛到单位，因为这些点穷尽谱。因此 <span class="arithmatex">\(H\)</span> 正交分解成全部特征空间及核，分别取正交基即得所述基。反向有限谱截断范数趋于 <span class="arithmatex">\(T\)</span>，每个截断正规有限秩；对角表达使极限正规，范数闭性使其紧。</p>
+</details>
+<details class="proof">
+<summary>预解式、图像嵌入与 Rellich</summary>
+<p>若 <span class="arithmatex">\(R(z)=(z-T)^{-1}\)</span> 有界，则 <span class="arithmatex">\(z-T=R(z)^{-1}\)</span> 的图像由闭图像反射得到闭性。<span class="arithmatex">\(R(z)\)</span> 将原空间有界地映到图像域，因为 <span class="arithmatex">\(TR(z)=zR(z)-1\)</span>；反向 <span class="arithmatex">\(z-T\)</span> 从图像域到原空间也有界。两者将图像嵌入与预解式的紧性互相转化。预解式恒等式保证一个参数紧就所有参数紧。</p>
+<p>对有界开集，将 <span class="arithmatex">\(H_0^1\)</span> 元素零延拓到包含它的立方体，再视为环面函数。梯度范数控制 Fourier 系数的加权平方和，高频 <span class="arithmatex">\(L^2\)</span> 尾部一致小；有限低频投影为有限秩，所以嵌入紧。Poincaré 可直接沿一个坐标积分并用 Cauchy–Schwarz，得到只依赖外包立方体大小的常数。</p>
+<p>紧预解式的 Fredholm 结论令 <span class="arithmatex">\(A=(T-z)^{-1}\)</span>，将 <span class="arithmatex">\(T\)</span> 写成 <span class="arithmatex">\((zA-1)A^{-1}\)</span>，再应用有界紧算子的二择一。正算子的特征展开则对紧正自伴 <span class="arithmatex">\((1+T)^{-1}\)</span> 应用紧谱定理，其非零特征值趋零对应 <span class="arithmatex">\(T\)</span> 的特征值趋于无穷。</p>
+</details>
+<h2 id="section-12"><span class="book-secnum">§ 12</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.1</span><span class="book-name">对角紧算子的准确条件</span></p>
+<p>对有界数列 <span class="arithmatex">\((a_n)\)</span>，令 <span class="arithmatex">\(Ke_n=a_ne_n\)</span>。证明 <span class="arithmatex">\(K\)</span> 紧当且仅当 <span class="arithmatex">\(a_n\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>若 <span class="arithmatex">\(a_n\to0\)</span>，前 <span class="arithmatex">\(N\)</span> 项截断与 <span class="arithmatex">\(K\)</span> 的范数差为 <span class="arithmatex">\(\sup_{n&gt;N}|a_n|\to0\)</span>。反过来，若有无穷多个 <span class="arithmatex">\(|a_n|\ge\varepsilon\)</span>，相应 <span class="arithmatex">\(Ke_n\)</span> 两两距离至少 <span class="arithmatex">\(\sqrt2\varepsilon\)</span>，没有收敛子列。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.2</span><span class="book-name">非自伴方程测试哪个核</span></p>
+<p>在 <span class="arithmatex">\(\mathbb C^2\)</span> 中取 <span class="arithmatex">\(K=\begin{pmatrix}1&amp;1\\0&amp;0\end{pmatrix}\)</span>。求 <span class="arithmatex">\((I-K)u=f\)</span> 的可解条件，并区分 <span class="arithmatex">\(\ker(I-K)\)</span> 与 <span class="arithmatex">\(\ker(I-K^*)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(I-K=\begin{pmatrix}0&amp;-1\\0&amp;1\end{pmatrix}\)</span>，像由 <span class="arithmatex">\((-1,1)\)</span> 张成，所以需 <span class="arithmatex">\(f_1+f_2=0\)</span>。原核由 <span class="arithmatex">\((1,0)\)</span> 张成，伴随核由 <span class="arithmatex">\((1,1)\)</span> 张成。可解条件测试的是伴随核。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.3</span><span class="book-name">Neumann 的非唯一性</span></p>
+<p>对 <span class="arithmatex">\(-u''=f\)</span>、<span class="arithmatex">\(u'(0)=u'(1)=0\)</span>，推导兼容条件，并说明怎样恢复唯一性。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>积分得 <span class="arithmatex">\(\int_0^1f=-u'(1)+u'(0)=0\)</span>。若兼容，<span class="arithmatex">\(u\)</span> 加任意常数仍是解；附加 <span class="arithmatex">\(\int_0^1u=0\)</span> 可恢复唯一性。</p>
+</details>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-07/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第七章：自伴算子、能量形式与 Fourier 分析</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-09/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第九章：弱拓扑、凸集分离与自反空间</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 9 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">分析</span><span class="zdd-end-chip is-category">泛函分析</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=compact-operators">#compact-operators</a><a class="zdd-end-chip" href="../../../../tags/?tag=pde">#pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

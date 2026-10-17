@@ -1,0 +1,869 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="实分析笔记第一章：简单测度、Jordan 测度。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-01/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：前言：Jordan 测度与 Riemann 积分 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-01/">
+  <meta property="og:title" content="第一章：前言：Jordan 测度与 Riemann 积分 - zdd14990">
+  <meta property="og:description" content="实分析笔记第一章：简单测度、Jordan 测度。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="measure-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-01/">
+  <meta name="twitter:title" content="第一章：前言：Jordan 测度与 Riemann 积分 - zdd14990">
+  <meta name="twitter:description" content="实分析笔记第一章：简单测度、Jordan 测度。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u524d\u8a00\uff1aJordan \u6d4b\u5ea6\u4e0e Riemann \u79ef\u5206",
+    "description": "\u5b9e\u5206\u6790\u7b14\u8bb0\u7b2c\u4e00\u7ae0\uff1a\u7b80\u5355\u6d4b\u5ea6\u3001Jordan \u6d4b\u5ea6\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/real-analysis/chapter-01/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/real-analysis/chapter-01/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["measure-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 简单测度
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Jordan 测度
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#real-analysis">实分析</a>
+    <span>Part 1 of 6</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="top"><span class="book-visually-hidden">第 1 章：</span>前言：Jordan 测度与 Riemann 积分</h1>
+  </div>
+  <p class="book-standfirst">在 Jordan 测度前，我们先考虑更简单的情形，即简单集合。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>1,259 字 · 约 4 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>简单测度</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>一个<strong>区间(interval)</strong>为 <span class="arithmatex">\(\mathbb{R}\)</span> 的子集，形如 <span class="arithmatex">\([a,b],[a,b),(a,b],(a,b)\)</span>，定义区间 <span class="arithmatex">\(I\)</span> 的长度 <span class="arithmatex">\(\left|I\right|:=b-a\)</span>。<span class="arithmatex">\(\mathbb{R}^d\)</span> 上的<strong>长方体(box)</strong>为 <span class="arithmatex">\(B:=I_1\times \cdots I_d\)</span>，其中 <span class="arithmatex">\(I_i\)</span> 均为区间，定义长方体 <span class="arithmatex">\(B\)</span> 的体积 <span class="arithmatex">\(\left|B\right|:=\left|I\right|\times \cdots \times \left|I_d\right|\)</span>。一个<strong>简单集合(elementary set)</strong> 为 <span class="arithmatex">\(\mathbb{R}^d\)</span> 中有限长方体的并。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.2</span><span class="book-name">Boolean closure</span></p>
+<p>简单集合的并、交、差、对称差、平移均为简单集合。</p>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.3</span></p>
+<p>设 <span class="arithmatex">\(E\subset \mathbb{R}^d\)</span> 是简单集合。</p>
+<ul>
+<li><span class="arithmatex">\(E\)</span> 可以写成有限个不交的长方体的并。</li>
+<li>设 <span class="arithmatex">\(E=B_1\cup\cdots \cup B_k\)</span> 为不交并，定义 <span class="arithmatex">\(m(E):=\left| B_1\right|+\cdots+\left|B_k\right|\)</span> 与 <span class="arithmatex">\(B_i\)</span> 的选取无关。</li>
+</ul>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.4</span></p>
+<p>对简单集合 <span class="arithmatex">\(E\subset \mathbb{R}^d\)</span>，有</p>
+<div class="arithmatex">\[
+m(E)=\lim_{N\rightarrow \infty}\frac{1}{N^d}\#\left\{E\cap \frac{1}{N}\mathbb{Z}^d\right\}
+\]</div>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.5</span></p>
+<ul>
+<li>
+<p>(非负性)</p>
+<div class="arithmatex">\[
+m(E)\ge 0
+\]</div>
+</li>
+<li>
+<p>(有限可加性)对不交的简单集合 <span class="arithmatex">\(E_1,\cdots,E_k\)</span>，</p>
+<div class="arithmatex">\[
+m(E_1\cup\cdots\cup E_k)=m(E_1)+\cdots+m(E_k)
+\]</div>
+</li>
+<li>
+<p>(单调性) <span class="arithmatex">\(E\subset F\)</span>，则</p>
+<div class="arithmatex">\[
+m(E)\le m(F)
+\]</div>
+</li>
+<li>
+<p>(有限次可加性)对任意简单集合 <span class="arithmatex">\(E_1,\cdots,E_k\)</span>，</p>
+<div class="arithmatex">\[
+m(E_1\cup\cdots\cup E_k)\le m(E_1)+\cdots+m(E_k)
+\]</div>
+</li>
+<li>
+<p>(平移不变性)</p>
+<div class="arithmatex">\[
+m(E+x)=m(E)
+\]</div>
+</li>
+</ul>
+</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.6</span><span class="book-name">简单测度的唯一性</span></p>
+<p>设 <span class="arithmatex">\(d \geq 1\)</span>。令 <span class="arithmatex">\(m': \mathcal{E}(\mathbf{R}^d) \to \mathbf{R}^+\)</span> 为一个从 <span class="arithmatex">\(\mathbf{R}^d\)</span> 的简单集合族 <span class="arithmatex">\(\mathcal{E}(\mathbf{R}^d)\)</span> 到非负实数的映射，且满足非负性、有限可加性及平移不变性。证明存在常数 <span class="arithmatex">\(c \in \mathbf{R}^+\)</span> 使得对所有简单集合 <span class="arithmatex">\(E\)</span>，有 <span class="arithmatex">\(m'(E) = c \cdot m(E)\)</span>。特别地，若附加归一化条件 <span class="arithmatex">\(m'([0,1)^d) = 1\)</span>，则 <span class="arithmatex">\(m' \equiv m\)</span>。</p>
+<p><strong>提示</strong>：设 <span class="arithmatex">\(c := m'([0,1)^d)\)</span>，并对任意正整数 <span class="arithmatex">\(n\)</span> 计算 <span class="arithmatex">\(m'([0, \frac{1}{n})^d)\)</span>。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>Jordan 测度</h2>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">Jordan测度</span></p>
+<p>设 <span class="arithmatex">\(E \subset \mathbb{R}^d\)</span> 为有界集。</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(E\)</span> 的<strong>Jordan 内测度</strong> <span class="arithmatex">\(m_{*,(J)}(E)\)</span> 定义为</p>
+<div class="arithmatex">\[
+m_{*,(J)}(E) := \sup_{\substack{A \subset E \\ A \text{ 为简单集}}} m(A).
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(E\)</span> 的<strong>Jordan 外测度</strong> <span class="arithmatex">\(m^{*,(J)}(E)\)</span> 定义为</p>
+<div class="arithmatex">\[
+m^{*,(J)}(E) := \inf_{\substack{B \supset E \\ B \text{ 为简单集}}} m(B).
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(m_{*,(J)}(E) = m^{*,(J)}(E)\)</span>，则称 <span class="arithmatex">\(E\)</span> 是<strong>Jordan 可测的</strong>，并称 <span class="arithmatex">\(m(E) := m_{*,(J)}(E) = m^{*,(J)}(E)\)</span> 为 <span class="arithmatex">\(E\)</span> 的<strong>Jordan 测度</strong> 。类似地，当需强调维数 <span class="arithmatex">\(d\)</span> 时，记 <span class="arithmatex">\(m(E)\)</span> 为 <span class="arithmatex">\(m^d(E)\)</span>。</p>
+</li>
+</ul>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.2</span><span class="book-name">Jordan可测性的等价刻画</span></p>
+<p>设 <span class="arithmatex">\(E \subset \mathbb{R}^d\)</span> 为有界集。证明以下命题等价：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(E\)</span> 是 Jordan 可测的。</p>
+</li>
+<li>
+<p>对任意 <span class="arithmatex">\(\varepsilon &gt; 0\)</span>，存在简单集合 <span class="arithmatex">\(A \subset E \subset B\)</span> 使得</p>
+<div class="arithmatex">\[
+m(B \setminus A) \leq \varepsilon.
+\]</div>
+</li>
+<li>
+<p>对任意 <span class="arithmatex">\(\varepsilon &gt; 0\)</span>，存在简单集合 <span class="arithmatex">\(A\)</span> 使得</p>
+<div class="arithmatex">\[
+m^{*,(J)}(A \Delta E) \leq \varepsilon,
+\]</div>
+</li>
+</ul>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.3</span></p>
+<p>设 <span class="arithmatex">\(E,F\subset \mathbb{R}^d\)</span> 为 Jordan 可测集。</p>
+<ul>
+<li>两者的并、交、差、对称差均 Jordan 可测。</li>
+<li>Jordan 测度 <span class="arithmatex">\(m\)</span> 满足非负性、有限可加性、单调性、有限次可加性、平移不变性。</li>
+</ul>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.4</span></p>
+<ul>
+<li><span class="arithmatex">\(\mathbb{R}\)</span> 上的三角形是 Jordan 可测的。</li>
+<li><span class="arithmatex">\(\mathbb{R}^d\)</span> 上的紧凸多面体是 Jordan 可测的。</li>
+<li><span class="arithmatex">\(\mathbb{R}^d\)</span> 上的开球和闭球都是 Jordan 可测的。</li>
+</ul>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.5</span></p>
+<p>对线性变换 <span class="arithmatex">\(L:\mathbb{R}^d\rightarrow \mathbb{R}^d\)</span>，</p>
+<div class="arithmatex">\[
+m(L(E))=\left|\det L\right|m(E)
+\]</div>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.6</span></p>
+<p>Jordan 测度为零的集合称为<strong>Jordan 零测集</strong>。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.7</span></p>
+<p>Jordan 零测集的子集也是 Jordan 零测集。</p>
+</div>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.8</span></p>
+<p>定义<strong>二分立方体</strong>为如下形式的半开长方体：</p>
+<div class="arithmatex">\[
+\left[ \frac{i_1}{2^n}, \frac{i_1 + 1}{2^n} \right) \times \ldots \times \left[ \frac{i_d}{2^n}, \frac{i_d + 1}{2^n} \right)
+\]</div>
+<p>其中 <span class="arithmatex">\(n, i_1, \ldots, i_d\)</span> 为整数。设 <span class="arithmatex">\(E \subset \mathbb{R}^d\)</span> 为有界集。对每个整数 <span class="arithmatex">\(n\)</span>，令 <span class="arithmatex">\(\mathcal{E}_*(E, 2^{-n})\)</span> 表示包含于 <span class="arithmatex">\(E\)</span> 内且边长为 <span class="arithmatex">\(2^{-n}\)</span> 的二分立方体的个数，并令 <span class="arithmatex">\(\mathcal{E}^*(E, 2^{-n})\)</span> 表示与 <span class="arithmatex">\(E\)</span> 相交且边长为 <span class="arithmatex">\(2^{-n}\)</span> 的二分立方体的个数。证明 <span class="arithmatex">\(E\)</span> 是 Jordan 可测的当且仅当</p>
+<div class="arithmatex">\[
+\lim_{n \to \infty} 2^{-dn} \left( \mathcal{E}^*(E, 2^{-n}) - \mathcal{E}_*(E, 2^{-n}) \right) = 0,
+\]</div>
+<p>此时成立</p>
+<div class="arithmatex">\[
+m(E) = \lim_{n \to \infty} 2^{-dn} \mathcal{E}_*(E, 2^{-n}) = \lim_{n \to \infty} 2^{-dn} \mathcal{E}^*(E, 2^{-n}).
+\]</div>
+</div>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.9</span><span class="book-name">Jordan测度的唯一性</span></p>
+<p>设 <span class="arithmatex">\(d \geq 1\)</span>。令 <span class="arithmatex">\(m': \mathcal{J}(\mathbf{R}^d) \to \mathbf{R}^+\)</span> 为一个从 <span class="arithmatex">\(\mathbf{R}^d\)</span> 的 Jordan 可测子集族 <span class="arithmatex">\(\mathcal{J}(\mathbf{R}^d)\)</span> 到非负实数的映射，且满足非负性、有限可加性及平移不变性。证明存在常数 <span class="arithmatex">\(c \in \mathbf{R}^+\)</span> 使得对所有 Jordan 可测集 <span class="arithmatex">\(E\)</span>，有 <span class="arithmatex">\(m'(E) = c \cdot m(E)\)</span>。特别地，若附加归一化条件 <span class="arithmatex">\(m'([0, 1)^d) = 1\)</span>，则 <span class="arithmatex">\(m' \equiv m\)</span>。</p>
+</div>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.10</span></p>
+<p>设 <span class="arithmatex">\(E\subset \mathbb{R}^d\)</span> 为有界集。</p>
+<ul>
+<li><span class="arithmatex">\(E\)</span> 的闭包 <span class="arithmatex">\(\overline{E}\)</span> 与 <span class="arithmatex">\(E\)</span> Jordan 外测度相同。</li>
+<li><span class="arithmatex">\(E\)</span> 的内部 <span class="arithmatex">\(E^\circ\)</span> 与 <span class="arithmatex">\(E\)</span> Jordan 内测度相同。</li>
+<li><span class="arithmatex">\(E\)</span> 是 Jordan 可测的当且仅当边界 <span class="arithmatex">\(\partial E\)</span> 的 Jordan 外测度为 <span class="arithmatex">\(0\)</span>。</li>
+</ul>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="real-analysis.pdf" href="../../../../assets/real-analysis.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="实分析章节导航">
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：Lebesgue 测度</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#real-analysis">实分析 · 第 1 / 6 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">分析</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=measure-theory">#measure-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

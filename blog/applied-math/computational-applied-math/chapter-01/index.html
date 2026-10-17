@@ -1,0 +1,1806 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第一章：ODE、初值问题与边值问题、齐次线性方程、解的线性无关性、朗斯基行列式、初值问题、边值问题、齐次线性方程解法。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-01/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：常微分方程基础 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-01/">
+  <meta property="og:title" content="第一章：常微分方程基础 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第一章：ODE、初值问题与边值问题、齐次线性方程、解的线性无关性、朗斯基行列式、初值问题、边值问题、齐次线性方程解法。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="ode">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-01/">
+  <meta name="twitter:title" content="第一章：常微分方程基础 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第一章：ODE、初值问题与边值问题、齐次线性方程、解的线性无关性、朗斯基行列式、初值问题、边值问题、齐次线性方程解法。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u5e38\u5fae\u5206\u65b9\u7a0b\u57fa\u7840",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u4e00\u7ae0\uff1aODE\u3001\u521d\u503c\u95ee\u9898\u4e0e\u8fb9\u503c\u95ee\u9898\u3001\u9f50\u6b21\u7ebf\u6027\u65b9\u7a0b\u3001\u89e3\u7684\u7ebf\u6027\u65e0\u5173\u6027\u3001\u6717\u65af\u57fa\u884c\u5217\u5f0f\u3001\u521d\u503c\u95ee\u9898\u3001\u8fb9\u503c\u95ee\u9898\u3001\u9f50\u6b21\u7ebf\u6027\u65b9\u7a0b\u89e3\u6cd5\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-01/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-01/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["ode"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. ODE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 初值问题与边值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 齐次线性方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 解的线性无关性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 朗斯基行列式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 初值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 边值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 齐次线性方程解法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 常系数方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 等维(Equidimensional)方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 恰当(Exact)方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 降阶法(Reduction of Order)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. 变换为已知方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 非齐次线性函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 参数变异法(Variation of Parameters)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 格林函数(Green's Function)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. 降阶法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. 待定系数法(Method of Undetermined Coefficients)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. 一阶非线性微分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. 伯努利方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21. Riccati方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22. 恰当方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23. 代换法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24. 高阶非线性微分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25. 自治方程(Autonomous Equations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s26" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26. 关于 x 的齐次方程(Equidimensional-in-x Equations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        27. 尺度不变方程 (Scale-Invariant Equations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28. 关于 \(y\) 的齐次方程 (Equidimensional-in-\(y\) Equations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s29" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        29. 特征值问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30. 复平面中的微分方程
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 1 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="top"><span class="book-visually-hidden">第 1 章：</span>常微分方程基础</h1>
+  </div>
+  <p class="book-standfirst">微分方程的解 <span class="arithmatex">\(y(x)\)</span> 不能仅由方程本身唯一确定，必须指定 <span class="arithmatex">\(n\)</span> 个独立积分常数的值。这些积分常数可通过多种不同方式指定。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>2,974 字 · 约 8 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>ODE</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>一个<span class="arithmatex">\(n\)</span>阶微分方程具有如下形式</p>
+<div class="arithmatex">\[
+y^{(n)}(x)=F[x,y(x),y'(x),\cdots,y^{(n-1)}(x)],
+\tag{1.1.1}
+\]</div>
+<p>其中 <span class="arithmatex">\(y^{(k)}=d^ky/dx^k\)</span>。</p>
+<p>如果 <span class="arithmatex">\(F\)</span> 是 <span class="arithmatex">\(y\)</span> 及其导数的线性函数，则称方程 (1.1.1) 是<strong>线性</strong>微分方程。</p>
+</div>
+<p>如果 (1.1.1) 是线性的，则其通解 <span class="arithmatex">\(y(x)\)</span> 依赖于 <span class="arithmatex">\(n\)</span> 个独立的参数（称为积分常数）且其所有解都可以通过适当选择这些常数得到。如果 (1.1.1) 是非线性微分方程，则它也有一个包含 <span class="arithmatex">\(n\)</span> 个积分常数的通解。然而，非线性微分方程有时存在特殊的额外解，这些解无法通过选择积分常数从通解中得到。我们省略对这些微分方程基本性质的严格讨论，在接下来的三个例子中说明它们。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span><span class="book-name">例（可分方程</span></p>
+<p><strong>可分方程(Separable equations)</strong>是最容易求解的微分方程。如果一个方程是一阶的，且方程 (1.1.1) 中的 <span class="arithmatex">\(F\)</span> 关于 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(y\)</span> 的依赖可以分离，则称它是<strong>可分</strong>的。</p>
+<p>最一般的可分方程是</p>
+<div class="arithmatex">\[
+y'(x)=a(x)b(y)
+\]</div>
+<p>直接积分给出通解</p>
+<div class="arithmatex">\[
+\int^y\frac{dt}{b(t)}=\int^xa(s)ds+c_1
+\]</div>
+<p>其中 <span class="arithmatex">\(c_1\)</span> 是积分常数。</p>
+</div>
+<p>形式上，线性微分方程可写为</p>
+<div class="arithmatex">\[
+Ly(x)=f(x)
+\tag{1.1.4}
+\]</div>
+<p>其中 <span class="arithmatex">\(L\)</span> 是线性微分算子：</p>
+<div class="arithmatex">\[
+L=p_0(x)+p_1(x)\frac{d}{dx}+\cdots+p_{n-1}(x)\frac{d^{n-1}}{dx^{n-1}}+\frac{d^n}{dx^n}
+\tag{1.1.5}
+\]</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span></p>
+<p>若 <span class="arithmatex">\(f(x)\equiv 0\)</span>，则称微分方程 (1.1.4) 是<strong>齐次(homogeneous)</strong>的，否则是<strong>非齐次(inhomogeneous)</strong>的。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.4</span><span class="book-name">例（线性方程的解</span></p>
+<p>齐次线性方程</p>
+<div class="arithmatex">\[
+y''-\frac{1+x}{x}y'+\frac{1}{x}y=0
+\tag{1.1.6}
+\]</div>
+<p>的通解为 <span class="arithmatex">\(y(x)=c_1e^x+c_2(1+x)\)</span>，这显式地依赖于两个积分常数 <span class="arithmatex">\(c_1\)</span> 和 <span class="arithmatex">\(c_2\)</span>，这也给出了方程 (1.1.6) 的所有解。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.5</span><span class="book-name">例（非线性方程的解</span></p>
+<p>两个常规可解的非线性微分方程是 Riccati 方程</p>
+<div class="arithmatex">\[
+y'=\frac{A^2}{x^4}-y^2,\qquad \text{$A$ 是常数}
+\]</div>
+<p>其通解为</p>
+<div class="arithmatex">\[
+y(x)=\frac{1}{x}+\frac{A}{x^2}\frac{c_1-e^{2A/x}}{c_1+e^{2A/x}}
+\]</div>
+<p>和等维方程</p>
+<div class="arithmatex">\[
+y''=yy'/x
+\tag{1.1.9}
+\]</div>
+<p>其通解为</p>
+<div class="arithmatex">\[
+y(x)=2c_1 \tan (c_1 \ln x+c_2)-1
+\tag{1.1.10}
+\]</div>
+<p>方程 (1.1.9) 存在一个特解 <span class="arithmatex">\(y=c_3\)</span>，该解无法通过选择 <span class="arithmatex">\(c_1\)</span> 和 <span class="arithmatex">\(c_2\)</span> 从通解 (1.1.10) 中得到。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>初值问题与边值问题</h2>
+<p>在<strong>初值问题(initial-value problem)</strong>中，在单点 <span class="arithmatex">\(x=x_0\)</span> 处指定 <span class="arithmatex">\(y\)</span> 及其前 <span class="arithmatex">\(n-1\)</span> 阶导数 <span class="arithmatex">\(y',\cdots,y^{(n-1)}\)</span> 的值：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+y(x_0)&amp;=a_0,\\
+y'(x_0)&amp;=a_1,\cdots,\\
+y^{(n-1)}(x_0)&amp;=a_{n-1}.
+\end{aligned}
+\tag{1.2.1}
+\]</div>
+<p>其中 <span class="arithmatex">\(a_0, \cdots, a_{n-1}\)</span> 是初值问题的 <span class="arithmatex">\(n\)</span> 个积分常数。在<strong>边值问题(boundary value problem)</strong>中，在两个或多个点处总共指定 <span class="arithmatex">\(n\)</span> 个量。例如，对于五阶微分方程，可施加条件：<span class="arithmatex">\(y(x_1) = a_1, \quad y'(x_2) = a_2, \quad y''(x_3) = a_3, \quad y'''(x_4) = a_4, \quad y'''(x_1) + [y(x_2)]^2 = a_5\)</span>，其中一些点 <span class="arithmatex">\(x_i\)</span> 可能位于求解区域 <span class="arithmatex">\(y(x)\)</span> 的内部而非边界上。但无论如何，<span class="arithmatex">\(a_i\)</span> 仍是该问题的积分常数。</p>
+<p>关于初值和边值问题解的存在唯一性定理为应用分析的两个层次提供了基础。局部分析研究解在某点邻域的性质，当邻域足够小时结果有效。全局分析则试图在有限区域内确定解的性质，这一般更为困难。例如，渐近级数仅局部有效，而 WKB 近似是全局的。</p>
+<p>初值问题本质上比边值问题简单得多。可通过局部分析判断在 <span class="arithmatex">\(x_0\)</span> 的足够小邻域内是否存在唯一解 <span class="arithmatex">\(y(x)\)</span>。例如，可重复微分方程 (1.1.1)以计算 <span class="arithmatex">\(y(x)\)</span> 在 <span class="arithmatex">\(x_0\)</span> 处 Taylor 展开的系数。一般而言，若 <span class="arithmatex">\(F, \partial F/\partial y, \partial F/\partial y', \cdots, \partial F/\partial y^{(n-1)}\)</span> 在 <span class="arithmatex">\(x_0, a_0, a_1, \cdots, a_{n-1}\)</span> 的某邻域内均为 <span class="arithmatex">\(x, y, y', \cdots, y^{(n-1)}\)</span> 的连续函数，则在包含 <span class="arithmatex">\(x_0\)</span> 的某区间上存在满足 (1.1.1) 和 (1.2.1) 的唯一解 <span class="arithmatex">\(y(x)\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.1</span><span class="book-name">例（存在唯一解的初值问题</span></p>
+<p>由于满足存在唯一性定理的条件，以下五个初值问题均有唯一解（当 <span class="arithmatex">\(x\)</span> 充分接近 0 时存在）：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;(a)\quad y' = \sin (xy), &amp;&amp;y(0) = 1; \\
+&amp;(b)\quad  y' = (x + y)x^2y^2, &amp;&amp;y(0) = 1; \\
+&amp;(c)\quad y' = e^x + x/y, &amp;&amp;y(0) = 1; \\
+&amp;(d)\quad  y'' = y^2 + e^x, &amp;&amp;y(0) = y'(0) = 0; \\
+&amp;(e)\quad  y''' = e^{xyy'},&amp;&amp; y(0) = y'(0) = y''(0) = 0. \\
+\end{aligned}
+\]</div>
+<p>遗憾的是，这些解的存在性仅是理论上的，因为我们无法用已知函数表示其中任何一个。</p>
+</div>
+<p>若 <span class="arithmatex">\(F\)</span> 不是其自变量的光滑函数，则存在唯一性定理可能不成立。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span><span class="book-name">例（具有非唯一解的微分方程</span></p>
+<p>初值问题 <span class="arithmatex">\(y' = y^{1/3}\ [ y(0) = 0]\)</span> 中，<span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x=0,y=0\)</span> 附近连续但 <span class="arithmatex">\(\partial F / \partial y\)</span> 不连续。因此该问题存在两个解：<span class="arithmatex">\(y=0\)</span> 和 <span class="arithmatex">\(y=(2x/3)^{3/2}\)</span>。注意到一阶方程 <span class="arithmatex">\(y'=y^{1/3}\)</span> 的通解为 <span class="arithmatex">\(y(x)=\eta(2x/3+c_1)^{3/2}\)</span>，其中 <span class="arithmatex">\(\eta=\pm1,0\)</span>，<span class="arithmatex">\(c_1\)</span> 任意。此通解不仅依赖于积分常数 <span class="arithmatex">\(c_1\)</span>，还依赖于离散参数 <span class="arithmatex">\(\eta\)</span>。</p>
+<p>一般地，若 (1.1.1) 中的 <span class="arithmatex">\(F\)</span> 不光滑，则解 <span class="arithmatex">\(y(x)\)</span> 可能依赖于超过 <span class="arithmatex">\(n\)</span> 个积分常数。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.3</span><span class="book-name">例（存在唯一解的微分方程</span></p>
+<p>初值问题 <span class="arithmatex">\(y' = x^{-1/2}\ [y(0) = 1]\)</span> 确有唯一解 <span class="arithmatex">\(y=2x^{1/2}+1\)</span>，尽管 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(x=0\)</span> 不连续。但这不违背唯一性定理，因该定理给出的是存在唯一性的充分非必要条件。</p>
+</div>
+<p>若初值问题在 <span class="arithmatex">\(x_0\)</span> 附近存在解，下一步是确定该解的全局性质，特别是确定局部解存在的区间范围。这对线性方程较容易，可以证明：与初始条件无关，该区间至少与不包含 <span class="arithmatex">\(p_0(x), p_1(x), \cdots, p_{n-1}(x)\)</span> 间断点的最大区间一样大，作进一步分析时可能发现区间更大。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span><span class="book-name">例（线性方程解的存在区间</span></p>
+<p>习题 1.4 的结果保证初值问题 <span class="arithmatex">\(y' = (\tan x)y + 1 \ [y(0) = 1]\)</span> 的解在 <span class="arithmatex">\(\tan x\)</span> 连续的区间内存在，即 <span class="arithmatex">\((-\pi/2, \pi/2)\)</span>。然而，其解 <span class="arithmatex">\(y(x) = (1 + \sin x)/\cos x\)</span> 实际存在于 <span class="arithmatex">\(-3\pi/2 &lt; x &lt; \pi/2\)</span> 区间。</p>
+</div>
+<p>非线性微分方程初值问题的全局分析要困难得多。</p>
+<p>边值问题本质上是全局的。解的存在唯一性定理必须在包含所有点 <span class="arithmatex">\(x_1, x_2, \cdots\)</span> 的足够大区间上证明。线性微分方程的全局性质相对容易得到，但对非线性微分方程边值问题解的存在唯一性建立严格准则非常困难。</p>
+<h2 id="s3"><span class="book-secnum">§ 03</span>齐次线性方程</h2>
+<p>本节回顾齐次线性微分方程初值和边值问题的理论。</p>
+<h2 id="s4"><span class="book-secnum">§ 04</span>解的线性无关性</h2>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.1</span></p>
+<p><span class="arithmatex">\(n\)</span>阶齐次线性方程</p>
+<div class="arithmatex">\[
+y^{(n)} + p_{n-1}(x)y^{(n-1)} + \cdots + p_0(x)y = 0
+\tag{1.3.1}
+\]</div>
+<p>的通解具有形式：</p>
+<div class="arithmatex">\[
+y(x) = \sum_{j=1}^{n} c_j y_j(x)
+\tag{1.3.2}
+\]</div>
+<p>其中 <span class="arithmatex">\(c_j\)</span> 是任意积分常数，<span class="arithmatex">\(\{y_j(x)\}\)</span> 是线性无关函数集，且每个函数均满足 (1.3.1)。在系数 <span class="arithmatex">\(p_0(x), p_1(x), \cdots, p_{n-1}(x)\)</span> 连续的任意区域内，方程 (1.3.1) 总存在恰好 <span class="arithmatex">\(n\)</span> 个线性无关解。</p>
+</div>
+<p>若存在不全为零的数集 <span class="arithmatex">\(\{c_j\}\)</span> 满足 <span class="arithmatex">\(\sum_{j=1}^{n} c_j y_j(x) = 0\)</span>，则称函数集 <span class="arithmatex">\(\{y_j(x)\}\)</span> <strong>线性相关(linearly dependent)</strong>。若不存在这样的集合，则 <span class="arithmatex">\(\{y_j(x)\}\)</span> <strong>线性无关(linearly independent)</strong>。</p>
+<p><strong>注：</strong>由于线性无关是全局概念，故在单点讨论线性无关无意义。</p>
+<p>对于可微函数集我们有简单的线性相关性检验方法。</p>
+<h2 id="s5"><span class="book-secnum">§ 05</span>朗斯基行列式</h2>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span><span class="book-name">朗斯基行列式</span></p>
+<p><strong>朗斯基行列式(Wronskian)</strong> <span class="arithmatex">\(W(x)\)</span> 定义为行列式：</p>
+<div class="arithmatex">\[
+W(x) = W[y_1(x), y_2(x), \cdots, y_n(x)]
+\equiv \det \begin{vmatrix}
+y_1 &amp; y_2 &amp; \cdots &amp; y_n \\
+y_1' &amp; y_2' &amp; \cdots &amp; y_n' \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+y_1^{(n-1)} &amp; y_2^{(n-1)} &amp; \cdots &amp; y_n^{(n-1)}
+\end{vmatrix}
+\]</div>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.2</span></p>
+<p><span class="arithmatex">\(W(x)\)</span> 在区间上恒为零当且仅当 <span class="arithmatex">\(\{y_j(x)\}\)</span> 是线性相关函数集。若 <span class="arithmatex">\(\{y_j(x)\}\)</span> 在某个区间线性无关，则 <span class="arithmatex">\(W(x)\)</span> 不恒为零（可能在孤立点为零）。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.3</span><span class="book-name">例（线性相关</span></p>
+<p>对所有 <span class="arithmatex">\(x\)</span> 有 <span class="arithmatex">\(W[e^x, e^{-x}, \cosh x] = 0\)</span>，故 <span class="arithmatex">\([e^x, e^{-x}, \cosh x]\)</span> 是线性相关函数集。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.4</span><span class="book-name">例（线性无关</span></p>
+<p>为验证方程 <span class="arithmatex">\(y'' - y'(1 + x)/x + y/x = 0\)</span> 的解 <span class="arithmatex">\(y(x) = c_1 e^x + c_2(1 + x)\)</span> 确为通解，计算朗斯基行列式：<span class="arithmatex">\(W[1+x,e^x]=xe^x\)</span>。而 <span class="arithmatex">\(xe^x\)</span> 仅在 <span class="arithmatex">\(x=0\)</span> 处为零，因此对所有 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(\{1+x,e^x\}\)</span> 是线性无关集。</p>
+</div>
+<p>齐次线性方程具有如下性质：</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.5</span></p>
+<p>方程 (1.3.1) 任意 <span class="arithmatex">\(n\)</span> 个解的朗斯基行列式 <span class="arithmatex">\(W(x)\)</span> 满足简单一阶方程：</p>
+<div class="arithmatex">\[
+W^{\prime}(x)=-p_{n-1}(x)W(x)
+\tag{1.3.4}
+\]</div>
+<p>方程 (1.3.4) 的解称为阿贝尔公式：</p>
+<div class="arithmatex">\[
+W(x)=\exp\left[-\int^{x}p_{n-1}(t)\,dt\right].
+\tag{1.3.5}
+\]</div>
+</div>
+<p>因此，我们可以在得到微分方程的任何解之前计算 <span class="arithmatex">\(W(x)\)</span>。</p>
+<p>现在使用这些理论结果讨论初值和边值问题的适定性。此处定义<strong>适定</strong>问题为存在唯一解的问题。</p>
+<h2 id="s6"><span class="book-secnum">§ 06</span>初值问题</h2>
+<p>求解初值问题需选择 (1.3.2) 中的 <span class="arithmatex">\(c_{j}\)</span> 以满足 (1.2.1) 的初始条件。<span class="arithmatex">\(c_{j}\)</span> 由 <span class="arithmatex">\(n\)</span> 个联立代数方程组 <span class="arithmatex">\(\sum_{j=1}^{n}c_{j}y_{j}^{(i)}(x_{0})=a_{i}\ (i=0,\ 1,\cdots,n-1)\)</span> 确定。根据 Cramer 法则，这些方程有唯一解仅当：</p>
+<div class="arithmatex">\[
+\det\left[y_{j}^{(i)}(x_{0})\right]=W(x_{0})\neq 0.
+\tag{1.3.6}
+\]</div>
+<p>因此，朗斯基行列式自然出现在初值问题研究中。它实际有两种应用。首先，可通过检验 <span class="arithmatex">\(\{y_{j}\}\)</span> 是否线性无关集，<strong>全局</strong>判断 (1.3.2) 形式的解是否为 (1.3.1) 的通解。</p>
+<p>其次，朗斯基行列式可<strong>局部</strong>用于发现不适定初值问题，无需实际求解微分方程，仅需计算 (1.3.5) 并参考 (1.3.6)。若齐次初值问题的初始条件给定在朗斯基行列式为零的点 <span class="arithmatex">\(x_{0}\)</span>（由阿贝尔公式计算），则该问题不适定。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.1</span><span class="book-name">例（不适定问题——朗斯基行列式为零</span></p>
+<p>方程 (1.1.6) 的朗斯基行列式仅在 <span class="arithmatex">\(x=0\)</span> 处为零。因此初值问题 <span class="arithmatex">\(y'' - y'(1 + x)/x + y/x = 0\ [y(1)=1, y'(1)=2]\)</span> 适定并不意外。当初始条件替换为 <span class="arithmatex">\(y(0)=1\)</span>，<span class="arithmatex">\(y'(0)=2\)</span> 时，无解。当替换为 <span class="arithmatex">\(y(0)=1\)</span>，<span class="arithmatex">\(y'(0)=1\)</span> 时，解 <span class="arithmatex">\(y(x)=e^{x}+c(e^{x}-1-x)\)</span> 不唯一。</p>
+</div>
+<p>遗憾的是，朗斯基行列式非零不意味着问题适定。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.2</span><span class="book-name">例（不适定问题——朗斯基行列式非零</span></p>
+<p>初值问题 <span class="arithmatex">\(y''-6y/x^{2}=0\ [y(0)=6, y'(0)=6]\)</span> 不适定，因其通解 <span class="arithmatex">\(y(x)=c_{1}x^{3}+c_{2}x^{-2}\)</span> 在 <span class="arithmatex">\(x=0\)</span> 处或发散或为零。阿贝尔公式 (1.3.5) 表明朗斯基行列式处处为常数（含 <span class="arithmatex">\(x=0\)</span>），且该常数非零（因 <span class="arithmatex">\(y(x)\)</span> 是通解）。因此，(1.2.1) 中 <span class="arithmatex">\(W(y)\)</span> 在 <span class="arithmatex">\(x=x_{0}\)</span> 非零是初值问题适定的必要非充分条件。当然，此问题不适定是显然的，初始条件给在 <span class="arithmatex">\(p_{0}(x)\)</span> 的间断点。</p>
+</div>
+<p>因此，尽管朗斯基行列式在理论上是有趣的对象，但作为初值问题局部分析工具有时不实用。</p>
+<h2 id="s7"><span class="book-secnum">§ 07</span>边值问题</h2>
+<p>边值问题的解由两个或多个不同点处的条件确定。与初值问题不同，系数函数的连续性不足以保证边值问题有解：</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.1</span><span class="book-name">例（无解的边值问题</span></p>
+<p>考虑边值问题 <span class="arithmatex">\(y'' + y = 0 \ [y'(0) = 0, y(\pi/2) = 1]\)</span>。微分方程通解为 <span class="arithmatex">\(y(x) = c_1 \sin x + c_2 \cos x\)</span>。朗斯基行列式 <span class="arithmatex">\(W(\sin x, \cos x) = -1\)</span> 非零且微分方程系数函数连续。然而，边值问题无解：条件 <span class="arithmatex">\(y'(0) = 0\)</span> 蕴含 <span class="arithmatex">\(c_1 = 0\)</span>，剩余解 <span class="arithmatex">\(y(x) = c_2 \cos x\)</span> 无法满足 <span class="arithmatex">\(y(\pi/2) = 1\)</span>。</p>
+</div>
+<p>上例可能暗示边值问题很少有解。但事实正相反：多数边值问题存在唯一解。考虑一般二阶线性微分方程 <span class="arithmatex">\(y'' + p_1(x)y' + p_0(x)y = 0\)</span> 及边界条件 <span class="arithmatex">\(y'(x_0) = a\)</span>，<span class="arithmatex">\(y(x_1) = b\)</span>。若 <span class="arithmatex">\(y_1(x)\)</span> 和 <span class="arithmatex">\(y_2(x)\)</span> 是微分方程的两个线性无关解，则通解可写为 <span class="arithmatex">\(y(x) = Ay_1(x) + By_2(x)\)</span>，边界条件要求：<span class="arithmatex">\(Ay_1'(x_0) + By_2'(x_0) = a,  Ay_1(x_1) + By_2(x_1) = b\)</span>。当行列式非零时，可由 <span class="arithmatex">\(a,b\)</span> 唯一确定 <span class="arithmatex">\(A,B\)</span>：</p>
+<div class="arithmatex">\[
+\det \begin{vmatrix}
+y_1'(x_0) &amp; y_2'(x_0) \\
+y_1(x_1) &amp; y_2(x_1)
+\end{vmatrix} \neq 0
+\]</div>
+<p>此条件是 (1.3.6) 中朗斯基条件的推广，通常成立（保证边值问题有唯一解）。但若选择点 <span class="arithmatex">\(x_0\)</span> 和 <span class="arithmatex">\(x_1\)</span> 使得 <span class="arithmatex">\(y_1'(x_0)y_2(x_1) - y_2'(x_0)y_1(x_1) = 0\)</span>，则边值问题不适定：或无解，或有无穷多解。若 <span class="arithmatex">\(by_1'(x_0) = ay_1(x_1)\)</span> 且 <span class="arithmatex">\(y_1'(x_0) \neq 0\)</span>，<span class="arithmatex">\(y_1(x_1) \neq 0\)</span> 时，后者可能出现。此时边值问题有无穷多解，它们相差函数 <span class="arithmatex">\(z(x) = y_1(x)y_2'(x_0) - y_2(x)y_1'(x_0)\)</span> 的任意常数倍。</p>
+<h2 id="s8"><span class="book-secnum">§ 08</span>齐次线性方程解法</h2>
+<p>本节讨论如何解方程 <span class="arithmatex">\(Ly=0\)</span>。一阶方程易解（可分）。但当阶数 <span class="arithmatex">\(\geq 2\)</span> 时，显式解仅在少数情况下存在。我们简要分类并讨论部分可解方程。</p>
+<h2 id="s9"><span class="book-secnum">§ 09</span>常系数方程</h2>
+<p>常系数方程的特征是 <span class="arithmatex">\(p_{0}\)</span>, <span class="arithmatex">\(p_{1},\cdots,p_{n-1}\)</span> 与 <span class="arithmatex">\(x\)</span> 无关。寻求形如 <span class="arithmatex">\(y(x)=e^{rx}\)</span> 的解，代入微分方程得 <span class="arithmatex">\(L[e^{rx}]=P(r)e^{rx}\)</span>，其中</p>
+<div class="arithmatex">\[
+P(r)=r^n + \sum_{j=0}^{n-1}p_{j}r^{j}
+\]</div>
+<p>是 <span class="arithmatex">\(n\)</span> 次多项式。对应 <span class="arithmatex">\(P(r)=0\)</span> 的不同根 <span class="arithmatex">\(r_{1},r_{2},\cdots\)</span> 的解为：</p>
+<div class="arithmatex">\[
+y=e^{r_{1}x},e^{r_{2}x},\cdots
+\tag{1.4.1}
+\]</div>
+<p>但若有重根，(1.4.1) 不是完全解集。设 <span class="arithmatex">\(r_{1}\)</span> 是 <span class="arithmatex">\(m\)</span> 重根，则</p>
+<div class="arithmatex">\[
+L[e^{rx}]=e^{r_1x}(r-r_{1})^{m}Q(r)
+\tag{1.4.2}
+\]</div>
+<p>其中 <span class="arithmatex">\(Q\)</span> 是 <span class="arithmatex">\(n-m\)</span> 次多项式。容易验证函数 <span class="arithmatex">\(x^k e^{r_1 x}\)</span> 是解，这给出 <span class="arithmatex">\(m\)</span> 个解：</p>
+<div class="arithmatex">\[
+y=e^{r_{1}x}, xe^{r_{1}x}, x^{2}e^{r_{1}x},\cdots,x^{m-1}e^{r_{1}x}.
+\tag{1.4.3}
+\]</div>
+<p>(1.4.1) 和 (1.4.3) 中所有解的线性组合构成微分方程的通解。</p>
+<h2 id="s10"><span class="book-secnum">§ 10</span>等维(Equidimensional)方程</h2>
+<p>等维（或欧拉）方程在变换 <span class="arithmatex">\(x \to ax\)</span> 下不变，其系数形式为 <span class="arithmatex">\(p_j(x) = q_j/ x^{n-j}\)</span>，其中 <span class="arithmatex">\(q_j\)</span> 与 <span class="arithmatex">\(x\)</span> 无关。可通过变量替换</p>
+<div class="arithmatex">\[
+x=e^{t},\qquad x\frac{d}{dx}=\frac{d}{dt}
+\tag{1.4.4}
+\]</div>
+<p>将等维方程转化为关于 <span class="arithmatex">\(t\)</span> 的常系数方程。或者，直接代试探函数 <span class="arithmatex">\(y=x^{r}\)</span> 得 <span class="arithmatex">\(L[x^{r}]=P(r)x^{r-n}\)</span>，这里 <span class="arithmatex">\(P(r)\)</span> 是 <span class="arithmatex">\(n\)</span> 次多项式。因此当 <span class="arithmatex">\(r_{1},r_{2},\cdots\)</span> 是 <span class="arithmatex">\(P(r)\)</span> 的不同根时，解为：</p>
+<div class="arithmatex">\[
+y=x^{r_{1}},x^{r_{2}},\cdots
+\tag{1.4.5}
+\]</div>
+<p>当 <span class="arithmatex">\(P(r)\)</span> 有重根 <span class="arithmatex">\(r_{1}\)</span> 时，完全解集形式为：</p>
+<div class="arithmatex">\[
+y=x^{r_{1}}, x^{r_{1}}\ln x, x^{r_{1}}(\ln x)^{2},\cdots
+\tag{1.4.6}
+\]</div>
+<p><span class="arithmatex">\(P(r)\)</span> 的根称为<strong>指标指数(indicial exponents)</strong>。</p>
+<h2 id="s11"><span class="book-secnum">§ 11</span>恰当(Exact)方程</h2>
+<p>恰当方程是低阶方程的导数：<span class="arithmatex">\(Ly = \frac{d}{dx}(My) = 0\)</span>。此方程的解为 <span class="arithmatex">\(My = c_1\)</span>（所得方程不再齐次）。</p>
+<p><strong>积分因子(Integrating factor)</strong>是使微分方程乘以该函数后变为恰当方程的函数。</p>
+<h2 id="s12"><span class="book-secnum">§ 12</span>降阶法(Reduction of Order)</h2>
+<p>是通过找到的解来简化线性微分方程以降至低阶的技术。设 <span class="arithmatex">\(y_1(x)\)</span> 是 <span class="arithmatex">\(Ly = 0\)</span> 的解，寻求如下形式的其他线性无关解：</p>
+<div class="arithmatex">\[
+y(x) = u(x)y_1(x)
+\tag{1.4.7}
+\]</div>
+<p>将 <span class="arithmatex">\(y(x)\)</span> 代入 <span class="arithmatex">\(Ly = 0\)</span> 得新方程 <span class="arithmatex">\(Mu = 0\)</span>。此替换的精妙在于 <span class="arithmatex">\(Mu\)</span> 不含 <span class="arithmatex">\(p_0(x)u\)</span> 项，故 <span class="arithmatex">\(Mu = 0\)</span> 是关于 <span class="arithmatex">\(v(x) = u'(x)\)</span> 的 <span class="arithmatex">\(n-1\)</span> 阶线性齐次方程。</p>
+<h2 id="s13"><span class="book-secnum">§ 13</span>变换为已知方程</h2>
+<p>若其他方法均不适用，可将微分方程变换为其他经典方程。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 13.1</span><span class="book-name">Airy 方程</span></p>
+<div class="arithmatex">\[
+y'' = x y,
+\tag{1.4.8}
+\]</div>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 13.2</span><span class="book-name">抛物柱面方程（Weber-Hermite 方程</span></p>
+<div class="arithmatex">\[
+y'' + \left( \nu + \frac{1}{2} - \frac{1}{4}x^2 \right) y = 0,
+\tag{1.4.9}
+\]</div>
+</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 13.3</span><span class="book-name">Bessel 方程</span></p>
+<div class="arithmatex">\[
+y'' + \frac{1}{x}y' + \left( 1 - \frac{\nu^2}{x^2} \right) y = 0,
+\tag{1.4.10}
+\]</div>
+</div>
+<h2 id="s14"><span class="book-secnum">§ 14</span>非齐次线性函数</h2>
+<p>非齐次线性微分方程仅比齐次方程略复杂。这是因为 <span class="arithmatex">\(Ly=f(x)\)</span> 的任意两解之差满足 <span class="arithmatex">\(Ly=0\)</span>。因此，<span class="arithmatex">\(Ly=f(x)\)</span> 的通解是其任一特解与 <span class="arithmatex">\(Ly=0\)</span> 的通解之和。</p>
+<p>所有一阶线性非齐次方程均可解，因为总存在仅依赖于 <span class="arithmatex">\(x\)</span> 的积分因子。方程</p>
+<div class="arithmatex">\[
+y'(x)+p_{0}(x)y(x)=f(x)
+\tag{1.5.1}
+\]</div>
+<p>的积分因子为 <span class="arithmatex">\(I(x)=\exp\left[\int p_{0}(t)\,dt\right]\)</span>。乘以 <span class="arithmatex">\(I(x)\)</span> 得 <span class="arithmatex">\(\frac{d}{dx}\big[I(x)y(x)\big]=f(x)I(x)\)</span>，故 (1.5.1) 的解为：</p>
+<div class="arithmatex">\[
+y(x)=\frac{c_{1}}{I(x)} + \frac{1}{I(x)}\int f(t)I(t)\,dt
+\tag{1.5.2}
+\]</div>
+<p>求解高阶非齐次线性方程有以下标准方法。</p>
+<h2 id="s15"><span class="book-secnum">§ 15</span>参数变异法(Variation of Parameters)</h2>
+<p>当齐次方程可解时，求解非齐次方程的难点在于寻找特解。参数变异法是确定特解的通用可靠方法，可视为高阶降阶法。</p>
+<p>以二阶方程为例。设 <span class="arithmatex">\(y_{1}(x)\)</span> 和 <span class="arithmatex">\(y_{2}(x)\)</span> 是齐次方程 <span class="arithmatex">\(Ly=0\)</span> 的两个线性无关解，其中<span class="arithmatex">\(L=d^{2}/dx^{2}+p_{1}(x)d/dx+p_{0}(x)\)</span>。我们来求 <span class="arithmatex">\(Ly=f(x)\)</span> 的对称形式特解：</p>
+<div class="arithmatex">\[
+y(x)=u_{1}(x)y_{1}(x)+u_{2}(x)y_{2}(x)
+\tag{1.5.3}
+\]</div>
+<p>其中 <span class="arithmatex">\(u_{1}\)</span>, <span class="arithmatex">\(u_{2}\)</span> 待定，可施加约束简化方程：</p>
+<div class="arithmatex">\[
+u_{1}'(x)y_{1}(x)+u_{2}'(x)y_{2}(x)=0
+\tag{1.5.4}
+\]</div>
+<p>对 (1.5.3) 求导两次并代入 <span class="arithmatex">\(Ly=f(x)\)</span>，结合 <span class="arithmatex">\(Ly_{1}=Ly_{2}=0\)</span> 和 (1.5.4) 得：</p>
+<div class="arithmatex">\[
+u_{1}'(x)y'_{1}(x)+u_{2}'(x)y'_{2}(x)=f(x)
+\tag{1.5.5}
+\]</div>
+<p>联立 (1.5.4) 和 (1.5.5) 解出：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+u_{1}'(x) &amp;= -\frac{f(x)y_{2}(x)}{W(x)}, \\
+u_{2}'(x) &amp;= \frac{f(x)y_{1}(x)}{W(x)}
+\end{aligned}
+\tag{1.5.6}
+\]</div>
+<p>其中 <span class="arithmatex">\(W(x)=W[y_{1}(x),y_{2}(x)]\)</span> 为朗斯基行列式，因 <span class="arithmatex">\(y_{1}\)</span>, <span class="arithmatex">\(y_{2}\)</span> 线性无关作为分母 <span class="arithmatex">\(W\)</span> 非零。积分 (1.5.6) 即得特解：</p>
+<div class="arithmatex">\[
+y(x) = -y_{1}(x)\int\frac{f(t)y_{2}(t)}{W(t)}\,dt + y_{2}(x)\int\frac{f(t)y_{1}(t)}{W(t)}\,dt + c_{1}y_{1}(x) + c_{2}y_{2}(x)
+\tag{1.5.7}
+\]</div>
+<h2 id="s16"><span class="book-secnum">§ 16</span>格林函数(Green's Function)</h2>
+<p>构造非齐次线性微分方程解有另一种通用方法，等价于参数变异法。该方法将解表示为<strong>格林函数</strong>的积分。定义格林函数需引入 Dirac 函数 <span class="arithmatex">\(\delta(x-a)\)</span>：</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 16.1</span></p>
+<p>定义 Dirac 函数为满足如下两个性质的函数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\delta(x-a) &amp;= 0, \quad x \neq a \\
+\int_{-\infty}^{\infty} \delta(x-a) \, dx &amp;= 1
+\end{aligned}\tag{1.5.8}
+\]</div>
+<p>此函数可视为单位脉冲：在 <span class="arithmatex">\(x=a\)</span> 处无限大的尖峰，且面积为1。</p>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 16.2</span></p>
+<p>若 <span class="arithmatex">\(f(x)\)</span> 在 <span class="arithmatex">\(a\)</span> 连续，则</p>
+<div class="arithmatex">\[
+\int_{-\infty}^{\infty} \delta(x-a)f(x) \, dx = f(a)
+\tag{1.5.9}
+\]</div>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 16.3</span></p>
+<p><span class="arithmatex">\(\delta\)</span> 函数有如下多种表示：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\delta(x-a) &amp;= \lim_{\varepsilon \to 0} F_{\varepsilon}(x)  \\
+\text{其中} \quad F_{\varepsilon}(x) &amp;=
+\begin{cases}
+0, &amp; x &lt; a - \frac{1}{2}\varepsilon \\
+1/\varepsilon, &amp; a - \frac{1}{2}\varepsilon \leq x \leq a + \frac{1}{2}\varepsilon \\
+0, &amp; a + \frac{1}{2}\varepsilon &lt; x
+\end{cases}  \\
+\text{或} \quad \delta(x-a) &amp;= \lim_{\varepsilon \to 0^+} \frac{\varepsilon}{\pi[(x-a)^2 + \varepsilon^2]}  \\
+\text{或} \quad \delta(x-a) &amp;= \lim_{\varepsilon \to 0^+} (\pi\varepsilon)^{-1/2} e^{-(x-a)^2/\varepsilon}  \\
+\text{或} \quad \delta(x-a) &amp;= \lim_{L \to +\infty} \frac{1}{2\pi} \int_{-L}^{L} e^{i(x-a)t}  dt
+\end{aligned}
+\]</div>
+</div>
+<p><span class="arithmatex">\(\delta\)</span> 函数也可视为不连续函数的导数。设 <span class="arithmatex">\(h(x-a)\)</span> 为 Heaviside 阶跃函数：</p>
+<div class="arithmatex">\[
+h(x-a) =
+\begin{cases}
+0, &amp; x &lt; a \\
+\frac{1}{2}, &amp; x = a \\
+1, &amp; x &gt; a
+\end{cases}
+\]</div>
+<p>则</p>
+<div class="arithmatex">\[
+\delta(x-a) \equiv \frac{d}{dx} h(x-a)
+\tag{1.5.11}
+\]</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 16.4</span></p>
+<p>非齐次方程 <span class="arithmatex">\(Ly=f(x)\)</span> 的格林函数 <span class="arithmatex">\(G(x,a)\)</span> 满足微分方程</p>
+<div class="arithmatex">\[
+LG(x,a) = \delta(x-a)
+\tag{1.5.12}
+\]</div>
+</div>
+<p>已知 <span class="arithmatex">\(G(x,a)\)</span> 后，<span class="arithmatex">\(Ly=f(x)\)</span> 的解可表示为积分：</p>
+<div class="arithmatex">\[
+y(x) = \int_{-\infty}^{\infty} da \, f(a) G(x,a)
+\tag{1.5.13}
+\]</div>
+<p>剩余问题是从 (1.5.12) 中解出 <span class="arithmatex">\(G(x,a)\)</span>。当齐次方程 <span class="arithmatex">\(Ly=0\)</span> 的解已知时，这是简单的。以二阶方程为例：</p>
+<div class="arithmatex">\[
+LG(x,a) = \left[ \frac{d^{2}}{dx^{2}} + p_{1}(x) \frac{d}{dx} + p_{0}(x) \right] G(x,a) = \delta(x-a)
+\tag{1.5.14}
+\]</div>
+<p>设 <span class="arithmatex">\(y_{1}(x)\)</span>, <span class="arithmatex">\(y_{2}(x)\)</span> 为 <span class="arithmatex">\(Ly=0\)</span> 的线性无关解。则当 <span class="arithmatex">\(x \neq a\)</span> 时，(1.5.14) 右边为零：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+G(x,a) &amp;= A_{1}y_{1}(x) + A_{2}y_{2}(x), \quad x &lt; a \\
+G(x,a) &amp;= B_{1}y_{1}(x) + B_{2}y_{2}(x), \quad x &gt; a
+\end{aligned}
+\]</div>
+<p>为关联 <span class="arithmatex">\(x &lt; a\)</span> 和 <span class="arithmatex">\(x &gt; a\)</span> 的格林函数解，我们来论证 <span class="arithmatex">\(G(x, a)\)</span> 在 <span class="arithmatex">\(x = a\)</span> 连续且 <span class="arithmatex">\(\partial G/\partial x\)</span> 在 <span class="arithmatex">\(x = a\)</span> 有幅度为 1 的有限跳跃间断。格林函数方程 (1.5.14) 左侧最奇异项必为 <span class="arithmatex">\(\partial^2 G/\partial x^2\)</span>，进一步有 <span class="arithmatex">\(\partial^2 G/\partial x^2 - \delta(x - a)\)</span> 在 <span class="arithmatex">\(x = a\)</span> 处奇异度低于 <span class="arithmatex">\(\delta\)</span> 函数。积分 <span class="arithmatex">\(\partial^2 G/\partial x^2 - \delta(x - a)\)</span> 得 <span class="arithmatex">\({\partial G}/{\partial x} - h(x - a)\)</span> 处处连续。因此 <span class="arithmatex">\(\partial G/\partial x\)</span> 在 <span class="arithmatex">\(x = a\)</span> 的间断性与函数 <span class="arithmatex">\(h(x - a)\)</span> 相同：</p>
+<div class="arithmatex">\[
+\lim_{\varepsilon \to 0^+} \left[ \frac{\partial G}{\partial x} \bigg|_{x=a+\varepsilon} - \frac{\partial G}{\partial x} \bigg|_{x=a-\varepsilon} \right] = 1
+\tag{1.5.15}
+\]</div>
+<p>且因 <span class="arithmatex">\(\partial G/\partial x\)</span> 仅有有限跳跃间断，其原函数 <span class="arithmatex">\(G(x, a)\)</span> 在 <span class="arithmatex">\(x = a\)</span> 连续，这给出条件：</p>
+<div class="arithmatex">\[
+A_1 y_1(a) + A_2 y_2(a) = B_1 y_1(a) + B_2 y_2(a)
+\tag{1.5.16}
+\]</div>
+<p>(1.5.15) 要求：</p>
+<div class="arithmatex">\[
+B_1 y_1'(a) + B_2 y_2'(a) - A_1 y_1'(a) - A_2 y_2'(a) = 1
+\tag{1.5.17}
+\]</div>
+<p>解出 <span class="arithmatex">\(B_1 - A_1\)</span> 和 <span class="arithmatex">\(B_2 - A_2\)</span>:</p>
+<div class="arithmatex">\[
+B_1 - A_1 = -\frac{y_2(a)}{W[y_1(a), y_2(a)]}
+\tag{1.5.18}
+\]</div>
+<div class="arithmatex">\[
+B_2 - A_2 = \frac{y_1(a)}{W[y_1(a), y_2(a)]}
+\tag{1.5.19}
+\]</div>
+<p>此式与 (1.5.6) 高度相似。令 <span class="arithmatex">\(A_1 = A_2 = 0\)</span> 并用 (1.5.18)、(1.5.19) 确定 <span class="arithmatex">\(B_1\)</span>, <span class="arithmatex">\(B_2\)</span> 得：</p>
+<div class="arithmatex">\[
+G(x, a) =
+\begin{cases}
+-\dfrac{y_2(a)y_1(x)}{W[y_1(a), y_2(a)]}, &amp; x &lt; a \\[2ex]
+\dfrac{y_1(a)y_2(x)}{W[y_1(a), y_2(a)]}, &amp; x \geq a
+\end{cases}
+\tag{1.5.20}
+\]</div>
+<p>代入 (1.5.13) 即得与参数变异法 (1.5.7) 相同结果。</p>
+<p>当需对固定算子 <span class="arithmatex">\(L\)</span> 和边界条件，对不同 <span class="arithmatex">\(f\)</span> 求解 <span class="arithmatex">\(Ly = f\)</span> 时，格林函数法优于参数变异法，这是因为格林函数可反复利用。齐次边界条件下分析尤简。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 16.5</span><span class="book-name">例（格林函数解边值问题</span></p>
+<p>边值问题 <span class="arithmatex">\(y'' = f(x) \ [y(0)=0, y(1)=0]\)</span> 的格林函数满足：</p>
+<div class="arithmatex">\[
+\frac{\partial^2 G}{\partial x^2}(x, a) = \delta(x - a), \quad G(0, a) = 0, \quad \frac{\partial G}{\partial x}(1, a) = 0
+\]</div>
+<p>解为：</p>
+<div class="arithmatex">\[
+G(x, a) =
+\begin{cases}
+-x, &amp; x &lt; a \\
+-a, &amp; x \geq a
+\end{cases} \quad (0 &lt; a &lt; 1)
+\]</div>
+<p>故对任意 <span class="arithmatex">\(f(x)\)</span>，解为 <span class="arithmatex">\(y(x) = \int_0^1 G(x, a)f(a)  \,da (0 \leq x \leq 1)\)</span>。积分限为 <span class="arithmatex">\([0,1]\)</span> 而非 <span class="arithmatex">\(\mathbb{R}\)</span> 是因为边界条件限制在有限区间。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 16.6</span><span class="book-name">例（格林函数解边值问题</span></p>
+<p>边值问题 <span class="arithmatex">\(y'' - y = f(x) \ [y(\pm \infty)=0]\)</span> 的格林函数满足：</p>
+<div class="arithmatex">\[
+\frac{\partial^2 G}{\partial x^2} - G(x, a) = \delta(x - a), \quad G(0, a) = 0, \quad G(\pm \infty ,a)=0
+\]</div>
+<p>解为：</p>
+<div class="arithmatex">\[
+G(x, a) = -\frac{1}{2} e^{-\left|x-a\right|}
+\]</div>
+<p>故对任意 <span class="arithmatex">\(f(x)\)</span>，解为 <span class="arithmatex">\(y(x) = -\frac{1}{2}\int_{-\infty }^\infty  e^{-\left|x-a\right|}f(a) \, da\)</span>。</p>
+</div>
+<h2 id="s17"><span class="book-secnum">§ 17</span>降阶法</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 17.1</span><span class="book-name">例（非齐次方程的降阶法</span></p>
+<p>齐次方程 <span class="arithmatex">\(a(x) y'' + x y' - y = 0\)</span> 的一个解为 <span class="arithmatex">\(y_1(x) = x\)</span>。为用降阶法解非齐次方程 <span class="arithmatex">\(a(x) y'' + x y' - y = f(x)\)</span>，设解形如 <span class="arithmatex">\(y(x) = x u(x)\)</span>。代入得关于 <span class="arithmatex">\(u'(x)\)</span> 的一阶方程：</p>
+<div class="arithmatex">\[
+xa(x) u'' + (2a(x)+x^2) u' = f(x)
+\]</div>
+</div>
+<h2 id="s18"><span class="book-secnum">§ 18</span>待定系数法(Method of Undetermined Coefficients)</h2>
+<p>此法本质上是系统猜测，通常适用于常系数方程且 <span class="arithmatex">\(f(x)\)</span> 为 <span class="arithmatex">\(e^x\)</span>、<span class="arithmatex">\(\sin x\)</span>、<span class="arithmatex">\(\cos x\)</span> 与多项式之组合，或等维方程且 <span class="arithmatex">\(f(x)\)</span> 为多项式。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 18.1</span><span class="book-name">例</span></p>
+<ul>
+<li>(a) 解 <span class="arithmatex">\(y''' + y = e^x \sin x\)</span>，猜测 <span class="arithmatex">\(y = ae^x \sin x + be^x \cos x\)</span>，代入确定系数 <span class="arithmatex">\(a = -\frac{1}{5}\)</span>, <span class="arithmatex">\(b = -\frac{2}{5}\)</span>。</li>
+<li>(b) 解 <span class="arithmatex">\(y'' - y = e^x\)</span>，因 <span class="arithmatex">\(e^x\)</span> 已满足齐次方程，猜特解 <span class="arithmatex">\(y = axe^x\)</span>，得 <span class="arithmatex">\(a = \frac{1}{2}\)</span>。</li>
+<li>(c) 解 <span class="arithmatex">\(y'' - \frac{y}{x^2} = x^4 + x^3\)</span>，猜多项式特解 <span class="arithmatex">\(y = ax^6 + bx^5\)</span>，得 <span class="arithmatex">\(a = \frac{1}{25}\)</span>, <span class="arithmatex">\(b = \frac{1}{15}\)</span>。</li>
+<li>(d) 解 <span class="arithmatex">\(y'' + xy' + 2y = 1\)</span>，猜特解 <span class="arithmatex">\(y = a\)</span>，得 <span class="arithmatex">\(y = \frac{1}{2}\)</span></li>
+<li>(e) 解 <span class="arithmatex">\(y'' + xy' + 2y = x^4\)</span>，猜特解 <span class="arithmatex">\(y = ax^4 + bx^2 + c\)</span>，得 <span class="arithmatex">\(y = \frac{x^4}{6} - \frac{x^2}{2} + \frac{1}{4}\)</span>。</li>
+</ul>
+</div>
+<h2 id="s19"><span class="book-secnum">§ 19</span>一阶非线性微分方程</h2>
+<p>尽管多数非线性微分方程难以显式求解，但识别可解方程类型并掌握相应解法至关重要。一阶方程的常规策略是通过代换转化为线性或恰当方程。</p>
+<h2 id="s20"><span class="book-secnum">§ 20</span>伯努利方程</h2>
+<p>标准形式为：</p>
+<div class="arithmatex">\[
+y' = a(x)y + b(x)y^p
+\tag{1.6.1}
+\]</div>
+<p>其中 <span class="arithmatex">\(a(x)\)</span>, <span class="arithmatex">\(b(x)\)</span> 为任意函数，<span class="arithmatex">\(P\)</span> 为任意常数。当 <span class="arithmatex">\(P = 0\)</span> 时为线性方程，<span class="arithmatex">\(P = 1\)</span> 时为可分方程。解法为利用代换</p>
+<div class="arithmatex">\[
+y(x) = [u(x)]^{1-P}
+\tag{1.6.2}
+\]</div>
+<p>得线性方程：</p>
+<div class="arithmatex">\[
+u'(x) = (1 - P)a(x)u(x) + (1 - P)b(x)
+\tag{1.6.3}
+\]</div>
+<h2 id="s21"><span class="book-secnum">§ 21</span>Riccati方程</h2>
+<p>标准形式为：</p>
+<div class="arithmatex">\[
+y'(x) = a(x)y^2(x) + b(x)y(x) + c(x)
+\tag{1.6.4}
+\]</div>
+<p>当 <span class="arithmatex">\(a(x) = 0\)</span> 时为线性方程，<span class="arithmatex">\(c(x) = 0\)</span> 时为伯努利方程。解法为利用代换</p>
+<div class="arithmatex">\[
+y(x) = -\frac{w'(x)}{a(x)w(x)}
+\tag{1.6.5}
+\]</div>
+<p>转化为二阶线性方程：</p>
+<div class="arithmatex">\[
+w''(x) - \left[ \frac{a'(x)}{a(x)} + b(x) \right] w'(x) + a(x)c(x)w(x) = 0
+\tag{1.6.6}
+\]</div>
+<p>此变换可逆。这表明方程与二阶齐次线性方程等价，但我们目前并未得到二阶线性微分方程的通解。回到开头，若已知特解 <span class="arithmatex">\(y_1(x)\)</span>，令</p>
+<div class="arithmatex">\[
+y(x) = y_1(x) + u(x)
+\tag{1.6.7}
+\]</div>
+<p>则转化为伯努利方程：</p>
+<div class="arithmatex">\[
+u'(x) = [b(x) + 2a(x)y_1(x)]u(x) + a(x)u^2(x)
+\]</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 21.1</span><span class="book-name">例（因式分解法</span></p>
+<p>Riccati 方程源于二阶线性方程的因式分解尝试，希望将 <span class="arithmatex">\(n\)</span> 阶线性算子分解为：</p>
+<div class="arithmatex">\[
+Ly = \left[ \frac{d}{dx} + a_1(x) \right] \left[ \frac{d}{dx} + a_2(x) \right] \cdots \left[ \frac{d}{dx} + a_n(x) \right] y(x)
+\tag{1.6.8}
+\]</div>
+<p>要注意这些因子既不是可交换的：</p>
+<div class="arithmatex">\[
+\left( \frac{d}{dx} + \frac{1}{x} \right) \left( \frac{d}{dx} + x \right) \neq \left( \frac{d}{dx} + x \right) \left( \frac{d}{dx} + \frac{1}{x} \right)
+\]</div>
+<p>也不是唯一的：</p>
+<div class="arithmatex">\[
+y'' - y = \left( \frac{d}{dx} + 1 \right) \left( \frac{d}{dx} - 1 \right) y = \left( \frac{d}{dx} + \tanh x \right) \left( \frac{d}{dx} - \tanh x \right) y
+\]</div>
+<p>若分解成功，求解 <span class="arithmatex">\(Ly = f(x)\)</span> 转化为一系列一阶线性方程：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+w_1' + a_1 w_1 &amp;= f(x) \\
+w_2' + a_2 w_2 &amp;= w_1(x) \\
+&amp;\,\,\,\, \vdots \\
+y' + a_n y &amp;= w_{n-1}(x)
+\end{aligned}
+\tag{1.6.9}
+\]</div>
+<p>最终解含 <span class="arithmatex">\(n\)</span> 个积分常数。</p>
+<p>当然这里的难点在于分解算子。以二阶算子 <span class="arithmatex">\(L = \frac{d^2}{dx^2} + p_1(x) \frac{d}{dx} + p_0(x)\)</span> 为例：</p>
+<div class="arithmatex">\[
+Ly = \left[ \frac{d}{dx} + a_1(x) \right] \left[ \frac{d}{dx} + a_2(x) \right] y
+\]</div>
+<p>比较系数消去 <span class="arithmatex">\(a_1\)</span> 得 <span class="arithmatex">\(a_2\)</span> 的 Riccati 方程：</p>
+<div class="arithmatex">\[
+a_2' = a_2^2 - p_1 a_2 + p_0
+\]</div>
+<p>其难度与原二阶方程相当。代换 <span class="arithmatex">\(a_2(x) = -w'(x)/w(x)\)</span> 后恰好还原为原方程 <span class="arithmatex">\(Lw = 0\)</span>。</p>
+</div>
+<h2 id="s22"><span class="book-secnum">§ 22</span>恰当方程</h2>
+<p>一阶恰当方程可表示为：</p>
+<div class="arithmatex">\[
+M[x, y(x)] + N[x, y(x)]y'(x) = \frac{d}{dx}f[x, y(x)] = 0
+\]</div>
+<p>其解为 <span class="arithmatex">\(f[x, y(x)] = c_1\)</span>。恰当性的充要条件为：</p>
+<div class="arithmatex">\[
+\frac{\partial M}{\partial y}(x, y) = \frac{\partial N}{\partial x}(x, y)
+\tag{1.6.10}
+\]</div>
+<p>解存在性定理表明每个非线性方程均可通过积分因子化为恰当方程，但寻找积分因子可能极困难。设方程 <span class="arithmatex">\(a(x, y) + b(x, y)y'(x) = 0\)</span>，乘以待定积分因子 <span class="arithmatex">\(I(x, y)\)</span> 后要求满足 (1.6.10)，得 <span class="arithmatex">\(I\)</span> 的线性偏微分方程：</p>
+<div class="arithmatex">\[
+a(x, y)\frac{\partial I}{\partial y} - b(x, y)\frac{\partial I}{\partial x} = \left( \frac{\partial b}{\partial x} - \frac{\partial a}{\partial y} \right)I
+\]</div>
+<p>此方程的标准解法（特征线法）的特征曲线方程为 <span class="arithmatex">\(dy/dx = -a/b\)</span>，恰为原微分方程！</p>
+<h2 id="s23"><span class="book-secnum">§ 23</span>代换法</h2>
+<p>有时可通过代换将非线性方程转化为可直接求解的形式。线性代换因易识别而应优先考虑。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 23.1</span><span class="book-name">例</span></p>
+<ul>
+<li>
+<p>(a) 代换 <span class="arithmatex">\(u = x + y\)</span> 使 <span class="arithmatex">\(y' = \cos (x + y)\)</span> 可分：<span class="arithmatex">\(u' = 1 + \cos u\)</span>。</p>
+</li>
+<li>
+<p>(b) 线性变换 <span class="arithmatex">\(x = av + bw + c\)</span>, <span class="arithmatex">\(y = dv + ew + f\)</span> 在适当选择参数后可将 <span class="arithmatex">\(y' = (Ax + By + C)/(Dx + Ey + F)\)</span> 转化为关于 <span class="arithmatex">\(w(v)\)</span> 的可分方程。</p>
+</li>
+<li>
+<p>(c) 方程 <span class="arithmatex">\(y' = (y - x)/(y + x)\)</span> 的解为对数螺线。使用极坐标代换：</p>
+<div class="arithmatex">\[
+x = r \cos \theta, \quad dx = \cos \theta  dr - r \sin \theta  d\theta,
+\]</div>
+<div class="arithmatex">\[
+y = r \sin \theta, \quad dy = \sin \theta  dr + r \cos \theta  d\theta,
+\]</div>
+<p>得可分方程 <span class="arithmatex">\(dr/d\theta = -r\)</span>，解为 <span class="arithmatex">\(r = c_1 e^{-\theta}\)</span>。</p>
+</li>
+<li>
+<p>(d) 代换 <span class="arithmatex">\(u = x + y\)</span> 将 <span class="arithmatex">\(y' = y/x + 1/(y + x)\)</span> 转化为伯努利方程：<span class="arithmatex">\(u' = u/x + 1/u\)</span>。</p>
+</li>
+<li>
+<p>(e) 对形如 <span class="arithmatex">\(y' = F(y/x)\)</span> 的方程，代换 <span class="arithmatex">\(u = y/x\)</span> 得可分方程：<span class="arithmatex">\(u' = [F(u) - u]/x\)</span>。</p>
+</li>
+<li>
+<p>(f) 代换 <span class="arithmatex">\(u = xy\)</span> 将 <span class="arithmatex">\(y' = \cos (xy)\)</span> 转化为 <span class="arithmatex">\(u' = x \cos u + u/x\)</span>，其求解难度未降低。乘法型代换（<span class="arithmatex">\(u = xy\)</span>, <span class="arithmatex">\(u = x^2 y\)</span> 等）通常对 <span class="arithmatex">\(y' = F(xy)\)</span> 类方程无效。</p>
+</li>
+</ul>
+</div>
+<h2 id="s24"><span class="book-secnum">§ 24</span>高阶非线性微分方程</h2>
+<p>本节简要总结求解 <span class="arithmatex">\(n\)</span> 阶非线性微分方程的方法，大多数方法试图降低微分方程的阶数。</p>
+<h2 id="s25"><span class="book-secnum">§ 25</span>自治方程(Autonomous Equations)</h2>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 25.1</span></p>
+<p>自治方程是指自变量不显式出现的方程，如 <span class="arithmatex">\(y'' + y' + y = 0\)</span>, <span class="arithmatex">\(y''' + y'' = 0\)</span>, <span class="arithmatex">\(yy' = y''y''\)</span>。自治方程在平移变换 <span class="arithmatex">\(x \rightarrow x + a\)</span> 下保持不变。</p>
+</div>
+<p>一个 <span class="arithmatex">\(n\)</span> 阶自治方程总可以用一个 <span class="arithmatex">\((n-1)\)</span> 阶非自治方程替代。标准技巧是将 <span class="arithmatex">\(u \equiv y'(x)\)</span> 表示为 <span class="arithmatex">\(y\)</span> 的函数，并找出 <span class="arithmatex">\(u\)</span> 及其导数满足的方程。因此，我们令</p>
+<div class="arithmatex">\[
+\begin{aligned}
+y'(x) &amp;= u(y),\\
+y''(x) &amp;= \frac{du}{dx} = \frac{du}{dy} \frac{dy}{dx} = u'(y)u(y),\\
+y'''(x) &amp;= \frac{d}{dx} [u'(y)u(y)] = u(y)[u'(y)]^2 + [u(y)]^2u''(y)
+\end{aligned}
+\]</div>
+<p>以此类推得到关于自变量 <span class="arithmatex">\(y\)</span> 的新微分方程，且其中 <span class="arithmatex">\(u\)</span> 关于 <span class="arithmatex">\(y\)</span> 的最高阶导数总是比原方程中 <span class="arithmatex">\(y\)</span> 关于 <span class="arithmatex">\(x\)</span> 的最高阶导数低一阶。</p>
+<h2 id="s26"><span class="book-secnum">§ 26</span>关于 x 的齐次方程(Equidimensional-in-x Equations)</h2>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 26.1</span></p>
+<p>如果一个方程在尺度变换 <span class="arithmatex">\(x \rightarrow a x\)</span> 下保持不变，则称该方程是关于 <span class="arithmatex">\(x\)</span> 齐次的。</p>
+</div>
+<p>所有关于 <span class="arithmatex">\(x\)</span> 齐次的方程都可以转化为同阶的自治方程。所需的变量变换已在 (1.4.4) 中给出：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+x &amp;= e^t, \\
+\frac{d}{dx} &amp;= e^{-t} \frac{d}{dt}, \\
+x^2 \frac{d^2}{dx^2} &amp;= \frac{d^2}{dt^2} - \frac{d}{dt}.
+\end{aligned}
+\]</div>
+<h2 id="s27"><span class="book-secnum">§ 27</span>尺度不变方程 (Scale-Invariant Equations)</h2>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 27.1</span></p>
+<p>如果存在 <span class="arithmatex">\(p\)</span> 使得尺度变换</p>
+<div class="arithmatex">\[
+x \rightarrow a x,\quad y \rightarrow a^p y
+\tag{1.7.3}
+\]</div>
+<p>保持原微分方程不变，则该微分方程是尺度不变的。</p>
+</div>
+<p>识别微分方程为尺度不变是求解的重要进展，因为所有尺度不变方程可通过代换</p>
+<div class="arithmatex">\[
+y(x) = x^p v(x)
+\tag{1.7.4}
+\]</div>
+<p>转化为关于 <span class="arithmatex">\(x\)</span> 的齐次方程。</p>
+<h2 id="s28"><span class="book-secnum">§ 28</span>关于 <span class="arithmatex">\(y\)</span> 的齐次方程 (Equidimensional-in-<span class="arithmatex">\(y\)</span> Equations)</h2>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 28.1</span></p>
+<p>若方程在尺度变换 <span class="arithmatex">\(y \rightarrow a y\)</span> 下不变，则称为关于 <span class="arithmatex">\(y\)</span> 齐次。</p>
+</div>
+<p>此类方程可通过变换</p>
+<div class="arithmatex">\[
+y(x) = e^{u(x)}
+\tag{1.7.5}
+\]</div>
+<p>将方程阶数降低一阶。</p>
+<h2 id="s29"><span class="book-secnum">§ 29</span>特征值问题</h2>
+<p>特征值问题是一类边界值问题，仅当问题中的参数 <span class="arithmatex">\(E\)</span> 取特定值（称为特征值）时才存在非平凡解。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.1</span><span class="book-name">例（简单特征值问题</span></p>
+<p>考虑边值问题</p>
+<div class="arithmatex">\[
+y'' + E y = 0, \quad y(0) = 0, \quad y(1) = 0.
+\tag{1.8.1}
+\]</div>
+<p>对任意参数 <span class="arithmatex">\(E\)</span>，存在平凡解 <span class="arithmatex">\(y(x) = 0\)</span>（<span class="arithmatex">\(0 \leq x \leq 1\)</span>）。但当 <span class="arithmatex">\(E\)</span> 取特定值时，(1.8.1) 存在额外的非零解：</p>
+<div class="arithmatex">\[
+E = (n\pi)^2, \quad y(x) = A_n \sin (n\pi x), \quad n = 1, 2, 3, \cdots
+\tag{1.8.2}
+\]</div>
+<p>其中 <span class="arithmatex">\(A_n\)</span> 为任意常数，<span class="arithmatex">\(E = \pi^2, 4\pi^2, 9\pi^2, \cdots\)</span> 称为特征值，对应的非平凡解 <span class="arithmatex">\(\sin \pi x, \sin 2\pi x, \sin 3\pi x,  \cdots\)</span> 称为特征函数。且易证 (1.8.1) 无其他特征值。</p>
+</div>
+<p>对齐次线性边值问题，当 <span class="arithmatex">\(E\)</span> 为特征值时，解不唯一：除 <span class="arithmatex">\(y(x) = 0\)</span> 外，存在特征函数的任意常数倍解。反之，当 <span class="arithmatex">\(E\)</span> 非特征值时，平凡解唯一。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.2</span><span class="book-name">例（另一简单特征值问题</span></p>
+<p>考虑特征值问题</p>
+<div class="arithmatex">\[
+y'' + E y = 0, \quad y(0) = 0, \quad y'(1) = 0.
+\tag{1.8.3}
+\]</div>
+<p>对任意参数 <span class="arithmatex">\(E\)</span> ，存在平凡解 <span class="arithmatex">\(y(x) = 0\)</span>。满足 <span class="arithmatex">\(y(0) = 0\)</span> 的通解为 <span class="arithmatex">\(y(x) = A \sin (\sqrt{E} x)\)</span>，由 <span class="arithmatex">\(y'(1) = 0\)</span> 得 <span class="arithmatex">\(A \sqrt{E} \cos \sqrt{E} = 0\)</span>，故特征值为 <span class="arithmatex">\(E = \left(\frac{\pi}{2}\right)^2, \left(\frac{3\pi}{2}\right)^2, \left(\frac{5\pi}{2}\right)^2, \cdots\)</span></p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.3</span><span class="book-name">例（无限域上的特征值问题</span></p>
+<p>特征值问题</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;y'' + (E - x^2) y = 0, \quad -\infty &lt; x &lt; \infty,\\
+&amp;y(x) \to 0 \quad \text{当} \quad |x| \to \infty
+\end{aligned}
+\]</div>
+<p>称为<strong>量子谐振子(quantum harmonic oscillator)</strong>。对任意 <span class="arithmatex">\(E\)</span> 存在平凡解 <span class="arithmatex">\(y(x) = 0\)</span>，但对特定 <span class="arithmatex">\(E\)</span> 存在非平凡解。(“特征值问题”一节) 的特征值为 <span class="arithmatex">\(E = n+\frac{1}{2}\)</span>，对应的特征函数为</p>
+<div class="arithmatex">\[
+y_n(x) = A \cdot \mathrm{He}_n(x) e^{-x^2/4},
+\tag{1.8.5}
+\]</div>
+<p>其中 <span class="arithmatex">\(A\)</span> 为任意常数，<span class="arithmatex">\(\mathrm{He}_n(x)\)</span> 为 <span class="arithmatex">\(n\)</span> 阶 Hermite 多项式，<span class="arithmatex">\(\mathrm{He}_0(x) = 1, \mathrm{He}_1(x) = x, \mathrm{He}_2(x) = x^2 - 1, \cdots\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.4</span><span class="book-name">例（含超越特征值的问题</span></p>
+<p>考虑特征值问题</p>
+<div class="arithmatex">\[
+y'' + (E - x) y = 0\, (0 &lt; x &lt; \infty), \quad y(0) = 0, \quad y(\infty) = 0.
+\tag{1.8.6}
+\]</div>
+<p>后文中将证明：满足 <span class="arithmatex">\(x \to \infty\)</span> 时 <span class="arithmatex">\(y \to 0\)</span> 的通解为</p>
+<div class="arithmatex">\[
+y(x) = A \cdot \mathrm{Ai}(x - E),
+\tag{1.8.7}
+\]</div>
+<p>其中 <span class="arithmatex">\(\mathrm{Ai}(z)\)</span> 为 Airy 函数（见 (1.4.8)）。边界条件 <span class="arithmatex">\(y(0) = 0\)</span> 给出特征值条件 <span class="arithmatex">\(\mathrm{Ai}(-E) = 0\)</span>，这是超越函数，其零点可数值计算，得到特征值序列：</p>
+<div class="arithmatex">\[
+E_0 \approx 2.338, \ E_1 \approx 4.088, \ E_2 \approx 5.521, \ E_3 \approx 6.787, \ E_4 \approx 7.944, \ E_5 \approx 9.023, \cdots
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.5</span><span class="book-name">例</span></p>
+<p>考虑特征值问题</p>
+<div class="arithmatex">\[
+y'' + (E + v\sec^2 x) y = 0, \quad y \to 0 \quad \text{当} \quad |x| \to \infty.
+\tag{1.8.8}
+\]</div>
+<p>仅存在有限个离散特征值：<span class="arithmatex">\(E = -\frac{1}{4}(2n + 1 - \sqrt{1 + 4v})^2\)</span>（<span class="arithmatex">\(0 \leq n \leq V\)</span>），其中 <span class="arithmatex">\(V = (\sqrt{1 + 4v} - 1)/2\)</span> 且 <span class="arithmatex">\(n\)</span> 为整数。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.6</span><span class="book-name">例（Sturm-Liouville 特征值问题</span></p>
+<p>特征值问题</p>
+<div class="arithmatex">\[
+a(x)y''(x) + b(x)y'(x) + c(x)y(x) + d(x)E y(x) = 0, \quad y(\alpha) = y(\beta) = 0
+\tag{1.8.9}
+\]</div>
+<p>总可化为 Sturm-Liouville 标准形式：</p>
+<div class="arithmatex">\[
+\frac{d}{dx} \left[ p(x) \frac{dy}{dx} \right] + q(x) y + E r(x) y = 0, \quad y(\alpha) = y(\beta) = 0
+\tag{1.8.10}
+\]</div>
+<p>方程 (1.8.10) 称为 Sturm-Liouville 问题。其性质为：当</p>
+<div class="arithmatex">\[
+p(x) &gt; 0, \quad q(x) \leq 0, \quad r(x) &gt; 0, \quad \alpha \leq x \leq \beta
+\]</div>
+<p>时，存在无限多个实数正特征值 <span class="arithmatex">\(E = E_0, E_1, E_2, \cdots\)</span>。此外，对应特征值 <span class="arithmatex">\(E_n\)</span> 的特征函数 <span class="arithmatex">\(y_n(x)\)</span>（<span class="arithmatex">\(n = 0, 1, 2, \cdots\)</span>）可关于权函数 <span class="arithmatex">\(r(x)\)</span> 正交归一化：</p>
+<div class="arithmatex">\[
+\int_{\alpha}^{\beta} r(x) y_n(x) y_m(x)  dx =
+\begin{cases}
+1, &amp; n = m \\
+0, &amp; n \neq m
+\end{cases}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 29.7</span><span class="book-name">例（薛定谔特征值问题</span></p>
+<p>若选取满足 <span class="arithmatex">\(|x| \to \infty\)</span> 时 <span class="arithmatex">\(V(x) \to +\infty\)</span> 的正函数 <span class="arithmatex">\(V(x)\)</span>，则薛定谔特征值问题</p>
+<div class="arithmatex">\[
+-y''(x) + V(x) y(x) = E y(x), \quad y(\pm \infty) = 0
+\tag{1.8.11}
+\]</div>
+<p>有无限多个实数正特征值 <span class="arithmatex">\(E_0, E_1, E_2, \cdots\)</span>。物理上，这些特征值表示势场 <span class="arithmatex">\(V(x)\)</span> 中粒子的允许能级。(“特征值问题”一节) 的问题是特例。仅对特殊 <span class="arithmatex">\(V(x)\)</span> 存在 (1.8.11) 的显式解。</p>
+</div>
+<h2 id="s30"><span class="book-secnum">§ 30</span>复平面中的微分方程</h2>
+<p>此前我们使用字母 <span class="arithmatex">\(x\)</span> 表示微分方程的自变量，并假设 <span class="arithmatex">\(x\)</span> 为实数。但在后续分析中，我们将关注复平面中的微分方程性质，此时自变量记为 <span class="arithmatex">\(z\)</span>。当微分方程从实轴 <span class="arithmatex">\(x\)</span> 推广到复平面 <span class="arithmatex">\(z\)</span> 时，所有导数必须按复导数解释。这导出一个重要结论（实变函数不适用）：在复导数 <span class="arithmatex">\(y'(z)\)</span> 存在的区域，函数 <span class="arithmatex">\(y(z)\)</span> 是解析的，该结论限制了可在复平面中构造的微分方程类型。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 30.1</span><span class="book-name">例（一阶微分方程</span></p>
+<p>微分方程 <span class="arithmatex">\(dy/dx = |x|\)</span> 在实轴上有意义，其解为 <span class="arithmatex">\(y(x) = \frac{1}{2}x |x| + c\)</span>。但方程 <span class="arithmatex">\(dy/dz = |z|\)</span> 在复平面中无意义，因为 <span class="arithmatex">\(y'(z)\)</span> 要求 <span class="arithmatex">\(y(z)\)</span> 解析，而 <span class="arithmatex">\(|z|\)</span> 处处不解析。</p>
+<p>一般地，为使复微分方程 <span class="arithmatex">\(dy/dz = g(z)\)</span> 有意义，需存在某个复区域使 <span class="arithmatex">\(g(z)\)</span> 解析。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 30.2</span><span class="book-name">例（二阶微分方程</span></p>
+<p>若微分方程 <span class="arithmatex">\(y'' + p_1(z)y' + p_0(z)y = 0\)</span> 在某个区域存在两个线性无关解，则 <span class="arithmatex">\(p_0(z)\)</span> 和 <span class="arithmatex">\(p_1(z)\)</span> 除可能孤立点外必须是解析函数。设 <span class="arithmatex">\(y_1\)</span> 和 <span class="arithmatex">\(y_2\)</span> 为两个线性无关解，因其复导数存在故解析，则</p>
+<div class="arithmatex">\[
+p_0(z) = \frac{y_1'' y_2' - y_2'' y_1'}{y_1' y_2 - y_1 y_2'}, \quad
+p_1(z) = \frac{y_2'' y_1 - y_1'' y_2}{y_1' y_2 - y_1 y_2'},
+\tag{1.5.14}
+\]</div>
+<p>其中分母仅在孤立点为零。</p>
+<p>具有非解析系数的二阶复微分方程可能有解，但解可能不含两个独立任意参数。例如方程 <span class="arithmatex">\(y'' - |z|y' + (|z| - 1)y = 0\)</span> 有解 <span class="arithmatex">\(y = c e^z\)</span>，但无其他解。</p>
+</div>
+<p>除上述限制外，实微分方程与复微分方程无本质区别。本章介绍的求解方法同样适用于复微分方程。</p>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：差分方程</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 1 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <span class="zdd-end-chip is-category">应用数学</span>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=ode">#ode</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-03/">第三章：线性微分方程的局部分析：常点与正则奇点</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>
