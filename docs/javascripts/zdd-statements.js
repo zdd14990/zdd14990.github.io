@@ -40,7 +40,7 @@
   function itemHtml(item) {
     var where = [item.article, item.section].filter(Boolean).join(" · ");
     return '<li class="zdd-statement-item" data-kind="' + escapeHtml(item.kind) + '">'
-      + '<span class="zdd-statement-kind">' + escapeHtml(item.label) + '</span>'
+      + '<span class="zdd-statement-kind">' + escapeHtml(item.number || item.label) + '</span>'
       + '<a class="zdd-statement-title" href="' + escapeHtml(item.url) + '">' + escapeHtml(item.title) + '</a>'
       + '<span class="zdd-statement-where">' + escapeHtml(where) + '</span>'
       + '<span class="zdd-statement-text arithmatex">' + escapeHtml(item.text) + '</span>'

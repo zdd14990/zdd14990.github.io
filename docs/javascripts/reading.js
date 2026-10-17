@@ -42,6 +42,7 @@
       if (!img.complete) { img.addEventListener('load', enhanceMedia, {once: true}); return; }
       if (img.naturalWidth < 150 && img.clientWidth < 150) return;
       img.dataset.readingEnhanced = 'true';
+      if (img.naturalWidth >= 1000 && img.parentElement.classList.contains('book-figure')) img.parentElement.classList.add('is-wide');
       var button = expandButton('放大图示'); img.insertAdjacentElement('afterend', button);
       button.addEventListener('click', function () { openMedia(img, img.alt || '图示', img.currentSrc || img.src); });
     });

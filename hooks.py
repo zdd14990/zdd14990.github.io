@@ -4,6 +4,7 @@ import os
 import re
 
 from blog_taxonomy import article_tags
+from book_layout import apply_book_layout
 from blog_content import begin_build, end_build, content_store, normalize_metadata
 from blog_links import backlink_map
 from blog_statements import extract_statements, statement_records
@@ -196,6 +197,9 @@ def on_page_content(html, page, config, files):
         store = content_store(config["docs_dir"])
         store.rendered_headings[source] = rendered_headings(html)
         html, items = extract_statements(html)
-        store.statements[source] = statement_records(
-            items, page.title, "/" + page.url, source, page.meta.get("tags", []))
+        records = statement_records(items, page.title, "/" + page.url, source, page.meta.get("tags", []))
+        html, page.meta["book_opener"], numbers = apply_book_layout(html, page.title)
+        for record in records:
+            record["number"] = numbers.get(record["url"].rsplit("#", 1)[1], "")
+        store.statements[source] = records
     return html

@@ -1,11 +1,15 @@
 {% include "partials/tags.html" %}
 {% include "partials/actions.html" %}
 {% set zdd_hide_index_title = page and page.url in ["blog/", "tags/"] %}
+{% if zdd_is_article and page.meta.book_opener %}
+{% include 'partials/book-opener.html' %}
+{% else %}
 {% if "<h1" not in page.content and not zdd_hide_index_title %}
   <h1>{{ page.title | d(config.site_name, true) }}</h1>
 {% endif %}
 {% if zdd_is_article %}{% include 'partials/reading-tools.html' %}{% endif %}
 {% if page.meta.course_navigation %}{% include 'partials/course-crumb.html' %}{% endif %}
+{% endif %}
 {{ page.content }}
 {% include 'partials/article-end.html' %}
 {% include "partials/source-file.html" %}

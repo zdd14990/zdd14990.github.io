@@ -7,7 +7,7 @@
 
 {% block site_meta %}
 {{ super() }}
-  <style>html { background: #eaf5fb !important; color-scheme: light; }</style>
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
   <script>
     (function () {
       var root = document.documentElement;
@@ -20,7 +20,7 @@
         }
       } catch (error) {}
       root.dataset.zddScheme = scheme;
-      root.style.setProperty('background', scheme === 'slate' ? '#101924' : '#eaf5fb', 'important');
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
       root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
       // Remove data left by the retired reading controls without touching other settings.
       try {
@@ -48,7 +48,9 @@
 {% if page and page.meta.code_notes %}
   <link rel="stylesheet" href="{{ 'stylesheets/code-notes.css' | url }}">
 {% endif %}
-  <link rel="stylesheet" href="{{ 'assets/fonts/wenkai/result.css' | url }}">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
 {% for asset in zdd_assets %}
 {% for style in config.extra.page_assets[asset].get('styles', []) %}
   <link rel="stylesheet" href="{{ style | url }}">

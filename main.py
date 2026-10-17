@@ -431,7 +431,7 @@ def _tag_explorer():
 """
 
 
-STATEMENT_INDEX_FIELDS = ("id", "kind", "label", "title", "name", "url", "article", "section", "tags")
+STATEMENT_INDEX_FIELDS = ("id", "kind", "label", "number", "title", "name", "url", "article", "section", "tags")
 STATEMENT_TEXT_LIMIT = 240
 
 

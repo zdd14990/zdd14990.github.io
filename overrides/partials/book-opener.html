@@ -1,0 +1,27 @@
+{# Chapter opener for articles; data comes from book_layout.apply_book_layout. #}
+{% set opener = page.meta.book_opener %}
+{% set course = page.meta.course_navigation %}
+{% set taxonomy = page.meta.taxonomy %}
+<header class="book-opener">
+  <div class="book-runhead">
+    {% if course %}
+    <a href="{{ course.catalog_url }}">{{ course.title }}</a>
+    <span>Part {{ course.position }} of {{ course.total }}</span>
+    {% else %}
+    <span>{{ taxonomy.categories[0] if taxonomy and taxonomy.categories else "Notes" }}</span>
+    <span>{{ (page.meta.reading_date | string)[:7] | replace("-", " · ") if page.meta.reading_date else "Notes" }}</span>
+    {% endif %}
+  </div>
+  <div class="book-title-row{% if opener.number is not none %} has-numeral{% endif %}">
+    {% if opener.number is not none %}<div class="book-numeral" aria-hidden="true">{{ "%02d" | format(opener.number) }}</div>{% endif %}
+    <h1{% if opener.anchor %} id="{{ opener.anchor }}"{% endif %}>{% if opener.number is not none %}<span class="book-visually-hidden">第 {{ opener.number }} 章：</span>{% endif %}{{ opener.title_html }}</h1>
+  </div>
+  {% if opener.lead_html %}<p class="book-standfirst">{{ opener.lead_html }}</p>{% endif %}
+  {% if page.meta.reading_date %}
+  <div class="book-meta">
+    <span>发布于 <time datetime="{{ page.meta.reading_date }}">{{ page.meta.reading_date }}</time></span>
+    {% if page.meta.reading_updated %}<span>更新于 <time datetime="{{ page.meta.reading_updated }}">{{ page.meta.reading_updated }}</time></span>{% endif %}
+    {% if page.meta.reading_words %}<span>{{ "{:,}".format(page.meta.reading_words) }} 字 · 约 {{ page.meta.reading_minutes }} 分钟</span>{% endif %}
+  </div>
+  {% endif %}
+</header>
