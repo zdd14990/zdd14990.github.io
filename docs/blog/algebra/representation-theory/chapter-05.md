@@ -2,7 +2,7 @@
 title: 第五章：对称群 S_n 的表示
 date: 2025-11-19
 updated: 2026-10-15
-description: 表示论笔记第五章：对称函数、S_n 表示的分类定理、对称群 S_n的表示的分类定理的证明、诱导表示、表示环和对称函数、A_n 的表示、Schur-Weyl 对偶。
+description: 表示论笔记第五章：对称函数、Sₙ 表示的分类定理、对称群 Sₙ 的表示的分类定理的证明、诱导表示、表示环和对称函数、Aₙ 的表示、Schur-Weyl 对偶。
 hide:
   - navigation
 categories:

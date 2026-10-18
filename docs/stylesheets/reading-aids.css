@@ -220,13 +220,14 @@ body .md-typeset details.proof[open]::details-content { block-size: auto; }
     body.article-layout .md-content__inner.md-typeset > h2::after {
         content: "";
         position: absolute;
-        /* centred on the 1px rule: box centre at -rail-gap + 0.5px */
-        left: calc(-1 * var(--rail-gap) + 0.5px);
+        /* centred on the 1px rule: a 9px box starting 4px left of it, on whole
+           pixels (a -50% translate landed on half pixels and drew 1px right) */
+        left: calc(-1 * var(--rail-gap) - 4px);
         top: 1.375em;
         width: 9px;
         height: 9px;
         box-sizing: border-box;
-        translate: -50% -50%;
+        translate: 0 -50%;
         background: var(--ed-paper);
         border: 1px solid var(--ed-ink);
         rotate: 45deg;

@@ -2,7 +2,7 @@
 title: 第六章：GL₂(𝔽_q) 与 SL₂(𝔽_q) 的表示
 date: 2025-11-19
 updated: 2026-10-15
-description: 表示论笔记第六章：mathrm{GL}_2(mathbb{F}_q) 表示、mathrm{SL}_2(mathbb{F}_q) 表示、习题。
+description: 表示论笔记第六章：GL₂(𝔽_q) 的表示、SL₂(𝔽_q) 的表示、习题。
 hide:
   - navigation
 categories:

@@ -242,7 +242,12 @@ def _render_tree(node, level=0, folder_parts=()):
         articles = _collect_articles(child)
         stats = _folder_stats(articles)
         name = SITE_CATALOG["display_names"].get(key, key.replace("-", " ").title())
-        date_range = f" · {stats['created']} - {stats['updated']}" if stats["created"] != "-" else ""
+        if stats["created"] == "-":
+            date_range = ""
+        elif stats["created"] == stats["updated"]:
+            date_range = f" · {stats['created']}"
+        else:
+            date_range = f" · {stats['created']} - {stats['updated']}"
         html_parts.append(f"""
 <details class="zdd-catalog-folder" data-level="{level}"{folder_id}>
   <summary>

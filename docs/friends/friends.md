@@ -1,5 +1,6 @@
 ---
 title: Friends
+description: zdd14990 的友情链接。
 hide:
   - navigation
   - toc

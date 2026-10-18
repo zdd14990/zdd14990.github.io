@@ -195,7 +195,7 @@
       state.ghost.hidden = true;
       return;
     }
-    state.ghost.textContent = "Tab -> " + value.replace(/\s+$/, " ");
+    state.ghost.textContent = "Tab → " + value.replace(/\s+$/, " ");
     state.ghost.hidden = false;
   }
 
@@ -271,7 +271,7 @@
 
   function matchingOptions(prefix, values, prefixSymbol, kind) {
     var needle = normalize(prefix || "");
-    if (!needle) return [];
+    // An empty prefix lists the first options, so "/random tag:" shows what to type.
     return values.filter(function(value) {
       return normalize(value).indexOf(needle) === 0;
     }).slice(0, 12).map(function(value) {
@@ -289,10 +289,6 @@
     state.suggestionRows = matchingOptions(prefix, values, prefixSymbol, kind);
     state.commandRows = [];
     state.selectedSuggestionIndex = Math.max(0, Math.min(state.selectedSuggestionIndex, state.suggestionRows.length - 1));
-    if (!prefix) {
-      hideResults();
-      return;
-    }
     state.resultBox.innerHTML = '<div class="zdd-command-panel">'
       + '<div class="zdd-command-prompt">' + escapeHtml(prompt || "Completion") + '</div>'
       + (state.suggestionRows.length ? state.suggestionRows.map(suggestionButton).join("") : '<div class="zdd-command-empty">No matching option found.</div>')
@@ -470,13 +466,18 @@
     var normalized = normalize(mode || "");
     var current = document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark" : "light";
     if (!normalized) normalized = current === "dark" ? "light" : "dark";
+    if (normalized === current) return normalized;
+    // Use the header toggle, so theme-fade.js cross-fades (and respects reduced motion).
+    var toggle = Array.prototype.find.call(document.querySelectorAll(".md-header__option label[for]"), function(label) {
+      return !label.hidden && label.offsetParent !== null;
+    });
+    if (toggle) {
+      toggle.click();
+      return normalized;
+    }
     var scheme = normalized === "dark" ? "slate" : "default";
     var primary = normalized === "dark" ? "black" : "blue";
     var media = normalized === "dark" ? "(prefers-color-scheme: dark)" : "(prefers-color-scheme: light)";
-    document.documentElement.classList.add("zdd-theme-fading");
-    window.setTimeout(function() {
-      document.documentElement.classList.remove("zdd-theme-fading");
-    }, 260);
     document.body.setAttribute("data-md-color-scheme", scheme);
     document.body.setAttribute("data-md-color-primary", primary);
     document.body.setAttribute("data-md-color-accent", "indigo");
@@ -1081,6 +1082,8 @@
         }
         renderCommandPanel(input.value);
       } else if (event.key === "Tab" && !event.shiftKey) {
+        // Nothing to complete: leave Tab to move focus.
+        if (!state.suggestionRows.length && !state.commandRows[state.selectedCommandIndex]) return;
         event.preventDefault();
         if (state.suggestionRows.length) {
           completeSuggestion();
@@ -1288,11 +1291,20 @@
     if (!target) return;
     if (target.dataset.zddTypingBound === "1") return;
     target.dataset.zddTypingBound = "1";
-    var textLight = '" 去过和没去过的地方 哪里更远 "';
-    var textDark = '" 抓住和抓不住的照片 哪张更美 "';
+    var textLight = "“去过和没去过的地方 哪里更远”";
+    var textDark = "“抓住和抓不住的照片 哪张更美”";
     var timer = 0;
+    var currentText = "";
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     function type(text) {
+      // Material re-sets the scheme attribute on load; only a real change retypes.
+      if (text === currentText) return;
+      currentText = text;
       window.clearTimeout(timer);
+      if (reduceMotion) {
+        target.textContent = text;
+        return;
+      }
       target.textContent = "";
       var i = 0;
       function next() {
@@ -1304,7 +1316,8 @@
     function refreshTitle() {
       type(document.body.getAttribute("data-md-color-scheme") === "slate" ? textDark : textLight);
     }
-    window.setTimeout(refreshTitle, 300);
+    // Start at once: a delay showed the static title, cleared it, then retyped it.
+    refreshTitle();
     new MutationObserver(refreshTitle).observe(document.body, {
       attributes: true,
       attributeFilter: ["data-md-color-scheme"]

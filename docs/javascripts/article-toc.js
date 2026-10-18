@@ -11,9 +11,14 @@
     var link = document.createElement("a");
     var label = heading.cloneNode(true);
     label.querySelectorAll(".headerlink").forEach(function (node) { node.remove(); });
+    // "§ 01" is a separate span; keep a space before the title text.
+    label.querySelectorAll(".book-secnum").forEach(function (node) { node.textContent = node.textContent.trim() + " "; });
+    // This runs before the deferred MathJax, so maths is still "\(...\)" here
+    // and is typeset in the dialog on first open.
     item.style.setProperty("--zdd-toc-level", Number(heading.tagName.slice(1)) - 2);
     link.href = "#" + encodeURIComponent(heading.id);
-    link.textContent = label.textContent.trim();
+    link.textContent = label.textContent.replace(/\s+/g, " ").trim();
+    if (/\\\(|\\\[/.test(link.textContent)) link.classList.add("arithmatex");
     item.appendChild(link);
     list.appendChild(item);
     return link;
@@ -30,9 +35,14 @@
     });
   }
   toggle.hidden = false;
+  var typeset = false;
   toggle.addEventListener("click", function () {
     updateActive();
     dialog.showModal();
+    if (!typeset && window.MathJax && typeof MathJax.typesetPromise === "function" && list.querySelector(".arithmatex")) {
+      typeset = true;
+      MathJax.typesetPromise([list]).catch(function () { typeset = false; });
+    }
     toggle.setAttribute("aria-expanded", "true");
     var current = list.querySelector('[aria-current="location"]');
     if (current) {

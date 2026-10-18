@@ -2,7 +2,7 @@
 title: 第七章：ℝ³ 中曲面的微分几何
 date: 2025-11-19
 updated: 2026-10-15
-description: 微分几何笔记第七章：mathbb{R}^3 中曲面的微分几何、高维切向量场的导数。
+description: 微分几何笔记第七章：ℝ³ 中曲面的微分几何、高维切向量场的导数。
 hide:
   - navigation
 categories:

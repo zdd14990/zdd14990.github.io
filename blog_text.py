@@ -29,7 +29,8 @@ def plain_markdown(text):
     )
     text = re.sub(r"^\s{0,3}(?:>\s*)+", " ", text, flags=re.M)
     text = re.sub(r"^\s*#{1,6}\s*", "", text, flags=re.M)
-    text = re.sub(r"^\s*!!!.*$", "", text, flags=re.M)
+    # Admonition and collapsible-block markers ("!!! note", '??? proof "证明"').
+    text = re.sub(r"^\s*(?:!!!|\?\?\?\+?).*$", "", text, flags=re.M)
     text = re.sub(r"^\s*(?:[-+*]|\d+[.)])\s+", "", text, flags=re.M)
     text = re.sub(r"[*`#|{}\[\]]", " ", text)
     return re.sub(r"\s+", " ", text).strip()

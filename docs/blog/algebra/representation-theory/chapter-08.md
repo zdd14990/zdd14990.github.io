@@ -2,7 +2,7 @@
 title: 第八章：Okounkov–Vershik 对 S_n 表示的新方法
 date: 2025-11-19
 updated: 2026-10-15
-description: 表示论笔记第八章：Okounkov-Vershik 对 S_n 表示的新方法。
+description: 表示论笔记第八章：Okounkov–Vershik 对 Sₙ 表示的新方法。
 hide:
   - navigation
 categories:

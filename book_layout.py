@@ -12,7 +12,7 @@
 import html as html_lib
 import re
 
-from blog_statements import plain_text, statement_name
+from blog_statements import _GENERIC_PREFIX, plain_text, statement_name, trim_unmatched_parens
 
 KINDS = {
     "theorem": "定理", "proposition": "命题", "prop": "命题", "lemma": "引理",
@@ -83,13 +83,17 @@ def _statement_title(kind, title_html):
     if plain.lower() in KINDS:
         return KINDS[kind], ""
     word = next((w for w in WORDS if plain.startswith(w)), None)
-    if word is None:
-        return KINDS[kind], title_html
+    word = KINDS[kind] if word is None else "习题" if word == "练习" else "例" if word == "例子" else word
     name = statement_name(plain)
-    word = "习题" if word == "练习" else "例" if word == "例子" else word
     if not name:
         return word, ""
-    return word, html_lib.escape(name) if "<" not in title_html else title_html
+    if name == plain.strip():
+        return word, title_html
+    if "<" not in title_html:
+        return word, html_lib.escape(name)
+    # HTML titles (with maths): strip the same leading "例（" / "Theorem 2.4." from the markup.
+    stripped = trim_unmatched_parens(_GENERIC_PREFIX.sub("", title_html, count=1))
+    return word, stripped if plain_text(stripped).strip() == name else title_html
 
 
 def apply_book_layout(content, page_title):

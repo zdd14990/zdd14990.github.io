@@ -43,7 +43,8 @@ _TITLE_KINDS = (
 )
 # Leading kind word plus numbering such as "定理 3.2.1" or "Lemma 4:".
 _GENERIC_PREFIX = re.compile(
-    r"^\s*(?:定理|命题|引理|推论|定义|习题|练习|theorem|proposition|lemma|corollary|definition|exercise|problem)?"
+    r"^\s*(?:定理|命题|引理|推论|定义|习题|练习|例子|例题|例|性质"
+    r"|(?:theorem|proposition|lemma|corollary|definition|exercise|problem|example|property)(?![a-z]))?"
     r"\s*[\d.．\-–()（）]*\s*[:：.。]?\s*",
     re.IGNORECASE,
 )
@@ -167,8 +168,22 @@ def statement_kind(css_class, title):
 
 def statement_name(title):
     """Return the descriptive part of a title, or "" for "定理 3.2" style labels."""
-    rest = _GENERIC_PREFIX.sub("", title, count=1).strip(" （）()")
+    rest = trim_unmatched_parens(_GENERIC_PREFIX.sub("", title, count=1))
     return rest if re.search(r"[^\W\d_]", rest) else ""
+
+
+def trim_unmatched_parens(text):
+    """Drop the closing bracket of "例（…）" once its opener went with the prefix,
+    but keep brackets that belong to the name, as in "L^p(Ω)"."""
+    def balance(value):
+        return value.count("(") + value.count("（") - value.count(")") - value.count("）")
+
+    text = text.strip()
+    while text and text[-1] in ")）" and balance(text) < 0:
+        text = text[:-1].rstrip()
+    while text and text[0] in "(（" and balance(text) > 0:
+        text = text[1:].lstrip()
+    return text
 
 
 def extract_statements(content):

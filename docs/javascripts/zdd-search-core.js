@@ -167,7 +167,7 @@
       var label;
       if (matched.length && formula.length <= 160) label = formula;
       else if (matched.length) label = "〔公式中匹配：" + matched.join("、") + "〕";
-      else if (formula.length <= 20 && !/[\\{}]/.test(formula)) label = formula;
+      else if (formula.length <= 20 && !/[\\{}]/.test(formula)) label = formula.replace(/^\$+|\$+$/g, "").trim();
       else label = "〔公式〕";
       source += label + " ";
       cursor = math.lastIndex;
