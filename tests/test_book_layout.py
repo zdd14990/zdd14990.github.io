@@ -42,6 +42,14 @@ class BookLayoutTests(unittest.TestCase):
         self.assertIn("<summary>证明</summary>", html)
         self.assertIn('<b>Fig. 1</b>主轨迹', html)
 
+    def test_diagrams_take_no_figure_number(self):
+        html, _, _ = apply_book_layout(
+            '<p><img alt="交换图" src="../assets/x/diagrams/fig-01.svg" /></p>\n'
+            '<p><img alt="轨迹" src="../assets/x/plot.png" /></p>', "随笔")
+        self.assertIn('<p class="book-figure book-diagram"><img alt="交换图"', html)
+        self.assertNotIn("</b>交换图", html)
+        self.assertIn('<b>Fig. 1</b>轨迹', html)
+
     def test_unnumbered_sections_use_plain_counter(self):
         html, opener, numbers = apply_book_layout(
             '<h2 id="a">导言</h2>\n<div id="thm-1" class="admonition theorem">\n'

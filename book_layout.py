@@ -109,6 +109,9 @@ def apply_book_layout(content, page_title):
                 section, count = section + 1, 0
             return match.group(0)
         if match.group("img"):
+            if "/diagrams/" in match.group("img"):
+                # Commutative diagrams are displayed maths, not figures: no number or caption.
+                return f'<p class="book-figure book-diagram">{match.group("img")}</p>'
             figure += 1
             return (f'<p class="book-figure">{match.group("img")}<span class="book-caption">'
                     f'<b>Fig. {figure}</b>{match.group("alt")}</span></p>')
