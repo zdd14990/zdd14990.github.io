@@ -71,6 +71,39 @@ body[data-md-color-scheme="slate"] {
     color: var(--ed-ink);
 }
 
+/* Material's palette attributes ([data-md-color-accent=indigo] ...) outrank a bare
+   `body`, which left hover and focus states blue. Restate the tokens above them,
+   together with the older component sheets' own colour tokens. */
+html body[data-md-color-scheme][data-md-color-primary][data-md-color-accent] {
+    --md-primary-fg-color: var(--ed-ink);
+    --md-primary-fg-color--light: var(--ed-ink-soft);
+    --md-primary-fg-color--dark: var(--ed-ink);
+    --md-primary-bg-color: var(--ed-paper);
+    --md-primary-bg-color--light: var(--ed-paper-deep);
+    --md-accent-fg-color: var(--ed-accent);
+    --md-accent-fg-color--transparent: color-mix(in srgb, var(--ed-accent) 10%, transparent);
+    --md-accent-bg-color: var(--ed-paper);
+    --md-accent-bg-color--light: var(--ed-paper-deep);
+    --md-typeset-a-color: var(--ed-ink);
+    --zdd-playground-line: var(--ed-rule);
+    --zdd-playground-ink: var(--ed-ink);
+    --zdd-playground-muted: var(--ed-muted);
+    --zdd-playground-panel: var(--ed-paper);
+    --zdd-playground-accent: var(--ed-accent);
+    --os-ink: var(--ed-ink);
+    --os-muted: var(--ed-muted);
+    --os-line: var(--ed-rule);
+    --os-panel: var(--ed-paper);
+    --os-panel-strong: var(--ed-paper-deep);
+    --os-accent: var(--ed-accent);
+    --os-accent-soft: var(--ed-paper-deep);
+    --os-shadow: none;
+}
+
+html body ::-webkit-scrollbar-thumb:hover { background: var(--ed-ink) !important; }
+html body :is(.minimal-search input:focus, .md-typeset a.zdd-search-result:hover, .zdd-search-result:hover,
+    .zdd-post-card:hover) { border-color: var(--ed-rule-strong) !important; }
+
 /* ---------- Chrome ---------- */
 body .md-header {
     background: var(--ed-paper) !important;
