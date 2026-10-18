@@ -51,58 +51,8 @@
   var updateLogs = [
     {
       date: "2026-10-18",
-      title: "Page transitions and reading aids",
-      detail: "Chapters slide left/right, catalog pages rise and fall; statements hang on a rule with labels in the gutter; running header, outline mode (O), smooth proof folds and a one-step light/dark cross-fade."
-    },
-    {
-      date: "2026-10-17",
-      title: "Editorial theme",
-      detail: "Paper and ink palette, serif text, numbered chapter openers, § section numbers and numbered statements and figures; the old blue card theme is gone."
-    },
-    {
-      date: "2026-10-17",
-      title: "Comments and formula copy",
-      detail: "Giscus comments under articles, a grouped article-end card, and click any formula to copy its LaTeX."
-    },
-    {
-      date: "2026-10-16",
-      title: "Theorem index and quizzes",
-      detail: "A site-wide theorem index, /thm to look up statements, /quiz for a random exercise, and backlinks at the end of articles."
-    },
-    {
-      date: "2026-10-16",
-      title: "Course navigation",
-      detail: "Previous/next and part numbers for the Autograd, cryptanalysis, statistics, GTM295, numerical PDE and convex optimization series."
-    },
-    {
-      date: "2026-10-16",
-      title: "Cleanup",
-      detail: "Removed /pixiv, unused effects and the MkDocs search index; tags rationalized and every page given a description; CI now deploys on push."
-    },
-    {
-      date: "2026-10-14",
-      title: "New series: Hyperbolic PDE",
-      detail: "Six chapters, from local theory and Klein–Gordon well-posedness to Littlewood–Paley theory, restriction and Kakeya geometry."
-    },
-    {
-      date: "2026-10-09",
-      title: "Rayleigh–Bénard notes",
-      detail: "Learning notes on Rayleigh–Bénard convection under numerical PDE."
-    },
-    {
-      date: "2026-10-04",
-      title: "New series: Functional Analysis",
-      detail: "Twelve parts, from normed and Hilbert spaces through spectral theory and unbounded operators to compact operators, weak topologies and Baire."
-    },
-    {
-      date: "2026-09-05",
-      title: "New series: Autograd source walkthrough",
-      detail: "Fifteen posts reading HIPS/autograd: tracing, reverse and forward mode, broadcasting, higher-order AD, and a mini autograd built from scratch."
-    },
-    {
-      date: "2026-08-26",
-      title: "Review materials",
-      detail: "Qualification exam review notes for probability and statistics, applied mathematics and AI, plus a reorganized taxonomy."
+      title: "Site rebuild",
+      detail: "Editorial paper-and-ink theme with numbered chapter openers and statements; page transitions, statement rail, running header and outline mode; theorem index with /thm and /quiz; course navigation; giscus comments; click a formula to copy its LaTeX."
     },
     {
       date: "2026-08-11",
@@ -113,11 +63,6 @@
       date: "2026-08-10",
       title: "Knowledge playground",
       detail: "Added Lab experiments, reusable article widgets, internal article previews, and matching console routes."
-    },
-    {
-      date: "2026-07-24",
-      title: "New series: Cryptanalysis",
-      detail: "Fifteen chapters from Enigma through differential, linear and integral attacks to hash functions, MACs and side channels."
     },
     {
       date: "2026-07-06",
