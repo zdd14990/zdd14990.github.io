@@ -119,7 +119,9 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
 }
 .zdd-strip:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: -2px; }
 
-/* An open strip keeps its chevron, turned down, over the covers it unfolded. */
+/* An open strip keeps its details shown, and its chevron turned down. */
+.zdd-strip.is-open .zdd-strip-title { font-size: 1.05rem; translate: 0 0; transition-delay: 0s; }
+.zdd-strip.is-open .zdd-strip-desc { opacity: 1; clip-path: inset(0); transition-delay: 0s; }
 .zdd-strip.is-open .zdd-strip-chevron { opacity: 1; translate: 0 0; rotate: 90deg; transition-delay: 0s; }
 .zdd-strip-chevron { transition: opacity 0.14s ease-in-out, translate 0.14s ease-in-out, rotate 0.24s ease-in-out; }
 
@@ -222,10 +224,10 @@ body.blog-index-layout .md-typeset .zdd-catalog-folder.is-shelved > .zdd-folder-
 .zdd-cover[aria-expanded="true"] {
     --spine: var(--ed-accent);
     translate: 0 -6px;
-    background: var(--ed-ink);
-    color: var(--ed-paper);
+    border-color: var(--ed-accent);
+    background: color-mix(in srgb, var(--ed-accent) 7%, var(--ed-paper));
 }
-.zdd-cover[aria-expanded="true"] :is(.zdd-cover-kicker, .zdd-cover-year, .zdd-cover-count small) { color: color-mix(in srgb, var(--ed-paper) 70%, transparent); }
+.zdd-cover[aria-expanded="true"] .zdd-cover-kicker { color: var(--ed-accent); }
 /* the open book points down at its contents */
 .zdd-cover[aria-expanded="true"] .zdd-cover-notch {
     position: absolute;
