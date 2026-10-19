@@ -56,5 +56,23 @@ hide:
         <span class="friend-domain">yyhmuke.com</span></span>
       </a>
     </li>
+    <li>
+      <a href="https://wesley-young.github.io/" target="_blank" rel="noopener noreferrer" class="friend-link">
+        <span class="friend-avatar" aria-hidden="true" data-initial="Y"><img src="https://avatars.githubusercontent.com/u/25684570?v=4" alt="" width="48" height="48" loading="lazy" onerror="this.remove()"></span>
+        <span class="friend-text">
+        <span class="friend-name">Young's Toy Box</span>
+        <span class="friend-desc">玩具盒</span>
+        <span class="friend-domain">wesley-young.github.io</span></span>
+      </a>
+    </li>
+    <li>
+      <a href="https://kujostar.github.io/" target="_blank" rel="noopener noreferrer" class="friend-link">
+        <span class="friend-avatar" aria-hidden="true" data-initial="K"><img src="https://kujostar.github.io/assets/avatar.jpg" alt="" width="48" height="48" loading="lazy" onerror="this.remove()"></span>
+        <span class="friend-text">
+        <span class="friend-name">KujoStar</span>
+        <span class="friend-desc">平泽唯的地下男友</span>
+        <span class="friend-domain">kujostar.github.io</span></span>
+      </a>
+    </li>
   </ul>
 </section>
