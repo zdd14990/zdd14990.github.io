@@ -24,7 +24,7 @@
   <div class="zdd-article-taxonomy zdd-end-row">
     <span class="zdd-end-label">归档</span>
     <div class="zdd-end-chips">
-      {% for name in taxonomy.categories %}<span class="zdd-end-chip is-category">{{ name }}</span>{% endfor %}
+      {% if page.meta.zdd_place %}{% for name, key in page.meta.zdd_place %}<a class="zdd-end-chip is-category" href="{{ base_url }}/blog/#{{ key }}">{{ name }}</a>{% endfor %}{% else %}{% for name in taxonomy.categories %}<span class="zdd-end-chip is-category">{{ name }}</span>{% endfor %}{% endif %}
       {% for tag in taxonomy.tags %}<a class="zdd-end-chip" href="{{ tag.url }}">#{{ tag.name }}</a>{% endfor %}
     </div>
   </div>

@@ -388,3 +388,72 @@ body.zdd-outline .md-content__inner > :is(h2, h3):hover { color: var(--ed-accent
     body .md-typeset details.proof::details-content { transition: none; }
     .zdd-runhead, .zdd-flash { transition: none !important; animation: none !important; }
 }
+
+/* ===== 9. Article end: quiet text buttons and a readable archive row ===== */
+/* Buttons in articles ("返回目录", "下载 PDF"): ink text on a rule, no box. */
+body .md-typeset a.md-button {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    margin: 0.3em 1.8em 0.3em 0;
+    padding: 0.3em 0 0.25em;
+    border: 0;
+    border-bottom: 1px solid var(--ed-rule-strong);
+    background: none !important;
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+body .md-typeset a.md-button::before {
+    content: "\2190";
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-weight: 400;
+    transition: translate 0.15s ease, color 0.15s ease;
+}
+body .md-typeset a.md-button:is([download], [href$=".pdf"])::before { content: "\2193"; }
+body .md-typeset a.md-button:is(:hover, :focus-visible) { border-color: var(--ed-accent); color: var(--ed-accent) !important; }
+body .md-typeset a.md-button:is(:hover, :focus-visible)::before { color: var(--ed-accent); translate: -0.15em 0; }
+body .md-typeset a.md-button:is([download], [href$=".pdf"]):is(:hover, :focus-visible)::before { translate: 0 0.12em; }
+
+/* Archive: the label in ink, shelf and book as linked words, tags in mono. */
+body .md-typeset .zdd-article-taxonomy { align-items: baseline; }
+body .md-typeset .zdd-article-taxonomy .zdd-end-label {
+    flex: 0 0 auto;
+    margin-right: 0.6rem;
+    color: var(--ed-ink-soft) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chips { align-items: baseline; gap: 0.35rem 0.9rem; }
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip,
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category {
+    padding: 0 0 0.1em;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: none;
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category {
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category + .zdd-end-chip.is-category::before {
+    content: "/";
+    margin-right: 0.9rem;
+    color: var(--ed-rule-strong);
+    font-weight: 400;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category + .zdd-end-chip:not(.is-category) { margin-left: 0.6rem; }
+body .md-typeset .zdd-article-taxonomy a.zdd-end-chip:hover { border-bottom-color: currentColor; color: var(--ed-accent) !important; }
