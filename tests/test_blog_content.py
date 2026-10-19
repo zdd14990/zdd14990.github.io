@@ -4,7 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from blog_content import ContentStore, begin_build, content_store, end_build, normalize_metadata, parse_document
+from zdd_build.blog_content import ContentStore, begin_build, content_store, end_build, normalize_metadata, parse_document
 from main import _article_data, _public_search_index
 
 

@@ -5,7 +5,7 @@ import re
 from pathlib import Path, PurePosixPath
 
 
-CATALOG_PATH = Path(__file__).resolve().parent / "data" / "site-catalog.json"
+CATALOG_PATH = Path(__file__).resolve().parents[1] / "data" / "site-catalog.json"
 
 
 def load_site_catalog(path=CATALOG_PATH, docs_dir=None):

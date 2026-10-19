@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import quote, unquote, urlparse
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = PROJECT_ROOT / "data" / "personal-os"
 DEFAULT_SITE_ROOT = PROJECT_ROOT / ".cache" / "personal-os-site"
 

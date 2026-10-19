@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from main import _display_chunks, _chunk_passage_text, _markdown_passages, _meta_and_body, _plain_markdown, _public_search_index
-from blog_text import rendered_headings
+from zdd_build.blog_text import rendered_headings
 
 
 class SearchNormalizationTests(unittest.TestCase):

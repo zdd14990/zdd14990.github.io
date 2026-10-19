@@ -3,17 +3,17 @@ import html
 import os
 import re
 
-from blog_taxonomy import article_tags
-from book_layout import apply_book_layout
-from blog_content import begin_build, end_build, content_store, normalize_metadata
-from blog_links import backlink_map
-from blog_statements import extract_statements, statement_records
-from blog_text import article_description, rendered_headings
-from site_catalog import course_for_folder, course_for_source, refresh_site_catalog, shelf_categories, shelf_for_source
+from zdd_build.blog_taxonomy import article_tags
+from zdd_build.book_layout import apply_book_layout
+from zdd_build.blog_content import begin_build, end_build, content_store, normalize_metadata
+from zdd_build.blog_links import backlink_map
+from zdd_build.blog_statements import extract_statements, statement_records
+from zdd_build.blog_text import article_description, rendered_headings
+from zdd_build.site_catalog import course_for_folder, course_for_source, refresh_site_catalog, shelf_categories, shelf_for_source
 from pathlib import Path
 from mkdocs.utils import get_relative_url
-from reading_features import article_dates, page_needs_math
-from code_notes import add_code_notes, prune_note_toc
+from zdd_build.reading_features import article_dates, page_needs_math
+from zdd_build.code_notes import add_code_notes, prune_note_toc
 
 
 PDF_EMBED_RE = re.compile(r'(<embed\s+[^>]*?src=")([^"]+\.pdf)("[^>]*>)', re.IGNORECASE)

@@ -15,14 +15,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from blog_content import content_store, parse_document
-from blog_text import (
+from zdd_build.blog_content import content_store, parse_document
+from zdd_build.blog_text import (
     article_description, plain_markdown as _plain_markdown,
     chunk_passage_text as _chunk_passage_text, display_chunks as _display_chunks,
     markdown_passages as _markdown_passages, render_math_text as _render_math_text,
     first_content_block as _first_content_block,
 )
-from site_catalog import SITE_CATALOG, course_for_folder, shelf_for_source
+from zdd_build.site_catalog import SITE_CATALOG, course_for_folder, shelf_for_source
 
 CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"

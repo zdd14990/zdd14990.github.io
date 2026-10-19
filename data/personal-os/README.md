@@ -25,4 +25,4 @@ python scripts/build_personal_os_data.py --bootstrap-cache-only
 
 By default, the generator reads the sibling `myblogs/course-materials` archive
 without modifying it. Use `--source` to select another source archive.
-Run the local-only viewer with `python personal_os_server.py`.
+Run the local-only viewer with `python scripts/personal_os_server.py`.

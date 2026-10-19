@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 from hooks import _set_course_navigation
 from main import _article_data, _chapter_neighbors, _render_tree, _tree_insert
-from site_catalog import SITE_CATALOG
+from zdd_build.site_catalog import SITE_CATALOG
 
 PILOT = next(course for course in SITE_CATALOG['courses'] if course['id'] == 'probability-theory-course')
 PROBABILITY_COURSE_CHAPTERS = tuple(PILOT['chapters'])

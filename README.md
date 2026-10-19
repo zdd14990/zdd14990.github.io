@@ -32,8 +32,10 @@ mkdocs serve
 # 生产构建
 mkdocs build --strict
 
-# 部署：推送到 main 后 CI 通过检查会自动发布到 gh-pages；如需手动发布：
-mkdocs gh-deploy --strict --force --no-history
+# 部署：只需推送 main，CI 检查通过后自动发布到 gh-pages
+git push origin main
+# gh-pages 每次都由 CI 整体重写，本地不加 --force 的 gh-deploy 会被拒绝；
+# 确需手动发布时必须用：mkdocs gh-deploy --strict --force --no-history
 ```
 
 ## 项目结构
@@ -50,17 +52,25 @@ zdd/
 │   ├── javascripts/       # 自定义 JS（命令搜索、MathJax 等）
 │   └── stylesheets/       # 自定义 CSS
 ├── mkdocs.yml             # 站点配置
-├── main.py                # 自定义宏（blog catalog、标签探索等）
-├── blog_content.py        # 统一文章元数据校验与单次构建缓存
-├── blog_text.py           # 正文摘要、搜索分段和公式展示文本
-├── site_catalog.py        # 分类、实验与课程清单校验
-├── data/site-catalog.json # 分类显示名、实验条目与课程章节顺序
-├── blog_taxonomy.py       # 页面与索引共用的标签规则
-├── hooks.py               # 构建钩子（搜索索引预处理、页面后处理）
+├── hooks.py               # 构建钩子入口（mkdocs.yml 的 hooks）
+├── main.py                # 宏入口（mkdocs-macros：blog catalog、标签探索等）
+├── zdd_build/             # 两个入口共用的构建模块
+│   ├── blog_content.py    #   文章元数据校验与单次构建缓存
+│   ├── blog_text.py       #   正文摘要、搜索分段和公式展示文本
+│   ├── blog_taxonomy.py   #   页面与索引共用的标签规则
+│   ├── blog_links.py      #   反向链接
+│   ├── blog_statements.py #   定理、定义等编号陈述
+│   ├── book_layout.py     #   章首页与编号结构
+│   ├── code_notes.py      #   带注释的代码块
+│   ├── reading_features.py#   日期、是否需要公式
+│   └── site_catalog.py    #   书架、实验与课程清单校验
+├── data/site-catalog.json # 书架、书与课程章节顺序
 ├── overrides/             # 主题覆写（main.html 等）
-├── scripts/               # Personal OS 数据、站点检查等辅助脚本
+├── scripts/               # 站点检查、Personal OS 数据与本地服务等辅助脚本
+├── tests/                 # Python 与 Node 测试
+├── archive/               # 不发布的旧稿
 ├── requirements.txt       # 固定版本的直接构建依赖
-└── site/                  # 构建输出（由 mkdocs 生成）
+└── site/                  # 构建输出（由 mkdocs 生成，不入库）
 ```
 
 ## 特性

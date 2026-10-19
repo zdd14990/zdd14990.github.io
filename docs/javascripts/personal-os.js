@@ -443,7 +443,7 @@
     panel.appendChild(el("span", "zdd-os__locked-icon", "⌁"));
     panel.appendChild(el("h1", "", "Local library is offline"));
     panel.appendChild(el("p", "", "Start the local zddOS service and reload this page."));
-    var code = el("code", "", "python personal_os_server.py");
+    var code = el("code", "", "python scripts/personal_os_server.py");
     panel.appendChild(code);
     panel.appendChild(el("small", "", error && error.message || "Private API unavailable"));
     content.appendChild(panel);

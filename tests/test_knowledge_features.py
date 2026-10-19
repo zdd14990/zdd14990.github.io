@@ -5,8 +5,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from blog_links import linked_sources  # noqa: E402
-from blog_statements import extract_statements, statement_kind, statement_name, statement_records  # noqa: E402
+from zdd_build.blog_links import linked_sources  # noqa: E402
+from zdd_build.blog_statements import extract_statements, statement_kind, statement_name, statement_records  # noqa: E402
 from main import _truncate_math_text  # noqa: E402
 
 

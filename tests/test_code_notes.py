@@ -9,7 +9,7 @@ import markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from code_notes import Article, HighlightLines, add_code_notes, bind_annotations, prune_note_toc
+from zdd_build.code_notes import Article, HighlightLines, add_code_notes, bind_annotations, prune_note_toc
 
 
 def render(text):

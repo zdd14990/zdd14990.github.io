@@ -12,7 +12,7 @@
 import html as html_lib
 import re
 
-from blog_statements import _GENERIC_PREFIX, plain_text, statement_name, trim_unmatched_parens
+from .blog_statements import _GENERIC_PREFIX, plain_text, statement_name, trim_unmatched_parens
 
 KINDS = {
     "theorem": "定理", "proposition": "命题", "prop": "命题", "lemma": "引理",

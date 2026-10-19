@@ -1,6 +1,6 @@
 import unittest
 
-from book_layout import apply_book_layout, chinese_number, split_chapter_title
+from zdd_build.book_layout import apply_book_layout, chinese_number, split_chapter_title
 
 
 ARTICLE = """<h1 id="chapter-03">第三章：内积空间</h1>

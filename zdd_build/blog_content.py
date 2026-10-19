@@ -7,8 +7,8 @@ import yaml
 from mkdocs.utils import get_markdown_title
 from mkdocs.utils.meta import YAML_RE, get_data
 
-from blog_taxonomy import article_tags
-from reading_features import article_dates
+from .blog_taxonomy import article_tags
+from .reading_features import article_dates
 
 
 def normalize_metadata(metadata, source):
@@ -111,4 +111,4 @@ def content_store(docs_dir=None):
     root = Path(docs_dir).resolve() if docs_dir is not None else None
     if _build_store is not None and (root is None or root == _build_store.docs_dir):
         return _build_store
-    return ContentStore(root or Path(__file__).resolve().parent / "docs")
+    return ContentStore(root or Path(__file__).resolve().parents[1] / "docs")

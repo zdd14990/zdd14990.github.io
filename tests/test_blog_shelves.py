@@ -6,7 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from main import _article_data, _render_tree, _tag_index, _tree_insert
-from site_catalog import SITE_CATALOG, load_site_catalog, shelf_categories, shelf_for_source
+from zdd_build.site_catalog import SITE_CATALOG, load_site_catalog, shelf_categories, shelf_for_source
 
 ROOT = Path(__file__).resolve().parents[1]
 

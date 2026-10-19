@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from hooks import _set_course_navigation, on_page_markdown
-from site_catalog import SITE_CATALOG, course_for_folder, load_site_catalog
+from zdd_build.site_catalog import SITE_CATALOG, course_for_folder, load_site_catalog
 
 
 class SiteCatalogTests(unittest.TestCase):
