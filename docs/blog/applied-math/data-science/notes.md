@@ -828,14 +828,14 @@ $\mathcal{B}_n$ 上概率测度的生成函数是**多重仿射 (multi-affine)**
 
 对比来看：
 
--
+- 
 
-$$
-\begin{align*}
-	\psi_{X+Y}&\leqslant \psi_X +\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_\infty\\
-	\psi_{X+Y}&= \psi_X +\underbrace{\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_1}_{\psi_Y}\text{ 若 } Y \text{ 独立于 }\mathcal{F}
-\end{align*}
-$$
+    $$
+    \begin{align*}
+    	\psi_{X+Y}&\leqslant \psi_X +\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_\infty\\
+    	\psi_{X+Y}&= \psi_X +\underbrace{\log \|e^{\psi_{Y\mid\mathcal{F}}}\|_1}_{\psi_Y}\text{ 若 } Y \text{ 独立于 }\mathcal{F}
+    \end{align*}
+    $$
 
 - 若 $Y$ 独立于 $\mathcal{F}$，则 $\|e^{\psi_{Y\mid\mathcal{F}}}\|_\infty = \|e^{\psi_{Y\mid\mathcal{F}}}\|_1$
 

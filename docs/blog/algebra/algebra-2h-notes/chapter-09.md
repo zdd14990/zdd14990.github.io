@@ -333,8 +333,6 @@ tags:
 
     回忆对极小分解，$\mathfrak{p}=r(I:x)=\bigcap r(\mathfrak{q}_i:x)=\bigcap_{x\notin \mathfrak{q}_i} r(\mathfrak{q}_i)$。对任意 $x\notin I$，$x\in \bigcap_{\mathfrak{q}_i\neq \mathfrak{q}} \mathfrak{q}_i=I'$，则 $r(I:x)=\mathfrak{p}$。由**命题 2.42**知，存在 $n$，$\mathfrak{p}^n\subset \mathfrak{q}$。则 $I'\mathfrak{p}^n\subset I'\cap \mathfrak{q}=0$ 取这样最小的 $n$，则存在 $0\neq y\in I'\mathfrak{p}^{n-1},y\mathfrak{p}=0$，即 $(I:y)\supset \mathfrak{p}$。因此 $\mathfrak{p}=(I:y)$，我们完成了证明。
 
--
-
 ## 3. Artin 环 { #s3 }
 
 !!! theorem "命题"

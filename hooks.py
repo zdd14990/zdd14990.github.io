@@ -159,6 +159,16 @@ def _set_place(page, source):
     page.meta["zdd_place"] = [[shelf["name"], shelf["key"]], [book["name"], course["anchor"] if course else book["key"]]]
 
 
+_BARE_ITEM = re.compile(r"^([ \t]*)([-*+])[ \t]*\n(?=[ \t]*\n\1[ \t]{4})", re.M)
+
+
+def _fix_bare_list_items(markdown):
+    """A marker alone on its line ("-", content indented below it) is not a list
+    item to Python-Markdown, which then shows the dash and the maths as code.
+    Give each one the space after the marker it needs."""
+    return _BARE_ITEM.sub(lambda m: m.group(1) + m.group(2) + " \n", markdown)
+
+
 def on_page_markdown(markdown, page, config, files):
     source = page.file.src_path.replace("\\", "/")
     assets = _as_list(page.meta.get("zdd_assets"))
@@ -172,6 +182,7 @@ def on_page_markdown(markdown, page, config, files):
     _set_course_navigation(page, config)
     _set_backlinks(page, config)
     _set_place(page, source)
+    markdown = _fix_bare_list_items(markdown)
     if page.file.src_path.replace('\\', '/').startswith('blog/'):
         published, modified = article_dates(page.meta.get('date'), page.meta.get('updated'))
         page.meta['reading_date'] = published

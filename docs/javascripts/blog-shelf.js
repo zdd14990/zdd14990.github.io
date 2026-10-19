@@ -295,8 +295,9 @@
       if (!event.viewTransition || !event.activation || !event.activation.entry || reduce.matches) return;
       var to = path(event.activation.entry.url);
       var card = cardFor(to);
+      // no named card: its snapshot hanging over the new page for a few frames
+      // read as a pixelated ghost, so the page simply cross-fades
       if (!card) return;
-      part(card, around(card), "zdd-card");
       try {
         sessionStorage.setItem("zdd.vt", "zdd-leaf");
         sessionStorage.setItem(RETURN_KEY, to);
@@ -313,8 +314,6 @@
       try { sessionStorage.removeItem(RETURN_KEY); } catch (error) {}
       event.viewTransition.types.add("zdd-leaf");
       event.viewTransition.types.add("zdd-return");
-      part(card, around(card), "zdd-card");
-      event.viewTransition.finished.finally(unname);
     });
   }
 
