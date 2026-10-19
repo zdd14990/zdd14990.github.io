@@ -20,12 +20,11 @@ def load_site_catalog(path=CATALOG_PATH, docs_dir=None):
         return result
 
     catalog = json.loads(Path(path).read_text(encoding="utf-8"), object_pairs_hook=unique_fields)
-    required = {"display_names": dict, "top_order": list, "flatten_roots": list,
-                "qualification_review_root": str, "qualification_review_pages": dict,
-                "labs": list, "courses": list}
+    required = {"display_names": dict, "shelves": list, "labs": list, "courses": list}
     for key, kind in required.items():
         if not isinstance(catalog.get(key), kind):
             raise ValueError(f"{path}: {key} must be a {kind.__name__}")
+    books = _check_shelves(path, catalog["shelves"], docs_dir)
     roots = set()
     sources = set()
     anchors = set()
@@ -40,6 +39,8 @@ def load_site_catalog(path=CATALOG_PATH, docs_dir=None):
         catalog_path = course.get("catalog_path")
         if not isinstance(chapters, list) or not chapters or not isinstance(catalog_path, list) or not catalog_path:
             raise ValueError(f"{path}: course {root} requires chapters and catalog_path")
+        if tuple(catalog_path) not in books:
+            raise ValueError(f"{path}: course {root} catalog_path is not a [shelf, book] pair")
         for source in chapters:
             if not isinstance(source, str) or not source.startswith(root + "/") or not source.endswith(".md") or ".." in PurePosixPath(source).parts or source in sources:
                 raise ValueError(f"{path}: invalid or duplicate chapter {source!r}")
@@ -59,6 +60,30 @@ def load_site_catalog(path=CATALOG_PATH, docs_dir=None):
     return catalog
 
 
+def _check_shelves(path, shelves, docs_dir):
+    """Two levels only: each shelf holds books, each book lists the sources it gathers."""
+    keys, sources, books = set(), set(), set()
+    for shelf in shelves:
+        for item in [shelf, *shelf.get("books", [])]:
+            key = item.get("key", "")
+            if not re.fullmatch(r"[a-z][a-z0-9-]*", key) or key in keys or not item.get("name"):
+                raise ValueError(f"{path}: invalid or duplicate shelf/book key {key!r}")
+            keys.add(key)
+        if not shelf.get("books"):
+            raise ValueError(f"{path}: shelf {shelf['key']} has no books")
+        for book in shelf["books"]:
+            books.add((shelf["key"], book["key"]))
+            if not isinstance(book.get("sources"), list) or not book["sources"]:
+                raise ValueError(f"{path}: book {book['key']} lists no sources")
+            for source in book["sources"]:
+                if not isinstance(source, str) or not source.startswith("blog/") or ".." in PurePosixPath(source).parts or source in sources:
+                    raise ValueError(f"{path}: invalid or duplicate book source {source!r}")
+                if docs_dir is not None and not (Path(docs_dir) / source).exists():
+                    raise ValueError(f"{path}: book source does not exist: {source}")
+                sources.add(source)
+    return books
+
+
 SITE_CATALOG = load_site_catalog()
 
 
@@ -74,3 +99,20 @@ def course_for_source(source):
 
 def course_for_folder(folder_parts):
     return next((course for course in SITE_CATALOG["courses"] if tuple(course["catalog_path"]) == tuple(folder_parts)), None)
+
+
+def shelf_for_source(source):
+    """(shelf, book) holding a blog source, by the longest matching source path."""
+    best, best_length = (None, None), -1
+    for shelf in SITE_CATALOG["shelves"]:
+        for book in shelf["books"]:
+            for prefix in book["sources"]:
+                if (source == prefix or source.startswith(prefix + "/")) and len(prefix) > best_length:
+                    best, best_length = (shelf, book), len(prefix)
+    return best
+
+
+def shelf_categories(source):
+    """Category labels shown for an article: the shelf and book names."""
+    shelf, book = shelf_for_source(source)
+    return [shelf["name"], book["name"]] if shelf else []

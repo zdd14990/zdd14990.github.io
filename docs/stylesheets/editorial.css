@@ -117,6 +117,9 @@ html body[data-md-color-scheme][data-md-color-primary][data-md-color-accent] {
     --md-default-bg-color: #f4f1ea;
     --md-primary-fg-color: #1c1b19;
     --md-accent-fg-color: #a8361f;
+    --zdd-scroll-thumb: #b9b2a5;
+    --zdd-scroll-thumb-hover: #1c1b19;
+    --zdd-scroll-track: transparent;
     background: #f4f1ea;
 }
 :root:has(> body[data-md-color-scheme="slate"]) {
@@ -124,6 +127,8 @@ html body[data-md-color-scheme][data-md-color-primary][data-md-color-accent] {
     --md-default-bg-color: #151412;
     --md-primary-fg-color: #e9e4d8;
     --md-accent-fg-color: #e0805f;
+    --zdd-scroll-thumb: #57524a;
+    --zdd-scroll-thumb-hover: #e9e4d8;
     background: #151412;
 }
 ::view-transition { background: transparent; }
@@ -150,7 +155,11 @@ html body input[type="search"]::-webkit-search-cancel-button {
 html body input[type="search"]::-webkit-search-cancel-button:hover { background: var(--ed-accent); }
 html body input { accent-color: var(--ed-accent); caret-color: var(--ed-accent); }
 
-html body ::-webkit-scrollbar-thumb:hover { background: var(--ed-ink) !important; }
+/* Scrollbars, the page's own included (it belongs to <html>, outside body). */
+::-webkit-scrollbar-thumb { border-radius: 0 !important; }
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active { background: var(--zdd-scroll-thumb-hover) !important; }
+@supports not selector(::-webkit-scrollbar) { :root { scrollbar-color: var(--zdd-scroll-thumb) transparent; } }
 html body :is(.minimal-search input:focus, .md-typeset a.zdd-search-result:hover, .zdd-search-result:hover,
     .zdd-post-card:hover) { border-color: var(--ed-rule-strong) !important; }
 
@@ -457,7 +466,7 @@ body .md-typeset :is(.admonition, details):is(.proof, .solution) > :is(.admoniti
     letter-spacing: 0.12em;
 }
 
-body .md-typeset :is(.admonition, details[open]):is(.proof, .solution) { border-left: 1px solid var(--ed-rule); }
+body .md-typeset :is(.admonition, details[open]):is(.proof, .solution) { border-left: 0; }
 body .md-typeset :is(.proof, .solution) > :last-child:not(summary):not(.admonition-title)::after { color: var(--ed-ink); }
 
 /* Other admonitions: quiet ruled notes */

@@ -1,0 +1,342 @@
+/* Blog catalog as folders of books, and the tag page as one alphabetical index.
+   Behaviour lives in blog-shelf.js; without it the catalog stays nested <details>. */
+
+/* ===== 1. Folders: a tab standing on a rule, opening into a framed pocket ===== */
+body.blog-index-layout .md-typeset .zdd-blog-catalog { display: block !important; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] {
+    --shelf-bg: var(--ed-paper);
+    margin: 0 0 1.15rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    gap: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    text-align: left !important;
+    cursor: pointer;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-name {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    min-width: 7.5rem;
+    margin-bottom: -1px;
+    padding: 0.6rem 1.3rem 0.55rem !important;
+    border: 1px solid var(--ed-rule-strong);
+    border-bottom-color: transparent;
+    background: var(--ed-paper);
+    color: var(--ed-ink) !important;
+    font-size: 0.92rem !important;
+    letter-spacing: 0.06em;
+    transition: color 0.2s ease;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"]:not([open]) > summary .zdd-folder-name { margin-bottom: 0; border-bottom-color: var(--ed-rule-strong); }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-meta {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 2.2rem 0.5rem 1rem !important;
+    border-bottom: 1px solid var(--ed-rule-strong);
+    font-size: 0.56rem !important;
+    white-space: pre;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary::after {
+    top: auto !important;
+    bottom: 0.55rem !important;
+    right: 0.6rem !important;
+    margin-top: 0 !important;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:hover { background: none !important; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:hover .zdd-folder-name { color: var(--ed-accent) !important; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:focus-visible { outline: none; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:focus-visible .zdd-folder-name { outline: 2px solid var(--ed-accent); outline-offset: 2px; }
+
+/* Open: the tab and the pocket share one paper. */
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"][open] { --shelf-bg: var(--ed-paper-deep); }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"][open] > summary .zdd-folder-name { background: var(--ed-paper-deep); }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > .zdd-folder-content {
+    border: 1px solid var(--ed-rule-strong);
+    border-top: 0;
+    background: var(--ed-paper-deep) !important;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"]:not([open]) > .zdd-folder-content { border: 0; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > .zdd-folder-content > div { padding: 0 1.2rem 0.4rem !important; background: none !important; }
+
+/* ===== 2. Books ===== */
+body.blog-index-layout .md-typeset .zdd-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.4rem, 1fr));
+    gap: 2.2rem 1.5rem;
+    padding: 1.6rem 1rem 2.2rem;
+}
+/* With covers in place, closed books are reached through them. */
+body.blog-index-layout .md-typeset .zdd-catalog-folder.is-shelved > .zdd-folder-content > div > .zdd-catalog-folder:not(.is-open-book) { display: none !important; }
+
+.zdd-cover {
+    --spine: var(--ed-ink);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 3 / 4;
+    padding: 0.85rem 0.8rem 0.75rem 1.25rem;
+    border: 1px solid var(--ed-rule-strong);
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    /* a flat stack of pages behind the board, drawn with lines */
+    box-shadow: 3px 3px 0 -1px var(--shelf-bg), 3px 3px 0 0 var(--ed-rule-strong),
+                6px 6px 0 -1px var(--shelf-bg), 6px 6px 0 0 var(--ed-rule);
+    transition: translate 0.25s cubic-bezier(.2, .7, .2, 1), background-color 0.25s ease, color 0.25s ease;
+}
+.zdd-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.42rem;
+    background: var(--spine);
+}
+.zdd-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0.42rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--spine) 35%, transparent);
+}
+.zdd-cover-kicker {
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.zdd-cover-title {
+    margin-top: 0.9rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid currentColor;
+    font-family: var(--ed-serif);
+    font-size: 0.86rem;
+    font-weight: 900;
+    line-height: 1.35;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+}
+.zdd-cover-rule { width: 1.6rem; height: 2px; margin-top: 0.6rem; background: var(--ed-accent); }
+.zdd-cover-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem; margin-top: auto; }
+.zdd-cover-count { font-family: var(--ed-serif); font-size: 1.7rem; font-weight: 300; line-height: 1; font-variant-numeric: lining-nums; }
+.zdd-cover-count small { margin-left: 0.3em; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.1em; }
+.zdd-cover-year { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.5rem; letter-spacing: 0.08em; }
+
+.zdd-cover:hover { translate: 0 -4px; }
+.zdd-cover:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: 4px; }
+.zdd-cover[aria-expanded="true"] {
+    --spine: var(--ed-accent);
+    translate: 0 -6px;
+    background: var(--ed-ink);
+    color: var(--ed-paper);
+}
+.zdd-cover[aria-expanded="true"] :is(.zdd-cover-kicker, .zdd-cover-year, .zdd-cover-count small) { color: color-mix(in srgb, var(--ed-paper) 70%, transparent); }
+/* the open book points down at its contents */
+.zdd-cover[aria-expanded="true"] .zdd-cover-notch {
+    position: absolute;
+    left: 50%;
+    bottom: -2.55rem;
+    z-index: 2;
+    width: 0.8rem;
+    height: 0.8rem;
+    translate: -50% 0;
+    rotate: 45deg;
+    border-top: 1px solid var(--ed-rule-strong);
+    border-left: 1px solid var(--ed-rule-strong);
+    background: var(--ed-paper-deep);
+}
+
+/* ===== 3. The open book's contents, under the row of its cover ===== */
+body.blog-index-layout .md-typeset .zdd-catalog-folder.is-open-book {
+    grid-column: 1 / -1;
+    margin: -0.4rem 0 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--ed-rule-strong) !important;
+    border-bottom: 1px solid var(--ed-rule-strong) !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+body.blog-index-layout .md-typeset .zdd-catalog-folder.is-open-book > summary { display: none !important; }
+body.blog-index-layout .md-typeset .zdd-catalog-folder.is-open-book > .zdd-folder-content { height: auto; padding: 0 0 0.6rem !important; }
+body.blog-index-layout .md-typeset .is-open-book :is(.zdd-catalog-posts, .zdd-post-card) { background: none !important; }
+body.blog-index-layout .md-typeset .is-open-book .zdd-post-card:hover { background: var(--ed-paper) !important; }
+/* inside a book the "shelf / book" line repeats the header */
+body.blog-index-layout .md-typeset .is-open-book .zdd-post-meta > span:first-child { display: none; }
+body.blog-index-layout .md-typeset .is-open-book .zdd-post-title[data-vol]::before {
+    content: attr(data-vol) "  ";
+    color: var(--ed-accent);
+    font-family: var(--ed-mono);
+    font-size: 0.78em;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    white-space: pre;
+}
+
+.zdd-book-head { display: flex; align-items: baseline; gap: 1rem; padding: 1.5rem 0.8rem 1.1rem; }
+.zdd-book-head b { font-family: var(--ed-serif); font-size: 1.05rem; font-weight: 900; line-height: 1.3; }
+.zdd-book-head span { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.06em; }
+
+/* close: a hairline cross that turns on hover */
+.zdd-book-close {
+    position: relative;
+    flex: none;
+    align-self: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: 0 -0.3rem 0 auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ed-ink);
+    cursor: pointer;
+}
+.zdd-book-close::before,
+.zdd-book-close::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.95rem;
+    height: 1px;
+    background: currentColor;
+    translate: -50% -50%;
+    rotate: 45deg;
+    transition: rotate 0.25s cubic-bezier(.2, .7, .2, 1);
+}
+.zdd-book-close::after { rotate: -45deg; }
+.zdd-book-close:hover { color: var(--ed-accent); }
+.zdd-book-close:hover::before { rotate: 135deg; }
+.zdd-book-close:hover::after { rotate: 45deg; }
+
+/* long books end with a colophon-style close */
+.zdd-book-foot { display: flex; justify-content: center; padding: 1.2rem 0 0.6rem; }
+.zdd-book-end {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+}
+.zdd-book-end::before,
+.zdd-book-end::after { content: ""; width: 2.2rem; height: 1px; background: currentColor; transition: width 0.25s ease; }
+.zdd-book-end:hover { color: var(--ed-accent); }
+.zdd-book-end:hover::before,
+.zdd-book-end:hover::after { width: 3rem; }
+:is(.zdd-book-close, .zdd-book-end):focus-visible { outline: 1px solid var(--ed-accent); outline-offset: 3px; }
+
+body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-content { animation: zdd-book-in 0.32s cubic-bezier(.2, .7, .2, 1); }
+@keyframes zdd-book-in { from { opacity: 0; translate: 0 -10px; } }
+
+/* ===== 4. Tags: one alphabetical index ===== */
+body .md-typeset .zdd-tag-cloud:has(.zdd-tag-index) { display: block !important; max-width: 52rem; margin: 2rem auto 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
+body .md-typeset .zdd-tag-index {
+    columns: 4 11rem;
+    column-gap: 2.4rem;
+    column-rule: 1px solid var(--ed-rule);
+    padding: 1rem 0 1.6rem;
+    border-top: 1px solid var(--ed-rule-strong);
+}
+body .md-typeset .zdd-tag-index-head {
+    column-span: all;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 1rem;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+body .md-typeset .zdd-tag-letter { break-inside: avoid; padding-bottom: 0.55rem; }
+body .md-typeset .zdd-tag-letter h2 {
+    margin: 0 0 0.1rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--ed-accent) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.95rem !important;
+    font-weight: 900;
+    line-height: 1.6;
+    letter-spacing: 0;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a {
+    display: flex !important;
+    align-items: baseline;
+    margin: 0 !important;
+    padding: 0.1rem 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif) !important;
+    font-size: 0.72rem !important;
+    font-weight: 400 !important;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a.is-large { font-weight: 700 !important; }
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a::after {
+    content: "";
+    order: 1;
+    flex: 1;
+    min-width: 0.8rem;
+    margin: 0 0.35em;
+    border-bottom: 1px dotted var(--ed-muted);
+    translate: 0 -0.25em;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a small {
+    order: 2;
+    margin: 0 !important;
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono) !important;
+    font-size: 0.86em !important;
+    font-variant-numeric: tabular-nums;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a:hover { color: var(--ed-accent) !important; }
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a:hover::after { border-bottom-color: var(--ed-accent); }
+
+/* ===== 5. Small screens and reduced motion ===== */
+@media screen and (max-width: 44.9375em) {
+    body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-name { min-width: 0; padding: 0.5rem 1rem 0.45rem !important; }
+    body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-meta { padding-right: 1.8rem !important; }
+    body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-meta-rest { display: none; }
+    body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > .zdd-folder-content > div { padding: 0 0.7rem 0.3rem !important; }
+    body.blog-index-layout .md-typeset .zdd-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.6rem 1.1rem; padding: 1.2rem 0.3rem 1.6rem; }
+    .zdd-cover-title { font-size: 0.78rem; }
+    .zdd-cover[aria-expanded="true"] .zdd-cover-notch { bottom: -1.95rem; }
+    .zdd-book-head { flex-wrap: wrap; row-gap: 0.2rem; }
+    .zdd-book-head b { white-space: nowrap; }
+    .zdd-book-head span { order: 3; flex-basis: 100%; }
+    body .md-typeset .zdd-tag-index { columns: 2; column-gap: 1.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .zdd-cover,
+    .zdd-book-close::before,
+    .zdd-book-close::after,
+    .zdd-book-end::before,
+    .zdd-book-end::after,
+    body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-name { transition: none; }
+    .zdd-cover:hover { translate: none; }
+    body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-content { animation: none; }
+}

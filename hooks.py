@@ -9,7 +9,7 @@ from blog_content import begin_build, end_build, content_store, normalize_metada
 from blog_links import backlink_map
 from blog_statements import extract_statements, statement_records
 from blog_text import article_description, rendered_headings
-from site_catalog import course_for_source, refresh_site_catalog
+from site_catalog import course_for_source, refresh_site_catalog, shelf_categories
 from pathlib import Path
 from mkdocs.utils import get_relative_url
 from reading_features import article_dates, page_needs_math
@@ -78,7 +78,8 @@ def _append_taxonomy(markdown, page):
     if not path.startswith("blog/") or path.endswith("index.md"):
         return markdown
 
-    categories = _as_list(page.meta.get("categories"))
+    # The shelf map decides the category shown; front matter is only a fallback.
+    categories = shelf_categories(path) or _as_list(page.meta.get("categories"))
     tags = article_tags(page.meta.get("tags"), path)
     if not categories and not tags:
         return markdown

@@ -22,7 +22,7 @@ from blog_text import (
     markdown_passages as _markdown_passages, render_math_text as _render_math_text,
     first_content_block as _first_content_block,
 )
-from site_catalog import SITE_CATALOG, course_for_folder
+from site_catalog import SITE_CATALOG, course_for_folder, shelf_for_source
 
 CHAPTER_RE = re.compile(
     r"(?i)(?:^|[-_\s])(?:chapter|chap|part|section|sec|exercise|ex|homework|hw)[-_\s]*(\d+)(?:[-_.\s]*(\d+))?"
@@ -107,22 +107,7 @@ def _article_data():
         tags = meta["tags"]
         categories = meta["categories"]
         search_text = _plain_markdown(body)
-        parts = rel.split("/")
-        folder_parts = parts[1:-1]
-        if folder_parts == [SITE_CATALOG["qualification_review_root"]]:
-            section = SITE_CATALOG["qualification_review_pages"].get(path.stem)
-            if section:
-                folder_parts.append(section)
-        elif folder_parts and folder_parts[0] == "probability-statistics":
-            folder_parts.insert(0, SITE_CATALOG["qualification_review_root"])
-        elif (
-            len(folder_parts) > 1
-            and folder_parts[0] == "applied-math"
-            and folder_parts[1] in {"ai-exam", "applied-math-exam"}
-        ):
-            folder_parts = [SITE_CATALOG["qualification_review_root"], *folder_parts[1:]]
-        elif len(folder_parts) > 1 and folder_parts[0] in SITE_CATALOG["flatten_roots"]:
-            folder_parts = folder_parts[1:]
+        folder_parts, categories = _shelf_placement(rel, categories)
         articles.append({
             "path": path,
             "src_path": src_path,
@@ -145,6 +130,34 @@ def _article_data():
         })
     store.articles = articles
     return articles
+
+
+def _shelf_placement(src_path, categories):
+    """[shelf, book] keys and their names for an article. A source missing from the
+    shelf map keeps its folders (at most two levels) and its own categories."""
+    shelf, book = shelf_for_source(src_path)
+    if shelf:
+        return [shelf["key"], book["key"]], [shelf["name"], book["name"]]
+    folders = src_path.split("/")[1:-1][:2] or ["misc"]
+    return folders, categories
+
+
+def _shelf_names():
+    names = dict(SITE_CATALOG["display_names"])
+    for shelf in SITE_CATALOG["shelves"]:
+        names[shelf["key"]] = shelf["name"]
+        names.update((book["key"], book["name"]) for book in shelf["books"])
+    return names
+
+
+def _shelf_order(key):
+    for i, shelf in enumerate(SITE_CATALOG["shelves"]):
+        if shelf["key"] == key:
+            return (i, 0)
+        for j, book in enumerate(shelf["books"]):
+            if book["key"] == key:
+                return (i, j)
+    return (len(SITE_CATALOG["shelves"]), 0)
 
 
 def _format_words(count):
@@ -232,16 +245,20 @@ def _collect_articles(node):
 def _render_tree(node, level=0, folder_parts=()):
     html_parts = []
     folder_keys = [key for key in node.keys() if key != "_articles"]
-    folder_keys.sort(key=lambda k: (SITE_CATALOG["top_order"].index(k) if k in SITE_CATALOG["top_order"] else 99, SITE_CATALOG["display_names"].get(k, k)))
+    names = _shelf_names()
+    folder_keys.sort(key=lambda k: (_shelf_order(k), names.get(k, k)))
 
     for key in folder_keys:
         child = node[key]
         child_parts = (*folder_parts, key)
         course = course_for_folder(child_parts)
-        folder_id = f' id="{course["anchor"]}"' if course else ""
+        anchor = course["anchor"] if course else (key if level == 1 else "")
+        folder_id = f' id="{anchor}"' if anchor else ""
         articles = _collect_articles(child)
         stats = _folder_stats(articles)
-        name = SITE_CATALOG["display_names"].get(key, key.replace("-", " ").title())
+        name = names.get(key, key.replace("-", " ").title())
+        books = sum(1 for k in child if k != "_articles")
+        volumes = f"{books} 册 · " if books else ""
         if stats["created"] == "-":
             date_range = ""
         elif stats["created"] == stats["updated"]:
@@ -252,7 +269,7 @@ def _render_tree(node, level=0, folder_parts=()):
 <details class="zdd-catalog-folder" data-level="{level}"{folder_id}>
   <summary>
     <span class="zdd-folder-name">{html.escape(name)}</span>
-    <span class="zdd-folder-meta">{stats['count']} 篇{date_range} · {_format_words(stats['words'])}</span>
+    <span class="zdd-folder-meta">{volumes}{stats['count']} 篇{date_range} · {_format_words(stats['words'])}</span>
   </summary>
   <div class="zdd-folder-content"><div>
     {_render_tree(child, level + 1, child_parts)}
@@ -271,7 +288,8 @@ def _render_tree(node, level=0, folder_parts=()):
 def _article_subtitle(article):
     if article["categories"]:
         return " / ".join(article["categories"])
-    labels = [SITE_CATALOG["display_names"].get(part, part.replace("-", " ").title()) for part in article["folder_parts"]]
+    names = _shelf_names()
+    labels = [names.get(part, part.replace("-", " ").title()) for part in article["folder_parts"]]
     return " / ".join(labels)
 
 
@@ -375,39 +393,39 @@ def _search_index_items():
     return _public_search_index(compact=True)["documents"]
 
 
-def _tag_groups(articles):
-    """Group tags under the subject (first category) most of their articles belong to."""
-    counts, subjects, order = {}, {}, {}
+def _tag_counts(articles):
+    counts = {}
     for article in articles:
-        subject = (article["categories"] or ["其他"])[0]
-        order.setdefault(subject, len(order))
         for tag in article["tags"]:
             counts[tag] = counts.get(tag, 0) + 1
-            subjects.setdefault(tag, {}).setdefault(subject, 0)
-            subjects[tag][subject] += 1
-    groups = {}
-    for tag, by_subject in subjects.items():
-        subject = max(by_subject, key=lambda name: (by_subject[name], -order[name]))
-        groups.setdefault(subject, []).append(tag)
-    return [
-        (subject, sorted(tags, key=lambda tag: (-counts[tag], tag)), counts)
-        for subject, tags in sorted(groups.items(), key=lambda item: order[item[0]])
-    ]
+    return counts
+
+
+def _tag_index(counts):
+    """All tags in one alphabetical index, grouped under their initial letter."""
+    letters = {}
+    for tag in sorted(counts, key=str.casefold):
+        initial = tag[:1].upper()
+        letters.setdefault(initial if "A" <= initial <= "Z" else "#", []).append(tag)
+    blocks = "".join(
+        f'<div class="zdd-tag-letter"><h2>{html.escape(letter)}</h2>'
+        + "".join(_tag_option(tag, counts[tag]) for tag in tags) + "</div>"
+        for letter, tags in letters.items()
+    )
+    return (f'<section class="zdd-tag-index" aria-label="标签索引">'
+            f'<header class="zdd-tag-index-head"><span>Index</span><span>{len(counts)} 个标签</span></header>'
+            f'{blocks}</section>')
 
 
 def _tag_option(tag, count):
     size = "is-large" if count >= 8 else "is-medium" if count >= 3 else ""
-    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}">#{html.escape(tag)}'
+    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}"><span>{html.escape(tag)}</span>'
             f'<small>{count}</small></a>')
 
 
 def _tag_explorer():
     articles = _article_data()
-    options = "".join(
-        f'<section class="zdd-tag-group"><h2>{html.escape(subject)}</h2>'
-        + "".join(_tag_option(tag, counts[tag]) for tag in tags) + "</section>"
-        for subject, tags, counts in _tag_groups(articles)
-    )
+    options = _tag_index(_tag_counts(articles))
     cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
     return f"""
 <div class="zdd-tag-page">
