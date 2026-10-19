@@ -1,77 +1,165 @@
 /* Blog catalog as folders of books, and the tag page as one alphabetical index.
    Behaviour lives in blog-shelf.js; without it the catalog stays nested <details>. */
 
-/* ===== 1. Folders: a tab standing on a rule, opening into a framed pocket ===== */
-body.blog-index-layout .md-typeset .zdd-blog-catalog { display: block !important; }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] {
-    --shelf-bg: var(--ed-paper);
-    margin: 0 0 1.15rem !important;
+/* ===== 1. The library: an overview of shelves as strips, and one view per shelf ===== */
+/* Folders are rebuilt into the views below; without the script they stay as <details>. */
+body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library > .zdd-catalog-folder { display: none !important; }
+body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library { display: block !important; }
+body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1:first-child { display: none; }
+.zdd-library { --shelf-bg: var(--ed-paper); --turn: 0.3s; --turn-lag: 0.3s; }
+.zdd-library [hidden] { display: none !important; }
+
+/* Title band: a large serif title on a rule, a line of figures to its right. */
+.zdd-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.6rem 2rem;
+    min-height: clamp(9rem, 26vh, 15rem);
+    padding: 0 0 1.4rem;
+}
+.zdd-band-row { display: flex; align-items: center; gap: 0.25em; min-width: 0; font-size: clamp(2.6rem, 8vw, 5.6rem); }
+.md-typeset .zdd-band-title {
+    margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    background: none !important;
-    box-shadow: none !important;
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif) !important;
+    font-size: inherit !important;
+    font-weight: 400 !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.01em !important;
 }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary {
-    display: flex !important;
-    flex-flow: row nowrap !important;
-    align-items: flex-end !important;
-    justify-content: flex-start !important;
-    gap: 0 !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    background: none !important;
-    text-align: left !important;
-    cursor: pointer;
-}
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-name {
-    position: relative;
-    z-index: 1;
+.zdd-band-back {
+    display: flex;
     flex: none;
-    min-width: 7.5rem;
-    margin-bottom: -1px;
-    padding: 0.6rem 1.3rem 0.55rem !important;
-    border: 1px solid var(--ed-rule-strong);
-    border-bottom-color: transparent;
+    width: 0.62em;
+    margin-right: 0.12em;
+    color: var(--ed-muted) !important;
+    transition: color 0.14s ease, translate 0.14s ease;
+}
+.zdd-band-back svg { width: 100%; height: auto; display: block; }
+.zdd-band-back:hover { color: var(--ed-accent) !important; translate: -0.08em 0; }
+.zdd-band-back:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: 4px; }
+.md-typeset .zdd-band-line {
+    margin: 0 0 0.45em auto !important;
+    max-width: 24rem;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+    text-align: right;
+}
+
+/* Strips: one per shelf, each a full-width band between rules. On hover the
+   name shrinks to a heading and the books and figures slide out beneath it. */
+.zdd-strips { border-bottom: 1px solid var(--ed-rule); }
+.md-typeset a.zdd-strip {
+    --strip-zone: 4.4rem;
+    position: relative;
+    display: block;
+    padding: 0.85rem 0 1rem;
+    border-top: 1px solid var(--ed-rule);
     background: var(--ed-paper);
     color: var(--ed-ink) !important;
-    font-size: 0.92rem !important;
-    letter-spacing: 0.06em;
-    transition: color 0.2s ease;
+    text-decoration: none !important;
 }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"]:not([open]) > summary .zdd-folder-name { margin-bottom: 0; border-bottom-color: var(--ed-rule-strong); }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-meta {
-    flex: 1;
-    align-self: stretch;
+.zdd-strip-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.zdd-strip-name {
+    color: var(--ed-accent);
+    font-family: var(--ed-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+}
+.zdd-strip-name i { margin-right: 1.1em; font-style: normal; }
+.zdd-strip-meta { flex: none; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.1em; }
+.zdd-strip-zone { position: relative; display: block; height: var(--strip-zone); margin-top: 0.5rem; }
+.zdd-strip-title {
+    position: absolute;
+    inset: 0 3rem auto 0;
+    translate: 0 0.55rem;
+    font-family: var(--ed-serif);
+    font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: font-size 0.14s ease-in-out, translate 0.14s ease-in-out;
+}
+.zdd-strip-desc {
+    position: absolute;
+    inset: 2.05rem 3rem auto 0;
+    max-width: 44rem;
+    color: var(--ed-ink);
+    font-family: var(--ed-serif);
+    font-size: 0.74rem;
+    line-height: 1.7;
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transition: opacity 0.14s ease-in-out, clip-path 0.14s ease-in-out;
+}
+.zdd-strip-books { display: block; }
+.zdd-strip-figures { display: block; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.06em; }
+.zdd-strip-chevron {
+    position: absolute;
+    inset-block: 0;
+    right: 0;
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    padding: 0 2.2rem 0.5rem 1rem !important;
-    border-bottom: 1px solid var(--ed-rule-strong);
-    font-size: 0.56rem !important;
-    white-space: pre;
+    align-items: center;
+    color: var(--ed-accent);
+    opacity: 0;
+    translate: -0.4rem 0;
+    transition: opacity 0.14s ease-in-out, translate 0.14s ease-in-out;
+    pointer-events: none;
 }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary::after {
-    top: auto !important;
-    bottom: 0.55rem !important;
-    right: 0.6rem !important;
-    margin-top: 0 !important;
+.zdd-strip-chevron svg { width: 1.05rem; height: 1.05rem; display: block; }
+@media (hover: hover) and (pointer: fine) {
+    .zdd-strip:is(:hover, :focus-visible) .zdd-strip-title { font-size: 1.05rem; translate: 0 0; transition-delay: 0.18s; }
+    .zdd-strip:is(:hover, :focus-visible) .zdd-strip-desc { opacity: 1; clip-path: inset(0); transition-delay: 0.18s; }
+    .zdd-strip:is(:hover, :focus-visible) .zdd-strip-chevron { opacity: 1; translate: 0 0; transition-delay: 0.18s; }
 }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:hover { background: none !important; }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:hover .zdd-folder-name { color: var(--ed-accent) !important; }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:focus-visible { outline: none; }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary:focus-visible .zdd-folder-name { outline: 2px solid var(--ed-accent); outline-offset: 2px; }
+@media (hover: none) {
+    .zdd-strip-title { font-size: 1.05rem; translate: 0 0; }
+    .zdd-strip-desc { opacity: 1; clip-path: inset(0); }
+    .zdd-strip-chevron { opacity: 1; translate: 0 0; }
+}
+.zdd-strip:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: -2px; }
 
-/* Open: the tab and the pocket share one paper. */
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"][open] { --shelf-bg: var(--ed-paper-deep); }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"][open] > summary .zdd-folder-name { background: var(--ed-paper-deep); }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > .zdd-folder-content {
-    border: 1px solid var(--ed-rule-strong);
-    border-top: 0;
-    background: var(--ed-paper-deep) !important;
-}
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"]:not([open]) > .zdd-folder-content { border: 0; }
-body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > .zdd-folder-content > div { padding: 0 1.2rem 0.4rem !important; background: none !important; }
+/* A shelf's view: its band, then its covers on the page itself. */
+.zdd-shelf-view .zdd-band { border-bottom: 1px solid var(--ed-rule-strong); }
+.zdd-books-parked { display: none; }
+
+/* ===== 1b. Motion, after simplicial-complex.space: the chosen strip slides away
+   to the left, then what was above it rises off and what was below sinks, while
+   the shelf fades in. Going back runs the same steps in reverse. ===== */
+html:active-view-transition-type(zdd-library)::view-transition-old(root),
+html:active-view-transition-type(zdd-leaf)::view-transition-old(root) { animation: pt-fade-out var(--turn, 0.3s) ease-in-out var(--turn-lag, 0.3s) both; }
+html:active-view-transition-type(zdd-library)::view-transition-new(root),
+html:active-view-transition-type(zdd-leaf)::view-transition-new(root) { animation: pt-fade-in var(--turn, 0.3s) ease-in-out var(--turn-lag, 0.3s) both; }
+::view-transition-group(*.zdd-leads),
+::view-transition-group(*.zdd-up),
+::view-transition-group(*.zdd-down),
+::view-transition-group(*.zdd-waits) { animation: none; }
+::view-transition-old(*.zdd-leads) { animation: zdd-turn-left 0.3s ease-in-out both; }
+::view-transition-old(*.zdd-up) { animation: zdd-turn-up 0.3s ease-in-out 0.3s both; }
+::view-transition-old(*.zdd-down) { animation: zdd-turn-down 0.3s ease-in-out 0.3s both; }
+::view-transition-new(*.zdd-waits) { animation: pt-fade-in 0.3s ease-in-out 0.3s both; }
+::view-transition-old(*.zdd-waits) { animation: pt-fade-out 0.25s ease-in-out both; }
+/* back: the others close in first, then the strip slides home */
+::view-transition-new(*.zdd-up) { animation: zdd-turn-in-up 0.3s ease-in-out 0.1s both; }
+::view-transition-new(*.zdd-down) { animation: zdd-turn-in-down 0.3s ease-in-out 0.1s both; }
+::view-transition-new(*.zdd-leads) { animation: zdd-turn-in-left 0.3s ease-in-out 0.4s both; }
+html:active-view-transition-type(zdd-return)::view-transition-old(root) { animation: pt-fade-out 0.2s ease-in-out both; }
+html:active-view-transition-type(zdd-return)::view-transition-new(root) { animation: pt-fade-in 0.3s ease-in-out 0.1s both; }
+@keyframes zdd-turn-left { to { translate: -100vw 0; } }
+@keyframes zdd-turn-up { to { translate: 0 -100vh; } }
+@keyframes zdd-turn-down { to { translate: 0 100vh; } }
+@keyframes zdd-turn-in-left { from { translate: -100vw 0; } }
+@keyframes zdd-turn-in-up { from { translate: 0 -100vh; } }
+@keyframes zdd-turn-in-down { from { translate: 0 100vh; } }
 
 /* ===== 2. Books ===== */
 body.blog-index-layout .md-typeset .zdd-shelf {
@@ -160,7 +248,7 @@ body.blog-index-layout .md-typeset .zdd-catalog-folder.is-shelved > .zdd-folder-
     rotate: 45deg;
     border-top: 1px solid var(--ed-rule-strong);
     border-left: 1px solid var(--ed-rule-strong);
-    background: var(--ed-paper-deep);
+    background: var(--ed-paper);
 }
 
 /* ===== 3. The open book's contents, under the row of its cover ===== */
@@ -253,7 +341,7 @@ body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-conte
 /* ===== 4. Tags: one alphabetical index ===== */
 body .md-typeset .zdd-tag-cloud:has(.zdd-tag-index) { display: block !important; max-width: 52rem; margin: 2rem auto 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
 body .md-typeset .zdd-tag-index {
-    columns: 4 11rem;
+    columns: 4 12.5rem;
     column-gap: 2.4rem;
     column-rule: 1px solid var(--ed-rule);
     padding: 1rem 0 1.6rem;
@@ -284,7 +372,7 @@ body .md-typeset .zdd-tag-letter h2 {
 }
 body .md-typeset .zdd-tag-cloud .zdd-tag-letter a {
     display: flex !important;
-    align-items: baseline;
+    align-items: flex-start;
     margin: 0 !important;
     padding: 0.1rem 0 !important;
     border: 0 !important;
@@ -294,20 +382,28 @@ body .md-typeset .zdd-tag-cloud .zdd-tag-letter a {
     font-family: var(--ed-serif) !important;
     font-size: 0.72rem !important;
     font-weight: 400 !important;
+    line-height: 1.45;
 }
+/* a long name folds at its hyphens; the leader and count stay on its first line */
+body .md-typeset .zdd-tag-cloud .zdd-tag-letter a > span { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; }
 body .md-typeset .zdd-tag-cloud .zdd-tag-letter a.is-large { font-weight: 700 !important; }
 body .md-typeset .zdd-tag-cloud .zdd-tag-letter a::after {
     content: "";
     order: 1;
     flex: 1;
-    min-width: 0.8rem;
+    min-width: 1.2rem;
+    align-self: flex-start;
+    height: 1.05em;
     margin: 0 0.35em;
     border-bottom: 1px dotted var(--ed-muted);
-    translate: 0 -0.25em;
 }
 body .md-typeset .zdd-tag-cloud .zdd-tag-letter a small {
     order: 2;
+    flex: none;
+    align-self: flex-start;
     margin: 0 !important;
+    line-height: 1.7;
+    white-space: nowrap;
     color: var(--ed-muted) !important;
     font-family: var(--ed-mono) !important;
     font-size: 0.86em !important;
@@ -328,7 +424,7 @@ body .md-typeset .zdd-tag-cloud .zdd-tag-letter a:hover::after { border-bottom-c
     .zdd-book-head { flex-wrap: wrap; row-gap: 0.2rem; }
     .zdd-book-head b { white-space: nowrap; }
     .zdd-book-head span { order: 3; flex-basis: 100%; }
-    body .md-typeset .zdd-tag-index { columns: 2; column-gap: 1.4rem; }
+    body .md-typeset .zdd-tag-index { columns: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
     .zdd-cover,

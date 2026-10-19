@@ -83,7 +83,13 @@ html:active-view-transition-type(theme)::view-transition-new(*) { animation: pt-
 html:active-view-transition-type(theme)::view-transition-group(*) { animation: none; }
 
 /* ===== 4. Running header ===== */
-.md-header__inner:has(.zdd-runhead) .md-header__title { display: none; }
+/* The wordmark stays beside the logo on every page; the running header follows it.
+   Material fades the first topic out once the page title scrolls away, which with
+   a single topic left the logo alone. */
+body .md-header__title--active .md-header__topic { opacity: 1; pointer-events: auto; transform: none; z-index: 0; }
+.md-header__inner:has(.zdd-runhead) .md-header__title { flex: 0 0 auto !important; }
+.md-header__inner:has(.zdd-runhead) .md-header__topic { position: relative; }
+@media screen and (max-width: 59.9375em) { .md-header__inner:has(.zdd-runhead) .md-header__title { flex: 1 1 auto !important; } }
 .zdd-runhead {
     flex: 1 1 auto;
     min-width: 0;

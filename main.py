@@ -252,7 +252,7 @@ def _render_tree(node, level=0, folder_parts=()):
         child = node[key]
         child_parts = (*folder_parts, key)
         course = course_for_folder(child_parts)
-        anchor = course["anchor"] if course else (key if level == 1 else "")
+        anchor = course["anchor"] if course else (key if level <= 1 else "")
         folder_id = f' id="{anchor}"' if anchor else ""
         articles = _collect_articles(child)
         stats = _folder_stats(articles)
