@@ -6,7 +6,7 @@
 body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library > .zdd-catalog-folder { display: none !important; }
 body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library { display: block !important; }
 body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1:first-child { display: none; }
-.zdd-library { --shelf-bg: var(--ed-paper); --turn: 0.3s; --turn-lag: 0.3s; }
+.zdd-library { --shelf-bg: var(--ed-paper); }
 .zdd-library [hidden] { display: none !important; }
 
 /* Title band: a large serif title on a rule, a line of figures to its right. */
@@ -31,17 +31,6 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
     line-height: 1.05 !important;
     letter-spacing: -0.01em !important;
 }
-.zdd-band-back {
-    display: flex;
-    flex: none;
-    width: 0.62em;
-    margin-right: 0.12em;
-    color: var(--ed-muted) !important;
-    transition: color 0.14s ease, translate 0.14s ease;
-}
-.zdd-band-back svg { width: 100%; height: auto; display: block; }
-.zdd-band-back:hover { color: var(--ed-accent) !important; translate: -0.08em 0; }
-.zdd-band-back:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: 4px; }
 .md-typeset .zdd-band-line {
     margin: 0 0 0.45em auto !important;
     max-width: 24rem;
@@ -122,44 +111,45 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
     .zdd-strip:is(:hover, :focus-visible) .zdd-strip-chevron { opacity: 1; translate: 0 0; transition-delay: 0.18s; }
 }
 @media (hover: none) {
-    .zdd-strip-title { font-size: 1.05rem; translate: 0 0; }
-    .zdd-strip-desc { opacity: 1; clip-path: inset(0); }
+    /* no hover: everything shows, in normal flow so long lists push the rule down */
+    .zdd-strip-zone { height: auto; }
+    .zdd-strip-title { position: static; font-size: 1.05rem; translate: 0 0; white-space: normal; }
+    .zdd-strip-desc { position: static; margin-top: 0.35rem; padding-right: 2rem; opacity: 1; clip-path: none; }
     .zdd-strip-chevron { opacity: 1; translate: 0 0; }
 }
 .zdd-strip:focus-visible { outline: 2px solid var(--ed-accent); outline-offset: -2px; }
 
-/* A shelf's view: its band, then its covers on the page itself. */
-.zdd-shelf-view .zdd-band { border-bottom: 1px solid var(--ed-rule-strong); }
+/* An open strip keeps its chevron, turned down, over the covers it unfolded. */
+.zdd-strip.is-open .zdd-strip-chevron { opacity: 1; translate: 0 0; rotate: 90deg; transition-delay: 0s; }
+.zdd-strip-chevron { transition: opacity 0.14s ease-in-out, translate 0.14s ease-in-out, rotate 0.24s ease-in-out; }
+
+/* The shelf unfolds in place under its strip. */
+.zdd-shelf-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.zdd-shelf-panel.is-open { grid-template-rows: 1fr; }
+.zdd-shelf-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.zdd-shelf-panel.is-open > .zdd-shelf-panel-inner { overflow: visible; opacity: 1; transition: opacity 0.24s ease 0.08s, overflow 0s 0.32s allow-discrete; }
+.zdd-blog-catalog.is-instant :is(.zdd-shelf-panel, .zdd-shelf-panel-inner, .zdd-strip-chevron) { transition: none !important; }
 .zdd-books-parked { display: none; }
 
-/* ===== 1b. Motion, after simplicial-complex.space: the chosen strip slides away
-   to the left, then what was above it rises off and what was below sinks, while
-   the shelf fades in. Going back runs the same steps in reverse. ===== */
-html:active-view-transition-type(zdd-library)::view-transition-old(root),
-html:active-view-transition-type(zdd-leaf)::view-transition-old(root) { animation: pt-fade-out var(--turn, 0.3s) ease-in-out var(--turn-lag, 0.3s) both; }
-html:active-view-transition-type(zdd-library)::view-transition-new(root),
-html:active-view-transition-type(zdd-leaf)::view-transition-new(root) { animation: pt-fade-in var(--turn, 0.3s) ease-in-out var(--turn-lag, 0.3s) both; }
-::view-transition-group(*.zdd-leads),
-::view-transition-group(*.zdd-up),
-::view-transition-group(*.zdd-down),
-::view-transition-group(*.zdd-waits) { animation: none; }
-::view-transition-old(*.zdd-leads) { animation: zdd-turn-left 0.3s ease-in-out both; }
-::view-transition-old(*.zdd-up) { animation: zdd-turn-up 0.3s ease-in-out 0.3s both; }
-::view-transition-old(*.zdd-down) { animation: zdd-turn-down 0.3s ease-in-out 0.3s both; }
-::view-transition-new(*.zdd-waits) { animation: pt-fade-in 0.3s ease-in-out 0.3s both; }
-::view-transition-old(*.zdd-waits) { animation: pt-fade-out 0.25s ease-in-out both; }
-/* back: the others close in first, then the strip slides home */
-::view-transition-new(*.zdd-up) { animation: zdd-turn-in-up 0.3s ease-in-out 0.1s both; }
-::view-transition-new(*.zdd-down) { animation: zdd-turn-in-down 0.3s ease-in-out 0.1s both; }
-::view-transition-new(*.zdd-leads) { animation: zdd-turn-in-left 0.3s ease-in-out 0.4s both; }
-html:active-view-transition-type(zdd-return)::view-transition-old(root) { animation: pt-fade-out 0.2s ease-in-out both; }
-html:active-view-transition-type(zdd-return)::view-transition-new(root) { animation: pt-fade-in 0.3s ease-in-out 0.1s both; }
-@keyframes zdd-turn-left { to { translate: -100vw 0; } }
-@keyframes zdd-turn-up { to { translate: 0 -100vh; } }
-@keyframes zdd-turn-down { to { translate: 0 100vh; } }
-@keyframes zdd-turn-in-left { from { translate: -100vw 0; } }
-@keyframes zdd-turn-in-up { from { translate: 0 -100vh; } }
-@keyframes zdd-turn-in-down { from { translate: 0 100vh; } }
+/* ===== 1b. Motion into an article, after simplicial-complex.space but quieter:
+   the clicked card slides a little to the left and fades while the page
+   cross-fades; coming back, it slides in from the left. ===== */
+html:active-view-transition-type(zdd-leaf)::view-transition-old(root) { animation: pt-fade-out 0.16s ease-out both; }
+html:active-view-transition-type(zdd-leaf)::view-transition-new(root) { animation: pt-fade-in 0.22s ease-out 0.1s both; }
+::view-transition-group(*.zdd-leads) { animation: none; }
+::view-transition-old(*.zdd-leads) { animation: zdd-lead-out 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(*.zdd-leads) { animation: zdd-lead-in 0.26s cubic-bezier(0, 0, 0.2, 1) 0.08s both; }
+@keyframes zdd-lead-out { to { opacity: 0; translate: -3rem 0; } }
+@keyframes zdd-lead-in { from { opacity: 0; translate: -3rem 0; } }
 
 /* ===== 2. Books ===== */
 body.blog-index-layout .md-typeset .zdd-shelf {
@@ -432,6 +422,9 @@ body .md-typeset .zdd-tag-cloud .zdd-tag-letter a:hover::after { border-bottom-c
     .zdd-book-close::after,
     .zdd-book-end::before,
     .zdd-book-end::after,
+    .zdd-shelf-panel,
+    .zdd-shelf-panel-inner,
+    .zdd-strip-chevron { transition: none !important; }
     body.blog-index-layout .md-typeset .zdd-catalog-folder[data-level="0"] > summary .zdd-folder-name { transition: none; }
     .zdd-cover:hover { translate: none; }
     body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-content { animation: none; }

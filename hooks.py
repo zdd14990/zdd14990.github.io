@@ -9,7 +9,7 @@ from blog_content import begin_build, end_build, content_store, normalize_metada
 from blog_links import backlink_map
 from blog_statements import extract_statements, statement_records
 from blog_text import article_description, rendered_headings
-from site_catalog import course_for_source, refresh_site_catalog, shelf_categories
+from site_catalog import course_for_folder, course_for_source, refresh_site_catalog, shelf_categories, shelf_for_source
 from pathlib import Path
 from mkdocs.utils import get_relative_url
 from reading_features import article_dates, page_needs_math
@@ -150,6 +150,15 @@ def _set_backlinks(page, config):
         ]
 
 
+def _set_place(page, source):
+    """Shelf and book of a blog page, as [name, anchor on /blog/] pairs for the running header."""
+    shelf, book = shelf_for_source(source) if source.startswith("blog/") else (None, None)
+    if not shelf:
+        return
+    course = course_for_folder((shelf["key"], book["key"]))
+    page.meta["zdd_place"] = [[shelf["name"], shelf["key"]], [book["name"], course["anchor"] if course else book["key"]]]
+
+
 def on_page_markdown(markdown, page, config, files):
     source = page.file.src_path.replace("\\", "/")
     assets = _as_list(page.meta.get("zdd_assets"))
@@ -162,6 +171,7 @@ def on_page_markdown(markdown, page, config, files):
         page.meta.update(normalize_metadata(page.meta, source))
     _set_course_navigation(page, config)
     _set_backlinks(page, config)
+    _set_place(page, source)
     if page.file.src_path.replace('\\', '/').startswith('blog/'):
         published, modified = article_dates(page.meta.get('date'), page.meta.get('updated'))
         page.meta['reading_date'] = published

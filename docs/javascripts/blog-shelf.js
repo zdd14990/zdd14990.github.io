@@ -1,16 +1,14 @@
-// Blog catalog as a library. The overview lists each shelf as a full-width strip;
-// opening one parts the page around it (the strip slides away left, what was above
-// rises, what was below sinks) and shows that shelf's book covers under a title
-// band. A cover opens the book's contents under its row. Back, Esc or the arrow in
-// the band reverse the move. The same choreography runs across pages: into an
-// article from its card, and back again. /blog/#<shelf> and /blog/#<book> deep-link.
+// Blog catalog as a library: each shelf is a full-width strip; clicking it unfolds
+// the shelf's book covers in place, under the strip. A cover opens the book's
+// contents under its row. Esc closes the book, then the shelf. Into an article
+// from its card the card slides away while the page cross-fades, and back again.
+// /blog/#<shelf> and /blog/#<book> deep-link.
 // Without this script the catalog stays nested <details>.
 (function () {
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var RETURN_KEY = "zdd.blog-return";
   var ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M6 2.5 11.5 8 6 13.5"/></svg>';
-  var BACK = '<svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M23 8H1.5M8.5 1 1.5 8l7 7"/></svg>';
 
   function el(tag, className, text) {
     var node = document.createElement(tag);
@@ -30,7 +28,6 @@
     var match = /^((?:\d+ 册 · )?\d+ 篇)(?: · )?(.*)$/.exec(meta.trim());
     return match ? [match[1], match[2].replace(/ - /, " \u2013 ")] : [meta, ""];
   }
-  function canAnimate() { return !!document.startViewTransition && !reduce.matches; }
   function path(url) { return new URL(url, location.href).pathname.replace(/index\.html$/, ""); }
 
   // ---- view-transition names: a lead that slides sideways, the rest parting around it
@@ -52,14 +49,10 @@
     var box = node.getBoundingClientRect();
     return box.bottom > 0 && box.top < innerHeight && box.height > 0;
   }
-  // Name the lead and everything on screen around it; above rises, below sinks.
+  // Only the clicked row moves (a short slide to the left); the page around it
+  // simply cross-fades.
   function part(lead, others, prefix) {
-    var top = lead.getBoundingClientRect().top;
-    name(lead, prefix + "-lead", "zdd-leads");
-    others.forEach(function (node, i) {
-      if (node === lead || !visible(node)) return;
-      name(node, prefix + "-" + i, node.getBoundingClientRect().top < top ? "zdd-up" : "zdd-down");
-    });
+    if (visible(lead)) name(lead, prefix + "-lead", "zdd-leads");
   }
 
   // ---- book covers and contents (inside a shelf view)
@@ -111,10 +104,12 @@
     var meta = splitMeta(summary.querySelector(".zdd-folder-meta").textContent);
     var books = [].slice.call(folder.querySelectorAll(':scope > .zdd-folder-content > div > .zdd-catalog-folder[data-level="1"]'));
 
-    // strip on the overview
+    // the strip
     var strip = this.strip = el("a", "zdd-strip");
     strip.href = "#" + this.key;
     strip.dataset.shelf = this.key;
+    strip.setAttribute("aria-expanded", "false");
+    strip.setAttribute("aria-controls", "shelf-" + this.key);
     var head = el("span", "zdd-strip-head");
     head.appendChild(el("span", "zdd-strip-name", "No. " + pad(index + 1)));
     head.appendChild(el("span", "zdd-strip-meta", meta[0]));
@@ -131,27 +126,20 @@
     chevron.innerHTML = ARROW;
     strip.appendChild(chevron);
 
-    // the shelf's own view
-    var view = this.view = el("section", "zdd-shelf-view");
-    view.id = "shelf-" + this.key;
-    view.hidden = true;
-    view.setAttribute("aria-label", this.title);
-    var band = this.band = el("header", "zdd-band");
-    var row = el("div", "zdd-band-row");
-    var back = this.back = el("a", "zdd-band-back");
-    back.href = "#";
-    back.setAttribute("aria-label", "返回全部书架");
-    back.innerHTML = BACK;
-    row.appendChild(back);
-    row.appendChild(el("h2", "zdd-band-title", this.title));
-    band.appendChild(row);
-    band.appendChild(el("p", "zdd-band-line", meta[0] + (meta[1] ? " \u00b7 " + meta[1] : "")));
-    view.appendChild(band);
+    // its covers, unfolding in place under the strip
+    var panel = this.panel = el("div", "zdd-shelf-panel");
+    panel.id = "shelf-" + this.key;
+    panel.setAttribute("role", "region");
+    panel.setAttribute("aria-label", this.title);
+    panel.inert = true;
+    var inner = el("div", "zdd-shelf-panel-inner");
     var grid = this.grid = el("div", "zdd-shelf");
-    view.appendChild(grid);
-    var parked = el("div", "zdd-books-parked");
-    view.appendChild(parked);
+    inner.appendChild(grid);
+    var parked = this.parked = el("div", "zdd-books-parked");
+    inner.appendChild(parked);
+    panel.appendChild(inner);
 
+    this.isOpen = false;
     this.current = -1;
     this.entries = books.map(function (book, i) {
       var t = book.querySelector(":scope > summary .zdd-folder-name").textContent.trim();
@@ -166,9 +154,16 @@
       });
       return { button: button, book: book };
     });
-    this.parked = parked;
     folder.hidden = true;
   }
+  Shelf.prototype.setOpen = function (open) {
+    this.isOpen = open;
+    this.strip.classList.toggle("is-open", open);
+    this.strip.setAttribute("aria-expanded", String(open));
+    this.panel.classList.toggle("is-open", open);
+    this.panel.inert = !open;
+    if (!open) this.closeBook(false);
+  };
   Shelf.prototype.place = function () {
     if (this.current < 0) return;
     var entry = this.entries[this.current], top = entry.button.offsetTop, last = entry.button;
@@ -183,7 +178,7 @@
     entry.book.open = false;
     entry.book.classList.remove("is-open-book", "is-entering");
     this.parked.appendChild(entry.book);
-    if (history.replaceState && !this.view.hidden) history.replaceState(history.state, "", "#" + this.key);
+    if (history.replaceState && this.isOpen) history.replaceState(history.state, "", "#" + this.key);
     if (focus) entry.button.focus();
   };
   Shelf.prototype.openBook = function (i, animate) {
@@ -214,86 +209,53 @@
     shelves.forEach(function (s) { byKey[s.key] = s; });
 
     var library = el("div", "zdd-library");
-    var overview = el("section", "zdd-overview");
     var books = shelves.reduce(function (n, s) { return n + s.entries.length; }, 0);
     var band = el("header", "zdd-band zdd-band--overview");
     var row = el("div", "zdd-band-row");
     row.appendChild(el("h1", "zdd-band-title", "Blog"));
     band.appendChild(row);
     band.appendChild(el("p", "zdd-band-line", shelves.length + " 个书架 \u00b7 " + books + " 本书 \u00b7 " + posts + " 篇"));
-    overview.appendChild(band);
-    var strips = el("nav", "zdd-strips");
-    strips.setAttribute("aria-label", "书架");
-    shelves.forEach(function (s) { strips.appendChild(s.strip); });
-    overview.appendChild(strips);
-    library.appendChild(overview);
-    shelves.forEach(function (s) { library.appendChild(s.view); });
+    library.appendChild(band);
+    var strips = el("div", "zdd-strips");
+    shelves.forEach(function (s) { strips.appendChild(s.strip); strips.appendChild(s.panel); });
+    library.appendChild(strips);
     catalog.appendChild(library);
     catalog.classList.add("is-library");
 
-    var active = null, overviewScroll = 0;
-    function allStrips() { return [band].concat(shelves.map(function (s) { return s.strip; })); }
-
+    var active = null;
     function show(shelf) {
-      overview.hidden = !!shelf;
-      shelves.forEach(function (s) {
-        if (s !== shelf) s.closeBook(false);
-        s.view.hidden = s !== shelf;
-      });
+      shelves.forEach(function (s) { if (s !== shelf && s.isOpen) s.setOpen(false); });
+      if (shelf && !shelf.isOpen) shelf.setOpen(true);
       active = shelf;
       if (shelf) requestAnimationFrame(function () { shelf.place(); });
     }
-    function transition(update, back) {
-      if (!canAnimate()) { update(); return; }
-      var vt = document.startViewTransition({ update: update, types: back ? ["zdd-library", "zdd-return"] : ["zdd-library"] });
-      vt.finished.finally(unname);
-    }
-    function openShelf(shelf, push) {
-      if (active === shelf) return;
-      overviewScroll = scrollY;
-      if (push) history.pushState({ zddShelf: shelf.key }, "", "#" + shelf.key);
-      if (canAnimate()) part(shelf.strip, allStrips(), "zdd-strip");
-      transition(function () {
-        unname();
-        show(shelf);
-        scrollTo(0, 0);
-        // the shelf's band and covers fall in from below
-        if (canAnimate()) name(shelf.view, "zdd-leaf", "zdd-waits");
-        shelf.back.focus({ preventScroll: true });
-      });
-    }
-    function closeShelf(push) {
-      if (!active) return;
-      var shelf = active;
-      if (push) history.pushState(null, "", location.pathname);
-      if (canAnimate()) name(shelf.view, "zdd-leaf", "zdd-waits");
-      transition(function () {
-        unname();
-        show(null);
-        scrollTo(0, overviewScroll);
-        if (canAnimate()) part(shelf.strip, allStrips(), "zdd-strip");
-        shelf.strip.focus({ preventScroll: true });
-      }, true);
+    function toggle(shelf) {
+      var top = shelf.strip.getBoundingClientRect().top;
+      show(shelf.isOpen ? null : shelf);
+      if (history.replaceState) history.replaceState(history.state, "", active ? "#" + active.key : location.pathname);
+      // a shelf closing above must not pull the clicked strip away from the pointer
+      var moved = shelf.strip.getBoundingClientRect().top - top;
+      if (moved) scrollBy({ top: moved, behavior: "instant" });
     }
 
     // Captured on window so site-shell.js's smooth scrolling of same-page
     // anchors (a capture listener on document) never sees these links.
     addEventListener("click", function (event) {
       if (event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      var link = event.target.closest && event.target.closest(".zdd-strip, .zdd-band-back");
+      var link = event.target.closest && event.target.closest(".zdd-strip");
       if (!link || !catalog.contains(link)) return;
       event.preventDefault();
       event.stopPropagation();
-      if (link.classList.contains("zdd-strip")) { openShelf(byKey[link.dataset.shelf], true); return; }
-      if (history.state && history.state.zddShelf) history.back();
-      else closeShelf(true);
+      toggle(byKey[link.dataset.shelf]);
     }, true);
-    addEventListener("popstate", function () { route(true); });
+    addEventListener("hashchange", function () { route(); });
     addEventListener("resize", function () { if (active) active.place(); });
     document.addEventListener("keydown", function (event) {
       if (event.key !== "Escape" || !active) return;
-      if (active.current >= 0) active.closeBook(true);
-      else active.back.click();
+      var shelf = active;
+      if (shelf.current >= 0) { shelf.closeBook(true); return; }
+      toggle(shelf);
+      shelf.strip.focus({ preventScroll: true });
     });
 
     // #shelf opens a shelf; #book opens its shelf and the book
@@ -307,25 +269,27 @@
       });
       return hit;
     }
-    function route(animate) {
+    function route() {
       var hit = find(decodeURIComponent(location.hash.slice(1)));
-      if (animate && hit.shelf && hit.shelf !== active && hit.book < 0) { openShelf(hit.shelf, false); return; }
-      if (animate && !hit.shelf && active) { closeShelf(false); return; }
+      if (!hit.shelf) return;
+      catalog.classList.add("is-instant");
       show(hit.shelf);
-      if (hit.shelf && hit.book >= 0) {
-        hit.shelf.openBook(hit.book, false);
-        requestAnimationFrame(function () { hit.shelf.entries[hit.book].button.scrollIntoView({ block: "center" }); });
-      }
+      if (hit.book >= 0) hit.shelf.openBook(hit.book, false);
+      var target = hit.book >= 0 ? hit.shelf.entries[hit.book].button : hit.shelf.strip;
+      requestAnimationFrame(function () {
+        target.scrollIntoView({ block: hit.book >= 0 ? "center" : "start" });
+        requestAnimationFrame(function () { catalog.classList.remove("is-instant"); });
+      });
     }
-    route(false);
+    route();
 
     // ---- across pages: into an article from its card, and back again
     function cardFor(url) {
       return [].slice.call(catalog.querySelectorAll(".is-open-book .zdd-post-card")).filter(function (c) { return path(c.href) === url; })[0];
     }
     function around(card) {
-      var view = card.closest(".zdd-shelf-view");
-      return [].slice.call(view.querySelectorAll(".zdd-band, .zdd-cover, .is-open-book .zdd-book-head, .is-open-book .zdd-post-card, .zdd-book-foot"));
+      var panel = card.closest(".zdd-shelf-panel");
+      return [].slice.call(panel.querySelectorAll(".zdd-cover, .is-open-book .zdd-book-head, .is-open-book .zdd-post-card, .zdd-book-foot"));
     }
     addEventListener("pageswap", function (event) {
       if (!event.viewTransition || !event.activation || !event.activation.entry || reduce.matches) return;

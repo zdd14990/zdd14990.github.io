@@ -61,6 +61,11 @@
   var run = null;
   var bar = header && header.querySelector(".md-header__inner");
   var title = opener && opener.querySelector("h1");
+  // Shelf and book, linking back to them on /blog/ (set by hooks.py from the catalog).
+  var place = [];
+  try { place = JSON.parse(header.getAttribute("data-zdd-place") || "[]"); } catch (error) {}
+  var logo = document.querySelector(".md-header__button.md-logo");
+  var blogRoot = new URL("blog/", logo ? logo.href : location.href).href;
   if (bar && title) {
     run = document.createElement("nav");
     run.className = "zdd-runhead";
@@ -77,8 +82,9 @@
   function crumb(label, target, current) {
     var a = document.createElement("a");
     a.textContent = label;
-    a.href = target ? "#" + target.id : "#";
     if (current) a.className = "is-current";
+    if (typeof target === "string") { a.href = blogRoot + "#" + target; return a; }
+    a.href = target ? "#" + target.id : "#";
     a.addEventListener("click", function (event) {
       event.preventDefault();
       if (target) scrollToNode(target, true);
@@ -91,21 +97,23 @@
     if (!run) return;
     var limit = headerBottom() + Math.round(innerHeight * 0.3);
     var on = !opener || opener.getBoundingClientRect().bottom < headerBottom() + 28;
-    run.classList.toggle("is-on", on);
+    // with a place the shelf / book trail is always shown; the rest joins on scroll
+    run.classList.toggle("is-on", on || place.length > 0);
     var h2 = null, h3 = null;
     headings.forEach(function (h) {
       if (h.offsetParent === null || h.getBoundingClientRect().top > limit) return;
       if (h.tagName === "H2") { h2 = h; h3 = null; } else h3 = h;
     });
-    var key = (h2 && h2.id) + "|" + (h3 && h3.id);
+    var key = on + "|" + (h2 && h2.id) + "|" + (h3 && h3.id);
     if (key === lastKey) return;
     lastKey = key;
     var series = opener.querySelector(".book-runhead a");
-    var parts = [];
-    if (series) parts.push([series.textContent.trim(), null]);
-    parts.push([text(title), null]);
-    if (h2) parts.push([text(h2), h2]);
-    if (h3) parts.push([text(h3), h3]);
+    var parts = place.map(function (p) { return [p[0], p[1]]; });
+    if (series && !place.length) parts.push([series.textContent.trim(), null]);
+    var heading = text(title);
+    if (on && (!place.length || heading !== place[place.length - 1][0])) parts.push([heading, null]);
+    if (on && h2) parts.push([text(h2), h2]);
+    if (on && h3) parts.push([text(h3), h3]);
     run.textContent = "";
     parts.forEach(function (part, i) {
       if (i) {
