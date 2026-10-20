@@ -933,6 +933,23 @@
     state.resultRows.forEach(function(row, index) {
       row.id = state.resultBox.id + "-result-" + index;
     });
+    renderStoryCard(query);
+  }
+
+  // Exact-match archive cards from zdd-story.js; ordinary results stay as they are.
+  function renderStoryCard(query) {
+    if (!window.ZddStory) return;
+    var box = state.resultBox;
+    var input = state.input;
+    window.ZddStory.lookup(query).then(function(html) {
+      if (!html || state.resultBox !== box || state.input !== input || input.value.trim() !== query) return;
+      var old = box.querySelector(".xh-card");
+      if (old) old.remove();
+      var empty = box.querySelector(".zdd-search-empty");
+      if (empty) empty.remove();
+      box.insertAdjacentHTML("afterbegin", html);
+      box.hidden = false;
+    });
   }
 
   function isComposing(event) {
