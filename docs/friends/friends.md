@@ -11,6 +11,17 @@ hide:
     <h1 id="friends-title">Friends</h1>
     <span class="friend-directory-label">友链</span>
   </header>
+
+  <section class="about-me" aria-labelledby="about-title">
+    <img class="about-avatar" src="https://zdd14990.github.io/assets/avatar.jpg" alt="zdd14990" width="112" height="112" loading="lazy">
+    <div class="about-text">
+      <h2 id="about-title">About Me</h2>
+      <p>Hi, I'm zdd, an undergraduate at Qiuzhen College, Tsinghua University, where I've been studying since 2023. Next year I'll begin my PhD in Applied Mathematics at Qiuzhen College. My main research interest lies in fast algorithms.</p>
+      <p>This blog is where I share my study notes and research progress.</p>
+      <p>You can find me on <a href="https://space.bilibili.com/545753285" target="_blank" rel="noopener noreferrer">Bilibili</a>, or reach me via QQ: 1499014252.</p>
+    </div>
+  </section>
+
   <ul class="friend-list">
     <li>
       <a href="https://murasaki010.github.io/" target="_blank" rel="noopener noreferrer" class="friend-link">
@@ -75,4 +86,15 @@ hide:
       </a>
     </li>
   </ul>
+
+  <section class="friend-data" aria-labelledby="friend-data-title">
+    <h2 id="friend-data-title">Add me as a friend</h2>
+    <p>Copy the following to add me to your friend list:</p>
+    <pre><code class="language-javascript">{
+  title: "zdd14990",
+  description: "家里蹲是绝对正义",
+  avatarUrl: "https://zdd14990.github.io/assets/avatar.jpg",
+  link: "https://zdd14990.github.io/"
+}</code></pre>
+  </section>
 </section>
