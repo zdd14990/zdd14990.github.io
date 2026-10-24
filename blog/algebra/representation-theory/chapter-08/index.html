@@ -1,0 +1,1254 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="表示论笔记第八章：Okounkov–Vershik 对 Sₙ 表示的新方法。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-08/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第八章：Okounkov–Vershik 对 S_n 表示的新方法 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-08/">
+  <meta property="og:title" content="第八章：Okounkov–Vershik 对 S_n 表示的新方法 - zdd14990">
+  <meta property="og:description" content="表示论笔记第八章：Okounkov–Vershik 对 Sₙ 表示的新方法。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="representation-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-08/">
+  <meta name="twitter:title" content="第八章：Okounkov–Vershik 对 S_n 表示的新方法 - zdd14990">
+  <meta name="twitter:description" content="表示论笔记第八章：Okounkov–Vershik 对 Sₙ 表示的新方法。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u516b\u7ae0\uff1aOkounkov\u2013Vershik \u5bf9 S_n \u8868\u793a\u7684\u65b0\u65b9\u6cd5",
+    "description": "\u8868\u793a\u8bba\u7b14\u8bb0\u7b2c\u516b\u7ae0\uff1aOkounkov\u2013Vershik \u5bf9 S\u2099 \u8868\u793a\u7684\u65b0\u65b9\u6cd5\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-08/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-08/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["representation-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u4ee3\u6570", "algebra"], ["\u8868\u793a\u8bba", "representation-theory"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Okounkov-Vershik 对 \(S_n\) 表示的新方法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Okounkov-Vershik 对 \(S_n\) 表示的新方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 中心化子 \(Z_B(A)\) 和表示的限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 \(Z_m(n)\) 代数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 分支图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 权的唯一性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 改变道路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 退化仿射 Hecke 代数 \(H(2)\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 \(H(2)\) 的有限维不可约表示
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.8 完成分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.9 Young 图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考文献
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#representation-theory">表示论</a>
+    <span>Part 8 of 8</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">08</div>
+    <h1 id="top"><span class="book-visually-hidden">第 8 章：</span>Okounkov–Vershik 对 S_n 表示的新方法</h1>
+  </div>
+  <p class="book-standfirst">动机：<span class="arithmatex">\(\left\{1\right\}=S_1\subseteq S_2 \subseteq S_3\subseteq \cdots \subseteq S_{n-1}\subseteq S_n\subseteq \cdots\)</span>，其中 <span class="arithmatex">\(S_k\)</span> 可以视作 <span class="arithmatex">\(S_{k+1}\)</span> 的子群（固定 <span class="arithmatex">\(k+1\)</span>）。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>3,783 字 · 约 11 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>Okounkov-Vershik 对 <span class="arithmatex">\(S_n\)</span> 表示的新方法</h2>
+<h3 id="s1-1">1.1 中心化子 <span class="arithmatex">\(Z_B(A)\)</span> 和表示的限制</h3>
+<p>设 <span class="arithmatex">\(A,B\)</span> 是半单代数，<span class="arithmatex">\(\tau:B\rightarrow A\)</span> 是同态，即对任意 <span class="arithmatex">\(A\)</span> 的表示 <span class="arithmatex">\(V\)</span> 均可表示为某个 <span class="arithmatex">\(B\)</span> 的表示在 <span class="arithmatex">\(\tau\)</span> 下的像。首先我们有</p>
+<div class="arithmatex">\[
+A\stackrel{\sim }{\rightarrow} \bigoplus_{V\in \mathrm{Irr}(A)}\mathrm{End}(V)\qquad B\stackrel{\sim }{\rightarrow} \bigoplus_{U\in \mathrm{Irr}(B)}\mathrm{End}(U)
+\]</div>
+<p>对任意 <span class="arithmatex">\(V\in \mathrm{Irr}(A),U\in \mathrm{Irr}(B)\)</span>，令 <span class="arithmatex">\(M_{V,U}:=\mathrm{Hom}_B(U,V)\)</span>，则</p>
+<div class="arithmatex">\[
+V\stackrel{\sim }{\rightarrow} \bigoplus_{U\in \mathrm{Irr}(B)} U\otimes M_{V,U}
+\]</div>
+<p>是 <span class="arithmatex">\(B\)</span> 的表示。</p>
+<p>现在我们的问题是如何计算 <span class="arithmatex">\(M_{V,U}\)</span>。为此我们需要如下定义：</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>定义<strong>中心化子(centralizer)</strong> <span class="arithmatex">\(Z_B(A)=\)</span></p>
+<div class="arithmatex">\[
+\left\{a\in A\Big| a\tau(b)=\tau(b)a,\forall b\in B\right\}
+\]</div>
+</div>
+<ul>
+<li>当 <span class="arithmatex">\(B=A\)</span>，<span class="arithmatex">\(\tau=\mathrm{id}\)</span> 时，<span class="arithmatex">\(Z_B(A)\)</span> 即为 <span class="arithmatex">\(A\)</span> 的中心。</li>
+<li><span class="arithmatex">\(Z_B(A)\subseteq A\)</span> 是子代数。</li>
+<li><span class="arithmatex">\(Z_B(A)\)</span> 在 <span class="arithmatex">\(M_{V,U}\)</span> 上有自然的作用。具体而言，对 <span class="arithmatex">\(z\in Z_B(A),\varphi\in M_{V,U}\)</span>，<span class="arithmatex">\((z\cdot \varphi)(u)=z(\varphi(u))\)</span>。</li>
+</ul>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.2</span></p>
+<div class="arithmatex">\[
+Z_B(A)\stackrel{\sim }{\rightarrow} \bigoplus_{\substack{U\in \mathrm{Irr}(B),V\in \mathrm{Irr}(A)\\ M_{V,U}\neq 0}} \mathrm{End}(M_{V,U})
+\]</div>
+</div>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.3</span></p>
+<p>以下两个命题等价：</p>
+<ul>
+<li><span class="arithmatex">\(\forall U\in \mathrm{Irr}(B),V\in \mathrm{Irr}(A)\)</span>，有 <span class="arithmatex">\(\dim \mathrm{Hom}_B(U,V)\le 1\)</span>。</li>
+<li><span class="arithmatex">\(Z_B(A)\)</span> 交换。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(Z_B(A)=\bigoplus \mathrm{End}(M_{V,U})\)</span> 交换 <span class="arithmatex">\(\Longleftrightarrow \dim M_{V,U}\le 1\)</span></p>
+</details>
+<p><strong>注：</strong>于是作为 <span class="arithmatex">\(B\)</span> 的表示 <span class="arithmatex">\(V=\bigoplus_{U,M_{V,U}\neq 0} U\)</span>，所以 <span class="arithmatex">\(U\)</span> 由 <span class="arithmatex">\(V\)</span> 的子空间唯一确定。</p>
+<h3 id="s1-2">1.2 <span class="arithmatex">\(Z_m(n)\)</span> 代数</h3>
+<p>在本节中，我们考虑代数</p>
+<div class="arithmatex">\[
+Z_m(n):=Z_{\mathbb{C}S_m}(\mathbb{C}S_n)
+\]</div>
+<p>其中 <span class="arithmatex">\(0\le m&lt;n\)</span>。首先我们有：</p>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.4</span></p>
+<p>设 <span class="arithmatex">\(H\subseteq G\)</span> 是有限群，则</p>
+<div class="arithmatex">\[
+Z_{\mathbb{C}H}(\mathbb{C}G)=\left\{\sum_{g\in G} a_g g\Big| a_g\in \mathbb{C},a_{hgh^{-1}}=a_g,\forall h\in H \right\}
+\]</div>
+<p>特别的，<span class="arithmatex">\(Z_{\mathbb{C}H}(\mathbb{C}G)\)</span> 有基</p>
+<div class="arithmatex">\[
+\left\{b_c:=\sum_{g\in c} g\Big| c\in G \text{ 的 } H-\text{共轭类}\right\}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<div class="arithmatex">\[
+\begin{aligned}
+\sum_{g\in G} a_g g\in Z_{\mathbb{C}H}(\mathbb{C}G)&amp;\Longleftrightarrow \forall h\in H,\sum_{g\in G} a_g h g =\sum_{g\in G} a_g g h\\
+&amp;\Longleftrightarrow \forall h\in H, a_g=a_{hgh^{-1}}
+\end{aligned}
+\]</div>
+</details>
+<p>考虑 <span class="arithmatex">\(S_m\subseteq S_n\)</span>，<span class="arithmatex">\(S_m\)</span> 在 <span class="arithmatex">\(S_n\)</span> 上的共轭作用为元素 <span class="arithmatex">\(1,2,\cdots,m\)</span> 的置换，故 <span class="arithmatex">\(S_n\)</span> 中的 <span class="arithmatex">\(S_m-\)</span>共轭类为 <span class="arithmatex">\(m+1,\cdots,n\)</span> 中元素的轮换。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.5</span></p>
+<p>考虑 <span class="arithmatex">\(m=n-1\)</span>，共轭类为 <span class="arithmatex">\((*, n)\)</span>，包含了 <span class="arithmatex">\(\left\{(1,n),(2,n),\cdots,(n-1,n)\right\}\)</span>，此时</p>
+<div class="arithmatex">\[
+b_{(*,n)}=\sum_{i=1}^{n-1} (i,n)=:J_n\in Z_{\mathbb{C}S_{n-1}}(\mathbb{C}S_n)
+\]</div>
+<p>其中 <span class="arithmatex">\(J_n\)</span> 称为 Jucys-Murphy 元。</p>
+</div>
+<p>注意到 <span class="arithmatex">\(Z_m(n)\)</span> 含有：</p>
+<ul>
+<li><span class="arithmatex">\(\mathbb S_n\)</span> 的中心 <span class="arithmatex">\(Z_m(m)\)</span> 且 <span class="arithmatex">\(Z_m(m)\subseteq Z_m(n)\)</span> 的中心。</li>
+<li><span class="arithmatex">\(S_{[m+1,n]}=\left\{g\in S_n\Big| g(i)=i,\forall 1\le i\le m\right\}\)</span>。</li>
+<li>考虑 Jucys-Murphy 元 <span class="arithmatex">\(J_k:=\sum_{i=1}^{k-1} (i,k)\)</span> 与 <span class="arithmatex">\(\mathbb{C}S_{k-1}\)</span> 交换。故 <span class="arithmatex">\(J_{m+1},\cdots,J_n\in Z_m(n)\)</span>。更进一步的，对 <span class="arithmatex">\(m+1\le k&lt;l\le n\)</span> 我们有 <span class="arithmatex">\(J_kJ_l=J_lJ_k\)</span>，这是因为 <span class="arithmatex">\(J_l\in Z_{l-1}(l)\)</span> 且 <span class="arithmatex">\(J_k\in \mathbb{C} S_{l-1}\)</span>。</li>
+</ul>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.6</span></p>
+<p>代数 <span class="arithmatex">\(Z_m(n)\)</span> 由 <span class="arithmatex">\(Z_m(m),\mathbb{C}S_{[m+1,n]},J_{m+1},\cdots,J_n\)</span> 生成。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>之后补。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.7</span></p>
+<p>我们有：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(Z_{n-1}(n)\)</span> 交换。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall U\in \mathrm{Irr}(\mathbb{C}S_{n-1}),V\in \mathrm{Irr}(\mathbb{C}S_n)\)</span>,</p>
+<div class="arithmatex">\[
+\dim \mathrm{Hom}_{\mathbb{C}S_{n-1}} (U,V)\le 1
+\]</div>
+</li>
+<li>
+<p>设 <span class="arithmatex">\(V \in \operatorname{Irr}(\mathbb{C}S_n)\)</span>，则 Jucys-Murphy 元素 <span class="arithmatex">\(J_n\)</span> 在 <span class="arithmatex">\(V\)</span> 的每个不可约 <span class="arithmatex">\(\mathbb{C}S_{n-1}\)</span>-子模上的作用均为标量乘法。</p>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：<span class="arithmatex">\(Z_{n-1}(n)\)</span> 由  <span class="arithmatex">\(Z_{n-1}(n-1)\)</span> 与 <span class="arithmatex">\(J_n\)</span> 生成，且前者在 <span class="arithmatex">\(Z_{n-1}(n)\)</span> 的中心里。</p>
+<p><span class="arithmatex">\((2)\)</span>：由 <span class="arithmatex">\((1)\)</span> 即得，且</p>
+<div class="arithmatex">\[
+Z_{n-1}(n)\cong \bigoplus_{U\in \mathrm{Irr}(\mathbb{C}S_{n-1}),V\in \mathrm{Irr}(\mathbb{C}S_n)} \mathrm{End}(\mathrm{Hom}_{\mathbb{C}S_{n-1}}(U,V))
+\]</div>
+<p><span class="arithmatex">\((3)\)</span>：设 <span class="arithmatex">\(V=\bigoplus_i U_i\)</span> 作为 <span class="arithmatex">\(S_{n-1}-\)</span>表示，<span class="arithmatex">\(U_i\)</span> 不可约。由于 <span class="arithmatex">\(J_n\)</span> 与 <span class="arithmatex">\(\mathbb{C}S_{n-1}\)</span> 交换，故</p>
+<div class="arithmatex">\[
+J_n\in \mathrm{Hom}_{S_{n-1}}(V,V)\cong \bigoplus_i \mathrm{Hom}_{S_{n-1}}(U_i,V_i)\cong \bigoplus_i \mathbb{C}
+\]</div>
+<p>故 <span class="arithmatex">\(J_n\)</span> 在每个 <span class="arithmatex">\(U_i\)</span> 上作用均为标量。</p>
+</details>
+<h3 id="s1-3">1.3 分支图</h3>
+<p>对任意 <span class="arithmatex">\(V^n\in \mathrm{Irr}(S_n),U\in \mathrm{Irr}(S_{n-1})\)</span>，由于 <span class="arithmatex">\(\dim \mathrm{Hom}_{S_{n-1}}(U,V^n)\le 1\)</span>，我们可以将 <span class="arithmatex">\(V^n\)</span> 唯一分解为两两不同构的 <span class="arithmatex">\(S_{n-1}-\)</span>表示的直和。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.8</span></p>
+<p><strong>分支图(branching graph)</strong>是一个有向图，其顶点由所有的 <span class="arithmatex">\(S_n\)</span> 表示的同构类组成，<span class="arithmatex">\(n\ge 1\)</span>，有边 <span class="arithmatex">\(U\to V\)</span> 当且仅当存在 <span class="arithmatex">\(n\)</span> 使得 <span class="arithmatex">\(V\in \mathrm{Irr}(S_n),U\in \mathrm{Irr}(S_{n-1})\)</span> 且 <span class="arithmatex">\(\mathrm{Hom}_{S_{n-1}}(U,V)\neq 0\)</span>。</p>
+</div>
+<p><strong>注：</strong>由于 <span class="arithmatex">\(U\subset V\)</span> 当且仅当 <span class="arithmatex">\(U\otimes \mathrm{sgn}_{n-1}\subset V\otimes \mathrm{sgn}_n\)</span>，于是张量积上一个 <span class="arithmatex">\(\mathrm{sgn}\)</span> 表示给出了分支图的一个对称。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.9</span></p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch08-fig-01.svg" /></p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.10</span></p>
+<p>对 <span class="arithmatex">\(V^m\in \mathrm{Irr}(S_m),V^n\in \mathrm{Irr}(S_n),m&lt;n\)</span>，在分支图中定义</p>
+<div class="arithmatex">\[
+\mathrm{Path}(V^m,V^n):=\left\{V^m \text{到} V^n \text{的所有道路}\right\}
+\]</div>
+<div class="arithmatex">\[
+\mathrm{Path}(V^n):=\mathrm{Path}(V^1,V^n)\qquad\mathrm{Path}_n:=\bigsqcup_{V^n\in \mathrm{Irr}(S_n)}{\mathrm{Path}(V^n)}
+\]</div>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.11</span></p>
+<p>对 <span class="arithmatex">\(\overline{P}=(V^m\to V^{m+1}\to \cdots \to V^n)\in \mathrm{Path}(V^m,V^n)\)</span>，记 <span class="arithmatex">\(V^m(\overline{P})\)</span> 为 <span class="arithmatex">\(V^m\)</span> 通过 <span class="arithmatex">\(V^m \to V^{m+1} \to \cdots \to V^n\)</span> 的方式嵌入到 <span class="arithmatex">\(V^n\)</span> 内部所对应的副本。故有</p>
+<div class="arithmatex">\[
+V^n=\bigoplus_{V^m\in \mathrm{Irr}{S_m}} \bigoplus_{\overline{P}\in \mathrm{Path}(V^m,V^n)} V^m(\overline{P})
+\]</div>
+<p>记 <span class="arithmatex">\(\varphi_{\overline{P}}:V^m\hookrightarrow V^n\)</span> 为对应的嵌入，该嵌入在缩放意义下是唯一的。且 <span class="arithmatex">\(\varphi_{\overline{p}}\)</span> 的像为 <span class="arithmatex">\(V^m(\overline{P})\)</span>。</p>
+<p>对于 <span class="arithmatex">\(m+1 \leq k \leq n\)</span>，定义 <span class="arithmatex">\(w_k \in \mathbb{C}\)</span> 满足</p>
+<div class="arithmatex">\[
+J_k |_{V^{k-1} \subseteq V^k} = w_k\cdot  \mathrm{Id}_ {V^{k-1}}
+\]</div>
+<p>并称<span class="arithmatex">\(w_{\overline{P}} := (w_{m+1}, \cdots, w_n)\)</span>为 <span class="arithmatex">\(\overline{p}\)</span> 的<strong>权(weight)</strong>。</p>
+</div>
+<p>另一方面，<span class="arithmatex">\(\operatorname{Hom}_{S_m}(V^m, V^n)\)</span> 是 <span class="arithmatex">\(Z_{m}(n)\)</span> 的不可约表示。回顾：对 <span class="arithmatex">\(z \in Z_{m}(m)\)</span> 和 <span class="arithmatex">\(\varphi \in \operatorname{Hom}_{S_m}(V^m, V^n)\)</span> 有<span class="arithmatex">\((z \cdot \varphi)(u) = z(\varphi(u)), \quad \text{其中}  u \in V^m\)</span>。易验证 <span class="arithmatex">\(z \cdot \varphi \in \operatorname{Hom}_{S_m}(V^m, V^n)\)</span>。因此，<span class="arithmatex">\(J_{m+1}, \cdots, J_n \in Z_{m}(n)\)</span> 作用于 <span class="arithmatex">\(\operatorname{Hom}_{\mathbb{C}S_n}(V^m, V^n)\)</span> 上。</p>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.12</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\left\{\varphi_{\overline{P}}\Big| \overline{P}\in \mathrm{Path}(V^m,V^n)\right\}\)</span> 是 <span class="arithmatex">\(\mathrm{Hom}_{S_m}(V^m,V^n)\)</span> 的一组基。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\forall m+1\le k\le n,\overline{P}\in \mathrm{Path}(V^m,V^n)\)</span> 与 <span class="arithmatex">\(w_{\overline{P}} =(w_{m+1},\cdots,w_n)\)</span>，则</p>
+<div class="arithmatex">\[
+J_k \cdot \varphi_{\overline{P}} =w_k \varphi_{\overline{P}}
+\]</div>
+</li>
+</ul>
+</div>
+<p>对 <span class="arithmatex">\(m=1\)</span>，<span class="arithmatex">\(\mathrm{Hom}_{S_1}(V^1,V^n)=\mathrm{Hom}_\mathbb{C}(\mathbb{C},V^n)\cong V^n\)</span>。<span class="arithmatex">\(\forall P\in \mathrm{Path}(V^n)\)</span>，记 <span class="arithmatex">\(v_P=\varphi_P\in V^n\)</span>。</p>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.13</span></p>
+<ul>
+<li><span class="arithmatex">\(\left\{v_P\Big| P\in \mathrm{Path}(V^n)\right\}\)</span> 是 <span class="arithmatex">\(V^n\)</span> 的一组基。</li>
+<li><span class="arithmatex">\(\forall 1\le k \le n\)</span>，<span class="arithmatex">\(J_kv_P=w_k\cdot v_P\)</span>。</li>
+</ul>
+<p>这里 <span class="arithmatex">\(w_1=0\)</span>，<span class="arithmatex">\(w_P=(0,w_2,\cdots,w_n)\in \mathbb{C}^n\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.14</span></p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch08-fig-02.svg" /></p>
+</div>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.15</span></p>
+<p>令 <span class="arithmatex">\(m&lt;n\)</span>，<span class="arithmatex">\(V^m\in \mathrm{Irr}(S_m),V^n\in \mathrm{Irr}(S_n)\)</span>，<span class="arithmatex">\(\underline{P}\in \mathrm{Path}(V^m)\)</span>，<span class="arithmatex">\(\overline{P} \in \mathrm{Path}(V^m,V^n)\)</span>。设 <span class="arithmatex">\(P\in \mathrm{Path}(V^n)\)</span> 为其串联 <span class="arithmatex">\(\underline{P}\overline{P}\)</span>，则 <span class="arithmatex">\(v_P\)</span> 与 <span class="arithmatex">\(\varphi_{\overline{P}} (v_{\underline{P}})\)</span> 成比例。</p>
+</div>
+<h3 id="s1-4">1.4 权的唯一性</h3>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.16</span></p>
+<p>令 <span class="arithmatex">\(P,P'\in \mathrm{Path}_n\)</span>，若 <span class="arithmatex">\(w_P=w_{P'}\)</span>，则 <span class="arithmatex">\(P=P'\)</span>。</p>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.17</span></p>
+<p>令 <span class="arithmatex">\(wt_n:=\left\{w_P\Big| P\in \mathrm{Path}_n\right\}\)</span>，称 <span class="arithmatex">\(w_P\)</span> 与 <span class="arithmatex">\(w_{P'}\)</span> 是<strong>表示等价</strong>的，若其均为两个不可约表示之间的道路的权。</p>
+</div>
+<h3 id="s1-5">1.5 改变道路</h3>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.18</span></p>
+<p>设 <span class="arithmatex">\(P=(V^1\to V^2\to \cdots V^n)\in \mathrm{Path}(V^n)\)</span>，对 <span class="arithmatex">\(1\le i \le n\)</span> 定义</p>
+<div class="arithmatex">\[
+\mathrm{Path}(P,i)=\left\{V'^1\to V'^2\to \cdots \to V'^n\Big| V'^j=V^j ,\forall j\neq i\right\}
+\]</div>
+</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.19</span></p>
+<p>令 <span class="arithmatex">\(w_P=(w_1,\cdots,w_n)\)</span>，则</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(w_i\neq w_{i+1}\)</span></p>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(w_{i+1}=w_i\pm 1\)</span>，则 <span class="arithmatex">\(\mathrm{Path}(P,i)=\left\{P\right\}\)</span></p>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(w_{i+1}\neq w_i\pm 1\)</span>，则 <span class="arithmatex">\(\mathrm{Path}(P,i)=\left\{P,P'\right\}\)</span>，且</p>
+<div class="arithmatex">\[
+w_{P'}=(w_1,\cdots,w_{i-1},w_{i+1},w_i,w_{i+2},\cdots,w_n)
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(i&lt;n-1\)</span>，且 <span class="arithmatex">\(w_i=w_{i+1}+1\)</span>，则 <span class="arithmatex">\(w_{i+2}\neq w_i\)</span>。</p>
+</li>
+</ul>
+</div>
+<p>考虑 <span class="arithmatex">\(Z_{i-1}(i+1)\subset \mathbb{C}S_n\)</span>，令</p>
+<div class="arithmatex">\[
+V_{P,i}:=\mathrm{span}_{\mathbb{C}} \left\{v_{P'}\Big| P'\in \mathrm{Path}(P,i)\right\}
+\]</div>
+<p>注意到 <span class="arithmatex">\(\left\{v_{P'}\Big| P'\in \mathrm{Path}(P,i)\right\}\)</span> 是 <span class="arithmatex">\(V_{P,i}\)</span> 的基。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.20</span></p>
+<p><span class="arithmatex">\(V_{P,i}\subset V^n\)</span> 是 <span class="arithmatex">\(Z_{i-1}(i+1)-\)</span>子模，且是不可约 <span class="arithmatex">\(Z_{i-1}(i+1)-\)</span>模。</p>
+</div>
+<h3 id="s1-6">1.6 退化仿射 Hecke 代数 <span class="arithmatex">\(H(2)\)</span></h3>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.21</span></p>
+<p><strong>退化仿射 Hecke 代数(degenerate affine Hecke algebra )</strong><span class="arithmatex">\(H(2)\)</span> 由 <span class="arithmatex">\(X_1,X_2,T\)</span> 生成，满足如下条件：</p>
+<div class="arithmatex">\[
+X_1X_2=X_2X_1,T^2=1,TX_1=X_2T-1
+\]</div>
+</div>
+<p>回忆 <span class="arithmatex">\(Z_{i-1}(i+1)\)</span> 由 <span class="arithmatex">\(Z_{i-1}(i+1)\)</span> 的中心、<span class="arithmatex">\(J_i\)</span>、<span class="arithmatex">\(J_{i+1}\)</span> 与 <span class="arithmatex">\((i,i+1)\)</span> 生成。</p>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.22</span></p>
+<div class="arithmatex">\[
+J_iJ_{i+1}=J_{i+1}J_i,(i,i+1)^2=1,(i,i+1)J_i=J_{i+1}(i,i+1)-1
+\]</div>
+</div>
+<p>故存在代数同态 <span class="arithmatex">\(H(2)\to Z_{i-1}(i+1)\)</span>，进而任意 <span class="arithmatex">\(Z_{i-1}(i+1)-\)</span>模都是 <span class="arithmatex">\(H(2)-\)</span>模。</p>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.23</span></p>
+<p>令 <span class="arithmatex">\(M\)</span> 是不可约 <span class="arithmatex">\(Z_{i-1}(i+1)-\)</span>模，则 <span class="arithmatex">\(M\)</span> 也是不可约 <span class="arithmatex">\(H(2)-\)</span>模。</p>
+</div>
+<p>可以证明 <span class="arithmatex">\(\left\{X_1^{d_1}X_2^{d_2}\sigma\Big| d_1,d_2\in \mathbb{Z}_{\ge 0},\sigma\in \left\{1,T\right\}\right\}\)</span> 为 <span class="arithmatex">\(H(2)\)</span> 的基，留做习题。</p>
+<h3 id="s1-7">1.7 <span class="arithmatex">\(H(2)\)</span> 的有限维不可约表示</h3>
+<p>令 <span class="arithmatex">\(M\)</span> 为有限维不可约 <span class="arithmatex">\(H(2)-\)</span>模。由 <span class="arithmatex">\(X_1X_2=X_2X_1\)</span> 知其有相同的特征向量 <span class="arithmatex">\(m\in M\)</span>，满足 <span class="arithmatex">\(X_1m=am,X_2m=bm,a,b\in \mathbb{C}\)</span>。考虑 <span class="arithmatex">\(Tm\)</span>，若 <span class="arithmatex">\(Tm,m\)</span> 线性独立，则有 <span class="arithmatex">\(M=\mathrm{span}\left\{M,TM\right\}\)</span> 且</p>
+<div class="arithmatex">\[
+T\rightarrow \left( \begin{matrix}
+0&amp;      1\\
+1&amp;      0\\
+\end{matrix} \right) ,X_1\rightarrow \left( \begin{matrix}
+a&amp;      -1\\
+0&amp;      b\\
+\end{matrix} \right) ,X_2\rightarrow \left( \begin{matrix}
+b&amp;      1\\
+0&amp;      a\\
+\end{matrix} \right)
+\]</div>
+<p>另一方面，对于任意 <span class="arithmatex">\(a,b\in \mathbb{C}\)</span> 上式满足 <span class="arithmatex">\(H(2)\)</span> 的定义。于是这给出了一个 <span class="arithmatex">\(\mathbb{C}^2\)</span> 上的 <span class="arithmatex">\(H(2)-\)</span>模结构，记为 <span class="arithmatex">\(M(a,b)\)</span>。</p>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.24</span></p>
+<p><span class="arithmatex">\(M(a,b)\)</span> 不可约当且仅当 <span class="arithmatex">\(a\neq b\pm 1\)</span>。更进一步的，若 <span class="arithmatex">\(a\neq b\pm 1\)</span>，<span class="arithmatex">\(M(a,b)\cong M(a',b')\)</span> 当且仅当 <span class="arithmatex">\((a,b)=(a',b')\)</span> 或 <span class="arithmatex">\((a,b)=(b',a')\)</span>。</p>
+</div>
+<p>综合一下得到：</p>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.25</span></p>
+<p><span class="arithmatex">\(H(2)\)</span> 的有限维不可约表示由一对复数确定，<span class="arithmatex">\((a,b)\mapsto L(a,b)\)</span>，其中 <span class="arithmatex">\(L(a,b)\cong L(b,a)\)</span> 若 <span class="arithmatex">\(b\neq a,b\neq a\pm 1\)</span>。在 <span class="arithmatex">\(L(a,b)\)</span> 中 <span class="arithmatex">\((a,b)\)</span> 对应 <span class="arithmatex">\(X_1,X_2\)</span> 的特征向量。我们还有：</p>
+<ul>
+<li>
+<p>若 <span class="arithmatex">\(b=a+1\)</span>，则 <span class="arithmatex">\(L(a,b)\cong \mathbb{C}\)</span>，</p>
+<div class="arithmatex">\[
+T\mapsto 1,X_1\mapsto a,X_2,\mapsto b
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(b=a-1\)</span>，则 <span class="arithmatex">\(L(a,b)\cong \mathbb{C}\)</span>，</p>
+<div class="arithmatex">\[
+T\mapsto -1,X_1\mapsto a,X_2,\mapsto b
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(b\neq a\pm 1\)</span>，则 <span class="arithmatex">\(L(a,b)\cong \mathbb{C}^2\)</span>，</p>
+<div class="arithmatex">\[
+T\rightarrow \left( \begin{matrix}
+0&amp;      1\\
+1&amp;      0\\
+\end{matrix} \right) ,X_1\rightarrow \left( \begin{matrix}
+a&amp;      -1\\
+0&amp;      b\\
+\end{matrix} \right) ,X_2\rightarrow \left( \begin{matrix}
+b&amp;      1\\
+0&amp;      a\\
+\end{matrix} \right)
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(X_1,X_2\)</span> 在 <span class="arithmatex">\(L(a,b)\)</span> 上作用是可对角化的当且仅当 <span class="arithmatex">\(a\neq b\)</span>。</p>
+</li>
+</ul>
+</div>
+<p>下面我们可以证明 <span class="arithmatex">\(\mathrm{Path}(P,i)\)</span> 的分类定理</p>
+<details class="proof">
+<summary>证明</summary>
+<p>下次补。</p>
+</details>
+<h3 id="s1-8">1.8 完成分类</h3>
+<p>现在我们利用 <span class="arithmatex">\(\mathrm{Path}(P,i)\)</span> 的分类定理与 <span class="arithmatex">\(\# \mathrm{Irr}(S_n)=\# \text{共轭类}\)</span> 来结束 <span class="arithmatex">\(\mathrm{Irr}(S_n)\)</span> 的分类。</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.26</span></p>
+<p>一个 <span class="arithmatex">\(\mathbb{C}^n\)</span> 上的<strong>可容对换(admissible transposition)</strong> 为</p>
+<div class="arithmatex">\[
+(w_1,\cdots,w_n)\mapsto (w_1,\cdots,w_{i-1},w_{i+1},w_{i},w_{i+2},\cdots,w_n)
+\]</div>
+<p>若 <span class="arithmatex">\(w_{i+1}\neq w_i\pm 1\)</span>。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.27</span></p>
+<p>我们称 <span class="arithmatex">\(\mathbb{C}^n\)</span> 中的两个元素是<strong>组合等价的(combinatorial equivalent)</strong>，若其中一个可通过一系列可容对换得到另一个。此等价关系记为 <span class="arithmatex">\(\sim_c\)</span>。</p>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.28</span></p>
+<p>一个<strong>组合权(combinatorial weight)</strong>为 <span class="arithmatex">\(\mathbb{C}^n\)</span> 的一个元素，使得任意与其组合等价的元素 <span class="arithmatex">\((w_1,\cdots,w_n)\)</span> 均满足：</p>
+<ul>
+<li><span class="arithmatex">\(w_1=0\)</span></li>
+<li><span class="arithmatex">\(w_i\neq w_{i+1},\forall 1\le i\le n-1\)</span></li>
+<li><span class="arithmatex">\(\forall 1\le i\le n-2,w_{i+1}=w_i\pm 1\)</span></li>
+</ul>
+<p>记 <span class="arithmatex">\(cwt_n\)</span> 为所有组合权。</p>
+</div>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.29</span></p>
+<ul>
+<li><span class="arithmatex">\(wt_n\subset cwt_n\)</span>，且 <span class="arithmatex">\(wt_n\)</span> 是一个组合等价类。</li>
+<li>组合等价是表示等价。</li>
+</ul>
+</div>
+<p>于是我们有</p>
+<div class="arithmatex">\[
+\left| P(n)\right|=\left|wt_n/\sim_r \right|\le\left|wt_n/\sim_c \right|\le \left|cwt_n/\sim_c \right|
+\]</div>
+<div id="lem-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 1.30</span></p>
+<p>任意组合等价类均含有一个元素</p>
+<div class="arithmatex">\[
+(0,1,\cdots,n_1-1,-1,0,\cdots,n_2-2,-2,-1,\cdots,n_3-3,\cdots,1-k,\cdots,n_k-k)
+\]</div>
+<p>这里 <span class="arithmatex">\(n_1\ge \cdots\ge n_k\ge 1\)</span> 满足 <span class="arithmatex">\(\sum n_i=n\)</span>。</p>
+</div>
+<p>这表明</p>
+<div class="arithmatex">\[
+\left|cwt_n/\sim_c\right|\le\left|P(n)\right|
+\]</div>
+<p>结合上一不等式我们有</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.31</span></p>
+<ul>
+<li><span class="arithmatex">\(cwt_n=wt_n\)</span>。</li>
+<li><span class="arithmatex">\(\sim_c=\sim_r\)</span>。</li>
+<li>引理中的 <span class="arithmatex">\((n_1,\cdots,n_k)\)</span> 由等价类唯一确定。</li>
+</ul>
+</div>
+<p>综上，对任意 <span class="arithmatex">\(V\in \mathrm{Irr}(S_n)\)</span>，我们有元素 <span class="arithmatex">\(wt_n/\sim_r\)</span> 与之对应，即某个 <span class="arithmatex">\(n\)</span> 的分划 <span class="arithmatex">\(\lambda=(n_1,\cdots,n_k)\)</span>，这表明 <span class="arithmatex">\(\mathrm{Irr}(S_n)\)</span> 与 <span class="arithmatex">\(P_n\)</span> 一一对应。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.32</span></p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch08-fig-03.svg" /></p>
+<ul>
+<li><span class="arithmatex">\(\mathrm{triv}_4\)</span>，仅有唯一的权 <span class="arithmatex">\((0,1,2,3)\)</span>，得 <span class="arithmatex">\(\lambda=(4)\)</span>。</li>
+<li><span class="arithmatex">\(\mathrm{std}_4\)</span>，有权 <span class="arithmatex">\(\color{red}{(0,1,2,-1)}\)</span> <span class="arithmatex">\(,(0,1,-1,2),(0,-1,1,2)\)</span>，得 <span class="arithmatex">\(\lambda=(3,1)\)</span>。</li>
+<li><span class="arithmatex">\(\mathbb{C}^2\)</span>，有权 <span class="arithmatex">\(\color{red}{(0,1,-1,0)}\)</span> <span class="arithmatex">\(,(0,-1,1,0)\)</span>，得 <span class="arithmatex">\(\lambda =(2,2)\)</span>。</li>
+<li><span class="arithmatex">\(\mathrm{std}_4\otimes \mathrm{sgn}_4\)</span>，有权 <span class="arithmatex">\(\color{red}{(0,1,-1,-2)}\)</span> <span class="arithmatex">\(,(0,-1,1,-2),(0,-1,-2,1)\)</span>，得 <span class="arithmatex">\(\lambda=(2,1,1)\)</span>。</li>
+<li><span class="arithmatex">\(\mathrm{sgn}_4\)</span>，仅有唯一的权 <span class="arithmatex">\((0,-1,-2,-3)\)</span>，得 <span class="arithmatex">\(\lambda=(1,1,1,1)\)</span>。</li>
+</ul>
+</div>
+<h3 id="s1-9">1.9 Young 图</h3>
+<p>回忆，一个标准 Young 表 <span class="arithmatex">\(SYT(n)\)</span> 为一种将 <span class="arithmatex">\(1,2,\cdots,n\)</span> 填入 Young 表 <span class="arithmatex">\(Y_\lambda\)</span> 中满足从上到下从左到右均严格递增。一个标准 Young 表 <span class="arithmatex">\(T\)</span> 所对应的 Young 表被称为 <span class="arithmatex">\(T\)</span> 的形状。</p>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.33</span></p>
+<p>对 <span class="arithmatex">\(SYT(n)\)</span> <span class="arithmatex">\(T\)</span>，定义其 content</p>
+<div class="arithmatex">\[
+c(T):=(x_1-y_1,\cdots,x_n-y_n)
+\]</div>
+<p>其中 <span class="arithmatex">\((x_i,y_i)\)</span> 为 <span class="arithmatex">\(i\)</span> 对应的坐标。</p>
+</div>
+<p>可以证明 <span class="arithmatex">\(T\mapsto c(T)\)</span> 是单射，留做习题。</p>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.34</span></p>
+<p>映射 <span class="arithmatex">\(T\mapsto c(T)\)</span> 是 <span class="arithmatex">\(SYT(n)\)</span> 与 <span class="arithmatex">\(cwt(n)\)</span> 的双射。更进一步的，<span class="arithmatex">\(T\)</span> 的形状等同于由 <span class="arithmatex">\(c(T)\)</span> 所确定的划分。</p>
+</div>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.35</span></p>
+<p>令 <span class="arithmatex">\(\lambda\in P(n)\)</span>，<span class="arithmatex">\(V_\lambda\)</span> 为其对应 <span class="arithmatex">\(S_n\)</span> 的不可约表示。存在 <span class="arithmatex">\(V_\lambda\)</span> 的基 <span class="arithmatex">\(\left\{v_T\Big| T\in SYT(n),T \text{ 形状为 } Y_\lambda\right\}\)</span>，且 <span class="arithmatex">\(J_i\cdot v_T=(x_i-y_i)v_T\)</span>，其中 <span class="arithmatex">\((x_i,y_i)\)</span> 为 <span class="arithmatex">\(i\)</span> 在 <span class="arithmatex">\(T\)</span> 中的坐标。</p>
+</div>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.36</span></p>
+<p><span class="arithmatex">\(\lambda\in P(n)\)</span>，则作为 <span class="arithmatex">\(S_{n-1}-\)</span>表示</p>
+<div class="arithmatex">\[
+V_\lambda=\bigoplus_{\mu} V_\mu
+\]</div>
+<p>其中 <span class="arithmatex">\(\mu\)</span> 遍历所有比 <span class="arithmatex">\(\lambda\)</span> 少一个格子的 Young 表。更进一步的，<span class="arithmatex">\(J_n\)</span> 作用在 <span class="arithmatex">\(V_\mu\)</span> 为标量，其值为少的格子的 content。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.37</span></p>
+<p>定义 Young 图为一个有向图，其顶点为 Young 表，<span class="arithmatex">\(\mu \to \lambda\)</span> 当且仅当 <span class="arithmatex">\(\mu\)</span> 比 <span class="arithmatex">\(\lambda\)</span> 少一个格子。</p>
+</div>
+<div id="cor-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.38</span></p>
+<p>在 <span class="arithmatex">\(\bigsqcup_{n \geq 1} \operatorname{Irr}(S_n)\)</span> 与 Young 表的一一对应关系下，分支图等于 Young 图。</p>
+</div>
+<p><strong>注：</strong>利用 Young 图，很容易得到对 <span class="arithmatex">\(P\in \mathrm{Path}(V_\lambda)\)</span> 的权 <span class="arithmatex">\(w_P=(w_1,\cdots,w_n)\)</span>，因为我们直接有 <span class="arithmatex">\(w_i=\)</span> <span class="arithmatex">\(\lambda_i\setminus \lambda_{i-1}\)</span> 的 content。</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch08-fig-04.svg" /></p>
+<h2 id="references">参考文献</h2>
+<ol>
+<li>Pavel Etingof, Oleg Golberg, Sebastian Hensel, Tiankai Liu, Alex Schwendner, Dmitry Vaintrob, Elena Yudovina. Introduction to Representation Theory.</li>
+<li>Jean-Pierre Serre. Linear Representations of Finite Groups.</li>
+<li>William Fulton, Joe Harris. Representation Theory.</li>
+<li>Andrei Okounkovy, Anatoly Vershikz. A New Approach to Representation Theory of Symmetric Groups.</li>
+<li>Ivan Losev. Modern introduction to Representation theory.</li>
+</ol>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="representation-theory.pdf" href="../../../../assets/representation-theory.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="表示论章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-07/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第七章：箭图表示</span>
+    </a>
+    
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    <a class="zdd-pager-catalog" href="../../../#representation-theory">表示论 · 第 8 / 8 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#algebra">代数</a><a class="zdd-end-chip is-category" href="../../../../blog/#representation-theory">表示论</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=representation-theory">#representation-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

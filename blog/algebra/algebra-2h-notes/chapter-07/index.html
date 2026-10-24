@@ -1,0 +1,1227 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="代数2-H 笔记第七章：环和理想、模。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-07/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第七章：环与模 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-07/">
+  <meta property="og:title" content="第七章：环与模 - zdd14990">
+  <meta property="og:description" content="代数2-H 笔记第七章：环和理想、模。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="commutative-algebra">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-07/">
+  <meta name="twitter:title" content="第七章：环与模 - zdd14990">
+  <meta name="twitter:description" content="代数2-H 笔记第七章：环和理想、模。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e03\u7ae0\uff1a\u73af\u4e0e\u6a21",
+    "description": "\u4ee3\u65702-H \u7b14\u8bb0\u7b2c\u4e03\u7ae0\uff1a\u73af\u548c\u7406\u60f3\u3001\u6a21\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-07/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-07/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["commutative-algebra"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u4ee3\u6570", "algebra"], ["\u4ee3\u6570 2-H \u7b14\u8bb0", "algebra-2h-notes"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 环和理想
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 模
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 模">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 正合性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 张量积
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 张量积的正合性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#algebra-2h-notes">代数2-H笔记</a>
+    <span>Part 7 of 10</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">07</div>
+    <h1 id="top"><span class="book-visually-hidden">第 7 章：</span>环与模</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>4,775 字 · 约 14 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>环和理想</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p><span class="arithmatex">\((R,+,\cdot)\)</span> 称为<strong>环(ring)</strong>，若满足：</p>
+<ul>
+<li><span class="arithmatex">\((R,+)\)</span> 是交换群(这样<span class="arithmatex">\(R\)</span>有零元素，记为0)</li>
+<li><span class="arithmatex">\((xy)z=x(yz)\)</span></li>
+<li><span class="arithmatex">\(x(y+z)=xy+xz\)</span></li>
+<li><span class="arithmatex">\((y+z)x=yz+zx\)</span></li>
+<li><span class="arithmatex">\(xy=yx\)</span></li>
+<li><span class="arithmatex">\(\exists1\in R\)</span>,<span class="arithmatex">\(\forall x\in R,x1=1x=x\)</span></li>
+</ul>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span></p>
+<p><span class="arithmatex">\(R\)</span> 的子集称为<strong>子环(subring)</strong>，若它对 <span class="arithmatex">\(R\)</span> 中的加法与乘法也构成环。</p>
+<p><span class="arithmatex">\(R\)</span> 的子群 <span class="arithmatex">\(I\)</span> 称为<strong>理想(ideal)</strong>，若满足 <span class="arithmatex">\(\forall a\in R,x\in I,ax\in R\)</span>。</p>
+</div>
+<p>考虑 <span class="arithmatex">\(\left\{I_i\right\}_{i\in J}\)</span> 是 <span class="arithmatex">\(R\)</span> 的所有理想，则 <span class="arithmatex">\(\cap_{i\in J}I_i\)</span> 也是 <span class="arithmatex">\(R\)</span> 的理想。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span></p>
+<p>定义 <span class="arithmatex">\(\sum_{i\in J}I_i=\left\{ \sum_{i\in J'}a_i\Big| a_i\in I_i,J'\subset J\text{有限}\right\}\)</span>。</p>
+<p><span class="arithmatex">\(I_1\cdot I_2=\left\{a_ib_j\Big|  a_i\in I_1,b_j\in I_2\right\}\)</span>。</p>
+<p><span class="arithmatex">\(R,I\)</span> 为理想，<span class="arithmatex">\(R/I=\left\{\bar{a}=a+I\Big| a\in R\right\}\)</span> 称为 <strong><span class="arithmatex">\(R\)</span> 模 <span class="arithmatex">\(I\)</span> 的商环</strong>。</p>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p>对 <span class="arithmatex">\(x\in R\)</span>：</p>
+<ul>
+<li>称为<strong>零因子(zero divisor)</strong>若存在 <span class="arithmatex">\(y\neq 0 \in R\)</span> 使 <span class="arithmatex">\(xy=0\)</span>。</li>
+<li>称为<strong>幂零的(nilotent)</strong>若存在 <span class="arithmatex">\(n\)</span> 使得 <span class="arithmatex">\(x^n=0\)</span>。</li>
+<li>称为<strong>单位(unit)</strong>若存在 <span class="arithmatex">\(y\in R\)</span> 使得 <span class="arithmatex">\(xy=1\)</span>。</li>
+</ul>
+<p>环称为<strong>整环(integral domain)</strong>，若没有非零零因子。</p>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.5</span></p>
+<p>由单位生成的理想称为<strong>单位理想(unit ideal)</strong>。</p>
+<p>由一个元生成的理想称为<strong>主理想(principal ideal)</strong>。</p>
+<p>一个理想称为环 <span class="arithmatex">\(R\)</span> 的<strong>极大理想</strong>，若它不被包含于任一其他 <span class="arithmatex">\(R\)</span> 的理想。</p>
+<p>一个理想 <span class="arithmatex">\(p\)</span> 称为<strong>素理想</strong>，若 <span class="arithmatex">\(xy\in \mathfrak{p}\)</span> 能推出 <span class="arithmatex">\(x\in \mathfrak{p}\)</span> 或 <span class="arithmatex">\(y\in \mathfrak{p}\)</span>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.6</span></p>
+<p><span class="arithmatex">\(I\)</span> 是素理想 <span class="arithmatex">\(\Longleftrightarrow\)</span> <span class="arithmatex">\(R/I\)</span> 是整环。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.7</span></p>
+<p><span class="arithmatex">\(k[x]\)</span> 的理想均形如 <span class="arithmatex">\((f(x))\)</span>。</p>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.8</span></p>
+<p>任一非零理想、非单位理想、非单位元都包含于某一极大理想。</p>
+</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.9</span></p>
+<p>所有幂零元构成的理想称作<strong>幂零根(nilradical)</strong>。</p>
+<p>所有极大理想的交称作<strong>Jacobson 根(Jacobson radical)</strong>。</p>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.10</span></p>
+<p>幂零根等于所有素理想的交。</p>
+<p><span class="arithmatex">\(\mathrm{Jacb}(R)\)</span> 是所有满足 <span class="arithmatex">\(\forall r\in R,1-ar\)</span> 可逆的 <span class="arithmatex">\(a\)</span> 构成的集合。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.11</span></p>
+<p><span class="arithmatex">\((I:J)=\left\{x\in R\Big| xJ\subset I\right\}\)</span> 称为<strong>商理想</strong>。<span class="arithmatex">\((0:J)\)</span> 称作 <span class="arithmatex">\(J\)</span> 的<strong>零化理想(annihilator)</strong>，记作 <span class="arithmatex">\(\mathrm{Ann}(J)\)</span>。特别的，若 <span class="arithmatex">\(J=(x)\)</span>，简记 <span class="arithmatex">\((I:J)=(I:x)\)</span>。</p>
+<p><span class="arithmatex">\(r(I)=\left\{x\in R\Big| x^n\in I,n&gt;0\right\}\)</span> 称作 <span class="arithmatex">\(I\)</span> 的<strong>根(radical)</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.12</span></p>
+<p><span class="arithmatex">\(\displaystyle\bigcup_{0\neq x\in R} \mathrm{Ann}(x)=\left\{R \text{的零因子}\right\}\)</span>。<span class="arithmatex">\(r(I)=\displaystyle\bigcap_{I\subset \mathfrak{p}\ prime}\mathfrak{p}\)</span>。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>模</h2>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>设<span class="arithmatex">\(R\)</span>是一个交换环，<span class="arithmatex">\(M\)</span>是一个交换群，<span class="arithmatex">\(\mu:R\times M\rightarrow M\)</span>，我们把<span class="arithmatex">\(\mu(r,x)\)</span>写作<span class="arithmatex">\(rx\)</span>，若：</p>
+<ul>
+<li><span class="arithmatex">\(a(x+y)=ax+by\)</span>，</li>
+<li><span class="arithmatex">\((a+b)x=ax+bx\)</span>，</li>
+<li><span class="arithmatex">\((ab)x=a(bx)\)</span>，</li>
+<li><span class="arithmatex">\(1x=x\)</span>。</li>
+</ul>
+<p>则称 <span class="arithmatex">\(M\)</span> 为<strong>R-模(R-module)</strong>。</p>
+<p><span class="arithmatex">\(M\)</span> 的子群称作<strong>子模(submodule)</strong>若 <span class="arithmatex">\(M\)</span> 也是 <span class="arithmatex">\(R\)</span>-模。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span></p>
+<p>两个 <span class="arithmatex">\(R\)</span>-模 <span class="arithmatex">\(M,N\)</span> 之间的映射 <span class="arithmatex">\(f:M\rightarrow N\)</span> 称为<strong>同态(homomorphism)</strong>，若满足 <span class="arithmatex">\(f(x+y)=f(x)+f(y),f(ax)=af(x),\forall a\in R\)</span>。</p>
+<p>称 <span class="arithmatex">\(f\)</span> 是<strong>同构(isomorphism)</strong>若存在同态 <span class="arithmatex">\(g:N\rightarrow M\)</span> 满足 <span class="arithmatex">\(f\circ g=id_N,g\circ f=id_M\)</span>。</p>
+<p><span class="arithmatex">\(\mathrm{ker}f=f^{-1}(0)\)</span> 是 <span class="arithmatex">\(M\)</span> 的子模。</p>
+<p><span class="arithmatex">\(\mathrm{coker}f=N/\mathrm{Im}f\)</span> 是 <span class="arithmatex">\(R\)</span>-模。</p>
+<p><span class="arithmatex">\(\mathrm{Hom}_R(M,N)\)</span> 为所有同态 <span class="arithmatex">\(f:M\rightarrow N\)</span> 构成的集合，也是一个 <span class="arithmatex">\(R\)</span>-模</p>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span></p>
+<p><span class="arithmatex">\(\left\{M_i\right\}_{i\in S}\)</span> 是 <span class="arithmatex">\(M\)</span> 的一列子模，定义</p>
+<div class="arithmatex">\[
+\sum_{i\in S}M_i=\left\{\sum_{i\in S'} x_i\Big| x_i \in M_i,S'\subset S\text{有限}\right\}
+\]</div>
+<p>称 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(\left\{M_i\right\}_{i\in S}\)</span> 的<strong>直和</strong>若每个元素表示方法唯一，记作 <span class="arithmatex">\(M=\displaystyle\bigoplus_{i\in S}M_i\)</span>。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.4</span></p>
+<p><span class="arithmatex">\(M\)</span> 是<strong>自由的</strong>若 <span class="arithmatex">\(M=\displaystyle\bigoplus_{i\in S}M_i\)</span> 且 <span class="arithmatex">\(M_i\cong R\)</span></p>
+<p>称 <span class="arithmatex">\(M\)</span> 是<strong>有限生成的</strong>若 <span class="arithmatex">\(M=\displaystyle\sum_{1\le i\le n} R\cdot x_i,x_i\in M\)</span>。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.5</span></p>
+<p>若 <span class="arithmatex">\(M\)</span> 是有限生成自由模，则 <span class="arithmatex">\(M\cong R^{\oplus n}\)</span> 且 <span class="arithmatex">\(n\)</span> 唯一，<span class="arithmatex">\(n\)</span> 称为这个自由模的<strong>维数(rank)</strong>。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.6</span></p>
+<p><span class="arithmatex">\(M\)</span> 有限生成 <span class="arithmatex">\(\Longleftrightarrow\)</span> 存在 <span class="arithmatex">\(R^{\oplus n}\twoheadrightarrow M\)</span> <span class="arithmatex">\(\Longleftrightarrow\)</span> <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(R^{\oplus n}\)</span> 的商模。</p>
+</div>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.7</span></p>
+<p><span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(R\)</span>-模，<span class="arithmatex">\(I\)</span> 是 <span class="arithmatex">\(R\)</span> 的理想，定义 <span class="arithmatex">\(IM=\left\{\sum_{i=1}^{n}a_ix_i\Big| a_i\in I,x_i\in M\right\}\)</span>。</p>
+<p><span class="arithmatex">\(N,N'\)</span> 是 <span class="arithmatex">\(M\)</span> 的子模，定义 <span class="arithmatex">\((N':N)=\left\{x\in R\Big| x\cdot N\subset N'\right\}\)</span> 是 <span class="arithmatex">\(R\)</span> 的一个理想，<span class="arithmatex">\((0:N)\)</span> 记作 <span class="arithmatex">\(\mathrm{Ann}(N)\)</span>。</p>
+</div>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.8</span></p>
+<p>称 <span class="arithmatex">\(M\)</span> 是<strong>忠实的(faithful)</strong> 若 <span class="arithmatex">\(\mathrm{Ann}(M)=0\)</span>。</p>
+</div>
+<p><span class="arithmatex">\(M\)</span> 在 <span class="arithmatex">\(R/\mathrm{Ann}(M)\)</span> 是忠实的。</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.9</span><span class="book-name">Cayley-Hamilton</span></p>
+<p><span class="arithmatex">\(M\)</span> 是有限生成 <span class="arithmatex">\(R\)</span>-模，<span class="arithmatex">\(\phi\in \mathrm{Hom}_R(M,M)\)</span>，<span class="arithmatex">\(\phi(M)\subset I\cdot M\)</span>，则存在 <span class="arithmatex">\(a_i\in I\)</span> 使得</p>
+<div class="arithmatex">\[
+\phi^n+a_1\phi^{n-1}+\cdots+a_n=0\in \mathrm{Hom}_R(M,M)
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(M\)</span> 生成元 <span class="arithmatex">\(x_1,\cdots,x_n\)</span>，<span class="arithmatex">\(M=\sum R\cdot x_i\)</span>，则 <span class="arithmatex">\(\phi(x_i)=\sum_j a_{i,j}x_j,a_{i,j}\in I\)</span>，则</p>
+<div class="arithmatex">\[
+\sum_j(a_{i,j}-\delta_{i,j}\phi)x_j=0
+\]</div>
+<p>进而 <span class="arithmatex">\((a_{i,j}-\delta_{i,j}\phi)_{n\times n}\left( \begin{array}{c} x_1\\ \vdots\\ x_n\\ \end{array} \right) =0\)</span>，故 <span class="arithmatex">\(\mathrm{det}A(x_i)=0\)</span>。</p>
+</details>
+<p>若 <span class="arithmatex">\(IM=M\)</span>，取 <span class="arithmatex">\(\phi=id_M\)</span>，则存在 <span class="arithmatex">\(a\in I,(1+a)M=0\)</span>。</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.10</span><span class="book-name">Nakayama</span></p>
+<p><span class="arithmatex">\(M\)</span> 是有限生成模，理想 <span class="arithmatex">\(I\subset \mathrm{Jacb}(R)\)</span>。若 <span class="arithmatex">\(IM=M\)</span> 则 <span class="arithmatex">\(M=0\)</span>。更一般的，对 <span class="arithmatex">\(M\)</span> 的子模 <span class="arithmatex">\(N\)</span>，若 <span class="arithmatex">\(M=N+IM\)</span> 则 <span class="arithmatex">\(M=N\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>存在 <span class="arithmatex">\(a\in I\)</span>，<span class="arithmatex">\((1+a)M=0\)</span>，由于 <span class="arithmatex">\(1+a\)</span> 是单位，故 <span class="arithmatex">\(M=0\)</span>。</p>
+<p>对第二个结论，我们有 <span class="arithmatex">\(I(M/N)=(IM+N)/N=M/N\)</span>。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.11</span></p>
+<p>环 <span class="arithmatex">\(R\)</span>，有限生成 <span class="arithmatex">\(R\)</span>-模 <span class="arithmatex">\(M\)</span>，<span class="arithmatex">\(x_1,\cdots,x_n\in M\)</span> 满足 <span class="arithmatex">\(R/\mathfrak{m}\curvearrowright M/\mathfrak{m}M=\sum R\cdot \bar{x_i}\)</span>，则 <span class="arithmatex">\(M=\sum Rx_i\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(N=\sum_i Rx_i\)</span>，则 <span class="arithmatex">\(M=N+\mathfrak{m}M\)</span>，由 Nakayama 引理知成立。</p>
+</details>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.12</span></p>
+<p>环 <span class="arithmatex">\(R\)</span> 称为<strong>局部的(local)</strong>若它仅有一个极大理想 <span class="arithmatex">\(\mathfrak{m}\)</span>，进而 <span class="arithmatex">\(R\setminus \mathfrak{m}\)</span> 中均是单位元，<span class="arithmatex">\(R/\mathfrak{m}\)</span> 称为 <span class="arithmatex">\(R\)</span> 的<strong>剩余类域(residue field)</strong>。</p>
+</div>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.13</span></p>
+<p><span class="arithmatex">\(R\)</span>是局部环，<span class="arithmatex">\(M\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>模，则我们可以将 <span class="arithmatex">\(M/\mathfrak{m}M\)</span> 看成 <span class="arithmatex">\(R/\mathfrak{m}-\)</span>模，这是一个向量空间。若这个向量空间的基是 <span class="arithmatex">\(x_1,\cdots,x_n\)</span>，则 <span class="arithmatex">\(\left\{x_i\right\}\)</span> 生成 <span class="arithmatex">\(M\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(N\)</span> 是由 <span class="arithmatex">\(\left\{x_i\right\}\)</span> 生成的子模，则 <span class="arithmatex">\(N\rightarrow M/\mathfrak{m}M\)</span> 是满射，这表示 <span class="arithmatex">\(N+\mathfrak{m}M=M\)</span>，由 Nakayama 引理知 <span class="arithmatex">\(N=M\)</span>。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.14</span></p>
+<p><span class="arithmatex">\(R\)</span> 是局部环，<span class="arithmatex">\(M=0\)</span> 当且仅当 <span class="arithmatex">\(M/\mathfrak{m}M=0\)</span>。<span class="arithmatex">\(M\rightarrow N\)</span> 是满射当且仅当 <span class="arithmatex">\(M/\mathfrak{m}M\rightarrow N/\mathfrak{m}N\)</span> 是满射。</p>
+</div>
+<h3 id="s2-1">2.1 正合性</h3>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.15</span></p>
+<p>一个 <span class="arithmatex">\(R\)</span>-模和 <span class="arithmatex">\(R\)</span>-同态的序列</p>
+<div class="arithmatex">\[
+\dots \rightarrow M_{i-1} \stackrel{f_i}{\longrightarrow}M_i\stackrel{f_{i+1}}{\longrightarrow}M_{i+1} \rightarrow\cdots
+\]</div>
+<p>叫做在 <span class="arithmatex">\(M_i\)</span> 处<strong>正合(exact)</strong>，若 <span class="arithmatex">\(\mathrm{Im}(f_i)=\mathrm{Ker}(f_{i+1})\)</span>。</p>
+<ul>
+<li><span class="arithmatex">\(0 \rightarrow M' \rightarrow M\rightarrow M'' \rightarrow 0\)</span> 称作短正合列；</li>
+<li><span class="arithmatex">\(0 \rightarrow M' \rightarrow M\rightarrow M''\)</span> 称作左正合列；</li>
+<li><span class="arithmatex">\(M' \rightarrow M\rightarrow M'' \rightarrow 0\)</span> 称作右正合列。</li>
+</ul>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.16</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(0\rightarrow M'\stackrel{f}{\longrightarrow} M\)</span> 是正合的当且仅当 <span class="arithmatex">\(f\)</span> 是单射；</p>
+</li>
+<li>
+<p><span class="arithmatex">\(M\stackrel{g}{\longrightarrow} M''\rightarrow 0\)</span> 是正合的当且仅当 <span class="arithmatex">\(f\)</span> 是满射；</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\dots \rightarrow M_{i-1}    \stackrel{f_i}{\longrightarrow}M_i\stackrel{f_{i+1}}{\longrightarrow}M_{i+1} \rightarrow\cdots\)</span></p>
+<p>是正合的当且仅当 <span class="arithmatex">\(0 \rightarrow \mathrm{Im}f_i \rightarrow M_i\rightarrow \mathrm{Ker}f_{i+1} \rightarrow 0\)</span> 是正合的。</p>
+</li>
+</ul>
+</div>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.17</span></p>
+<p>正合列 <span class="arithmatex">\(0 \rightarrow M' \stackrel{f}{\rightarrow}M\stackrel{g}{\rightarrow}M'' \rightarrow 0\)</span> 称为<strong>分裂的(split)</strong>，若存在 <span class="arithmatex">\(h:M''\rightarrow M\)</span> 使得 <span class="arithmatex">\(g\circ h=id_M\)</span>。</p>
+</div>
+<p>注意到 <span class="arithmatex">\(f,h\)</span> 都是单射，故 <span class="arithmatex">\(M',M''\)</span> 可视作 <span class="arithmatex">\(M\)</span> 的子模且由 <span class="arithmatex">\(g\circ f=0\)</span> 有 <span class="arithmatex">\(M'\cap M''=\left\{0\right\}\)</span>。对任意 <span class="arithmatex">\(x\in M\)</span>，<span class="arithmatex">\(x=h(g(x))+(x-h(g(x))\in M''+M'\)</span>，故 <span class="arithmatex">\(M=M'\oplus M''\)</span>。</p>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.18</span></p>
+<p><span class="arithmatex">\((1)\)</span> <span class="arithmatex">\(M'\rightarrow M\rightarrow M''\rightarrow 0\)</span> 是正合的当且仅当对任意 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(N\)</span>，有</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{Hom}(M'',N)\rightarrow \mathrm{Hom}(M,N)\rightarrow \mathrm{Hom}(M',N)
+\]</div>
+<p>是正合的。</p>
+<p><span class="arithmatex">\((2)\)</span> <span class="arithmatex">\(0\rightarrow N'\rightarrow N\rightarrow N''\)</span> 是正合的当且仅当对任意 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(N\)</span> 有</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{Hom}(M,N'')\rightarrow \mathrm{Hom}(M,N)\rightarrow \mathrm{Hom}(M,N')
+\]</div>
+<p>是正合的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们只证明 <span class="arithmatex">\((1)\)</span>，<span class="arithmatex">\((2)\)</span> 是类似的。</p>
+<p>设 <span class="arithmatex">\(M'\rightarrow M\rightarrow M''\rightarrow 0\)</span> 是正合的。若 <span class="arithmatex">\(M\rightarrow M''\rightarrow N\)</span> 是零的，由于 <span class="arithmatex">\(M\rightarrow M'\)</span> 是满射，故 <span class="arithmatex">\(M''\rightarrow N\)</span> 是零。于是 <span class="arithmatex">\(\mathrm{Hom}(M'',N)\rightarrow \mathrm{Hom}(M,N)\)</span> 是单射。</p>
+<p>若 <span class="arithmatex">\(f:M\rightarrow N\in \mathrm{Im}(\mathrm{Hom}(M'',N)\rightarrow \mathrm{Hom}(M,N))\)</span>，则 <span class="arithmatex">\((M'\rightarrow M\rightarrow N)=(M'\rightarrow M\rightarrow M''\rightarrow N)=0\)</span>，故 <span class="arithmatex">\(f\in \mathrm{Ker}(\mathrm{Hom}(M,N)\rightarrow \mathrm{Hom}(M',N))\)</span>。</p>
+<p>另一方面若 <span class="arithmatex">\((M'\rightarrow M\rightarrow N)=0\)</span>，由于 <span class="arithmatex">\(M''\cong M/\mathrm{Im}(M'\rightarrow M)\)</span>，故存在自然映射 <span class="arithmatex">\(M''\rightarrow N,(M\rightarrow N)=(M\rightarrow M''\rightarrow N)\)</span>，故 <span class="arithmatex">\(M\rightarrow N\in \mathrm{Im}(\mathrm{Hom}(M'',N)\rightarrow \mathrm{Hom}(M,N))\)</span>。</p>
+<p>反过来是类似的，读者自证不难。</p>
+</details>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.19</span><span class="book-name">Snake lemma</span></p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-01.svg" /></p>
+<p>是交换图。则存在正合列</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{ker}f'\rightarrow \mathrm{ker}f\rightarrow \mathrm{ker}f''\stackrel{\delta}{\rightarrow}\mathrm{coker}f'\rightarrow \mathrm{coker}f\rightarrow \mathrm{coker}f''\rightarrow 0
+\]</div>
+<p>其中 <span class="arithmatex">\(\delta\)</span> 称为<strong>边缘同态(boundary homomorphism)</strong>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们这样给出 <span class="arithmatex">\(\delta\)</span>：对任意 <span class="arithmatex">\(x''\in M\)</span>，<span class="arithmatex">\(f''(x'')=0\)</span>，我们取 <span class="arithmatex">\(x\in M\)</span>，<span class="arithmatex">\((M\rightarrow M'')(x)=x''\)</span>，则 <span class="arithmatex">\(f(x)\in \mathrm{ker}(N\rightarrow N'')\)</span>，故存在唯一的 <span class="arithmatex">\(x'\in N',x'\rightarrow f(x)\)</span>。令 <span class="arithmatex">\(\delta(x'')=\overline{x'}\in \mathrm{coker}f'\)</span>，容易验证良定义，且 <span class="arithmatex">\(\mathrm{ker}f\rightarrow \mathrm{ker}f''\stackrel{\delta}{\rightarrow}\mathrm{coker}f'\rightarrow \mathrm{coker}f\)</span> 正合</p>
+</details>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.20</span></p>
+<p>设 <span class="arithmatex">\(S\)</span> 是一些 <span class="arithmatex">\(R-\)</span>模构成的集合，<span class="arithmatex">\(\lambda:S\rightarrow \mathbb{Z}\)</span> 称为<strong>可加的(additive)</strong>若对任意正合列 <span class="arithmatex">\(0\rightarrow M'\rightarrow M\rightarrow M''\rightarrow 0\)</span> 有  <span class="arithmatex">\(\lambda(M)=\lambda(M')+\lambda(M'')\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.21</span></p>
+<p>若 <span class="arithmatex">\(R\)</span> 是域，则 <span class="arithmatex">\(\lambda(M)=\mathrm{dim}_R(M)\)</span> 是可加的。</p>
+</div>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.22</span></p>
+<p>设 <span class="arithmatex">\(0\rightarrow M_0\rightarrow M_1\rightarrow \cdots \rightarrow M_n\rightarrow 0\)</span> 是正合的，<span class="arithmatex">\(M_i\in S\)</span>，<span class="arithmatex">\(\lambda\)</span> 在 <span class="arithmatex">\(S\)</span> 上可加，则</p>
+<div class="arithmatex">\[
+\sum_{i=0}^n(-1)^i\lambda(M_i)=0
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(0\rightarrow \mathrm{Im}f_i\rightarrow M_i\rightarrow \mathrm{Im}f_{i+1}\rightarrow 0\)</span> 是正合的，故 <span class="arithmatex">\(\lambda(M_i)=\lambda(\mathrm{Im}f_i)+\lambda(\mathrm{Im}f_{i+1})\)</span>。</p>
+</details>
+<h3 id="s2-2">2.2 张量积</h3>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.23</span></p>
+<p><span class="arithmatex">\(M,N,P\)</span> 是 <span class="arithmatex">\(R-\)</span>模，<span class="arithmatex">\(f:M\times N\rightarrow P\)</span> 称为 <strong><span class="arithmatex">\(R-\)</span>双线性的(<span class="arithmatex">\(R-\)</span>bilinear)</strong>，若任意 <span class="arithmatex">\(x\in M\)</span>，<span class="arithmatex">\(N\rightarrow P,y\mapsto f(x,y)\)</span> 是 <span class="arithmatex">\(R-\)</span>线性的且任意 <span class="arithmatex">\(y\in N\)</span>，<span class="arithmatex">\(M\rightarrow P,x\mapsto f(x,y)\)</span> 是 <span class="arithmatex">\(R-\)</span>线性的。</p>
+</div>
+<p>若 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(R-\)</span>双线性的，则如下元素均为零：</p>
+<div class="arithmatex">\[
+\left( x+x^\prime,y \right) -\left( x,y \right) -\left( x^\prime,y \right),\left( x,y+y^\prime \right) -\left( x,y \right) -\left( x,y^\prime \right),\left( ax,y \right) -a\left( x,y \right),\left( x,ay \right) -a\left( x,y \right)
+\]</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.24</span></p>
+<p><span class="arithmatex">\(M,N\)</span> 是 <span class="arithmatex">\(R-\)</span>模，<span class="arithmatex">\(C=\bigoplus_{(x,y)\in M\times N} R\cdot (x,y)\)</span>，<span class="arithmatex">\(D\subset C\)</span> 由 <span class="arithmatex">\((\ast)\)</span> 生成。称 <span class="arithmatex">\(C/D\)</span> 为 <span class="arithmatex">\(M\)</span> 与 <span class="arithmatex">\(N\)</span> 的张量积，记作 <span class="arithmatex">\(M\otimes N\)</span>。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.25</span><span class="book-name">Universal property</span></p>
+<p>存在双线性映射 <span class="arithmatex">\(g:M\times N\rightarrow M\otimes N,(x,y)\mapsto x\otimes y\)</span> 使得对任意双线性映射 <span class="arithmatex">\(f:M\times N\rightarrow P\)</span>，存在唯一的 <span class="arithmatex">\(R\)</span>-线性映射 <span class="arithmatex">\(h\)</span> 使下图交换：</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-02.svg" /></p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对任意映射 <span class="arithmatex">\(f:M\times N\rightarrow P\)</span>，我们有 <span class="arithmatex">\(f':C\rightarrow P,\sum a_{xy}(x,y)\mapsto \sum a_{xy}f(x,y)\)</span>，则 <span class="arithmatex">\(f\)</span> 是双线性的当且仅当 <span class="arithmatex">\(\mathrm{ker}f'\supset D\)</span>。故若 <span class="arithmatex">\(f\)</span> 是双线性的，则存在唯一的 <span class="arithmatex">\(h\)</span>，<span class="arithmatex">\(f'=h\circ \pi\)</span>，其中 <span class="arithmatex">\(\pi\)</span> 是投影映射 <span class="arithmatex">\(C\rightarrow M\otimes N=C/D\)</span>，则 <span class="arithmatex">\(f=h\circ g\)</span>。</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-03.svg" /></p>
+</details>
+<p>由此命题我们可以有如下张量积的定义：</p>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.26</span></p>
+<p><span class="arithmatex">\(M,N\)</span> 的张量积 <span class="arithmatex">\(T\)</span> 是由双线性映射 <span class="arithmatex">\(g:M\times N\rightarrow T\)</span> 定义的模，对任意 <span class="arithmatex">\(f:M\times N\rightarrow P\)</span> 存在唯一的线性映射 <span class="arithmatex">\(f':T\rightarrow P,f=f'\circ g\)</span>。</p>
+</div>
+<details class="proof">
+<summary>张量积的唯一性</summary>
+<p>若我们有两个不同的张量积 <span class="arithmatex">\(T_1\)</span> 和 <span class="arithmatex">\(T_2\)</span> 与对应的双线性映射 <span class="arithmatex">\(g_1,g_2\)</span>，由上定义存在 <span class="arithmatex">\(h_1:T_1\rightarrow T_2,g_2=h_1\circ g_1\)</span> 与 <span class="arithmatex">\(h_2:T_2\rightarrow T_1,g_1=h_2\circ g_2\)</span>。则 <span class="arithmatex">\(g_2=h_1\circ g_1=h_1\circ h_2\circ g_2\)</span>。由于 <span class="arithmatex">\(h_1\circ h_2:T_2\rightarrow T_2\)</span> 是线性的，由唯一性 <span class="arithmatex">\(h_1\circ h_2=id_{T_2}\)</span>。同理 <span class="arithmatex">\(h_2\circ h_1=id_{T_1}\)</span>，故 <span class="arithmatex">\(T_1\cong T_2\)</span>。</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-04.svg" /></p>
+</details>
+<p>由 Universal property，我们可以定义 <span class="arithmatex">\(M_1,\cdots,M_n\)</span> 的张量积，由多线性映射 <span class="arithmatex">\(g:M_1\times \cdots \times M_n\rightarrow M_1\otimes \cdots \otimes M_n,(x_1,\cdots,x_n)\mapsto x_1\otimes \cdots \otimes x_n\)</span> 定义，对任意多线性映射 <span class="arithmatex">\(f:M_1\times \cdots \times M_n\rightarrow P\)</span>，存在唯一的 <span class="arithmatex">\(R\)</span>-线性映射 <span class="arithmatex">\(h\)</span> 使下图交换：</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-05.svg" /></p>
+<p>设 <span class="arithmatex">\(M\)</span> 由 <span class="arithmatex">\(\left\{x_i\right\}_{i\in S}\)</span> 生成，<span class="arithmatex">\(N\)</span> 由 <span class="arithmatex">\(\left\{y_i\right\}_{i\in S'}\)</span> 生成，则</p>
+<div class="arithmatex">\[
+\sum a_{x,y}(x,y)=\sum a_{x,y}(\sum b_i x_i,\sum c_j y_j)=\sum a_{x,y}\sum b_ic_j x_i\otimes y_j
+\]</div>
+<p>即 <span class="arithmatex">\(M\otimes\)</span> 由 <span class="arithmatex">\(\left\{x_i\otimes y_j\right\}\)</span> 生成。于是有如下推论：</p>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.27</span></p>
+<p>若 <span class="arithmatex">\(M,N\)</span> 有限生成，则 <span class="arithmatex">\(M\otimes N\)</span> 也有限生成。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.28</span></p>
+<p>将 <span class="arithmatex">\(\mathbb{Z}_m\otimes \mathbb{Z}_n\)</span> 看成 <span class="arithmatex">\(\mathbb{Z}-\)</span>模。我们来证 <span class="arithmatex">\(\mathbb{Z}_m\otimes \mathbb{Z}_n\cong \mathbb{Z}_{(m,n)}\)</span>。</p>
+<p>令 <span class="arithmatex">\(d=(m,n)\)</span>，<span class="arithmatex">\(\mathbb{Z}_m\otimes \mathbb{Z}_n\)</span> 由 <span class="arithmatex">\(1\otimes 1\)</span> 生成，<span class="arithmatex">\(m(1\otimes 1)=m\otimes 1=0,n(1\otimes 1)=1\otimes n=0\)</span>，故 <span class="arithmatex">\(d(1\otimes 1)=0\)</span>。令 <span class="arithmatex">\(f:\mathbb{Z}_m\times \mathbb{Z}_n\rightarrow \mathbb{Z}_d,(a,b)\mapsto ab\)</span>，这是双线性的，故由 Universal property 存在满射 <span class="arithmatex">\(h:\mathbb{Z}_m\otimes \mathbb{Z}_n\rightarrow \mathbb{Z}_d\)</span>。这同时也是单射因为 <span class="arithmatex">\(d(1\otimes 1)=0\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.29</span></p>
+<p>设 <span class="arithmatex">\(M,N\)</span> 分别为 <span class="arithmatex">\(m,n\)</span> 维自由模且</p>
+<div class="arithmatex">\[
+M=\displaystyle\bigoplus_{i=1}^n Rx_i,N=\displaystyle\bigoplus_{j=1}^m Ry_j
+\]</div>
+<p>令 <span class="arithmatex">\(A=\bigoplus_{i=1}^n\bigoplus_{j=1}^m R x_i\otimes y_j\)</span>。</p>
+<p>考虑 <span class="arithmatex">\(f:M\times N\rightarrow A,(\sum a_ix_i,\sum b_jy_j)\mapsto \sum a_ib_j(x_i\otimes y_j)\)</span>，这是双线性的，故我们可以构造 <span class="arithmatex">\(f':M\otimes N\rightarrow A,f'=f\circ g\)</span>。</p>
+<p>另一方面我们自然有 <span class="arithmatex">\(h:A\rightarrow M\otimes N,x_i\otimes y_j\mapsto x_i\otimes y_j\)</span>。可以验证 <span class="arithmatex">\(f'\circ h=id_A,h\circ f'=id_{M\otimes N}\)</span>，故 <span class="arithmatex">\(M\otimes N\cong A\)</span> 是一个 <span class="arithmatex">\(mn\)</span> 维的自由模。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.30</span></p>
+<p><span class="arithmatex">\(2\otimes \overline{1}\in \mathbb{Z}\otimes \mathbb{Z}_2\)</span>，<span class="arithmatex">\(2\otimes \overline{1}=2\cdots 1\otimes \overline{1}=1\otimes 2\cdots \overline{1}=\overline{0}\)</span>，但在 <span class="arithmatex">\(2\mathbb{Z}\otimes \mathbb{Z}_2\)</span> 中 <span class="arithmatex">\(2\otimes \overline{1}\neq 0\)</span>。</p>
+<p>故若 <span class="arithmatex">\(M'\subset M,N'\subset N\)</span>，不一定有 <span class="arithmatex">\(M'\otimes N'\subset M\otimes N\)</span>。</p>
+<p>另一方面，若 <span class="arithmatex">\(\sum x\otimes y=0\in M'\otimes N'\)</span>，则 <span class="arithmatex">\(\sum x\otimes y=0\in M\otimes N\)</span>。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.31</span></p>
+<p><span class="arithmatex">\(M,N,P\)</span> 是 <span class="arithmatex">\(R-\)</span>模，则有如下命题成立：</p>
+<ul>
+<li><span class="arithmatex">\(M\otimes N\cong N\otimes M\)</span></li>
+<li><span class="arithmatex">\((M\otimes N)\otimes P\cong M\otimes (N\otimes P)\cong M\otimes N\otimes P\)</span></li>
+<li><span class="arithmatex">\((M\oplus N)\otimes P\cong (M\otimes P)\oplus (N\otimes P)\)</span></li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>这些同构分别由如下映射给出：</p>
+<ul>
+<li><span class="arithmatex">\(x\otimes y\mapsto y\otimes x\)</span>；</li>
+<li><span class="arithmatex">\((x\otimes y)\otimes z\mapsto x\otimes (y\otimes z)\mapsto x\otimes y\otimes z\)</span>；</li>
+<li><span class="arithmatex">\((x,y)\otimes z\mapsto (x\otimes z,y\otimes z)\)</span>。</li>
+</ul>
+</details>
+<p>设 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(R-\)</span>模，<span class="arithmatex">\(N\)</span> 是 <span class="arithmatex">\(R,R'-\)</span>双模(满足 <span class="arithmatex">\((ax)b=a(xb)\)</span>)，<span class="arithmatex">\(P\)</span> 是 <span class="arithmatex">\(R'-\)</span>模，则</p>
+<div class="arithmatex">\[
+(M\otimes_RN)\otimes_{R'}P\cong M\otimes_R N \otimes_{R'} P
+\]</div>
+<p>是 <span class="arithmatex">\(R,R'-\)</span>双模</p>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.32</span></p>
+<p>同态 <span class="arithmatex">\(f:M\rightarrow M',g:N\rightarrow N'\)</span> 则</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-06.svg" /></p>
+</div>
+<p>设 <span class="arithmatex">\(N\)</span> 是 <span class="arithmatex">\(R-\)</span>模，在范畴论中我们有函子</p>
+<p>Cat of R-module<span class="arithmatex">\(\longrightarrow\)</span> Cat of R-module</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-07.svg" /></p>
+<p>设 <span class="arithmatex">\(\varphi:R\rightarrow R'\)</span> 是环同态，则在 <span class="arithmatex">\(R'\)</span> 上定义 <span class="arithmatex">\(ra=\varphi(r)a\)</span> 则是一个 <span class="arithmatex">\(R-\)</span>模。对任意 <span class="arithmatex">\(R'-\)</span>模 <span class="arithmatex">\(M'\)</span>，定义 <span class="arithmatex">\(ra=\varphi(r)a\)</span> 则是一个 <span class="arithmatex">\(R-\)</span>模，这称为<strong>纯量限制(restriction of scalars)</strong>。对任意 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span>，在 <span class="arithmatex">\(M\otimes_RR'\)</span> 上定义 <span class="arithmatex">\(r(a\otimes x)=a\otimes rx\)</span> 则是一个 <span class="arithmatex">\(R'-\)</span>模，这称为<strong>纯量扩张(extension of scalars)</strong>。</p>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.33</span></p>
+<ul>
+<li>若 <span class="arithmatex">\(M'\)</span> 在 <span class="arithmatex">\(R'\)</span> 上有限生成，<span class="arithmatex">\(R'\)</span> 在 <span class="arithmatex">\(R\)</span> 上有限生成，则 <span class="arithmatex">\(M'\)</span> 在 <span class="arithmatex">\(R\)</span> 上有限生成；</li>
+<li>若 <span class="arithmatex">\(M\)</span> 在 <span class="arithmatex">\(R\)</span> 上有限生成，则 <span class="arithmatex">\(M\otimes_R R'\)</span> 在 <span class="arithmatex">\(R'\)</span> 上有限生成。</li>
+</ul>
+</div>
+<h3 id="s2-3">2.3 张量积的正合性</h3>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.34</span></p>
+<p><span class="arithmatex">\(M'\rightarrow M\rightarrow M''\rightarrow0\)</span> 正合，对任一 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(N\)</span> 都有</p>
+<div class="arithmatex">\[
+M'\otimes N\rightarrow M\otimes N\rightarrow M''\otimes N\rightarrow 0
+\]</div>
+<p>正合。</p>
+</div>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.35</span></p>
+<p>由于 <span class="arithmatex">\(I\rightarrow R\rightarrow R/I \rightarrow 0\)</span> 正合，故任意 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span>，<span class="arithmatex">\(I\otimes M\rightarrow R\otimes M\rightarrow R/I\otimes M\rightarrow 0\)</span> 正合。</p>
+<p>注意到 <span class="arithmatex">\(R\otimes M\cong M\)</span>，<span class="arithmatex">\(I\otimes M\cong IM\)</span>，故<span class="arithmatex">\((R/I)\otimes M\cong M/IM\)</span>。</p>
+<p>特别的令 <span class="arithmatex">\(M=R/J\)</span>，则 <span class="arithmatex">\(R/I\otimes R/J\cong R/I+J\)</span>。</p>
+</div>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.36</span></p>
+<p><span class="arithmatex">\(M,N,P\)</span> 是 <span class="arithmatex">\(R-\)</span>模，则 <span class="arithmatex">\(\mathrm{Hom}_R(M\otimes N,P)\cong \mathrm{Hom}_R(M,\mathrm{Hom}_R(N,P))\)</span></p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>下述两个映射互为逆映射：</p>
+<div class="arithmatex">\[
+\phi:\begin{aligned}
+f:M\otimes N\rightarrow P\mapsto&amp; M\rightarrow \mathrm{Hom}_R(N,P)\\
+&amp;\ \ x\mapsto y\mapsto f(x\otimes y)
+\end{aligned}
+,
+\varphi:\begin{aligned}
+g:M\rightarrow \mathrm{Hom}_R(N,P)\mapsto M&amp;\otimes N\rightarrow P\\
+x&amp;\otimes y\mapsto g(x)(y)
+\end{aligned}
+\]</div>
+</details>
+<details class="proof">
+<summary>命题2.10的证明</summary>
+<p>由<strong>命题2.4</strong>我们希望</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{Hom}(M''\otimes N,P)\rightarrow \mathrm{Hom}(M\otimes N,P)\rightarrow \mathrm{Hom}(M'\otimes N,P)
+\]</div>
+<p>对任意 <span class="arithmatex">\(P\)</span> 都正合，而由上述引理这等价于</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{Hom}(M'',\mathrm{Hom}(N,P))\rightarrow \mathrm{Hom}(M,\mathrm{Hom}(N,P))\rightarrow \mathrm{Hom}(M',\mathrm{Hom}(N,P))
+\]</div>
+<p>正合，再次利用<strong>命题2.4</strong>我们完成了证明。</p>
+</details>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.37</span></p>
+<p>一个 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span> 是<strong>平坦的(flat)</strong>，若对任意正合列</p>
+<div class="arithmatex">\[
+\cdots\rightarrow M_{i-1}\rightarrow M_i\rightarrow M_{i+1}\rightarrow \cdots
+\]</div>
+<p>有</p>
+<div class="arithmatex">\[
+\cdots\rightarrow M\otimes M_{i-1}\rightarrow M\otimes M_i\rightarrow M\otimes M_{i+1}\rightarrow \cdots
+\]</div>
+<p>也是正合的。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.38</span></p>
+<p>自由模是平坦的，任意有限生成平坦 <span class="arithmatex">\(\mathbb{Z}-\)</span>模都是自由的。</p>
+</div>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.39</span></p>
+<p>下述命题等价：</p>
+<ul>
+<li><span class="arithmatex">\(M\)</span> 是平坦的；</li>
+<li>任意正合列 <span class="arithmatex">\(0\rightarrow N'\rightarrow N\rightarrow N''\rightarrow 0\)</span>，<span class="arithmatex">\(0\rightarrow N'\otimes M\rightarrow N\otimes M\rightarrow N''\otimes M\rightarrow 0\)</span> 正合。</li>
+<li>任意正合列 <span class="arithmatex">\(0\rightarrow N'\rightarrow N\)</span>，<span class="arithmatex">\(0\rightarrow N'\otimes M\rightarrow N\otimes M\)</span> 正合。</li>
+<li>任意有限生成模 <span class="arithmatex">\(N,N'\)</span>，若 <span class="arithmatex">\(0\rightarrow N'\rightarrow N\)</span> 正合，则 <span class="arithmatex">\(0\rightarrow N'\otimes M\rightarrow N\otimes M\)</span> 正合。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\Longrightarrow (2)\)</span> 是显然的。</p>
+<p><span class="arithmatex">\((2)\Longrightarrow (1)\)</span>：回忆若有正合列 <span class="arithmatex">\(N_{i-1}\stackrel{f_i}{\longrightarrow}N_i\stackrel{f_{i+1}}{\longrightarrow} N_{i+1}\)</span>，则</p>
+<div class="arithmatex">\[
+0\rightarrow \mathrm{Im}f_i\rightarrow N_i\rightarrow \mathrm{Im}f_{i+1}\rightarrow 0
+\]</div>
+<p>也是正合的，进而 <span class="arithmatex">\(0\rightarrow \mathrm{Im}f_i\otimes M\rightarrow N_i\otimes M\rightarrow \mathrm{Im}f_{i+1}\otimes M\rightarrow 0\)</span> 正合。我们有自然映射 <span class="arithmatex">\(\mathrm{Im}f_{i+1}\rightarrow N_i\)</span> 与 <span class="arithmatex">\(N_i\rightarrow \mathrm{Im}f_i\)</span>，故s</p>
+<div class="arithmatex">\[
+\mathrm{ker}(f_{i+1}\otimes id_M)=\mathrm{ker}(N_i\otimes M\rightarrow \mathrm{Im}f_{i+1}\otimes M)=\mathrm{Im}(\mathrm{Im}f_i\otimes M\rightarrow N_i\otimes M)=\mathrm{Im}(f_i\otimes id_M)
+\]</div>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/algebra-2h-notes/diagrams/ch07-fig-08.svg" /></p>
+<p><span class="arithmatex">\((2)\Longleftrightarrow (3)\)</span> 由<strong>命题2.10</strong>是显然的。</p>
+<p><span class="arithmatex">\((3)\Longrightarrow (4)\)</span> 是显然的。</p>
+<p><span class="arithmatex">\((4)\Longrightarrow (3)\)</span>：设 <span class="arithmatex">\(M'\rightarrow M\)</span> 是单射，我们来证明 <span class="arithmatex">\(f\otimes 1:M'\otimes N\rightarrow M\otimes N\)</span> 也是单射。取 <span class="arithmatex">\(x\in \mathrm{ker}(f\otimes 1)\)</span>，<span class="arithmatex">\(x=\sum_{i=1}^n x_i\otimes y_i\)</span>，则 <span class="arithmatex">\((f\otimes 1)(x)=\sum_{i=1}^n f(x_i)\otimes y_i=0\)</span>。取 <span class="arithmatex">\(\tilde{M}'\)</span> 由 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 生成，<span class="arithmatex">\(\tilde{M}\)</span> 由 <span class="arithmatex">\(f(x_1),\cdots,f(x_n)\)</span> 生成，则我们有单射 <span class="arithmatex">\(f\Big|_{\tilde{M}'}:\tilde{M}'\rightarrow \tilde{M}\)</span>，且 <span class="arithmatex">\((\tilde{f}\otimes 1)(x)=0\)</span>，即 <span class="arithmatex">\(x=0\in \tilde{M}'\otimes N\)</span>，即 <span class="arithmatex">\(x=0\in M'\otimes N\)</span>，于是我们完成了证明。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.40</span></p>
+<p>若 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(R\)</span> 上的平坦模，则 <span class="arithmatex">\(M\otimes_R R'\)</span> 是 <span class="arithmatex">\(R'\)</span> 上的平坦模。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由 <span class="arithmatex">\(N_i\otimes_{R'} (R'\otimes_R M)\cong N_i\otimes_R M\)</span> 即得。</p>
+</details>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.41</span></p>
+<p>环 <span class="arithmatex">\(R'\)</span> 由同态 <span class="arithmatex">\(f:R\rightarrow R'\)</span> 给出的 <span class="arithmatex">\(R-\)</span>模结构称为一个 <span class="arithmatex">\(R\)</span> 上的<strong>代数</strong>。</p>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="algebra-2h-notes.pdf" href="../../../../assets/algebra-2h-notes.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="代数2-H笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-06/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第六章：根式可解性</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-08/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第八章：局部化与整相关性</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#algebra-2h-notes">代数2-H笔记 · 第 7 / 10 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#algebra">代数</a><a class="zdd-end-chip is-category" href="../../../../blog/#algebra-2h-notes">代数 2-H 笔记</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=commutative-algebra">#commutative-algebra</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

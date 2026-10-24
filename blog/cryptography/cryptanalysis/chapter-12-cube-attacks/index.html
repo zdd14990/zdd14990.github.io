@@ -1,0 +1,1259 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第十二章：布尔函数的代数标准型与莫比乌斯变换、立方攻击定理（极大项与超级多项式）、立方测试、动态立方攻击与缩减轮 Grain-128 的零化技术。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-12-cube-attacks/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第十二章：序列密码的立方攻击 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-12-cube-attacks/">
+  <meta property="og:title" content="第十二章：序列密码的立方攻击 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第十二章：布尔函数的代数标准型与莫比乌斯变换、立方攻击定理（极大项与超级多项式）、立方测试、动态立方攻击与缩减轮 Grain-128 的零化技术。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-12-cube-attacks/">
+  <meta name="twitter:title" content="第十二章：序列密码的立方攻击 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第十二章：布尔函数的代数标准型与莫比乌斯变换、立方攻击定理（极大项与超级多项式）、立方测试、动态立方攻击与缩减轮 Grain-128 的零化技术。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u5341\u4e8c\u7ae0\uff1a\u5e8f\u5217\u5bc6\u7801\u7684\u7acb\u65b9\u653b\u51fb",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u5341\u4e8c\u7ae0\uff1a\u5e03\u5c14\u51fd\u6570\u7684\u4ee3\u6570\u6807\u51c6\u578b\u4e0e\u83ab\u6bd4\u4e4c\u65af\u53d8\u6362\u3001\u7acb\u65b9\u653b\u51fb\u5b9a\u7406\uff08\u6781\u5927\u9879\u4e0e\u8d85\u7ea7\u591a\u9879\u5f0f\uff09\u3001\u7acb\u65b9\u6d4b\u8bd5\u3001\u52a8\u6001\u7acb\u65b9\u653b\u51fb\u4e0e\u7f29\u51cf\u8f6e Grain-128 \u7684\u96f6\u5316\u6280\u672f\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-12-cube-attacks/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-12-cube-attacks/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 布尔函数
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 布尔函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 代数标准型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 莫比乌斯变换
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 立方攻击原理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 动态立方攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 动态立方攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 零化技术
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 12 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">12</div>
+    <h1 id="top"><span class="book-visually-hidden">第 12 章：</span>序列密码的立方攻击</h1>
+  </div>
+  <p class="book-standfirst"><a href="../chapter-11-stream-cipher-analysis/">第十一章</a>介绍了在 LFSR 的基础上增加非线性滤波函数来引入非线性。另一种办法是把移位寄存器的反馈函数改为非线性函数，这就是<strong>非线性反馈移位寄存器 (NFSR)</strong>。经过多轮非线性迭代后，输出是关于输入的高次非线性方程，直接求解很困难。<strong>立方攻击 (cube attack)</strong> 通过对高次变量集合求和，得到密钥的低次（如线性）方程，从而恢复密钥信息。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>3,625 字 · 约 10 分钟</span>
+  </div>
+  
+</header>
+
+<p>立方攻击和<a href="../chapter-05-integral-cryptanalysis/">第五章</a>的积分攻击本质上是同一件事：对一个公开变量的子空间求和，把高次项“积”掉。区别在于积分攻击关心求和结果是否为 0（区分器），立方攻击关心求和结果是什么（关于密钥的方程）。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>布尔函数</h2>
+<h3 id="s1-1">1.1 代数标准型</h3>
+<p>记 <span class="arithmatex">\([n]=\{1,2,\cdots,n\}\)</span>。对 <span class="arithmatex">\(I\subseteq[n]\)</span>，令 <span class="arithmatex">\(x^I=\prod_{i\in I}x_i\)</span>。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">代数标准型</span></p>
+<p><span class="arithmatex">\(n\)</span> 元布尔函数 <span class="arithmatex">\(F\)</span> 的<strong>代数标准型 (ANF)</strong> 为</p>
+<div class="arithmatex">\[
+F=\sum_{I\subseteq[n]}a_Ix^I,\tag{1}
+\]</div>
+<p>加法为模 2 运算，<span class="arithmatex">\(a_I\in\{0,1\}\)</span>。<span class="arithmatex">\(I\)</span> 中元素的个数称为项 <span class="arithmatex">\(x^I\)</span> 的代数次数，所有（<span class="arithmatex">\(a_I=1\)</span> 的）项的最大代数次数称为 <span class="arithmatex">\(F\)</span> 的<strong>代数次数</strong>。</p>
+</div>
+<p>布尔函数的另一种表示是<strong>真值表</strong>：列出所有输入及对应的输出，<span class="arithmatex">\(n\)</span> 元函数的真值表大小为 <span class="arithmatex">\(2^n\)</span>。已知 ANF 时，把所有输入代入即得真值表。例如三元择多函数 <span class="arithmatex">\(f(x)=x_1x_2\oplus x_1x_3\oplus x_2x_3\)</span>：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x_1x_2x_3\)</span></th>
+<th>000</th>
+<th>100</th>
+<th>010</th>
+<th>110</th>
+<th>001</th>
+<th>101</th>
+<th>011</th>
+<th>111</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(f\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>（注意这张表的行序：<span class="arithmatex">\(x_1\)</span> 是最低位。）还可以把布尔函数表示成逻辑门（与、或、非），这在密码分析中比较少见。</p>
+<h3 id="s1-2">1.2 莫比乌斯变换</h3>
+<p>真值表到 ANF 的转换可以用<strong>莫比乌斯变换 (Möbius transform)</strong> 实现，部分文献也叫杨辉三角变换。莫比乌斯变换是可逆的，且逆变换仍是莫比乌斯变换，所以对 ANF 再作一次莫比乌斯变换就得到真值表。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.2</span><span class="book-name">算法（莫比乌斯变换）</span></p>
+<p><strong>输入</strong>：<span class="arithmatex">\(n\)</span> 元布尔函数 <span class="arithmatex">\(f\)</span> 的真值表 <span class="arithmatex">\(z[i]\)</span>，<span class="arithmatex">\(0\le i&lt;2^n\)</span>。</p>
+<ol>
+<li>
+<p>对 <span class="arithmatex">\(t=1,\cdots,n\)</span>：</p>
+<ol>
+<li>对 <span class="arithmatex">\(j=0,\cdots,2^{n-t}-1\)</span>：<ol>
+<li>
+<p>对 <span class="arithmatex">\(k=0,\cdots,2^{t-1}-1\)</span>：</p>
+<div class="arithmatex">\[
+z[2^tj+2^{t-1}+k]\leftarrow z[2^tj+2^{t-1}+k]\oplus z[2^tj+k];
+\]</div>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>返回 <span class="arithmatex">\(z\)</span>。</p>
+</li>
+</ol>
+</div>
+<p>变换结束后，所有结果为 1 的位置对应的单项式之和就是 ANF。复杂度为 <span class="arithmatex">\(O(n\cdot2^n)\)</span>，与 Hadamard 变换类似。</p>
+<p>它为什么对？第 <span class="arithmatex">\(t\)</span> 步把“第 <span class="arithmatex">\(t\)</span> 个变量为 1 的位置”加上“第 <span class="arithmatex">\(t\)</span> 个变量为 0 的对应位置”，相当于对第 <span class="arithmatex">\(t\)</span> 个变量作差分 <span class="arithmatex">\(f|_{x_t=1}\oplus f|_{x_t=0}\)</span>。<span class="arithmatex">\(n\)</span> 步之后，位置 <span class="arithmatex">\(u\)</span> 上的值是</p>
+<div class="arithmatex">\[
+z[u]=\bigoplus_{x\preceq u}f(x)=a_u,
+\]</div>
+<p>即对 <span class="arithmatex">\(u\)</span> 所支撑的子立方体求和。这正是 ANF 的系数公式，也正是下面立方攻击定理的特例。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.3</span><span class="book-name">择多函数的莫比乌斯变换</span></p>
+<p>以上表的真值表为例，下标 <span class="arithmatex">\(i\)</span> 的二进制最低位对应 <span class="arithmatex">\(x_1\)</span>：</p>
+<ol>
+<li><span class="arithmatex">\(t=1\)</span>：<span class="arithmatex">\(z[1]\mathrel{\oplus}=z[0]\)</span>，<span class="arithmatex">\(z[3]\mathrel{\oplus}=z[2]\)</span>，<span class="arithmatex">\(z[5]\mathrel{\oplus}=z[4]\)</span>，<span class="arithmatex">\(z[7]\mathrel{\oplus}=z[6]\)</span>；</li>
+<li><span class="arithmatex">\(t=2\)</span>：<span class="arithmatex">\(z[2]\mathrel{\oplus}=z[0]\)</span>，<span class="arithmatex">\(z[3]\mathrel{\oplus}=z[1]\)</span>，<span class="arithmatex">\(z[6]\mathrel{\oplus}=z[4]\)</span>，<span class="arithmatex">\(z[7]\mathrel{\oplus}=z[5]\)</span>；</li>
+<li><span class="arithmatex">\(t=3\)</span>：<span class="arithmatex">\(z[4]\mathrel{\oplus}=z[0]\)</span>，<span class="arithmatex">\(z[5]\mathrel{\oplus}=z[1]\)</span>，<span class="arithmatex">\(z[6]\mathrel{\oplus}=z[2]\)</span>，<span class="arithmatex">\(z[7]\mathrel{\oplus}=z[3]\)</span>。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x_1x_2x_3\)</span></th>
+<th>真值</th>
+<th><span class="arithmatex">\(t=1\)</span></th>
+<th><span class="arithmatex">\(t=2\)</span></th>
+<th>ANF (<span class="arithmatex">\(t=3\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>000</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>010</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>110</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>001</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>101</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>011</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>111</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(z[3],z[5],z[6]\)</span> 为 1，对应 110、101、011，即 <span class="arithmatex">\(x_1x_2\)</span>、<span class="arithmatex">\(x_1x_3\)</span>、<span class="arithmatex">\(x_2x_3\)</span>，所以 <span class="arithmatex">\(f=x_1x_2\oplus x_1x_3\oplus x_2x_3\)</span>。注意 000 代表常数项 1。</p>
+</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.4</span></p>
+<p>令 <span class="arithmatex">\(f(x)=x_1x_2x_3\oplus x_3x_4\oplus x_2x_4\oplus x_3\)</span> 是一个 4 元布尔函数，根据莫比乌斯变换推导其真值表。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>ANF 的系数为 1 的位置是 <span class="arithmatex">\(\{x_3\}\)</span>、<span class="arithmatex">\(\{x_2,x_4\}\)</span>、<span class="arithmatex">\(\{x_3,x_4\}\)</span>、<span class="arithmatex">\(\{x_1,x_2,x_3\}\)</span>。对这个系数向量作一次莫比乌斯变换就是真值表：<span class="arithmatex">\(f(x)=\bigoplus_{u\preceq x}a_u\)</span>，即数一数 <span class="arithmatex">\(x\)</span> 覆盖了几个系数为 1 的单项式，奇数个为 1。</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x_1x_2x_3x_4\)</span></th>
+<th>覆盖的单项式</th>
+<th><span class="arithmatex">\(f\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0010</td>
+<td><span class="arithmatex">\(x_3\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>0011</td>
+<td><span class="arithmatex">\(x_3\)</span>，<span class="arithmatex">\(x_3x_4\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0101</td>
+<td><span class="arithmatex">\(x_2x_4\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>0110</td>
+<td><span class="arithmatex">\(x_3\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>0111</td>
+<td><span class="arithmatex">\(x_3\)</span>，<span class="arithmatex">\(x_2x_4\)</span>，<span class="arithmatex">\(x_3x_4\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1010</td>
+<td><span class="arithmatex">\(x_3\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>1011</td>
+<td><span class="arithmatex">\(x_3\)</span>，<span class="arithmatex">\(x_3x_4\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>1100</td>
+<td>—</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1101</td>
+<td><span class="arithmatex">\(x_2x_4\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>1110</td>
+<td><span class="arithmatex">\(x_3\)</span>，<span class="arithmatex">\(x_1x_2x_3\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>全部 4 个</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>（我用程序直接代入核对过这 16 个值，再对真值表作莫比乌斯变换，也正好恢复出这 4 个单项式。）</p>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span>立方攻击原理</h2>
+<p>Dinur 和 Shamir 在 EUROCRYPT 2009 上提出了立方攻击，它基于如下定理。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">立方攻击</span></p>
+<p>设 <span class="arithmatex">\(p(x)\)</span> 是关于 <span class="arithmatex">\(n\)</span> 个变量 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 的布尔函数。选择集合 <span class="arithmatex">\(I=\{i_1,\cdots,i_{|I|}\}\subseteq[n]\)</span>，令 <span class="arithmatex">\(t_I=\prod_{i\in I}x_i\)</span>，则 <span class="arithmatex">\(p\)</span> 总可以表示成</p>
+<div class="arithmatex">\[
+p=t_Ip_1+p_2,
+\]</div>
+<p>其中 <span class="arithmatex">\(p_1\)</span> 不含任何 <span class="arithmatex">\(x_i\)</span>（<span class="arithmatex">\(i\in I\)</span>），<span class="arithmatex">\(p_2\)</span> 中的每一项都不能被 <span class="arithmatex">\(t_I\)</span> 整除（即至少不含一个 <span class="arithmatex">\(x_i\)</span>，<span class="arithmatex">\(i\in I\)</span>）。则 <span class="arithmatex">\(p\)</span> 在 <span class="arithmatex">\(|I|\)</span> 个变量 <span class="arithmatex">\(x_{i_1},\cdots,x_{i_{|I|}}\)</span> 的所有可能取值下求和，结果恰好等于 <span class="arithmatex">\(p_1\)</span>：</p>
+<div class="arithmatex">\[
+\sum_{(x_{i_1},\cdots,x_{i_{|I|}})\in\{0,1\}^{|I|}}p=\sum_{(x_{i_1},\cdots,x_{i_{|I|}})\in\{0,1\}^{|I|}}(t_Ip_1+p_2)=p_1.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(t_I\)</span> 只在所有 <span class="arithmatex">\(x_i\)</span>（<span class="arithmatex">\(i\in I\)</span>）都为 1 时为 1，<span class="arithmatex">\(p_1\)</span> 与这些变量无关，所以 <span class="arithmatex">\(\sum t_Ip_1=p_1\)</span>。<span class="arithmatex">\(p_2\)</span> 的每一项都缺某个 <span class="arithmatex">\(x_j\)</span>（<span class="arithmatex">\(j\in I\)</span>），这一项在求和时，<span class="arithmatex">\(x_j=0\)</span> 和 <span class="arithmatex">\(x_j=1\)</span> 两半取值相同，模 2 相消，所以 <span class="arithmatex">\(\sum p_2=0\)</span>。</p>
+</details>
+<p>一个密码算法往往以 <span class="arithmatex">\(m\)</span> 比特密钥 <span class="arithmatex">\(k=(k_1,\cdots,k_m)\)</span> 和 <span class="arithmatex">\(n\)</span> 比特明文（或 IV、nonce）<span class="arithmatex">\(v=(v_1,\cdots,v_n)\)</span> 为输入，任意一个输出比特都可以表示成 <span class="arithmatex">\(k\)</span> 和 <span class="arithmatex">\(v\)</span> 的布尔函数 <span class="arithmatex">\(p\)</span>。实际应用中，<span class="arithmatex">\(t_I\)</span> 通常选为 <span class="arithmatex">\(v\)</span> 中一部分比特的乘积，<span class="arithmatex">\(v\)</span> 中剩下的比特固定为常数，这使 <span class="arithmatex">\(p_1\)</span> 成为只与密钥 <span class="arithmatex">\(k\)</span> 相关的表达式。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span><span class="book-name">立方攻击的术语</span></p>
+<p>集合 <span class="arithmatex">\(I\)</span> 称为<strong>立方索引</strong>，它决定了 <span class="arithmatex">\(t_I\)</span> 是哪些变量的乘积。<span class="arithmatex">\(I\)</span> 确定的变量称为<strong>立方变量</strong>，<span class="arithmatex">\(t_I\)</span> 称为<strong>极大项 (maxterm)</strong>，<span class="arithmatex">\(p_1\)</span> 称为<strong>超级多项式 (superpoly)</strong>。<span class="arithmatex">\(|I|\)</span> 称为立方的<strong>维数</strong>。</p>
+</div>
+<p>密钥一般被当作（未知）常数，所以 <span class="arithmatex">\(p\)</span> 的代数次数只由每一项中的明文比特决定。例如 <span class="arithmatex">\(p=k_1k_2v_4v_5\oplus k_1v_1v_2v_3\)</span> 的代数次数为 3。实际应用中可能遇到两种情况：</p>
+<ul>
+<li><strong>若 <span class="arithmatex">\(p_1\)</span> 是关于密钥的简单函数</strong>（如线性方程），就可以由定理得到关于密钥的简单方程，获取密钥的部分信息。这就是 Dinur 和 Shamir 的立方攻击：选择多个 <span class="arithmatex">\(t_I\)</span>，使对应的 <span class="arithmatex">\(p_1\)</span> 都是关于密钥比特的线性方程，求和建立线性方程组，解出密钥的大部分比特，剩下的穷举；</li>
+<li><strong>若 <span class="arithmatex">\(p_1\)</span> 是非平衡的（如常数）</strong>，可以用来构造区分器。特别地，若 <span class="arithmatex">\(p\)</span> 的代数次数为 <span class="arithmatex">\(d\)</span>，选取任意 <span class="arithmatex">\(d+1\)</span> 维的 <span class="arithmatex">\(I\)</span>，对应的 <span class="arithmatex">\(p_1\)</span> 都为 0，即 <span class="arithmatex">\(p\)</span> 在这 <span class="arithmatex">\(|I|\)</span> 个明文比特的所有取值下求和为 0。这就是<strong>立方测试 (cube tester)</strong>，与<a href="../chapter-05-integral-cryptanalysis/">第五章</a>的积分区分器一样。</li>
+</ul>
+<p>立方攻击分为两个阶段：</p>
+<ul>
+<li><strong>预计算阶段</strong>：攻击者对算法有完全的控制权限，可以随意操纵密钥比特和明文比特。目标是选取尽可能多的 <span class="arithmatex">\(t_I\)</span>，恢复它们对应的 <span class="arithmatex">\(p_1\)</span> 的具体表达式，<span class="arithmatex">\(p_1\)</span> 越简单越好，比如关于密钥的线性表达式；</li>
+<li><strong>在线攻击阶段</strong>：密钥是未知的，但攻击者可以把任意明文作为输入，获取对应的输出。对 <span class="arithmatex">\(t_I\)</span> 求和，获得 <span class="arithmatex">\(p_1\)</span> 的真实值，从而建立关于密钥的方程组，恢复部分密钥。</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.3</span></p>
+<p>设密钥流输出比特 <span class="arithmatex">\(z\)</span> 可以表示为 5 个 IV 比特 <span class="arithmatex">\(v_0,\cdots,v_4\)</span> 和 5 个密钥比特 <span class="arithmatex">\(k_0,\cdots,k_4\)</span> 的布尔函数：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+z={}&amp;v_0v_1k_2k_4\oplus v_0v_1v_3k_2\oplus v_0v_1v_2v_3\oplus v_2v_4k_0k_2k_3\\
+&amp;\oplus v_1v_3k_0k_1\oplus v_1v_4k_1k_2k_3\oplus v_1v_2v_4k_2\oplus v_2v_3v_4k_0\oplus v_1\oplus k_0.
+\end{aligned}
+\]</div>
+<ul>
+<li>预计算阶段，选择极大项 <span class="arithmatex">\(t_I=v_1v_2v_4\)</span>，其超级多项式为 <span class="arithmatex">\(p_1=k_2\)</span>。在线阶段固定 <span class="arithmatex">\(v_0=v_3=0\)</span>，对 <span class="arithmatex">\(v_1,v_2,v_4\)</span> 的每一个可能取值获取 <span class="arithmatex">\(z\)</span>，把这 8 个值相加，结果即为 <span class="arithmatex">\(p_1\)</span> 的真实值 <span class="arithmatex">\(a\)</span>，于是建立方程 <span class="arithmatex">\(k_2=a\)</span>，恢复出 <span class="arithmatex">\(k_2\)</span>。这一步需要 <span class="arithmatex">\(2^3=8\)</span> 次异或；</li>
+<li>同理，选取 <span class="arithmatex">\(t_I=v_2v_3v_4\)</span>，<span class="arithmatex">\(p_1=k_0\)</span>，固定 <span class="arithmatex">\(v_0=v_1=0\)</span>，在 <span class="arithmatex">\(v_2,v_3,v_4\)</span> 上求和，就能恢复 <span class="arithmatex">\(k_0\)</span>，也是 8 次异或。</li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>“固定其余 IV 比特为 0”很要紧。以 <span class="arithmatex">\(t_I=v_1v_2v_4\)</span> 为例，含 <span class="arithmatex">\(v_1v_2v_4\)</span> 的项只有 <span class="arithmatex">\(v_1v_2v_4k_2\)</span>，所以严格的超级多项式就是 <span class="arithmatex">\(k_2\)</span>，与 <span class="arithmatex">\(v_0,v_3\)</span> 无关；但 <span class="arithmatex">\(p_2\)</span> 中的项（如 <span class="arithmatex">\(v_0v_1k_2k_4\)</span>）虽然求和后消失，也要求它们在求和中是“缺某个立方变量”的。这里没有问题。我用程序对全部 <span class="arithmatex">\(2^5\)</span> 个密钥验证过：两次立方和分别恒等于 <span class="arithmatex">\(k_2\)</span> 和 <span class="arithmatex">\(k_0\)</span>。</p>
+</div>
+<p>这个例子中已知输出比特关于 IV 和密钥的表达式，可以有针对性地选择 <span class="arithmatex">\(t_I\)</span>。在实际的流密码中，密钥流比特与 IV、密钥的关系往往很复杂，写不出具体表达式，也就不知道某个极大项对应的超级多项式。这时可以用<strong>立方测试</strong>的办法获得极大项和超级多项式，依据是下面的引理。</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.4</span><span class="book-name">线性测试</span></p>
+<p>记输出比特关于 <span class="arithmatex">\(n\)</span> 比特 IV <span class="arithmatex">\(v\)</span> 和 <span class="arithmatex">\(m\)</span> 比特密钥 <span class="arithmatex">\(k\)</span> 的表达式为 <span class="arithmatex">\(z(v,k)\)</span>。令立方索引 <span class="arithmatex">\(I\subseteq[n]\)</span>，<span class="arithmatex">\(t_I\)</span> 为由 <span class="arithmatex">\(I\)</span> 决定的极大项，对应的超级多项式为 <span class="arithmatex">\(p_1\)</span>。某个密钥比特 <span class="arithmatex">\(k_i\)</span> 在 <span class="arithmatex">\(p_1\)</span> 中<strong>线性出现</strong>（即 <span class="arithmatex">\(p_1=k_i\oplus g\)</span>，<span class="arithmatex">\(g\)</span> 不含 <span class="arithmatex">\(k_i\)</span>）当且仅当对所有 <span class="arithmatex">\((k_1,\cdots,k_{i-1},k_{i+1},\cdots,k_m)\in\{0,1\}^{m-1}\)</span>，</p>
+<div class="arithmatex">\[
+\sum_{(v_{i_1},\cdots,v_{i_{|I|}})\in\{0,1\}^{|I|}}z\big|_{k_i=0}=\sum_{(v_{i_1},\cdots,v_{i_{|I|}})\in\{0,1\}^{|I|}}z\big|_{k_i=1}\oplus1.
+\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>教材的引理表述是“某个密钥比特 <span class="arithmatex">\(k_i\)</span> 在超级多项式 <span class="arithmatex">\(p_1\)</span> 中当且仅当……”，句子里缺了一个修饰词。按等式的含义，条件说的是 <span class="arithmatex">\(p_1|_{k_i=0}\oplus p_1|_{k_i=1}=1\)</span> 对其余所有密钥恒成立，即 <span class="arithmatex">\(\partial p_1/\partial k_i\equiv1\)</span>，这正好是“<span class="arithmatex">\(k_i\)</span> 在 <span class="arithmatex">\(p_1\)</span> 中线性出现、不与其他密钥比特相乘”。我按这个意思补上了“线性出现”。</p>
+</div>
+<p>由引理，选择一个 IV 变量集合，把 <span class="arithmatex">\(m-1\)</span> 比特密钥固定为任意值，把剩下的一比特密钥分别置为 0 和 1，计算输出比特在 <span class="arithmatex">\(t_I\)</span> 上的立方和：</p>
+<ul>
+<li>无论 <span class="arithmatex">\(m-1\)</span> 比特密钥取什么，立方和始终不同，则该密钥比特为一个<strong>线性</strong>项；</li>
+<li>立方和始终相同，则该密钥比特<strong>不在</strong> <span class="arithmatex">\(p_1\)</span> 中；</li>
+<li>其他情况，该密钥比特为<strong>非线性</strong>项。</li>
+</ul>
+<p>对每个密钥比特都执行这样的操作。若每个密钥比特都是线性项或不在 <span class="arithmatex">\(p_1\)</span> 中，这个变量集合就是一个（线性的）极大项，可以确定超级多项式的表达式（再通过把所有密钥置 0 求一次立方和得到常数项）。特别地，若 <span class="arithmatex">\(p_1\)</span> 不含任何密钥变量，则 <span class="arithmatex">\(p_1\)</span> 为常数。</p>
+<p>实际中不可能遍历 <span class="arithmatex">\(2^{m-1}\)</span> 种其他密钥，只能随机抽取几十到上百组做检验，这就是<strong>线性测试</strong>（BLR 测试）：线性函数一定通过，非线性函数以较大的概率被淘汰。</p>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>令 <span class="arithmatex">\(f(k,v)=k_1k_2v_1v_2\oplus k_3k_4v_1v_2v_3\oplus v_2v_3\oplus k_4v_4\)</span> 是关于 4 比特初始向量 <span class="arithmatex">\(v\)</span> 和 4 比特密钥 <span class="arithmatex">\(k\)</span> 的布尔函数。指出 <span class="arithmatex">\(f\)</span> 的代数次数，并写出极大项 <span class="arithmatex">\(t_I=v_1v_2\)</span> 的超级多项式。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>密钥看作常数，代数次数由 IV 比特决定：各项的 IV 次数分别为 2、3、2、1，所以 <span class="arithmatex">\(f\)</span> 的代数次数为 3。</p>
+<p><span class="arithmatex">\(t_I=v_1v_2\)</span> 的超级多项式是 <span class="arithmatex">\(f\)</span> 中能被 <span class="arithmatex">\(v_1v_2\)</span> 整除的项除以 <span class="arithmatex">\(v_1v_2\)</span> 之和：</p>
+<div class="arithmatex">\[
+p_1=k_1k_2\oplus k_3k_4v_3.
+\]</div>
+<p>注意它仍含 IV 变量 <span class="arithmatex">\(v_3\)</span>。在线阶段把 <span class="arithmatex">\(v_3,v_4\)</span> 固定为常数：<span class="arithmatex">\(v_3=0\)</span> 时 <span class="arithmatex">\(p_1=k_1k_2\)</span>，<span class="arithmatex">\(v_3=1\)</span> 时 <span class="arithmatex">\(p_1=k_1k_2\oplus k_3k_4\)</span>。两者都是二次的，不是线性超级多项式。但联合两个值可以得到 <span class="arithmatex">\(k_1k_2\)</span> 和 <span class="arithmatex">\(k_3k_4\)</span> 的值，各自约束了 2 比特密钥（例如 <span class="arithmatex">\(k_1k_2=1\)</span> 直接给出 <span class="arithmatex">\(k_1=k_2=1\)</span>）。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.6</span><span class="book-name">思考</span></p>
+<p>立方攻击也可以利用非线性的超级多项式。在上面的例子中，若选取极大项 <span class="arithmatex">\(t_I=v_0v_1\)</span>，如何利用其超级多项式提取密钥比特的信息？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>含 <span class="arithmatex">\(v_0v_1\)</span> 的项有 <span class="arithmatex">\(v_0v_1k_2k_4\)</span>、<span class="arithmatex">\(v_0v_1v_3k_2\)</span>、<span class="arithmatex">\(v_0v_1v_2v_3\)</span>，所以</p>
+<div class="arithmatex">\[
+p_1=k_2k_4\oplus v_3k_2\oplus v_2v_3.
+\]</div>
+<p>它含 IV 变量 <span class="arithmatex">\(v_2,v_3\)</span>，可以在在线阶段<strong>选择</strong>它们的值，得到不同的方程：</p>
+<ul>
+<li><span class="arithmatex">\(v_2=v_3=0\)</span>：立方和 <span class="arithmatex">\(=k_2k_4\)</span>；</li>
+<li><span class="arithmatex">\(v_2=0,v_3=1\)</span>：立方和 <span class="arithmatex">\(=k_2k_4\oplus k_2\)</span>；</li>
+<li><span class="arithmatex">\(v_2=v_3=1\)</span>：立方和 <span class="arithmatex">\(=k_2k_4\oplus k_2\oplus1\)</span>。</li>
+</ul>
+<p>（<span class="arithmatex">\(v_4\)</span> 不出现在 <span class="arithmatex">\(p_1\)</span> 中，取任意值；我用程序对全部密钥核对过这三个等式。）前两个相加就得到线性方程 <span class="arithmatex">\(k_2=a_1\oplus a_2\)</span>，再由第一个得到 <span class="arithmatex">\(k_2k_4\)</span>，若 <span class="arithmatex">\(k_2=1\)</span> 就直接得到 <span class="arithmatex">\(k_4\)</span>。可见通过改变非立方 IV 变量的取值，可以把非线性超级多项式“线性化”。这就是后来<strong>条件立方攻击</strong>、<strong>动态立方攻击</strong>的出发点。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>动态立方攻击</h2>
+<p>一般情况下，序列密码经过一定轮数的初始化后，输出密钥流是关于 IV 和密钥的高次稠密布尔函数，对选择的立方变量集合求和后的结果仍是关于密钥的高次非线性方程，直接求解很困难。在基于 LFSR 和 NFSR 的流密码中，输出比特可以表示成寄存器状态比特的布尔多项式，<strong>通过控制某些状态比特可以使输出布尔函数简化</strong>。Dinur 等提出了<strong>动态立方攻击 (dynamic cube attack)</strong>，结合立方测试得到的区分器恢复密钥信息，并把它应用到 Grain-128 上。</p>
+<p>动态立方攻击的一项关键技术是<strong>零化技术</strong>：选择部分 IV 比特，使中间部分状态比特的取值为 0，从而简化输出。</p>
+<p>下面以缩减轮的 Grain-128（算法见<a href="../appendix-algorithms/">算法附录</a>）为例。考虑初始化运行 128 轮后开始输出密钥流的版本，第一个输出比特是 <span class="arithmatex">\(z_{129}\)</span>，在密钥流产生阶段 <span class="arithmatex">\(z_i\)</span> 不参与反馈。</p>
+<h3 id="s3-1">3.1 零化技术</h3>
+<p>Grain-128 的第一个输出比特 <span class="arithmatex">\(z_{129}\)</span> 可以用状态比特表示为</p>
+<div class="arithmatex">\[
+\begin{aligned}
+z_{129}={}&amp;b_{141}b_{224}s_{224}\oplus b_{224}s_{171}\oplus s_{189}s_{208}\oplus s_{142}s_{149}\oplus b_{141}s_{137}\oplus s_{222}\oplus b_{218}\\
+&amp;\oplus b_{202}\oplus b_{193}\oplus b_{174}\oplus b_{165}\oplus b_{144}\oplus b_{131},
+\end{aligned}
+\]</div>
+<p><span class="arithmatex">\(b_i\)</span> 为 NFSR 状态比特，<span class="arithmatex">\(s_i\)</span> 为 LFSR 状态比特。</p>
+<p><strong>第一步：找最显著的项。</strong> 先计算每个状态比特关于 IV 的代数次数。<span class="arithmatex">\(b_{141}b_{224}s_{224}\)</span> 次数最高，能产生更多高次项，是最显著的项。考虑通过零化 <span class="arithmatex">\(b_{141}\)</span> 来消掉它。</p>
+<p><strong>第二步：零化。</strong> 由迭代关系，</p>
+<div class="arithmatex">\[
+\begin{aligned}
+b_{141}={}&amp;v_{13}\oplus k_{13}\oplus k_{39}\oplus k_{69}\oplus k_{104}\oplus k_{109}\oplus k_{16}k_{80}\oplus k_{24}k_{26}\oplus k_{30}k_{31}\oplus k_{40}k_{72}\\
+&amp;\oplus k_{53}k_{61}\oplus k_{74}k_{78}\oplus k_{81}k_{97}\oplus k_{15}\oplus k_{28}\oplus k_{49}\oplus k_{58}\oplus k_{77}\oplus k_{86}\oplus k_{102}\\
+&amp;\oplus k_{25}v_{21}\oplus v_{26}v_{33}\oplus k_{108}v_{55}\oplus v_{73}v_{92}\oplus k_{25}k_{108}.
+\end{aligned}
+\]</div>
+<p>选择 <span class="arithmatex">\(v_{26}=v_{73}=0\)</span>，<span class="arithmatex">\(b_{141}\)</span> 降为 1 次（<span class="arithmatex">\(v_{26}v_{33}\)</span> 和 <span class="arithmatex">\(v_{73}v_{92}\)</span> 消失）。再选择</p>
+<div class="arithmatex">\[
+v_{13}=k_{13}\oplus k_{39}\oplus\cdots\oplus k_{102}\oplus k_{25}v_{21}\oplus k_{108}v_{55}\oplus k_{25}k_{108},
+\]</div>
+<p>就能使 <span class="arithmatex">\(b_{141}=0\)</span>。式中的密钥比特是未知的，在实际攻击中要猜测：根据猜测的密钥值选择 <span class="arithmatex">\(v_{13}\)</span> 使上式成立。需要猜测的是 <span class="arithmatex">\(k_{25}\)</span>、<span class="arithmatex">\(k_{108}\)</span>（它们与立方变量 <span class="arithmatex">\(v_{21},v_{55}\)</span> 相乘），以及剩下的那个只与密钥有关的表达式的值</p>
+<div class="arithmatex">\[
+k_{13}\oplus k_{39}\oplus k_{69}\oplus k_{104}\oplus k_{109}\oplus k_{16}k_{80}\oplus\cdots\oplus k_{102}\oplus k_{25}k_{108}
+\]</div>
+<p>（1 比特）。所以只需猜 3 比特信息。</p>
+<p><strong>第三步：降次后的输出。</strong> 零化 <span class="arithmatex">\(b_{141}\)</span> 之后，</p>
+<div class="arithmatex">\[
+z_{129}=b_{224}s_{171}\oplus s_{189}s_{208}\oplus s_{142}s_{149}\oplus s_{222}\oplus b_{218}\oplus b_{202}\oplus b_{193}\oplus b_{174}\oplus b_{165}\oplus b_{144}\oplus b_{131}.
+\]</div>
+<p>涉及的状态比特关于 IV 的代数次数为</p>
+<table>
+<thead>
+<tr>
+<th>状态比特</th>
+<th><span class="arithmatex">\(b_{224}\)</span></th>
+<th><span class="arithmatex">\(s_{224}\)</span></th>
+<th><span class="arithmatex">\(s_{171}\)</span></th>
+<th><span class="arithmatex">\(s_{189}\)</span></th>
+<th><span class="arithmatex">\(s_{208}\)</span></th>
+<th><span class="arithmatex">\(s_{142}\)</span></th>
+<th><span class="arithmatex">\(s_{149}\)</span></th>
+<th><span class="arithmatex">\(s_{222}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>次数</td>
+<td>7</td>
+<td>7</td>
+<td>3</td>
+<td>3</td>
+<td>5</td>
+<td>2</td>
+<td>2</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>状态比特</th>
+<th><span class="arithmatex">\(b_{218}\)</span></th>
+<th><span class="arithmatex">\(b_{202}\)</span></th>
+<th><span class="arithmatex">\(b_{193}\)</span></th>
+<th><span class="arithmatex">\(b_{174}\)</span></th>
+<th><span class="arithmatex">\(b_{165}\)</span></th>
+<th><span class="arithmatex">\(b_{144}\)</span></th>
+<th><span class="arithmatex">\(b_{131}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>次数</td>
+<td>5</td>
+<td>5</td>
+<td>3</td>
+<td>3</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>其他状态比特的次数满足</p>
+<div class="arithmatex">\[
+\deg(s_i)\le\begin{cases}1,&amp;0\le i&lt;96,\\0,&amp;96\le i&lt;128,\\2,&amp;128\le i&lt;161,\\3,&amp;161\le i&lt;194,\end{cases}\qquad
+\deg(b_i)\le\begin{cases}0,&amp;0\le i&lt;128,\\2,&amp;128\le i&lt;161,\\3,&amp;161\le i&lt;188,\\4,&amp;188\le i&lt;194.\end{cases}
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这张表我只是照录，没有复算。<span class="arithmatex">\(s_{96..127}\)</span> 次数为 0、<span class="arithmatex">\(b_{0..127}\)</span> 次数为 0 是因为 Grain-128 的 LFSR 后 32 位初始化为全 1、NFSR 初始化为密钥，都与 IV 无关；LFSR 前 96 位装 IV，次数为 1。</p>
+</div>
+<p><strong>第四步：区分正确与错误的猜测。</strong> 在正确的密钥猜测下，零化 <span class="arithmatex">\(b_{141}\)</span> 后输出的代数次数</p>
+<div class="arithmatex">\[
+d\le\deg(b_{224})+\deg(s_{171})=7+3=10,
+\]</div>
+<p>（其余各项次数更低：<span class="arithmatex">\(s_{189}s_{208}\)</span> 为 <span class="arithmatex">\(3+5=8\)</span>，<span class="arithmatex">\(s_{222}\)</span> 为 7，……）所以 <span class="arithmatex">\(z_{129}\)</span> 在<strong>任意 11 维立方</strong>下的求和为 0。而在错误的密钥猜测下，<span class="arithmatex">\(b_{141}\)</span> 不能被零化，且 <span class="arithmatex">\(\deg(b_{141})=1\)</span>，输出的最高次项为 <span class="arithmatex">\(b_{141}b_{224}s_{224}\)</span>，次数可达 <span class="arithmatex">\(1+7+7=15\)</span>，<span class="arithmatex">\(z_{129}\)</span> 在某些 11 维立方下的和不为 0。</p>
+<p>也就是说，可以通过研究 <span class="arithmatex">\(z_{129}\)</span> 在 11 维立方下的和来区分正确密钥和错误密钥。随机取若干个 11 维立方（避开 <span class="arithmatex">\(v_{13},v_{26},v_{73}\)</span> 这几个被固定的 IV），用立方测试检测超级多项式是否为 0：正确猜测下总为 0，错误猜测下以可观的概率不为 0。测试得到的 11 维立方变量就作为正确密钥与错误密钥的区分器。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这是一个用“代数次数降低”作区分器的密钥恢复，与<a href="../chapter-03-differential-cryptanalysis/">第三章</a>猜部分密钥、看区分器是否成立的统计攻击结构相同，只是区分器换成了立方测试，判定是确定性的。完整 Grain-128 的动态立方攻击要零化多个状态比特，猜测更多密钥表达式，并用大得多的立方（Dinur 等用了 50 维左右，在 GPU 上跑）。</p>
+</div>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.1</span></p>
+<p>根据 Grain-128 算法，通过编程或手动推导，计算出上表中状态比特的次数。</p>
+</div>
+<details class="solution">
+<summary>思路</summary>
+<p>用<strong>数值映射 (numeric mapping)</strong> 估计次数上界：对每个状态比特维护一个次数上界 <span class="arithmatex">\(\deg(\cdot)\)</span>，初始化时 IV 比特为 1、密钥比特和常数为 0。按 Grain-128 的更新函数迭代：</p>
+<ul>
+<li>异或：<span class="arithmatex">\(\deg(a\oplus b)\le\max(\deg a,\deg b)\)</span>；</li>
+<li>与：<span class="arithmatex">\(\deg(ab)\le\deg a+\deg b\)</span>。</li>
+</ul>
+<p>逐轮计算 <span class="arithmatex">\(s_{i+128}=s_i\oplus s_{i+7}\oplus s_{i+38}\oplus s_{i+70}\oplus s_{i+81}\oplus s_{i+96}\oplus z_i\)</span>（初始化阶段 <span class="arithmatex">\(z_i\)</span> 参与反馈）和 <span class="arithmatex">\(b_{i+128}\)</span>（含若干二次项，见算法附录），就能得到每个状态比特次数的上界。注意在零化 <span class="arithmatex">\(v_{26}=v_{73}=0\)</span> 的条件下要把这两个 IV 的次数置为 0，<span class="arithmatex">\(v_{13}\)</span> 由密钥决定也置为 0。这样得到的是上界，表中的数字应该与之吻合或更紧（更紧的需要符号计算，例如用 SageMath 的 BooleanPolynomialRing 直接展开前几十轮）。这道题我没有实际跑。</p>
+</details>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 12 章。</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-11-stream-cipher-analysis/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第十一章：序列密码的经典安全性分析技术</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-13-hash-function-analysis/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">杂凑函数的安全性分析概述</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 12 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-14-message-authentication-codes/">消息认证码的安全性分析概述</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

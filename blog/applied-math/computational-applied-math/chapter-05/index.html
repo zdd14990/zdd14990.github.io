@@ -1,0 +1,1165 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第五章：渐进级数、收敛与发散幂级数、渐近级数的例子、使用渐近级数的数值近似：最优截断法则、渐近级数的性质、微分方程解的渐近展开、复平面中的渐近幂级数：不同有效扇形区域之间的联系。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第五章：渐近级数 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-05/">
+  <meta property="og:title" content="第五章：渐近级数 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第五章：渐进级数、收敛与发散幂级数、渐近级数的例子、使用渐近级数的数值近似：最优截断法则、渐近级数的性质、微分方程解的渐近展开、复平面中的渐近幂级数：不同有效扇形区域之间的联系。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="asymptotic-analysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-05/">
+  <meta name="twitter:title" content="第五章：渐近级数 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第五章：渐进级数、收敛与发散幂级数、渐近级数的例子、使用渐近级数的数值近似：最优截断法则、渐近级数的性质、微分方程解的渐近展开、复平面中的渐近幂级数：不同有效扇形区域之间的联系。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e94\u7ae0\uff1a\u6e10\u8fd1\u7ea7\u6570",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u4e94\u7ae0\uff1a\u6e10\u8fdb\u7ea7\u6570\u3001\u6536\u655b\u4e0e\u53d1\u6563\u5e42\u7ea7\u6570\u3001\u6e10\u8fd1\u7ea7\u6570\u7684\u4f8b\u5b50\u3001\u4f7f\u7528\u6e10\u8fd1\u7ea7\u6570\u7684\u6570\u503c\u8fd1\u4f3c\uff1a\u6700\u4f18\u622a\u65ad\u6cd5\u5219\u3001\u6e10\u8fd1\u7ea7\u6570\u7684\u6027\u8d28\u3001\u5fae\u5206\u65b9\u7a0b\u89e3\u7684\u6e10\u8fd1\u5c55\u5f00\u3001\u590d\u5e73\u9762\u4e2d\u7684\u6e10\u8fd1\u5e42\u7ea7\u6570\uff1a\u4e0d\u540c\u6709\u6548\u6247\u5f62\u533a\u57df\u4e4b\u95f4\u7684\u8054\u7cfb\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-05/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-05/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["asymptotic-analysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66", "computational-applied-math"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 渐进级数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 收敛与发散幂级数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 渐近级数的例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 使用渐近级数的数值近似：最优截断法则
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 渐近级数的性质
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 渐近级数的性质">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 (a) 非唯一性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 (b) 唯一性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 (c) 渐近级数中的系数等同
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 (d) 渐近级数的算术运算
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 (e) 渐近级数的积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 (f) 渐近级数的微分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 微分方程解的渐近展开
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 复平面中的渐近幂级数：不同有效扇形区域之间的联系
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 5 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">05</div>
+    <h1 id="top"><span class="book-visually-hidden">第 5 章：</span>渐近级数</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>3,309 字 · 约 9 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>渐进级数</h2>
+<p>在本节中，我们用严谨的数学分析语言叙述前文所用到的渐进方法。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>收敛与发散幂级数</h2>
+<p>在3.5节中，我们将 <span class="arithmatex">\(f(x) \sim \sum_{n=0}^\infty a_n (x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>) 定义为：对于每一个 <span class="arithmatex">\(N\)</span>，当 <span class="arithmatex">\(x \to x_0\)</span> 时，余项 <span class="arithmatex">\(\varepsilon_N(x) = f(x) - \sum_{n=0}^N a_n(x-x_0)^n \ll (x-x_0)^N\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)。</p>
+<p>容易看出渐近级数是Taylor级数的推广。一个级数不必是收敛的才能是渐近的。收敛是一个绝对的概念,它代表的是系数 <span class="arithmatex">\(a_n\)</span> 的性质，而渐近性是展开系数和级数所属函数 <span class="arithmatex">\(f(x)\)</span> 的一个相对属性。事实上，每个幂级数对于某个连续函数 <span class="arithmatex">\(f(x)\)</span> 都是渐近的。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.1</span></p>
+<p>给定一个形式幂级数 <span class="arithmatex">\(\sum_{n=0}^\infty a_n (x-x_0)^n\)</span>，我们定义一个连续函数 <span class="arithmatex">\(\phi(x;\alpha)\)</span>如下：</p>
+<div class="arithmatex">\[
+\phi(x; \alpha) =
+\begin{cases}
+1, &amp; |x| \le \frac{1}{2}\alpha, \\
+2\left(1 - \frac{|x|}{\alpha}\right), &amp; \frac{1}{2}\alpha &lt; |x| &lt; \alpha, \\
+0, &amp; \alpha \le |x|.
+\end{cases}
+\]</div>
+<p>再定义 <span class="arithmatex">\(\alpha_n = \min(1/|a_n|, 2^{-n})\)</span>，其中 <span class="arithmatex">\(a_n\)</span> 是任意级数 <span class="arithmatex">\(\sum_{n=0}^\infty a_n(x-x_0)^n\)</span> 的系数。定义：</p>
+<div class="arithmatex">\[
+f(x) = \sum_{n=0}^\infty a_n \phi(x-x_0; \alpha_n)(x-x_0)^n
+\]</div>
+<p>则 <span class="arithmatex">\(f\)</span> 是有限、连续的，且满足</p>
+<div class="arithmatex">\[
+f(x) \sim \sum_{n=0}^\infty a_n(x-x_0)^n, \quad x \to x_0.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对于任何 <span class="arithmatex">\(x \neq x_0\)</span>，因为该级数在最多 <span class="arithmatex">\(N\)</span> 项后截断，其中 <span class="arithmatex">\(N\)</span> 是满足 <span class="arithmatex">\(2^{-N} \le |x-x_0|\)</span> 的最小整数，故它是有限且连续的。若 <span class="arithmatex">\(|x-x_0| \le \min(2^{-n}, 1/|a_n|, \dots, 1/|a_N|) = R_N\)</span>，则 <span class="arithmatex">\(\phi(x-x_0; \alpha_n) = 1\)</span>,<span class="arithmatex">\(n=0, \dots, N\)</span>。因此，若 <span class="arithmatex">\(|x-x_0| \le R_N\)</span>，</p>
+<div class="arithmatex">\[
+f(x) = a_0 + a_1(x-x_0) + \dots + a_N(x-x_0)^N + \sum_{n=N+1}^\infty a_n \phi(x-x_0; \alpha_n)(x-x_0)^n.
+\]</div>
+<p>由定义任意 <span class="arithmatex">\(x\)</span> 与 <span class="arithmatex">\(n\)</span>有<span class="arithmatex">\(|a_n \phi(x-x_0; \alpha_n)| \le 1,|\phi(x-x_0; \alpha_n)| \le 1\)</span>，因此若 <span class="arithmatex">\(|x-x_0| \le R_N\)</span>，则</p>
+<div class="arithmatex">\[
+\begin{aligned}
+|\varepsilon_N(x)| &amp;= \left| f(x) - \sum_{n=0}^N a_n(x-x_0)^n \right| \\
+&amp;= \left| a_{N+1} \phi(x-x_0; \alpha_{N+1})(x-x_0)^{N+1} + \sum_{n=N+2}^\infty a_n \phi(x-x_0; \alpha_n)(x-x_0)^n \right| \\
+&amp;\le |a_{N+1}| |x-x_0|^{N+1} + \sum_{n=N+2}^\infty |x-x_0|^{n-1} \\
+&amp;= |x-x_0|^{N+1} \left(|a_{N+1}| +(1-|x-x_0|)^{-1}\right) \ll (x-x_0)^N, \quad x \to x_0.
+\end{aligned}
+\]</div>
+<p>因此，<span class="arithmatex">\(\sum_{n=0}^\infty a_n(x-x_0)^n\)</span> 对于 <span class="arithmatex">\(x \to x_0\)</span> 是 <span class="arithmatex">\(f(x)\)</span> 的渐近级数。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>渐近级数的例子</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span><span class="book-name">Stieltjes 级数</span></p>
+<p><strong>Stieltjes级数</strong>定义为</p>
+<div class="arithmatex">\[
+\sum_{n=0}^\infty (-1)^n n! x^n. \tag{3.8.1}
+\]</div>
+</div>
+<p>上文提到这是微分方程(<a href="../chapter-03/">3.4.2</a>)的形式幂级数解。我们现在将利用它来渐近该方程的解。</p>
+<p>为了对级数进行“求和”，我们利用积分恒等式 <span class="arithmatex">\(n! = \int_0^\infty e^{-t} t^n dt\)</span>：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^\infty (-x)^n n! \to \sum_{n=0}^\infty (-x)^n \int_0^\infty e^{-t} t^n dt.
+\]</div>
+<p>无视任何收敛定理所要求的条件，交换求和与积分的顺序：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^\infty (-x)^n \int_0^\infty e^{-t} t^n dt \to \int_0^\infty dt \, e^{-t} \sum_{n=0}^\infty (-xt)^n,
+\]</div>
+<p>然后对 <span class="arithmatex">\(\sum_{n=0}^\infty (-xt)^n \to 1/(1+xt)\)</span> 求和，即使对于 <span class="arithmatex">\(|xt| \ge 1\)</span> 的 <span class="arithmatex">\(t\)</span> 是发散的，至此我们得到：</p>
+<div class="arithmatex">\[
+y(x) = \int_0^\infty \frac{e^{-t}}{1+xt} dt, \tag{3.8.2}
+\]</div>
+<p>这被称为Stieltjes积分，存在且在 <span class="arithmatex">\(x&gt;0\)</span> 上解析，并且 <span class="arithmatex">\(y(x)\)</span> 满足微分方程(<a href="../chapter-03/">3.4.2</a>)。</p>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.2</span></p>
+<p>Stieltjes级数对于Stieltjes积分是渐近的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>反复利用分部积分我们得到：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+y(x) = 1 - x + 2!x^2 - 3!x^3 + \dots + (-1)^N N!x^N + \varepsilon_N(x),
+\end{aligned}
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+\varepsilon_N(x) = (-1)^{N+1} (N+1)! x^{N+1} \int_0^\infty (1+xt)^{-N-2} e^{-t} dt.
+\]</div>
+<p>利用不等式</p>
+<div class="arithmatex">\[
+\int_0^\infty (1+xt)^{-N-2} e^{-t} dt \le \int_0^\infty e^{-t} dt = 1, \quad x \to 0+,
+\]</div>
+<p>得到</p>
+<div class="arithmatex">\[
+|\varepsilon_N(x)| \le (N+1)! x^{N+1} \ll x^N, \quad x \to 0+.
+\]</div>
+</details>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.3</span><span class="book-name">广义Stieltjes级数和积分</span></p>
+<p><strong>广义Stieltjes积分</strong>定义为</p>
+<div class="arithmatex">\[
+f(x) = \int_0^\infty \frac{\rho(t)}{1+xt} dt, \tag{3.8.3}
+\]</div>
+<p>其中权重函数 <span class="arithmatex">\(\rho(t)\)</span> 是非负的，并且当 <span class="arithmatex">\(t \to \infty\)</span> 时迅速趋于零，使得积分</p>
+<div class="arithmatex">\[
+a_n = \int_0^\infty t^n \rho(t) dt \tag{3.8.4}
+\]</div>
+<p>对于所有正整数 <span class="arithmatex">\(n\)</span> 都存在。对应的<strong>广义Stieltjes级数</strong>定义为</p>
+<div class="arithmatex">\[
+f(x) \sim \sum_{n=0}^\infty (-1)^n a_n x^n, \quad x \to 0+. \tag{3.8.5}
+\]</div>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.4</span></p>
+<p>广义Stieltjes级数对于广义Stieltjes积分是渐近的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>注意到对任意 <span class="arithmatex">\(N\)</span>，有</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\varepsilon_N(x) &amp;= f(x) - \sum_{n=0}^N (-1)^n a_n x^n  \\
+&amp;= \int_0^\infty \rho(t) \left[ \frac{1}{1+xt} - \sum_{n=0}^N (-xt)^n \right] dt  \\
+&amp;= \int_0^\infty \frac{\rho(t)}{1+xt} (-xt)^{N+1} dt
+\end{aligned}\tag{3.8.6}
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+|\varepsilon_N(x)| \le x^{N+1} \int_0^\infty \rho(t) t^{N+1} dt = a_{N+1} x^{N+1} \ll x^N, \quad x \to 0+, \tag{3.8.7}
+\]</div>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.5</span></p>
+<p>如果 <span class="arithmatex">\(\rho(t) = K_0(t)\)</span>，即零阶修正Bessel函数(<a href="../chapter-03/">3.3.15</a>)，那么 (3.8.5) 变为</p>
+<div class="arithmatex">\[
+\int_0^\infty \frac{K_0(t)}{1+xt} dt \sim \frac{1}{2} \sum_{n=0}^\infty (-2x)^n \left[ \Gamma\left(\frac{1}{2}n+\frac{1}{2}\right) \right]^2 \tag{3.8.8}
+\]</div>
+</div>
+<h2 id="s4"><span class="book-secnum">§ 04</span>使用渐近级数的数值近似：最优截断法则</h2>
+<p>对于Stieltjes级数，我们可以提供一个精确的渐近估计，用于描述当<span class="arithmatex">\(x \to 0+\)</span>时Stieltjes积分的精确值与Stieltjes级数的最优截断之间的差异。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.1</span></p>
+<p>根据(3.8.6)，对于权重函数<span class="arithmatex">\(\rho(t) = e^{-t}\)</span>的Stieltjes级数(3.8.1)，其<span class="arithmatex">\(N\)</span>项后的误差为</p>
+<div class="arithmatex">\[
+(-x)^{N} \int_0^\infty \frac{t^N}{1+xt} e^{-t} dt.
+\]</div>
+<p>因为第<span class="arithmatex">\(n+1\)</span>项与第<span class="arithmatex">\(n\)</span>项的比值是<span class="arithmatex">\(-nx\)</span>，故Stieltjes级数(3.8.1)的最优截断是选择<span class="arithmatex">\(N\)</span> 为<span class="arithmatex">\(1/x\)</span>的向下取整。如果用这个积分表示来近似最优误差<span class="arithmatex">\(\varepsilon_{\text{optimal}}(x)\)</span>，我们有</p>
+<div class="arithmatex">\[
+|\varepsilon_{\text{optimal}}(x)| \sim \left(\frac{\pi}{2x}\right)^{1/2} e^{-1/x}, \quad x \to 0+. \tag{3.8.9}
+\]</div>
+<p>当<span class="arithmatex">\(x \to 0+\)</span>时，两者比值接近1。</p>
+</div>
+<h2 id="s5"><span class="book-secnum">§ 05</span>渐近级数的性质</h2>
+<h3 id="s5-1">5.1 (a) 非唯一性</h3>
+<p>一个发散幂级数的“和”并不是唯一确定的。例如，如果<span class="arithmatex">\(f(x) \sim \sum_{n=0}^\infty a_n(x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)，那么<span class="arithmatex">\(f(x) + e^{-(x-x_0)^{-2}} \sim \sum_{n=0}^\infty a_n(x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)也同样成立。事实上，级数<span class="arithmatex">\(\sum_{n=0}^\infty a_n(x-x_0)^n\)</span>对于任何与<span class="arithmatex">\(f(x)\)</span>相差一个函数<span class="arithmatex">\(g(x)\)</span>的函数都是渐近的，只要当<span class="arithmatex">\(x \to x_0\)</span>时<span class="arithmatex">\(g(x)\)</span>比<span class="arithmatex">\(f(x)\)</span>的所有幂次<span class="arithmatex">\(x-x_0\)</span>都更快地趋于0。这样的函数<span class="arithmatex">\(g(x)\)</span>被称为相对于渐近幂级数是<strong>次主导的</strong>，其渐近展开是</p>
+<div class="arithmatex">\[
+g(x) \sim \sum_{n=0}^\infty 0 \cdot (x-x_0)^n, \quad x \to x_0.
+\]</div>
+<h3 id="s5-2">5.2 (b) 唯一性</h3>
+<p>虽然有许多不同的函数可以渐近于一个给定的幂级数，但对于每个函数只有一个渐近幂级数。这已在3.5节中给出。</p>
+<h3 id="s5-3">5.3 (c) 渐近级数中的系数等同</h3>
+<p><span class="arithmatex">\(\sum_{n=0}^\infty a_n(x-x_0)^n \sim \sum_{n=0}^\infty b_n(x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>) 并不严格，因为幂级数只能渐近于函数。这个记号的意思是<span class="arithmatex">\(\sum a_n(x-x_0)^n\)</span>和<span class="arithmatex">\(\sum b_n(x-x_0)^n\)</span>为渐近的函数类别是相同的。容易看出两个幂级数是渐近的，当且仅当对于所有<span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(a_n = b_n\)</span>。因此，我们可以将幂级数中的系数等同起来。</p>
+<h3 id="s5-4">5.4 (d) 渐近级数的算术运算</h3>
+<p>算术运算可以逐项对渐近级数进行。具体来说，假设</p>
+<div class="arithmatex">\[
+f(x) \sim \sum_{n=0}^\infty a_n (x-x_0)^n, \quad x \to x_0,
+\]</div>
+<div class="arithmatex">\[
+g(x) \sim \sum_{n=0}^\infty b_n (x-x_0)^n, \quad x \to x_0.
+\]</div>
+<p>那么</p>
+<div class="arithmatex">\[
+\alpha f(x) + \beta g(x) \sim \sum_{n=0}^\infty (\alpha a_n + \beta b_n) (x-x_0)^n, \quad x \to x_0,
+\]</div>
+<div class="arithmatex">\[
+f(x)g(x) \sim \sum_{n=0}^\infty c_n (x-x_0)^n, \quad x \to x_0,
+\]</div>
+<div class="arithmatex">\[
+\frac{f(x)}{g(x)} \sim \sum_{n=0}^\infty d_n (x-x_0)^n, \quad x \to x_0,
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+c_n = \sum_{m=0}^n a_m b_{n-m},d_n = \frac{a_n - \sum_{m=0}^{n-1} d_m b_{n-m}}{b_0},
+\]</div>
+<p>后者当然要求 <span class="arithmatex">\(b_0 \neq 0\)</span>。证明留给读者。</p>
+<h3 id="s5-5">5.5 (e) 渐近级数的积分</h3>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.1</span></p>
+<p>任何渐近级数<span class="arithmatex">\(f(x) \sim \sum_{n=0}^\infty a_n (x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)，如果<span class="arithmatex">\(f(x)\)</span>在<span class="arithmatex">\(x_0\)</span>附近可积，则可以逐项积分：</p>
+<div class="arithmatex">\[
+\int_{x_0}^x f(t) dt \sim \sum_{n=0}^\infty \frac{a_n}{n+1} (x-x_0)^{n+1}, \quad x \to x_0.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由<span class="arithmatex">\(|f(x) - \sum_{n=0}^N a_n(x-x_0)^n| \ll (x-x_0)^N\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)可知，对于任何<span class="arithmatex">\(\varepsilon &gt; 0\)</span>，存在<span class="arithmatex">\(\delta,R &gt; 0\)</span>使得任意<span class="arithmatex">\(|x-x_0| \le R\)</span>，有</p>
+<div class="arithmatex">\[
+\left|f(x) - \sum_{n=0}^N a_n (x-x_0)^n\right| \le \varepsilon |x-x_0|^N,
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\left| \int_{x_0}^x \left( f(t) - \sum_{n=0}^N a_n (t-x_0)^n \right) dt \right| &amp;\le \left| \int_{x_0}^x \left| f(t) - \sum_{n=0}^N a_n(t-x_0)^n \right| dt \right| \\
+&amp;\le \varepsilon \left| \int_{x_0}^x |t-x_0|^N dt \right| \\
+&amp;= \frac{\varepsilon}{N+1} |x-x_0|^{N+1}
+\end{aligned}
+\]</div>
+<p>于是有，</p>
+<div class="arithmatex">\[
+\left| \frac{\int_{x_0}^x f(t) dt - \sum_{n=0}^N \frac{a_n}{(n+1)} (x-x_0)^{n+1}}{(x-x_0)^{N+1}} \right| \le \frac{\varepsilon}{N+1}
+\]</div>
+<p>由于<span class="arithmatex">\(\varepsilon &gt; 0\)</span>是任意的，故</p>
+<div class="arithmatex">\[
+\int_{x_0}^x f(t) dt - \sum_{n=0}^N \frac{a_n}{n+1} (x-x_0)^{n+1} \ll (x-x_0)^{N+1}, \quad x \to x_0,
+\]</div>
+<p>这表明渐近级数可以逐项积分。</p>
+</details>
+<p>如果我们希望对一个在无穷远处的渐近级数进行积分，则上述论证可以推广到，如果<span class="arithmatex">\(f(x) \sim \sum_{n=0}^\infty a_n x^{-n}\)</span> (<span class="arithmatex">\(x \to \infty\)</span>)，那么</p>
+<div class="arithmatex">\[
+\int_x^\infty [f(t) - a_0 - a_1 t^{-1}] dt \sim \sum_{n=2}^\infty \frac{a_n}{n-1} x^{1-n}, \quad x \to \infty.
+\]</div>
+<h3 id="s5-6">5.6 (f) 渐近级数的微分</h3>
+<p>渐近级数通常不能逐项微分，这与次主导性有关。考虑</p>
+<div class="arithmatex">\[
+g(x) = f(x) + e^{-1/(x-x_0)^2} \sin(e^{1/(x-x_0)^2})
+\]</div>
+<p>与<span class="arithmatex">\(f(x)\)</span>相差一个次主导函数，因此当<span class="arithmatex">\(x \to x_0\)</span>时具有相同的渐近级数展开。然而，<span class="arithmatex">\(f'(x)\)</span>和</p>
+<div class="arithmatex">\[
+g'(x) = f'(x) - 2(x-x_0)^{-3} \cos(e^{1/(x-x_0)^2}) + 2(x-x_0)^{-3} e^{-1/(x-x_0)^2} \sin(e^{1/(x-x_0)^2})
+\]</div>
+<p>不具有相同的渐近幂级数展开。我们有如下几种定理来处理渐近级数的微分。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span></p>
+<p>设<span class="arithmatex">\(f'(x)\)</span>存在且可积，且<span class="arithmatex">\(f(x) \sim \sum_{n=0}^\infty a_n(x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)，那么</p>
+<div class="arithmatex">\[
+f'(x) \sim \sum_{n=1}^\infty n a_n(x-x_0)^{n-1}, \quad x \to x_0.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设<span class="arithmatex">\(f'(x) \sim \sum_{n=0}^\infty b_n(x-x_0)^n\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)。逐项积分给出</p>
+<div class="arithmatex">\[
+f(x) = f(x_0) + \int_{x_0}^x f'(t) dt \sim f(x_0) + \sum_{n=0}^\infty \frac{b_n}{n+1} (x-x_0)^{n+1}, \quad x \to x_0.
+\]</div>
+<p>由渐进级数的唯一性即得。</p>
+</details>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.3</span></p>
+<p>设<span class="arithmatex">\(f(x) \sim x^p\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>)，其中<span class="arithmatex">\(p \ge 1\)</span>且<span class="arithmatex">\(f''(x)\)</span>是正的，那么<span class="arithmatex">\(f'(x) \sim px^{p-1}\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>)。</p>
+</div>
+<p>这个结果只涉及<span class="arithmatex">\(f(x)\)</span>的主导行为，并不能证明渐近级数的逐项微分。渐近级数的逐项微分在复数域中要清晰得多。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.4</span></p>
+<p>设<span class="arithmatex">\(f(z)\)</span>在扇区<span class="arithmatex">\(\theta_1 \le \arg(z-z_0) \le \theta_2\)</span>, <span class="arithmatex">\(0 &lt; |z-z_0| &lt; R\)</span>内是解析的，并且<span class="arithmatex">\(f(z) \sim \sum_{n=0}^\infty a_n(z-z_0)^n\)</span> [<span class="arithmatex">\(z \to z_0; \theta_1 \le \arg(z-z_0) \le \theta_2\)</span>]，那么</p>
+<div class="arithmatex">\[
+f'(z) \sim \sum_{n=1}^\infty n a_n (z-z_0)^{n-1}, \quad z \to z_0; \theta_1 &lt; \arg(z-z_0) &lt; \theta_2.
+\]</div>
+</div>
+<p>即使渐进级数的微分定理比较复杂，但我们指出，如果已知一个函数满足一个线性微分方程，其系数可以展开为渐近级数，那么整个情况就会大大简化。</p>
+<h2 id="s6"><span class="book-secnum">§ 06</span>微分方程解的渐近展开</h2>
+<p>上文中给出的形式化方法需要有其合理性的证明，这有如下几点困难要处理。首先，我们一直在假设主导行为被分解出来后，解的剩余部分存在一个渐近级数展开。然而，容易看到并非所有函数都能被展开为渐近级数。其次，渐近级数通常不能逐项微分。我们考虑 <span class="arithmatex">\(y(x)\)</span> 是 <span class="arithmatex">\(y'' + py' + qy = 0\)</span> 的解，其中 <span class="arithmatex">\(p(x), q(x)\)</span> 当 <span class="arithmatex">\(x \to x_0\)</span> 时可展开为渐近幂级数，则若 <span class="arithmatex">\(y(x)\)</span> 当 <span class="arithmatex">\(x \to x_0\)</span> 时可展开为渐近幂级数，就有 <span class="arithmatex">\(y'(x)\)</span> 的渐近幂级数是对 <span class="arithmatex">\(y(x)\)</span> 的渐近幂级数逐项微分得到的。这个结论对于一般的<span class="arithmatex">\(n\)</span>阶微分方程也是成立的。</p>
+<p>剩下的问题是要证明解具有渐近级数表示，我们通过一个例子来说明。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.1</span><span class="book-name"><span class="arithmatex">\(K_\nu(x)\)</span> 渐近展开的存在性</span></p>
+<p>回忆，<span class="arithmatex">\(K_\nu(x)\)</span> 被定义为修正Bessel方程</p>
+<div class="arithmatex">\[
+x^2 y'' + xy' - (x^2 + \nu^2)y = 0 \tag{3.8.10}
+\]</div>
+<p>的解，其主导行为是</p>
+<div class="arithmatex">\[
+K_\nu(x) \sim \left(\frac{\pi}{2x}\right)^{1/2} e^{-x}, \quad x \to +\infty. \tag{3.8.11}
+\]</div>
+<p>将 <span class="arithmatex">\(w(x) = (\pi/2x)^{-1/2} e^x w(x)\)</span> 代入 (3.8.10)，得到 <span class="arithmatex">\(w(x)\)</span> 的微分方程：</p>
+<div class="arithmatex">\[
+w'' - 2w' + \frac{\lambda}{x^2} w = 0, \tag{3.8.12}
+\]</div>
+<p>其中 <span class="arithmatex">\(\lambda = \frac{1}{4} - \nu^2\)</span>。我们想证明 <span class="arithmatex">\(w(x)\)</span> 具有 <span class="arithmatex">\(w(x) \sim 1 + a_1/x + a_2/x^2 + \dots\)</span> 形式的渐近展开，容易验证它必须满足积分方程：</p>
+<div class="arithmatex">\[
+w(x) = 1 + \frac{\lambda}{2} \int_x^\infty (e^{2(x-t)}-1) \frac{w(t)}{t^2} dt. \tag{3.8.13}
+\]</div>
+<p>可以证明积分方程(3.8.13)有一个对 <span class="arithmatex">\(x&gt;a\)</span> 有界 <span class="arithmatex">\(B_0\)</span> 的解：<span class="arithmatex">\(|w(x)| \le B_0\)</span> (<span class="arithmatex">\(x&gt;a\)</span>)，进而有：</p>
+<div class="arithmatex">\[
+\frac{1}{2} \left| \int_x^\infty (e^{2(x-t)}-1) \frac{w(t)}{t^2} dt \right| \le \frac{1}{2} \int_x^\infty \frac{|w(t)|}{t^2} dt \le \frac{B_0}{2x}, \quad x&gt;a.
+\]</div>
+<p>上式与(3.8.13) 表明 <span class="arithmatex">\(w(x) \equiv 1+w_1(x)\)</span> 满足 <span class="arithmatex">\(|w_1(x)| \le B_1/x\)</span> (<span class="arithmatex">\(x&gt;a\)</span>)，其中 <span class="arithmatex">\(B_1 = \frac{1}{2} \lambda B_0\)</span>，代入(3.8.13) 给出</p>
+<div class="arithmatex">\[
+w_1(x) = \frac{\lambda}{2} \int_x^\infty (e^{2(x-t)}-1) \frac{1}{t^2} dt + \frac{\lambda}{2} \int_x^\infty (e^{2(x-t)}-1) \frac{w_1(t)}{t^2} dt.
+\]</div>
+<p>对第一个积分分部积分得到</p>
+<div class="arithmatex">\[
+\frac{\lambda}{2} \int_x^\infty (e^{2(x-t)}-1) \frac{1}{t^2} dt = -\frac{\lambda}{2x} + \frac{\lambda^2}{2} \int_x^\infty \frac{e^{2x-2t}}{t^2} dt.
+\]</div>
+<p>因此，存在一个正常数 <span class="arithmatex">\(B_2\)</span> 使得 <span class="arithmatex">\(w(x) = 1 - \lambda/2x + w_2(x)\)</span>，其中 <span class="arithmatex">\(|w_2(x)| &lt; B_2/x^2\)</span> (<span class="arithmatex">\(x&gt;a\)</span>)，这等价于 <span class="arithmatex">\(w(x) \sim 1 - \lambda/2x\)</span> (<span class="arithmatex">\(x \to \infty\)</span>)。反复进行分部积分，我们可以证明 <span class="arithmatex">\(w(x)\)</span> 具有渐近展开。</p>
+</div>
+<h2 id="s7"><span class="book-secnum">§ 07</span>复平面中的渐近幂级数：不同有效扇形区域之间的联系</h2>
+<p>在级数对一个函数的有效扇形区域之外，通常还有其他级数对该函数渐近，且它们有自己的有效扇形区域。例如，我们在3.5节和3.7节中看到，函数 Ai(<span class="arithmatex">\(x\)</span>) 和 Bi(<span class="arithmatex">\(x\)</span>) 对大 <span class="arithmatex">\(|x|\)</span> 有不同的渐近展开，这取决于 <span class="arithmatex">\(x\)</span> 的符号。因此，对于Airy方程 <span class="arithmatex">\(y''=zy\)</span>，一般的渐近表示为</p>
+<div class="arithmatex">\[
+y(z) \sim a_1 z^{-1/4} e^{-\frac{2}{3}z^{3/2}} \sum_{n=0}^\infty (-1)^n c_n z^{-3n/2} + a_2 z^{-1/4} e^{\frac{2}{3}z^{3/2}} \sum_{n=0}^\infty c_n z^{-3n/2}, \quad z \to \infty, \tag{3.8.14}
+\]</div>
+<p>其中 <span class="arithmatex">\(a_1\)</span> 和 <span class="arithmatex">\(a_2\)</span> 是常数。特殊解 Ai(<span class="arithmatex">\(z\)</span>) 和 Bi(<span class="arithmatex">\(z\)</span>) 的渐近展开可以通过指定 <span class="arithmatex">\(a_1\)</span> 和 <span class="arithmatex">\(a_2\)</span> 的值来确定。斯托克斯现象仅表明在复平面的不同扇形区域中，Ai(<span class="arithmatex">\(z\)</span>) 或 Bi(<span class="arithmatex">\(z\)</span>) 的 <span class="arithmatex">\(a_1\)</span> 和 <span class="arithmatex">\(a_2\)</span> 的值可能不同。对于 Ai(<span class="arithmatex">\(z\)</span>):</p>
+<div class="arithmatex">\[
+\begin{align*}
+a_1 = \frac{1}{2\sqrt{\pi}}, \quad a_2 = 0, \quad &amp;|\arg z| &lt; \pi; \tag{3.8.15} \\
+a_1 = \frac{1}{2\sqrt{\pi}}, \quad a_2 = \frac{i}{2\sqrt{\pi}}, \quad &amp;\frac{\pi}{3} &lt; \arg z &lt; \frac{5\pi}{3}; \tag{3.8.16} \\
+a_1 = \frac{1}{2\sqrt{\pi}}, \quad a_2 = \frac{-i}{2\sqrt{\pi}}, \quad &amp;-\frac{5\pi}{3} &lt; \arg z &lt; -\frac{\pi}{3}. \tag{3.8.17}
+\end{align*}
+\]</div>
+<p>对于 Bi(<span class="arithmatex">\(z\)</span>):</p>
+<div class="arithmatex">\[
+\begin{align*}
+a_1 \text{ 任意}, \quad a_2 = \frac{1}{\sqrt{\pi}}, \quad &amp;|\arg z| &lt; \frac{\pi}{3}; \tag{3.8.18} \\
+a_1 = \frac{i}{2\sqrt{\pi}}, \quad a_2 = \frac{1}{\sqrt{\pi}}, \quad &amp;\frac{\pi}{3} &lt; \arg z &lt; \frac{5\pi}{3}; \tag{3.8.19} \\
+a_1 = \frac{-i}{2\sqrt{\pi}}, \quad a_2 = \frac{1}{\sqrt{\pi}}, \quad &amp;-\frac{5\pi}{3} &lt; \arg z &lt; -\frac{\pi}{3}. \tag{3.8.20}
+\end{align*}
+\]</div>
+<p>在(3.8.18)中，<span class="arithmatex">\(a_1\)</span>是任意的，这是因为其为在<span class="arithmatex">\(|\arg z| &lt; \pi/3\)</span>时为次主导的函数。尽管Airy函数的渐近展开是唯一的，但人们不能解析地将其渐近展开从一个有效扇形区域延拓到另一个。那么，这些对大<span class="arithmatex">\(|z|\)</span>的不同渐近展开之间有什么联系呢？要回答这个问题，考虑：</p>
+<div class="arithmatex">\[
+\begin{align*}
+\text{Ai}(z) &amp;= -\omega \text{Ai}(\omega z) - \omega^2 \text{Ai}(\omega^2 z), \tag{21} \\
+\text{Bi}(z) &amp;= i\omega \text{Ai}(\omega z) - i\omega^2 \text{Ai}(\omega^2 z), \tag{22}
+\end{align*}
+\]</div>
+<p>其中 <span class="arithmatex">\(\omega = e^{-2\pi i/3}\)</span> 。我们使用该函数关系来推导(3.8.15)和(3.8.16)与(3.8.19)之间的联系。若 <span class="arithmatex">\(\frac{1}{3}\pi &lt; \arg z &lt; \frac{5}{3}\pi\)</span>，那么 <span class="arithmatex">\(-\pi/3 &lt; \arg(\omega z) &lt; \pi\)</span> 并且 <span class="arithmatex">\(-\pi &lt; \arg(\omega^2 z) &lt; \pi/3\)</span>。因此，(3.8.14)中具有 <span class="arithmatex">\(a_1\)</span> 和 <span class="arithmatex">\(a_2\)</span> 的(3.8.15)给出了 Ai(<span class="arithmatex">\(\omega z\)</span>) 和 Ai(<span class="arithmatex">\(\omega^2 z\)</span>) 的有效渐近展开。使用(3.8.14)，我们得到(3.8.16)。方程(3.8.21a,b)允许我们将渐近展开旋转120度。Ai(<span class="arithmatex">\(z\)</span>)的渐近展开由(3.8.14)和(3.8.16)给出。然而，Bi(<span class="arithmatex">\(z\)</span>)的渐近展开(3.8.18)与(3.8.20)给出的区域没有重叠。为了验证 Bi(<span class="arithmatex">\(z\)</span>) 在 <span class="arithmatex">\(-\pi &lt; \arg z &lt; -\pi/3\)</span> 和 <span class="arithmatex">\(\pi/3 &lt; \arg z &lt; \pi\)</span> 时的有效性，可能需要获得额外的渐近展开。通过推导这些不同的渐近展开，我们解释了 Ai(<span class="arithmatex">\(x\)</span>) 和 Bi(<span class="arithmatex">\(x\)</span>) 对大正 <span class="arithmatex">\(x\)</span> 的指数行为与对大负 <span class="arithmatex">\(x\)</span> 的振荡行为之间的联系。</p>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第四章：线性微分方程的局部分析：非正则奇点与渐近关系</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第六章：凸优化</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 5 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#computational-applied-math">计算与应用数学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=asymptotic-analysis">#asymptotic-analysis</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

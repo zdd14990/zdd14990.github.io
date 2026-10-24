@@ -1,0 +1,1595 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="概率论课程第六章：Markov 链的平稳测度、可逆性、生灭链、击中时、遍历定理、收敛定理与常返性。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Markov Chains - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/">
+  <meta property="og:title" content="Markov Chains - zdd14990">
+  <meta property="og:description" content="概率论课程第六章：Markov 链的平稳测度、可逆性、生灭链、击中时、遍历定理、收敛定理与常返性。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="course">
+
+  <meta property="article:tag" content="probability">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/">
+  <meta name="twitter:title" content="Markov Chains - zdd14990">
+  <meta name="twitter:description" content="概率论课程第六章：Markov 链的平稳测度、可逆性、生灭链、击中时、遍历定理、收敛定理与常返性。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Markov Chains",
+    "description": "\u6982\u7387\u8bba\u8bfe\u7a0b\u7b2c\u516d\u7ae0\uff1aMarkov \u94fe\u7684\u5e73\u7a33\u6d4b\u5ea6\u3001\u53ef\u9006\u6027\u3001\u751f\u706d\u94fe\u3001\u51fb\u4e2d\u65f6\u3001\u904d\u5386\u5b9a\u7406\u3001\u6536\u655b\u5b9a\u7406\u4e0e\u5e38\u8fd4\u6027\u3002",
+    "url": "https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/probability-statistics/probability-theory/course/chapter-06/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["course", "probability"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#markov-chains" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u6982\u7387\u7edf\u8ba1", "probability-statistics"], ["\u6982\u7387\u8bba", "probability-theory-course"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../../index.html">Home</a>
+      
+      
+        <a href="../../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#markov-property" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Markov Property
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ergodic-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ergodic theorem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ergodic theorem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-random-walk-on-a-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple random walk on a cycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stationary-measure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stationary Measure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-reversal-and-detailed-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Reversal and Detailed Balance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#birth-and-death-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Birth-and-Death Chains
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hitting-and-return-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hitting and Return Times
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#harmonic-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Harmonic Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ergodic-theorem_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ergodic Theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#total-variation-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total Variation Distance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convergence-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence Theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recurrence-and-transience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recurrence and Transience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#positive-recurrence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positive Recurrence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ergodic-theorem-countable-state-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ergodic Theorem: Countable State Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convergence-theorem-countable-state-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence Theorem: Countable State Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simple-random-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple Random Walk
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../../#probability-theory-course">概率论课程</a>
+    <span>Part 6 of 6</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="markov-chains">Markov Chains</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>1,464 字 · 约 4 分钟</span>
+  </div>
+  
+</header>
+
+<hr />
+<h2 id="markov-property">Markov Property</h2>
+<p>A sequence of random variables <span class="arithmatex">\(\left\{X_n\right\}\)</span> is a <strong>Markov process</strong> with state space <span class="arithmatex">\(S\)</span> and transition probabilities <span class="arithmatex">\(P\)</span> if for all <span class="arithmatex">\(n\ge 0\)</span> and all sequences <span class="arithmatex">\(x_0,\ldots,x_n,x_{n+1}\in S\)</span>, we have that</p>
+<div class="arithmatex">\[
+\mathbb{P}[X_{n+1}=x_{n+1}\mid X_0=x_0,\ldots,X_n=x_n]=\mathbb{P}[X_{n+1}=x_{n+1}\mid X_n=x_n]= P(x_n,x_{n+1}).
+\]</div>
+<ul>
+<li>
+<p>the conditional probability is <span class="arithmatex">\(P(x,y)\)</span>, no matter what sequence <span class="arithmatex">\(x_0,\cdots,x_{n-1}\)</span> of states proceeds the current state <span class="arithmatex">\(x\)</span></p>
+</li>
+<li>
+<p>the transition matrix <span class="arithmatex">\(P\)</span> is a stochastic matrix, i.e. <span class="arithmatex">\(P(x,y)\ge 0\)</span> and <span class="arithmatex">\(\sum_{y\in S}P(x,y)=1\)</span> for all <span class="arithmatex">\(x\in S\)</span>.</p>
+</li>
+</ul>
+<hr />
+<h2 id="ergodic-theorem">Ergodic theorem</h2>
+<p><strong>Theorem</strong> Let <span class="arithmatex">\(f\)</span> be a real-valued function defined on <span class="arithmatex">\(S\)</span>. If <span class="arithmatex">\(\left\{X_n\right\}\)</span> is an irreducible Markov chain with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for any starting distribution <span class="arithmatex">\(\mu\)</span>, we have</p>
+<div class="arithmatex">\[
+\lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}f(X_k)=\pi(f),\quad \mathbb{P}_\mu\text{-a.s.}
+\]</div>
+<p><strong>Theorem</strong> Suppose that <span class="arithmatex">\(P\)</span> is irreducible, aperiodic, with stationary distribution <span class="arithmatex">\(\pi\)</span>. Then there exist constants <span class="arithmatex">\(\alpha \in (0,1)\)</span> and <span class="arithmatex">\(C &gt; 0\)</span> such that</p>
+<div class="arithmatex">\[
+\max_{x\in S}\|P^n(x,\cdot)-\pi\|_{\text{TV}}\le C\alpha^n.
+\]</div>
+<p>In particular, for any state <span class="arithmatex">\(y\)</span>, we have</p>
+<div class="arithmatex">\[
+\lim _{n\to\infty}P^n(x,y)=\pi(y).
+\]</div>
+<p>A transition matrix <span class="arithmatex">\(P\)</span> is called <strong>irreducible</strong> if for any two states <span class="arithmatex">\(x,y\in S\)</span>, there exists an integer <span class="arithmatex">\(n\ge 0\)</span> such that <span class="arithmatex">\(P^n(x,y)&gt;0\)</span>. For any <span class="arithmatex">\(x\in S\)</span>, define <span class="arithmatex">\(T(x)=\left\{n\ge 1:P^n(x,x)&gt;0\right\}\)</span>, the <strong>period</strong> of <span class="arithmatex">\(x\)</span> is the greatest common divisor of <span class="arithmatex">\(T(x)\)</span>, denote by <span class="arithmatex">\(gcd(T(x))\)</span>.</p>
+<p><strong>Lemma</strong> If <span class="arithmatex">\(P\)</span> is irreducible, then <span class="arithmatex">\(gcd(T(x)) = gcd(T(y))\)</span> for all <span class="arithmatex">\(x,y \in S\)</span>. We define this common number to be the period of the chain.</p>
+<p>For an irreducible chain, the chain is <strong>aperiodic</strong> if all states have period one.</p>
+<h3 id="simple-random-walk-on-a-cycle">Simple random walk on a cycle</h3>
+<p>For the simple random walk on the <span class="arithmatex">\(N\)</span>-cycle:</p>
+<ul>
+<li>the chain is irreducible;</li>
+<li>if <span class="arithmatex">\(N\)</span> is odd, it is aperiodic;</li>
+<li>if <span class="arithmatex">\(N\)</span> is even, it has period <span class="arithmatex">\(2\)</span>.</li>
+</ul>
+<hr />
+<h2 id="stationary-measure">Stationary Measure</h2>
+<p>Consider a Markov chain <span class="arithmatex">\((X_n)_{n\ge0}\)</span> with state space <span class="arithmatex">\(S\)</span> and transition matrix <span class="arithmatex">\(P\)</span>. Let</p>
+<ul>
+<li><span class="arithmatex">\(\mu_0\)</span> be the distribution of <span class="arithmatex">\(X_0\)</span>;</li>
+<li><span class="arithmatex">\(\mu_n\)</span> be the distribution of <span class="arithmatex">\(X_n\)</span>.</li>
+</ul>
+<p>Then</p>
+<div class="arithmatex">\[
+\mu_{n+1}=\mu_nP,
+\qquad
+\mu_n=\mu_0P^n.
+\]</div>
+<p>For a function <span class="arithmatex">\(f:S\to\mathbb R\)</span>, define</p>
+<div class="arithmatex">\[
+Pf(x)=\sum_{y\in S}P(x,y)f(y).
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\mathbb E_\mu[f(X_n)]=\mu P^nf.
+\]</div>
+<p>A probability measure <span class="arithmatex">\(\pi\)</span> on <span class="arithmatex">\(S\)</span> is called a <strong>stationary distribution</strong> if</p>
+<div class="arithmatex">\[
+\pi=\pi P.
+\]</div>
+<p>Equivalently, for every <span class="arithmatex">\(y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\pi(y)=\sum_{x\in S}\pi(x)P(x,y).
+\]</div>
+<p>If <span class="arithmatex">\(X_0\sim\pi\)</span>, then</p>
+<div class="arithmatex">\[
+X_n\sim\pi,\qquad \forall n\ge0.
+\]</div>
+<p>Indeed,</p>
+<div class="arithmatex">\[
+\mu_n=\pi P^n=\pi.
+\]</div>
+<hr />
+<h2 id="time-reversal-and-detailed-balance">Time Reversal and Detailed Balance</h2>
+<p>A probability distribution <span class="arithmatex">\(\pi\)</span> satisfies the <strong>detailed balance equations</strong> if</p>
+<div class="arithmatex">\[
+\pi(x)P(x,y)=\pi(y)P(y,x),
+\qquad \forall x,y\in S.
+\]</div>
+<p>Any probability distribution satisfying the detailed balance equations is stationary. In fact,</p>
+<div class="arithmatex">\[
+\sum_{x\in S}\pi(x)P(x,y)
+=
+\sum_{x\in S}\pi(y)P(y,x)
+=
+\pi(y)\sum_{x\in S}P(y,x)
+=
+\pi(y).
+\]</div>
+<p>Suppose <span class="arithmatex">\(X_0\sim\pi\)</span>. For every sequence <span class="arithmatex">\(x_0,\ldots,x_n\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\mathbb P_\pi(X_0=x_0,\ldots,X_n=x_n)\\
+&amp;=
+\pi(x_0)P(x_0,x_1)\cdots P(x_{n-1},x_n)\\
+&amp;=
+\pi(x_n)P(x_n,x_{n-1})\cdots P(x_1,x_0)\\
+&amp;=
+\mathbb P_\pi(X_0=x_n,\ldots,X_n=x_0).
+\end{aligned}
+\]</div>
+<p>Thus the chain has the same law when time is reversed.</p>
+<p>A Markov chain satisfying the detailed balance equations is called <strong>reversible</strong>.</p>
+<hr />
+<h2 id="birth-and-death-chains">Birth-and-Death Chains</h2>
+<p>A birth-and-death chain has state space</p>
+<div class="arithmatex">\[
+S=\{0,1,\ldots,N\}.
+\]</div>
+<p>From state <span class="arithmatex">\(k\)</span>, the chain can only move to <span class="arithmatex">\(k-1\)</span>, <span class="arithmatex">\(k\)</span>, or <span class="arithmatex">\(k+1\)</span>. Write</p>
+<div class="arithmatex">\[
+P(k,k+1)=p_k,
+\qquad
+P(k,k)=r_k,
+\qquad
+P(k,k-1)=q_k,
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+p_k+r_k+q_k=1,
+\qquad
+p_N=0,
+\qquad
+q_0=0.
+\]</div>
+<p>Assume the chain is irreducible. The detailed balance equations are</p>
+<div class="arithmatex">\[
+\pi(k)p_k=\pi(k+1)q_{k+1},
+\qquad 0\le k&lt;N.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\pi(k+1)=\pi(k)\frac{p_k}{q_{k+1}}.
+\]</div>
+<p>Starting from <span class="arithmatex">\(\pi(0)\)</span>,</p>
+<div class="arithmatex">\[
+\pi(k)
+=
+\pi(0)
+\prod_{j=0}^{k-1}\frac{p_j}{q_{j+1}}.
+\]</div>
+<p>Define</p>
+<div class="arithmatex">\[
+w_0=1,
+\qquad
+w_k=\prod_{j=0}^{k-1}\frac{p_j}{q_{j+1}},
+\qquad 1\le k\le N.
+\]</div>
+<p>After normalization,</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(k)=\frac{w_k}{\sum_{j=0}^Nw_j}.
+}
+\]</div>
+<p>Therefore every finite irreducible birth-and-death chain is reversible.</p>
+<hr />
+<h2 id="hitting-and-return-times">Hitting and Return Times</h2>
+<p>For <span class="arithmatex">\(x\in S\)</span>, define</p>
+<div class="arithmatex">\[
+\tau_x=\inf\{n\ge0:X_n=x\},
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\tau_x^+=\inf\{n\ge1:X_n=x\}.
+\]</div>
+<p>The random variable <span class="arithmatex">\(\tau_x\)</span> is the <strong>hitting time</strong> of <span class="arithmatex">\(x\)</span>, while <span class="arithmatex">\(\tau_x^+\)</span> is the <strong>first return time</strong> when <span class="arithmatex">\(X_0=x\)</span>.</p>
+<p><strong>Theorem.</strong> Suppose that <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible. Then there exists a unique stationary distribution <span class="arithmatex">\(\pi\)</span>. Moreover,</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(x)=\frac1{\mathbb E_x[\tau_x^+]},
+\qquad x\in S.
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\pi(x)&gt;0.
+\]</div>
+<p>The formula has the following interpretation:</p>
+<div class="arithmatex">\[
+\boxed{
+\text{long-run proportion of time at }x
+=
+\frac1{\text{mean return time to }x}.
+}
+\]</div>
+<p>For every <span class="arithmatex">\(x,y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_y]&lt;\infty.
+\]</div>
+<p>This follows from finiteness and irreducibility: there exist <span class="arithmatex">\(m\ge1\)</span> and <span class="arithmatex">\(c&gt;0\)</span> such that, from every state, the chain reaches <span class="arithmatex">\(y\)</span> within <span class="arithmatex">\(m\)</span> steps with probability at least <span class="arithmatex">\(c\)</span>. Hence</p>
+<div class="arithmatex">\[
+\mathbb P_x(\tau_y&gt;km)\le(1-c)^k,
+\]</div>
+<p>and consequently</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_y]&lt;\infty.
+\]</div>
+<hr />
+<h2 id="harmonic-functions">Harmonic Functions</h2>
+<p>A function <span class="arithmatex">\(f:S\to\mathbb R\)</span> is called <strong>harmonic</strong> if</p>
+<div class="arithmatex">\[
+f=Pf,
+\]</div>
+<p>that is,</p>
+<div class="arithmatex">\[
+f(x)=\sum_{y\in S}P(x,y)f(y).
+\]</div>
+<p><strong>Lemma.</strong> If <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible, then every harmonic function is constant.</p>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(x_0\)</span> be a point where <span class="arithmatex">\(f\)</span> attains its maximum. Since</p>
+<div class="arithmatex">\[
+f(x_0)=\sum_yP(x_0,y)f(y)
+\]</div>
+<p>is a convex combination of values not exceeding <span class="arithmatex">\(f(x_0)\)</span>, every state <span class="arithmatex">\(y\)</span> with <span class="arithmatex">\(P(x_0,y)&gt;0\)</span> must satisfy</p>
+<div class="arithmatex">\[
+f(y)=f(x_0).
+\]</div>
+<p>Repeating this argument and using irreducibility shows that every state has the same value.</p>
+<hr />
+<h2 id="ergodic-theorem_1">Ergodic Theorem</h2>
+<p><strong>Theorem.</strong> Let <span class="arithmatex">\(f:S\to\mathbb R\)</span>. If <span class="arithmatex">\((X_n)\)</span> is a finite irreducible Markov chain with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for every starting distribution <span class="arithmatex">\(\mu\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+\frac1n\sum_{j=0}^{n}f(X_j)
+\longrightarrow
+\pi(f),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+\pi(f)=\sum_{x\in S}f(x)\pi(x).
+\]</div>
+<p>In particular, take</p>
+<div class="arithmatex">\[
+f(y)=\mathbf 1_{\{y=x\}}.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\boxed{
+\frac1n\sum_{j=0}^{n}\mathbf 1_{\{X_j=x\}}
+\longrightarrow
+\pi(x),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
+\]</div>
+<p>Thus <span class="arithmatex">\(\pi(x)\)</span> is the long-run proportion of time spent at state <span class="arithmatex">\(x\)</span>.</p>
+<p>Aperiodicity is not required for this time-average result.</p>
+<hr />
+<h2 id="total-variation-distance">Total Variation Distance</h2>
+<p>For two probability measures <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\nu\)</span> on <span class="arithmatex">\(S\)</span>, their <strong>total variation distance</strong> is</p>
+<div class="arithmatex">\[
+\|\mu-\nu\|_{\mathrm{TV}}
+=
+\max_{A\subset S}|\mu(A)-\nu(A)|.
+\]</div>
+<p>For a finite or countable state space,</p>
+<div class="arithmatex">\[
+\boxed{
+\|\mu-\nu\|_{\mathrm{TV}}
+=
+\frac12\sum_{x\in S}|\mu(x)-\nu(x)|.
+}
+\]</div>
+<p>The total variation distance satisfies the triangle inequality:</p>
+<div class="arithmatex">\[
+\|\mu-\nu\|_{\mathrm{TV}}
+\le
+\|\mu-\eta\|_{\mathrm{TV}}
++
+\|\eta-\nu\|_{\mathrm{TV}}.
+\]</div>
+<p>For every <span class="arithmatex">\(y\in S\)</span>,</p>
+<div class="arithmatex">\[
+|\mu(y)-\nu(y)|
+\le
+\|\mu-\nu\|_{\mathrm{TV}}.
+\]</div>
+<hr />
+<h2 id="convergence-theorem">Convergence Theorem</h2>
+<p><strong>Theorem.</strong> Suppose that <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible and aperiodic, with stationary distribution <span class="arithmatex">\(\pi\)</span>. Then there exist constants</p>
+<div class="arithmatex">\[
+\alpha\in(0,1),
+\qquad
+C&gt;0,
+\]</div>
+<p>such that</p>
+<div class="arithmatex">\[
+\boxed{
+\max_{x\in S}
+\|P^n(x,\cdot)-\pi\|_{\mathrm{TV}}
+\le C\alpha^n.
+}
+\]</div>
+<p>In particular, for every <span class="arithmatex">\(x,y\in S\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+P^n(x,y)\longrightarrow\pi(y).
+}
+\]</div>
+<p>The ergodic theorem and the convergence theorem are different:</p>
+<ul>
+<li>irreducibility is sufficient for convergence of time averages;</li>
+<li>aperiodicity is additionally required for convergence of the distribution at a fixed time.</li>
+</ul>
+<hr />
+<h2 id="recurrence-and-transience">Recurrence and Transience</h2>
+<p>For <span class="arithmatex">\(x\in S\)</span>, recall</p>
+<div class="arithmatex">\[
+\tau_x^+=\inf\{n\ge1:X_n=x\}.
+\]</div>
+<p>A state <span class="arithmatex">\(x\)</span> is called <strong>recurrent</strong> if</p>
+<div class="arithmatex">\[
+\mathbb P_x(\tau_x^+&lt;\infty)=1.
+\]</div>
+<p>Otherwise, <span class="arithmatex">\(x\)</span> is called <strong>transient</strong>.</p>
+<p><strong>Lemma.</strong> Suppose <span class="arithmatex">\(P\)</span> is irreducible. The following are equivalent:</p>
+<ol>
+<li>there exists <span class="arithmatex">\(x\in S\)</span> such that</li>
+</ol>
+<p>$$
+   \mathbb P_x(\tau_x^+&lt;\infty)=1;
+   $$</p>
+<ol start="2">
+<li>for every <span class="arithmatex">\(x,y\in S\)</span>,</li>
+</ol>
+<p>$$
+   \mathbb P_x(\tau_y&lt;\infty)=1.
+   $$</p>
+<p>Thus an irreducible Markov chain is either recurrent or transient.</p>
+<p>If <span class="arithmatex">\(S\)</span> is finite and <span class="arithmatex">\(P\)</span> is irreducible, then every state is recurrent.</p>
+<hr />
+<h2 id="positive-recurrence">Positive Recurrence</h2>
+<p>A recurrent state <span class="arithmatex">\(x\)</span> is called <strong>positive recurrent</strong> if</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_x^+]&lt;\infty.
+\]</div>
+<p>If <span class="arithmatex">\(x\)</span> is recurrent but</p>
+<div class="arithmatex">\[
+\mathbb E_x[\tau_x^+]=\infty,
+\]</div>
+<p>then <span class="arithmatex">\(x\)</span> is called <strong>null recurrent</strong>.</p>
+<p>For an irreducible chain, positive recurrence is a class property: if one state is positive recurrent, then every state is positive recurrent.</p>
+<p><strong>Theorem.</strong> An irreducible Markov chain is positive recurrent if and only if there exists a stationary probability distribution <span class="arithmatex">\(\pi\)</span>.</p>
+<p>In this case, the stationary distribution is unique and</p>
+<div class="arithmatex">\[
+\boxed{
+\pi(x)=\frac1{\mathbb E_x[\tau_x^+]},
+\qquad x\in S.
+}
+\]</div>
+<hr />
+<h2 id="ergodic-theorem-countable-state-space">Ergodic Theorem: Countable State Space</h2>
+<p><strong>Theorem.</strong> Let <span class="arithmatex">\(f:S\to\mathbb R\)</span> satisfy</p>
+<div class="arithmatex">\[
+\pi(|f|)&lt;\infty.
+\]</div>
+<p>If <span class="arithmatex">\((X_n)\)</span> is irreducible and positive recurrent with stationary distribution <span class="arithmatex">\(\pi\)</span>, then for every starting distribution <span class="arithmatex">\(\mu\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+\frac1n\sum_{j=0}^{n}f(X_j)
+\longrightarrow
+\pi(f),
+\qquad
+\mathbb P_\mu\text{-a.s.}
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\frac1n\sum_{j=0}^{n}\mathbf 1_{\{X_j=x\}}
+\longrightarrow
+\pi(x),
+\qquad a.s.
+\]</div>
+<hr />
+<h2 id="convergence-theorem-countable-state-space">Convergence Theorem: Countable State Space</h2>
+<p><strong>Theorem.</strong> Suppose that the Markov chain is irreducible, aperiodic and positive recurrent. Then</p>
+<div class="arithmatex">\[
+\boxed{
+\|P^n(x,\cdot)-\pi\|_{\mathrm{TV}}
+\longrightarrow0.
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+P^n(x,y)\longrightarrow\pi(y)&gt;0.
+\]</div>
+<p>For an infinite state space, the theorem does not in general give a uniform exponential estimate of the form</p>
+<div class="arithmatex">\[
+C\alpha^n.
+\]</div>
+<hr />
+<h2 id="simple-random-walk">Simple Random Walk</h2>
+<p>Let <span class="arithmatex">\((S_n)\)</span> be a simple random walk on <span class="arithmatex">\(\mathbb Z^d\)</span> starting from the origin. Define successive return times by</p>
+<div class="arithmatex">\[
+\tau_0=0,
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\tau_{k+1}
+=
+\inf\{n&gt;\tau_k:S_n=0\}.
+\]</div>
+<p>The following statements are equivalent:</p>
+<ol>
+<li>the random walk is recurrent;</li>
+<li>the walk returns to the origin almost surely:</li>
+</ol>
+<p>$$
+   \mathbb P(\tau_1&lt;\infty)=1;
+   $$</p>
+<ol start="3">
+<li>the expected total number of visits to the origin is infinite:</li>
+</ol>
+<p>$$
+   \sum_{m=0}^\infty\mathbb P(S_m=0)=\infty.
+   $$</p>
+<p>Let</p>
+<div class="arithmatex">\[
+p_d(m)=\mathbb P(S_m=0).
+\]</div>
+<p>For <span class="arithmatex">\(d=1\)</span>,</p>
+<div class="arithmatex">\[
+p_1(2n)
+=
+\binom{2n}{n}2^{-2n}
+\sim
+\frac1{\sqrt{\pi n}}.
+\]</div>
+<p>For <span class="arithmatex">\(d=2\)</span>,</p>
+<div class="arithmatex">\[
+p_2(2n)
+=
+p_1(2n)^2
+\sim
+\frac1{\pi n}.
+\]</div>
+<p>For <span class="arithmatex">\(d=3\)</span>,</p>
+<div class="arithmatex">\[
+p_3(2n)=O(n^{-3/2}).
+\]</div>
+<p>Therefore,</p>
+<div class="arithmatex">\[
+\sum_np_1(n)=\infty,
+\qquad
+\sum_np_2(n)=\infty,
+\qquad
+\sum_np_3(n)&lt;\infty.
+\]</div>
+<p>Hence</p>
+<div class="arithmatex">\[
+\boxed{
+\text{simple random walk on }\mathbb Z^d
+\text{ is recurrent for }d\le2
+\text{ and transient for }d\ge3.
+}
+\]</div>
+<hr />
+<h1 id="galton-watson-tree">Galton--Watson Tree</h1>
+<p>A tree is a connected graph with no cycles. A rooted tree has a distinguished vertex called the root.</p>
+<p>The <strong>depth</strong> of a vertex is its graph distance from the root. Vertices at depth <span class="arithmatex">\(n\)</span> form the <span class="arithmatex">\(n\)</span>-th generation.</p>
+<p>In a regular rooted tree, every vertex has exactly <span class="arithmatex">\(m\)</span> offspring, so the number of vertices in generation <span class="arithmatex">\(n\)</span> is</p>
+<div class="arithmatex">\[
+Z_n=m^n.
+\]</div>
+<p>In a Galton--Watson tree, the number of offspring is random.</p>
+<p>Start with one ancestor:</p>
+<div class="arithmatex">\[
+Z_0=1.
+\]</div>
+<p>Each individual independently produces a random number of offspring with distribution</p>
+<div class="arithmatex">\[
+p_k=\mathbb P(Z_1=k),
+\qquad k\ge0.
+\]</div>
+<p>If <span class="arithmatex">\(\xi_{n,i}\)</span> denotes the number of offspring produced by individual <span class="arithmatex">\(i\)</span> in generation <span class="arithmatex">\(n\)</span>, then</p>
+<div class="arithmatex">\[
+Z_{n+1}
+=
+\sum_{i=1}^{Z_n}\xi_{n,i}.
+\]</div>
+<p>The state <span class="arithmatex">\(0\)</span> is absorbing.</p>
+<p>Define the extinction time</p>
+<div class="arithmatex">\[
+T=\inf\{n\ge0:Z_n=0\},
+\]</div>
+<p>and the extinction probability</p>
+<div class="arithmatex">\[
+q
+=
+\mathbb P(Z_n=0\text{ eventually})
+=
+\mathbb P(T&lt;\infty).
+\]</div>
+<hr />
+<h2 id="reproduction-law">Reproduction Law</h2>
+<p>The reproduction law is</p>
+<div class="arithmatex">\[
+p_k=\mathbb P(Z_1=k),
+\qquad
+\sum_{k=0}^\infty p_k=1.
+\]</div>
+<p>Assume</p>
+<div class="arithmatex">\[
+p_0+p_1&lt;1,
+\]</div>
+<p>so the reproduction law is nontrivial.</p>
+<p>The mean number of offspring is</p>
+<div class="arithmatex">\[
+R_0
+=
+\mathbb E[Z_1]
+=
+\sum_{k=0}^\infty kp_k.
+\]</div>
+<p>Conditioning on <span class="arithmatex">\(Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}\mid Z_n]
+=
+R_0Z_n.
+\]</div>
+<p>Taking expectations,</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}]
+=
+R_0\mathbb E[Z_n].
+\]</div>
+<p>Since <span class="arithmatex">\(Z_0=1\)</span>,</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[Z_n]=R_0^n.
+}
+\]</div>
+<hr />
+<h2 id="generating-function">Generating Function</h2>
+<p>Define the generating function</p>
+<div class="arithmatex">\[
+f(s)
+=
+\mathbb E[s^{Z_1}]
+=
+\sum_{k=0}^\infty p_ks^k,
+\qquad 0\le s\le1.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+f(0)=p_0,
+\qquad
+f(1)=1,
+\qquad
+f'(1)=R_0.
+\]</div>
+<p>The function <span class="arithmatex">\(f\)</span> is increasing and convex.</p>
+<p>Conditioning on <span class="arithmatex">\(Z_n\)</span>,</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\mathbb E[s^{Z_{n+1}}\mid Z_n]
+&amp;=
+\mathbb E\left[
+s^{\xi_{n,1}+\cdots+\xi_{n,Z_n}}
+\mid Z_n
+\right]\\
+&amp;=
+f(s)^{Z_n}.
+\end{aligned}
+\]</div>
+<p>Let <span class="arithmatex">\(f_n\)</span> denote the <span class="arithmatex">\(n\)</span>-fold composition of <span class="arithmatex">\(f\)</span>. Then</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[s^{Z_n}]=f_n(s).
+}
+\]</div>
+<p>In particular,</p>
+<div class="arithmatex">\[
+\mathbb P(Z_n=0)=f_n(0).
+\]</div>
+<hr />
+<h2 id="extinction-probability">Extinction Probability</h2>
+<p>Set</p>
+<div class="arithmatex">\[
+q_n=\mathbb P(Z_n=0)=f_n(0).
+\]</div>
+<p>Since extinction is permanent,</p>
+<div class="arithmatex">\[
+q_n\uparrow q.
+\]</div>
+<p>Also,</p>
+<div class="arithmatex">\[
+q_{n+1}=f(q_n).
+\]</div>
+<p>Taking limits gives</p>
+<div class="arithmatex">\[
+f(q)=q.
+\]</div>
+<p>If <span class="arithmatex">\(s\in[0,1]\)</span> satisfies <span class="arithmatex">\(f(s)=s\)</span>, then <span class="arithmatex">\(q_0=0\le s\)</span>, and by induction,</p>
+<div class="arithmatex">\[
+q_n\le s.
+\]</div>
+<p>Hence <span class="arithmatex">\(q\le s\)</span>. Therefore,</p>
+<div class="arithmatex">\[
+\boxed{
+q\text{ is the smallest solution of }f(s)=s
+\text{ in }[0,1].
+}
+\]</div>
+<p>The shape of the generating function gives</p>
+<div class="arithmatex">\[
+\boxed{
+\begin{cases}
+R_0&lt;1 &amp;\Longrightarrow q=1,\\
+R_0=1 &amp;\Longrightarrow q=1,\\
+R_0&gt;1 &amp;\Longrightarrow q&lt;1.
+\end{cases}
+}
+\]</div>
+<p>Thus:</p>
+<ul>
+<li><span class="arithmatex">\(R_0&lt;1\)</span>: extinction occurs almost surely;</li>
+<li><span class="arithmatex">\(R_0=1\)</span>: extinction occurs almost surely;</li>
+<li><span class="arithmatex">\(R_0&gt;1\)</span>: survival has positive probability <span class="arithmatex">\(1-q\)</span>.</li>
+</ul>
+<hr />
+<h2 id="subcritical-case">Subcritical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0&lt;1
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma^2
+=
+\operatorname{Var}(Z_1)
+=
+\sum_{k=0}^\infty(k-R_0)^2p_k
+&lt;\infty.
+\]</div>
+<p>Then there exists <span class="arithmatex">\(C&gt;0\)</span> such that</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb P(T&gt;n)\sim CR_0^n.
+}
+\]</div>
+<p>Thus the survival probability decays exponentially.</p>
+<hr />
+<h2 id="critical-case">Critical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0=1
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma^2=\operatorname{Var}(Z_1)&lt;\infty.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb P(T&gt;n)
+\sim
+\frac{2}{\sigma^2n}.
+}
+\]</div>
+<p>Extinction still occurs almost surely, but the survival probability decays only at rate <span class="arithmatex">\(1/n\)</span>.</p>
+<hr />
+<h2 id="supercritical-case">Supercritical Case</h2>
+<p>Suppose</p>
+<div class="arithmatex">\[
+R_0&gt;1.
+\]</div>
+<p>Then the survival probability is</p>
+<div class="arithmatex">\[
+1-q&gt;0.
+\]</div>
+<p>Define</p>
+<div class="arithmatex">\[
+W_n=\frac{Z_n}{R_0^n}.
+\]</div>
+<p>Let <span class="arithmatex">\(\mathcal F_n\)</span> be the information up to generation <span class="arithmatex">\(n\)</span>. Since</p>
+<div class="arithmatex">\[
+\mathbb E[Z_{n+1}\mid\mathcal F_n]
+=
+R_0Z_n,
+\]</div>
+<p>we have</p>
+<div class="arithmatex">\[
+\mathbb E[W_{n+1}\mid\mathcal F_n]
+=
+W_n.
+\]</div>
+<p>Thus <span class="arithmatex">\((W_n)\)</span> is a nonnegative martingale. By the martingale convergence theorem,</p>
+<div class="arithmatex">\[
+\boxed{
+W_n\longrightarrow W,
+\qquad a.s.
+}
+\]</div>
+<p>The Kesten--Stigum theorem states that</p>
+<div class="arithmatex">\[
+\boxed{
+\mathbb E[W]=1
+\iff
+\mathbb P(W&gt;0\mid\text{survival})=1
+\iff
+\mathbb E[Z_1\log^+Z_1]&lt;\infty,
+}
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+\log^+x=\max\{\log x,0\}.
+\]</div>
+<p>Under this condition, on the survival event,</p>
+<div class="arithmatex">\[
+Z_n\approx WR_0^n,
+\]</div>
+<p>so the population grows exponentially.</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="概率论课程章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-05/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Conditional Expectation</span>
+    </a>
+    
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    <a class="zdd-pager-catalog" href="../../../../#probability-theory-course">概率论课程 · 第 6 / 6 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../../blog/#probability-statistics">概率统计</a><a class="zdd-end-chip is-category" href="../../../../../blog/#probability-theory-course">概率论</a>
+      <a class="zdd-end-chip" href="../../../../../tags/?tag=course">#course</a><a class="zdd-end-chip" href="../../../../../tags/?tag=probability">#probability</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

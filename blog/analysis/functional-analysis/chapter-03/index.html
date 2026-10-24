@@ -1,0 +1,1733 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="证明正交投影、Hilbert 空间的 Riesz 表示与伴随算子，并学习无穷矩阵、弱收敛、SOT 和 WOT。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-03/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第三章：内积空间与 Hilbert 空间 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-03/">
+  <meta property="og:title" content="第三章：内积空间与 Hilbert 空间 - zdd14990">
+  <meta property="og:description" content="证明正交投影、Hilbert 空间的 Riesz 表示与伴随算子，并学习无穷矩阵、弱收敛、SOT 和 WOT。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="hilbert-space">
+
+  <meta property="article:tag" content="operator-theory">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-03/">
+  <meta name="twitter:title" content="第三章：内积空间与 Hilbert 空间 - zdd14990">
+  <meta name="twitter:description" content="证明正交投影、Hilbert 空间的 Riesz 表示与伴随算子，并学习无穷矩阵、弱收敛、SOT 和 WOT。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e09\u7ae0\uff1a\u5185\u79ef\u7a7a\u95f4\u4e0e Hilbert \u7a7a\u95f4",
+    "description": "\u8bc1\u660e\u6b63\u4ea4\u6295\u5f71\u3001Hilbert \u7a7a\u95f4\u7684 Riesz \u8868\u793a\u4e0e\u4f34\u968f\u7b97\u5b50\uff0c\u5e76\u5b66\u4e60\u65e0\u7a77\u77e9\u9635\u3001\u5f31\u6536\u655b\u3001SOT \u548c WOT\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-03/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-03/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "hilbert-space", "operator-theory", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-03" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 为什么要引入内积
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 半双线性形式与内积
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 正交与最佳逼近
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 正交与最佳逼近">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 有限正交展开
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 闭子空间上的投影
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 正交基与 Parseval
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Hilbert 空间的 Riesz 表示
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 从形式到算子，从算子到伴随
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 从形式到算子，从算子到伴随">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 半双线性形式的表示
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 伴随算子
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 无穷矩阵与算子拓扑
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 无穷矩阵与算子拓扑">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 矩阵的每一列存在还不够
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 三种收敛强度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 向量的弱收敛
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 半双线性形式与正交结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 半双线性形式与正交结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        正性决定形式的结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        内积如何控制算子
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        正交展开的有限与无限
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        完备性与投影
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 形式、矩阵和算子拓扑
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 形式、矩阵和算子拓扑">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从矩阵元恢复算子
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        固定哪些变量来测极限
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        弱收敛与范数收敛的距离
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-3-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        区分正规性与对称性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 4 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">03</div>
+    <h1 id="chapter-03"><span class="book-visually-hidden">第 3 章：</span>内积空间与 Hilbert 空间</h1>
+  </div>
+  <p class="book-standfirst">范数给出误差大小，但只凭范数未必能谈正交方向。对于最小二乘、Fourier 展开和能量方法，我们还需要角度与投影。内积把这些几何工具带入函数空间，而完备性保证正交展开和最佳逼近的极限存在。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>7,460 字 · 约 21 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>为什么要引入内积</h2>
+<p>全篇约定第一变量共轭线性、第二变量线性：<span class="arithmatex">\(\langle f,g\rangle_{L^2}=\int\overline f g\)</span>。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>半双线性形式与内积</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">半双线性形式</span></p>
+<p><span class="arithmatex">\(a:H\times H\to\mathbb C\)</span> 对第一变量共轭线性、第二变量线性时，称半双线性形式。若 <span class="arithmatex">\(a(x,y)=\overline{a(y,x)}\)</span>，称 Hermitian 形式；若 <span class="arithmatex">\(a(x,x)\ge0\)</span>，称正形式。</p>
+<p>正形式且 <span class="arithmatex">\(a(x,x)=0\)</span> 只发生在 <span class="arithmatex">\(x=0\)</span> 时，称内积。其诱导范数为 <span class="arithmatex">\(\|x\|=\sqrt{\langle x,x\rangle}\)</span>。内积空间在此范数下完备，称 Hilbert 空间。</p>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">Cauchy–Schwarz 与平行四边形恒等式</span></p>
+<div class="arithmatex">\[
+|\langle x,y\rangle|\le\|x\|\|y\|,
+\]</div>
+<div class="arithmatex">\[
+\|x+y\|^2+\|x-y\|^2=2\|x\|^2+2\|y\|^2.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对 <span class="arithmatex">\(y\ne0\)</span>，令 <span class="arithmatex">\(c=\langle y,x\rangle/\|y\|^2\)</span>，展开 <span class="arithmatex">\(0\le\|x-cy\|^2\)</span> 得 Cauchy–Schwarz；<span class="arithmatex">\(y=0\)</span> 显然。平行四边形恒等式直接展开内积。</p>
+<p>Cauchy–Schwarz 给出 <span class="arithmatex">\(\|x+y\|^2\le(\|x\|+\|y\|)^2\)</span>，所以内积确实诱导范数。</p>
+</details>
+<p>对正半双线性形式同样有 Cauchy–Schwarz。其零空间中的向量与所有向量都配对为零，因此可先商去零空间，再完备化。第四章会把矩数据产生的正形式这样变为 Hilbert 空间。</p>
+<div class="admonition note">
+<p class="admonition-title">从二次型恢复形式</p>
+<p>令 <span class="arithmatex">\(Q(x)=a(x,x)\)</span>。采用本篇约定时，极化公式为</p>
+<div class="arithmatex">\[
+a(x,y)=\frac14\big[Q(x+y)-Q(x-y)-iQ(x+iy)+iQ(x-iy)\big].
+\]</div>
+<p>展开右边即可验证。这说明能量中的二次型已经包含全部半双线性信息。相反，一般范数未必来自内积，例如 <span class="arithmatex">\(\ell^1\)</span> 的范数不满足平行四边形恒等式。</p>
+</div>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>正交与最佳逼近</h2>
+<h3 id="section-3-1">3.1 有限正交展开</h3>
+<p>对标准正交向量 <span class="arithmatex">\(e_1,\ldots,e_n\)</span>，令</p>
+<div class="arithmatex">\[
+P_nx=\sum_{j=1}^n\langle e_j,x\rangle e_j.
+\]</div>
+<p><span class="arithmatex">\(x-P_nx\)</span> 与各 <span class="arithmatex">\(e_j\)</span> 正交，勾股恒等式给出</p>
+<div class="arithmatex">\[
+\|x\|^2=\sum_{j=1}^n|\langle e_j,x\rangle|^2+\|x-P_nx\|^2.
+\]</div>
+<p>这既给出 Bessel 不等式，也说明 <span class="arithmatex">\(P_nx\)</span> 是张成空间中的最佳逼近。Gram–Schmidt 正交化就是逐次减去已有投影，再把非零余项归一化。</p>
+<h3 id="section-3-2">3.2 闭子空间上的投影</h3>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">正交投影定理</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 是 Hilbert 空间 <span class="arithmatex">\(H\)</span> 的闭线性子空间。每个 <span class="arithmatex">\(x\in H\)</span> 唯一写成</p>
+<div class="arithmatex">\[
+x=P_Mx+(x-P_Mx),\qquad P_Mx\in M,\quad x-P_Mx\in M^\perp.
+\]</div>
+<p><span class="arithmatex">\(P_Mx\)</span> 是 <span class="arithmatex">\(M\)</span> 中距离 <span class="arithmatex">\(x\)</span> 最近的点，<span class="arithmatex">\(P_M\)</span> 线性、有界且 <span class="arithmatex">\(\|P_M\|\le1\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明：最小化序列为何一定收敛</summary>
+<p>令 <span class="arithmatex">\(d=\inf_{m\in M}\|x-m\|\)</span>，选 <span class="arithmatex">\(m_n\in M\)</span> 使 <span class="arithmatex">\(\|x-m_n\|\to d\)</span>。平行四边形恒等式给出</p>
+<div class="arithmatex">\[
+\|m_n-m_k\|^2
+=2\|x-m_n\|^2+2\|x-m_k\|^2
+-4\left\|x-\frac{m_n+m_k}{2}\right\|^2.
+\]</div>
+<p>最后一项中的范数至少为 <span class="arithmatex">\(d\)</span>，故 <span class="arithmatex">\(m_n\)</span> 是 Cauchy 列。完备性与 <span class="arithmatex">\(M\)</span> 闭性给出 <span class="arithmatex">\(m_n\to m\in M\)</span>，且 <span class="arithmatex">\(\|x-m\|=d\)</span>。</p>
+<p>对 <span class="arithmatex">\(v\in M\)</span>，函数 <span class="arithmatex">\(\|x-m-tv\|^2\)</span> 在实数 <span class="arithmatex">\(t=0\)</span> 取最小值，得到 <span class="arithmatex">\(\operatorname{Re}\langle v,x-m\rangle=0\)</span>；再以 <span class="arithmatex">\(iv\)</span> 代替 <span class="arithmatex">\(v\)</span>，得到虚部也为零。</p>
+<p>若有两个正交分解，其 <span class="arithmatex">\(M\)</span> 分量之差同时属于 <span class="arithmatex">\(M\)</span> 与 <span class="arithmatex">\(M^\perp\)</span>，只能为零。唯一性给出 <span class="arithmatex">\(P_M\)</span> 线性；勾股恒等式给出范数估计。</p>
+</details>
+<p>因此 <span class="arithmatex">\(H=M\oplus M^\perp\)</span>，<span class="arithmatex">\(P_M^2=P_M=P_M^*\)</span>。对于任意线性子空间 <span class="arithmatex">\(E\)</span>，</p>
+<div class="arithmatex">\[
+(E^\perp)^\perp=\overline E,
+\qquad \overline E=H\Longleftrightarrow E^\perp=\{0\}.
+\]</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.2</span><span class="book-name">Galerkin 投影中的误差</span></p>
+<p>在能量内积 <span class="arithmatex">\(a(\cdot,\cdot)\)</span> 下，若精确解 <span class="arithmatex">\(u\)</span> 和离散解 <span class="arithmatex">\(u_h\)</span> 满足 <span class="arithmatex">\(a(v_h,u-u_h)=0\)</span>，则 <span class="arithmatex">\(u_h\)</span> 是离散空间中的能量正交投影，故</p>
+<div class="arithmatex">\[
+\|u-u_h\|_a=\inf_{v_h}\|u-v_h\|_a.
+\]</div>
+<p>这是对称椭圆问题有限元误差分析的核心。一般非对称问题需要第八章的 Céa 估计。</p>
+</div>
+<h3 id="section-3-3">3.3 正交基与 Parseval</h3>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.3</span><span class="book-name">Hilbert 正交基</span></p>
+<p>标准正交族 <span class="arithmatex">\((e_j)_{j\in J}\)</span> 的线性张成稠密时，称正交基。它通常不是 Hamel 基：向量往往需要无穷多个项的范数极限来展开。</p>
+</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.4</span><span class="book-name">正交展开</span></p>
+<p>对 Hilbert 正交基，</p>
+<div class="arithmatex">\[
+x=\sum_{j\in J}\langle e_j,x\rangle e_j,
+\qquad \|x\|^2=\sum_{j\in J}|\langle e_j,x\rangle|^2.
+\]</div>
+<p>若 <span class="arithmatex">\(J\)</span> 不可数，和按有限子集网理解；每个固定向量只有至多可数个非零系数。<span class="arithmatex">\(H\)</span> 等距同构于 <span class="arithmatex">\(\ell^2(J)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>Bessel 不等式使平方系数和有限，因此有限部分和是 Cauchy 网。完备性给出极限 <span class="arithmatex">\(y\)</span>。对每个 <span class="arithmatex">\(e_j\)</span>，<span class="arithmatex">\(\langle e_j,x-y\rangle=0\)</span>；稠密性推出 <span class="arithmatex">\(x=y\)</span>，勾股恒等式取极限即得 Parseval。</p>
+<p>反过来，对任意 <span class="arithmatex">\(\ell^2(J)\)</span> 系数，正交部分和同样 Cauchy，所以每组平方可和系数都能恢复一个向量。由此得到满射等距同构。一般正交基的存在可用 Zorn 引理；可分空间则可对一列稠密向量作 Gram–Schmidt。</p>
+</details>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>Hilbert 空间的 Riesz 表示</h2>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">Riesz–Fréchet 表示定理</span></p>
+<p>对每个 <span class="arithmatex">\(f\in H^*\)</span>，存在唯一的 <span class="arithmatex">\(y\in H\)</span>，使</p>
+<div class="arithmatex">\[
+f(x)=\langle y,x\rangle,\qquad \|f\|=\|y\|.
+\]</div>
+<p>按我们的内积约定，<span class="arithmatex">\(y\mapsto f\)</span> 是共轭线性等距双射。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(f=0\)</span> 时取 <span class="arithmatex">\(y=0\)</span>。否则 <span class="arithmatex">\(M=\ker f\)</span> 是真闭子空间。取 <span class="arithmatex">\(u\)</span> 使 <span class="arithmatex">\(f(u)\ne0\)</span>，令 <span class="arithmatex">\(q=u-P_Mu\)</span>，则 <span class="arithmatex">\(q\ne0\)</span>、<span class="arithmatex">\(q\in M^\perp\)</span>。</p>
+<p>对任意 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(x-f(x)q/f(q)\in M\)</span>，所以</p>
+<div class="arithmatex">\[
+\langle q,x\rangle=\frac{f(x)}{f(q)}\|q\|^2.
+\]</div>
+<p>因此取 <span class="arithmatex">\(y=\overline{f(q)}q/\|q\|^2\)</span> 即可。唯一性：若 <span class="arithmatex">\(\langle y_1-y_2,x\rangle=0\)</span> 对所有 <span class="arithmatex">\(x\)</span> 成立，取 <span class="arithmatex">\(x=y_1-y_2\)</span>。范数上界由 Cauchy–Schwarz，下界用 <span class="arithmatex">\(x=y/\|y\|\)</span> 测试。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">两个 Riesz 定理的区别</p>
+<p>第一章的 Riesz–Markov 定理把 <span class="arithmatex">\(C_0(X)\)</span> 上的泛函表示为测度；本章把 <span class="arithmatex">\(H\)</span> 上的泛函表示为空间里的向量。前者依赖连续函数与测度结构，后者依赖内积和完备性。谱定理会同时用到两者。</p>
+</div>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>从形式到算子，从算子到伴随</h2>
+<h3 id="section-5-1">5.1 半双线性形式的表示</h3>
+<p>设 <span class="arithmatex">\(a(x,y)\)</span> 有界，即 <span class="arithmatex">\(|a(x,y)|\le C\|x\|\|y\|\)</span>。固定 <span class="arithmatex">\(y\)</span> 后它对 <span class="arithmatex">\(x\)</span> 共轭线性，Riesz 定理给出唯一的 <span class="arithmatex">\(Ay\)</span>，使</p>
+<div class="arithmatex">\[
+a(x,y)=\langle x,Ay\rangle.
+\]</div>
+<p>第二变量的线性和唯一性保证 <span class="arithmatex">\(A\)</span> 线性，且 <span class="arithmatex">\(\|A\|=\|a\|\)</span>。因此有界半双线性形式与有界算子等价。若 <span class="arithmatex">\(a\)</span> Hermitian，则 <span class="arithmatex">\(A=A^*\)</span>；若 <span class="arithmatex">\(a\)</span> 正，则 <span class="arithmatex">\(A\ge0\)</span>。</p>
+<h3 id="section-5-2">5.2 伴随算子</h3>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span><span class="book-name">有界算子的伴随</span></p>
+<p>对 <span class="arithmatex">\(T\in\mathcal B(H,K)\)</span>，<span class="arithmatex">\(T^*\in\mathcal B(K,H)\)</span> 由</p>
+<div class="arithmatex">\[
+\langle Tx,y\rangle_K=\langle x,T^*y\rangle_H
+\]</div>
+<p>定义。固定 <span class="arithmatex">\(y\)</span> 时左端关于 <span class="arithmatex">\(x\)</span> 共轭线性，Riesz 定理保证表示向量存在。</p>
+</div>
+<p>有</p>
+<div class="arithmatex">\[
+(ST)^*=T^*S^*,\qquad (T^*)^*=T,
+\qquad\|T^*\|=\|T\|,\qquad\|T^*T\|=\|T\|^2.
+\]</div>
+<p>最后一个等式中，上界由范数次乘性；下界由</p>
+<div class="arithmatex">\[
+\|Tx\|^2=\langle x,T^*Tx\rangle\le\|T^*T\|\|x\|^2
+\]</div>
+<p>得到。核与像的关系为</p>
+<div class="arithmatex">\[
+(\operatorname{Ran}T)^\perp=\ker T^*,
+\qquad\overline{\operatorname{Ran}T}=(\ker T^*)^\perp.
+\]</div>
+<p>注意第二式需要闭包，像空间可能不闭。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.2</span><span class="book-name">三个重要算子类型</span></p>
+<p><span class="arithmatex">\(T=T^*\)</span> 称自伴；<span class="arithmatex">\(T^*T=TT^*\)</span> 称正规；<span class="arithmatex">\(U^*U=UU^*=I\)</span> 称酉。仅有 <span class="arithmatex">\(U^*U=I\)</span> 时，<span class="arithmatex">\(U\)</span> 是等距映射，未必满射。</p>
+<p>例如 <span class="arithmatex">\(\ell^2(\mathbb N_0)\)</span> 上的右移 <span class="arithmatex">\(S(x_0,x_1,\ldots)=(0,x_0,x_1,\ldots)\)</span> 等距，但没有覆盖第一坐标非零的向量，所以不是酉算子。</p>
+</div>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>无穷矩阵与算子拓扑</h2>
+<h3 id="section-6-1">6.1 矩阵的每一列存在还不够</h3>
+<p>在正交基下，<span class="arithmatex">\(T\)</span> 的矩阵系数为 <span class="arithmatex">\(a_{ij}=\langle e_i,Te_j\rangle\)</span>。任意无穷矩阵并不自动定义有界算子。准确条件是：对所有有限支撑系数 <span class="arithmatex">\(x,y\)</span>，</p>
+<div class="arithmatex">\[
+\left|\sum_{i,j}\overline{y_i}a_{ij}x_j\right|
+\le C\|x\|_2\|y\|_2.
+\]</div>
+<p>这个有界形式由 Riesz 表示产生唯一的 <span class="arithmatex">\(T\)</span>。其乘积应通过算子复合定义，而不是未经检验交换多重无穷和。例如对角矩阵 <span class="arithmatex">\(\operatorname{diag}(1,2,3,\ldots)\)</span> 每列都属于 <span class="arithmatex">\(\ell^2\)</span>，却不是有界算子。</p>
+<h3 id="section-6-2">6.2 三种收敛强度</h3>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.1</span><span class="book-name">范数、强算子、弱算子拓扑</span></p>
+<p>对 <span class="arithmatex">\(T_\alpha,T\in\mathcal B(H,K)\)</span>：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>算子范数收敛</td>
+<td><span class="arithmatex">\(\|T_\alpha-T\|\to0\)</span></td>
+</tr>
+<tr>
+<td>SOT，强算子收敛</td>
+<td>对每个 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(\|(T_\alpha-T)x\|\to0\)</span></td>
+</tr>
+<tr>
+<td>WOT，弱算子收敛</td>
+<td>对每个 <span class="arithmatex">\(x,y\)</span>，<span class="arithmatex">\(\langle y,(T_\alpha-T)x\rangle\to0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>有范数收敛 <span class="arithmatex">\(\Rightarrow\)</span> SOT 收敛 <span class="arithmatex">\(\Rightarrow\)</span> WOT 收敛，反向一般不成立。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.2</span><span class="book-name">有限秩截断与移位</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 中令 <span class="arithmatex">\(P_n\)</span> 投影到前 <span class="arithmatex">\(n\)</span> 个坐标。平方尾和趋于零，所以 <span class="arithmatex">\(P_n\to I\)</span> 强收敛；但 <span class="arithmatex">\(\|I-P_n\|=1\)</span>，故不在范数下收敛。</p>
+<p>双边移位 <span class="arithmatex">\(U\)</span> 在 <span class="arithmatex">\(\ell^2(\mathbb Z)\)</span> 上酉，<span class="arithmatex">\(U^n\to0\)</span> 弱算子收敛：先检查有限支撑向量，再用统一范数界扩张。它不强趋于零，因为 <span class="arithmatex">\(\|U^nx\|=\|x\|\)</span>。</p>
+</div>
+<p>若 <span class="arithmatex">\(T_\alpha\to T\)</span>、<span class="arithmatex">\(S_\alpha\to S\)</span> 强收敛，且 <span class="arithmatex">\(\sup_\alpha\|T_\alpha\|\le M\)</span>，则</p>
+<div class="arithmatex">\[
+\|(T_\alpha S_\alpha-TS)x\|
+\le M\|(S_\alpha-S)x\|+\|(T_\alpha-T)Sx\|\to0.
+\]</div>
+<p>故在统一有界条件下，强收敛与乘积相容，进而与多项式演算相容。弱算子收敛一般不能这么乘：<span class="arithmatex">\(U^n\to0\)</span>、<span class="arithmatex">\(U^{-n}\to0\)</span> 弱收敛，但乘积一直为 <span class="arithmatex">\(I\)</span>。</p>
+<h3 id="section-6-3">6.3 向量的弱收敛</h3>
+<p><span class="arithmatex">\(x_n\rightharpoonup x\)</span> 在 Hilbert 空间中等价于对每个 <span class="arithmatex">\(y\)</span>，<span class="arithmatex">\(\langle y,x_n\rangle\to\langle y,x\rangle\)</span>。Bessel 不等式给出 <span class="arithmatex">\(e_n\rightharpoonup0\)</span>，但 <span class="arithmatex">\(\|e_n\|=1\)</span>。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.3</span><span class="book-name">弱收敛加范数收敛</span></p>
+<p>若 <span class="arithmatex">\(x_n\rightharpoonup x\)</span>，则 <span class="arithmatex">\(\|x\|\le\liminf\|x_n\|\)</span>。并且</p>
+<div class="arithmatex">\[
+x_n\to x\text{ 强收敛}
+\Longleftrightarrow\|x_n\|\to\|x\|.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>下半连续性可对 <span class="arithmatex">\(y=x/\|x\|\)</span> 测试得到。若范数趋于极限范数，则</p>
+<div class="arithmatex">\[
+\|x_n-x\|^2=\|x_n\|^2+\|x\|^2-2\operatorname{Re}\langle x,x_n\rangle\to0.
+\]</div>
+<p>反向由范数连续性。对网也成立。</p>
+</details>
+<p>Hilbert 空间闭单位球弱紧：Riesz 表示把它对应到某个对偶闭单位球，应用 Banach–Alaoglu 即可。第九章把这种性质推广到自反 Banach 空间。</p>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>半双线性形式与正交结构</h2>
+<p>本节的 <span class="arithmatex">\(V,W\)</span> 可以只是内积空间，<span class="arithmatex">\(H,K,M\)</span> 表示完备的 Hilbert 空间。内积第一变量共轭线性、第二变量线性；省略共轭符号会改变 Riesz 映射和矩阵的含义。</p>
+<h3 id="topic-3-1-1">正性决定形式的结构</h3>
+<p>从二次型出发，极化恢复交叉项，正性给 Cauchy–Schwarz。零范数向量必须先商掉，剩下的形式才是内积；这一构造以后也用于矩问题和能量空间。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.1</span><span class="book-name">共轭线性映射</span></p>
+<p><span class="arithmatex">\(T:V\to W\)</span> 共轭线性，指 <span class="arithmatex">\(T(a\xi+b\eta)=\overline aT\xi+\overline bT\eta\)</span>。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.2</span><span class="book-name">半双线性形式</span></p>
+<p><span class="arithmatex">\(\omega:V\times W\to\mathbb C\)</span> 对第一变量共轭线性、对第二变量线性时称半双线性。定义在 <span class="arithmatex">\(V\times V\)</span> 时，其二次型为 <span class="arithmatex">\(q_\omega(\xi)=\omega(\xi,\xi)\)</span>。</p>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.3</span><span class="book-name">形式的伴随</span></p>
+<p>定义 <span class="arithmatex">\(\omega^*(\eta,\xi)=\overline{\omega(\xi,\eta)}\)</span>，这是 <span class="arithmatex">\(W\times V\)</span> 上的半双线性形式。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.4</span><span class="book-name">Hermitian 形式</span></p>
+<p>形式满足 <span class="arithmatex">\(\omega^*=\omega\)</span>，即 <span class="arithmatex">\(\omega(\eta,\xi)=\overline{\omega(\xi,\eta)}\)</span> 时称 Hermitian 形式。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.5</span><span class="book-name">Hermitian 性的二次型判据</span></p>
+<p>复半双线性形式是 Hermitian 形式，当且仅当全部 <span class="arithmatex">\(\omega(\xi,\xi)\)</span> 都为实数。</p>
+</div>
+<details class="proof">
+<summary>证明 3.1.6</summary>
+<p>若形式 Hermitian，<span class="arithmatex">\(\omega(\xi,\xi)=\overline{\omega(\xi,\xi)}\)</span>，故对角值实。反过来，<span class="arithmatex">\(\omega\)</span> 与 <span class="arithmatex">\(\omega^*\)</span> 的二次型相同。一般复半双线性形式满足极化公式</p>
+<div class="arithmatex">\[
+\omega(\xi,\eta)=\frac14\sum_{k=0}^3i^kq_\omega(i^k\xi+\eta).
+\]</div>
+<p>直接展开右侧，常数项与反向交叉项相消，只留下 <span class="arithmatex">\(\omega(\xi,\eta)\)</span>。因此二次型决定形式，<span class="arithmatex">\(\omega=\omega^*\)</span>，即得 Hermitian 性。</p>
+</details>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.6</span><span class="book-name">正形式</span></p>
+<p>若全部 <span class="arithmatex">\(\omega(\xi,\xi)\geq0\)</span>，称 <span class="arithmatex">\(\omega\)</span> 正或半正定，记 <span class="arithmatex">\(\omega\geq0\)</span>。令 <span class="arithmatex">\(\|\xi\|_\omega=\sqrt{\omega(\xi,\xi)}\)</span>；其值为一的向量称单位向量。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.7</span><span class="book-name">形式的序</span></p>
+<p>对 Hermitian 形式，<span class="arithmatex">\(\omega_1\leq\omega_2\)</span> 指每个 <span class="arithmatex">\(\xi\)</span> 都有 <span class="arithmatex">\(\omega_1(\xi,\xi)\leq\omega_2(\xi,\xi)\)</span>。由极化公式，这是形式空间上的偏序。</p>
+</div>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.8</span><span class="book-name">Cauchy–Schwarz 不等式</span></p>
+<p>对任意正形式，<span class="arithmatex">\(|\omega(\xi,\eta)|\leq\|\xi\|_\omega\|\eta\|_\omega\)</span>，即使形式退化也成立。</p>
+</div>
+<details class="proof">
+<summary>证明 3.1.9</summary>
+<p>若 <span class="arithmatex">\(\omega(\eta,\eta)&gt;0\)</span>，对任意 <span class="arithmatex">\(t\in\mathbb C\)</span> 展开 <span class="arithmatex">\(0\leq\omega(\xi+t\eta,\xi+t\eta)\)</span>，取 <span class="arithmatex">\(t=-\omega(\eta,\xi)/\omega(\eta,\eta)\)</span>，得到</p>
+<div class="arithmatex">\[
+0\leq\omega(\xi,\xi)-\frac{|\omega(\xi,\eta)|^2}{\omega(\eta,\eta)}.
+\]</div>
+<p>若 <span class="arithmatex">\(\omega(\eta,\eta)=0\)</span>，展开式成为 <span class="arithmatex">\(\omega(\xi,\xi)+2\operatorname{Re}(t\omega(\xi,\eta))\geq0\)</span>。若交叉项非零，可选择相位并让 <span class="arithmatex">\(|t|\)</span> 增大使其为负，矛盾。因此交叉项也为零，退化情形同样成立。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.9</span><span class="book-name">正形式的零空间</span></p>
+<p><span class="arithmatex">\(\{\xi:\|\xi\|_\omega=0\}=\{\xi:\omega(\xi,\psi)=0\text{ 对全部 }\psi\}\)</span>，是线性子空间。</p>
+</div>
+<details class="proof">
+<summary>证明 3.1.10</summary>
+<p>Cauchy–Schwarz 使 <span class="arithmatex">\(\|\xi\|_\omega=0\)</span> 时全部 <span class="arithmatex">\(\omega(\xi,\psi)=0\)</span>。反过来取 <span class="arithmatex">\(\psi=\xi\)</span> 即可。后一个集合是所有共轭线性映射 <span class="arithmatex">\(\xi\mapsto\omega(\xi,\psi)\)</span> 的核的交，因此是线性子空间。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.10</span><span class="book-name">正形式给出半范数</span></p>
+<p><span class="arithmatex">\(\|\cdot\|_\omega\)</span> 满足齐次性和三角不等式，故为半范数。</p>
+</div>
+<details class="proof">
+<summary>证明 3.1.11</summary>
+<p>齐次性来自 <span class="arithmatex">\(\omega(a\xi,a\xi)=|a|^2\omega(\xi,\xi)\)</span>。三角不等式来自</p>
+<div class="arithmatex">\[
+\|\xi+\eta\|_\omega^2
+=\|\xi\|_\omega^2+\|\eta\|_\omega^2+
+2\operatorname{Re}\omega(\xi,\eta)
+\leq(\|\xi\|_\omega+\|\eta\|_\omega)^2.
+\]</div>
+<p>两侧开平方即可；不需要非退化性。</p>
+</details>
+<h3 id="topic-3-2-1">内积如何控制算子</h3>
+<p>内积中的估计最终要变成范数估计。有界形式的对角值能够控制全部矩阵元，而平行四边形恒等式说明哪些范数确实来自内积。</p>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.11</span><span class="book-name">内积空间</span></p>
+<p>非退化正半双线性形式称内积。配备内积的复向量空间称内积空间或预 Hilbert 空间，其范数为 <span class="arithmatex">\(\sqrt{\langle\xi,\xi\rangle}\)</span>。</p>
+</div>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.12</span><span class="book-name">共轭空间</span></p>
+<p>共轭空间 <span class="arithmatex">\(\overline V\)</span> 的元素记 <span class="arithmatex">\(\overline\xi\)</span>，规定 <span class="arithmatex">\(a\overline\xi+b\overline\eta=\overline{\overline a\xi+\overline b\eta}\)</span> 和 <span class="arithmatex">\(\langle\overline\xi,\overline\eta\rangle_{\overline V}=\overline{\langle\xi,\eta\rangle_V}\)</span>。自然映射 <span class="arithmatex">\(V\to\overline V\)</span> 为反酉映射，二次共轭自然识别为 <span class="arithmatex">\(V\)</span>。</p>
+</div>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.13</span><span class="book-name">有界半双线性形式</span></p>
+<p><span class="arithmatex">\(\|\omega\|=\sup_{\|\xi\|,\|\eta\|\leq1}|\omega(\xi,\eta)|\)</span>；有限时称有界。记其空间为 <span class="arithmatex">\(\operatorname{Ses}(V\mid W)=\mathcal L(\overline V\times W,\mathbb C)\)</span>。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.14</span><span class="book-name">二次型控制形式</span></p>
+<p>若 <span class="arithmatex">\(|\omega(\xi,\xi)|\leq M\|\xi\|^2\)</span> 对全部 <span class="arithmatex">\(\xi\)</span> 成立，则 <span class="arithmatex">\(\|\omega\|\leq4M\)</span>。该估计不要求形式 Hermitian。</p>
+</div>
+<details class="proof">
+<summary>证明 3.2.12</summary>
+<p>对单位球内的 <span class="arithmatex">\(\xi,\eta\)</span>，每个 <span class="arithmatex">\(\|i^k\xi+\eta\|\leq2\)</span>，所以 <span class="arithmatex">\(|q_\omega(i^k\xi+\eta)|\leq4M\)</span>。代入命题 3.1.6 中的极化公式，有 <span class="arithmatex">\(|\omega(\xi,\eta)|\leq(1/4)\cdot4\cdot4M=4M\)</span>。再对两变量的单位球取上确界即得估计。</p>
+</details>
+<h3 id="topic-3-3-1">正交展开的有限与无限</h3>
+<p>有限正交分解只需代数；无限展开还需要平方可和与完备性。Bessel 不等式先控制系数，Parseval 等式再判断正交族是否穷尽了整个空间。</p>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.15</span><span class="book-name">正交族与标准正交族</span></p>
+<p>不同向量两两内积为零时称正交族；再要求每个向量范数为一时称标准正交族。</p>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.16</span><span class="book-name">勾股恒等式</span></p>
+<p>若 <span class="arithmatex">\(\xi\perp\eta\)</span>，则 <span class="arithmatex">\(\|\xi+\eta\|^2=\|\xi\|^2+\|\eta\|^2\)</span>，特别 <span class="arithmatex">\(\|\xi\|\leq\|\xi+\eta\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.3</summary>
+<p>展开 <span class="arithmatex">\(\langle\xi+\eta,\xi+\eta\rangle\)</span>，两个交叉项因正交性为零，所以只剩 <span class="arithmatex">\(\|\xi\|^2+\|\eta\|^2\)</span>。后者不小于 <span class="arithmatex">\(\|\xi\|^2\)</span>，得到附带不等式。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.17</span><span class="book-name">Gram–Schmidt 的投影步骤</span></p>
+<p>若 <span class="arithmatex">\(e_1,\ldots,e_n\)</span> 标准正交，则 <span class="arithmatex">\(\xi-\sum_je_j\langle e_j,\xi\rangle\)</span> 与所有 <span class="arithmatex">\(e_j\)</span> 正交。递归使用并归一化非零余项，得到 Gram–Schmidt 正交化。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.5</summary>
+<p>对任意 <span class="arithmatex">\(k\)</span>，<span class="arithmatex">\(\langle e_k,\xi-\sum_je_j\langle e_j,\xi\rangle\rangle=\langle e_k,\xi\rangle-\langle e_k,\xi\rangle=0\)</span>。从给定向量依次减去已取得的正交投影；余项非零时归一化，余项为零时该向量已在已有张成中，略过即可。每一步都保留到当前为止的线性张成。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.18</span><span class="book-name">Bessel 不等式</span></p>
+<p>对标准正交族 <span class="arithmatex">\((e_i)_{i\in I}\)</span>，<span class="arithmatex">\(\sum_i|\langle e_i,\xi\rangle|^2\leq\|\xi\|^2\)</span>。非零系数的指标至多可数。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.7</summary>
+<p>对有限 <span class="arithmatex">\(F\)</span>，投影步骤和勾股恒等式给出</p>
+<div class="arithmatex">\[
+\|\xi\|^2=\left\|\xi-\sum_{i\in F}e_i\langle e_i,\xi\rangle\right\|^2+
+\sum_{i\in F}|\langle e_i,\xi\rangle|^2.
+\]</div>
+<p>因此有限和不超过 <span class="arithmatex">\(\|\xi\|^2\)</span>，取上确界就是无序和的 Bessel 不等式。每个集合 <span class="arithmatex">\(\{i:|\langle e_i,\xi\rangle|\geq1/n\}\)</span> 必有限，否则有限和无界；其可数并包含全部非零系数，故后者至多可数。</p>
+</details>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.19</span><span class="book-name">正交分解</span></p>
+<p>相对于线性子空间 <span class="arithmatex">\(U\)</span> 的分解为 <span class="arithmatex">\(\xi=\eta+\psi\)</span>，其中 <span class="arithmatex">\(\eta\in U\)</span>、<span class="arithmatex">\(\psi\perp U\)</span>。存在时唯一，<span class="arithmatex">\(\eta\)</span> 称 <span class="arithmatex">\(\xi\)</span> 在 <span class="arithmatex">\(U\)</span> 上的正交投影。</p>
+</div>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.20</span><span class="book-name">投影算子</span></p>
+<p>若每个向量均有上述分解，定义 <span class="arithmatex">\(P\xi=\eta\)</span>。则 <span class="arithmatex">\(P\)</span> 线性，<span class="arithmatex">\(\|P\|\leq1\)</span>，并称为空间到 <span class="arithmatex">\(U\)</span> 的正交投影算子。</p>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.21</span><span class="book-name">最佳逼近</span></p>
+<p>正交分解 <span class="arithmatex">\(\xi=\eta+\psi\)</span> 满足 <span class="arithmatex">\(\|\xi-\eta\|=\inf_{u\in U}\|\xi-u\|\)</span>，且最佳逼近向量唯一。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.11</summary>
+<p>对 <span class="arithmatex">\(u\in U\)</span>，<span class="arithmatex">\(\xi-u=(\eta-u)+\psi\)</span> 的两部分正交，因此 <span class="arithmatex">\(\|\xi-u\|^2=\|\eta-u\|^2+\|\psi\|^2\geq\|\psi\|^2\)</span>。等号当且仅当 <span class="arithmatex">\(u=\eta\)</span>。所以投影是唯一的最佳逼近向量。</p>
+</details>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.22</span><span class="book-name">有限正交直和</span></p>
+<p><span class="arithmatex">\(V_1\oplus\cdots\oplus V_n\)</span> 取分量线性运算，内积为 <span class="arithmatex">\(\sum_j\langle\xi_j,\eta_j\rangle\)</span>；各分量自然嵌入且互相正交。</p>
+</div>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.23</span><span class="book-name">正交补</span></p>
+<p><span class="arithmatex">\(S^\perp=\{\xi:\langle\xi,s\rangle=0\text{ 对全部 }s\in S\}\)</span>，是闭线性子空间。也记 <span class="arithmatex">\(V\ominus U=U^\perp\)</span>。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.24</span><span class="book-name">投影与直和</span></p>
+<p>若存在到 <span class="arithmatex">\(U\)</span> 的正交投影 <span class="arithmatex">\(P\)</span>，则 <span class="arithmatex">\(V=U\oplus U^\perp\)</span>，<span class="arithmatex">\(1-P\)</span> 投影到 <span class="arithmatex">\(U^\perp\)</span>，并有 <span class="arithmatex">\(\operatorname{ran}P=\ker(1-P)=U\)</span>、<span class="arithmatex">\(\ker P=\operatorname{ran}(1-P)=U^\perp\)</span>、<span class="arithmatex">\(U^{\perp\perp}=U\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.18</summary>
+<p>分解的唯一性使 <span class="arithmatex">\(P\)</span> 线性，并对 <span class="arithmatex">\(u\in U\)</span> 有 <span class="arithmatex">\(Pu=u\)</span>，对 <span class="arithmatex">\(\psi\in U^\perp\)</span> 有 <span class="arithmatex">\(P\psi=0\)</span>。于是 <span class="arithmatex">\(P^2=P\)</span>，各核像关系直接成立，<span class="arithmatex">\(1-P\)</span> 取得正交余项。若 <span class="arithmatex">\(\xi\in U^{\perp\perp}\)</span>，把它写成 <span class="arithmatex">\(u+\psi\)</span>，则 <span class="arithmatex">\(0=\langle\psi,\xi\rangle=\|\psi\|^2\)</span>，故 <span class="arithmatex">\(\xi=u\in U\)</span>；相反包含显然。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.25</span><span class="book-name">有限维子空间闭</span></p>
+<p>内积空间的每个有限维线性子空间均闭。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.19</summary>
+<p>给有限维 <span class="arithmatex">\(U\)</span> 取标准正交基 <span class="arithmatex">\(e_1,\ldots,e_n\)</span>，有限投影公式对整个空间有定义且有界。由命题 3.3.18，<span class="arithmatex">\(U=\ker(1-P)\)</span>，连续映射的核闭，故 <span class="arithmatex">\(U\)</span> 闭。这个论证不需要整个空间完备。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.26</span><span class="book-name">投影的正性</span></p>
+<p>正交投影满足 <span class="arithmatex">\(P^2=P\)</span>，且 <span class="arithmatex">\(\langle\xi,P\eta\rangle\)</span> 是正形式，因为 <span class="arithmatex">\(\langle\xi,P\xi\rangle=\|P\xi\|^2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.20</summary>
+<p>将 <span class="arithmatex">\(\xi=P\xi+(1-P)\xi\)</span> 分成正交两项，得到 <span class="arithmatex">\(\langle\xi,P\xi\rangle=\|P\xi\|^2\geq0\)</span>。对任意 <span class="arithmatex">\(\xi,\eta\)</span> 同样有 <span class="arithmatex">\(\langle\xi,P\eta\rangle=\langle P\xi,P\eta\rangle\)</span>，因此其形式 Hermitian 且正。<span class="arithmatex">\(P\)</span> 在自身像上恒等，所以 <span class="arithmatex">\(P^2=P\)</span>。</p>
+</details>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.27</span><span class="book-name">标准正交基</span></p>
+<p>标准正交族的线性张成稠密时称标准正交基。这里的基按范数收敛展开，区别于仅允许有限线性组合的 Hamel 基。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.28</span><span class="book-name">正交展开</span></p>
+<p>对标准正交基 <span class="arithmatex">\((e_i)\)</span>，<span class="arithmatex">\(\xi=\sum_ie_i\langle e_i,\xi\rangle\)</span>，无序有限部分和在范数下收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.24</summary>
+<p>给定 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，稠密性让某个有限线性组合 <span class="arithmatex">\(u=\sum_{i\in F_0}a_ie_i\)</span> 满足 <span class="arithmatex">\(\|\xi-u\|&lt;\varepsilon\)</span>。对任何 <span class="arithmatex">\(F\supset F_0\)</span>，有限投影 <span class="arithmatex">\(P_F\xi\)</span> 是到该有限维张成的最佳逼近，因此 <span class="arithmatex">\(\|\xi-P_F\xi\|\leq\|\xi-u\|&lt;\varepsilon\)</span>。这直接证明无序有限部分和收敛，不需要先假设整个空间完备。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.29</span><span class="book-name">Parseval 恒等式</span></p>
+<p><span class="arithmatex">\(\langle\xi,\eta\rangle=\sum_i\langle\xi,e_i\rangle\langle e_i,\eta\rangle\)</span>，特别 <span class="arithmatex">\(\|\xi\|^2=\sum_i|\langle e_i,\xi\rangle|^2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.25</summary>
+<p>由正交展开，<span class="arithmatex">\(P_F\eta\to\eta\)</span>。连续性给出 <span class="arithmatex">\(\langle\xi,\eta\rangle=\lim_F\langle\xi,P_F\eta\rangle=\sum_i\langle\xi,e_i\rangle\langle e_i,\eta\rangle\)</span>。Bessel 和 Cauchy–Schwarz 保证该标量和绝对收敛。取 <span class="arithmatex">\(\eta=\xi\)</span> 得 Parseval。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.30</span><span class="book-name">坐标等距嵌入</span></p>
+<p>若内积空间 <span class="arithmatex">\(V\)</span> 有标准正交基 <span class="arithmatex">\((e_x)_{x\in X}\)</span>，则 <span class="arithmatex">\(\xi\mapsto(\langle e_x,\xi\rangle)_x\)</span> 是到 <span class="arithmatex">\(\ell^2(X)\)</span> 的线性等距嵌入，像稠密，但 <span class="arithmatex">\(V\)</span> 不完备时未必满射。</p>
+</div>
+<details class="proof">
+<summary>证明 3.3.26</summary>
+<p>坐标对第二变量线性，Parseval 保证等距，所以单射。像包含全部有限支集坐标族，它们在 <span class="arithmatex">\(\ell^2(X)\)</span> 中稠密，故像稠密。若原空间不完备，其等距像未必闭，不能据此宣布满射。</p>
+</details>
+<h3 id="topic-3-4-1">完备性与投影</h3>
+<p>正交级数的极限及闭子空间的投影都是完备性的表现。投影把一般向量拆成子空间部分与正交误差，随后 Riesz 表示就能把泛函沿这个几何分解恢复成向量。</p>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.31</span><span class="book-name">Hilbert 空间的等价定义</span></p>
+<p>内积空间的以下条件等价：完备；每个标准正交族 <span class="arithmatex">\((e_i)\)</span> 与每个平方可和系数族 <span class="arithmatex">\((a_i)\)</span> 的无序和 <span class="arithmatex">\(\sum_i a_ie_i\)</span> 都在空间中收敛；与某个 <span class="arithmatex">\(\ell^2(X)\)</span> 酉等价。满足这些条件称 Hilbert 空间。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.1</summary>
+<p>完备性推出平方可和正交和收敛：两个有限部分和之差的范数平方就是系数尾和，故为 Cauchy 网；完备空间中 Cauchy 网有极限。</p>
+<p>反过来假设全部这类和都存在。用 Zorn 引理取极大标准正交族 <span class="arithmatex">\((e_i)\)</span>。对任意 <span class="arithmatex">\(\xi\)</span>，Bessel 使其坐标平方可和，假设便产生 <span class="arithmatex">\(\eta=\sum_ie_i\langle e_i,\xi\rangle\)</span>。每个 <span class="arithmatex">\(\langle e_i,\xi-\eta\rangle=0\)</span>；若余项非零，可归一化后加入原正交族，与极大性矛盾。因此余项为零，原族为基。坐标映射等距；又对任意 <span class="arithmatex">\(\ell^2\)</span> 系数族，假设给出的正交和提供其原像，所以它满射。</p>
+<p>最后 <span class="arithmatex">\(\ell^2\)</span> 完备，酉同构把 Cauchy 极限传回原空间。这同时证明三种条件等价，且避免预先使用闭子空间投影定理。</p>
+</details>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.32</span><span class="book-name">标准正交基的存在</span></p>
+<p>每个 Hilbert 空间都有标准正交基；空间可分当且仅当可取至多可数的标准正交基。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.5</summary>
+<p>基的存在已在定理 3.4.1 的极大正交族构造中得到。若基可数，有限有理实虚系数组合构成可数稠密集。反过来，标准正交族不同向量的距离为 <span class="arithmatex">\(\sqrt2\)</span>，以它们为中心、半径小于 <span class="arithmatex">\(\sqrt2/2\)</span> 的球两两不交；可数稠密集必须为每个球提供不同点，因此这族至多可数。</p>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.33</span><span class="book-name">Hilbert 空间的坐标表示</span></p>
+<p>Hilbert 空间的标准正交基给出酉同构 <span class="arithmatex">\(H\to\ell^2(X)\)</span>，<span class="arithmatex">\(\xi\mapsto(\langle e_x,\xi\rangle)_x\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.6</summary>
+<p>命题 3.3.26 已给出等距且像稠密的坐标映射。Hilbert 完备性使等距像闭：像中 Cauchy 序列对应原空间 Cauchy 序列。闭且稠密的像就是全部 <span class="arithmatex">\(\ell^2(X)\)</span>，故映射酉。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.34</span><span class="book-name">闭子空间投影定理</span></p>
+<p>Hilbert 空间中，每个闭线性子空间 <span class="arithmatex">\(U\)</span> 均有正交投影，且 <span class="arithmatex">\(H=U\oplus U^\perp\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.7</summary>
+<p>记 <span class="arithmatex">\(d=\inf_{u\in U}\|\xi-u\|\)</span>，取 <span class="arithmatex">\(u_n\in U\)</span> 使距离趋于 <span class="arithmatex">\(d\)</span>。平行四边形恒等式给出</p>
+<div class="arithmatex">\[
+\|u_n-u_m\|^2
+=2\|\xi-u_n\|^2+2\|\xi-u_m\|^2-
+4\left\|\xi-\frac{u_n+u_m}{2}\right\|^2
+\leq2\|\xi-u_n\|^2+2\|\xi-u_m\|^2-4d^2.
+\]</div>
+<p>右侧趋零，所以 <span class="arithmatex">\((u_n)\)</span> Cauchy。完备性给出极限，闭性使极限 <span class="arithmatex">\(u\)</span> 留在 <span class="arithmatex">\(U\)</span>。对任意 <span class="arithmatex">\(v\in U\)</span>，<span class="arithmatex">\(\|\xi-u-tv\|^2\)</span> 在 <span class="arithmatex">\(t=0\)</span> 最小；分别令 <span class="arithmatex">\(t\)</span> 为实数及纯虚数，得到 <span class="arithmatex">\(\langle v,\xi-u\rangle=0\)</span>。因此最佳逼近产生正交分解，唯一性使这些分解定义投影。</p>
+</details>
+<div id="cor-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.35</span><span class="book-name">双正交补</span></p>
+<p>Hilbert 空间中，对任意线性子空间 <span class="arithmatex">\(U\)</span>，<span class="arithmatex">\(U^{\perp\perp}=\overline U\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.8</summary>
+<p>连续性给出 <span class="arithmatex">\(U^\perp=(\overline U)^\perp\)</span>。对闭子空间 <span class="arithmatex">\(\overline U\)</span> 应用投影定理及命题 3.3.18，即有 <span class="arithmatex">\(U^{\perp\perp}=(\overline U)^{\perp\perp}=\overline U\)</span>。</p>
+</details>
+<div id="cor-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 7.36</span><span class="book-name">稠密性的正交判据</span></p>
+<p>Hilbert 空间中的线性子空间 <span class="arithmatex">\(U\)</span> 稠密当且仅当 <span class="arithmatex">\(U^\perp=\{0\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.4.9</summary>
+<p>若 <span class="arithmatex">\(U\)</span> 稠密，任何与它正交的向量也与整个空间正交，取自身测试便为零。反过来，<span class="arithmatex">\(U^\perp=0\)</span> 时，推论 3.4.8 给出 <span class="arithmatex">\(\overline U=U^{\perp\perp}=H\)</span>。</p>
+</details>
+<details class="proof">
+<summary>完备性与平方可和展开</summary>
+<p>平方可和正交和的尾部范数平方等于系数的平方和，所以它是 Cauchy 网。反过来，给定 Cauchy 序列，可用 Gram–Schmidt 正交化它所张成的可分子空间；在所有基方向上的系数存在极限，Bessel 不等式给出平方可和性。假设这些正交和都存在，即可恢复序列的范数极限。</p>
+<p>取极大标准正交族。如果它的闭线性张成不等于空间，对闭子空间投影后可得到一个非零正交余项，归一化后便能扩大正交族，矛盾。因此它是基。坐标映射等距且具有稠密像，完备性使像闭，故满射。可分空间的任意标准正交族至多可数，因为不同基向量周围的小球两两不交，必须对应不同的可数稠密点。</p>
+</details>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>形式、矩阵和算子拓扑</h2>
+<h3 id="topic-3-5-1">从矩阵元恢复算子</h3>
+<p>Riesz 表示先恢复一个泛函的代表向量，再逐变量恢复有界形式对应的算子。伴随、乘法和矩阵表达都必须与复内积的反线性变量约定一致。</p>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span><span class="book-name">算子的形式</span></p>
+<p>线性 <span class="arithmatex">\(T:V\to W\)</span> 对应形式 <span class="arithmatex">\(\omega_T(w,v)=\langle w,Tv\rangle\)</span>。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.2</span><span class="book-name">形式与算子的范数</span></p>
+<p><span class="arithmatex">\(\|\omega_T\|=\|T\|\)</span>，允许二者同时无穷。因此二者同时有界，且 <span class="arithmatex">\(T\mapsto\omega_T\)</span> 单射。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.2</summary>
+<p>Cauchy–Schwarz 给出 <span class="arithmatex">\(|\langle w,Tv\rangle|\leq\|w\|\|Tv\|\)</span>，所以 <span class="arithmatex">\(\|\omega_T\|\leq\|T\|\)</span>。对固定 <span class="arithmatex">\(v\)</span> 且 <span class="arithmatex">\(Tv\ne0\)</span>，取 <span class="arithmatex">\(w=Tv/\|Tv\|\)</span>，便使配对模等于 <span class="arithmatex">\(\|Tv\|\)</span>；再对单位球内的 <span class="arithmatex">\(v\)</span> 取上确界，得到反向不等式。有界性可以不预设，以上上确界论证对无穷值仍有效。若形式为零，逐个 <span class="arithmatex">\(v\)</span> 用 <span class="arithmatex">\(Tv\)</span> 测试得 <span class="arithmatex">\(Tv=0\)</span>，所以映射单射。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.3</span><span class="book-name">Riesz–Fréchet 定理及完备性判据</span></p>
+<p>内积空间 <span class="arithmatex">\(W\)</span> 的映射 <span class="arithmatex">\(\Phi:W\to(\overline W)^*\)</span>，<span class="arithmatex">\(\Phi(\xi)(\overline w)=\langle w,\xi\rangle\)</span>，是线性等距嵌入；它满射当且仅当 <span class="arithmatex">\(W\)</span> 是 Hilbert 空间。等价地，Hilbert 空间上每个线性有界泛函唯一写成 <span class="arithmatex">\(v\mapsto\langle h,v\rangle\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.3</summary>
+<p>Cauchy–Schwarz 和用自身归一化测试，说明 <span class="arithmatex">\(\Phi\)</span> 是线性等距嵌入。若 <span class="arithmatex">\(W\)</span> 完备，取标准正交基 <span class="arithmatex">\((e_i)\)</span>，对 <span class="arithmatex">\(\Lambda\in(\overline W)^*\)</span> 令 <span class="arithmatex">\(b_i=\Lambda(\overline{e_i})\)</span>。在有限坐标族上用等号测试，得到 <span class="arithmatex">\(\sum_i|b_i|^2\leq\|\Lambda\|^2\)</span>，所以 <span class="arithmatex">\(\xi=\sum_ib_ie_i\)</span> 存在。<span class="arithmatex">\(\Phi(\xi)\)</span> 与 <span class="arithmatex">\(\Lambda\)</span> 在有限坐标张成上相同，连续性使它们处处相同，故满射。</p>
+<p>反过来，若 <span class="arithmatex">\(\Phi\)</span> 满射，则 <span class="arithmatex">\(W\)</span> 与一个连续对偶等距同构；对偶总完备，所以 <span class="arithmatex">\(W\)</span> 完备。线性泛函的通常版本由共轭变换得到：<span class="arithmatex">\(\Lambda(v)=\langle h,v\rangle\)</span>，其表示向量唯一，且 <span class="arithmatex">\(\|\Lambda\|=\|h\|\)</span>。</p>
+</details>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.4</span><span class="book-name">Riesz 映射</span></p>
+<p>上述 <span class="arithmatex">\(\Phi\)</span> 称 Riesz 等距映射；Hilbert 空间中称 Riesz 同构。它对应于内积的柯里化。</p>
+</div>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.5</span><span class="book-name">有界形式与算子的等价</span></p>
+<p>对 Hilbert 空间 <span class="arithmatex">\(H,K\)</span>，<span class="arithmatex">\(T\mapsto\omega_T\)</span> 给出 <span class="arithmatex">\(\mathcal L(H,K)\cong\operatorname{Ses}(K\mid H)\)</span> 的线性等距同构。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.5</summary>
+<p>对固定 <span class="arithmatex">\(\xi\in H\)</span>，<span class="arithmatex">\(w\mapsto\omega(w,\xi)\)</span> 为有界共轭线性泛函。<span class="arithmatex">\(K\)</span> 上的 Riesz 同构唯一给出 <span class="arithmatex">\(T\xi\in K\)</span>，满足 <span class="arithmatex">\(\langle w,T\xi\rangle=\omega(w,\xi)\)</span>。形式对 <span class="arithmatex">\(\xi\)</span> 的线性及代表向量唯一性使 <span class="arithmatex">\(T\)</span> 线性；<span class="arithmatex">\(\|T\xi\|\leq\|\omega\|\|\xi\|\)</span> 使它有界。命题 3.5.2 给出范数相等。反方向由算子取形式，两个构造互逆。</p>
+</details>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.6</span><span class="book-name">伴随算子</span></p>
+<p><span class="arithmatex">\(T^*:K\to H\)</span> 由 <span class="arithmatex">\(\langle\eta,T\xi\rangle=\langle T^*\eta,\xi\rangle\)</span> 唯一确定。它有界且 <span class="arithmatex">\(\|T^*\|=\|T\|\)</span>，对应形式 <span class="arithmatex">\(\omega_T^*\)</span>。</p>
+</div>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.7</span><span class="book-name">自伴算子</span></p>
+<p>有界算子 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\(T=T^*\)</span> 时称自伴；等价于 <span class="arithmatex">\(\omega_T\)</span> 为 Hermitian 形式。</p>
+</div>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.8</span><span class="book-name">算子的序与正性</span></p>
+<p>自伴 <span class="arithmatex">\(A\leq B\)</span> 指 <span class="arithmatex">\(\langle\xi,A\xi\rangle\leq\langle\xi,B\xi\rangle\)</span> 对全部 <span class="arithmatex">\(\xi\)</span> 成立。正算子指 <span class="arithmatex">\(A\geq0\)</span>；其形式正。</p>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.9</span><span class="book-name">复合算子的正交展开</span></p>
+<p>若 <span class="arithmatex">\((e_i)\)</span> 为中间 Hilbert 空间 <span class="arithmatex">\(K\)</span> 的标准正交基，<span class="arithmatex">\(S:M\to K\)</span>、<span class="arithmatex">\(T:K\to H\)</span> 有界，则 <span class="arithmatex">\(TS\xi=\sum_iTe_i\langle e_i,S\xi\rangle\)</span>，范数收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.12</summary>
+<p>中间空间中 <span class="arithmatex">\(S\xi=\sum_ie_i\langle e_i,S\xi\rangle\)</span> 范数收敛。有界 <span class="arithmatex">\(T\)</span> 可与这个极限交换，因此 <span class="arithmatex">\(TS\xi=\sum_iTe_i\langle e_i,S\xi\rangle\)</span>。有界性是把向量展开变成算子复合展开所必需的条件。</p>
+</details>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.10</span><span class="book-name">形式的复合</span></p>
+<p>对 <span class="arithmatex">\(\omega\in\operatorname{Ses}(H\mid K)\)</span>、<span class="arithmatex">\(\sigma\in\operatorname{Ses}(K\mid M)\)</span>，定义 <span class="arithmatex">\((\omega\circ\sigma)(\psi,\xi)=\sum_i\omega(\psi,e_i)\sigma(e_i,\xi)\)</span>，得到 <span class="arithmatex">\(\operatorname{Ses}(H\mid M)\)</span> 中的形式。和绝对收敛、与基无关，且 <span class="arithmatex">\(\omega_{TS}=\omega_T\circ\omega_S\)</span>。中间内积空间只要具有标准正交基，也可用同一公式。</p>
+</div>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.11</span><span class="book-name">复合范数估计</span></p>
+<p>赋范空间间的有界映射满足 <span class="arithmatex">\(\|TS\|\leq\|T\|\|S\|\)</span>；算子复合为范数至多一的双线性映射。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.14</summary>
+<p>对任意 <span class="arithmatex">\(\xi\)</span>，<span class="arithmatex">\(\|TS\xi\|\leq\|T\|\|S\xi\|\leq\|T\|\|S\|\|\xi\|\)</span>，取单位球上确界即得结论。逐变量线性来自复合的分配律，该估计使复合双线性映射的范数至多为一。</p>
+</details>
+<div id="cor-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.12</span><span class="book-name">代数的范数闭包</span></p>
+<p><span class="arithmatex">\(\mathcal L(V)\)</span> 中任意子代数的算子范数闭包仍为子代数。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.15</summary>
+<p>设 <span class="arithmatex">\(A_n,B_n\)</span> 位于子代数且范数趋于 <span class="arithmatex">\(A,B\)</span>。收敛序列 <span class="arithmatex">\((A_n)\)</span> 有界，故</p>
+<div class="arithmatex">\[
+\|A_nB_n-AB\|\leq\|A_n\|\|B_n-B\|+\|A_n-A\|\|B\|\to0.
+\]</div>
+<p>每个 <span class="arithmatex">\(A_nB_n\)</span> 留在原子代数，所以 <span class="arithmatex">\(AB\)</span> 留在其闭包。加法及标量乘法同样与范数极限相容，故闭包仍为子代数。</p>
+</details>
+<div id="cor-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.13</span><span class="book-name">预解式的 Neumann 展开</span></p>
+<p>对 Hilbert 空间上的 <span class="arithmatex">\(T\in\mathcal L(H)\)</span>，若 <span class="arithmatex">\(|z|&gt;\|T\|\)</span>，则 <span class="arithmatex">\(zI-T\)</span> 有有界逆 <span class="arithmatex">\(R_T(z)=\sum_{n\geq0}z^{-n-1}T^n\)</span>。每个矩阵元 <span class="arithmatex">\(\langle\eta,R_T(z)\xi\rangle\)</span> 在此区域全纯。</p>
+</div>
+<details class="proof">
+<summary>证明 3.5.16</summary>
+<p>此处 <span class="arithmatex">\(T\in\mathcal L(H)\)</span>，<span class="arithmatex">\(H\)</span> 完备。复合范数估计给出 <span class="arithmatex">\(\|z^{-n-1}T^n\|\leq|z|^{-n-1}\|T\|^n\)</span>，右侧几何级数收敛，故算子级数在完备的 <span class="arithmatex">\(\mathcal L(H)\)</span> 中收敛。</p>
+<p>有限部分和 <span class="arithmatex">\(S_N\)</span> 满足 <span class="arithmatex">\((zI-T)S_N=S_N(zI-T)=I-z^{-N-1}T^{N+1}\)</span>。余项范数趋零，取极限得双侧逆。对紧集 <span class="arithmatex">\(K\subset\{|z|&gt;\|T\|\}\)</span>，存在统一几何比率小于一，因此各矩阵元级数在 <span class="arithmatex">\(K\)</span> 上一致绝对收敛。每项全纯，局部一致极限仍全纯。</p>
+</details>
+<h3 id="topic-3-6-1">固定哪些变量来测极限</h3>
+<p>WOT 固定两个测试向量，只看矩阵元；SOT 固定输入向量，要求像的范数收敛。下面的判据说明稠密测试何时足够，以及乘法为什么需要额外的统一界。</p>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.14</span><span class="book-name">无限矩阵及其范数</span></p>
+<p><span class="arithmatex">\(X\times Y\)</span> 矩阵为标量族 <span class="arithmatex">\(A(x,y)\)</span>。定义 <span class="arithmatex">\(\|A\|\)</span> 为 <span class="arithmatex">\(|\sum_{x,y}\overline{\xi(x)}A(x,y)\eta(y)|\)</span> 在有限支集 <span class="arithmatex">\(\xi,\eta\)</span> 且 <span class="arithmatex">\(\|\xi\|_2,\|\eta\|_2\leq1\)</span> 下的上确界；值有限称有界矩阵。</p>
+</div>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.15</span><span class="book-name">矩阵表示</span></p>
+<p>相对于两侧标准正交基，形式的矩阵为 <span class="arithmatex">\([\omega](x,y)=\omega(e_x,e_y)\)</span>，算子的矩阵为 <span class="arithmatex">\([T](x,y)=\langle e_x,Te_y\rangle\)</span>。</p>
+</div>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.16</span><span class="book-name">矩阵表示定理</span></p>
+<p>有界形式到矩阵的映射单射，像恰为全部有界矩阵，并保持范数。相应矩阵唯一给出 <span class="arithmatex">\(\ell^2(Y)\to\ell^2(X)\)</span> 的有界算子。</p>
+</div>
+<details class="proof">
+<summary>证明 3.6.3</summary>
+<p>用坐标酉同构把两空间化为 <span class="arithmatex">\(\ell^2(X),\ell^2(Y)\)</span>。有界形式在有限支集向量上的限制给出矩阵 <span class="arithmatex">\(A\)</span>；矩阵范数正是该限制的范数，稠密延拓保范数，故 <span class="arithmatex">\(\|A\|=\|\omega\|\)</span>。若矩阵为零，则形式在稠密乘积上为零，连续性使它处处为零，得到单射。</p>
+<p>反过来，给定有界矩阵，在有限支集向量上定义 <span class="arithmatex">\(\omega(\xi,\eta)=\sum_{x,y}\overline{\xi(x)}A(x,y)\eta(y)\)</span>。定义中的矩阵范数保证它有界，所以唯一延拓到全部 <span class="arithmatex">\(\ell^2(X)\times\ell^2(Y)\)</span>。延拓的矩阵仍为 <span class="arithmatex">\(A\)</span>，并由 Riesz 同构产生唯一有界算子。</p>
+</details>
+<div id="def-29" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.17</span><span class="book-name">有界矩阵的乘法</span></p>
+<p>定义 <span class="arithmatex">\((AB)(x,z)=\sum_yA(x,y)B(y,z)\)</span>。每个和由行列的 <span class="arithmatex">\(\ell^2\)</span> 性及 Cauchy–Schwarz 不等式绝对收敛，并与算子复合一致，因此乘法结合且 <span class="arithmatex">\(\|AB\|\leq\|A\|\|B\|\)</span>。</p>
+</div>
+<h3 id="topic-3-7-1">弱收敛与范数收敛的距离</h3>
+<p>弱收敛只控制内积坐标，范数可以仍有误差。Hilbert 结构允许用“弱收敛加范数收敛”消掉这个误差，并使闭单位球具有弱紧性。</p>
+<div id="def-30" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.18</span><span class="book-name">内积诱导的弱拓扑</span></p>
+<p>内积空间 <span class="arithmatex">\(V\)</span> 上，通过 Riesz 等距映射拉回弱-* 拓扑，得到以所有内积坐标检测的弱拓扑：<span class="arithmatex">\(\xi_\alpha\rightharpoonup\xi\)</span> 当且仅当全部 <span class="arithmatex">\(\langle\eta,\xi_\alpha\rangle\to\langle\eta,\xi\rangle\)</span>。Hilbert 空间中它等于 <span class="arithmatex">\(\sigma(V,V^*)\)</span>；不完备时须区别这两种定义。</p>
+</div>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.19</span><span class="book-name">弱收敛与范数</span></p>
+<p>弱收敛时 <span class="arithmatex">\(\|\xi\|\leq\liminf\|\xi_\alpha\|\)</span>。在已有弱收敛的前提下，范数收敛到 <span class="arithmatex">\(\|\xi\|\)</span> 当且仅当向量在范数下收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.3</summary>
+<p>若 <span class="arithmatex">\(\xi\ne0\)</span>，以 <span class="arithmatex">\(\eta=\xi/\|\xi\|\)</span> 测试弱收敛，得 <span class="arithmatex">\(\|\xi\|=|\langle\eta,\xi\rangle|\leq\liminf_\alpha\|\xi_\alpha\|\)</span>；<span class="arithmatex">\(\xi=0\)</span> 时直接成立。若范数也趋于 <span class="arithmatex">\(\|\xi\|\)</span>，则</p>
+<div class="arithmatex">\[
+\|\xi_\alpha-\xi\|^2=\|\xi_\alpha\|^2+\|\xi\|^2-
+2\operatorname{Re}\langle\xi,\xi_\alpha\rangle\to0.
+\]</div>
+<p>反向由范数连续性。整个论证适用于网，也不依赖完备性。</p>
+</details>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.20</span><span class="book-name">Hilbert 球的弱紧性</span></p>
+<p>Hilbert 空间的闭单位球弱紧。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.5</summary>
+<p>Riesz 同构把 Hilbert 闭单位球等距对应到 <span class="arithmatex">\((\overline H)^*\)</span> 的闭单位球。其每个弱-* 坐标恰为一个内积测试坐标，因此这个对应还是拓扑同构。Banach–Alaoglu 给出对偶球的弱-* 紧性，拉回就是原球的弱紧性。</p>
+</details>
+<div id="def-31" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.21</span><span class="book-name">SOT 与 WOT</span></p>
+<p>强算子拓扑由全部 <span class="arithmatex">\(T\mapsto Tv\)</span> 的范数坐标诱导；弱算子拓扑由全部 <span class="arithmatex">\(T\mapsto\langle w,Tv\rangle\)</span> 诱导。形式空间的弱-* 拓扑为逐对变量的数值收敛，WOT 就是经 <span class="arithmatex">\(T\mapsto\omega_T\)</span> 的拉回拓扑。</p>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.22</span><span class="book-name">迭代极限</span></p>
+<p>若 <span class="arithmatex">\(T_\alpha\to T\)</span> 强算子收敛，<span class="arithmatex">\(\xi_\beta\to\xi\)</span> 范数收敛，则两种迭代极限 <span class="arithmatex">\(\lim_\alpha\lim_\beta T_\alpha\xi_\beta\)</span> 与 <span class="arithmatex">\(\lim_\beta\lim_\alpha T_\alpha\xi_\beta\)</span> 均为 <span class="arithmatex">\(T\xi\)</span>。此结论本身不声称乘积网收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.10</summary>
+<p>固定 <span class="arithmatex">\(\alpha\)</span>，有界 <span class="arithmatex">\(T_\alpha\)</span> 使 <span class="arithmatex">\(\lim_\beta T_\alpha\xi_\beta=T_\alpha\xi\)</span>；再取 <span class="arithmatex">\(\alpha\)</span> 极限得 <span class="arithmatex">\(T\xi\)</span>。固定 <span class="arithmatex">\(\beta\)</span>，强算子收敛给出 <span class="arithmatex">\(\lim_\alpha T_\alpha\xi_\beta=T\xi_\beta\)</span>；有界 <span class="arithmatex">\(T\)</span> 再给出 <span class="arithmatex">\(\beta\)</span> 极限。这里先后固定一个指标，尚未使用统一算子范数界，所以只推出两种迭代极限。</p>
+</details>
+<div id="cor-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.23</span><span class="book-name">算子复合的迭代极限</span></p>
+<p>若 <span class="arithmatex">\(T_\alpha\to T\)</span> 和 <span class="arithmatex">\(S_\beta\to S\)</span> 均为 SOT 收敛，则对每个 <span class="arithmatex">\(u\)</span>，两种迭代极限 <span class="arithmatex">\(T_\alpha S_\beta u\)</span> 均为 <span class="arithmatex">\(TSu\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.11</summary>
+<p>令 <span class="arithmatex">\(\xi_\beta=S_\beta u\)</span>，则 <span class="arithmatex">\(\xi_\beta\to Su\)</span>。把它代入命题 3.7.10，得到两种迭代极限都为 <span class="arithmatex">\(TSu\)</span>。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.24</span><span class="book-name">一致有界下的联合极限</span></p>
+<p>若再有 <span class="arithmatex">\(\sup_\alpha\|T_\alpha\|&lt;\infty\)</span>，则乘积网 <span class="arithmatex">\(T_\alpha\xi_\beta\to T\xi\)</span>。同一指标时也有 <span class="arithmatex">\(T_\alpha\xi_\alpha\to T\xi\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.13</summary>
+<p>记 <span class="arithmatex">\(C=\sup_\alpha\|T_\alpha\|\)</span>。直接估计</p>
+<div class="arithmatex">\[
+\|T_\alpha\xi_\beta-T\xi\|
+\leq C\|\xi_\beta-\xi\|+\|(T_\alpha-T)\xi\|.
+\]</div>
+<p>两项分别由 <span class="arithmatex">\(\beta\)</span> 和 <span class="arithmatex">\(\alpha\)</span> 的尾部控制，因此在乘积有向集上趋零。共用一个指标时，同一指标可以同时超过两个要求的下界，故对角网也收敛。</p>
+</details>
+<div id="cor-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.25</span><span class="book-name">多个算子的联合复合</span></p>
+<p>若 <span class="arithmatex">\(T^j_{\alpha_j}:V_{j-1}\to V_j\)</span> 各自 SOT 趋于 <span class="arithmatex">\(T^j\)</span>，且 <span class="arithmatex">\(j\geq2\)</span> 的族一致有界，则对每个 <span class="arithmatex">\(\xi\)</span>，乘积指标网 <span class="arithmatex">\(T^k_{\alpha_k}\cdots T^1_{\alpha_1}\xi\to T^k\cdots T^1\xi\)</span>。共用指标时对角网也收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.14</summary>
+<p>先以第一族的强收敛得到 <span class="arithmatex">\(T^1_{\alpha_1}\xi\to T^1\xi\)</span>。第二族统一有界，定理 3.7.13 给出两族联合复合极限。再将这个乘积网作为新的向量网，与第三族复合，依次归纳便得到全部 <span class="arithmatex">\(k\)</span> 个因子的联合极限。第一族无需统一范数界，因为它在这里仅作用于固定的 <span class="arithmatex">\(\xi\)</span>。</p>
+</details>
+<div id="cor-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.26</span><span class="book-name">多项式保持有界 SOT 极限</span></p>
+<p>一致有界且 SOT 趋于 <span class="arithmatex">\(T\)</span> 的算子网满足 <span class="arithmatex">\(p(T_\alpha)\to p(T)\)</span> 强算子收敛，对任意复多项式成立。</p>
+</div>
+<details class="proof">
+<summary>证明 3.7.15</summary>
+<p>对每个固定 <span class="arithmatex">\(n\)</span>，把 <span class="arithmatex">\(n\)</span> 个同样的一致有界算子族代入推论 3.7.14，并取共同指标的对角网，得到 <span class="arithmatex">\(T_\alpha^n\xi\to T^n\xi\)</span>。有限线性组合可与极限交换，故任意多项式 <span class="arithmatex">\(p\)</span> 保持强算子收敛。</p>
+</details>
+<h3 id="topic-3-8-1">区分正规性与对称性</h3>
+<p>有界正规算子包含自伴与酉算子。它的实、虚部交换，为下一章之后的联合谱演算提供代数条件。</p>
+<div id="def-32" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.27</span><span class="book-name">Hilbert 完备化</span></p>
+<p>内积空间 <span class="arithmatex">\(V\)</span> 的 Hilbert 完备化是等距线性嵌入 <span class="arithmatex">\(V\to H\)</span>，其中 <span class="arithmatex">\(H\)</span> 完备且像稠密。可用 Cauchy 序列等价类构造，线性运算与内积取极限定义；任意两个完备化之间有唯一保持原空间的酉同构。</p>
+</div>
+<details class="proof">
+<summary>联合极限需要的估计</summary>
+<p><span class="arithmatex">\(\|T_\alpha\xi_\beta-T\xi\|\leq C\|\xi_\beta-\xi\|+\|(T_\alpha-T)\xi\|\)</span>，其中 <span class="arithmatex">\(C=\sup_\alpha\|T_\alpha\|\)</span>。分别令两个指标充分大即得乘积网收敛。迭代极限只固定其中一个指标，所以不需要统一的 <span class="arithmatex">\(C\)</span>。对算子复合逐层应用此估计，即得到多项式的结论。</p>
+<p>有界矩阵乘法中的行和列分别是 <span class="arithmatex">\(\ell^2\)</span> 向量，故单个乘积系数的和绝对收敛。但三重乘积不宜未经证明任意交换两层和；将矩阵还原为有界算子后，有限部分和在范数下收敛，复合的连续性保证两种迭代计算给出同一结果。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.1</span><span class="book-name">平均值作为正交投影</span></p>
+<p>在 <span class="arithmatex">\(L^2[0,1]\)</span> 中，把 <span class="arithmatex">\(f\)</span> 投影到常数函数空间。再求在条件 <span class="arithmatex">\(\int_0^1u=0\)</span> 下离 <span class="arithmatex">\(f\)</span> 最近的 <span class="arithmatex">\(u\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>常数函数 <span class="arithmatex">\(1\)</span> 的范数为 <span class="arithmatex">\(1\)</span>，故 <span class="arithmatex">\(P f=\langle1,f\rangle1=(\int_0^1f)1\)</span>。零均值空间是常数空间的正交补，最佳逼近为 <span class="arithmatex">\(u=f-\int_0^1f\)</span>。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.2</span><span class="book-name">像空间为什么需要闭包</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 上取 <span class="arithmatex">\(Tx=(x_n/n)_{n\ge1}\)</span>。证明像稠密却不闭，并核对 <span class="arithmatex">\((\operatorname{Ran}T)^\perp=\ker T^*\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>像包含所有有限支撑数列，故稠密。<span class="arithmatex">\(y=(1/n)\)</span> 属于 <span class="arithmatex">\(\ell^2\)</span>，但原像必须是全为 <span class="arithmatex">\(1\)</span> 的数列，不属于 <span class="arithmatex">\(\ell^2\)</span>，故 <span class="arithmatex">\(y\)</span> 不在像中。其有限截断属于像且趋于 <span class="arithmatex">\(y\)</span>，所以像不闭。<span class="arithmatex">\(T=T^*\)</span>、核为零，因此像的正交补也为零。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 9.3</span><span class="book-name">强收敛不保证伴随强收敛</span></p>
+<p>在 <span class="arithmatex">\(\ell^2(\mathbb N_0)\)</span> 上取右移 <span class="arithmatex">\(S\)</span>。证明 <span class="arithmatex">\((S^*)^n\to0\)</span> 强收敛，而其伴随 <span class="arithmatex">\(S^n\)</span> 不强趋于零。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(\|(S^*)^nx\|^2\)</span> 是 <span class="arithmatex">\(x\)</span> 的平方尾和，趋于零。但 <span class="arithmatex">\(\|S^nx\|=\|x\|\)</span>。伴随在 WOT 下保持收敛，在 SOT 下则需额外条件。</p>
+</details>
+<p>接下来，我们会用正形式构造 Hilbert 空间，再把乘以变量的映射解释为一个算子，使矩问题进入谱理论。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-02/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第二章：赋范空间与对偶空间</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-04/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第四章：多项式矩问题与谱理论的起源</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 4 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=hilbert-space">#hilbert-space</a><a class="zdd-end-chip" href="../../../../tags/?tag=operator-theory">#operator-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../appendix-a/">附录 A：选择公理与存在性方法</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

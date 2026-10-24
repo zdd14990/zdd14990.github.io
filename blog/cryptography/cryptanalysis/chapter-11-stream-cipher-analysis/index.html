@@ -1,0 +1,1369 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第十一章：序列密码概述、线性反馈移位寄存器与 B-M 算法、相关性与相关偏差、Walsh-Hadamard 变换与能量守恒定律、LFSR 驱动的前馈序列密码的相关攻击。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-11-stream-cipher-analysis/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第十一章：序列密码的经典安全性分析技术 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-11-stream-cipher-analysis/">
+  <meta property="og:title" content="第十一章：序列密码的经典安全性分析技术 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第十一章：序列密码概述、线性反馈移位寄存器与 B-M 算法、相关性与相关偏差、Walsh-Hadamard 变换与能量守恒定律、LFSR 驱动的前馈序列密码的相关攻击。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-11-stream-cipher-analysis/">
+  <meta name="twitter:title" content="第十一章：序列密码的经典安全性分析技术 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第十一章：序列密码概述、线性反馈移位寄存器与 B-M 算法、相关性与相关偏差、Walsh-Hadamard 变换与能量守恒定律、LFSR 驱动的前馈序列密码的相关攻击。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u5341\u4e00\u7ae0\uff1a\u5e8f\u5217\u5bc6\u7801\u7684\u7ecf\u5178\u5b89\u5168\u6027\u5206\u6790\u6280\u672f",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u5341\u4e00\u7ae0\uff1a\u5e8f\u5217\u5bc6\u7801\u6982\u8ff0\u3001\u7ebf\u6027\u53cd\u9988\u79fb\u4f4d\u5bc4\u5b58\u5668\u4e0e B-M \u7b97\u6cd5\u3001\u76f8\u5173\u6027\u4e0e\u76f8\u5173\u504f\u5dee\u3001Walsh-Hadamard \u53d8\u6362\u4e0e\u80fd\u91cf\u5b88\u6052\u5b9a\u5f8b\u3001LFSR \u9a71\u52a8\u7684\u524d\u9988\u5e8f\u5217\u5bc6\u7801\u7684\u76f8\u5173\u653b\u51fb\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-11-stream-cipher-analysis/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-11-stream-cipher-analysis/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 序列密码概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. B-M 算法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. B-M 算法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 线性反馈移位寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 B-M 算法
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 相关攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 相关攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 布尔函数的线性相关性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Walsh-Hadamard 变换
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 LFSR 驱动的序列密码的相关攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 11 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">11</div>
+    <h1 id="top"><span class="book-visually-hidden">第 11 章：</span>序列密码的经典安全性分析技术</h1>
+  </div>
+  <p class="book-standfirst"><strong>序列密码 (stream cipher)</strong>，又称流密码，是最早使用的密码学技术之一，广泛应用于军事、外交和政府等关键应用的保密通信中。序列密码是一种对数据流进行加密的对称密码，一般说的序列密码加密算法指的是<strong>密钥流生成算法</strong>。许多序列密码逻辑实现简单、占用面积小、速度快，尤其适用于硬件资源受限的环境。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>4,074 字 · 约 12 分钟</span>
+  </div>
+  
+</header>
+
+<p>序列密码主要包括 5 类：表驱动型、线性反馈移位寄存器驱动型、非线性反馈移位寄存器驱动型、类分组型和字驱动型。当前主要以线性反馈移位寄存器 (LFSR) 和非线性反馈移位寄存器 (NFSR) 驱动为主。尽管序列密码很早就在军事中得到应用，它的标准化却比分组密码和公钥密码晚得多。欧洲的 NESSIE 和 eSTREAM 两大征集计划极大地促进了序列密码以及基于序列密码的认证加密算法的设计和分析，eSTREAM 的 7 个胜出算法的安全性分析至今仍是热点。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>序列密码概述</h2>
+<p>序列密码的历史可以追溯到凯撒密码。凯撒密码是一种单表代替密码，明文、密钥和密文在 <span class="arithmatex">\(\mathbb Z_{26}=\{0,1,\cdots,25\}\)</span> 中，</p>
+<div class="arithmatex">\[
+c=(m+k)\bmod26,\qquad m=(c-k)\bmod26.
+\]</div>
+<p>扩展密钥长度就得到多表代替密码：密钥 <span class="arithmatex">\(k=(k_1,\cdots,k_d)\)</span>，明文 <span class="arithmatex">\(m=(m_1,\cdots,m_n)\)</span>，</p>
+<div class="arithmatex">\[
+c_i=(m_i+k_i)\bmod26,\qquad i=1,2,\cdots,n,
+\]</div>
+<p><span class="arithmatex">\(i&gt;d\)</span> 时循环使用密钥。为了适应软硬件实现，现代序列密码多用模 2 运算。</p>
+<p>密钥长度扩展到无穷，就是<strong>一次一密</strong>。它由 Mauborgne 和 Vernam 于 1917 年发明，Shannon 于 1949 年证明一次一密可以抵抗无限计算能力的唯密文攻击。但一次一密的密钥与明文一样长，生成、存储和使用都不现实。所以设计者设想用尽量少的真随机序列生成尽量长的<strong>伪随机序列</strong>，用较少的密钥加密大量明文。序列密码的设计思想就脱胎于一次一密。</p>
+<p>20 世纪初产生的 LFSR 为序列密码提供了很好的驱动部件：<span class="arithmatex">\(n\)</span> 级 LFSR 可以产生最长为 <span class="arithmatex">\(2^n-1\)</span> 的序列，密码学性质良好。到了 60 年代，B-M 算法的提出使得把 LFSR 输出直接作为密钥流不再安全，非线性改造加入到流密码设计中。主要的改造方式包括前馈模型和钟控模型，代表密码有蓝牙中的 <span class="arithmatex">\(E_0\)</span> 算法和 2G 语音与数据加密的 A5 系列算法。</p>
+<p>几次征集计划：</p>
+<ul>
+<li><strong>NESSIE</strong>（欧洲，2000—2004）：征集到 42 个算法，6 个序列密码（LEVIATHAN、LILI-128、BMGL、SOBER-t32、SNOW、SOBER-t16）进入第二轮评估，但由于存在安全弱点，最终都被淘汰；</li>
+<li><strong>CRYPTREC</strong>（日本，2000—2003）：给出了 3 个序列密码推荐算法 MUGI、MULTI-S01 和 RC4-128；</li>
+<li><strong>eSTREAM</strong>（欧洲 ECRYPT，2004 年起）：最终 7 个算法胜出，3 个面向硬件（Grain v1、MICKEY v2、Trivium），4 个面向软件（HC-128、Rabbit、Salsa20/12、SOSEMANUK）。</li>
+</ul>
+<p>针对序列密码的攻击主要分为唯密文攻击和已知明文攻击两种。已知明文时，密文与明文模 2 加就得到了密钥流，所以本章只考虑已知明文攻击，即<strong>已知密钥流</strong>。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>B-M 算法</h2>
+<h3 id="s2-1">2.1 线性反馈移位寄存器</h3>
+<p><strong>线性反馈移位寄存器 (LFSR)</strong> 由 <span class="arithmatex">\(n\)</span> 个寄存器 <span class="arithmatex">\(s_{n-1},\cdots,s_0\)</span> 和 <span class="arithmatex">\(n\)</span> 个反馈系数 <span class="arithmatex">\(c_{n-1},\cdots,c_0\)</span> 组成，每个寄存器存储一个比特，<span class="arithmatex">\(n\)</span> 称为级数。更新是通过移位完成的：记时刻 <span class="arithmatex">\(t\)</span> 的状态为 <span class="arithmatex">\(s_{n-1}^{(t)},\cdots,s_0^{(t)}\)</span>，则</p>
+<div class="arithmatex">\[
+s_i^{(t+1)}:=s_{i+1}^{(t)},\quad i=0,\cdots,n-2,\qquad s_{n-1}^{(t+1)}:=\bigoplus_{i=0}^{n-1}c_is_i^{(t)},\tag{1}
+\]</div>
+<p>每个时刻输出 <span class="arithmatex">\(s_0\)</span>。</p>
+<p><span class="arithmatex">\(n\)</span> 级 LFSR 最多有 <span class="arithmatex">\(2^n\)</span> 个状态，除去全 0 状态还剩 <span class="arithmatex">\(2^n-1\)</span> 种，所以输出序列的最大周期为 <span class="arithmatex">\(2^n-1\)</span>，达到最大周期的输出序列称为 <strong>m 序列</strong>。m 序列中除全 0 状态外的所有状态出现的概率相同，一个周期中有 <span class="arithmatex">\(2^{n-1}\)</span> 个 1 和 <span class="arithmatex">\(2^{n-1}-1\)</span> 个 0，<span class="arithmatex">\(n\)</span> 较大时这种不平衡可以忽略，所以 m 序列有较好的平衡性。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">反馈多项式与特征多项式</span></p>
+<p><span class="arithmatex">\(f(x)=x^n+\sum_{i=0}^{n-1}c_ix^i\)</span> 称为 LFSR 的<strong>反馈多项式</strong>，其互反多项式 <span class="arithmatex">\(g(x)=x^nf(x^{-1})=\sum_{i=1}^nc_{n-i}x^i+1\)</span> 称为<strong>特征多项式</strong>。若 <span class="arithmatex">\(f(x)\)</span> 是生成序列 <span class="arithmatex">\(\mathbf a\)</span> 的多项式中级数最小的，称为<strong>极小反馈多项式</strong>。<span class="arithmatex">\(f(x)\)</span> 是本原多项式时，生成的序列有最大周期 <span class="arithmatex">\(2^n-1\)</span>，即 m 序列。通常把 <span class="arithmatex">\(\langle f(x),n\rangle\)</span> 称作 <span class="arithmatex">\(\mathbf a\)</span> 的线性反馈移位寄存器。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span></p>
+<p>7 级 LFSR 的输出序列满足 <span class="arithmatex">\(a_k=a_{k-4}\oplus a_{k-7}\)</span>，则反馈多项式为 <span class="arithmatex">\(x^7+x^3+1\)</span>，特征多项式为 <span class="arithmatex">\(x^7+x^4+1\)</span>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>“反馈多项式”和“特征多项式”这两个名字在不同教材里正好可能是反过来的。我这里跟教材一致。真正要记的只有递推关系 <span class="arithmatex">\(a_k=\bigoplus c_{n-i}a_{k-i}\)</span>：无论叫什么，B-M 算法输出的 <span class="arithmatex">\(f_N(x)=1+c_1x+\cdots+c_lx^l\)</span> 对应的递推都是 <span class="arithmatex">\(a_k=c_1a_{k-1}\oplus\cdots\oplus c_la_{k-l}\)</span>。</p>
+</div>
+<p>LFSR 的输出直接存在线性关系，直接作为密钥流是不安全的。若已知级数 <span class="arithmatex">\(n\)</span> 和输出序列 <span class="arithmatex">\(\mathbf a\)</span>，则</p>
+<div class="arithmatex">\[
+\begin{aligned}
+a_{n+1}&amp;=c_{n-1}a_n\oplus\cdots\oplus c_0a_1,\\
+&amp;\cdots\cdots\\
+a_{2n}&amp;=c_{n-1}a_{2n-1}\oplus\cdots\oplus c_0a_n.
+\end{aligned}
+\]</div>
+<p>求解这个 <span class="arithmatex">\(n\)</span> 元线性方程组就能得到反馈系数，进而恢复密钥流的所有比特。所以<strong>已知 <span class="arithmatex">\(2n\)</span> 个连续输出比特就能恢复 <span class="arithmatex">\(n\)</span> 级 LFSR</strong>。这要求已知级数；级数未知时，B-M 算法只需至多 <span class="arithmatex">\(2n\)</span> 个连续比特就能恢复反馈多项式和初态。</p>
+<h3 id="s2-2">2.2 B-M 算法</h3>
+<p>给定长度为 <span class="arithmatex">\(N\)</span> 的二元序列 <span class="arithmatex">\(\mathbf a\)</span>，<strong>Berlekamp-Massey (B-M) 算法</strong>的主要思想是不断生成前 <span class="arithmatex">\(k\)</span> 个比特的最小生成多项式。记 <span class="arithmatex">\(\langle f_k(x),l_k\rangle\)</span> 为前 <span class="arithmatex">\(k\)</span> 个比特的最小生成多项式和对应的级数。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span><span class="book-name">算法（B-M 算法）</span></p>
+<ol>
+<li>取初始值 <span class="arithmatex">\(f_0(x)=1\)</span>，<span class="arithmatex">\(l_0=0\)</span>；</li>
+<li>
+<p>设已求得 <span class="arithmatex">\(\langle f_0(x),l_0\rangle,\cdots,\langle f_k(x),l_k\rangle\)</span>，<span class="arithmatex">\(l_0\le l_1\le\cdots\le l_k\)</span>。记 <span class="arithmatex">\(f_k(x)=1+c_1^{(k)}x+\cdots+c_{l_k}^{(k)}x^{l_k}\)</span>，计算<strong>差值</strong></p>
+<div class="arithmatex">\[
+d_k=a_k+c_1^{(k)}a_{k-1}+\cdots+c_{l_k}^{(k)}a_{k-l_k}.
+\]</div>
+<ul>
+<li>若 <span class="arithmatex">\(d_k=0\)</span>，令 <span class="arithmatex">\(f_{k+1}(x)=f_k(x)\)</span>，<span class="arithmatex">\(l_{k+1}=l_k\)</span>；</li>
+<li>若 <span class="arithmatex">\(d_k\ne0\)</span>：<ul>
+<li>当 <span class="arithmatex">\(l_0=l_1=\cdots=l_k=0\)</span> 时，令 <span class="arithmatex">\(f_{k+1}(x)=1+x^{k+1}\)</span>，<span class="arithmatex">\(l_{k+1}=k+1\)</span>；</li>
+<li>
+<p>否则设 <span class="arithmatex">\(m\)</span>（<span class="arithmatex">\(0\le m&lt;k\)</span>）使 <span class="arithmatex">\(l_m&lt;l_{m+1}=l_{m+2}=\cdots=l_k\)</span>（即最后一次级数增长的位置），令</p>
+<div class="arithmatex">\[
+f_{k+1}(x)=f_k(x)+x^{k-m}f_m(x),\qquad l_{k+1}=\max(l_k,\ k+1-l_k);
+\]</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>最后得到的 <span class="arithmatex">\(\langle f_N(x),l_N\rangle\)</span> 就是产生序列 <span class="arithmatex">\(\mathbf a\)</span> 的 LFSR。</p>
+</li>
+</ol>
+</div>
+<p><span class="arithmatex">\(d_k\)</span> 的意义是：用当前的 <span class="arithmatex">\(f_k\)</span> 预测第 <span class="arithmatex">\(k\)</span> 个比特，<span class="arithmatex">\(d_k=0\)</span> 说明预测正确，不用改；<span class="arithmatex">\(d_k\ne0\)</span> 说明预测错了，借助上一次出错时的多项式 <span class="arithmatex">\(f_m\)</span> 修正——在 <span class="arithmatex">\(f_m\)</span> 出错的位置上 <span class="arithmatex">\(f_m\)</span> 的差值也是 <span class="arithmatex">\(1\)</span>，把它平移 <span class="arithmatex">\(k-m\)</span> 位加上去，正好抵消当前的错误。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span></p>
+<p>设序列 <span class="arithmatex">\(a_0a_1\cdots a_6=0011101\)</span>，求其最短线性反馈移位寄存器。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<ol>
+<li>初始值 <span class="arithmatex">\(f_0(x)=1\)</span>，<span class="arithmatex">\(l_0=0\)</span>；</li>
+<li><span class="arithmatex">\(a_0=0\)</span>，<span class="arithmatex">\(d_0=1\cdot a_0=0\)</span>，所以 <span class="arithmatex">\(f_1(x)=1\)</span>，<span class="arithmatex">\(l_1=0\)</span>；同理 <span class="arithmatex">\(d_1=1\cdot a_1=0\)</span>，<span class="arithmatex">\(f_2(x)=1\)</span>，<span class="arithmatex">\(l_2=0\)</span>；</li>
+<li>
+<p><span class="arithmatex">\(a_2=1\)</span>，<span class="arithmatex">\(d_2=1\cdot a_2=1\)</span>，又 <span class="arithmatex">\(l_0=l_1=l_2=0\)</span>，所以</p>
+<div class="arithmatex">\[
+f_3(x)=1+x^3,\qquad l_3=3;
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(d_3=1\cdot a_3+1\cdot a_0=1\)</span>。<span class="arithmatex">\(l_2&lt;l_3\)</span>，所以 <span class="arithmatex">\(m=2\)</span>，</p>
+<div class="arithmatex">\[
+f_4(x)=f_3(x)+x^{3-2}f_2(x)=1+x+x^3,\qquad l_4=\max(3,3+1-3)=3;
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(d_4=a_4+a_3+a_1=1+1+0=0\)</span>，<span class="arithmatex">\(f_5=f_4\)</span>，<span class="arithmatex">\(l_5=3\)</span>；</p>
+</li>
+<li><span class="arithmatex">\(d_5=a_5+a_4+a_2=0+1+1=0\)</span>，<span class="arithmatex">\(f_6=f_5\)</span>，<span class="arithmatex">\(l_6=3\)</span>；</li>
+<li><span class="arithmatex">\(d_6=a_6+a_5+a_3=1+0+1=0\)</span>，<span class="arithmatex">\(f_7=f_6\)</span>，<span class="arithmatex">\(l_7=3\)</span>。</li>
+</ol>
+<p>所以最短 LFSR 为 <span class="arithmatex">\(\langle1+x+x^3,3\rangle\)</span>，递推为 <span class="arithmatex">\(a_k=a_{k-1}\oplus a_{k-3}\)</span>。序列长度 <span class="arithmatex">\(7=2^3-1\)</span>，该序列是 m 序列，<span class="arithmatex">\(1+x+x^3\)</span> 为本原多项式。（我用程序跑了一遍 B-M，各步的 <span class="arithmatex">\(d_k\)</span>、<span class="arithmatex">\(l_k\)</span> 与上面一致，并且用 <span class="arithmatex">\(a_k=a_{k-1}\oplus a_{k-3}\)</span> 从 <span class="arithmatex">\(001\)</span> 递推出了 <span class="arithmatex">\(0011101\)</span>。）</p>
+</details>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>已知序列 <span class="arithmatex">\(a_0a_1\cdots a_{10}=00100011101\)</span>，用 B-M 算法通过编程或手动推导计算其最短线性反馈移位寄存器。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>逐步计算（我用程序核对过每一步）：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(k\)</span></th>
+<th><span class="arithmatex">\(a_k\)</span></th>
+<th><span class="arithmatex">\(d_k\)</span></th>
+<th><span class="arithmatex">\(f_{k+1}(x)\)</span></th>
+<th><span class="arithmatex">\(l_{k+1}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td><span class="arithmatex">\(1+x^3\)</span></td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td><span class="arithmatex">\(1+x^3\)</span></td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td><span class="arithmatex">\(1+x^3\)</span></td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>1</td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td>3</td>
+</tr>
+<tr>
+<td>6</td>
+<td>1</td>
+<td>1</td>
+<td><span class="arithmatex">\(1+x^4\)</span></td>
+<td>4</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1</td>
+<td>1</td>
+<td><span class="arithmatex">\(1+x+x^4\)</span></td>
+<td>4</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td><span class="arithmatex">\(1+x+x^4\)</span></td>
+<td>4</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0</td>
+<td>1</td>
+<td><span class="arithmatex">\(1+x+x^3+x^4\)</span></td>
+<td>6</td>
+</tr>
+<tr>
+<td>10</td>
+<td>1</td>
+<td>1</td>
+<td><span class="arithmatex">\(1+x^2+x^3+x^4+x^5\)</span></td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(k=5\)</span> 这一步值得注意：<span class="arithmatex">\(f_6=f_5+x^{5-2}f_2=(1+x^3)+x^3=1\)</span>，多项式“退化”成了 <span class="arithmatex">\(1\)</span>，但级数仍记为 <span class="arithmatex">\(l_6=\max(3,6-3)=3\)</span>。所以 <span class="arithmatex">\(l\)</span> 才是真正的线性复杂度，多项式次数可以小于 <span class="arithmatex">\(l\)</span>。</p>
+<p>最终最短 LFSR 为 <span class="arithmatex">\(\langle1+x^2+x^3+x^4+x^5,\ 6\rangle\)</span>，线性复杂度为 6。递推关系 <span class="arithmatex">\(a_k=a_{k-2}\oplus a_{k-3}\oplus a_{k-4}\oplus a_{k-5}\)</span> 对 <span class="arithmatex">\(k=6,\cdots,10\)</span> 成立：例如 <span class="arithmatex">\(k=6\)</span> 时 <span class="arithmatex">\(a_4\oplus a_3\oplus a_2\oplus a_1=0\oplus0\oplus1\oplus0=1=a_6\)</span>。（它对 <span class="arithmatex">\(k=5\)</span> 不成立，但级数是 6，前 6 个比特是初态，不需要满足递推。）</p>
+</details>
+<p>在序列密码中，若直接把 <span class="arithmatex">\(n\)</span> 级 LFSR 生成的序列作为密钥流，已知连续 <span class="arithmatex">\(2n\)</span> 比特就能恢复 LFSR，得到所有密钥流比特。所以需要引入<strong>非线性变换</strong>，打破 LFSR 输出之间的线性关系。</p>
+<h2 id="s3"><span class="book-secnum">§ 03</span>相关攻击</h2>
+<p>相关攻击主要用于分析 LFSR 驱动的密码算法，主要原理是利用<strong>密钥流序列与 LFSR 生成的线性序列的相关偏差</strong>。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span><span class="book-name">相关性与相关偏差</span></p>
+<p>两个序列 <span class="arithmatex">\(\mathbf a=(a_1,\cdots,a_N)\)</span> 和 <span class="arithmatex">\(\mathbf b=(b_1,\cdots,b_N)\)</span> 的<strong>相关性</strong>定义为</p>
+<div class="arithmatex">\[
+\mathrm{cor}(\mathbf a,\mathbf b)=\frac{\sum_{i=1}^N(a_i\oplus b_i\oplus1)}N,\tag{2}
+\]</div>
+<p>即对应比特相等的比例。对应的<strong>相关偏差</strong>为</p>
+<div class="arithmatex">\[
+\epsilon=\mathrm{cor}(\mathbf a,\mathbf b)-\frac12=\frac{\sum_{i=1}^N(a_i\oplus b_i\oplus1)-N/2}N.\tag{3}
+\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这里的“相关性”是相等的概率，与<a href="../chapter-08-equivalence-of-analysis-methods/#s1-1">第八章</a>的“相关度” <span class="arithmatex">\(\mathrm{Cor}=2\Pr-1\)</span> 不同，后者是本章相关偏差的 2 倍。看到“相关”两个字要先确认是哪个定义。</p>
+</div>
+<p>相关偏差为负（相关性小于 <span class="arithmatex">\(1/2\)</span>）时，把其中一个序列所有比特取反，相关偏差就为正。相关偏差的绝对值越大，两个序列的相关性越好；若无特殊说明，相关偏差大指的是绝对值大。若密码输出序列与任意线性序列的相关性都为 <span class="arithmatex">\(1/2\)</span>（相关偏差为 0），称该密码是<strong>相关免疫</strong>的。</p>
+<h3 id="s3-1">3.1 布尔函数的线性相关性</h3>
+<p><span class="arithmatex">\(n\)</span> 元布尔函数 <span class="arithmatex">\(f(x)\)</span> 与线性函数 <span class="arithmatex">\(L(x)\)</span> 的相关性定义为</p>
+<div class="arithmatex">\[
+\mathrm{cor}(f(x),L(x))=\frac{\sum_{x=0}^{2^n-1}f(x)\oplus L(x)\oplus1}{2^n},\tag{4}
+\]</div>
+<p><span class="arithmatex">\(x=(x_1,\cdots,x_n)\)</span> 也可以看作 <span class="arithmatex">\(n\)</span> 比特整数 <span class="arithmatex">\(\sum_{i=0}^{n-1}x_{i+1}2^i\)</span>。相关偏差为 <span class="arithmatex">\(\epsilon(f,L)=\mathrm{cor}(f,L)-\frac12\)</span>。相关偏差最大值对应的相关性称为该布尔函数的<strong>线性相关性</strong>。</p>
+<p>可以枚举线性函数、统计所有输入下输出相同的个数来求，但计算量较大，可以用 Walsh 谱变换来求。</p>
+<h3 id="s3-2">3.2 Walsh-Hadamard 变换</h3>
+<p><strong>Walsh-Hadamard 变换</strong>（又叫 Walsh 谱变换或 Hadamard 变换）给出一个布尔函数与所有线性函数的线性偏差。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.2</span><span class="book-name">Walsh-Hadamard 变换</span></p>
+<p><span class="arithmatex">\(n\)</span> 元布尔函数 <span class="arithmatex">\(f(x)\)</span> 的 Walsh-Hadamard 变换为</p>
+<div class="arithmatex">\[
+S_f(w)=\frac1{2^n}\sum_{x=0}^{2^n-1}(-1)^{w\cdot x+f(x)}.\tag{5}
+\]</div>
+<p>变换结果称为 <strong>Walsh 谱</strong>，表示 <span class="arithmatex">\(f(x)\)</span> 与线性函数 <span class="arithmatex">\(w\cdot x\)</span> 的逼近程度。</p>
+</div>
+<p>记 <span class="arithmatex">\(P(f(x)=w\cdot x)\)</span> 为 <span class="arithmatex">\(f(x)\)</span> 与 <span class="arithmatex">\(w\cdot x\)</span> 相等的概率，则</p>
+<div class="arithmatex">\[
+P(f(x)=w\cdot x)=\mathrm{cor}(f(x),w\cdot x)=\frac{1+S_f(w)}2.
+\]</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.3</span><span class="book-name">平衡函数</span></p>
+<p>布尔函数 <span class="arithmatex">\(f(x)\)</span> 是平衡函数当且仅当 <span class="arithmatex">\(S_f(0)=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(S_f(0)=\frac1{2^n}\sum_x(-1)^{f(x)}=\frac{\#\{f=0\}-\#\{f=1\}}{2^n}\)</span>，为 0 当且仅当 <span class="arithmatex">\(f\)</span> 取 0 和取 1 的次数相等。</p>
+</details>
+<p><strong>快速 Walsh 变换。</strong> 注意到 <span class="arithmatex">\((-1)^{w\cdot x+f(x)}=(-1)^{w\cdot x}\cdot(-1)^{f(x)}\)</span>。把真值表 <span class="arithmatex">\(f(x)\)</span> 变换为 <span class="arithmatex">\((-1)^{f(x)}\)</span>（0 变为 1，1 变为 <span class="arithmatex">\(-1\)</span>），Walsh 变换就相当于对变换后的真值表作（<span class="arithmatex">\(\mathbb Z_2^n\)</span> 上的）Fourier 变换，可以用蝶形运算快速计算：</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.4</span><span class="book-name">算法（快速 Walsh-Hadamard 变换）</span></p>
+<ol>
+<li>对真值表作变换 <span class="arithmatex">\(z[i]=(-1)^{f(i)}\)</span>；</li>
+<li>
+<p>对 <span class="arithmatex">\(k=1,\cdots,n\)</span>，对 <span class="arithmatex">\(i=1,\cdots,2^{k-1}\)</span>，对 <span class="arithmatex">\(j=1,\cdots,2^{n-k}\)</span>，记 <span class="arithmatex">\(p=(i-1)\cdot2^{n-k+1}+j\)</span>，<span class="arithmatex">\(q=p+2^{n-k}\)</span>：</p>
+<div class="arithmatex">\[
+t_1=z[p]+z[q],\qquad t_2=z[p]-z[q],\qquad z[p]=t_1,\qquad z[q]=t_2;
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(z[i]=z[i]/2^n\)</span>。</p>
+</li>
+</ol>
+<p>最终得到的 <span class="arithmatex">\(z[i]\)</span>（<span class="arithmatex">\(0\le i&lt;2^n\)</span>）就是 Walsh 谱，其中的非 0 项代表有效的线性逼近。复杂度为 <span class="arithmatex">\(O(n\cdot2^{k-1}\cdot2^{n-k}\cdot2)=O(n\cdot2^n)\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.5</span><span class="book-name">Walsh 谱变换</span></p>
+<p>3 元函数 <span class="arithmatex">\(f(x_1,x_2,x_3)=x_1x_2\oplus x_1x_3\oplus x_2x_3\)</span>（多数函数）的蝶形运算过程：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x_1x_2x_3\)</span></th>
+<th><span class="arithmatex">\(f\)</span></th>
+<th><span class="arithmatex">\((-1)^f\)</span></th>
+<th><span class="arithmatex">\(k=1\)</span></th>
+<th><span class="arithmatex">\(k=2\)</span></th>
+<th><span class="arithmatex">\(k=3\)</span></th>
+<th><span class="arithmatex">\(S_f\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>000</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>001</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td><span class="arithmatex">\(-2\)</span></td>
+<td>4</td>
+<td>1/2</td>
+</tr>
+<tr>
+<td>010</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>1/2</td>
+</tr>
+<tr>
+<td>011</td>
+<td>1</td>
+<td><span class="arithmatex">\(-1\)</span></td>
+<td><span class="arithmatex">\(-2\)</span></td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>1/2</td>
+</tr>
+<tr>
+<td>101</td>
+<td>1</td>
+<td><span class="arithmatex">\(-1\)</span></td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>110</td>
+<td>1</td>
+<td><span class="arithmatex">\(-1\)</span></td>
+<td>2</td>
+<td><span class="arithmatex">\(-2\)</span></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>111</td>
+<td>1</td>
+<td><span class="arithmatex">\(-1\)</span></td>
+<td>0</td>
+<td>2</td>
+<td><span class="arithmatex">\(-4\)</span></td>
+<td><span class="arithmatex">\(-1/2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>由 Walsh 谱，</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\Pr(f=x_1)=\Pr(f=x_2)=\Pr(f=x_3)=\frac{1+1/2}2=\frac34,\\
+&amp;\Pr(f=x_1\oplus x_2\oplus x_3)=\frac{1-1/2}2=\frac14.
+\end{aligned}
+\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>表中 <span class="arithmatex">\(k=1,2\)</span> 两列是蝶形运算的中间结果，依赖于每一步把哪两个位置配对，我没有逐格核对；最后一列 <span class="arithmatex">\(S_f\)</span> 我用直接按 (5) 求和的程序核对过：非零项恰为 <span class="arithmatex">\(w=001,010,100\)</span> 处的 <span class="arithmatex">\(1/2\)</span> 和 <span class="arithmatex">\(w=111\)</span> 处的 <span class="arithmatex">\(-1/2\)</span>。</p>
+</div>
+<p>布尔函数的 Walsh 谱决定了相关攻击能否成功：只有相关偏差不为 0 的线性逼近才能用来做密码攻击。下面的定理保证这样的线性逼近一定存在。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.6</span><span class="book-name">能量守恒定律, Parseval 等式</span></p>
+<p><span class="arithmatex">\(n\)</span> 元布尔函数 <span class="arithmatex">\(f(x)\)</span> 的 Walsh 谱 <span class="arithmatex">\(S_f(w)\)</span> 满足</p>
+<div class="arithmatex">\[
+\sum_{w=0}^{2^n-1}|S_f(w)|^2=1.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<div class="arithmatex">\[
+\begin{aligned}
+\sum_wS_f(w)^2&amp;=\frac1{2^{2n}}\sum_w\sum_x\sum_y(-1)^{w\cdot x+f(x)}(-1)^{w\cdot y+f(y)}\\
+&amp;=\frac1{2^{2n}}\sum_x\sum_y(-1)^{f(x)+f(y)}\sum_w(-1)^{w\cdot(x\oplus y)}.
+\end{aligned}
+\]</div>
+<p>内层和 <span class="arithmatex">\(\sum_w(-1)^{w\cdot z}\)</span> 在 <span class="arithmatex">\(z=0\)</span> 时为 <span class="arithmatex">\(2^n\)</span>，否则为 <span class="arithmatex">\(0\)</span>（<span class="arithmatex">\(z\ne0\)</span> 时有一半的 <span class="arithmatex">\(w\)</span> 使 <span class="arithmatex">\(w\cdot z=1\)</span>）。所以只剩 <span class="arithmatex">\(x=y\)</span> 的项：</p>
+<div class="arithmatex">\[
+\sum_wS_f(w)^2=\frac1{2^{2n}}\sum_x(-1)^{2f(x)}\cdot2^n=\frac{2^n\cdot2^n}{2^{2n}}=1.
+\]</div>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 3.7</span></p>
+<p>任意 <span class="arithmatex">\(n\)</span> 元布尔函数都存在某个 <span class="arithmatex">\(w\)</span> 使 <span class="arithmatex">\(|S_f(w)|\ge2^{-n/2}\)</span>，即至少有一个相关偏差不小于 <span class="arithmatex">\(2^{-n/2-1}\)</span> 的线性逼近。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(2^n\)</span> 个 <span class="arithmatex">\(S_f(w)^2\)</span> 之和为 1，最大的一个至少为平均值 <span class="arithmatex">\(2^{-n}\)</span>。</p>
+</details>
+<p>这就是“不存在完美非线性”的原因：非线性只能把能量摊平，不能消除。Walsh 谱绝对值全部相等（<span class="arithmatex">\(|S_f(w)|=2^{-n/2}\)</span>）的函数称为 <strong>Bent 函数</strong>，它是非线性度最高的，但不平衡（<span class="arithmatex">\(S_f(0)\ne0\)</span>）。</p>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.8</span></p>
+<p>设 <span class="arithmatex">\(f(x)=x_0x_1x_2\oplus x_2x_3\)</span> 是一个 4 元布尔函数，根据 Walsh-Hadamard 变换，通过编程或手动推导找到所有与其相关偏差不为 0 的线性函数。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>按 (5) 计算（以 <span class="arithmatex">\(w=(w_0w_1w_2w_3)\)</span> 表示线性函数 <span class="arithmatex">\(w_0x_0\oplus w_1x_1\oplus w_2x_2\oplus w_3x_3\)</span>，我用程序算的）。<span class="arithmatex">\(2^4\cdot S_f(w)\)</span> 的非零值为：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(w\)</span></th>
+<th><span class="arithmatex">\(2^4S_f(w)\)</span></th>
+<th><span class="arithmatex">\(S_f(w)\)</span></th>
+<th>相关偏差 <span class="arithmatex">\(S_f/2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>8</td>
+<td>1/2</td>
+<td>1/4</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>4</td>
+<td>1/4</td>
+<td>1/8</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>8</td>
+<td>1/2</td>
+<td>1/4</td>
+</tr>
+<tr>
+<td>0011</td>
+<td><span class="arithmatex">\(-4\)</span></td>
+<td><span class="arithmatex">\(-1/4\)</span></td>
+<td><span class="arithmatex">\(-1/8\)</span></td>
+</tr>
+<tr>
+<td>0101</td>
+<td>4</td>
+<td>1/4</td>
+<td>1/8</td>
+</tr>
+<tr>
+<td>0111</td>
+<td><span class="arithmatex">\(-4\)</span></td>
+<td><span class="arithmatex">\(-1/4\)</span></td>
+<td><span class="arithmatex">\(-1/8\)</span></td>
+</tr>
+<tr>
+<td>1001</td>
+<td>4</td>
+<td>1/4</td>
+<td>1/8</td>
+</tr>
+<tr>
+<td>1011</td>
+<td><span class="arithmatex">\(-4\)</span></td>
+<td><span class="arithmatex">\(-1/4\)</span></td>
+<td><span class="arithmatex">\(-1/8\)</span></td>
+</tr>
+<tr>
+<td>1101</td>
+<td><span class="arithmatex">\(-4\)</span></td>
+<td><span class="arithmatex">\(-1/4\)</span></td>
+<td><span class="arithmatex">\(-1/8\)</span></td>
+</tr>
+<tr>
+<td>1111</td>
+<td>4</td>
+<td>1/4</td>
+<td>1/8</td>
+</tr>
+</tbody>
+</table>
+<p>所以与 <span class="arithmatex">\(f\)</span> 相关偏差不为 0 的线性函数有 <span class="arithmatex">\(x_3\)</span>、<span class="arithmatex">\(x_2\)</span>、<span class="arithmatex">\(x_2\oplus x_3\)</span>、<span class="arithmatex">\(x_1\oplus x_3\)</span>、<span class="arithmatex">\(x_1\oplus x_2\oplus x_3\)</span>、<span class="arithmatex">\(x_0\oplus x_3\)</span>、<span class="arithmatex">\(x_0\oplus x_2\oplus x_3\)</span>、<span class="arithmatex">\(x_0\oplus x_1\oplus x_3\)</span>、<span class="arithmatex">\(x_0\oplus x_1\oplus x_2\oplus x_3\)</span>，以及常数 <span class="arithmatex">\(0\)</span>（<span class="arithmatex">\(w=0000\)</span>，说明 <span class="arithmatex">\(f\)</span> 不平衡，<span class="arithmatex">\(\Pr(f=0)=3/4\)</span>）。最好的线性逼近是 <span class="arithmatex">\(f\approx x_2\)</span>，相等概率 <span class="arithmatex">\(3/4\)</span>。</p>
+<p>验证能量守恒：<span class="arithmatex">\(\frac{8^2+8^2+8\times4^2}{16^2}=\frac{64+64+128}{256}=1\)</span>。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.9</span></p>
+<p>给出能量守恒定律的数学证明。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>见上面定理下的证明。核心是特征和的正交性 <span class="arithmatex">\(\sum_w(-1)^{w\cdot z}=2^n\delta_{z,0}\)</span>，与<a href="../chapter-08-equivalence-of-analysis-methods/#s3">第八章</a>引理用的是同一个工具。</p>
+</details>
+<h3 id="s3-3">3.3 LFSR 驱动的序列密码的相关攻击</h3>
+<p>线性序列比特之间存在线性关系，LFSR 的输出直接作为密钥流很容易受到攻击。为了破坏输出序列的线性关系，一种办法是把一个或多个 LFSR 的抽头经过非线性函数（通常也叫<strong>滤波函数</strong>）得到密钥流序列，这种体制叫做<strong>前馈逻辑</strong>。</p>
+<p>相关攻击的思路是：先找到输出序列与 LFSR 某些抽头线性组合的相关偏差，然后<strong>分别</strong>穷举相关 LFSR 的初态，得到其生成序列，比较生成序列与密钥流序列的相关性。猜测正确时有明显的相关偏差；猜测错误时则随机耦合，无明显相关性。这样就把对整个密钥的穷举拆成了对各个 LFSR 的分别穷举，是一种分而治之。</p>
+<p>设正确猜测下的相关偏差为 <span class="arithmatex">\(\epsilon\)</span>，密钥流长度为 <span class="arithmatex">\(N\)</span>。一般在 <span class="arithmatex">\(t=\epsilon\sqrt N\ge3\)</span> 时，有较高的置信度认为猜测值是正确的解，所以数据复杂度为</p>
+<div class="arithmatex">\[
+N=\frac9{\epsilon^2}.
+\]</div>
+<p>具体 <span class="arithmatex">\(t\)</span> 的取值根据实际分析中要求的置信度确定。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这里的 <span class="arithmatex">\(t\)</span> 可以这样理解：错误猜测下，<span class="arithmatex">\(N\)</span> 比特中相等的个数近似服从均值 <span class="arithmatex">\(N/2\)</span>、标准差 <span class="arithmatex">\(\sqrt N/2\)</span> 的正态分布；正确猜测下均值是 <span class="arithmatex">\(N/2+\epsilon N\)</span>。两者均值之差以错误分布的标准差为单位是 <span class="arithmatex">\(\epsilon N/(\sqrt N/2)=2\epsilon\sqrt N=2t\)</span>。<span class="arithmatex">\(t=3\)</span> 就是相差 6 个标准差，和<a href="../chapter-03-differential-cryptanalysis/">第三章</a>信噪比的思路一样。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.10</span><span class="book-name">前馈逻辑的相关攻击</span></p>
+<p>两个 7 级 LFSR 的反馈多项式分别为 <span class="arithmatex">\(x^7+x^4+1\)</span> 和 <span class="arithmatex">\(x^7+x^3+1\)</span>。第一个 LFSR 的一个抽头作为 <span class="arithmatex">\(x_1\)</span>，第二个 LFSR 的两个抽头作为 <span class="arithmatex">\(x_2,x_3\)</span>，经过非线性函数</p>
+<div class="arithmatex">\[
+z(x_1,x_2,x_3)=x_1x_2\oplus x_1x_3\oplus x_2x_3
+\]</div>
+<p>输出密钥流。如何恢复两个 LFSR 的初态？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><strong>恢复第一个 LFSR。</strong> 上面已经算过，对 <span class="arithmatex">\(z\)</span> 作 Walsh 谱变换得 <span class="arithmatex">\(\mathrm{cor}(z,x_1)=3/4\)</span>，即第一个 LFSR 正确初态产生的序列与密钥流对应比特相等的概率为 <span class="arithmatex">\(3/4\)</span>，相关偏差 <span class="arithmatex">\(\epsilon=1/4\)</span>。穷举第一个 LFSR 的所有 <span class="arithmatex">\(2^7\)</span> 种初态，把产生的序列与密钥流比较：若相等的比例接近 <span class="arithmatex">\(3/4\)</span>，就是正确初态；猜错时接近 <span class="arithmatex">\(1/2\)</span>。由 <span class="arithmatex">\(N=9/\epsilon^2=144\)</span>，约 144 比特密钥流就足够。</p>
+<p><strong>恢复第二个 LFSR。</strong> 可以用同样的办法穷举第二个 LFSR 的 <span class="arithmatex">\(2^7\)</span> 种初态（<span class="arithmatex">\(\mathrm{cor}(z,x_2)=3/4\)</span>）。但对这个密码有更高效的办法：观察多数函数，<span class="arithmatex">\(x_1=0\)</span> 时 <span class="arithmatex">\(z=x_2x_3\)</span>，于是 <span class="arithmatex">\(z=1\)</span> 时必有 <span class="arithmatex">\(x_2=x_3=1\)</span>；<span class="arithmatex">\(x_1=1\)</span> 时 <span class="arithmatex">\(z=x_2\oplus x_3\oplus x_2x_3=x_2\vee x_3\)</span>，于是 <span class="arithmatex">\(z=0\)</span> 时必有 <span class="arithmatex">\(x_2=x_3=0\)</span>。即 <span class="arithmatex">\(x_1\ne z\)</span> 时，<span class="arithmatex">\(x_2=x_3=z\)</span> 可以直接得到。</p>
+<p>已知第一个 LFSR 的初态后，就有它的输出序列 <span class="arithmatex">\(x_1\)</span>。把密钥流与 <span class="arithmatex">\(x_1\)</span> 比对，在不相等的位置上直接得到第二个 LFSR 对应抽头的比特。这是第二个 LFSR 输出序列的间断序列，每个比特都可以表示成初态比特的线性组合，得到关于 7 个初态比特的线性方程组，求解即可得到初态。只需大约 14 个“不相等”的位置（约 56 比特密钥流），复杂度可以忽略。</p>
+<p>总复杂度约 <span class="arithmatex">\(2^7+2^7\)</span>，而直接穷举两个 LFSR 的联合初态要 <span class="arithmatex">\(2^{14}\)</span>。</p>
+</details>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.11</span></p>
+<p>若把上例中的非线性函数改为 <span class="arithmatex">\(z(x_1,x_2,x_3)=x_1x_2\oplus x_1x_3\oplus x_2x_3\oplus x_2\oplus x_3\)</span>，仿照上例给出相应的相关攻击步骤说明。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><strong>Walsh 谱。</strong> 我用程序算出新 <span class="arithmatex">\(z\)</span> 的 Walsh 谱非零项为</p>
+<div class="arithmatex">\[
+S_z(001)=\tfrac12,\quad S_z(010)=\tfrac12,\quad S_z(100)=-\tfrac12,\quad S_z(111)=\tfrac12,
+\]</div>
+<p>（<span class="arithmatex">\(w=w_1w_2w_3\)</span> 对应 <span class="arithmatex">\(w_1x_1\oplus w_2x_2\oplus w_3x_3\)</span>。）所以</p>
+<div class="arithmatex">\[
+\Pr(z=x_1)=\tfrac14,\qquad\Pr(z=x_2)=\Pr(z=x_3)=\tfrac34,\qquad\Pr(z=x_1\oplus x_2\oplus x_3)=\tfrac34.
+\]</div>
+<p>与原例相比，<span class="arithmatex">\(z\)</span> 与 <span class="arithmatex">\(x_1\)</span> 的相关偏差变成了 <span class="arithmatex">\(-1/4\)</span>。（直观上：加上的 <span class="arithmatex">\(x_2\oplus x_3\)</span> 在多数函数 <span class="arithmatex">\(=x_1\)</span> 的那些位置上恰好把结果翻转。）</p>
+<p><strong>恢复第一个 LFSR。</strong> 相关偏差为负，把密钥流取反（或把生成序列取反）后比较：穷举 <span class="arithmatex">\(2^7\)</span> 种初态，若生成序列与密钥流<strong>不相等</strong>的比例接近 <span class="arithmatex">\(3/4\)</span>，就是正确初态。<span class="arithmatex">\(|\epsilon|=1/4\)</span>，同样约需 144 比特。</p>
+<p><strong>恢复第二个 LFSR。</strong> 仍可利用 <span class="arithmatex">\(x_1\)</span> 已知后的确定关系。新函数为</p>
+<ul>
+<li><span class="arithmatex">\(x_1=0\)</span>：<span class="arithmatex">\(z=x_2x_3\oplus x_2\oplus x_3=x_2\vee x_3\)</span>，所以 <span class="arithmatex">\(z=0\)</span> 时 <span class="arithmatex">\(x_2=x_3=0\)</span>；</li>
+<li><span class="arithmatex">\(x_1=1\)</span>：<span class="arithmatex">\(z=x_2\oplus x_3\oplus x_2x_3\oplus x_2\oplus x_3=x_2x_3\)</span>，所以 <span class="arithmatex">\(z=1\)</span> 时 <span class="arithmatex">\(x_2=x_3=1\)</span>。</li>
+</ul>
+<p>即 <span class="arithmatex">\(x_1=z\)</span> 的位置上，<span class="arithmatex">\(x_2=x_3=z\)</span> 可以直接读出（条件从原例的“<span class="arithmatex">\(x_1\ne z\)</span>”变成了“<span class="arithmatex">\(x_1=z\)</span>”）。<span class="arithmatex">\(\Pr(x_1=z)=1/4\)</span>，与原例中 <span class="arithmatex">\(\Pr(x_1\ne z)=1/4\)</span> 相同，所以同样约 56 比特密钥流就能得到足够的线性方程，解出第二个 LFSR 的初态。也可以直接对第二个 LFSR 用 <span class="arithmatex">\(\Pr(z=x_2)=3/4\)</span> 再做一次相关攻击。</p>
+</details>
+<h2 id="s4"><span class="book-secnum">§ 04</span>小结</h2>
+<ul>
+<li>单个 LFSR 的输出不能直接作为密钥流：已知 <span class="arithmatex">\(2n\)</span> 个连续比特，B-M 算法就能恢复它（线性复杂度就是 B-M 输出的级数）。</li>
+<li>加了非线性滤波后，滤波函数总有非零的 Walsh 谱（能量守恒），也就总存在与某个线性组合的相关性。相关攻击利用这种相关性分别穷举各个 LFSR，把 <span class="arithmatex">\(2^{\sum n_i}\)</span> 的穷举降为 <span class="arithmatex">\(\sum2^{n_i}\)</span>，数据量约 <span class="arithmatex">\(9/\epsilon^2\)</span>。</li>
+<li>设计上的对策是选择相关免疫阶高、非线性度高的滤波函数，或者改用 NFSR 驱动。下一章的立方攻击针对的就是 Trivium、Grain 这类 NFSR 驱动的算法。</li>
+</ul>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 11 章。</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-10-block-cipher-modes/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第十章：分组密码工作模式的攻击概述</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-12-cube-attacks/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第十二章：序列密码的立方攻击</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 11 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-12-cube-attacks/">第十二章：序列密码的立方攻击</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,459 @@
+/* Page transitions and reading aids: page turns between chapters, a loading line,
+   a running header, smooth proof folds, statements hung on a rule down the page,
+   and an outline mode. Behaviour lives in page-transitions.js and reading-aids.js. */
+
+:root {
+    --pt-dur: 0.34s;
+    --pt-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    interpolate-size: allow-keywords;
+}
+
+/* ===== 1. Page transitions (cross-document View Transitions) ===== */
+@view-transition { navigation: auto; }
+
+/* The bar stays put: only the page under it turns. */
+body .md-header { view-transition-name: zdd-bar; }
+::view-transition-group(zdd-bar) { z-index: 2; animation: none; }
+::view-transition-old(zdd-bar) { display: none; }
+::view-transition-new(zdd-bar) { animation: none; }
+
+::view-transition-old(root) { animation: pt-fade-out var(--pt-dur) var(--pt-ease) both; }
+::view-transition-new(root) { animation: pt-fade-in var(--pt-dur) var(--pt-ease) 0.1s both; }
+
+/* Next / previous chapter: a page turn. */
+html:active-view-transition-type(next)::view-transition-old(root) { animation: pt-out-left var(--pt-dur) var(--pt-ease) both; }
+html:active-view-transition-type(next)::view-transition-new(root) { animation: pt-in-right var(--pt-dur) var(--pt-ease) both; }
+html:active-view-transition-type(prev)::view-transition-old(root) { animation: pt-out-right var(--pt-dur) var(--pt-ease) both; }
+html:active-view-transition-type(prev)::view-transition-new(root) { animation: pt-in-left var(--pt-dur) var(--pt-ease) both; }
+
+/* Into a deeper page rises from below; back to a parent comes from above. */
+html:active-view-transition-type(down)::view-transition-old(root) { animation: pt-sink-up var(--pt-dur) var(--pt-ease) both; }
+html:active-view-transition-type(down)::view-transition-new(root) { animation: pt-rise-up var(--pt-dur) var(--pt-ease) 0.08s both; }
+html:active-view-transition-type(up)::view-transition-old(root) { animation: pt-sink-down var(--pt-dur) var(--pt-ease) both; }
+html:active-view-transition-type(up)::view-transition-new(root) { animation: pt-rise-down var(--pt-dur) var(--pt-ease) 0.08s both; }
+
+/* Between the sections of the header menu: a short sideways move in menu order. */
+html:active-view-transition-type(across-next)::view-transition-old(root) { animation: pt-across-out-left 0.2s var(--pt-ease) both; }
+html:active-view-transition-type(across-next)::view-transition-new(root) { animation: pt-across-in-right 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) 0.14s both; }
+html:active-view-transition-type(across-prev)::view-transition-old(root) { animation: pt-across-out-right 0.2s var(--pt-ease) both; }
+html:active-view-transition-type(across-prev)::view-transition-new(root) { animation: pt-across-in-left 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) 0.14s both; }
+
+@keyframes pt-fade-out { to { opacity: 0; } }
+@keyframes pt-fade-in { from { opacity: 0; } }
+@keyframes pt-out-left { to { translate: -100% 0; } }
+@keyframes pt-in-right { from { translate: 100% 0; } }
+@keyframes pt-out-right { to { translate: 100% 0; } }
+@keyframes pt-in-left { from { translate: -100% 0; } }
+@keyframes pt-sink-up { to { opacity: 0; translate: 0 -2.5rem; } }
+@keyframes pt-rise-up { from { opacity: 0; translate: 0 2.5rem; } }
+@keyframes pt-sink-down { to { opacity: 0; translate: 0 2.5rem; } }
+@keyframes pt-rise-down { from { opacity: 0; translate: 0 -2.5rem; } }
+@keyframes pt-across-out-left { to { opacity: 0; translate: -4rem 0; } }
+@keyframes pt-across-in-right { from { opacity: 0; translate: 4rem 0; } }
+@keyframes pt-across-out-right { to { opacity: 0; translate: 4rem 0; } }
+@keyframes pt-across-in-left { from { opacity: 0; translate: -4rem 0; } }
+
+/* ===== 2. Loading line under the bar ===== */
+.zdd-loadline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.14s var(--pt-ease);
+}
+.zdd-loadline::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 28%;
+    background: var(--ed-accent);
+}
+.md-header.is-loading .zdd-loadline { opacity: 1; transition: none; }
+.md-header.is-loading .zdd-loadline::before { animation: pt-rule 0.9s ease-in-out infinite; }
+@keyframes pt-rule { from { translate: -100% 0; } to { translate: 360% 0; } }
+
+/* ===== 3. Light/dark switch: one cross-fade of the whole page (theme-fade.js) ===== */
+html:active-view-transition-type(theme)::view-transition-old(*) { display: block; animation: pt-fade-out 0.3s ease both; }
+html:active-view-transition-type(theme)::view-transition-new(*) { animation: pt-fade-in 0.3s ease both; }
+html:active-view-transition-type(theme)::view-transition-group(*) { animation: none; }
+
+/* ===== 4. Running header ===== */
+/* The wordmark stays beside the logo on every page; the running header follows it.
+   Material fades the first topic out once the page title scrolls away, which with
+   a single topic left the logo alone. */
+body .md-header__title--active .md-header__topic { opacity: 1; pointer-events: auto; transform: none; z-index: 0; }
+.md-header__inner:has(.zdd-runhead) .md-header__title { flex: 0 0 auto !important; }
+.md-header__inner:has(.zdd-runhead) .md-header__topic { position: relative; }
+@media screen and (max-width: 59.9375em) { .md-header__inner:has(.zdd-runhead) .md-header__title { flex: 1 1 auto !important; } }
+.zdd-runhead {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.55em;
+    margin: 0 1.4rem 0 0.8rem;
+    /* optical centre on the wordmark: CJK ink is taller than the mono caps */
+    position: relative;
+    top: -0.06rem;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: var(--ed-serif);
+    font-size: 0.66rem;
+    opacity: 0;
+    translate: 0 0.3rem;
+    transition: opacity 0.2s var(--pt-ease), translate 0.2s var(--pt-ease);
+    pointer-events: none;
+}
+.zdd-runhead.is-on { opacity: 1; translate: 0 0; pointer-events: auto; }
+.zdd-runhead a {
+    min-width: 2.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ed-muted) !important;
+    text-decoration: none;
+    font-family: var(--ed-serif) !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+.zdd-runhead a:nth-of-type(1) { flex-shrink: 4; }
+.zdd-runhead a:nth-of-type(2) { flex-shrink: 3; }
+.zdd-runhead a:nth-of-type(3) { flex-shrink: 1; }
+.zdd-runhead a:nth-of-type(4) { flex-shrink: 0.5; }
+.zdd-runhead a.is-current { color: var(--ed-ink) !important; font-weight: 700; }
+.zdd-runhead a:hover { color: var(--ed-accent) !important; }
+.zdd-runhead .sep { flex: none; color: var(--ed-rule-strong); }
+@media screen and (max-width: 59.9375em) { .zdd-runhead { display: none; } }
+
+/* ===== 5. Proofs fold smoothly; the whole line is the control ===== */
+body .md-typeset details.proof::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size var(--pt-dur) var(--pt-ease), content-visibility var(--pt-dur) allow-discrete;
+}
+body .md-typeset details.proof[open]::details-content { block-size: auto; }
+
+:root body.article-layout .md-typeset details.proof.proof {
+    position: relative;
+    margin: -0.9em 0 1.5em;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: visible;
+}
+:root body.article-layout .md-typeset details.proof.proof > summary {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.7em;
+    min-height: 0;
+    margin: 0;
+    padding: 0.2em 0 !important;
+    color: var(--ed-ink-soft);
+    font-family: var(--ed-serif);
+    font-size: 1em;
+    font-style: italic;
+    letter-spacing: 0;
+    cursor: pointer;
+    list-style: none;
+    overflow: visible !important;
+}
+:root body.article-layout .md-typeset details.proof.proof > summary::-webkit-details-marker { display: none; }
+:root body.article-layout .md-typeset details.proof.proof > summary::after {
+    content: "展开";
+    position: static;
+    width: auto;
+    height: auto;
+    mask: none;
+    -webkit-mask: none;
+    background: none;
+    transform: none;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.56em;
+    font-style: normal;
+    letter-spacing: 0.14em;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+:root body.article-layout .md-typeset details.proof.proof[open] > summary::after { content: "收起"; }
+:root body.article-layout .md-typeset details.proof.proof > summary:hover::after { opacity: 1; }
+:root body.article-layout .md-typeset details.proof.proof > summary:hover { color: var(--ed-accent); }
+:root body.article-layout .md-typeset details.proof.proof > summary::before {
+    content: "";
+    display: inline-block;
+    position: static;
+    align-self: center;
+    margin-right: -0.2em;
+    width: 0;
+    height: 0;
+    mask: none;
+    -webkit-mask: none;
+    background: none;
+    border: 0.28rem solid transparent;
+    border-left-color: var(--ed-muted);
+    transform-origin: 50% 50%;
+    transition: rotate var(--pt-dur) var(--pt-ease);
+}
+:root body.article-layout .md-typeset details.proof.proof[open] > summary::before { rotate: 90deg; }
+
+/* ===== 6. Wide layout: a rule down the page, statements hang on it ===== */
+.zdd-rail { display: none; }
+
+@media screen and (min-width: 76.25em) {
+    body.article-layout {
+        --ed-margin: 200px;
+        --rail-gap: 18px;
+        --gutter-w: 104px;
+    }
+    body.article-layout .md-sidebar--secondary { margin-right: 30px; }
+    body.article-layout .md-content { flex-basis: 1020px; max-width: 1020px; }
+    body.article-layout .md-content__inner { position: relative; padding-left: 120px !important; }
+    body.article-layout .md-content__inner > .admonition:is(.note, .remark, .info, .tip) { width: 176px !important; }
+
+    .zdd-rail {
+        display: block;
+        position: absolute;
+        left: calc(120px - var(--rail-gap));
+        top: var(--rail-top, 0);
+        height: var(--rail-height, 0);
+        width: 1px;
+        background: var(--ed-rule-strong);
+        pointer-events: none;
+    }
+
+    /* Section numbers move into the gutter, a mark on the rule beside them. */
+    body.article-layout .md-content__inner.md-typeset > h2 { position: relative; }
+    body.article-layout .md-content__inner.md-typeset > h2 .book-secnum {
+        position: absolute;
+        right: calc(100% + var(--rail-gap) + 14px);
+        top: 1.4em;
+        margin: 0;
+        line-height: 2.7;
+        white-space: nowrap;
+        font-size: 0.5em;
+    }
+    body.article-layout .md-content__inner.md-typeset > h2::after {
+        content: "";
+        position: absolute;
+        /* centred on the 1px rule: a 9px box starting 4px left of it, on whole
+           pixels (a -50% translate landed on half pixels and drew 1px right) */
+        left: calc(-1 * var(--rail-gap) - 4px);
+        top: 1.375em;
+        width: 9px;
+        height: 9px;
+        box-sizing: border-box;
+        translate: 0 -50%;
+        background: var(--ed-paper);
+        border: 1px solid var(--ed-ink);
+        rotate: 45deg;
+    }
+
+    /* Statements: a bar on the rule, the label in the gutter. */
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma,
+        .corollary, .property, .claim, .collary, .definition, .problem, .example) {
+        --bar: var(--ed-accent);
+        position: relative;
+        margin: 1.4em 0;
+        padding: 0 !important;
+        border: 0 !important;
+        background: none !important;
+        overflow: visible !important;
+    }
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details).definition { --bar: var(--ed-ink); }
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details):is(.example, .problem) { --bar: var(--ed-muted); }
+
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma,
+        .corollary, .property, .claim, .collary, .definition, .problem, .example)::before {
+        content: "";
+        position: absolute;
+        left: calc(-1 * var(--rail-gap) - 2px);
+        top: 0.2em;
+        bottom: 0.2em;
+        width: 5px;
+        background: var(--bar);
+        transition: scale 0.2s var(--pt-ease);
+    }
+    /* the bar thickens on the rule while the statement is under the pointer */
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma,
+        .corollary, .property, .claim, .collary, .definition, .problem, .example):hover::before { scale: 1.8 1; }
+
+    body.article-layout .md-content__inner.md-typeset > :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma,
+        .corollary, .property, .claim, .collary, .definition, .problem, .example) > :is(.admonition-title, summary) {
+        position: absolute;
+        right: calc(100% + var(--rail-gap) + 14px);
+        top: 0.15em;
+        width: var(--gutter-w);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.2em;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0.7rem;
+        line-height: 1.45;
+        text-align: right;
+    }
+    body.article-layout .md-content__inner.md-typeset > .admonition > .admonition-title .book-label {
+        color: var(--bar);
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+    }
+    body.article-layout .md-content__inner.md-typeset > .admonition > .admonition-title .book-name {
+        color: var(--bar);
+        font-weight: 400;
+    }
+    body.article-layout .md-content__inner.md-typeset > .admonition > .admonition-title + * { margin-top: 0; }
+    body.article-layout .md-content__inner.md-typeset > .admonition > :last-child { margin-bottom: 0; }
+
+    :root body.article-layout .md-content__inner.md-typeset > details.proof.proof > summary::before {
+        position: absolute;
+        left: calc(-1 * var(--rail-gap) - 3px);
+        top: 0.5em;
+        margin: 0;
+        border-width: 6px 0 6px 8px;
+        border-color: transparent transparent transparent var(--ed-ink);
+        transform-origin: 30% 50%;
+    }
+}
+
+/* ===== 7. Outline mode ===== */
+.zdd-outline-btn {
+    position: fixed;
+    right: 1.4rem;
+    bottom: 1.4rem;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.1rem;
+    padding: 0 0.8rem;
+    border: 1px solid var(--ed-rule-strong);
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s;
+}
+.zdd-outline-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+.zdd-outline-btn kbd {
+    padding: 0 0.3em;
+    border: 1px solid var(--ed-rule);
+    color: var(--ed-muted);
+    font: inherit;
+}
+.zdd-outline-btn:hover { color: var(--ed-accent); }
+@media screen and (max-width: 59.9375em) {
+    .zdd-outline-btn { left: 1rem; right: auto; bottom: 1rem; }
+    .zdd-outline-btn kbd { display: none; }
+}
+body.zdd-outline .zdd-outline-btn { background: var(--ed-ink); color: var(--ed-paper); }
+body.zdd-outline .zdd-outline-btn kbd { color: inherit; border-color: currentColor; }
+
+body.zdd-outline .md-content__inner > :not(h2, h3, .book-opener, .zdd-rail, .theorem, .proposition, .prop, .lemma,
+    .corollary, .property, .claim, .collary, .definition, .problem, .example) { display: none !important; }
+body.zdd-outline .md-content__inner > :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .claim, .collary,
+    .definition, .problem, .example) > :not(.admonition-title, summary) { display: none !important; }
+body.zdd-outline .md-content__inner > :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .claim, .collary,
+    .definition, .problem, .example) > :is(.admonition-title, summary) + :is(p, ul, ol) {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+body.zdd-outline .md-content__inner > :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .claim, .collary,
+    .definition, .problem, .example) > :is(.admonition-title, summary) + :is(ul, ol) > li:not(:first-child) { display: none; }
+body.zdd-outline .md-content__inner > :is(h2, h3, .admonition) { cursor: pointer; margin-top: 1em !important; margin-bottom: 1em !important; }
+body.zdd-outline .md-content__inner > h2 { margin-top: 2.2em !important; }
+body.zdd-outline .md-content__inner > .admonition:hover { box-shadow: -0.6rem 0 0 0 var(--ed-paper-deep), 0.6rem 0 0 0 var(--ed-paper-deep); background: var(--ed-paper-deep) !important; }
+body.zdd-outline .md-content__inner > :is(h2, h3):hover { color: var(--ed-accent); }
+
+.md-content__inner > :is(h2, h3, .admonition) { scroll-margin-top: 5rem; }
+.zdd-flash { animation: pt-flash 1.4s var(--pt-ease); }
+@keyframes pt-flash { from { background-color: color-mix(in srgb, var(--ed-accent) 14%, transparent); } }
+
+::view-transition-old(zdd-outline-root),
+::view-transition-new(zdd-outline-root) { animation-duration: 0.25s; }
+
+/* ===== Reduced motion: switch, don't move ===== */
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+    .md-header.is-loading .zdd-loadline::before { width: 100%; animation: none; }
+    body .md-typeset details.proof::details-content { transition: none; }
+    .zdd-runhead, .zdd-flash { transition: none !important; animation: none !important; }
+}
+
+/* ===== 9. Article end: quiet text buttons and a readable archive row ===== */
+/* Buttons in articles ("返回目录", "下载 PDF"): ink text on a rule, no box. */
+body .md-typeset a.md-button {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    margin: 0.3em 1.8em 0.3em 0;
+    padding: 0.3em 0 0.25em;
+    border: 0;
+    border-bottom: 1px solid var(--ed-rule-strong);
+    background: none !important;
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+body .md-typeset a.md-button::before {
+    content: "\2190";
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-weight: 400;
+    transition: translate 0.15s ease, color 0.15s ease;
+}
+body .md-typeset a.md-button:is([download], [href$=".pdf"])::before { content: "\2193"; }
+body .md-typeset a.md-button:is(:hover, :focus-visible) { border-color: var(--ed-accent); color: var(--ed-accent) !important; }
+body .md-typeset a.md-button:is(:hover, :focus-visible)::before { color: var(--ed-accent); translate: -0.15em 0; }
+body .md-typeset a.md-button:is([download], [href$=".pdf"]):is(:hover, :focus-visible)::before { translate: 0 0.12em; }
+
+/* Archive: the label in ink, shelf and book as linked words, tags in mono. */
+body .md-typeset .zdd-article-taxonomy { align-items: baseline; }
+body .md-typeset .zdd-article-taxonomy .zdd-end-label {
+    flex: 0 0 auto;
+    margin-right: 0.6rem;
+    color: var(--ed-ink-soft) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chips { align-items: baseline; gap: 0.35rem 0.9rem; }
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip,
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category {
+    padding: 0 0 0.1em;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: none;
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category {
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category + .zdd-end-chip.is-category::before {
+    content: "/";
+    margin-right: 0.9rem;
+    color: var(--ed-rule-strong);
+    font-weight: 400;
+}
+body .md-typeset .zdd-article-taxonomy .zdd-end-chip.is-category + .zdd-end-chip:not(.is-category) { margin-left: 0.6rem; }
+body .md-typeset .zdd-article-taxonomy a.zdd-end-chip:hover { border-bottom-color: currentColor; color: var(--ed-accent) !important; }

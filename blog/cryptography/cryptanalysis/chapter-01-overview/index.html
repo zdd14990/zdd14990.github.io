@@ -1,0 +1,967 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第一章：Kerckhoffs 准则、攻击类型、无条件安全与计算安全、对称算法/杂凑函数/MAC 的攻击目标，以及“区分”与“分割”的一般攻击模型。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-01-overview/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：密码分析学概述 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-01-overview/">
+  <meta property="og:title" content="第一章：密码分析学概述 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第一章：Kerckhoffs 准则、攻击类型、无条件安全与计算安全、对称算法/杂凑函数/MAC 的攻击目标，以及“区分”与“分割”的一般攻击模型。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-01-overview/">
+  <meta name="twitter:title" content="第一章：密码分析学概述 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第一章：Kerckhoffs 准则、攻击类型、无条件安全与计算安全、对称算法/杂凑函数/MAC 的攻击目标，以及“区分”与“分割”的一般攻击模型。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u5bc6\u7801\u5206\u6790\u5b66\u6982\u8ff0",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e00\u7ae0\uff1aKerckhoffs \u51c6\u5219\u3001\u653b\u51fb\u7c7b\u578b\u3001\u65e0\u6761\u4ef6\u5b89\u5168\u4e0e\u8ba1\u7b97\u5b89\u5168\u3001\u5bf9\u79f0\u7b97\u6cd5/\u6742\u51d1\u51fd\u6570/MAC \u7684\u653b\u51fb\u76ee\u6807\uff0c\u4ee5\u53ca\u201c\u533a\u5206\u201d\u4e0e\u201c\u5206\u5272\u201d\u7684\u4e00\u822c\u653b\u51fb\u6a21\u578b\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-01-overview/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-01-overview/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 密码分析学的基本概念
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 密码分析学的基本概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Kerckhoffs 准则与攻击类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 无条件安全与计算安全
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 各类算法的攻击目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 密码分析的一般模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 密码分析的一般模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 区分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 分割
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 1 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="top"><span class="book-visually-hidden">第 1 章：</span>密码分析学概述</h1>
+  </div>
+  <p class="book-standfirst">密码学主要分为密码设计学和密码分析学。前者致力于设计安全高效的密码算法，后者则试图发现算法的安全缺陷，打破设计者宣称的安全界限，恢复明文或密钥。新的分析方法催生更完善的设计，新的设计又激发新的分析，二者的博弈推动着密码学发展。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>4,263 字 · 约 12 分钟</span>
+  </div>
+  
+</header>
+
+<p>一个密码体制抵抗现有各种分析技术的强度，已经成为衡量算法安全性的重要指标。这套笔记围绕对称加密算法、杂凑函数和消息认证码 (Message Authentication Code, MAC) 的安全性分析，整理现代密码分析学的主流技术。本章先给出基本假设、攻击者能力、安全性的定义，以及贯穿全书的攻击模型。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>密码分析学的基本概念</h2>
+<p>现代密码算法除了用于保密通信的加密算法（如 AES），还有保证完整性的杂凑函数（如 SHA-2）、实现认证性的消息认证码（如 HMAC），以及同时提供机密性和认证性的认证加密算法（如 AES-GCM）。我们先以对称加密算法为例讨论。</p>
+<h3 id="s1-1">1.1 Kerckhoffs 准则与攻击类型</h3>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.1</span><span class="book-name">Kerckhoffs 准则</span></p>
+<p>密码体制的安全性仅依赖于密钥，其他一切（包括算法本身）都是公开的。</p>
+</div>
+<p>这是 Kerckhoffs 在 1883 年提出的六条准则的核心思想。从分析者的角度说，评估一个密码体制时，我们总是假设攻击者知道除密钥以外的全部信息，包括每一个设计细节。在此基础上，按攻击者掌握的信息不同，攻击分为五类：</p>
+<ol>
+<li><strong>唯密文攻击 (ciphertext-only attack)</strong>：只能获得同一密钥加密的一个或多个密文。例如搭线窃听者。这是对分析者最不利的情况。</li>
+<li><strong>已知明文攻击 (known-plaintext attack)</strong>：能获得某些明密文对。例如用户数据总以 “LOGIN” 开头，或可以根据语言习惯预测。这是密码算法至少要抵抗的攻击。</li>
+<li><strong>选择明文攻击 (chosen-plaintext attack)</strong>：能选择明文并获得相应密文。文件系统和数据库特别容易受到这种攻击，因为用户可以随意写入明文。对称算法的密钥既用于加密也用于解密，常见的攻击多为这一类，这也是这套笔记讨论的重点。</li>
+<li><strong>选择密文攻击 (chosen-ciphertext attack)</strong>：能选择密文并获得相应明文。</li>
+<li><strong>选择文本攻击 (chosen-text attack)</strong>：同时具有 3 和 4 的能力，往往是攻击者暂时控制了加密机和解密机。</li>
+</ol>
+<p>可见攻击者的能力从上到下逐渐增强，一个算法能抵抗越强的攻击者，安全性就越高。</p>
+<h3 id="s1-2">1.2 无条件安全与计算安全</h3>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span><span class="book-name">无条件安全</span></p>
+<p>若无论密码分析者知道多少信息，都不足以唯一确定目标密文对应的明文，则称该密码体制是<strong>无条件安全 (unconditionally secure)</strong> 的，也称理论安全。</p>
+</div>
+<p>无条件安全与攻击者的计算资源无关：无论有多少明密文、花多少时间和存储，都无法解密。除一次一密外，实际应用的加密算法都不是无条件安全的。原因是由 Kerckhoffs 准则，实际算法的安全性依赖于一个固定长度的密钥，而无论算法多复杂，都可以用穷举、查表等<strong>强力攻击</strong>恢复密钥。所以我们只能要求实际算法从计算资源的角度看是安全的，这就需要衡量每一种攻击的效率。</p>
+<p>设有某种攻击，其效率从两个方面衡量：</p>
+<ul>
+<li><strong>成功率 <span class="arithmatex">\(P_S\)</span></strong>：恢复出的密钥是正确密钥的概率。（对区分攻击，指做出正确判断的概率。）</li>
+<li><strong>复杂度</strong>：达到成功率 <span class="arithmatex">\(P_S\)</span> 所需的资源，包括<ul>
+<li><strong>数据复杂度 <span class="arithmatex">\(D\)</span></strong>：所需明文或密文的总数；</li>
+<li><strong>时间复杂度 <span class="arithmatex">\(T\)</span></strong>：分析处理数据所消耗的时间，一般以运行一次加密为单位；</li>
+<li><strong>存储复杂度 <span class="arithmatex">\(M\)</span></strong>：占用存储空间的大小，一般以字节或比特为单位。</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>复杂度和成功率之间存在约束关系：复杂度不同，能达到的成功率也不同。因此比较两个攻击时，应把复杂度统一在相同的成功率下再比较。</p>
+</div>
+<p>以穷举攻击为例，时间复杂度由穷举的次数决定。对 <span class="arithmatex">\(n\)</span> 比特密钥，遍历全部 <span class="arithmatex">\(2^n\)</span> 种可能，成功率为 <span class="arithmatex">\(100\%\)</span>，复杂度为 <span class="arithmatex">\(2^n\)</span> 次加密；若只随机验证一半，复杂度为 <span class="arithmatex">\(2^{n-1}\)</span>，成功率约为 <span class="arithmatex">\(1/2\)</span>。一般地，复杂度为 <span class="arithmatex">\(2^{n-a}\)</span> 时成功率约为 <span class="arithmatex">\(2^{-a}\)</span>。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span><span class="book-name">计算安全</span></p>
+<p>若对某密码体制尝试各种攻击，在不可忽略的成功率下，各攻击的复杂度均超出分析者计算资源可达到的合理边界，则称该密码体制是<strong>计算安全 (computationally secure)</strong> 的。</p>
+</div>
+<p>此外还有所谓<strong>实际安全 (practical security)</strong>：破译的代价超过密文信息的价值，或破译的时间超过密文信息的有效期。</p>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.4</span></p>
+<p>密钥长度为 <span class="arithmatex">\(n\)</span> 比特的算法，若随机选取 <span class="arithmatex">\(2^{n-a}\)</span> 个互不相同的密钥逐一验证，精确的成功率是多少？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>正确密钥在 <span class="arithmatex">\(2^n\)</span> 个密钥中均匀分布，被选中的概率恰为 <span class="arithmatex">\(2^{n-a}/2^n=2^{-a}\)</span>。若允许重复选取（每次独立均匀选取），则成功率为 <span class="arithmatex">\(1-(1-2^{-n})^{2^{n-a}}\approx1-e^{-2^{-a}}\)</span>，<span class="arithmatex">\(a\)</span> 较大时也约为 <span class="arithmatex">\(2^{-a}\)</span>，<span class="arithmatex">\(a=0\)</span> 时只有约 <span class="arithmatex">\(63\%\)</span>。</p>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span>各类算法的攻击目标</h2>
+<p>不同算法的安全属性不同，攻击目标也不同。</p>
+<p><strong>对称加密算法</strong>用于保障机密性，同时也是随机数生成器、杂凑函数、MAC 的基本部件。主要考虑两类攻击：</p>
+<ol>
+<li><strong>区分攻击</strong>：将分组密码与随机置换区分开；</li>
+<li><strong>密钥恢复攻击</strong>：恢复加解密所用的密钥。</li>
+</ol>
+<p>密钥恢复攻击往往建立在区分成功的基础上。由于强力攻击的存在，密钥长 <span class="arithmatex">\(n\)</span> 比特时，这两类攻击的复杂度上界都是 <span class="arithmatex">\(2^n\)</span>。</p>
+<p><strong>杂凑函数</strong>用于保障完整性，也是数字签名的关键技术。对 <span class="arithmatex">\(n\)</span> 比特杂凑值的杂凑函数 <span class="arithmatex">\(h\)</span>，主要考虑：</p>
+<ol>
+<li><strong>原像攻击</strong>：给定 <span class="arithmatex">\(n\)</span> 比特的 <span class="arithmatex">\(H\)</span>，找消息 <span class="arithmatex">\(M\)</span> 使 <span class="arithmatex">\(h(M)=H\)</span>；</li>
+<li><strong>第二原像攻击</strong>：给定 <span class="arithmatex">\(M_1\)</span>，找 <span class="arithmatex">\(M_2\ne M_1\)</span> 使 <span class="arithmatex">\(h(M_1)=h(M_2)\)</span>；</li>
+<li><strong>碰撞攻击</strong>：找两个消息 <span class="arithmatex">\(M_1\ne M_2\)</span> 使 <span class="arithmatex">\(h(M_1)=h(M_2)\)</span>；</li>
+<li><strong>长度扩展攻击</strong>：给定 <span class="arithmatex">\(h(M)\)</span>，其中 <span class="arithmatex">\(M\)</span> 未知，找数据串 <span class="arithmatex">\(N\)</span> 与 <span class="arithmatex">\(n\)</span> 比特的 <span class="arithmatex">\(H'\)</span>，使 <span class="arithmatex">\(h(M\Vert N)=H'\)</span>。</li>
+</ol>
+<p>由于强力攻击，前两类和长度扩展攻击的复杂度上界为 <span class="arithmatex">\(2^n\)</span>；碰撞攻击有生日攻击，上界为 <span class="arithmatex">\(2^{n/2}\)</span>。具体结构的杂凑函数，上界还可能更低。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>MD 结构的杂凑函数容易受到长度扩展攻击，用它构造 MAC 或认证加密时易被伪造。因此 NIST 在征集 SHA-3 时，要求候选算法抵抗这一攻击。</p>
+</div>
+<p><strong>消息认证码</strong>用于保障认证性，收发双方共享的密钥是唯一保密的信息，所以对称加密的攻击目标同样适用于 MAC。此外还有：</p>
+<ul>
+<li><strong>区分攻击</strong>：<ol>
+<li><strong>R 型区分 (distinguishing-R)</strong>：把 MAC 与随机函数区分开；</li>
+<li><strong>H 型区分 (distinguishing-H)</strong>：把基于具体密码元件（如 SHA-1）构造的 MAC 与基于随机函数构造的同一种 MAC 区分开。</li>
+</ol>
+</li>
+<li><strong>伪造攻击</strong>：设 MAC 的输入为 <span class="arithmatex">\(M\)</span>，输出为 <span class="arithmatex">\(t\)</span>，攻击者在不知道密钥时输出能通过验证的 <span class="arithmatex">\((M,t)\)</span>，即 <span class="arithmatex">\(\mathrm{Verf}(M,t)=1\)</span>。<ol>
+<li><strong>存在性伪造 (existential forgery)</strong>：与 MAC 交互后输出 <span class="arithmatex">\((M,t)\)</span>，<span class="arithmatex">\(M\)</span> 在交互中没有被询问过；例如询问 <span class="arithmatex">\(M_1,\cdots,M_s\)</span>（可以自适应地选择）后，输出 <span class="arithmatex">\(M\notin\{M_1,\cdots,M_s\}\)</span> 的合法标签。</li>
+<li><strong>选择性伪造 (selective forgery)</strong>：交互之前先选定 <span class="arithmatex">\(M\)</span>，交互后输出它的合法标签，且 <span class="arithmatex">\(M\)</span> 没有被询问过。</li>
+<li><strong>通用性伪造 (universal forgery)</strong>：对交互前任意给定的 <span class="arithmatex">\(M\)</span>，都能输出其合法标签。</li>
+</ol>
+</li>
+<li><strong>密钥恢复攻击</strong>：恢复 MAC 使用的密钥。</li>
+</ul>
+<p>设 MAC 值长 <span class="arithmatex">\(n\)</span> 比特，密钥长 <span class="arithmatex">\(k\)</span> 比特，则区分和伪造攻击的复杂度上界为 <span class="arithmatex">\(\min(2^n,2^k)\)</span>，密钥恢复的上界为 <span class="arithmatex">\(2^k\)</span>。对具体结构还可能更低，例如基于杂凑函数的部分 MAC，区分攻击的上界为 <span class="arithmatex">\(2^{l/2}\)</span>，<span class="arithmatex">\(l\)</span> 为中间链接变量的长度。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>密码分析并不只分析完整的算法，一般会先从简化版本入手。例如 DES 规定加密 16 轮，分析时可以先缩减到 12 轮。在简化版本上发现的设计问题，随着技术进步，可能最终导致整个算法被攻破。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>密码分析的一般模型</h2>
+<p>常见的密码分析方法分为三类：</p>
+<ol>
+<li><strong>强力攻击</strong>：与算法设计细节无关的通用方法，如穷举攻击、查表攻击、时间-存储权衡攻击。它的复杂度给出了算法的安全上界，即其他攻击复杂度的上界。</li>
+<li><strong>基于数学模型和程序搜索的攻击</strong>：如差分分析、线性分析。分析算法的内部结构，把数学推导、统计测试与程序搜索相结合，发现特殊规律。</li>
+<li><strong>侧信道攻击 (side-channel attack)</strong>：利用算法在芯片上运行时泄露的物理参量（执行时间、电流、电压、电磁辐射、声音等），这些量与中间状态和运算存在相关性，从而推测密钥。见<a href="../chapter-15-side-channel-analysis/">第十五章</a>。</li>
+</ol>
+<p>我们重点关注第二类。它的两个关键要素是<strong>区分</strong>和<strong>分割</strong>。</p>
+<h3 id="s3-1">3.1 区分</h3>
+<p>所谓区分，就是找一个可计算或可统计的指标，对特定密码算法和随机函数（置换）分别计算它，若能在复杂度允许的范围内以不可忽略的概率区分这两种分布，就称这个指标为<strong>不随机特征</strong>，利用它进行区分的算法称为<strong>区分器</strong>或<strong>区分攻击</strong>。区分往往是各类攻击的第一步。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.1</span><span class="book-name">区分</span></p>
+<p>分组密码 <span class="arithmatex">\(\mathrm{EG}_2\)</span> 为 <span class="arithmatex">\(C=F_{K_1}(F_{K_0}(P))\)</span>，<span class="arithmatex">\(P,C\)</span> 为 <span class="arithmatex">\(n\)</span> 比特，<span class="arithmatex">\(F\)</span> 是由密钥 <span class="arithmatex">\(K_i\)</span> 决定的置换，<span class="arithmatex">\(K_0,K_1\)</span> 相互独立，均为 <span class="arithmatex">\(n\)</span> 比特。若攻击者发现等式 <span class="arithmatex">\(P\oplus C=1\)</span> 以概率 <span class="arithmatex">\(1\)</span> 成立，能否把 <span class="arithmatex">\(\mathrm{EG}_2\)</span> 与随机置换 RP 区分开？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>对随机置换，<span class="arithmatex">\(P\oplus C\)</span> 均匀分布，<span class="arithmatex">\(\Pr(P\oplus C=1)=2^{-n}\)</span>。于是给一个黑盒，已知 <span class="arithmatex">\(x\)</span> 个输入 <span class="arithmatex">\(P_i\)</span> 与输出 <span class="arithmatex">\(C_i\)</span>：</p>
+<ol>
+<li>计算 <span class="arithmatex">\(x\)</span> 个 <span class="arithmatex">\(P_i\oplus C_i\)</span>；</li>
+<li>若都等于 <span class="arithmatex">\(1\)</span>，输出 <span class="arithmatex">\(\mathrm{EG}_2\)</span>；</li>
+<li>否则输出 RP。</li>
+</ol>
+<p>设黑盒等可能为 <span class="arithmatex">\(\mathrm{EG}_2\)</span> 和 RP。黑盒为 <span class="arithmatex">\(\mathrm{EG}_2\)</span> 时一定判断正确；为 RP 时，只有 <span class="arithmatex">\(x\)</span> 个值都恰好为 <span class="arithmatex">\(1\)</span> 才会判错。故</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Pr(\text{成功})&amp;=\frac12\Pr(\text{输出 }\mathrm{EG}_2\mid\mathrm{EG}_2)+\frac12\Pr(\text{输出 RP}\mid\text{RP})\\
+&amp;=\frac12\cdot1+\frac12\left(1-\left(\frac1{2^n}\right)^x\right)=1-\frac1{2^{nx+1}}.
+\end{aligned}
+\]</div>
+<p>可见 <span class="arithmatex">\(x=1\)</span> 就能以不可忽略的概率区分成功。</p>
+</details>
+<p>当然这只是个极端的例子，真正分析时很难找到概率为 <span class="arithmatex">\(1\)</span> 的不随机特征。</p>
+<h3 id="s3-2">3.2 分割</h3>
+<p>所谓分割，有两层含义：</p>
+<ol>
+<li><strong>对算法的分割</strong>：寻找区分器时往往自下而上，把算法的部件分开考虑，细化到 S 盒、置换 <span class="arithmatex">\(P\)</span>，甚至比特，从中发现不随机现象。</li>
+<li><strong>对搜索空间的分割</strong>：强力攻击要验证的是与全部密钥比特有关的明密文关系。借助区分器，可以得到只与部分密钥有关的、可验证的关系，于是先恢复这部分密钥，再恢复其余密钥。这种“两步走”的复杂度是<strong>相加</strong>而不是相乘的关系，从而降低了总复杂度。</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.2</span><span class="book-name">分割</span></p>
+<p>分组密码 <span class="arithmatex">\(\mathrm{EG}_3\)</span> 为 <span class="arithmatex">\(C=F_{K_2}(F_{K_1}(F_{K_0}(P)))\)</span>，<span class="arithmatex">\(K_0,K_1,K_2\)</span> 相互独立，均为 <span class="arithmatex">\(n\)</span> 比特。若发现两轮后的中间结果 <span class="arithmatex">\(X\)</span> 满足 <span class="arithmatex">\(P\oplus X=1\)</span> 的概率为 <span class="arithmatex">\(1\)</span>，能否找到比穷举更有效的密钥恢复攻击？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>设得到一个明密文对 <span class="arithmatex">\((P,C)\)</span>。直接穷举需遍历 <span class="arithmatex">\(3n\)</span> 比特密钥，即 <span class="arithmatex">\(2^{3n}\)</span> 种情况。</p>
+<p>利用 <span class="arithmatex">\(P\oplus X=1\)</span>，可得 <span class="arithmatex">\(X=P\oplus1\)</span>，即恢复了中间结果。于是得到只与 <span class="arithmatex">\(K_2\)</span> 有关的方程</p>
+<div class="arithmatex">\[
+C=F_{K_2}(X).
+\]</div>
+<p>只需猜测 <span class="arithmatex">\(K_2\)</span> 的 <span class="arithmatex">\(2^n\)</span> 种可能，满足的为候选。候选多于 <span class="arithmatex">\(1\)</span> 个时，再用其他明密文对筛选。之后对 <span class="arithmatex">\(K_0,K_1\)</span>，利用 <span class="arithmatex">\(X=F_{K_1}(F_{K_0}(P))\)</span>，再用中间相遇或穷举恢复。由于分割了密钥搜索空间，复杂度远小于 <span class="arithmatex">\(2^{3n}\)</span>。</p>
+</details>
+<p>一般地，对 <span class="arithmatex">\(r\)</span> 轮算法的密钥恢复攻击分两步：</p>
+<ol>
+<li><strong>找一个 <span class="arithmatex">\(d\)</span> 轮区分器。</strong> 注意到区分器对应的不随机现象（如线性关系或差分）与每轮中间值无关，只与区分器的头尾 <span class="arithmatex">\((X,Y)\)</span> 有关，所以区分器可以看作一个函数 <span class="arithmatex">\(D(X,Y)\)</span>，它在真实算法与随机置换下的取值分布可区分。</li>
+<li><strong>利用区分器分割密钥空间。</strong> 只需考虑从明文 <span class="arithmatex">\(P\)</span> 加密到区分器头部 <span class="arithmatex">\(X\)</span> 涉及的密钥 <span class="arithmatex">\(K_0,\cdots,K_i\)</span> 中的部分比特，以及从密文 <span class="arithmatex">\(C\)</span> 解密到尾部 <span class="arithmatex">\(Y\)</span> 涉及的 <span class="arithmatex">\(K_{i+d+1},\cdots,K_r\)</span> 中的部分比特。</li>
+</ol>
+<div class="arithmatex">\[
+P\xrightarrow{K_0,\cdots,K_i}\underbrace{X\xrightarrow{d\text{ 轮区分器}}Y}_{D(X,Y)}\xleftarrow{K_{i+d+1},\cdots,K_r}C
+\]</div>
+<p>可见攻击的复杂度与成功率取决于函数 <span class="arithmatex">\(D(X,Y)\)</span>、求解 <span class="arithmatex">\((X,Y)\)</span> 的方式和涉及的密钥量。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>构造区分器时，一般要求不随机现象对随机选取的任意密钥都成立，即对整个密钥空间成立。但也可以只考虑满足某些特定条件的密钥，例如相关密钥或弱密钥下的区分器。</p>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.3</span></p>
+<p>把 AES 的轮函数去掉列混合 (MC)，其余不变，记为 Test 算法。试对 Test 进行选择明文攻击，使得能解密任何密文对应的明文（可以不恢复密钥），并给出复杂度。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>去掉 MC 后，每轮只剩字节代换 SB、行移位 SR 和轮密钥加 AK。SB 与 AK 逐字节作用，SR 只是重排字节位置，所以<strong>每个密文字节只依赖于一个明文字节</strong>，且这种对应关系由 SR 的复合决定，与密钥无关。于是整个算法分割成 16 个相互独立的 8 比特置换 <span class="arithmatex">\(c_{\pi(j)}=T_j(p_j)\)</span>。</p>
+<p>选 <span class="arithmatex">\(2^8\)</span> 个明文 <span class="arithmatex">\(P_v=(v,v,\cdots,v)\)</span>，<span class="arithmatex">\(v=0,\cdots,255\)</span>，获得密文，就同时得到 16 个置换 <span class="arithmatex">\(T_j\)</span> 的完整表。解密时逐字节查逆表即可。</p>
+<ul>
+<li>数据：<span class="arithmatex">\(2^8\)</span> 个选择明文；</li>
+<li>时间：<span class="arithmatex">\(2^8\)</span> 次加密；</li>
+<li>存储：<span class="arithmatex">\(16\times256\)</span> 字节 <span class="arithmatex">\(=2^{15}\)</span> 比特。</li>
+</ul>
+<p>教材的提示是 <span class="arithmatex">\(2^{32}\)</span> 个选择明文、<span class="arithmatex">\(2^{32}\)</span> 次加密、<span class="arithmatex">\(2^{39}\)</span> 比特存储，那是按 4 个字节一组分割的做法；如上逐字节分割更省，任何低于穷举的方法都可以。</p>
+</details>
+<p>现代密码分析的主要技术就是按区分器构造方式的不同来分类的：</p>
+<ul>
+<li><strong>差分分析</strong>利用高概率差分路线构造区分器；<strong>飞去来器</strong>与<strong>矩形攻击</strong>同时利用两条高概率路线；<strong>截断差分</strong>把特定差分值放宽为满足某些条件的差分集合；<strong>不可能差分</strong>反其道而行之，利用概率为 <span class="arithmatex">\(0\)</span> 的路线。见<a href="../chapter-03-differential-cryptanalysis/">第三章</a>。</li>
+<li><strong>线性分析</strong>利用高偏差的线性逼近式，此后又有基于零偏差线性逼近的<strong>零相关线性分析</strong>。见<a href="../chapter-04-linear-cryptanalysis/">第四章</a>。</li>
+<li>此外还有<strong>积分攻击</strong>（<a href="../chapter-05-integral-cryptanalysis/">第五章</a>）、<strong>中间相遇攻击</strong>（<a href="../chapter-06-meet-in-the-middle/">第六章</a>）等。</li>
+</ul>
+<p>不同攻击的侧重点不同，对同一个算法的效果也不同。所以衡量一个算法的安全性，需要考虑各种攻击的影响。特别是新算法发布时，设计者必须给出用现有各种攻击分析得到的详细数据，作为安全性的重要指标。</p>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 1 章。</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02-enigma/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：恩尼格玛密码机的破解</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 1 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-02-enigma/">第二章：恩尼格玛密码机的破解</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

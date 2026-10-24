@@ -1,0 +1,1223 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="用滑动驼峰和 Baire 纲定理理解一致有界原理，证明开映射、逆映射、闭图像定理，并联系方程的稳定性。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-10/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第十章：完备性与 Banach 空间的基本定理 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-10/">
+  <meta property="og:title" content="第十章：完备性与 Banach 空间的基本定理 - zdd14990">
+  <meta property="og:description" content="用滑动驼峰和 Baire 纲定理理解一致有界原理，证明开映射、逆映射、闭图像定理，并联系方程的稳定性。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="banach-space">
+
+  <meta property="article:tag" content="completeness">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-10/">
+  <meta name="twitter:title" content="第十章：完备性与 Banach 空间的基本定理 - zdd14990">
+  <meta name="twitter:description" content="用滑动驼峰和 Baire 纲定理理解一致有界原理，证明开映射、逆映射、闭图像定理，并联系方程的稳定性。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u5341\u7ae0\uff1a\u5b8c\u5907\u6027\u4e0e Banach \u7a7a\u95f4\u7684\u57fa\u672c\u5b9a\u7406",
+    "description": "\u7528\u6ed1\u52a8\u9a7c\u5cf0\u548c Baire \u7eb2\u5b9a\u7406\u7406\u89e3\u4e00\u81f4\u6709\u754c\u539f\u7406\uff0c\u8bc1\u660e\u5f00\u6620\u5c04\u3001\u9006\u6620\u5c04\u3001\u95ed\u56fe\u50cf\u5b9a\u7406\uff0c\u5e76\u8054\u7cfb\u65b9\u7a0b\u7684\u7a33\u5b9a\u6027\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-10/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-10/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "banach-space", "completeness", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-10" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 完备性到底替我们做了什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 一致有界原理：把逐点估计升级为统一估计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 一致有界原理：把逐点估计升级为统一估计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 滑动驼峰证明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Baire 纲定理证明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 怎样正确使用它
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 开映射定理：可解性怎样产生稳定估计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 开映射定理：可解性怎样产生稳定估计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 与商空间、闭值域的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 闭图像定理：把极限相容性变成连续性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 条件少一个会怎样
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 完备性定理的精确条件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 完备性定理的精确条件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-10-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        完备性使逐点有界变成统一界
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-10-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从近似原像取得真正原像
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 11 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">10</div>
+    <h1 id="chapter-10"><span class="book-visually-hidden">第 10 章：</span>完备性与 Banach 空间的基本定理</h1>
+  </div>
+  <p class="book-standfirst">第二章的有界扩张定理用到<strong>值域完备</strong>：输入的逼近序列产生一个输出的 Cauchy 序列，必须保证输出极限仍在值域。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>2,530 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>完备性到底替我们做了什么</h2>
+<p>本章主要使用<strong>定义域完备</strong>。我们会将无穷多个局部信息拼成一个向量，或者从可数个闭集合中找出有内点的一个。缺少完备性，拼出的向量可能落在空间外，整个结论就失效。</p>
+<p>要解决的三个问题可以写得很具体：</p>
+<ol>
+<li>每个输入上，一族连续算子的输出都有界，能否统一控制算子范数？</li>
+<li>连续线性方程对每个右端都有解，解能否按照右端大小受到控制？</li>
+<li>只知道“输入和输出同时收敛时极限仍满足方程”，能否推出算子连续？</li>
+</ol>
+<p>它们依次对应一致有界原理、开映射定理、闭图像定理。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>一致有界原理：把逐点估计升级为统一估计</h2>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">一致有界原理（Banach–Steinhaus）</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 是 Banach 空间，<span class="arithmatex">\(Y\)</span> 是赋范空间，<span class="arithmatex">\(\mathcal T\subset\mathcal B(X,Y)\)</span>。若</p>
+<div class="arithmatex">\[
+\forall x\in X,\qquad \sup_{T\in\mathcal T}\|Tx\|&lt;\infty,
+\]</div>
+<p>则 <span class="arithmatex">\(\sup_{T\in\mathcal T}\|T\|&lt;\infty\)</span>。</p>
+</div>
+<p>注意：逐点界可以依赖 <span class="arithmatex">\(x\)</span>，定理给出与 <span class="arithmatex">\(T\)</span>、<span class="arithmatex">\(x\)</span> 都无关的常数 <span class="arithmatex">\(C\)</span>，使 <span class="arithmatex">\(\|Tx\|\le C\|x\|\)</span>。这里不要求 <span class="arithmatex">\(Y\)</span> 完备。</p>
+<h3 id="section-2-1">2.1 滑动驼峰证明</h3>
+<p>“驼峰”的含义是给一个向量不断添上很小的修正，使某个算子在新增修正上产生很大输出；再让后续修正足够小，不破坏已经造出的峰。</p>
+<details class="proof">
+<summary>直接构造一个导致矛盾的输入</summary>
+<p>反设算子范数没有统一上界。令 <span class="arithmatex">\(r_1=1\)</span>。在第 <span class="arithmatex">\(n\)</span> 步，由范数无界可选 <span class="arithmatex">\(T_n\in\mathcal T\)</span> 和 <span class="arithmatex">\(v_n\)</span>，使</p>
+<div class="arithmatex">\[
+\|v_n\|\le r_n,\qquad \|T_nv_n\|&gt;4n.
+\]</div>
+<p>设此前部分和为 <span class="arithmatex">\(s_{n-1}\)</span>。<span class="arithmatex">\(T_n(s_{n-1}+v_n)\)</span> 与 <span class="arithmatex">\(T_n(s_{n-1}-v_n)\)</span> 中至少一个的范数不小于 <span class="arithmatex">\(\|T_nv_n\|\)</span>，否则二者之差的范数会小于 <span class="arithmatex">\(2\|T_nv_n\|\)</span>。改变 <span class="arithmatex">\(v_n\)</span> 的符号，便可保证 <span class="arithmatex">\(\|T_ns_n\|&gt;4n\)</span>。</p>
+<p>再取</p>
+<div class="arithmatex">\[
+0&lt;r_{n+1}\le\min\left\{\frac{r_n}{2},\frac{n}{4\|T_n\|}\right\}.
+\]</div>
+<p>因 <span class="arithmatex">\(\sum_n\|v_n\|&lt;\infty\)</span> 且 <span class="arithmatex">\(X\)</span> 完备，<span class="arithmatex">\(x=\sum_nv_n\)</span> 属于 <span class="arithmatex">\(X\)</span>。后续尾项满足</p>
+<div class="arithmatex">\[
+\|x-s_n\|\le\sum_{j&gt;n}r_j\le2r_{n+1},
+\qquad\|T_n(x-s_n)\|\le n/2.
+\]</div>
+<p>所以 <span class="arithmatex">\(\|T_nx\|&gt;4n-n/2\to\infty\)</span>，与这个固定 <span class="arithmatex">\(x\)</span> 上的逐点有界性矛盾。</p>
+</details>
+<p>这个证明指出了完备性的具体位置：它让精心构造的级数和仍是一个合法输入。</p>
+<h3 id="section-2-2">2.2 Baire 纲定理证明</h3>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">Baire 纲定理</span></p>
+<p>在非空完备度量空间中，可数个稠密开集的交仍然稠密。等价地，若空间是可数个闭集合的并，至少一个闭集合有非空内点。</p>
+</div>
+<details class="proof">
+<summary>嵌套小球</summary>
+<p>设 <span class="arithmatex">\(G_n\)</span> 稠密且开，从任意非空开集 <span class="arithmatex">\(U\)</span> 出发。依次选取非空闭球 <span class="arithmatex">\(\overline B(x_n,r_n)\)</span>，使第一只球包含于 <span class="arithmatex">\(U\cap G_1\)</span>，后续球包含于前一只球的内部与 <span class="arithmatex">\(G_n\)</span> 的交，并使 <span class="arithmatex">\(r_n\le2^{-n}\)</span>。稠密性保证交非空，开性保证可放入一个足够小的闭球。</p>
+<p>球嵌套且半径趋零，故 <span class="arithmatex">\((x_n)\)</span> 是 Cauchy 序列。完备性给出极限 <span class="arithmatex">\(x\)</span>，闭球性质给出 <span class="arithmatex">\(x\)</span> 属于每只球，因而 <span class="arithmatex">\(x\in U\cap\bigcap_nG_n\)</span>。这就证明了稠密性。</p>
+</details>
+<details class="proof">
+<summary>由 Baire 推出一致有界原理</summary>
+<p>定义闭集合</p>
+<div class="arithmatex">\[
+E_m=\{x\in X:\sup_{T\in\mathcal T}\|Tx\|\le m\}.
+\]</div>
+<p>它闭，是因为它是全部闭集合 <span class="arithmatex">\(\{x:\|Tx\|\le m\}\)</span> 的交。逐点有界保证 <span class="arithmatex">\(X=\bigcup_{m\ge1}E_m\)</span>。Baire 定理给出 <span class="arithmatex">\(B(x_0,r)\subset E_m\)</span>。</p>
+<p>若 <span class="arithmatex">\(\|h\|\le r/2\)</span>，则 <span class="arithmatex">\(x_0\)</span> 和 <span class="arithmatex">\(x_0+h\)</span> 都在 <span class="arithmatex">\(E_m\)</span> 中，所以 <span class="arithmatex">\(\|Th\|\le2m\)</span>，对所有 <span class="arithmatex">\(T\)</span> 成立。缩放得到 <span class="arithmatex">\(\|T\|\le4m/r\)</span>。</p>
+</details>
+<p>两种证明各有作用：滑动驼峰适合追踪失败机制，Baire 证明揭示了一整组基本定理的共同来源。</p>
+<h3 id="section-2-3">2.3 怎样正确使用它</h3>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span><span class="book-name">逐点收敛的连续算子</span></p>
+<p>若 <span class="arithmatex">\(X,Y\)</span> 均为 Banach 空间，<span class="arithmatex">\(T_n\in\mathcal B(X,Y)\)</span>，且每个 <span class="arithmatex">\(x\)</span> 上 <span class="arithmatex">\(T_nx\)</span> 都收敛，则 <span class="arithmatex">\(Tx=\lim_nT_nx\)</span> 定义有界线性算子，且 <span class="arithmatex">\(\sup_n\|T_n\|&lt;\infty\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>每个收敛序列 <span class="arithmatex">\(T_nx\)</span> 有界，先用一致有界原理得统一算子范数界 <span class="arithmatex">\(C\)</span>。极限保留线性，且 <span class="arithmatex">\(\|Tx\|=\lim_n\|T_nx\|\le C\|x\|\)</span>。</p>
+<p>这里假设 <span class="arithmatex">\(Y\)</span> 完备方便保证逐点 Cauchy 序列有极限；若题目已明确给定 <span class="arithmatex">\(Y\)</span> 中的逐点极限，就无需另加 <span class="arithmatex">\(Y\)</span> 完备。</p>
+</details>
+<p>特别地，检验算子强收敛时常用“稠密子空间上收敛 + 统一范数界”。前者控制方便的输入，后者把控制扩张到全空间。</p>
+<div class="admonition note">
+<p class="admonition-title">弱收敛序列与弱-* 收敛序列</p>
+<p>任意赋范空间中的弱收敛序列 <span class="arithmatex">\((x_n)\)</span> 都范数有界：将 <span class="arithmatex">\(Jx_n\)</span> 看作 Banach 空间 <span class="arithmatex">\(X^*\)</span> 上的泛函，使用 <span class="arithmatex">\(\|Jx_n\|=\|x_n\|\)</span> 和一致有界原理。</p>
+<p><span class="arithmatex">\(X^*\)</span> 中弱-* 收敛序列 <span class="arithmatex">\((f_n)\)</span> 的范数有界，则需要前对偶 <span class="arithmatex">\(X\)</span> 完备，才能在 <span class="arithmatex">\(X\)</span> 上直接使用一致有界原理。一般赋范前对偶下结论会失败，见下面的 <span class="arithmatex">\(c_{00}\)</span> 例子。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span><span class="book-name">从全部测试函数推出可积性</span></p>
+<p>在 <span class="arithmatex">\(\sigma\)</span>-有限测度空间上，设有限值可测函数 <span class="arithmatex">\(f\)</span> 满足：对每个 <span class="arithmatex">\(u\in L^q\)</span>，都有 <span class="arithmatex">\(fu\in L^1\)</span>，其中 <span class="arithmatex">\(1&lt;q&lt;\infty\)</span>，<span class="arithmatex">\(1/p+1/q=1\)</span>。则 <span class="arithmatex">\(f\in L^p\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>取递增有限测度集合 <span class="arithmatex">\(F_n\)</span> 覆盖空间，令 <span class="arithmatex">\(E_n=F_n\cap\{|f|\le n\}\)</span>，定义 <span class="arithmatex">\(T_nu=f\mathbf1_{E_n}u\)</span>。Hölder 不等式与达到等号的测试函数给出</p>
+<div class="arithmatex">\[
+\|T_n\|_{L^q\to L^1}=\|f\mathbf1_{E_n}\|_p.
+\]</div>
+<p>对每个固定 <span class="arithmatex">\(u\)</span>，<span class="arithmatex">\(\|T_nu\|_1\le\|fu\|_1\)</span>。一致有界原理给出右侧算子范数的统一界，再由单调收敛得到 <span class="arithmatex">\(\int|f|^p&lt;\infty\)</span>。</p>
+</details>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>开映射定理：可解性怎样产生稳定估计</h2>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">开映射定理</span></p>
+<p>Banach 空间之间的有界线性满射 <span class="arithmatex">\(T:X\to Y\)</span> 是开映射。等价地，存在 <span class="arithmatex">\(C&gt;0\)</span>，使每个 <span class="arithmatex">\(y\in Y\)</span> 都有一个原像 <span class="arithmatex">\(x\)</span> 满足 <span class="arithmatex">\(\|x\|\le C\|y\|\)</span>。</p>
+</div>
+<p>第二种表述不说原像唯一，也不说能够选出一个有界线性的右逆；它给出的是解的范数控制。</p>
+<details class="proof">
+<summary>第一步：Baire 给出近似解</summary>
+<p>写 <span class="arithmatex">\(B_X=\{x:\|x\|\le1\}\)</span>。满射性给出 <span class="arithmatex">\(Y=\bigcup_{n\ge1}T(nB_X)\)</span>，因此也是其闭包的并。由 <span class="arithmatex">\(Y\)</span> 完备，某个 <span class="arithmatex">\(\overline{T(nB_X)}\)</span> 含球 <span class="arithmatex">\(B(y_0,r)\)</span>。</p>
+<p>对 <span class="arithmatex">\(\|y\|&lt;r\)</span>，<span class="arithmatex">\(y_0+y\)</span> 与 <span class="arithmatex">\(y_0\)</span> 都可由 <span class="arithmatex">\(T(nB_X)\)</span> 逼近，相减得 <span class="arithmatex">\(y\in\overline{T(2nB_X)}\)</span>。缩放后存在 <span class="arithmatex">\(\delta&gt;0\)</span>，使</p>
+<div class="arithmatex">\[
+B(0,\delta)\subset\overline{T(B_X)}.
+\]</div>
+<p>这一步只给近似解，不能直接删掉闭包符号。</p>
+</details>
+<details class="proof">
+<summary>第二步：把近似解加成精确解</summary>
+<p>对 <span class="arithmatex">\(\|y\|&lt;\delta/2\)</span>，利用缩放后的闭包包含关系，选 <span class="arithmatex">\(\|x_1\|\le1/2\)</span> 使 <span class="arithmatex">\(\|y-Tx_1\|&lt;\delta/4\)</span>。再选 <span class="arithmatex">\(\|x_2\|\le1/4\)</span> 使新残差小于 <span class="arithmatex">\(\delta/8\)</span>，依此类推。</p>
+<p>得到 <span class="arithmatex">\(\|x_j\|\le2^{-j}\)</span> 和残差趋零。由 <span class="arithmatex">\(X\)</span> 完备，<span class="arithmatex">\(x=\sum_jx_j\)</span> 属于 <span class="arithmatex">\(X\)</span>，<span class="arithmatex">\(\|x\|\le1\)</span>；由 <span class="arithmatex">\(T\)</span> 连续，<span class="arithmatex">\(Tx=y\)</span>。</p>
+<p>因此 <span class="arithmatex">\(B(0,\delta/2)\subset T(B_X)\)</span>。再缩小一半可令原像范数严格小于 <span class="arithmatex">\(1\)</span>，即 <span class="arithmatex">\(B(0,\delta/4)\subset T(B_X^\circ)\)</span>。平移和缩放即得开映射。按 <span class="arithmatex">\(\|y\|\)</span> 缩放也得到定理中的常数 <span class="arithmatex">\(C\)</span>。</p>
+</details>
+<p>此处 <span class="arithmatex">\(Y\)</span> 完备用于 Baire，<span class="arithmatex">\(X\)</span> 完备用于求和，两者各有任务。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.2</span><span class="book-name">有界逆定理</span></p>
+<p>Banach 空间之间的有界线性双射，其逆也是有界线性算子。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>开映射定理给出每个 <span class="arithmatex">\(y\)</span> 有范数受控的原像；双射性使原像恰为 <span class="arithmatex">\(T^{-1}y\)</span>，所以 <span class="arithmatex">\(\|T^{-1}y\|\le C\|y\|\)</span>。</p>
+</details>
+<h3 id="section-3-1">3.1 与商空间、闭值域的关系</h3>
+<p>对闭子空间 <span class="arithmatex">\(M\subset X\)</span>，商空间范数定义为</p>
+<div class="arithmatex">\[
+\|x+M\|_{X/M}=\inf_{m\in M}\|x-m\|.
+\]</div>
+<p>闭性保证范数为零恰好意味着 <span class="arithmatex">\(x\in M\)</span>。</p>
+<details class="proof">
+<summary>Banach 空间的闭子空间商仍完备</summary>
+<p>取商空间中的 Cauchy 序列，可抽子列使相邻商范数差小于 <span class="arithmatex">\(2^{-j}\)</span>。按商范数定义，给每个相邻差选一个 <span class="arithmatex">\(X\)</span> 中代表 <span class="arithmatex">\(v_j\)</span>，使 <span class="arithmatex">\(\|v_j\|&lt;2^{1-j}\)</span>。</p>
+<p>从子列第一项的一个代表出发，加上 <span class="arithmatex">\(\sum_jv_j\)</span>。级数在 <span class="arithmatex">\(X\)</span> 中收敛，其商类就是子列极限；原序列 Cauchy，所以也收敛到同一商类。</p>
+</details>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.3</span><span class="book-name">闭值域的稳定性刻画</span></p>
+<p>若 <span class="arithmatex">\(X,Y\)</span> 是 Banach 空间，<span class="arithmatex">\(T\in\mathcal B(X,Y)\)</span>，则 <span class="arithmatex">\(\operatorname{Ran}T\)</span> 闭当且仅当存在 <span class="arithmatex">\(C&gt;0\)</span> 使</p>
+<div class="arithmatex">\[
+\operatorname{dist}(x,\ker T)\le C\|Tx\|\qquad(x\in X).
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若值域闭，则 <span class="arithmatex">\(X/\ker T\)</span> 与 <span class="arithmatex">\(\operatorname{Ran}T\)</span> 都是 Banach 空间。诱导算子 <span class="arithmatex">\(\widetilde T(x+\ker T)=Tx\)</span> 是有界双射，用有界逆定理即得估计。</p>
+<p>反之，若 <span class="arithmatex">\(Tx_n\to y\)</span>，估计使商类 <span class="arithmatex">\(x_n+\ker T\)</span> 是 Cauchy 序列。商空间完备给出极限 <span class="arithmatex">\(x+\ker T\)</span>，由诱导算子连续得到 <span class="arithmatex">\(Tx=y\)</span>。因此值域闭。</p>
+</details>
+<p>这正是第八章 Fredholm 理论中“去掉核以后仍有稳定估计”的抽象形式。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>闭图像定理：把极限相容性变成连续性</h2>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">闭图像定理</span></p>
+<p>设 <span class="arithmatex">\(X,Y\)</span> 是 Banach 空间，线性算子 <span class="arithmatex">\(T:X\to Y\)</span> <strong>在整个 <span class="arithmatex">\(X\)</span> 上定义</strong>。若图像</p>
+<div class="arithmatex">\[
+G(T)=\{(x,Tx):x\in X\}
+\]</div>
+<p>在 <span class="arithmatex">\(X\times Y\)</span> 中闭，则 <span class="arithmatex">\(T\)</span> 有界。</p>
+</div>
+<p>闭图像条件等价于：<span class="arithmatex">\(x_n\to x\)</span> 且 <span class="arithmatex">\(Tx_n\to y\)</span> 时，有 <span class="arithmatex">\(y=Tx\)</span>。它没有预先保证 <span class="arithmatex">\(Tx_n\)</span> 一定收敛。</p>
+<details class="proof">
+<summary>证明</summary>
+<p>赋予乘积空间范数 <span class="arithmatex">\(\|(x,y)\|=\|x\|+\|y\|\)</span>。闭子空间 <span class="arithmatex">\(G(T)\)</span> 是 Banach 空间。投影</p>
+<div class="arithmatex">\[
+P:G(T)\to X,\qquad (x,Tx)\mapsto x
+\]</div>
+<p>是有界线性双射；定义域是整个 <span class="arithmatex">\(X\)</span>，保证这里满射。由有界逆定理，<span class="arithmatex">\(P^{-1}\)</span> 有界，故</p>
+<div class="arithmatex">\[
+\|x\|+\|Tx\|\le C\|x\|.
+\]</div>
+<p>所以 <span class="arithmatex">\(T\)</span> 有界。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">为什么第六章的无界闭算子不矛盾</p>
+<p>微分算子通常只在 <span class="arithmatex">\(D(T)\subsetneq X\)</span> 上定义。图像投影的像是 <span class="arithmatex">\(D(T)\)</span>，并非整个 Banach 空间 <span class="arithmatex">\(X\)</span>，因而不满足本定理的满射条件。</p>
+<p>给 <span class="arithmatex">\(D(T)\)</span> 加图范数 <span class="arithmatex">\(\|x\|_T=(\|x\|^2+\|Tx\|^2)^{1/2}\)</span> 后，它确实是 Banach 空间，且 <span class="arithmatex">\(T:(D(T),\|\cdot\|_T)\to Y\)</span> 有界。无界性说的是原来的 <span class="arithmatex">\(X\)</span> 范数不能控制 <span class="arithmatex">\(Tx\)</span>。</p>
+</div>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>条件少一个会怎样</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.1</span><span class="book-name">不完备定义域上的逐点有界族</span></p>
+<p>在有限支撑序列空间 <span class="arithmatex">\(c_{00}\)</span> 上用 <span class="arithmatex">\(\ell^2\)</span> 范数，定义 <span class="arithmatex">\(T_nx=nx_n\)</span>。每个 <span class="arithmatex">\(T_n\)</span> 连续，<span class="arithmatex">\(\|T_n\|=n\)</span>；对每个固定 <span class="arithmatex">\(x\in c_{00}\)</span>，<span class="arithmatex">\(T_nx\)</span> 最终为零，所以逐点有界，甚至逐点趋零。</p>
+<p>但 <span class="arithmatex">\(c_{00}\)</span> 不完备，无法使用一致有界原理。这也给出其对偶中一个弱-* 收敛到零、范数却无界的序列。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.2</span><span class="book-name">单射不等于稳定可逆</span></p>
+<p>令 <span class="arithmatex">\(T:\ell^2\to\ell^2\)</span>，<span class="arithmatex">\(Te_n=n^{-1}e_n\)</span>。它有界、单射且像稠密，但不是满射。例如 <span class="arithmatex">\(y=(1/n)\)</span> 属于 <span class="arithmatex">\(\ell^2\)</span>，其形式原像 <span class="arithmatex">\((1,1,\ldots)\)</span> 不属于 <span class="arithmatex">\(\ell^2\)</span>。</p>
+<p>值域上的逆满足 <span class="arithmatex">\(T^{-1}(n^{-1}e_n)=e_n\)</span>，所以不连续。输入噪声只有 <span class="arithmatex">\(1/n\)</span>，恢复出的解变化却为 <span class="arithmatex">\(1\)</span>。这是不适定反问题中误差放大的一个完整模型。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.3</span><span class="book-name">闭算子不意味着能对所有输入求导</span></p>
+<p><span class="arithmatex">\(D=-i\,d/dx\)</span> 的周期自伴实现定义在 <span class="arithmatex">\(H^1\)</span> 中满足周期边界条件的函数上。它在 <span class="arithmatex">\(L^2\)</span> 中闭，但 <span class="arithmatex">\(L^2\)</span> 的一般函数没有 <span class="arithmatex">\(L^2\)</span> 弱导数，不能把定义域改成整个 <span class="arithmatex">\(L^2\)</span> 后继续使用原表达式。</p>
+</div>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>完备性定理的精确条件</h2>
+<p>以下 <span class="arithmatex">\(V,W\)</span> 为赋范空间。除特别说明外，算子均处处定义。对“开映射”须区分映到整个值域与映到实际像空间的相对拓扑。</p>
+<h3 id="topic-10-2-1">完备性使逐点有界变成统一界</h3>
+<p>单个向量上的有界性还没有给出共同算子范数。滑动驼峰将越来越坏的方向合成一个向量，Baire 则从可数闭集覆盖中取得有内部的集合；完备性是两条证明的共同前提。</p>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">一致有界原理</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 完备，算子族 <span class="arithmatex">\(T_\alpha\in\mathcal L(V,W)\)</span> 的范数无统一上界，则存在单个 <span class="arithmatex">\(v\in V\)</span>，使 <span class="arithmatex">\(\sup_\alpha\|T_\alpha v\|=\infty\)</span>。等价地，逐点有界蕴含算子范数一致有界；不要求 <span class="arithmatex">\(W\)</span> 完备。</p>
+</div>
+<details class="proof">
+<summary>证明 10.2.1</summary>
+<p>假设算子范数无界。递归选修正 <span class="arithmatex">\(v_n\)</span> 和算子 <span class="arithmatex">\(T_n\)</span>，使 <span class="arithmatex">\(\|v_n\|\leq r_n\)</span>、<span class="arithmatex">\(\|T_nv_n\|&gt;4n\)</span>。对此前部分和 <span class="arithmatex">\(s_{n-1}\)</span>，<span class="arithmatex">\(T_n(s_{n-1}+v_n)\)</span> 与 <span class="arithmatex">\(T_n(s_{n-1}-v_n)\)</span> 中至少一个范数不小于 <span class="arithmatex">\(\|T_nv_n\|\)</span>；选择符号后令 <span class="arithmatex">\(s_n=s_{n-1}+v_n\)</span>，便有 <span class="arithmatex">\(\|T_ns_n\|&gt;4n\)</span>。</p>
+<p>随后选 <span class="arithmatex">\(r_{n+1}\leq\min(r_n/2,n/(4\|T_n\|))\)</span>。几何衰减使 <span class="arithmatex">\(\sum\|v_n\|&lt;\infty\)</span>，完备性让 <span class="arithmatex">\(v=\sum_nv_n\)</span> 留在 <span class="arithmatex">\(V\)</span>。又有 <span class="arithmatex">\(\|T_n(v-s_n)\|\leq\|T_n\|\sum_{j&gt;n}r_j\leq n/2\)</span>，所以 <span class="arithmatex">\(\|T_nv\|&gt;7n/2\)</span>，产生所需固定输入。</p>
+<p>等价表述也可由 Baire 证明：逐点有界时，闭集 <span class="arithmatex">\(E_m=\{v:\sup_\alpha\|T_\alpha v\|\leq m\}\)</span> 覆盖 <span class="arithmatex">\(V\)</span>。某个 <span class="arithmatex">\(E_m\)</span> 含球 <span class="arithmatex">\(B(v_0,r)\)</span>；相减并缩放，得到全部 <span class="arithmatex">\(\|T_\alpha\|\leq4m/r\)</span>。两种证明都只要求定义域完备。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.2</span><span class="book-name">SOT 收敛序列有界</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 完备，<span class="arithmatex">\(T_n:V\to W\)</span> 对每个向量的像在范数下收敛，则 <span class="arithmatex">\(\sup_n\|T_n\|&lt;\infty\)</span>。一般网不能仅凭收敛就断言整个指标族一致有界。</p>
+</div>
+<details class="proof">
+<summary>证明 10.2.4</summary>
+<p>对固定 <span class="arithmatex">\(v\)</span>，收敛序列 <span class="arithmatex">\((T_nv)\)</span> 有界。因此对算子族 <span class="arithmatex">\((T_n)\)</span> 应用一致有界原理，得到 <span class="arithmatex">\(\sup_n\|T_n\|&lt;\infty\)</span>。一个收敛网的早期指标集合可能无限且无界，不能把序列的“有限头部加有界尾部”论证原样套到任意网。</p>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.3</span><span class="book-name">Hilbert 空间的闭图像定理</span></p>
+<p>Hilbert 空间间处处定义的闭线性算子有界。</p>
+</div>
+<details class="proof">
+<summary>证明 10.2.7</summary>
+<p>用极分解 <span class="arithmatex">\(T=U|T|\)</span>，有 <span class="arithmatex">\(D(|T|)=D(T)=H\)</span>、<span class="arithmatex">\(\|T\xi\|=\||T|\xi\|\)</span>。只须证明处处定义的正自伴 <span class="arithmatex">\(|T|\)</span> 有界。</p>
+<p>若其谱不有界，可递归选互不交的有界谱区间 <span class="arithmatex">\(I_k\subset[2^k,\infty)\)</span>，使 <span class="arithmatex">\(E(I_k)\ne0\)</span>。在各谱子空间内取单位向量 <span class="arithmatex">\(e_k\)</span>，令 <span class="arithmatex">\(\xi=\sum_k2^{-k}e_k\)</span>。正交性使此和在 <span class="arithmatex">\(H\)</span> 中收敛，但谱域判据给出</p>
+<div class="arithmatex">\[
+\int\lambda^2\,d\mu_\xi(\lambda)
+=\sum_k2^{-2k}\int_{I_k}\lambda^2\,d\mu_{e_k}(\lambda)
+\geq\sum_k1=\infty.
+\]</div>
+<p>因此 <span class="arithmatex">\(\xi\notin D(|T|)\)</span>，与处处定义矛盾。谱遂包含于某个 <span class="arithmatex">\([0,R]\)</span>，谱演算给出 <span class="arithmatex">\(\||T|\|\leq R\)</span>，从而 <span class="arithmatex">\(T\)</span> 有界。这条证明直接看见了无界谱如何产生不属于算子域的输入。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.4</span><span class="book-name">Hellinger–Toeplitz 结论</span></p>
+<p>Hilbert 空间上处处定义的线性 <span class="arithmatex">\(T\)</span> 若满足 <span class="arithmatex">\(\langle\xi,T\eta\rangle=\langle T\xi,\eta\rangle\)</span>，则 <span class="arithmatex">\(T\)</span> 有界，因而是有界自伴算子。</p>
+</div>
+<details class="proof">
+<summary>证明 10.2.8</summary>
+<p>对称稠密定义算子可闭。这里它处处定义，所以闭包的定义域只能仍为 <span class="arithmatex">\(H\)</span>；任何扩张与它在每个向量上的作用相同，故闭包就是 <span class="arithmatex">\(T\)</span> 本身。定理 10.2.7 使 <span class="arithmatex">\(T\)</span> 有界，原对称关系此时等价于 <span class="arithmatex">\(T=T^*\)</span>。</p>
+</details>
+<h3 id="topic-10-3-1">从近似原像取得真正原像</h3>
+<p>满射首先给出可数个像球的覆盖，Baire 使某个像球闭包含邻域。随后以几何递减误差逐步修正，原空间完备性让原像级数收敛，才得到开映射所需的精确包含。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.5</span><span class="book-name">映到像空间的开性</span></p>
+<p>有界 <span class="arithmatex">\(T:V\to W\)</span> 的以下条件等价：<span class="arithmatex">\(T:V\to\operatorname{ran}T\)</span> 为开映射；单位球的像在像空间中包含零的邻域；存在 <span class="arithmatex">\(\delta&gt;0\)</span> 使 <span class="arithmatex">\(\|Tv\|\geq\delta\operatorname{dist}(v,\ker T)\)</span> 对全部 <span class="arithmatex">\(v\)</span> 成立。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.1</summary>
+<p>线性映射开当且仅当某个零邻域的像包含像空间的零邻域，平移和缩放把局部条件推广到全部开集。</p>
+<p>若 <span class="arithmatex">\(B_{\operatorname{ran}T}(0,\delta)\subset T(B_V(0,1))\)</span>，对任意 <span class="arithmatex">\(v\)</span>，缩放 <span class="arithmatex">\(Tv\)</span> 可得范数任意接近 <span class="arithmatex">\(\|Tv\|/\delta\)</span> 的原像。原像间相差 <span class="arithmatex">\(\ker T\)</span>，所以 <span class="arithmatex">\(\operatorname{dist}(v,\ker T)\leq\|Tv\|/\delta\)</span>。</p>
+<p>反过来，假设此下界成立。若 <span class="arithmatex">\(\|y\|&lt;\delta r\)</span>，取任意原像 <span class="arithmatex">\(v\)</span>；其到核距离小于 <span class="arithmatex">\(r\)</span>，故可减去某个核向量，得到范数小于 <span class="arithmatex">\(r\)</span> 的同一原像。因此 <span class="arithmatex">\(B(0,\delta r)\cap\operatorname{ran}T\subset T(B_V(0,r))\)</span>，得到开性。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.6</span><span class="book-name">开像的完备性</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 完备，<span class="arithmatex">\(T\)</span> 映到自身像时为开映射，则 <span class="arithmatex">\(\operatorname{ran}T\)</span> 完备，特别在 <span class="arithmatex">\(W\)</span> 中闭，即使 <span class="arithmatex">\(W\)</span> 本身不完备。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.2</summary>
+<p>核闭，<span class="arithmatex">\(V/\ker T\)</span> 在商范数下完备。下界与有界性共同说明诱导映射 <span class="arithmatex">\(\widetilde T:V/\ker T\to\operatorname{ran}T\)</span> 及其逆有界，所以像空间与一个完备空间等价范数同构，因而完备。</p>
+<p>若像中一个序列在 <span class="arithmatex">\(W\)</span> 中收敛，它必为 Cauchy 序列；像空间完备给出像内极限，而 <span class="arithmatex">\(W\)</span> 中极限唯一，二者相同，所以像闭。证明不要求整个 <span class="arithmatex">\(W\)</span> 完备。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.7</span><span class="book-name">商映射与商空间完备性</span></p>
+<p>闭子空间 <span class="arithmatex">\(U\)</span> 的商映射 <span class="arithmatex">\(\pi_U:V\to V/U\)</span> 开；若 <span class="arithmatex">\(V\)</span> 完备，则商空间在商范数下完备。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.3</summary>
+<p>商范数的定义给出 <span class="arithmatex">\(\pi(B_V(0,r))=B_{V/U}(0,r)\)</span>：商范数小于 <span class="arithmatex">\(r\)</span> 就有范数小于 <span class="arithmatex">\(r\)</span> 的代表元。因此商映射开。</p>
+<p>对商空间的 Cauchy 序列，抽子列使相邻商距离小于 <span class="arithmatex">\(2^{-n}\)</span>，再递归选择代表元 <span class="arithmatex">\(v_n\)</span>，使 <span class="arithmatex">\(\|v_{n+1}-v_n\|&lt;2^{1-n}\)</span>。完备性让这些代表元收敛于 <span class="arithmatex">\(v\)</span>，投影后子列趋于 <span class="arithmatex">\(v+U\)</span>；原序列 Cauchy，所以整个序列同趋此值。闭性保证商半范数确为范数。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.8</span><span class="book-name">有限维满射为开映射</span></p>
+<p>有界满射 <span class="arithmatex">\(T:V\to W\)</span> 若 <span class="arithmatex">\(W\)</span> 有限维，则开，不要求 <span class="arithmatex">\(V\)</span> 完备。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.4</summary>
+<p>取 <span class="arithmatex">\(W\)</span> 的基 <span class="arithmatex">\(e_1,\ldots,e_n\)</span>，为它们选原像 <span class="arithmatex">\(v_1,\ldots,v_n\)</span>，定义 <span class="arithmatex">\(S(\sum a_je_j)=\sum a_jv_j\)</span>。有限维坐标泛函连续，所以 <span class="arithmatex">\(S\)</span> 有界，且 <span class="arithmatex">\(TS=I\)</span>。于是每个小右端 <span class="arithmatex">\(y\)</span> 都有范数不超过 <span class="arithmatex">\(\|S\|\|y\|\)</span> 的原像，单位球像包含零邻域，得到开性。此构造未使用 <span class="arithmatex">\(V\)</span> 完备。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.9</span><span class="book-name">开映射定理</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 和 <span class="arithmatex">\(\operatorname{ran}T\)</span> 都完备，则有界 <span class="arithmatex">\(T:V\to W\)</span> 映到自身像时为开映射。特别，Banach 空间间的有界满射为开映射。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.5</summary>
+<p>把值域换为完备的实际像 <span class="arithmatex">\(Y=\operatorname{ran}T\)</span>。满射使 <span class="arithmatex">\(Y=\bigcup_{n\geq1}\overline{T(nB_V)}\)</span>。Baire 给出其中某个闭集含开球；相减并缩放得 <span class="arithmatex">\(B_Y(0,\delta)\subset\overline{T(B_V)}\)</span>。</p>
+<p>这只有近似解，下一步要去掉闭包。对 <span class="arithmatex">\(\|y\|&lt;\delta/2\)</span>，逐次选 <span class="arithmatex">\(\|v_j\|\leq2^{-j}\)</span>，使减去前 <span class="arithmatex">\(j\)</span> 个像后的残差小于 <span class="arithmatex">\(\delta2^{-j-1}\)</span>。每一步由缩放后的近似像球完成。定义域完备使 <span class="arithmatex">\(v=\sum_jv_j\)</span> 存在且 <span class="arithmatex">\(\|v\|\leq1\)</span>；连续性及残差趋零给出 <span class="arithmatex">\(Tv=y\)</span>。再缩小目标球即可把原像放入开单位球，故 <span class="arithmatex">\(T\)</span> 开。两种完备性分别用于 Baire 和级数求和。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.10</span><span class="book-name">有界逆定理</span></p>
+<p>Banach 空间间的有界线性双射有有界逆。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.6</summary>
+<p>开映射定理使双射 <span class="arithmatex">\(T\)</span> 将零邻域映为零邻域，这就是 <span class="arithmatex">\(T^{-1}\)</span> 在零点连续。线性映射在零点连续等价于有界，所以逆有界。也可由原像估计 <span class="arithmatex">\(\|v\|\leq C\|Tv\|\)</span> 直接取得逆范数界。</p>
+</details>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.11</span><span class="book-name">赋范直和与图像</span></p>
+<p><span class="arithmatex">\(V\oplus W\)</span> 取范数 <span class="arithmatex">\(\|(v,w)\|=(\|v\|^2+\|w\|^2)^{1/2}\)</span>；处处定义线性 <span class="arithmatex">\(T\)</span> 的图像为 <span class="arithmatex">\(G(T)=\{(v,Tv):v\in V\}\)</span>，是直和中的线性子空间。</p>
+</div>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.12</span><span class="book-name">Banach 空间的闭图像定理</span></p>
+<p>若 <span class="arithmatex">\(V,W\)</span> 完备且处处定义的线性 <span class="arithmatex">\(T:V\to W\)</span> 图像闭，则 <span class="arithmatex">\(T\)</span> 有界。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.8</summary>
+<p>直和 <span class="arithmatex">\(V\oplus W\)</span> 完备；闭图像 <span class="arithmatex">\(G(T)\)</span> 因此是 Banach 空间。第一坐标投影 <span class="arithmatex">\(P:G(T)\to V\)</span> 有界且双射，有界逆定理给出 <span class="arithmatex">\(\|P^{-1}v\|\leq C\|v\|\)</span>。其逆正是 <span class="arithmatex">\(v\mapsto(v,Tv)\)</span>，所以 <span class="arithmatex">\(\|Tv\|\leq C\|v\|\)</span>，得到 <span class="arithmatex">\(T\)</span> 有界。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.13</span><span class="book-name">Baire 纲定理</span></p>
+<p>非空完备度量空间不能被可数个闭且无内部的集合覆盖；这些集合的并也无内部。等价地，可数个稠密开集的交稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.10</summary>
+<p>设 <span class="arithmatex">\(G_n\)</span> 为稠密开集，要证明其交碰到任意非空开集 <span class="arithmatex">\(U\)</span>。在 <span class="arithmatex">\(U\cap G_1\)</span> 内选闭球 <span class="arithmatex">\(\overline B(x_1,r_1)\)</span>；递归在上一球内部与 <span class="arithmatex">\(G_{n+1}\)</span> 的交中选下一闭球，半径小于 <span class="arithmatex">\(2^{-n}\)</span>。稠密性保证交非空，开性保证能放入小球。</p>
+<p>中心序列 Cauchy，完备性给出极限 <span class="arithmatex">\(x\)</span>。每个闭球包含所有充分晚的中心，故也包含 <span class="arithmatex">\(x\)</span>；于是 <span class="arithmatex">\(x\in U\cap\bigcap_nG_n\)</span>。因此交稠密。取补集得到闭无内部集可数并无内部的等价表述。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.14</span><span class="book-name">有限个闭无内部集</span></p>
+<p>任意拓扑空间中，两个闭且无内部的集合之并仍无内部；归纳得到有限并的同一结论。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.11</summary>
+<p>若 <span class="arithmatex">\(F_1,F_2\)</span> 闭且无内部，任取非空开集 <span class="arithmatex">\(U\)</span>。<span class="arithmatex">\(U\)</span> 不全包含于 <span class="arithmatex">\(F_1\)</span>，所以 <span class="arithmatex">\(U\setminus F_1\)</span> 为非空开集；它又不全包含于 <span class="arithmatex">\(F_2\)</span>，故其中存在不在二者并集中的点。因此并集不包含任何非空开集。逐个归纳得到有限并结论。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 6.15</span><span class="book-name">Banach 空间没有可数无限 Hamel 基</span></p>
+<p>无限维 Banach 空间不可能由可数集合在线性代数意义下张成，即不能将每个向量都写成同一可数族的有限线性组合。</p>
+</div>
+<details class="proof">
+<summary>证明 10.3.12</summary>
+<p>若 <span class="arithmatex">\(V=\operatorname{span}\{v_1,v_2,\ldots\}\)</span>，令 <span class="arithmatex">\(E_n=\operatorname{span}\{v_1,\ldots,v_n\}\)</span>。每个 <span class="arithmatex">\(E_n\)</span> 有限维而闭；因 <span class="arithmatex">\(V\)</span> 无限维，它是真子空间，内部为空。否则含某个开球，平移到零后再缩放就会包含全部向量。于是 <span class="arithmatex">\(V=\bigcup_nE_n\)</span> 是可数个闭无内部集的并，与 Baire 定理矛盾。</p>
+</details>
+<details class="proof">
+<summary>商映射、开像与闭图像</summary>
+<p>商映射将半径 <span class="arithmatex">\(r\)</span> 的开球映成商空间中同半径开球，因为商范数小于 <span class="arithmatex">\(r\)</span> 时存在范数小于 <span class="arithmatex">\(r\)</span> 的代表元。商空间 Cauchy 序列可取误差逐次小于 <span class="arithmatex">\(2^{-n}\)</span> 的子列，并选取代表元使相邻差的范数至多为 <span class="arithmatex">\(2^{1-n}\)</span>；绝对收敛级数在 <span class="arithmatex">\(V\)</span> 中产生极限，投影后恢复商极限。</p>
+<p>开像条件等价于商空间诱导映射 <span class="arithmatex">\(\widetilde T:V/\ker T\to\operatorname{ran}T\)</span> 的逆有界。原空间完备使商完备，因此有界双向同构让像完备。有限维像时选取一组基及其原像，得到一个有界线性右逆，直接证明开性。</p>
+<p>对闭图像，<span class="arithmatex">\(G(T)\)</span> 为 Banach 空间，投影 <span class="arithmatex">\(G(T)\to V\)</span> 有界且双射。有界逆定理给出 <span class="arithmatex">\(\|(v,Tv)\|\leq C\|v\|\)</span>，从而 <span class="arithmatex">\(T\)</span> 有界。处处对称 <span class="arithmatex">\(T\)</span> 若 <span class="arithmatex">\(v_n\to v\)</span>、<span class="arithmatex">\(Tv_n\to w\)</span>，对任意 <span class="arithmatex">\(u\)</span> 以对称性取极限得到 <span class="arithmatex">\(\langle u,w\rangle=\langle u,Tv\rangle\)</span>，故图像闭，得到 Hellinger–Toeplitz 结论。</p>
+</details>
+<details class="proof">
+<summary>可数线性张成为何与完备性矛盾</summary>
+<p>假设 <span class="arithmatex">\(V=\operatorname{span}\{v_1,v_2,\ldots\}\)</span>，令 <span class="arithmatex">\(E_n=\operatorname{span}\{v_1,\ldots,v_n\}\)</span>。每个 <span class="arithmatex">\(E_n\)</span> 有限维而闭，且因空间无限维而为真子空间。真线性子空间若含开球，平移并放缩就得到全空间，所以其内部为空。<span class="arithmatex">\(V=\bigcup_nE_n\)</span> 与 Baire 定理矛盾。</p>
+</details>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 7.1</span><span class="book-name">弱收敛为何范数有界</span></p>
+<p>对赋范空间 <span class="arithmatex">\(X\)</span> 中弱收敛序列 <span class="arithmatex">\(x_n\)</span>，写出一致有界原理的定义域、值域和算子族。这里是否需要 <span class="arithmatex">\(X\)</span> 完备？</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>定义域是 <span class="arithmatex">\(X^*\)</span>，它总是 Banach 空间；值域是标量域；算子是 <span class="arithmatex">\(Jx_n:f\mapsto f(x_n)\)</span>。弱收敛给出对每个 <span class="arithmatex">\(f\)</span> 的逐点有界性，Hahn–Banach 给出 <span class="arithmatex">\(\|Jx_n\|=\|x_n\|\)</span>，所以范数有界。不需要 <span class="arithmatex">\(X\)</span> 完备。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 7.2</span><span class="book-name">图范数完备性</span></p>
+<p>设 <span class="arithmatex">\(X,Y\)</span> 是 Banach 空间。证明线性算子 <span class="arithmatex">\(T:D(T)\subset X\to Y\)</span> 闭，当且仅当 <span class="arithmatex">\(D(T)\)</span> 在范数 <span class="arithmatex">\(\|x\|+\|Tx\|\)</span> 下完备。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>图范数 Cauchy 序列使 <span class="arithmatex">\(x_n\)</span> 与 <span class="arithmatex">\(Tx_n\)</span> 分别在 <span class="arithmatex">\(X,Y\)</span> 中收敛。若 <span class="arithmatex">\(T\)</span> 闭，极限属于图像，便给出图范数极限。反过来，若图像中序列在乘积空间收敛，它在图范数下 Cauchy，完备性给出图像中的极限；乘积空间极限唯一，所以图像闭。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 7.3</span><span class="book-name">严格正与统一正下界</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 上令 <span class="arithmatex">\(Ae_n=n^{-1}e_n\)</span>。证明 <span class="arithmatex">\(\langle x,Ax\rangle&gt;0\)</span> 对每个 <span class="arithmatex">\(x\ne0\)</span> 成立，但不存在 <span class="arithmatex">\(\alpha&gt;0\)</span> 使 <span class="arithmatex">\(\langle x,Ax\rangle\ge\alpha\|x\|^2\)</span> 对全部 <span class="arithmatex">\(x\)</span> 成立。为什么不能据此直接使用 Lax–Milgram？</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(\langle x,Ax\rangle=\sum_n|x_n|^2/n\)</span>，非零输入给出正值。代入 <span class="arithmatex">\(e_n\)</span>，统一下界将要求 <span class="arithmatex">\(1/n\ge\alpha\)</span>，不可能。Lax–Milgram 要求的强制性是统一正下界，它同时控制存在性与解的稳定性。</p>
+</details>
+<p>有界性控制误差，完备性承接极限，紧性提供可提取的极限，凸性与对偶性则帮助判断极限是否仍满足约束。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-09/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第九章：弱拓扑、凸集分离与自反空间</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../appendix-a/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">附录 A：选择公理与存在性方法</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 11 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=banach-space">#banach-space</a><a class="zdd-end-chip" href="../../../../tags/?tag=completeness">#completeness</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

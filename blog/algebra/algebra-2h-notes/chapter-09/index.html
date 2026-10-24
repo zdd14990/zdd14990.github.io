@@ -1,0 +1,1181 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="代数2-H 笔记第九章：诺特环、准素分解、Artin 环。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-09/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第九章：Noether 模与 Artin 模 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-09/">
+  <meta property="og:title" content="第九章：Noether 模与 Artin 模 - zdd14990">
+  <meta property="og:description" content="代数2-H 笔记第九章：诺特环、准素分解、Artin 环。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="commutative-algebra">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-09/">
+  <meta name="twitter:title" content="第九章：Noether 模与 Artin 模 - zdd14990">
+  <meta name="twitter:description" content="代数2-H 笔记第九章：诺特环、准素分解、Artin 环。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e5d\u7ae0\uff1aNoether \u6a21\u4e0e Artin \u6a21",
+    "description": "\u4ee3\u65702-H \u7b14\u8bb0\u7b2c\u4e5d\u7ae0\uff1a\u8bfa\u7279\u73af\u3001\u51c6\u7d20\u5206\u89e3\u3001Artin \u73af\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-09/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/algebra-2h-notes/chapter-09/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["commutative-algebra"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u4ee3\u6570", "algebra"], ["\u4ee3\u6570 2-H \u7b14\u8bb0", "algebra-2h-notes"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 诺特环
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 准素分解
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Artin 环
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#algebra-2h-notes">代数2-H笔记</a>
+    <span>Part 9 of 10</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">09</div>
+    <h1 id="top"><span class="book-visually-hidden">第 9 章：</span>Noether 模与 Artin 模</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>4,317 字 · 约 12 分钟</span>
+  </div>
+  
+</header>
+
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1</span></p>
+<p><span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span> 称为 Noether 模，若其满足升链条件：<span class="arithmatex">\(M_1\subset M_2\subset \cdots\Longrightarrow \exists k,M_k=M_{k+1}=\cdots\)</span>。</p>
+<p><span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span> 称为 Artin 模，若其满足链降条件：<span class="arithmatex">\(M_1\supset M_2\supset \cdots\Longrightarrow \exists k,M_k=M_{k+1}=\cdots\)</span>。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2</span></p>
+<p>环 <span class="arithmatex">\(R\)</span> 称为 Noether/Artin 环若它对自身是 Noether/Artin 模。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3</span></p>
+<p>有限群看作 <span class="arithmatex">\(\mathbb{Z}-\)</span>模既是 Noether 也是 Artin 模。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4</span></p>
+<ul>
+<li><span class="arithmatex">\(\mathbb{Z}\)</span> 是 Noether 的但不是 Artin 的；</li>
+<li>任一域既是 Noether 也是 Artin 的；</li>
+<li>任一 PID 是 Noether 的。</li>
+</ul>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5</span></p>
+<p><span class="arithmatex">\(k[x]\)</span> 是 Noether 的但不是 Artin 的，<span class="arithmatex">\(k[x_1,x_2,\cdots]\)</span> 既不是 Noether 也不是 Artin 的。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6</span></p>
+<p>Noether/Artin 环的子环不一定是 Noether/Artin 环，如 <span class="arithmatex">\(k[x_1,x_2,\cdots]\)</span> 的分式域是域。</p>
+</div>
+<p>后文中我们会证明任一 Artin 环均为 Noether 环。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7</span></p>
+<p><span class="arithmatex">\(M\)</span> 是 Noether 的当且仅当任意 <span class="arithmatex">\(M\)</span> 的子模都是有限生成的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”：令 <span class="arithmatex">\(N\)</span> 是 <span class="arithmatex">\(M\)</span> 的子模，若 <span class="arithmatex">\(N\)</span> 不是有限生成的，设 <span class="arithmatex">\(x_1\in N,x_2\in N\setminus Rx_1,x_3\in N\setminus (Rx_1+Rx_2),\cdots\)</span>，则我们有升链：</p>
+<div class="arithmatex">\[
+Rx_1\subset Rx_1+Rx_2\subset \cdots
+\]</div>
+<p>由于 <span class="arithmatex">\(M\)</span> 是 Noether 的，故存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(Rx_1+Rx_2+\cdots+Rx_n=Rx_1+\cdots+Rx_{n+1}\)</span>，矛盾！</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：对任意 <span class="arithmatex">\(M_1\subset M_2\subset \cdots,M=\bigcup M_i\)</span> 由一些 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 生成，则存在 <span class="arithmatex">\(a_i\)</span>，<span class="arithmatex">\(x_i\in M_{a_i}\)</span>，取 <span class="arithmatex">\(m=\max a_i\)</span>，则 <span class="arithmatex">\(M_m=M\)</span>。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8</span></p>
+<p>令 <span class="arithmatex">\(0\rightarrow M'\overset{f}{\rightarrow}M\overset{g}{\rightarrow}M''\rightarrow 0\)</span> 是短正合列。则 <span class="arithmatex">\(M\)</span> 是 Noether/Artin 的当且仅当 <span class="arithmatex">\(M',M''\)</span> 均为 Noether/Artin 的。特别的，由于 <span class="arithmatex">\(0\rightarrow M'\rightarrow M'\oplus M''\rightarrow M''\rightarrow 0\)</span> 是正合的，故 Noether/Artin 模的直和也是 Noether/Artin 的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>下次再补。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether/Artin 环，<span class="arithmatex">\(M\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>模，则 <span class="arithmatex">\(M\)</span> 是 Noether/Artin 模。令 <span class="arithmatex">\(I\)</span> 是 <span class="arithmatex">\(R\)</span> 的理想，则作为 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(R/I\)</span> 是 Noether/Artin 的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(R^n\)</span> 的商模，则我们有正合列</p>
+<div class="arithmatex">\[
+0\rightarrow \ker f \rightarrow R^n\overset{f}{\rightarrow} M\rightarrow 0
+\]</div>
+<p>由<strong>命题 2.30</strong>，我们有正合列 <span class="arithmatex">\(0\rightarrow I\rightarrow R\rightarrow R/I\rightarrow 0\)</span>，故 <span class="arithmatex">\(R/I\)</span> 是 Noether/Artin 的。</p>
+</details>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10</span></p>
+<p>一个 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span> 称为单模，若它没有非平凡的子模。一个合成列是一列子模</p>
+<div class="arithmatex">\[
+M=M_0\supsetneqq M_1 \supsetneqq M_2 \supsetneqq \cdots \supsetneqq M_n=0
+\]</div>
+<p>其中 <span class="arithmatex">\(M_i/M_{i+1}\)</span> 是单模。<span class="arithmatex">\(n\)</span> 称为这个合成列的长度。</p>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11</span></p>
+<p>合成列的长度相同。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对 <span class="arithmatex">\(R-\)</span>模 <span class="arithmatex">\(M\)</span>，记 <span class="arithmatex">\(l(M)\)</span> 为其合成列中最小的长度。我们断言若 <span class="arithmatex">\(N\subsetneqq M,l(M)&lt;\infty\)</span>，则 <span class="arithmatex">\(l(M)&gt;l(N)\)</span>。</p>
+<p>若该断言成立，则对任意序列 <span class="arithmatex">\(M=M_0\supsetneqq M_1 \supsetneqq M_2 \supsetneqq\cdots \supsetneqq M_n=0\)</span>，我们有 <span class="arithmatex">\(l(M)&gt;l(M_1)&gt;\cdots&gt;l(M_n)=0\)</span>，故 <span class="arithmatex">\(l(M)\ge n\)</span>，但由定义 <span class="arithmatex">\(l(M)\le n\)</span>，故 <span class="arithmatex">\(n=l(M)\)</span>。</p>
+<p>现在我们来证明这个断言。取 <span class="arithmatex">\(M\)</span> 的一个合成列，<span class="arithmatex">\(M=M_0\supset M_1 \supset M_2\supset \cdots \supset M_l=0\)</span>，其中 <span class="arithmatex">\(l=l(M)\)</span>。则</p>
+<div class="arithmatex">\[
+N=M_0\cap N\supset \cdots \supset M_l\cap N=0
+\]</div>
+<p>是 <span class="arithmatex">\(N\)</span> 的合成列，这是因为 <span class="arithmatex">\(M_i\cap N/M_{i+1}\cap N\subset M_i/M_{i+1}\)</span> 是单的，故 <span class="arithmatex">\(M_i\cap N=M_{i+1}\cap N\)</span> 或 <span class="arithmatex">\(M_i\cap N/M_{i+1}\cap N=M_i/M_{i+1}\)</span>。若第一种情况发生了，则我们可以删去一些项，这表示 <span class="arithmatex">\(l(N)&lt;l(M)\)</span>。否则我们可以归纳得到 <span class="arithmatex">\(M_i=M_i\cap N\)</span>，这表明 <span class="arithmatex">\(M=N\)</span>。</p>
+</details>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 12</span></p>
+<p><span class="arithmatex">\(M\)</span> 有合成列当且仅当 <span class="arithmatex">\(M\)</span> 既是 Noether 又是 Artin 的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：对全体子模用升链条件我们有极大子模 <span class="arithmatex">\(M_1\subset M\)</span>，<span class="arithmatex">\(M/M_1\)</span> 是单的。类似的得到 <span class="arithmatex">\(M_1\supset M_2\supset \cdots\)</span>，<span class="arithmatex">\(M_i/M_{i+1}\)</span> 是单的。再利用降链条件得到这个序列有限。</p>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”：设 <span class="arithmatex">\(M\)</span> 有合成列，对任意 <span class="arithmatex">\(M_1\supset M_2\supset \cdots\)</span>，<span class="arithmatex">\(l(M_1)\le l(M_2)\le \cdots\le l(M)\)</span> 有限，故存在 <span class="arithmatex">\(k\)</span>，<span class="arithmatex">\(l(M_k)=l(M_{k+1})=\cdots\)</span>，即 <span class="arithmatex">\(M_k=M_{k+1}=\cdots\)</span>，故是 Noether 的。Artin 同理。</p>
+</details>
+<p>注：若 <span class="arithmatex">\(l(M)&lt;\infty\)</span>，则任意序列 <span class="arithmatex">\(M=M_0\supsetneqq M_1 \supsetneqq\cdots \supsetneqq M_n=0\)</span> 可通过将 <span class="arithmatex">\(M_i/M_{i+1}\)</span> 拆开扩张成合成列。</p>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 13</span></p>
+<p>定义在有限长度的 <span class="arithmatex">\(R-\)</span>模上的 <span class="arithmatex">\(l(M)\)</span> 是加性函数。即对任意正合列 <span class="arithmatex">\(0\rightarrow M'\overset{f}{\rightarrow}M\overset{g}{\rightarrow}M''\rightarrow 0\)</span> 我们有 <span class="arithmatex">\(l(M)=l(M')+l(M'')\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对任意 <span class="arithmatex">\(M'\)</span> 的合成列，<span class="arithmatex">\(M'=M'_0\supset M'_1\supset \cdots \supset M'_m=0\)</span>，任意 <span class="arithmatex">\(M''\)</span> 的合成列，<span class="arithmatex">\(M''=M''_0\supset M''_1\supset \cdots \supset M''_n=0\)</span>，我们有</p>
+<div class="arithmatex">\[
+M=g^{-1}(M'')\supset g^{-1}(M''_1)\supset \cdots\supset g^{-1}(M''_n)=f(M')\supset f(M'_1)\supset \cdots\supset f(M'_m)=0
+\]</div>
+<p>是 <span class="arithmatex">\(M\)</span> 的长度为 <span class="arithmatex">\(m+n\)</span> 的合成列。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 14</span></p>
+<p>若环 <span class="arithmatex">\(R\)</span> 满足 <span class="arithmatex">\((0)=\mathfrak{m}_1\cdots \mathfrak{m}_n\)</span>，其中 <span class="arithmatex">\(\mathfrak{m}_i\)</span> 是极大理想，则 <span class="arithmatex">\(R\)</span> 是 Noether 的当且仅当 <span class="arithmatex">\(R\)</span> 是 Artin 的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由于 <span class="arithmatex">\(0\rightarrow \mathfrak{m}_1\rightarrow R\rightarrow R/\mathfrak{m}_1\rightarrow 0\)</span> 是正合列，<span class="arithmatex">\(R\)</span> 是 Noether 的当且仅当 <span class="arithmatex">\(\mathfrak{m}_1\)</span> 和 <span class="arithmatex">\(R/\mathfrak{m}_1\)</span>  是 Noether 的，且 <span class="arithmatex">\(R/\mathfrak{m}_1\)</span> 在 <span class="arithmatex">\(R\)</span> 上是 Noether 的当且仅当它在 <span class="arithmatex">\(R/\mathfrak{m}_1\)</span> 上是 Noether 的。类似的 <span class="arithmatex">\(\mathfrak{m}_1\)</span> 是 Noether 的当且仅当 <span class="arithmatex">\(\mathfrak{m}_1/\mathfrak{m}_1\mathfrak{m}_2\)</span> 在 <span class="arithmatex">\(R/\mathfrak{m}_2\)</span> 上是 Noether 的且 <span class="arithmatex">\(\mathfrak{m}_1\mathfrak{m}_2\)</span> 在 <span class="arithmatex">\(R\)</span> 上是 Noether 的。继续这样下去我们有 <span class="arithmatex">\(R\)</span> 是 Noether 的当且仅当对任意 <span class="arithmatex">\(i\)</span>，<span class="arithmatex">\(\mathfrak{m}_1\cdots\mathfrak{m}_{i-1}/\mathfrak{m}_1\cdots\mathfrak{m}_i\)</span> 在 <span class="arithmatex">\(R/\mathfrak{m}_i\)</span> 上是 Noether 的。对 Artin 的讨论可以得到类似的结果。而由于 <span class="arithmatex">\(R/\mathfrak{m}_i\)</span> 是域，故我们可以将 Noether 替换成 Artin，便完成了证明。</p>
+</details>
+<h2 id="s1"><span class="book-secnum">§ 01</span>诺特环</h2>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.1</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether 环。</p>
+<ul>
+<li>同态 <span class="arithmatex">\(f:R\rightarrow R'\)</span>，<span class="arithmatex">\(R'\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>模，则 <span class="arithmatex">\(R'\)</span> 是 Noether 的。特别的，若 <span class="arithmatex">\(f\)</span> 是满射，则 <span class="arithmatex">\(R'\)</span> 是 Noether 的；</li>
+<li><span class="arithmatex">\(S\subset R\)</span> 是乘性子集，则 <span class="arithmatex">\(S^{-1}R\)</span> 是 Noether 的。特别的 <span class="arithmatex">\(R_\mathfrak{p}\)</span> 是 Noether 的。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span> <span class="arithmatex">\(f(R)\cong R/\ker f\)</span> 是 Noether 的。<span class="arithmatex">\(R'\)</span> 是有限生成 <span class="arithmatex">\(f(R)-\)</span>模，故是 Noether <span class="arithmatex">\(f(R)-\)</span>模。因此 <span class="arithmatex">\(R'\)</span> 是 Noether 的。</p>
+<p><span class="arithmatex">\((2)\)</span> 注意到 <span class="arithmatex">\(S^{-1}R\)</span> 中的理想均为扩张的，故升链条件显然成立。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span></p>
+<p>数域所包含的全体代数整数形成的环是诺特环。</p>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.3</span><span class="book-name">Hilbert basis theorem</span></p>
+<p>若 <span class="arithmatex">\(R\)</span> 是 Noether 的，则 <span class="arithmatex">\(R[x]\)</span> 是 Noether 的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由于 <span class="arithmatex">\(R\left\lbrack  { {X}_{1},\ldots ,{X}_{n + 1}}\right\rbrack   \simeq  R\left\lbrack  { {X}_{1},\ldots ,{X}_{n}}\right\rbrack  \left\lbrack  {X}_{n + 1}\right\rbrack\)</span>，断言化约到 <span class="arithmatex">\(n = 1\)</span> 亦即环 <span class="arithmatex">\(R\left\lbrack  X\right\rbrack\)</span>  的情形。给定理想 <span class="arithmatex">\(\mathfrak{a} \subset  R\left\lbrack  X\right\rbrack\)</span>，我们将指出如何递归地构造一列元素 <span class="arithmatex">\({f}_{1},\ldots ,{f}_{m} \in  \mathfrak{a}\)</span> 使之 生成 <span class="arithmatex">\(\mathfrak{a}\)</span> 进而导出 <span class="arithmatex">\(R\left\lbrack  X\right\rbrack\)</span> 为 Noether 环。</p>
+<p>对任意 <span class="arithmatex">\(f = \mathop{\sum }\limits_{ {k = 0}}^{n}{a}_{k}{X}^{k} \in  R\left\lbrack  X\right\rbrack  ,{a}_{n} \neq  0\)</span>，定义其领导系数为</p>
+<div class="arithmatex">\[
+\operatorname{in}\left( f\right)  \mathrel{\text{:=}} {a}_{n}.
+\]</div>
+<p>取 <span class="arithmatex">\({f}_{1} \in  \mathfrak{a} \setminus  \{ 0\}\)</span> 使得 <span class="arithmatex">\(\deg {f}_{1}\)</span> 最小。今假设已选取 <span class="arithmatex">\({f}_{1},\ldots ,{f}_{k} \in  \mathfrak{a}\)</span>，倘若 <span class="arithmatex">\(\mathfrak{a} = \left\langle  { {f}_{1},\ldots ,{f}_{k}}\right\rangle\)</span>  则构造终止，否则选择 <span class="arithmatex">\({f}_{k + 1} \in  \mathfrak{a}\)</span> 使得 (i) <span class="arithmatex">\({f}_{k + 1} \in  \mathfrak{a} \setminus  \left\langle  { {f}_{1},\ldots ,{f}_{k}}\right\rangle\)</span>；(ii) 在前述条件下  <span class="arithmatex">\(\deg {f}_{k + 1}\)</span> 取最小可能的值. 置 <span class="arithmatex">\({\alpha }_{i} \mathrel{\text{:=}} \operatorname{in}\left( {f}_{i}\right)\)</span>。由 <span class="arithmatex">\(R\)</span> 的升链条件，理想 <span class="arithmatex">\(\left\langle  { {\alpha }_{1},\ldots }\right\rangle\)</span> 有一族生成元 <span class="arithmatex">\({\alpha }_{1},\ldots ,{\alpha }_{m}\)</span>。倘若上述构造可以走到第 <span class="arithmatex">\(m + 1\)</span> 步，则有</p>
+<div class="arithmatex">\[
+\operatorname{in}\left( {f}_{m + 1}\right)  = \mathop{\sum }\limits_{ {i = 1}}^{m}{u}_{i}{\alpha }_{i},\;{u}_{1},\ldots ,{u}_{m} \in  R.
+\]</div>
+<p>根据前 <span class="arithmatex">\(m\)</span> 步的选取，对 <span class="arithmatex">\(i = 1,\ldots ,m\)</span> 皆有 <span class="arithmatex">\({d}_{i} \mathrel{\text{:=}} \deg {f}_{m + 1} - \deg {f}_{i} \geq  0\)</span>。显见</p>
+<div class="arithmatex">\[
+{f}_{m + 1} - \mathop{\sum }\limits_{ {i = 1}}^{m}{u}_{i}{f}_{i}{X}^{ {d}_{i}}\; \in  \mathfrak{a} \setminus  \left\langle  { {f}_{1},\ldots ,{f}_{m}}\right\rangle
+\]</div>
+<p>的次数严格小于 <span class="arithmatex">\(\deg {f}_{m + 1}\)</span> ,此与 <span class="arithmatex">\({f}_{m + 1}\)</span> 的选取矛盾。</p>
+</details>
+<p><strong>注：</strong>反复使用该定理我们有 <span class="arithmatex">\(R[x_1,\cdots,x_n]\)</span> 是 Noether 的。对任意有限生成 <span class="arithmatex">\(R-\)</span>代数 <span class="arithmatex">\(R'\)</span>，存在满射 <span class="arithmatex">\(R[x_1,\cdots,x_n]\rightarrow R'\)</span>，故 <span class="arithmatex">\(R'\)</span> 也是 Noether 的。</p>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.4</span></p>
+<p><span class="arithmatex">\(R\subset R'\subset R''\)</span>，<span class="arithmatex">\(R\)</span> 是 Noether 的，<span class="arithmatex">\(R''\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>代数，也是有限生成 <span class="arithmatex">\(R'-\)</span>模，则 <span class="arithmatex">\(R'\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>代数。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们来构造这样的 <span class="arithmatex">\(R_0\)</span>：<span class="arithmatex">\(R\subset R_0\subset R'\subset R''\)</span> 使得 <span class="arithmatex">\(R''\)</span> 是有限生成 <span class="arithmatex">\(R_0-\)</span>模，<span class="arithmatex">\(R_0\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>代数。这样由 Hilbert 基定理就有 <span class="arithmatex">\(R_0\)</span> 是 Noether 的，故 <span class="arithmatex">\(R''\)</span> 是 Noether <span class="arithmatex">\(R_0-\)</span>模，因此 <span class="arithmatex">\(R'\)</span> 是有限生成 <span class="arithmatex">\(R_0-\)</span>模。由于 <span class="arithmatex">\(R_0\)</span> 是有限生成 <span class="arithmatex">\(R-\)</span>代数，<span class="arithmatex">\(R'\)</span> 也是有限生成 <span class="arithmatex">\(R-\)</span>代数。</p>
+<p>我们这样来构造 <span class="arithmatex">\(R_0\)</span>：设 <span class="arithmatex">\(R''\)</span> 作为 <span class="arithmatex">\(R-\)</span>代数由 <span class="arithmatex">\(x_1,\cdots,x_m\)</span> 生成，作为 <span class="arithmatex">\(R-\)</span>模由 <span class="arithmatex">\(y_1,\cdots,y_n\)</span> 生成，则我们有</p>
+<div class="arithmatex">\[
+x_i=\sum_{j=1}^n a_{ij}y_j,a_{ij}\in R';y_iy_j=\sum_{k=1}^n a_{ijk}y_k,a_{ijk}\in R'
+\]</div>
+<p>令 <span class="arithmatex">\(R_0=R[a_{ij},a_{ijk}]\)</span>，这是一个有限生成 <span class="arithmatex">\(R-\)</span>代数。对任意 <span class="arithmatex">\(m\in R''\)</span> 我们可以将它写成 <span class="arithmatex">\(y_i\)</span> 的系数在 <span class="arithmatex">\(R_0\)</span> 中的多项式，且由上关系可以将其写成 <span class="arithmatex">\(y_i\)</span> 的线性表达式，即 <span class="arithmatex">\(R''\)</span> 是有限生成 <span class="arithmatex">\(R_0-\)</span>模。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 1.5</span><span class="book-name">First part of Hilbert&#x27;s Nullstellensatz</span></p>
+<p><span class="arithmatex">\(k\)</span> 是域，<span class="arithmatex">\(R\)</span> 是有限生成 <span class="arithmatex">\(k-\)</span>代数。若 <span class="arithmatex">\(R\)</span> 是域，则也是 <span class="arithmatex">\(k\)</span> 的有限扩张。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(R\)</span> 作为 <span class="arithmatex">\(k-\)</span>代数由 <span class="arithmatex">\(a_1,\cdots,a_n\)</span> 生成，若 <span class="arithmatex">\(R\)</span> 不是有限生成的，我们可以找到 <span class="arithmatex">\(a_1,\cdots,a_r\)</span> 在 <span class="arithmatex">\(k\)</span> 上是代数不相关的，<span class="arithmatex">\(a_{r+1},\cdots,a_n\)</span> 在 <span class="arithmatex">\(R'=k(a_1,\cdots,a_r)\cong k(x_1,\cdots,x_r)\)</span> 是代数的。则 <span class="arithmatex">\(R\)</span> 是 <span class="arithmatex">\(R'\)</span> 的有限扩张。由于 <span class="arithmatex">\(R\)</span> 是有限生成 <span class="arithmatex">\(R,k-\)</span>模，由上命题我们有 <span class="arithmatex">\(R'\)</span> 在 <span class="arithmatex">\(k\)</span> 上是有限生成的。</p>
+<p>设 <span class="arithmatex">\(R'\)</span> 由 <span class="arithmatex">\(\frac{f_1}{g_1},\cdots,\frac{f_m}{g_m}\)</span> 生成，其中 <span class="arithmatex">\((f_i,g_i)=1\)</span>，令 <span class="arithmatex">\(h\in k[x_1,\cdots,x_r]\)</span>，满足 <span class="arithmatex">\((h,g_1,g_2,\cdots,g_m)=1\)</span>，则 <span class="arithmatex">\(\frac{1}{h}\)</span> 不在 <span class="arithmatex">\(k[\frac{f_1}{g_1},\cdots,\frac{f_m}{g_m}]\)</span> 中，矛盾！</p>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span>准素分解</h2>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p><span class="arithmatex">\(R\)</span> 是环，理想 <span class="arithmatex">\(\mathfrak{q}\)</span> 称为<strong>准素的(primary)</strong>，若 <span class="arithmatex">\(\mathfrak{q}\neq (1)\)</span> 且若 <span class="arithmatex">\(xy\in \mathfrak{q}\)</span>，则 <span class="arithmatex">\(x\in \mathfrak{q}\)</span> 或 <span class="arithmatex">\(y^n \in \mathfrak{q}\)</span> 对某个 <span class="arithmatex">\(n&gt;0\)</span>。等价的定义是 <span class="arithmatex">\(R/\mathfrak{q}\neq 0\)</span> 且其中零因子均幂零。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span></p>
+<p>在 <span class="arithmatex">\(\mathbb{Z}\)</span> 中，<span class="arithmatex">\((0),(p^n)\)</span> 是准素的。</p>
+<p>在 <span class="arithmatex">\(k[x,y]\)</span> 中，<span class="arithmatex">\((x^2,y)\)</span> 是准素的，这是因为 <span class="arithmatex">\(k[x,y]/(x^2,y)\cong k[x]/(x^2)\)</span> 且 <span class="arithmatex">\((x^2)\)</span> 在 <span class="arithmatex">\(k[x]\)</span> 中是准素的。</p>
+</div>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.3</span></p>
+<p>设 <span class="arithmatex">\(\mathfrak{q}\)</span> 是准素的，则 <span class="arithmatex">\(r(\mathfrak{q})\)</span> 是包含 <span class="arithmatex">\(\mathfrak{q}\)</span> 的极小素理想。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>Check directly by definition.</p>
+</details>
+<p>若 <span class="arithmatex">\(r(\mathfrak{q})=\mathfrak{p}\)</span>，则称 <span class="arithmatex">\(\mathfrak{q}\)</span> 是 <span class="arithmatex">\(\mathfrak{p}-\)</span>准素的。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span></p>
+<p><span class="arithmatex">\((x,y^2)\subset k[x,y]\)</span>，<span class="arithmatex">\(r(x,y^2)=(x,y)\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.5</span></p>
+<p>考虑 <span class="arithmatex">\(R=k[x,y,z]/(xy-z^2)\)</span>，<span class="arithmatex">\(\mathfrak{p}=(\bar{x},\bar{z})\)</span>，<span class="arithmatex">\(r(\mathfrak{p}^2)=\mathfrak{p}\)</span>，但 <span class="arithmatex">\(\mathfrak{p}^2\)</span> 不是准素的，因为 <span class="arithmatex">\(\bar{x}\bar{y}=\bar{z}^2\)</span>，但 <span class="arithmatex">\(\bar{x}\neq \mathfrak{p}^2\)</span>，<span class="arithmatex">\(\bar{y}\neq r(\mathfrak{p})=\mathfrak{p}\)</span>。</p>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.6</span></p>
+<p>若 <span class="arithmatex">\(r(\mathfrak{q})\)</span> 是极大的，则 <span class="arithmatex">\(\mathfrak{q}\)</span> 是准素的。特别的，对任意极大理想 <span class="arithmatex">\(\mathfrak{m}\)</span>，<span class="arithmatex">\(\mathfrak{m}^n\)</span> 是准素的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(R/\mathfrak{q}\)</span> 的幂零根是极大的，故 <span class="arithmatex">\(R/\mathfrak{q}\)</span> 有唯一的素理想，因此任意 <span class="arithmatex">\(R/\mathfrak{q}\)</span> 中的元素要么是单位的，要么是幂零的。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.7</span></p>
+<p><span class="arithmatex">\(I\)</span> 的一个<strong>准素分解(primary decomposition)</strong>为 <span class="arithmatex">\(I=\bigcap_{i=1}^n \mathfrak{q}_i\)</span>，其中 <span class="arithmatex">\(\mathfrak{q}_i\)</span> 是准素的，此时 <span class="arithmatex">\(I\)</span> 称作<strong>可分解的(decomposible)</strong>。这样的分解称为极小的，若对任意 <span class="arithmatex">\(i\neq j\)</span>，<span class="arithmatex">\(r(\mathfrak{q}_i)\neq r(\mathfrak{q}_j)\)</span> 且 <span class="arithmatex">\(\bigcap_{k\neq i}\mathfrak{q}_k\)</span> 不包含于 <span class="arithmatex">\(\mathfrak{q}_i\)</span>。</p>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.8</span></p>
+<p>若 <span class="arithmatex">\(\mathfrak{q}_1,\mathfrak{q}_2\)</span> 是 <span class="arithmatex">\(\mathfrak{q}-\)</span>准素的，则 <span class="arithmatex">\(\mathfrak{q}_1\cap \mathfrak{q}_2\)</span> 是 <span class="arithmatex">\(\mathfrak{p}-\)</span>准素的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>首先 <span class="arithmatex">\(r(\mathfrak{q}_1\cap \mathfrak{q}_2)=r(\mathfrak{q}_1)\cap r(\mathfrak{q}_2)\)</span>。若 <span class="arithmatex">\(xy\in \mathfrak{q}_1\cap \mathfrak{q}_2\)</span>，<span class="arithmatex">\(x\notin \mathfrak{q}_1\cap \mathfrak{q}_2\)</span>，不妨 <span class="arithmatex">\(x\notin \mathfrak{q}_1\)</span>，则 <span class="arithmatex">\(y\in r(\mathfrak{q}_1)=r(\mathfrak{q}_1\cap \mathfrak{q}_2)\)</span>，即 <span class="arithmatex">\(\mathfrak{q}_1\cap \mathfrak{q}_2\)</span> 是准素的。</p>
+</details>
+<p>由该引理我们知道准素分解总能化简为极小分解，然而下面给出的例子表明极小分解并不唯一。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.9</span></p>
+<p><span class="arithmatex">\(R=k[x,y]\)</span>，<span class="arithmatex">\(I=(x^2,xy)=(x)\cap (x,y)^2=(x)\cap (x^2,y)\)</span>。</p>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.10</span></p>
+<p><span class="arithmatex">\(I\)</span> 是可分解的理想，<span class="arithmatex">\(I=\bigcap_{i=1}^n\mathfrak{q}_i\)</span> 是一个极小分解，设 <span class="arithmatex">\(\mathfrak{p}_i=r(\mathfrak{q}_i)\)</span>，则</p>
+<div class="arithmatex">\[
+\left\{\mathfrak{p}_i\right\}=\left\{prime\ r(I:x)\Big| x\in R\right\}
+\]</div>
+<p>由 <span class="arithmatex">\(I\)</span> 唯一确定。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>首先我们有 <span class="arithmatex">\(r(I:x)=r(\bigcap_{i=1}^n\mathfrak{q}_i:x)=\bigcap_{i=1}^nr(\mathfrak{q}_i:x)\)</span>，为了计算 <span class="arithmatex">\(r(\mathfrak{q}_i:x)\)</span>，我们需要如下引理：</p>
+<div class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.11</span></p>
+<p><span class="arithmatex">\(\mathfrak{q}\)</span> 是 <span class="arithmatex">\(\mathfrak{p}-\)</span>准素理想，则</p>
+<ul>
+<li>若 <span class="arithmatex">\(x\in \mathfrak{q}\)</span>，则 <span class="arithmatex">\((\mathfrak{q}:x)=(1)\)</span>；</li>
+<li>若 <span class="arithmatex">\(x\notin \mathfrak{q}\)</span>，则 <span class="arithmatex">\((\mathfrak{q}:x)\)</span> 是 <span class="arithmatex">\(\mathfrak{p}-\)</span>准素的；</li>
+<li>若 <span class="arithmatex">\(x\notin \mathfrak{p}\)</span>，则 <span class="arithmatex">\((\mathfrak{q}:x)=\mathfrak{q}\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span> 和 <span class="arithmatex">\((3)\)</span> 是显然的。对于 <span class="arithmatex">\((2)\)</span>，<span class="arithmatex">\(y\in (\mathfrak{q}:x)\Longrightarrow xy\in \mathfrak{q}\Longrightarrow y\in r(\mathfrak{q})=\mathfrak{p}\)</span>，由于 <span class="arithmatex">\(\mathfrak{q}\subset (\mathfrak{q}:x)\)</span>，故只能 <span class="arithmatex">\(r(\mathfrak{q}:x)=\mathfrak{p}\)</span>。若 <span class="arithmatex">\(yz\in (\mathfrak{q}:x),y\notin (\mathfrak{q}:x)\)</span>，则 <span class="arithmatex">\(xyz\in \mathfrak{q},xy\notin \mathfrak{q}\)</span>，故 <span class="arithmatex">\(z\in r(\mathfrak{q})=r(\mathfrak{q}:x)\)</span>，即 <span class="arithmatex">\((\mathfrak{q}:x)\)</span> 是准素的。</p>
+</details>
+<p>由引理，<span class="arithmatex">\(r(\mathfrak{q}:x)=\begin{cases} R,&amp;x\in \mathfrak{q}_i;\\ \mathfrak{p}_i,&amp;x\notin \mathfrak{q}_i. \end{cases}\)</span> 故 <span class="arithmatex">\(\bigcap_{i=1}^n r(\mathfrak{q}_i:x)=\bigcap_{x\notin \mathfrak{q}_i} \mathfrak{p}_i\)</span>。</p>
+<p>一方面由于这个分解是极小的，我们可以找到 <span class="arithmatex">\(x,x\notin \mathfrak{q}_i\)</span>，<span class="arithmatex">\(x\in \bigcap_{j\neq i} \mathfrak{q}_j\)</span>，则 <span class="arithmatex">\((I:x)=\mathfrak{p}_i\)</span>。另一方面当 <span class="arithmatex">\(r(I:x)\)</span> 是素的，若 <span class="arithmatex">\(r(I:x)\neq \mathfrak{p}_i\)</span>，我们可以取出 <span class="arithmatex">\(y_i\notin r(I:x),y_i\in \mathfrak{p}_i\)</span>，则 <span class="arithmatex">\(\prod y_i\in \bigcap \mathfrak{p}_i\)</span>，但因为 <span class="arithmatex">\(r(I:x)\)</span> 是素的，<span class="arithmatex">\(\prod y_i\notin r(I:x)\)</span>，矛盾！</p>
+</details>
+<p>上面的 <span class="arithmatex">\(\mathfrak{p}_i\)</span> 称作<strong>与 <span class="arithmatex">\(I\)</span> 相伴的(associated)</strong>，<span class="arithmatex">\(\left\{\mathfrak{p}_i\right\}\)</span> 中的最小元称作 <span class="arithmatex">\(I\)</span> 的<strong>伴随素理想(isolated prime ideals)</strong>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.12</span></p>
+<p><span class="arithmatex">\(I\)</span> 是准素的当且仅当只有一个伴随素理想。</p>
+</div>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.13</span></p>
+<p>设 <span class="arithmatex">\(I\)</span> 为可分解理想，则对任意素理想 <span class="arithmatex">\(\mathfrak{p}\supset I\)</span>，<span class="arithmatex">\(\mathfrak{p}\)</span> 包含一个伴随素理想。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\mathfrak{p}\supset I=\bigcap_{i=1}^n \mathfrak{q}_i\)</span> 是一个极小分解，<span class="arithmatex">\(r(\mathfrak{q}_i)=\mathfrak{p}_i\)</span>，则 <span class="arithmatex">\(\mathfrak{p}=r(\mathfrak{p})\supset r(\bigcap_{i=1}^n \mathfrak{q}_i)\supset \bigcap_{i=1}^n r(\mathfrak{q}_i)=\bigcap_{i=1}^n \mathfrak{p}_i\)</span>，故 <span class="arithmatex">\(\mathfrak{p}\supset \mathfrak{p}_i\)</span>，对某个 <span class="arithmatex">\(i\)</span>。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.14</span></p>
+<p>设 <span class="arithmatex">\(I=\bigcap_{i=1}^n \mathfrak{q}_i\)</span> 是一个极小准素分解，则 <span class="arithmatex">\(\left\{\mathfrak{q}_i\Big| r(\mathfrak{q}_i\text{是极小的})\right\}\)</span> 唯一确定。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>详见 Atiyah。</p>
+</details>
+<p>现在我们来看 Noether 环的准素分解。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.15</span></p>
+<p>理想 <span class="arithmatex">\(I\)</span> 称为<strong>不可约的(irreducible)</strong>，若 <span class="arithmatex">\(I=I_1\cap I_2\)</span>，则 <span class="arithmatex">\(I=I_1\)</span> 或 <span class="arithmatex">\(I=I_2\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.16</span></p>
+<p><span class="arithmatex">\(I\)</span> 是不可约的当且仅当 <span class="arithmatex">\((0)\)</span> 在 <span class="arithmatex">\(R/I\)</span> 中不可约，任意素理想都是不可约的。</p>
+</div>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.17</span></p>
+<p>对 Noether 环 <span class="arithmatex">\(R\)</span>：</p>
+<ul>
+<li>任意理想是有限个不可约理想的交；</li>
+<li>任意不可约理想是准素理想；</li>
+<li>任意理想有准素分解。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：设 <span class="arithmatex">\(\Sigma=\left\{\text{不是有限个不可约理想的交}\right\}\)</span>，由 Noether 环的性质对每个升链都有上界，故由 Zorn 引理存在 <span class="arithmatex">\(\Sigma\)</span> 的极大元 <span class="arithmatex">\(I\)</span>。由于 <span class="arithmatex">\(I\)</span> 是可约的，<span class="arithmatex">\(I=I_1\cap I_2,I_1,I_2\notin \Sigma\)</span>，这是一个矛盾！</p>
+<p><span class="arithmatex">\((2)\)</span>：考虑商环，需要证明 <span class="arithmatex">\((0)\)</span> 是不可约的。若 <span class="arithmatex">\(xy=0,y\neq 0\)</span>，我们有升链</p>
+<div class="arithmatex">\[
+\mathrm{Ann}(x)\subset \mathrm{Ann}(x^2)\subset \cdots
+\]</div>
+<p>由 Noether 环的性质知存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\mathrm{Ann}(x^n)=\mathrm{Ann}(x^{n+1})=\cdots\)</span>。</p>
+<p>对于 <span class="arithmatex">\(a\in (x^n)\cap (y)\)</span>，设 <span class="arithmatex">\(a=x^nb=cy\)</span>，则 <span class="arithmatex">\(ax=cxy=0=x^{n+1}b\)</span>，故 <span class="arithmatex">\(b\in \mathrm{Ann}(x^{n+1})=\mathrm{Ann}(x^n)\)</span>，即 <span class="arithmatex">\(a=0\)</span>。由于 <span class="arithmatex">\(y\neq 0,x^n=0\)</span>，<span class="arithmatex">\((x^n)\cap (y)=(0)\)</span>。</p>
+<p><span class="arithmatex">\((3)\)</span> 由 <span class="arithmatex">\((1)\)</span> 和 <span class="arithmatex">\((2)\)</span> 直接推出。</p>
+</details>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.18</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether 环，<span class="arithmatex">\(I\)</span> 是 <span class="arithmatex">\(R\)</span> 的理想，则 <span class="arithmatex">\(I\)</span> 包含一个 <span class="arithmatex">\(r(I)\)</span> 的幂。特别的，<span class="arithmatex">\(R\)</span> 的幂零根是幂零的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(r(I)\)</span> 由 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 生成，其中 <span class="arithmatex">\(x_i^{k_i}\in I\)</span>。令 <span class="arithmatex">\(k=\sum_{i=1}^n (k_i-1)+1\)</span>，则 <span class="arithmatex">\(r(I)^k\in I\)</span>。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.19</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether 环，<span class="arithmatex">\(\mathfrak{m}\)</span> 是 <span class="arithmatex">\(A\)</span> 的极大理想，则下述命题等价：</p>
+<ul>
+<li><span class="arithmatex">\(\mathfrak{q}\)</span> 是 <span class="arithmatex">\(\mathfrak{m}-\)</span>准素的；</li>
+<li><span class="arithmatex">\(\mathfrak{m}^n\subset \mathfrak{q}\subset \mathfrak{m}\)</span>，对某个 <span class="arithmatex">\(n&gt;0\)</span>；</li>
+<li><span class="arithmatex">\(r(\mathfrak{q})=\mathfrak{m}\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\Longrightarrow (2)\)</span> 由上命题即得。</p>
+<p><span class="arithmatex">\((2)\Longrightarrow (3)\)</span> 是因为 <span class="arithmatex">\(\mathfrak{m}=r(\mathfrak{m}^n)\subset r(\mathfrak{q})\subset r(\mathfrak{m})=\mathfrak{m}\)</span>。</p>
+<p><span class="arithmatex">\((3)\Longrightarrow (1)\)</span> 由<strong>命题 2.38</strong>即得。</p>
+</details>
+<div id="prop-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.20</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether 环，<span class="arithmatex">\(I\neq(1)\)</span>，则伴随素理想=<span class="arithmatex">\(\left\{(I:x)\right\}_{x\in R}\)</span> 的素理想。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们已证明伴随素理想是 <span class="arithmatex">\(r(I:x)\)</span> 中的素理想。另一方面，若 <span class="arithmatex">\((I:x)\)</span> 是素理想，则 <span class="arithmatex">\(r(I:x)=(I:x)\)</span> 是相伴的。反过来，我们需要证明任意相伴的素理想 <span class="arithmatex">\(\mathfrak{p}\)</span> 对应的 <span class="arithmatex">\(\mathfrak{q}\)</span> 形如 <span class="arithmatex">\((I:y)\)</span>，其中 <span class="arithmatex">\(y\in R\)</span>。</p>
+<p>回忆对极小分解，<span class="arithmatex">\(\mathfrak{p}=r(I:x)=\bigcap r(\mathfrak{q}_i:x)=\bigcap_{x\notin \mathfrak{q}_i} r(\mathfrak{q}_i)\)</span>。对任意 <span class="arithmatex">\(x\notin I\)</span>，<span class="arithmatex">\(x\in \bigcap_{\mathfrak{q}_i\neq \mathfrak{q}} \mathfrak{q}_i=I'\)</span>，则 <span class="arithmatex">\(r(I:x)=\mathfrak{p}\)</span>。由<strong>命题 2.42</strong>知，存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\mathfrak{p}^n\subset \mathfrak{q}\)</span>。则 <span class="arithmatex">\(I'\mathfrak{p}^n\subset I'\cap \mathfrak{q}=0\)</span> 取这样最小的 <span class="arithmatex">\(n\)</span>，则存在 <span class="arithmatex">\(0\neq y\in I'\mathfrak{p}^{n-1},y\mathfrak{p}=0\)</span>，即 <span class="arithmatex">\((I:y)\supset \mathfrak{p}\)</span>。因此 <span class="arithmatex">\(\mathfrak{p}=(I:y)\)</span>，我们完成了证明。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>Artin 环</h2>
+<div id="prop-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.1</span></p>
+<p>若 <span class="arithmatex">\(R\)</span> 是 Artin 环，则任意素理想均是极大的，即幂零根与Jacobson根相等。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>考虑 Artin 整环 <span class="arithmatex">\(R'=R/\mathfrak{p}\)</span>，对任意 <span class="arithmatex">\(0\neq x\in R'\)</span>，我们有 <span class="arithmatex">\((x)\supset (x^2) \supset \cdots\)</span>，存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\((x^n)=(x^{n+1})\)</span>，即存在 <span class="arithmatex">\(y\in R'\)</span>，<span class="arithmatex">\(x^n=x^{n+1}y\)</span>，故 <span class="arithmatex">\(x^n(xy-1)=0\)</span>，由于</p>
+</details>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.2</span></p>
+<p>环 <span class="arithmatex">\(R\)</span> 的 Krull 维数为素理想升链 <span class="arithmatex">\(\mathfrak{p}_0\subsetneq \mathfrak{p}_1\subsetneq \cdots \subsetneq\mathfrak{p}_n\)</span> 长度 <span class="arithmatex">\(n\)</span> 的最大值。</p>
+</div>
+<p>由上命题，若 <span class="arithmatex">\(R\)</span> 是 Artin 的，则 <span class="arithmatex">\(\dim R=0\)</span>。</p>
+<div id="prop-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.3</span></p>
+<p>Artin 环只有有限个极大理想。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>考虑 <span class="arithmatex">\(\Sigma=\left\{ \text{极大理想的有限交}\right\}\)</span>，由 Artin 环的降链条件这个集合有极小元，记为 <span class="arithmatex">\(I=\mathfrak{m}_1\cap \cdots \cap \mathfrak{m}_n\)</span>。则对任意其他极大理想 <span class="arithmatex">\(\mathfrak{m}\)</span>，<span class="arithmatex">\(\mathfrak{m}\cap I=I\)</span>，故存在 <span class="arithmatex">\(i\)</span>，<span class="arithmatex">\(\mathfrak{m}=\mathfrak{m}_i\)</span>，取法有限。</p>
+</details>
+<div id="prop-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.4</span></p>
+<p>在 Artin 环中，幂零根是幂零的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\Re\)</span> 是幂零根，由 Artin 环的升链条件存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\Re^n=\Re^{n+1}=\cdots\)</span>，记为 <span class="arithmatex">\(I\)</span>，我们来证明 <span class="arithmatex">\(I=0\)</span>。若 <span class="arithmatex">\(I\neq 0\)</span>，设 <span class="arithmatex">\(\Sigma=\left\{J\Big|ideal \\ J,I\cdots J\neq 0\right\}\)</span>，则 <span class="arithmatex">\(I\in \Sigma\)</span>。由 Artin，<span class="arithmatex">\(\Sigma\)</span> 有极小元，记为 <span class="arithmatex">\(I'\)</span>，对任意 <span class="arithmatex">\(x\in I',xI\neq 0\)</span>，<span class="arithmatex">\((x)\subset I'\)</span>，故 <span class="arithmatex">\(I'=(x)\)</span>。<span class="arithmatex">\((xI)I=xI^2=xI\neq 0\)</span>，故 <span class="arithmatex">\(xI\in \Sigma\)</span>，这表明 <span class="arithmatex">\(xI=(x)\)</span>。故存在 <span class="arithmatex">\(y\in I\subset \Re\)</span>，<span class="arithmatex">\(xy=x\)</span>。故存在 <span class="arithmatex">\(k\)</span>，<span class="arithmatex">\(y^k=0\)</span>，<span class="arithmatex">\(x=xy^k=0\)</span>，矛盾！</p>
+</details>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.5</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Artin 的当且仅当 <span class="arithmatex">\(R\)</span> 是 Noether 的且 <span class="arithmatex">\(\dim R=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”：设 <span class="arithmatex">\(R\)</span> 是 Artin 的，则幂零根 <span class="arithmatex">\(\Re=\bigcap_{i=1}^n \mathfrak{m}_i\)</span>。由上一个命题存在 <span class="arithmatex">\(k\)</span>，<span class="arithmatex">\(\prod_{i=1}^n  \mathfrak{m}_i^k\subset (\bigcap_{i=1}^n \mathfrak{m}_i)^k=\Re^k=0\)</span>，由<strong>推论 2.18</strong>知 <span class="arithmatex">\(R\)</span> 是 Noether 的。</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：设 <span class="arithmatex">\(R\)</span> 是 Noether 的，<span class="arithmatex">\((0)\)</span> 有准素分解 <span class="arithmatex">\((0)=\cap \mathfrak{q}_i\)</span>。由于存在 <span class="arithmatex">\(n_i\)</span>，<span class="arithmatex">\(r(\mathfrak{q}_i)^{n_i}\subset \mathfrak{q}_i\)</span>，我们可以找到 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\((0)=(\cap r(\mathfrak{q}_i))^n\)</span>。再由 <span class="arithmatex">\(\dim R=0\)</span> 与 <span class="arithmatex">\(r(\mathfrak{q}_i)\)</span> 是素的知其均为极大理想，结合<strong>推论 2.18</strong>知 <span class="arithmatex">\(R\)</span> 是 Artin 的。</p>
+</details>
+<p>上面定理说明了 Artin 环都是 Noether 环，但是 Artin 模不一定是 Noether 模。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.6</span></p>
+<p>考虑 <span class="arithmatex">\(G\subset \mathbb{Q}/\mathbb{Z}\)</span> 作为 <span class="arithmatex">\(\mathbb{Z}-\)</span>模，取素数 <span class="arithmatex">\(p\)</span>，<span class="arithmatex">\(G={\frac{q}{p^n}}\)</span>，其所有子模为 <span class="arithmatex">\((0)\subset \mathbb{Z}\subset \frac{\mathbb{Z}}{p}\subset \frac{\mathbb{Z}}{p^2}\subset \cdots\)</span>，故 <span class="arithmatex">\(G\)</span> 是 Noether 模但不是 Artin 模。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.7</span></p>
+<p>设 <span class="arithmatex">\(R\)</span> 是 Artin 局部环，极大理想为 <span class="arithmatex">\(\mathfrak{m}\)</span>，则 <span class="arithmatex">\(\mathfrak{m}\)</span> 是幂零的，故 <span class="arithmatex">\(x\in R\)</span> 要么是单位，要么是幂零的。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.8</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Noether 局部环，极大理想为 <span class="arithmatex">\(\mathfrak{m}\)</span>，若存在 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\mathfrak{m}^n=\mathfrak{m}^{n+1}\)</span>，由于 Noether 环的理想均有限生成，利用 Nakayama 引理，<span class="arithmatex">\(\mathfrak{m}^n=0\)</span>。对任意素理想 <span class="arithmatex">\(\mathfrak{p}\)</span>，<span class="arithmatex">\(\mathfrak{m}^n\subset \mathfrak{p}\)</span>，故 <span class="arithmatex">\(\mathfrak{m}\subset r(\mathfrak{m}^n)\subset r(\mathfrak{p})\subset \mathfrak{p}\)</span>，即 <span class="arithmatex">\(\mathfrak{m}=\mathfrak{p}\)</span>。因此 <span class="arithmatex">\(\mathfrak{m}\)</span> 是唯一的素理想，由上定理，<span class="arithmatex">\(R\)</span> 是 Artin 的。另外若 <span class="arithmatex">\(R\)</span> 不是 Artin 的，则对任意 <span class="arithmatex">\(\mathfrak{m}\)</span>，<span class="arithmatex">\(\mathfrak{m}^n\neq \mathfrak{m}^{n+1}\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.9</span></p>
+<p>维数为 <span class="arithmatex">\(0\)</span> 的局部环不一定是 Noether 或者 Artin 的。考虑 <span class="arithmatex">\(R=k[x_1,x_2,\cdots]/(x_1,x_2^2,x_3^3,\cdots)\)</span>，有唯一的素理想 <span class="arithmatex">\(\mathfrak{p}=(\bar{x}_2,\bar{x}_3,\cdots)\)</span>，但 <span class="arithmatex">\((\bar{x}_1)\subset (\bar{x}_1,\bar{x}_2)\subset \cdots\)</span> 不是稳定的。</p>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.10</span><span class="book-name">Artin 环的结构定理</span></p>
+<p>任意 Artin 环 <span class="arithmatex">\(R\)</span> 是有限个 Artin 局部环的直积，此直积在同构意义下是唯一的。</p>
+</div>
+<p>为了证明这个定理，我们需要介绍如下定义：</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.11</span></p>
+<p>环 <span class="arithmatex">\(R\)</span> 的两个理想 <span class="arithmatex">\(I_1,I_2\)</span> 称为<strong>互素的(coprime)</strong>，若 <span class="arithmatex">\(I_1+I_2=(1)\)</span>。</p>
+</div>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 3.12</span></p>
+<p>设 <span class="arithmatex">\(I_1,\cdots,I_n \subset R\)</span> 是理想，我们有自然同态 <span class="arithmatex">\(\phi:R\rightarrow \prod R/I_i\)</span>，则：</p>
+<ul>
+<li>若对任意 <span class="arithmatex">\(i\neq j\)</span>，<span class="arithmatex">\(I_i\)</span> 与 <span class="arithmatex">\(I_j\)</span> 互素，则 <span class="arithmatex">\(\cap I_i=\prod I_i\)</span>；</li>
+<li><span class="arithmatex">\(\phi\)</span> 是满射当且仅当对任意 <span class="arithmatex">\(i\neq j\)</span>，<span class="arithmatex">\(I_i\)</span> 与 <span class="arithmatex">\(I_j\)</span> 互素；</li>
+<li><span class="arithmatex">\(\phi\)</span> 是单射当且仅当 <span class="arithmatex">\(\cap I_i=(0)\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：设结论对 <span class="arithmatex">\(n-1\)</span> 成立，即 <span class="arithmatex">\(I=\cap_{i=2}^n I_i=\prod_{i=2}^n I_i\)</span>。我们来证明 <span class="arithmatex">\(I_1\)</span> 与 <span class="arithmatex">\(I\)</span> 互素。事实上对任意 <span class="arithmatex">\(2\le i\le n\)</span>，我们可以找到 <span class="arithmatex">\(a_i\in I_1,b_i\in I_i,a_i+b_i=1\)</span>。故 <span class="arithmatex">\(I\ni \prod b_i=\prod(1-a_i)\in 1+I_1\)</span>，故 <span class="arithmatex">\(1\in I+I_1\)</span>。于是我们只需证明 <span class="arithmatex">\(n=2\)</span> 的情形。事实上，我们有</p>
+<div class="arithmatex">\[
+I_1\cdot I_2\subset I_1\cap I_2=(I_1\cap I_2)(I_1+I_2)=(I_1\cap I_2)I_1+(I_1\cap I_2)I_2\subset I_1\cdot I_2
+\]</div>
+<p>故 <span class="arithmatex">\(I_1\cap I_2=I_1\cdot I_2\)</span>。</p>
+<p><span class="arithmatex">\((2)\)</span>：“<span class="arithmatex">\(\Longrightarrow\)</span>”：<span class="arithmatex">\(R\rightarrow R/I_1\times R/I_2\)</span> 是满射，故存在 <span class="arithmatex">\(a\)</span>，<span class="arithmatex">\(a\in I_i,a\in 1+I_j\)</span>，即 <span class="arithmatex">\(I_i+I_j=1\)</span>。</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：同 <span class="arithmatex">\((1)\)</span>，<span class="arithmatex">\(I_1+\cap_{i=2}^n I_i=(1)\)</span>，故对任意 <span class="arithmatex">\(r_1\in R/I_1\)</span>，我们可以找到 <span class="arithmatex">\(a_1\)</span>，<span class="arithmatex">\(\phi(a_1)=(r_1,0,\cdots,0)\)</span>。则对任意 <span class="arithmatex">\(r=(r_1,\cdots,r_n),\phi(a_1+\cdots+a_n)=r\)</span>，故 <span class="arithmatex">\(\phi\)</span> 是满射。</p>
+<p><span class="arithmatex">\((3)\)</span>：由 <span class="arithmatex">\(\ker \phi=\cap I_i\)</span> 显然。</p>
+</details>
+<details class="proof">
+<summary>定理 2.9 的证明</summary>
+<p>存在性：我们有极小分解 <span class="arithmatex">\((0)=\mathfrak{q}_1\cap \cdots\cap \mathfrak{q}_n\)</span>，<span class="arithmatex">\(r(\mathfrak{q}_i)\neq r(\mathfrak{q}_j)\)</span> 是极大理想。故 <span class="arithmatex">\(r(\mathfrak{q}_i)+r(\mathfrak{q}_j)=(1)\)</span>。则 <span class="arithmatex">\(\mathfrak{q}_i+\mathfrak{q}_j=(1)\)</span>，故由上引理我们有同构</p>
+<div class="arithmatex">\[
+R\cong \prod R/\mathfrak{q}_i
+\]</div>
+<p>唯一性：设 <span class="arithmatex">\(R\cong \prod R_i\)</span>，其中 <span class="arithmatex">\(R_i\)</span> 是 Artin 局部环。我们有自然投影 <span class="arithmatex">\(\pi_i:R\rightarrow R_i\)</span>。令 <span class="arithmatex">\(I_i=\ker \pi_i\)</span>，则 <span class="arithmatex">\((0)=\cap I_i\)</span>。我们希望这是一个极小分解。</p>
+<p>首先 <span class="arithmatex">\(r(I_i)=\pi_i^{-1}(r(0))\)</span>，其中 <span class="arithmatex">\(r(0)\)</span> 是 <span class="arithmatex">\(R_i\)</span> 唯一的极大理想，因此 <span class="arithmatex">\(r(I_i)\)</span> 是极大的，故 <span class="arithmatex">\(I_i\)</span> 是准素的。由上引理对任意 <span class="arithmatex">\(i\neq j\)</span>，<span class="arithmatex">\(I_i+I_j=(1)\)</span>，故 <span class="arithmatex">\(r(I_i)+r(I_j)=(1)\)</span>，这表明 <span class="arithmatex">\(r(I_i)\neq r(I_j)\)</span>。由于 <span class="arithmatex">\(I_i+\cap _{j\neq i}I_j=(1)\)</span>，<span class="arithmatex">\(\cap_{j\neq i}I_j\)</span> 不包含于 <span class="arithmatex">\(I_i\)</span>。</p>
+<p>于是 <span class="arithmatex">\((0)=\cap I_i\)</span> 是极小分解，由于任意素理想是极大的，故均为极小素理想。由<strong>命题 2.40</strong>知唯一。</p>
+</details>
+<div id="prop-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.13</span></p>
+<p><span class="arithmatex">\(R\)</span> 是 Artin 局部环且不是域，则如下条件等价：</p>
+<ul>
+<li><span class="arithmatex">\(R\)</span> 是 PID；</li>
+<li>极大理想 <span class="arithmatex">\(\mathfrak{m}\)</span> 是主理想；</li>
+<li><span class="arithmatex">\(\dim_{R/\mathfrak{m}} \mathfrak{m}/\mathfrak{m}^2=1\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\Longrightarrow(2)\Longrightarrow(3)\)</span> 是显然的。下假设 <span class="arithmatex">\((3)\)</span> 成立。</p>
+<p>由<strong>推论 2.2</strong>知 <span class="arithmatex">\(\mathfrak{m}\)</span> 是主理想，设为 <span class="arithmatex">\((x)\)</span>。由<strong>命题 2.46</strong>知存在 <span class="arithmatex">\(r\)</span>，<span class="arithmatex">\(I\subset \mathfrak{m}^r\)</span> 但不被包含于 <span class="arithmatex">\(\mathfrak{m}^{r+1}\)</span>，故存在 <span class="arithmatex">\(y\in I,y=ax^r,a\notin \mathfrak{m}\)</span>。则 <span class="arithmatex">\(a\)</span> 是 <span class="arithmatex">\(R\)</span> 中的单位，故 <span class="arithmatex">\((x^r)\subset I\)</span>，即 <span class="arithmatex">\(I=(x^r)\)</span> 是主理想。</p>
+</details>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="algebra-2h-notes.pdf" href="../../../../assets/algebra-2h-notes.pdf">下载 PDF 完整版</a></p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="代数2-H笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-08/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第八章：局部化与整相关性</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-10/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第十章：Dedekind 整环与完备性</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#algebra-2h-notes">代数2-H笔记 · 第 9 / 10 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#algebra">代数</a><a class="zdd-end-chip is-category" href="../../../../blog/#algebra-2h-notes">代数 2-H 笔记</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=commutative-algebra">#commutative-algebra</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

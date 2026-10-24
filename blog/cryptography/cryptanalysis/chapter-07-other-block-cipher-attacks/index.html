@@ -1,0 +1,1113 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第七章：代数攻击（插值攻击、线性化与先猜后定、Gröbner 基攻击）与滑动攻击（滑动对、弱置换、Feistel 结构的已知明文与选择明文滑动攻击）。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-07-other-block-cipher-attacks/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第七章：分组密码的其他攻击方法 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge-playground.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-07-other-block-cipher-attacks/">
+  <meta property="og:title" content="第七章：分组密码的其他攻击方法 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第七章：代数攻击（插值攻击、线性化与先猜后定、Gröbner 基攻击）与滑动攻击（滑动对、弱置换、Feistel 结构的已知明文与选择明文滑动攻击）。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-07-other-block-cipher-attacks/">
+  <meta name="twitter:title" content="第七章：分组密码的其他攻击方法 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第七章：代数攻击（插值攻击、线性化与先猜后定、Gröbner 基攻击）与滑动攻击（滑动对、弱置换、Feistel 结构的已知明文与选择明文滑动攻击）。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e03\u7ae0\uff1a\u5206\u7ec4\u5bc6\u7801\u7684\u5176\u4ed6\u653b\u51fb\u65b9\u6cd5",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e03\u7ae0\uff1a\u4ee3\u6570\u653b\u51fb\uff08\u63d2\u503c\u653b\u51fb\u3001\u7ebf\u6027\u5316\u4e0e\u5148\u731c\u540e\u5b9a\u3001Gr\u00f6bner \u57fa\u653b\u51fb\uff09\u4e0e\u6ed1\u52a8\u653b\u51fb\uff08\u6ed1\u52a8\u5bf9\u3001\u5f31\u7f6e\u6362\u3001Feistel \u7ed3\u6784\u7684\u5df2\u77e5\u660e\u6587\u4e0e\u9009\u62e9\u660e\u6587\u6ed1\u52a8\u653b\u51fb\uff09\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-07-other-block-cipher-attacks/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-07-other-block-cipher-attacks/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="zdd14990" class="md-header__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zdd14990
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      
+        <a href="../../../../index.html">Home</a>
+      
+      
+        <a href="../../../" data-zdd-nav="blog">Blog</a>
+      
+      
+        <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      
+      
+        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+      
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 代数攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 代数攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 插值攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 线性化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Gröbner 基攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 滑动攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 滑动攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 滑动攻击原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Feistel 结构的滑动攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 7 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">07</div>
+    <h1 id="top"><span class="book-visually-hidden">第 7 章：</span>分组密码的其他攻击方法</h1>
+  </div>
+  <p class="book-standfirst">前几章的差分、线性、积分分析都是统计分析方法。这一章介绍另外两类攻击：一是<strong>代数攻击</strong>，它是确定性的，利用算法内部的代数结构；二是<strong>滑动攻击</strong>，它利用算法的自相似性，与轮数无关。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>5,828 字 · 约 17 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>代数攻击</h2>
+<p><strong>代数攻击 (algebraic cryptanalysis)</strong> 区别于差分、线性等统计分析方法，是一类确定性的攻击，主要利用算法内部的代数结构。密码算法总可以建模成一系列多变元的代数方程系统，所以通过求解方程系统就可以攻击算法。如果能成功恢复出密钥，或者恢复出一个与具体密钥值无关的等价表示，就视为攻击成功。</p>
+<p>本节先介绍插值攻击，再介绍布尔域 <span class="arithmatex">\(\mathbb F_2\)</span> 上的线性化攻击和有限域 <span class="arithmatex">\(\mathbb F_q\)</span> 上的 Gröbner 基攻击。</p>
+<h3 id="s1-1">1.1 插值攻击</h3>
+<p><strong>插值攻击 (interpolation attack)</strong> 由 Jakobsen 和 Knudsen 提出，是分组密码的第一个代数攻击。密文总可以表示成明文的一系列多项式。如果这些多项式的次数较低，攻击者就可以通过收集足够多的明密文对恢复多项式的系数，从而得到一个与密钥值无关的算法表示。此时攻击者可以在不知道密钥的情况下任意加密明文，得到对应的密文。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.1</span><span class="book-name">拉格朗日插值公式</span></p>
+<p>对某个多项式函数，给定 <span class="arithmatex">\(d+1\)</span> 个取值点 <span class="arithmatex">\((x_0,y_0),\cdots,(x_d,y_d)\)</span>，其中 <span class="arithmatex">\(x_i,y_i\in\mathbb F_q\)</span> 且 <span class="arithmatex">\(x_i\)</span> 两两不同。拉格朗日插值多项式定义为</p>
+<div class="arithmatex">\[
+f(x)=\sum_{i=0}^d y_i\prod_{0\le j\le d,\,j\ne i}\frac{x-x_j}{x_i-x_j},
+\]</div>
+<p>则 <span class="arithmatex">\(y_i=f(x_i)\)</span>，<span class="arithmatex">\(0\le i\le d\)</span>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>密码学中一般使用有限域 <span class="arithmatex">\(\mathbb F_q\)</span> 或 <span class="arithmatex">\(\mathbb F_{2^n}\)</span>，<span class="arithmatex">\(q\)</span> 为素数。</p>
+</div>
+<p>设分组密码 <span class="arithmatex">\(E_k:\mathbb F_{2^n}\to\mathbb F_{2^n}\)</span> 的最高次数为 <span class="arithmatex">\(d&lt;2^n\)</span>，则</p>
+<div class="arithmatex">\[
+y=E_k(x)=\sum_{i=0}^d g_i(k)x^i,
+\]</div>
+<p><span class="arithmatex">\(g_i(k)\)</span> 是与密钥有关的多项式。密钥实际上是未知的确定值，所以可以改写为</p>
+<div class="arithmatex">\[
+y=\sum_{i=0}^d c_ix^i,
+\]</div>
+<p><span class="arithmatex">\(c_0,\cdots,c_d\)</span> 为未知系数。由拉格朗日插值，敌手只需收集 <span class="arithmatex">\(d+1\)</span> 个已知明密文对作插值，就能恢复 <span class="arithmatex">\(E_k\)</span> 的表达式。构造拉格朗日插值多项式的复杂度为 <span class="arithmatex">\(O(d\log d)\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span></p>
+<p>设 <span class="arithmatex">\(E_k\)</span> 是定义在 <span class="arithmatex">\(\mathbb F_{2^n}\)</span> 上的 <span class="arithmatex">\(r\)</span> 轮迭代分组密码，第 <span class="arithmatex">\(i\)</span> 轮的轮函数为</p>
+<div class="arithmatex">\[
+f(x_i,k_i)=(x_i\oplus k_i)^3,
+\]</div>
+<p><span class="arithmatex">\(x_0\)</span> 为输入的明文 <span class="arithmatex">\(p\)</span>，<span class="arithmatex">\(k_0,\cdots,k_{r-1}\)</span> 为独立选取的密钥。当 <span class="arithmatex">\(r=2\)</span> 时，求插值攻击所需的数据量和复杂度。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>记密文为 <span class="arithmatex">\(c\)</span>。特征为 2 时 <span class="arithmatex">\((a\oplus b)^3=a^3\oplus a^2b\oplus ab^2\oplus b^3\)</span>，<span class="arithmatex">\((a\oplus b)^8=a^8\oplus b^8\)</span>，展开得</p>
+<div class="arithmatex">\[
+\begin{aligned}
+c&amp;=\big((p\oplus k_0)^3\oplus k_1\big)^3\\
+&amp;=p^9\oplus p^8k_0\oplus p^6k_1\oplus p^4k_0^2k_1\oplus p^3k_1^2\oplus p^2(k_0^4k_1\oplus k_0k_1^2)\\
+&amp;\quad\oplus p(k_0^8\oplus k_0^2k_1^2)\oplus k_0^9\oplus k_0^6k_1\oplus k_0^3k_1^2\oplus k_1^3.
+\end{aligned}\tag{1}
+\]</div>
+<p>密钥是未知的确定值，所以可以改写为</p>
+<div class="arithmatex">\[
+c=p^9\oplus p^8c_0\oplus p^6c_1\oplus p^4c_2\oplus p^3c_3\oplus p^2c_4\oplus pc_5\oplus c_6,
+\]</div>
+<p><span class="arithmatex">\(c_0,\cdots,c_6\)</span> 为方程的系数。方程的最高次数为 9，由拉格朗日插值定理，敌手收集 10 个明密文对，就能通过插值恢复所有系数。复杂度为 <span class="arithmatex">\(O(9\log9)\)</span> 次域运算，可以忽略。</p>
+</details>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.3</span></p>
+<p>上面的插值攻击如何扩展为密钥恢复攻击？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>有两种思路。</p>
+<ol>
+<li><strong>直接从系数解密钥</strong>：由 (1)，<span class="arithmatex">\(c_0=k_0\)</span>，<span class="arithmatex">\(c_1=k_1\)</span>。插值恢复出系数后，直接读出 <span class="arithmatex">\(k_0=c_0\)</span>，<span class="arithmatex">\(k_1=c_1\)</span>，再用其余系数验证。</li>
+<li><strong>对更多轮，猜最后一轮密钥后插值</strong>（Jakobsen–Knudsen 的通用做法）：对 <span class="arithmatex">\(r\)</span> 轮算法，猜测最后一轮密钥 <span class="arithmatex">\(k_{r-1}\)</span>，把密文部分解密一轮，得到 <span class="arithmatex">\(r-1\)</span> 轮输出关于明文的多项式，次数为 <span class="arithmatex">\(3^{r-1}\)</span>。用 <span class="arithmatex">\(3^{r-1}+1\)</span> 个明密文对插值出多项式，再用一个额外的明密文对检验：猜对时插值多项式能预测这个额外的值，猜错时一般不能。时间复杂度约为 <span class="arithmatex">\(2^n\times O(3^{r-1}\cdot(r-1)\log3)\)</span>。</li>
+</ol>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.4</span></p>
+<p>上例中多项式次数虽为 9，但只有 7 个未知系数（项是稀疏的）。可以尝试用高斯消元法恢复系数。高斯消元的复杂度和成功率分别是多少？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>把 <span class="arithmatex">\(c_0,\cdots,c_6\)</span> 看作未知量，每个明密文对给出一个关于它们的线性方程</p>
+<div class="arithmatex">\[
+c\oplus p^9=p^8c_0\oplus p^6c_1\oplus p^4c_2\oplus p^3c_3\oplus p^2c_4\oplus pc_5\oplus c_6.
+\]</div>
+<p>只需 7 个明密文对，比插值少 3 个。求解 <span class="arithmatex">\(7\times7\)</span> 的线性系统需 <span class="arithmatex">\(O(7^3)\)</span> 次域运算，可以忽略。</p>
+<p>成功的条件是系数矩阵（行为 <span class="arithmatex">\((p^8,p^6,p^4,p^3,p^2,p,1)\)</span>）满秩。对随机选取的 7 个不同明文，可以把它看作 <span class="arithmatex">\(\mathbb F_{2^n}\)</span> 上的随机矩阵，满秩的概率约为 <span class="arithmatex">\(\prod_{i\ge1}(1-2^{-ni})\approx1-2^{-n}\)</span>，几乎一定成功。不满秩时再多取一个明文即可。</p>
+</details>
+<h3 id="s1-2">1.2 线性化</h3>
+<p><strong>线性化 (linearization)</strong> 是求解布尔域 <span class="arithmatex">\(\mathbb F_2\)</span> 上多变元方程系统的重要技术：把方程中所有的单项式都看作新的独立变量，利用线性代数求解。具体地说，对 <span class="arithmatex">\(n\)</span> 进 <span class="arithmatex">\(m\)</span> 出的向量布尔函数 <span class="arithmatex">\(F:\mathbb F_2^n\to\mathbb F_2^m\)</span>，<span class="arithmatex">\(F_i\)</span> 为其第 <span class="arithmatex">\(i\)</span> 个坐标函数。令 <span class="arithmatex">\(\mathbb A\)</span> 为 <span class="arithmatex">\(F\)</span> 的坐标函数中所有可能出现的指数集合，指数 <span class="arithmatex">\(\alpha=(\alpha_1,\cdots,\alpha_n)\in\{0,1\}^n\)</span>，则</p>
+<div class="arithmatex">\[
+F_i=\sum_{\alpha\in\mathbb A}c^{(i)}_\alpha x^\alpha,\qquad x^\alpha=x_1^{\alpha_1}\cdots x_n^{\alpha_n},\ x_i\in\mathbb F_2.
+\]</div>
+<p>于是 <span class="arithmatex">\(F\)</span> 可以写成</p>
+<div class="arithmatex">\[
+\begin{pmatrix}\cdots&amp;c^{(1)}_\alpha&amp;\cdots\\&amp;\vdots&amp;\\\cdots&amp;c^{(m)}_\alpha&amp;\cdots\end{pmatrix}
+\begin{pmatrix}\vdots\\x^\alpha\\\vdots\end{pmatrix}
+=\begin{pmatrix}F_1\\\vdots\\F_m\end{pmatrix}.
+\]</div>
+<p>把每个单项式 <span class="arithmatex">\(x^\alpha\)</span> 看作独立的线性变量，就可以用高斯消元法求解。</p>
+<p>线性化的有效性主要取决于方程组中线性独立的单项式数目，所以估计单项式数目是计算线性化复杂度的重要步骤。一般地，对最高次数为 <span class="arithmatex">\(d\)</span> 的 <span class="arithmatex">\(n\)</span> 元向量布尔函数，求解的时间复杂度上界为 <span class="arithmatex">\(D^\omega\)</span> 次比特操作（<span class="arithmatex">\(\omega\)</span> 一般取 2.8 或 3），数据复杂度上界为 <span class="arithmatex">\(D\)</span>，其中 <span class="arithmatex">\(D\)</span> 为次数不超过 <span class="arithmatex">\(d\)</span> 的单项式个数：</p>
+<div class="arithmatex">\[
+D=\sum_{i=1}^d\binom ni.
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>若时间复杂度的单位是运行一次加密的时间，则需要把比特操作折算过去。</p>
+</div>
+<p>实际攻击中还可以用<strong>先猜后定 (guess-and-determine)</strong> 策略降低复杂度：预先猜定 <span class="arithmatex">\(g\)</span> 个比特的取值，此时可能出现的单项式数目变为</p>
+<div class="arithmatex">\[
+D_g=\sum_{i=1}^d\binom{n-g}i,
+\]</div>
+<p>求解的时间复杂度上界为 <span class="arithmatex">\(2^g\times(D_g)^\omega\)</span> 次比特操作，数据复杂度上界为 <span class="arithmatex">\(D_g\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.5</span><span class="book-name">EL 算法的线性化攻击</span></p>
+<p>分组加密算法 EL 是一个 3 轮 SPN 结构算法，分组长度与轮密钥长度均为 12 比特。内部状态是 <span class="arithmatex">\(3\times4\)</span> 的比特矩阵：</p>
+<div class="arithmatex">\[
+\begin{matrix}0&amp;1&amp;2&amp;3\\4&amp;5&amp;6&amp;7\\8&amp;9&amp;10&amp;11\end{matrix}
+\]</div>
+<p>明密文分别记为 <span class="arithmatex">\(p=(p_0,\cdots,p_{11})\)</span>，<span class="arithmatex">\(c=(c_0,\cdots,c_{11})\)</span>，<span class="arithmatex">\(p_i,c_i\in\mathbb F_2\)</span>。每一轮使用相同的轮密钥 <span class="arithmatex">\(k=(k_0,\cdots,k_{11})\)</span>。轮函数包含三步：</p>
+<ul>
+<li><strong>异或轮密钥</strong>：状态矩阵逐比特与轮密钥异或；</li>
+<li>
+<p><strong>字节替换</strong>：用同一个 3 比特 S 盒对状态矩阵的每一列作替换，<span class="arithmatex">\((y_0,y_1,y_2)=S(x_0,x_1,x_2)\)</span>，</p>
+<div class="arithmatex">\[
+y_0=x_0x_2\oplus x_1\oplus1,\qquad y_1=x_0x_1\oplus x_1\oplus x_2\oplus1,\qquad y_2=x_1x_2\oplus x_0\oplus x_2;
+\]</div>
+</li>
+<li>
+<p><strong>行变换</strong>：对状态矩阵的每一行用矩阵 <span class="arithmatex">\(M\)</span> 作线性变换，</p>
+<div class="arithmatex">\[
+M=\begin{pmatrix}1&amp;1&amp;0&amp;0\\0&amp;1&amp;1&amp;0\\0&amp;0&amp;1&amp;1\\1&amp;0&amp;0&amp;1\end{pmatrix}.
+\]</div>
+</li>
+</ul>
+<p>三轮 EL 算法线性化攻击的复杂度为多少？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>线性化攻击中，敌手收集明密文对，构造与密钥变量有关的多项式求解。把 EL 的输出 <span class="arithmatex">\(c\)</span> 看成明文 <span class="arithmatex">\(p\)</span> 和密钥 <span class="arithmatex">\(k\)</span> 的多项式，明密文已知时，每一轮的代数次数为 2，所以三轮后关于密钥 <span class="arithmatex">\(k=(k_0,\cdots,k_{11})\)</span> 的多项式次数为 <span class="arithmatex">\(d=2^3=8\)</span>。可能出现的单项式数目为</p>
+<div class="arithmatex">\[
+D=\sum_{i=1}^8\binom{12}i=3796.
+\]</div>
+<p>取 <span class="arithmatex">\(\omega=2.8\)</span>，时间复杂度为 <span class="arithmatex">\(D^\omega\approx2^{33.29}\)</span> 次比特操作。每个明密文对给出 12 个方程，数据复杂度为 <span class="arithmatex">\(D/12\approx2^{8.31}\)</span> 个明密文对。</p>
+<p>用先猜后定策略，设猜测 <span class="arithmatex">\(g\)</span> 个密钥比特（<span class="arithmatex">\(1\le g\le12\)</span>），单项式数目为</p>
+<div class="arithmatex">\[
+D_g=\sum_{i=1}^8\binom{12-g}i.
+\]</div>
+<p>取 <span class="arithmatex">\(\omega=2.8\)</span>，<span class="arithmatex">\(g=4\)</span> 时 <span class="arithmatex">\(D_4=255\)</span>，时间复杂度为 <span class="arithmatex">\(2^4\times255^{2.8}\approx2^{26.4}\)</span> 次比特操作，数据复杂度为 <span class="arithmatex">\(255/12\approx2^{4.41}\)</span> 个明密文对。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这两个数我用程序重算过：<span class="arithmatex">\(D/12\approx2^{8.305}\)</span>，<span class="arithmatex">\(D_4/12\approx2^{4.409}\)</span>。教材印的是 <span class="arithmatex">\(2^{8.301}\)</span> 和 <span class="arithmatex">\(2^{4.415}\)</span>，差别在小数点后第二位，应该是舍入方式不同，不影响结论。</p>
+</div>
+<p>一般化的线性化攻击假定所有次数不超过 <span class="arithmatex">\(d\)</span> 的单项式都会出现，但实际算法中单项式可能是稀疏的。在上例中，考虑第一轮字节替换在内部状态位置 1 的输出：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+S(p_0\oplus k_0,p_4\oplus k_4,p_8\oplus k_8)_1&amp;=(p_0\oplus k_0)(p_4\oplus k_4)\oplus(p_4\oplus k_4)\oplus(p_8\oplus k_8)\oplus1\\
+&amp;=k_0k_4\oplus p_4k_0\oplus(p_0\oplus1)k_4\oplus k_8\oplus(p_0p_4\oplus p_4\oplus p_8\oplus1),
+\end{aligned}
+\]</div>
+<p>与密钥有关的项只有 1 个二次项和 3 个线性项。简单计算可知，过完整个字节替换后，与密钥有关的项只有 12 个二次项和 12 个线性项，而不是 <span class="arithmatex">\(\binom{12}2=66\)</span> 个二次项。过第二轮轮函数也有同样的结论。所以实际攻击中可以根据算法结构进一步确定单项式数目。</p>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.6</span></p>
+<p>用 SageMath 计算 EL 算法两轮和三轮后与密钥相关的单项式数目。</p>
+</div>
+<details class="solution">
+<summary>思路</summary>
+<p>在 <span class="arithmatex">\(\mathbb F_2[p_0,\cdots,p_{11},k_0,\cdots,k_{11}]\)</span> 的商环（模 <span class="arithmatex">\(x_i^2-x_i\)</span>）中，用 <code>BooleanPolynomialRing</code> 定义 24 个变量，按定义逐轮计算状态的 12 个多项式。对每个输出多项式取 <code>monomials()</code>，把每个单项式中的明文变量去掉（明文已知，相当于系数），收集只含密钥变量的部分并去重，统计个数。关键代码：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">R</span> <span class="o">=</span> <span class="n">BooleanPolynomialRing</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="p">[</span><span class="s1">'p</span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'k</span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)])</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">P</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">gens</span><span class="p">()[:</span><span class="mi">12</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">gens</span><span class="p">()[</span><span class="mi">12</span><span class="p">:]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">S</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">return</span> <span class="p">(</span><span class="n">x0</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x0</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x1</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">rnd</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)]</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">8</span><span class="p">])</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="n">row</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="o">*</span><span class="n">r</span><span class="p">:</span><span class="mi">4</span><span class="o">*</span><span class="n">r</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="n">out</span><span class="p">[</span><span class="mi">4</span><span class="o">*</span><span class="n">r</span><span class="p">:</span><span class="mi">4</span><span class="o">*</span><span class="n">r</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">return</span> <span class="n">out</span>
+</code></pre></div>
+<p><code>rnd</code> 中的行变换要按 <span class="arithmatex">\(M\)</span> 是左乘还是右乘确定（上面按 <span class="arithmatex">\(\boldsymbol y=M\boldsymbol x\)</span> 写）。两轮、三轮后分别统计，就能看到实际单项式数目远小于 <span class="arithmatex">\(D\)</span>。</p>
+</details>
+<h3 id="s1-3">1.3 Gröbner 基攻击</h3>
+<p>Gröbner 基算法是目前公认可用于求解多变元高次方程系统的有效算法。通常把密码算法建模成多变元方程系统，再用现有的 Gröbner 基算法求解。具体的数学理论可以参考 Cox、Little、O'Shea 的《Ideals, Varieties, and Algorithms》。</p>
+<p>对 <span class="arithmatex">\(\mathbb F_q[X_1,\cdots,X_{n_v}]\)</span> 上有 <span class="arithmatex">\(n_v\)</span> 个变元的多项式系统 <span class="arithmatex">\(P_1,\cdots,P_{n_e}\)</span>，记理想 <span class="arithmatex">\(\mathcal I=\langle P_1,\cdots,P_{n_e}\rangle\)</span>，可以用 F4 或 F5 算法计算 <span class="arithmatex">\(\mathcal I\)</span> 的 Gröbner 基。若算出的 Gröbner 基是字典序的，最后得到的形式为</p>
+<div class="arithmatex">\[
+\begin{cases}
+G_1(X_1),\\
+G_{2,1}(X_1,X_2),\cdots,G_{2,l_2}(X_1,X_2),\\
+\cdots\cdots\\
+G_{n,1}(X_1,\cdots,X_{n_v}),\cdots,G_{n,l_n}(X_1,\cdots,X_{n_v}),
+\end{cases}
+\]</div>
+<p>即可递归求解：先用单变元求根的方法解 <span class="arithmatex">\(G_1(X_1)\)</span>，把解代入 <span class="arithmatex">\(G_{2,i}(X_1,X_2)\)</span>，依次类推。但直接计算字典序 Gröbner 基的成本太大，所以一般先计算分次反字典序 (grevlex) 的 Gröbner 基，再用 FGLM 算法转为字典序。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.7</span><span class="book-name">算法（Gröbner 基攻击）</span></p>
+<ol>
+<li><strong>多项式建模</strong>：把密码算法建模成一系列多变元多项式；</li>
+<li>用 F4 或 F5 算法计算分次反字典序的 Gröbner 基；</li>
+<li>用 FGLM 算法对得到的 Gröbner 基作项序转换，从分次反字典序转为字典序；</li>
+<li>用单变元求根法依次回代求解。</li>
+</ol>
+</div>
+<p><strong>复杂度。</strong> 第 2 步中，多项式系统通常是非正则系统，而非正则系统的分析较困难，所以通常用等价的正则系统来估计。记 <span class="arithmatex">\(d_i\)</span> 为 <span class="arithmatex">\(P_i\)</span> 的次数，<span class="arithmatex">\(d\)</span> 为理想 <span class="arithmatex">\(\mathcal I\)</span> 的次数（即 <span class="arithmatex">\(\overline{\mathbb F_q}^n\)</span> 中解的个数），<span class="arithmatex">\(D_{\mathrm{reg}}\)</span> 为 <span class="arithmatex">\(\mathcal I\)</span> 的正则度，则</p>
+<div class="arithmatex">\[
+D_{\mathrm{reg}}\le1+\sum_{i=1}^{n_e}(d_i-1),\qquad d\le\prod_{i=1}^{n_e}d_i,
+\]</div>
+<p>系统正则时取等号。在假定系统正则的前提下，计算 Gröbner 基的复杂度为</p>
+<div class="arithmatex">\[
+O\left(n_vD_{\mathrm{reg}}\times\binom{n_v+D_{\mathrm{reg}}-1}{D_{\mathrm{reg}}}^\omega\right),
+\]</div>
+<p><span class="arithmatex">\(2\le\omega&lt;3\)</span> 为线性代数中高斯消元的指数。</p>
+<p>第 3 步中，原始的 FGLM 算法复杂度为 <span class="arithmatex">\(O(n_vd^3)\)</span>，也存在一些复杂度更优的概率性算法。第 4 步主要用单变元求根算法，复杂度约为 <span class="arithmatex">\(O\big(d\log d(\log d+\log q)\log\log d\big)\)</span> 次运算。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>从复杂度公式可以看出，Gröbner 基攻击的代价主要由正则度 <span class="arithmatex">\(D_{\mathrm{reg}}\)</span> 决定，而 <span class="arithmatex">\(D_{\mathrm{reg}}\)</span> 随方程次数 <span class="arithmatex">\(d_i\)</span> 线性增长。这就是为什么近年面向零知识证明、多方计算设计的“算术化友好”算法（如 MiMC、Poseidon）特别关注代数次数：它们在大素数域上运算、轮函数次数很低，插值攻击和 Gröbner 基攻击是对它们最主要的威胁。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>滑动攻击</h2>
+<p><strong>滑动攻击 (slide attack)</strong> 是 Biryukov 和 Wagner 在 FSE 1999 上提出的一种利用算法自相似性构造区分器的攻击方法。在 EUROCRYPT 2000 上，他们又扩展了滑动的形式，提出<strong>高级滑动攻击 (advanced slide attack)</strong>。</p>
+<p>滑动攻击可以在已知明文或选择明文两种场景下进行。与相关密钥攻击一样，滑动攻击都基于密钥编排，利用轮密钥之间的关系构造区分器。<strong>值得注意的是，滑动攻击与算法轮数无关</strong>：一旦存在滑动攻击，就很难通过简单增加轮数来提高抵抗能力。一般而言，若密钥编排存在一定的周期性，就容易受到滑动攻击。所以现在多数密钥编排都通过引入不同的轮常数来消除周期性，避开滑动攻击。</p>
+<p>本章只考虑每轮轮密钥都相同这种最简单的情况，更复杂的情形参考 Biryukov 和 Wagner 的两篇原文。</p>
+<h3 id="s2-1">2.1 滑动攻击原理</h3>
+<p>设加密算法 <span class="arithmatex">\(E\)</span> 为 <span class="arithmatex">\(r\)</span> 轮迭代，每轮的轮函数都为 <span class="arithmatex">\(F\)</span>，分组长度为 <span class="arithmatex">\(n\)</span> 比特。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">滑动对</span></p>
+<p>若 <span class="arithmatex">\(F(K,P_0)=P_1\)</span>，则称 <span class="arithmatex">\((P_0,P_1)\)</span> 为<strong>滑动对 (slid pair)</strong>。</p>
+</div>
+<p>把 <span class="arithmatex">\(P_1\)</span> 的加密过程相对 <span class="arithmatex">\(P_0\)</span> 的“滑动”一轮：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+P_0&amp;\xrightarrow{F}\ \cdot\ \xrightarrow{F}\cdots\xrightarrow{F}C_0,\\
+&amp;\phantom{\xrightarrow{F}}P_1\xrightarrow{F}\ \cdot\ \xrightarrow{F}\cdots\xrightarrow{F}C_1.
+\end{aligned}
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>若 <span class="arithmatex">\((P_0,P_1)\)</span> 为滑动对，因为两条加密路线只是错开了一轮，易得 <span class="arithmatex">\(F(K,C_0)=C_1\)</span> 也成立，于是得到关于密钥 <span class="arithmatex">\(K\)</span> 的方程组。对滑动对 <span class="arithmatex">\((P_0,P_1)\)</span>：</p>
+<ul>
+<li>对正确密钥 <span class="arithmatex">\(K\)</span>，<span class="arithmatex">\(F(K,P_0)=P_1\)</span> 与 <span class="arithmatex">\(F(K,C_0)=C_1\)</span> 一定同时成立；</li>
+<li>对错误密钥 <span class="arithmatex">\(K\)</span>，两式以 <span class="arithmatex">\(2^{-2n}\)</span> 的概率同时成立。</li>
+</ul>
+<p>反过来，若滑动对 <span class="arithmatex">\((P_0,P_1)\)</span> 对应的关于 <span class="arithmatex">\(K\)</span> 的方程组</p>
+<div class="arithmatex">\[
+\begin{cases}F(K,P_0)=P_1,\\F(K,C_0)=C_1\end{cases}\tag{2}
+\]</div>
+<p>有解，就认为该解为正确密钥的候选值。</p>
+</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">算法（已知明文环境下的滑动攻击）</span></p>
+<ol>
+<li>获取 <span class="arithmatex">\(2^{n/2}\)</span> 个已知明密文对 <span class="arithmatex">\((P_i,C_i)\)</span>。由生日攻击，其中以不可忽略的概率存在一个滑动对；</li>
+<li>
+<p>对所有 <span class="arithmatex">\(i,j\in\{1,2,\cdots,2^{n/2}\}\)</span>，<span class="arithmatex">\(i\ne j\)</span>，求解关于密钥 <span class="arithmatex">\(K\)</span> 的方程组</p>
+<div class="arithmatex">\[
+\begin{cases}F(K,P_i)=P_j,\\F(K,C_i)=C_j.\end{cases}
+\]</div>
+<p>若有解，认为该解为正确密钥的候选值，且相应的 <span class="arithmatex">\((P_i,P_j)\)</span> 为滑动对；</p>
+</li>
+<li>
+<p>若上一步求出的密钥多于 1 个，再结合穷举攻击或另一个 <span class="arithmatex">\(2^{n/2}\)</span> 个明密文对的集合识别出唯一的正确密钥。</p>
+</li>
+</ol>
+</div>
+<p>可见攻击的数据复杂度为 <span class="arithmatex">\(O(2^{n/2})\)</span> 个已知明文，时间复杂度受第 2 步的影响，为 <span class="arithmatex">\(O(2^n)\)</span> 次方程组求解。若能利用 <span class="arithmatex">\(F\)</span> 的特性降低第 2 步的复杂度，攻击的复杂度就会低于强力攻击，滑动攻击成功。一般来说，滑动攻击要求轮函数 <span class="arithmatex">\(F\)</span> 是弱置换。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span><span class="book-name">弱置换</span></p>
+<p>若关于密钥 <span class="arithmatex">\(K\)</span> 的方程组</p>
+<div class="arithmatex">\[
+\begin{cases}F(K,x_0)=y_0,\\F(K,x_1)=y_1\end{cases}
+\]</div>
+<p>容易求解，则称 <span class="arithmatex">\(F\)</span> 为<strong>弱置换 (weak permutation)</strong>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这里的“容易求解”是一个相对的概念，结合下面 Feistel 结构的滑动攻击来理解。</p>
+</div>
+<h3 id="s2-2">2.2 Feistel 结构的滑动攻击</h3>
+<p>下面以 Feistel 结构的算法为例，说明滑动攻击在已知明文环境下的复杂度为 <span class="arithmatex">\(O(2^{n/2})\)</span>，在选择明文环境下为 <span class="arithmatex">\(O(2^{n/4})\)</span>。</p>
+<p><strong>已知明文环境。</strong> 按 <a href="#s2-1">§2.1</a> 的模型，已知 <span class="arithmatex">\(2^{n/2}\)</span> 个明密文对 <span class="arithmatex">\((P_i,C_i)\)</span>。在 Feistel 结构中，每个明密文都可以分成长度相等的左右两部分，记作 <span class="arithmatex">\((P_{i,L}\Vert P_{i,R},\ C_{i,L}\Vert C_{i,R})\)</span>。若 <span class="arithmatex">\((P_a,P_b)\)</span> 为滑动对，则一轮 Feistel 把 <span class="arithmatex">\(P_a\)</span> 的右半直接搬到 <span class="arithmatex">\(P_b\)</span> 的左半，密文端同理，所以一定满足</p>
+<div class="arithmatex">\[
+P_{a,R}=P_{b,L}\quad\text{且}\quad C_{a,L}=C_{b,R}.
+\]</div>
+<p>反之，不满足这一特性的一定不是滑动对。所以可以用哈希表直接过滤出滑动对：按 <span class="arithmatex">\((P_R,C_L)\)</span> 建表，再以 <span class="arithmatex">\((P_L,C_R)\)</span> 查表，复杂度为 <span class="arithmatex">\(O(2^{n/2})\)</span>。得到滑动对后，代入方程组 (2) 求解正确密钥的候选值。<span class="arithmatex">\(F\)</span> 是弱置换，模型第 2 步的时间复杂度降为 <span class="arithmatex">\(O(2^{n/2})\)</span>，攻击的总复杂度为 <span class="arithmatex">\(O(2^{n/2})\)</span>，低于穷举攻击。</p>
+<p><strong>选择明文环境。</strong> 这时可以直接选择满足 <span class="arithmatex">\(P_{a,R}=P_{b,L}\)</span> 的明文对，进一步降低复杂度。选择两个各由 <span class="arithmatex">\(2^{n/4}\)</span> 个明文构成的结构体</p>
+<div class="arithmatex">\[
+S_1=\{P_i\mid P_i=(y_i\Vert x)\},\qquad S_2=\{P_j\mid P_j=(x\Vert y_j)\},
+\]</div>
+<p>其中 <span class="arithmatex">\(x\)</span> 为随机选取的 <span class="arithmatex">\(n/2\)</span> 比特常数，<span class="arithmatex">\(y_i\)</span> 和 <span class="arithmatex">\(y_j\)</span> 各遍历 <span class="arithmatex">\(2^{n/4}\)</span> 种可能。于是</p>
+<div class="arithmatex">\[
+\forall P_i\in S_1,\ P_j\in S_2,\qquad P_{i,R}=P_{j,L}.
+\]</div>
+<p>只需验证 <span class="arithmatex">\(C_{i,L}=C_{j,R}\)</span> 是否满足。两个结构体之间共有 <span class="arithmatex">\(2^{n/4}\times2^{n/4}=2^{n/2}\)</span> 对，而每对是滑动对的概率约为 <span class="arithmatex">\(2^{-n/2}\)</span>（只需 <span class="arithmatex">\(F\)</span> 的输出与 <span class="arithmatex">\(y_j\)</span> 吻合），所以这两个结构体中以不可忽略的概率存在一个滑动对，且识别滑动对的复杂度为 <span class="arithmatex">\(O(2^{n/4})\)</span>。因此攻击的总复杂度为 <span class="arithmatex">\(O(2^{n/4})\)</span>，低于穷举攻击。</p>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.4</span></p>
+<p>若把 DES 由 16 轮改为 96 轮，主密钥由 56 比特改为 96 比特，即 96 比特的主密钥分为 48 比特的两个轮密钥 <span class="arithmatex">\((K_0,K_1)\)</span> 循环使用（第一轮用 <span class="arithmatex">\(K_0\)</span>，第二轮用 <span class="arithmatex">\(K_1\)</span>，第三轮用 <span class="arithmatex">\(K_0\)</span>，……），能否对这个变形算法 2K-DES 实施滑动攻击？复杂度为多少？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>能。把相邻两轮合起来看作一个“大轮” <span class="arithmatex">\(F'=F_{K_1}\circ F_{K_0}\)</span>，96 轮 2K-DES 就是 48 个相同的大轮，满足滑动攻击的前提：<span class="arithmatex">\((P_0,P_1)\)</span> 是滑动对当且仅当 <span class="arithmatex">\(F'(P_0)=P_1\)</span>。</p>
+<p>困难在于 <span class="arithmatex">\(F'\)</span> 是两轮 Feistel，它的左右两半都被改动，不能再用 <span class="arithmatex">\(P_{a,R}=P_{b,L}\)</span> 过滤。Biryukov 和 Wagner 的办法是<strong>扭转滑动 (twist)</strong> 或<strong>互补滑动 (complementation slide)</strong>：</p>
+<ul>
+<li><strong>互补滑动</strong>：把 <span class="arithmatex">\(P_1\)</span> 的加密相对 <span class="arithmatex">\(P_0\)</span> 滑动<strong>一轮</strong>（不是一个大轮），此时 <span class="arithmatex">\(P_0\)</span> 用 <span class="arithmatex">\(K_0,K_1,K_0,\cdots\)</span>，<span class="arithmatex">\(P_1\)</span> 用 <span class="arithmatex">\(K_1,K_0,K_1,\cdots\)</span>。两个加密的每一轮之间密钥差为 <span class="arithmatex">\(\Delta=K_0\oplus K_1\)</span>，若同时给中间状态引入差分 <span class="arithmatex">\((\Delta,\Delta)\)</span>，可以让它在每一轮的 F 函数输入处抵消。于是又回到单轮滑动对的情形，可用 <span class="arithmatex">\(P_{a,R}=P_{b,L}\oplus\Delta\)</span> 一类的条件过滤。</li>
+<li>复杂度：已知明文下约需 <span class="arithmatex">\(2^{n/2}=2^{32}\)</span> 个已知明文和 <span class="arithmatex">\(2^{32}\)</span> 量级的时间。由于 DES 的 F 是弱置换（每个滑动对给出关于 48 比特轮密钥的方程，可以通过 S 盒逐个求解），复杂度与轮数无关，远低于 <span class="arithmatex">\(2^{96}\)</span> 的穷举。</li>
+</ul>
+<p>更细的条件和推导见 Biryukov–Wagner, <em>Advanced Slide Attacks</em>, EUROCRYPT 2000。</p>
+</details>
+<div id="ex-5" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>思考：对 Feistel 结构，若轮密钥循环使用 <span class="arithmatex">\(K_0,K_1\)</span>，还可以存在哪些滑动形式？</p>
+</div>
+<details class="solution">
+<summary>提示</summary>
+<p>Biryukov–Wagner 的高级滑动攻击给出了两种：</p>
+<ul>
+<li><strong>互补滑动 (complementation slide)</strong>：滑动一轮，利用密钥差 <span class="arithmatex">\(K_0\oplus K_1\)</span> 与状态差相互抵消；</li>
+<li><strong>扭转滑动 (sliding with a twist)</strong>：把一个加密与另一个<strong>解密</strong>对齐（Feistel 的解密与加密结构相同，只是轮密钥顺序相反），对 <span class="arithmatex">\(K_0,K_1\)</span> 交替的结构，解密的轮密钥序列恰好与加密错开一轮后吻合。</li>
+</ul>
+<p>两者还可以组合使用（complementation + twist），对付更复杂的周期性密钥编排。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>小结</h2>
+<ul>
+<li><strong>代数攻击</strong>是确定性攻击：插值攻击利用低次数恢复多项式表示，线性化把单项式当作新变量解线性方程组（可配合先猜后定），Gröbner 基攻击用 F4/F5 + FGLM 解一般多变元方程组，其复杂度主要由正则度决定。</li>
+<li><strong>滑动攻击</strong>利用轮函数的自相似性，复杂度与轮数无关。已知明文下 <span class="arithmatex">\(O(2^{n/2})\)</span>，Feistel 结构的选择明文攻击 <span class="arithmatex">\(O(2^{n/4})\)</span>。抵抗方法是在密钥编排中加入轮常数，破坏周期性。</li>
+</ul>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 7 章。</p>
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-06-meet-in-the-middle/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第六章：中间相遇攻击</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-08-equivalence-of-analysis-methods/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第八章：分组密码各种分析方法的等价性</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 7 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/funny_title.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>
