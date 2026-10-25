@@ -200,10 +200,9 @@ $$
 
 **扰动边界条件。** 底壁 $\theta=T-(1-0)=1-1=0$，顶壁 $\theta=T-(1-1)=0-0=0$；速度边界不变。
 
-!!! note "目前进展"
-    原问题是关于有量纲量 $(\boldsymbol v^*,T^*,p^*_{\rm full})$ 的方程组：温度壁值非齐次（底 $T_b^*$、顶 $T_t^*$），含 $H_*,\Delta T_*,\nu,\kappa,\alpha,g_*,\rho_0$ 七个物理参数。现在它已转化为关于无量纲扰动量 $(u,w,\theta,p)$ 的问题：所有壁面条件都是**齐次零值**，水平周期为 1，参数只剩 $\mathrm{Ra}$ 与 $\Pr$。
+**目前进展。** 原问题是关于有量纲量 $(\boldsymbol v^*,T^*,p^*_{\rm full})$ 的方程组：温度壁值非齐次（底 $T_b^*$、顶 $T_t^*$），含 $H_*,\Delta T_*,\nu,\kappa,\alpha,g_*,\rho_0$ 七个物理参数。现在它已转化为关于无量纲扰动量 $(u,w,\theta,p)$ 的问题：所有壁面条件都是**齐次零值**，水平周期为 1，参数只剩 $\mathrm{Ra}$ 与 $\Pr$。
 
-    剩下的困难是压力 $p$：它没有自己的演化方程，只由不可压约束 $\nabla\cdot\boldsymbol v=0$ 隐式决定。下一节先把它从推进中消掉。
+剩下的困难是压力 $p$：它没有自己的演化方程，只由不可压约束 $\nabla\cdot\boldsymbol v=0$ 隐式决定。下一节先把它从推进中消掉。
 
 ## 2. 程序设计
 
@@ -340,10 +339,9 @@ $$
 
 需要另外两件事：平均流 $\overline u$ 以零壁条件推进（第 3 节），非平均部分 $\psi_z|_{\rm wall}=0$ 由 `impose_noslip` 调整壁面涡量来保证（第 6 节）。`velocity_from_vorticity` 使用这份已经受约束的状态求速度，没有在恢复后强行覆盖壁面速度。
 
-!!! note "目前进展"
-    四个未知量 $(u,w,\theta,p)$ 已换成三个存储量 $(\omega,\overline u,\theta)$：压力不再需要推进，速度 $(u,w)$ 也不再是独立未知量，而是随时可以从 $(\omega,\overline u)$ 算出来——逐模态解 $(-\partial_{zz}+a_m^2)\widehat\psi_m=\widehat\omega_m$，再求导。不穿透条件 $w=0$ 已自动满足。
+**目前进展。** 四个未知量 $(u,w,\theta,p)$ 已换成三个存储量 $(\omega,\overline u,\theta)$：压力不再需要推进，速度 $(u,w)$ 也不再是独立未知量，而是随时可以从 $(\omega,\overline u)$ 算出来——逐模态解 $(-\partial_{zz}+a_m^2)\widehat\psi_m=\widehat\omega_m$，再求导。不穿透条件 $w=0$ 已自动满足。
 
-    代价是留下一个尚未满足的条件：壁面 $\psi_z=0$（切向无滑移）。它要靠选择合适的壁面涡量来实现，留到第 6 节。
+代价是留下一个尚未满足的条件：壁面 $\psi_z=0$（切向无滑移）。它要靠选择合适的壁面涡量来实现，留到第 6 节。
 
 ### 2.2 全局辅助网格与局部自适应网格
 
@@ -372,7 +370,7 @@ $$
 \qquad a_m=2\pi\kappa_m .
 $$
 
-例如 $N_x=8$ 时 $\kappa=0,1,2,3,-4,-3,-2,-1$。第 $m=N_x/2+1$ 个是 **Nyquist 模态** $\kappa=-N_x/2$，它没有对应的 $+N_x/2$ 伙伴，后面会单独处理。
+例如 $N_x=8$ 时 $\kappa=0,1,2,3,-4,-3,-2,-1$。第 $m=N_x/2+1$ 个是 **Nyquist 模态** $\kappa=-N_x/2$，它没有对应的 $+N_x/2$，后面会单独处理。
 
 #### 离散 Fourier 变换为什么互逆
 
@@ -599,10 +597,9 @@ $$
 
 代码复数 `dot_product(a,b)` 正好对第一参数取共轭；Nyquist 行（`m == g%nx/2+1`）额外除以 2。这个 1/2 的来源就是 Nyquist 项在实数合成中只是一个余弦，而不是一对共轭指数。
 
-!!! note "目前进展"
-    连续场 $(\omega,\overline u,\theta)$ 已换成辅助网格上的数组 `omega(nx,nz)`、`mean_u(nz)`、`theta(nx,nz)`，所有**空间**运算都有了确定的矩阵实现：$\partial_x$（乘 $\mathrm ia_m$）、$\partial_z$ 与 $\partial_{zz}$（$\mathsf D,\mathsf D^2$）、逐模态 Poisson 逆、去混叠乘积、精确积分与内积。也就是说，给定某一时刻的状态，任何空间导数、速度、乘积和积分都能算出来。
+**目前进展。** 连续场 $(\omega,\overline u,\theta)$ 已换成辅助网格上的数组 `omega(nx,nz)`、`mean_u(nz)`、`theta(nx,nz)`，所有**空间**运算都有了确定的矩阵实现：$\partial_x$（乘 $\mathrm ia_m$）、$\partial_z$ 与 $\partial_{zz}$（$\mathsf D,\mathsf D^2$）、逐模态 Poisson 逆、去混叠乘积、精确积分与内积。也就是说，给定某一时刻的状态，任何空间导数、速度、乘积和积分都能算出来。
 
-    剩下的问题全部在**时间**方向：怎样把状态从 $t_0$ 推进到 $t_0+h$。
+剩下的问题全部在**时间**方向：怎样把状态从 $t_0$ 推进到 $t_0+h$。
 
 ## 3. 拆分成三个扩散
 
@@ -756,10 +753,9 @@ $$
 
 注意被平流的是总涡量 $\zeta=\omega-\overline u'$，不能擅自用 $\omega$ 替换，否则遗漏平均剪切 $\overline u'$ 的贡献。代码从速度力的旋度出发，自动包含了这一项。
 
-!!! note "目前进展"
-    关于 $(\omega,\overline u,\theta)$ 的耦合非线性方程组，已写成三个形式完全相同的有源扩散方程 $v_t=D\Delta v+S_v$：$\omega$ 与 $\overline u$ 的 $D=\Pr$，$\theta$ 的 $D=1$，壁面条件除 $\omega$ 外都是零值。三个方程的扩散部分彼此独立；耦合与非线性全部集中在源 $S_v(\omega,\overline u,\theta)$ 中，而 $S_v$ 的每一项都可以从当前状态算出。
+**目前进展。** 关于 $(\omega,\overline u,\theta)$ 的耦合非线性方程组，已写成三个形式完全相同的有源扩散方程 $v_t=D\Delta v+S_v$：$\omega$ 与 $\overline u$ 的 $D=\Pr$，$\theta$ 的 $D=1$，壁面条件除 $\omega$ 外都是零值。三个方程的扩散部分彼此独立；耦合与非线性全部集中在源 $S_v(\omega,\overline u,\theta)$ 中，而 $S_v$ 的每一项都可以从当前状态算出。
 
-    下一步：先假设一步内的源已知，推导一步推进的精确公式（3.2）；再处理“新端点的源其实依赖未知新状态”这件事（3.3）。
+下一步：先假设一步内的源已知，推导一步推进的精确公式（3.2）；再处理“新端点的源其实依赖未知新状态”这件事（3.3）。
 
 ### 3.2 为什么源项还要解 Poisson 方程：源势与积分因子
 
@@ -981,17 +977,16 @@ $$
 
 $\overline u$ 通道的输入沿 $x$ 为常数，精确传播后仍为常数；取水平平均只是去掉 FGT 数值误差带来的微小 $x$ 变化。下一步看如何计算 $Hf$：把构造好的传播输入 $f$ 交给自适应 FGT，计算一次齐次热传播。
 
-!!! note "目前进展"
-    “把 $(\omega,\overline u,\theta)$ 从 $t_0$ 推进到 $t_0+h$”已归结为三类子问题，它们的状态各不相同：
+**目前进展。** “把 $(\omega,\overline u,\theta)$ 从 $t_0$ 推进到 $t_0+h$”已归结为三类子问题，它们的状态各不相同：
 
-    | 子问题 | 输入是否已知 | 状态 |
-    | --- | --- | --- |
-    | 算源 $S_0=S(U_0)$、$S_1^{(k)}=S(U_1^{(k)})$ | 旧状态已知；候选新状态由上一轮给出 | 已解决（第 2 节算子） |
-    | Poisson 求解 $r_0,r_1,q$ | 右端由上一行给出 | 已解决（第 2.1、2.3 节） |
-    | 齐次零壁热传播 $Hf$，每轮 3 次 | 输入 $f$ 由上两行组装 | **未解决**，交给第 4、5 节 |
-    | 涡量新壁值 $g_1$ | 依赖未知的 $\omega_1$ | **未解决**，交给第 6 节 |
+| 子问题 | 输入是否已知 | 状态 |
+| --- | --- | --- |
+| 算源 $S_0=S(U_0)$、$S_1^{(k)}=S(U_1^{(k)})$ | 旧状态已知；候选新状态由上一轮给出 | 已解决（第 2 节算子） |
+| Poisson 求解 $r_0,r_1,q$ | 右端由上一行给出 | 已解决（第 2.1、2.3 节） |
+| 齐次零壁热传播 $Hf$，每轮 3 次 | 输入 $f$ 由上两行组装 | **未解决**，交给第 4、5 节 |
+| 涡量新壁值 $g_1$ | 依赖未知的 $\omega_1$ | **未解决**，交给第 6 节 |
 
-    真正的未知量 $S_1$ 已经用固定次数的预测–校正替代；时间方向剩下的近似只有“源在一步内是仿射的”这一条（以及校正次数有限）。
+真正的未知量 $S_1$ 已经用固定次数的预测–校正替代；时间方向剩下的近似只有“源在一步内是仿射的”这一条（以及校正次数有限）。
 
 ## 4. 热传播
 
@@ -1145,10 +1140,9 @@ FGT 利用高斯核可压缩的展开与树层级组织，复用盒间作用，�
 
 FGT 的作用是快速算核积分；自适应树的作用是用合适的局部多项式表示输入与输出。二者的精度分别由库容差 $10^{-12}$ 与第 5 节的两个树容差控制。
 
-!!! note "目前进展"
-    零壁、水平周期的热传播 $Hf$ 已转化为：把 $f$ 奇反射、周期延拓到 $[0,2)^2$ 后，与周期高斯核做一次体积分，再除以 $\pi\delta$（$\delta=4Dh$）。零壁条件由奇对称自动满足，不需要额外施加；积分本身由外部 FGT 快速计算。
+**目前进展。** 零壁、水平周期的热传播 $Hf$ 已转化为：把 $f$ 奇反射、周期延拓到 $[0,2)^2$ 后，与周期高斯核做一次体积分，再除以 $\pi\delta$（$\delta=4Dh$）。零壁条件由奇对称自动满足，不需要额外施加；积分本身由外部 FGT 快速计算。
 
-    FGT 要求输入是一棵四叉树上的分片 Chebyshev 多项式，而我们手上只有辅助网格数组。下一节要解决：怎样把辅助网格上的场放到树上，并保证输入和输出都表示得足够准。
+FGT 要求输入是一棵四叉树上的分片 Chebyshev 多项式，而我们手上只有辅助网格数组。下一节要解决：怎样把辅助网格上的场放到树上，并保证输入和输出都表示得足够准。
 
 ## 5. 自适应网格
 
@@ -1301,10 +1295,18 @@ $$
 
 **资源与特殊分支。** 桥接器使用源阈值 `tol`、输出阈值 `8*tol`、库参数 $10^{-12}$，并限制源细化轮数、盒数和最大层级。到达这些资源上限仍未通过时程序报错，而不是无条件接受未分辨结果。另有最大输入值小于 $10^{-27}$ 的直接置零分支；这也是一个明确的数值近似，不应描述成所有输入都必然经过 FGT。
 
-!!! note "目前进展"
-    $H$ 已经是一个完整的“辅助网格数组 → 辅助网格数组”映射（`heat_on_grid`）：辅助展开 → 源树（源指示量控制输入误差）→ 带输出检查的 FGT（输出指示量控制输出误差）→ 求值回辅助节点。
+**绝对容差与相对容差。** 默认 `tol` 是绝对量：无论传播输入的量级是多少，源指示量都要 $\le2\times10^{-10}$。这有两个后果。其一，三个通道量级不同（$\omega$ 随 $\mathrm{Ra}$ 增大，$\theta=O(1)$ 或更小），同一个绝对阈值对它们的相对要求差别很大；高 $\mathrm{Ra}$ 时 $\omega$ 通道可能触及 4096 盒或 7 层的上限。其二，线性模式振幅 $10^{-5}$ 时，$2\times10^{-10}$ 只相当于约 $2\times10^{-5}$ 的相对精度。为此 `flow_solver` 增加开关 `relative_tolerance`（命令行第 8 个参数 `relative`，默认关闭）：开启后每一步的两个树阈值改为
 
-    结合第 3 节，**温度 $\theta$ 与平均流 $\overline u$ 两个通道已经能完整推进一步**：它们的壁值本来就是零，不需要再做什么。唯一还缺的是涡量通道的壁值。
+$$
+\texttt{tol}\cdot s,\qquad 8\,\texttt{tol}\cdot s,\qquad
+s=\max\left(\max|\omega_0|,\ \max|\overline u_0|,\ \max|\theta_0|\right),
+$$
+
+$s$ 取自旧状态，整步的 9 次热传播共用。为什么不按每次输入各自的 $\max|f|$ 缩放：线性模式下 $\overline u$ 通道的输入只是约 $10^{-22}$ 的舍入噪声，按自身缩放会把阈值压到 $10^{-31}$，树为了“分辨”噪声而细化到盒数上限（实测如此）。用全状态共同尺度，噪声通道的阈值仍与有意义的通道同量级。实测线性和非线性运行中，相对模式与绝对模式的增长率、热平衡、能量平衡一致。
+
+**目前进展。** $H$ 已经是一个完整的“辅助网格数组 → 辅助网格数组”映射（`heat_on_grid`）：辅助展开 → 源树（源指示量控制输入误差）→ 带输出检查的 FGT（输出指示量控制输出误差）→ 求值回辅助节点。
+
+结合第 3 节，**温度 $\theta$ 与平均流 $\overline u$ 两个通道已经能完整推进一步**：它们的壁值本来就是零，不需要再做什么。唯一还缺的是涡量通道的壁值。
 
 ## 6. 处理无滑移壁面
 
@@ -1608,10 +1610,9 @@ $n=0$：$\int1\,d\xi=\xi=T_1$。$n=1$：$\int\xi\,d\xi=\xi^2/2=(T_2+1)/4$，即 
 
 **压力常数。** 最后减去全域平均使 $\int_\Omega p=0$。压力在方程中只以梯度出现，任意加法常数不影响速度；这只是选定一个代表。
 
-!!! note "目前进展"
-    “未知的壁面涡量 $g_1$ 应该取多少”已转化为：每个非零水平模态一个 $2\times2$ 线性系统 $Mg_1=-d$。矩阵 $M$ 只依赖网格、$h$、$\Pr$，初始化时已求逆；右端 $d$ 是体积部分 $R$ 对应流函数的两个壁面导数，每步算一次。
+**目前进展。** “未知的壁面涡量 $g_1$ 应该取多少”已转化为：每个非零水平模态一个 $2\times2$ 线性系统 $Mg_1=-d$。矩阵 $M$ 只依赖网格、$h$、$\Pr$，初始化时已求逆；右端 $d$ 是体积部分 $R$ 对应流函数的两个壁面导数，每步算一次。
 
-    至此三个通道都能完整推进，第 1 节的全部壁面条件都已满足：$\theta=0$ 与 $\overline u=0$ 由零壁传播保证，$w=0$ 由 $\psi$ 两壁为零保证（第 2.1 节），非平均部分的 $u=\psi_z=0$ 由本节的影响系统保证。压力在需要时可单独恢复，不影响推进。
+至此三个通道都能完整推进，第 1 节的全部壁面条件都已满足：$\theta=0$ 与 $\overline u=0$ 由零壁传播保证，$w=0$ 由 $\psi$ 两壁为零保证（第 2.1 节），非平均部分的 $u=\psi_z=0$ 由本节的影响系统保证。压力在需要时可单独恢复，不影响推进。
 
 ## 7. 总体流程
 
@@ -1643,10 +1644,9 @@ $$
 
 其中 $\mathcal N[R]=R+Bg_1(R)$ 是第 6.4 节的无滑移修正，$K_c$ 用本通道的扩散系数。默认 `ncorrect=2`，循环 `iteration=0,1,2` 共三轮，每轮三次热传播，所以每步 9 次 `heat_on_grid`。校正次数固定，没有非线性迭代残差停止判据。
 
-!!! note "目前进展"
-    第 2–6 节的组件已拼成完整的时间推进映射 $U_n\mapsto U_{n+1}$。给定初态和参数 $(\mathrm{Ra},\Pr)$，反复调用它就得到 RB 问题的数值解。
+**目前进展。** 第 2–6 节的组件已拼成完整的时间推进映射 $U_n\mapsto U_{n+1}$。给定初态和参数 $(\mathrm{Ra},\Pr)$，反复调用它就得到 RB 问题的数值解。
 
-    剩下的问题不再是“怎么解”，而是“解得对不对”：需要一个与离散无关的参考解（第 8.2 节的线性稳定性），以及若干在精确解上必须成立的平衡关系（第 8.3–8.6 节的热流与能量）。下面两个小节先说明步长保护和模块调用关系。
+剩下的问题不再是“怎么解”，而是“解得对不对”：需要一个与离散无关的参考解（第 8.2 节的线性稳定性），以及若干在精确解上必须成立的平衡关系（第 8.3–8.6 节的热流与能量）。下面两个小节先说明步长保护和模块调用关系。
 
 ### 7.1 步长保护的每个因子
 
@@ -1894,7 +1894,56 @@ $$
 
 **反对称分支。** 改用 $\sinh(s\xi)$；实现对实根基额外除以 $s_r$，因为 $\sinh(s_r\xi)/s_r\to\xi$（$s_r\to0$ 时用 $\sinh x\approx x$），一阶导数趋于 1，避免退化成零基。`neutral_rayleigh` 可选反对称分支，但主程序初始化和增长率求解使用对称分支。
 
-**求根。** 中性值令 $\sigma=0$，固定 $a=2\pi m$ 后找 $\det M(\mathrm{Ra},a,0)=0$。源码从 $\mathrm{Ra}=100$ 开始每次乘 1.1，找到符号变化后进行二分，直到区间宽度小于 $10^{-9}$ 或达到迭代上限。增长率则固定 $\mathrm{Ra}$，在 $\sigma\in[-10,10]$ 检查异号后进行二分，区间阈值为 $10^{-12}$。二分每次把区间减半，并保留函数异号的那一半，所以连续函数在区间内一定有根。这是有指定分支和包围区间的求根，并非对所有复增长率或所有水平波数做谱扫描。因此上述 $3784.3406\ldots$ 应读作周期 1、对称 $m=1$ 分支的临界参考，不应与水平波数连续可选时的经典最小值（约 1708，在 $a\approx3.117$ 处）混为一谈——$a=2\pi$ 远离最不稳定波数，所以临界值更高。
+**求根：临界值。** 中性值令 $\sigma=0$，固定 $a=2\pi m$ 后找 $\det M(\mathrm{Ra},a,0)=0$。源码从 $\mathrm{Ra}=100$ 开始每次乘 1.1，找到符号变化后进行二分，直到区间宽度小于 $10^{-9}$ 或达到迭代上限。二分每次把区间减半，并保留函数异号的那一半，所以连续函数在区间内一定有根。因此上述 $3784.3406\ldots$ 应读作周期 1、对称 $m=1$ 分支的临界参考，不应与水平波数连续可选时的经典最小值（约 1708，在 $a\approx3.117$ 处）混为一谈——$a=2\pi$ 远离最不稳定波数，所以临界值更高。
+
+**求根：增长率要找的是哪一个根。** 固定 $\mathrm{Ra}$ 后，$\det M(\mathrm{Ra},a,\sigma)=0$ 在对称分支上通常有**无穷多个**实根 $\sigma_1>\sigma_2>\cdots$，每个对应一个竖直结构不同的特征模态。小扰动 $\sum_kc_ke^{\sigma_kt}(\cdots)$ 在长时间后由最大的 $\sigma_1$ 主导，所以参考增长率必须是**最大根**，而不是“某个根”。只检查一个固定区间两端是否异号，二分只会给出区间里的某一个根：区间太窄时（例如 $\mathrm{Ra}=6000$，$\sigma_1\approx13.96>10$）两端同号、无法开始；区间里有好几个根时，可能收敛到非最大的那个。因此 `reference_growth` 改为**从一个已知上界向下扫描**，遇到的第一个真根就是 $\sigma_1$。下面三步说明上界、下界和“真根”各从哪里来。
+
+**第一步：所有增长率都是实数，且 $\sigma\le\sqrt{\mathrm{Ra}}$（$\Pr=1$）。** 取线性化方程（第 8.2.1 节，$\Pr=1$，非线性项删去）
+
+$$
+\boldsymbol v_t=-\nabla p+\Delta\boldsymbol v+\mathrm{Ra}\,\theta\,\boldsymbol e_z,\qquad
+\theta_t=\Delta\theta+w,\qquad\nabla\cdot\boldsymbol v=0 .
+$$
+
+两个耦合项的系数不对称（$\mathrm{Ra}$ 与 $1$），令 $\vartheta=\sqrt{\mathrm{Ra}}\,\theta$（$\mathrm{Ra}>0$），则 $\mathrm{Ra}\,\theta=\sqrt{\mathrm{Ra}}\,\vartheta$，温度方程乘 $\sqrt{\mathrm{Ra}}$ 得 $\vartheta_t=\Delta\vartheta+\sqrt{\mathrm{Ra}}\,w$。于是系统写成 $(\boldsymbol v,\vartheta)_t=\mathcal L(\boldsymbol v,\vartheta)$，其中耦合系数两边都是 $\sqrt{\mathrm{Ra}}$。对正规模态 $(\boldsymbol v,\vartheta)e^{\sigma t}$，用复共轭 $(\boldsymbol v^*,\vartheta^*)$ 作内积并在 $\Omega$ 上积分：
+
+$$
+\sigma\left(\|\boldsymbol v\|^2+\|\vartheta\|^2\right)
+=-\|\nabla\boldsymbol v\|^2-\|\nabla\vartheta\|^2
++\sqrt{\mathrm{Ra}}\int_\Omega\left(\vartheta\,w^*+w\,\vartheta^*\right).
+$$
+
+逐项说明：$\int\boldsymbol v^*\cdot\Delta\boldsymbol v=-\int|\nabla\boldsymbol v|^2$，分部积分的边界项因两壁 $\boldsymbol v=0$、水平周期而为零（$\vartheta$ 同理）；$\int\boldsymbol v^*\cdot\nabla p=-\int p\,\nabla\cdot\boldsymbol v^*=0$，边界项因壁面 $w=0$ 为零。右边第一、二项是实数；第三项是 $z+\bar z=2\operatorname{Re}z$ 的形式，也是实数。左边括号是正实数，所以 $\sigma$ **必为实数**。再用 $|2\operatorname{Re}\int\vartheta w^*|\le2\|\vartheta\|\|w\|\le\|w\|^2+\|\vartheta\|^2\le\|\boldsymbol v\|^2+\|\vartheta\|^2$（Cauchy–Schwarz，再用 $2xy\le x^2+y^2$），并丢掉两个非正的梯度项：
+
+$$
+\sigma\left(\|\boldsymbol v\|^2+\|\vartheta\|^2\right)\le\sqrt{\mathrm{Ra}}\left(\|\boldsymbol v\|^2+\|\vartheta\|^2\right)
+\quad\Longrightarrow\quad\sigma\le\sqrt{\mathrm{Ra}} .
+$$
+
+这正是“经 $\sqrt{\mathrm{Ra}}$ 缩放后线性算子自伴”的具体含义。代码取扫描起点 $\sigma_{\rm top}=\sqrt{\mathrm{Ra}}+1$，保证起点在所有根之上。（$\Pr\ne1$ 时缩放后仍不对称，这个上界论证不成立——这也是参考解只做 $\Pr=1$ 的原因之一。）
+
+**第二步：扫描下界来自 Cardano 公式的适用范围。** `characteristic_roots` 只处理三次方程恰有一个实根、一对共轭复根的情形，判别式条件为 $(q_c/2)^2+(p_c/3)^3>0$。代入 $p_c=-\sigma^2/3$、$q_c=2\sigma^3/27+\mathrm{Ra}\,a^2$，记 $s=\sigma^3/27$、$R=\mathrm{Ra}\,a^2>0$：
+
+$$
+\left(\frac{q_c}2\right)^2+\left(\frac{p_c}3\right)^3
+=\left(s+\frac R2\right)^2-s^2
+=sR+\frac{R^2}4
+=R\left(s+\frac R4\right).
+$$
+
+$R>0$，所以条件等价于 $s>-R/4$，即 $\sigma^3>-27\mathrm{Ra}\,a^2/4$，即
+
+$$
+\sigma>\sigma_{\min}=-\left(\frac{27\,\mathrm{Ra}\,a^2}4\right)^{1/3}.
+$$
+
+代码取 $0.99\,\sigma_{\min}$ 作扫描下界，留出余量以免在判别式接近零处触发 `error stop`。默认参数（$\mathrm{Ra}\approx4541$、$a=2\pi$）下 $\sigma_{\min}\approx-106.6$、$\sigma_{\rm top}\approx68.4$，扫描区间远宽于原来的 $[-10,10]$。
+
+**第三步：变号不一定是根，还可能是极点。** `basis` 的温度基函数除以 $\sigma-q$（第 8.2.2 节 $\Theta=W/(\sigma-q)$ 的来源）。当扫描经过某个 $\sigma$ 使 $\sigma=q_r$ 时，第三行 $r_3$ 的某个分量穿过无穷大并改变符号，归一化后的 $\det M$ 也会在这里跳变而变号——这不是特征值。区分办法：在真根处 $\det M$ 连续地经过零，二分收敛后 $|\det M(\sigma^*)|$ 很小；在极点处二分收敛到跳变点，两侧函数值都是有限的非零值。代码在二分收敛后检查 $|\det M|<10^{-6}$（三行都已归一化，所以这是一个与 $\mathrm{Ra}$ 量级无关的相对阈值）；不满足就判定为极点，从这个小区间下方继续扫描。
+
+**扫描步长与结果。** 步长取 $10^{-2}\max(1,\sqrt{\mathrm{Ra}}/100)$，与根的间距同步放大。每个变号区间用二分收敛到宽度 $<10^{-12}$。在 $[\sigma_{\min},\sigma_{\rm top}]$ 内找不到真根时（例如 $\mathrm{Ra}=100$，衰减太快），可选参数 `found` 返回 `.false.`；未提供 `found` 时报错。`run_rb` 会提供它：找不到时给出警告，摘要中参考增长率记为 NaN，初态改用 $\mathrm{Ra}_c$ 处的中性模态（同样满足全部壁面条件），时间推进照常进行。
+
+我用一个独立的 Chebyshev 配点广义特征值求解器（不经过三次方程和行列式）核对过：$\mathrm{Ra}$ 从 500 到 $2\times10^5$ 的 12 个值，对称分支最大增长率都与此一致到约 $10^{-7}$。例如 $\mathrm{Ra}=8\times10^4$ 时 $\sigma_1\approx195.13$，而对称分支上 $\sigma\approx0.644$ 处也有一个根——只检查固定区间的二分可能静默返回后者。这仍然是指定分支的求根，没有对所有水平波数做扫描。
 
 #### 8.2.4 初态的构造与检查
 
@@ -1902,19 +1951,20 @@ $$
 
 逐项检查：$u_x=-\varepsilon W'\cos(ax)$、$w_z=\varepsilon W'\cos(ax)$，逐点相加为零；$W=0$ 保证壁面 $w=0$，$W'=0$ 保证 $u=0$，$\Theta=0$ 保证温度扰动为零。对应流函数为 $\psi=-\varepsilon W\sin(ax)/a$：$\psi_z=-\varepsilon W'\sin(ax)/a=u$，$-\psi_x=\varepsilon W\cos(ax)=w$。相应涡量为 $\omega=-\Delta\psi=\varepsilon(W''-a^2W)\sin(ax)/a$，其水平平均为零，平均流为零。程序不直接用这个解析涡量，而是在辅助网格上用 `set_velocity` 从 $u,w$ 数值计算，所以初始涡量带有辅助网格的离散误差。
 
-!!! note "目前进展"
-    关于扰动的线性特征值问题已转化为：先解一个三次方程得到三个 $q$ 根，再由对称性把六个边界条件减为三阶行列式 $\det M(\mathrm{Ra},a,\sigma)=0$，用二分求根。由此得到三个与数值格式无关的参考量：周期 1、对称 $m=1$ 分支的 $\mathrm{Ra}_c\approx3784.34$，给定 $\mathrm{Ra}$ 时的增长率 $\sigma$，以及满足全部壁面条件的初态 $(u,w,\theta)$。
+**目前进展。** 关于扰动的线性特征值问题已转化为：先解一个三次方程得到三个 $q$ 根，再由对称性把六个边界条件减为三阶行列式 $\det M(\mathrm{Ra},a,\sigma)=0$，用扫描加二分求根。由此得到三个与数值格式无关的参考量：周期 1、对称 $m=1$ 分支的 $\mathrm{Ra}_c\approx3784.34$，给定 $\mathrm{Ra}$ 时对称分支增长最快的增长率 $\sigma$（从上界 $\sqrt{\mathrm{Ra}}+1$ 向下扫描得到），以及满足全部壁面条件的初态 $(u,w,\theta)$。
 
-    时间推进器有了初态；它在线性阶段测得的增长率，就拿这里的 $\sigma$ 来比较。接下来定义判断解是否自洽的诊断量。
+时间推进器有了初态；它在线性阶段测得的增长率，就拿这里的 $\sigma$ 来比较。接下来定义判断解是否自洽的诊断量。
 
 ### 8.3 四类输出与诊断
 
 | 文件后缀 | 内容 | 用途 |
 | --- | --- | --- |
 | `_history.csv` | 每步 14 个诊断量，含初始时刻 | 看增长、热流、约束及耗散随时间变化 |
-| `_summary.txt` | 参考值、拟合值、终态、平衡误差、FGT 统计 | 汇总数值证据 |
+| `_summary.txt` | 参考值、拟合值、拟合值能否比较（`growth comparison`）、树容差模式、终态、平衡误差、FGT 统计 | 汇总数值证据 |
 | `_field.csv` | 终态 `x,z,u,w,theta,T` | 绘图及空间比较 |
-| `_checkpoint.bin` | 参数及完整状态 | 供 `load_checkpoint` 接口恢复；当前 CLI 没有重启参数 |
+| `_checkpoint.bin` | 参数及完整状态；绝对容差写 `RBFGT002`，相对容差写 `RBFGT003` | 供 `load_checkpoint` 接口恢复；当前 CLI 没有重启参数 |
+
+命令行参数依次为：模式、`dt`、终止时间、`nx`、`nz`、`Ra`（非正值表示取 $1.2\,\mathrm{Ra}_c$）、输出前缀、树容差模式（`absolute` 或 `relative`，默认 `absolute`）。
 
 最重要的诊断是动能 $E=\tfrac12\int(u^2+w^2)$、温度扰动能 $K_\theta=\tfrac12\int\theta^2$，以及
 
@@ -2086,7 +2136,7 @@ $$
 R_A=A_N-A_0-\sum_{n=0}^{N-1}\frac h2(F_n+F_{n+1}).
 $$
 
-程序将 $A=(Q,Q_b,Q_t,E,K_\theta)$ 对应的五个右端分别累积：`flux_integral(1:3)` 累加 $[\mathrm{Nu}_b-\mathrm{Nu}_t,\ \mathrm{Nu}_b-\mathrm{Nu}_V,\ \mathrm{Nu}_V-\mathrm{Nu}_t]$，`flux_integral(4)` 累加 $\mathrm{Ra}(\mathrm{Nu}_V-1)-D_u$（写作 `ra*(old(3)+d(3)-2)-old(13)-d(13)`，即两端点之和），`flux_integral(5)` 累加 $\mathrm{Nu}_V-1-D_\theta$。主程序固定 $\Pr=1$，所以它的动能累计中直接使用 `ra`；通用求解器接口若改为其他 $\Pr$，累计也必须同步乘 $\Pr$。
+程序将 $A=(Q,Q_b,Q_t,E,K_\theta)$ 对应的五个右端分别累积：`flux_integral(1:3)` 累加 $[\mathrm{Nu}_b-\mathrm{Nu}_t,\ \mathrm{Nu}_b-\mathrm{Nu}_V,\ \mathrm{Nu}_V-\mathrm{Nu}_t]$，`flux_integral(4)` 累加 $\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)-D_u$（写作 `ra*solver%pr*(old(3)+d(3)-2)-old(13)-d(13)`，即两端点之和），`flux_integral(5)` 累加 $\mathrm{Nu}_V-1-D_\theta$。逐项对应：`old(3)+d(3)-2` 是两端点的 $(\mathrm{Nu}_V-1)$ 之和；第 8.5 节动能方程中浮力做功项是 $\mathrm{Ra}\Pr\int w\theta=\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)$，所以系数是 $\mathrm{Ra}\Pr$；`d(13)` 已含 $\Pr$（$D_u=\Pr\int|\nabla\boldsymbol v|^2$），不再乘。原版本此处只写 `ra`，主程序固定 $\Pr=1$ 时结果相同，但对一般 $\Pr$ 会少一个因子；现已补上，$\Pr=1$ 时输出逐位不变。
 
 即使状态为精确解，梯形时间积分一般仍有误差，因此非零窗口残差不是某一类误差的唯一证据。梯形误差：设 $F$ 二阶连续可导，对 $e(\tau)=F(t_n+\tau)-F_{\rm lin}(\tau)$ 用第 3.2 节第五步同样的 Rolle 论证，$e(\tau)=\frac12\tau(\tau-h)F''(\xi_\tau)$，积分得每段误差 $\le\frac{h^3}{12}\max|F''|$，固定长度窗口共 $T/h$ 段，累计 $O(h^2)$。
 
@@ -2129,13 +2179,14 @@ $$
 
 这与五个累计变量 `fit_n,fit_t,fit_y,fit_tt,fit_ty` 一一对应。分母 $S_{tt}-S_t^2/N=\sum_j(t_j-\bar t)^2$（$\bar t=S_t/N$），只要至少两个不同时间就为正；还需要 $E>0$ 才能取对数。非线性饱和期不再满足单指数假设，拟合斜率不能继续解释成线性特征值。
 
-!!! note "目前进展"
-    整条求解链已经闭合：
+**拟合值何时能与参考 $\sigma$ 比较。** 上面推导的前提是 $E\propto e^{2\sigma t}$ 在整个拟合窗口成立。这只在扰动足够小、对流项可忽略时才对。`linear` 模式删除对流项，方程严格线性，前提成立（窗口开始时次要模态 $e^{\sigma_k t}$ 也需已衰减到可忽略）。`super` 初始幅值 0.01，默认 $t_{\rm final}=2$ 时 $E$ 已增长到约 10 并饱和，窗口 $[0.5,2]$ 大部分在非线性阶段，拟合约 2.889，与 $\sigma\approx5.138$ 没有可比性。为了不让读者把两个数并排误读，摘要新增一行 `growth comparison`，按模式写明：`linear` 为 comparable；`super`/`onset` 为“仅当拟合窗口仍在线性阶段时可比”；`conduction` 不适用；找不到参考值时为 not available。原有各行格式不变。
 
-    - **求解**：第 8.2 节给出初态 → 每步计算源与源势，做 9 次热传播、若干 Poisson 求解和 $2\times2$ 壁面系统（第 3–7 节）→ 得到各时刻的 $(\omega,\overline u,\theta)$，并由它恢复 $(u,w)$、必要时恢复 $p$。
-    - **检验**：线性阶段的拟合增长率对比参考 $\sigma$；三个热矩的窗口残差检查 $\mathrm{Nu}_b,\mathrm{Nu}_V,\mathrm{Nu}_t$ 的热平衡；动能与温度扰动能的窗口残差检查能量平衡；壁面速度、壁面温度和散度三个监测量检查约束。
+**目前进展。** 整条求解链已经闭合：
 
-    第 9 节对照源码逐行看这些步骤的实现，第 10 节给出数值结果。
+- **求解**：第 8.2 节给出初态 → 每步计算源与源势，做 9 次热传播、若干 Poisson 求解和 $2\times2$ 壁面系统（第 3–7 节）→ 得到各时刻的 $(\omega,\overline u,\theta)$，并由它恢复 $(u,w)$、必要时恢复 $p$。
+- **检验**：线性阶段的拟合增长率对比参考 $\sigma$；三个热矩的窗口残差检查 $\mathrm{Nu}_b,\mathrm{Nu}_V,\mathrm{Nu}_t$ 的热平衡；动能与温度扰动能的窗口残差检查能量平衡；壁面速度、壁面温度和散度三个监测量检查约束。
+
+第 9 节对照源码逐行看这些步骤的实现，第 10 节给出数值结果。
 
 ## 9. 完整源码与批注
 
@@ -3735,12 +3786,17 @@ contains
     ! @note-end slab_heat-note-1
 
     ! @note-start slab_heat-note-2
-    function heat_on_grid(g,values,diffusion,h,k,tol,min_level,stats) result(output)
+    function heat_on_grid(g,values,diffusion,h,k,tol,min_level,stats,scale) result(output)
+        ! If scale is present, the tree tolerances become tol*scale (relative to a caller-chosen
+        ! magnitude); absent keeps the original absolute tolerances. The caller should pass one
+        ! state-wide scale rather than max|values| of this input: an input that is pure round-off
+        ! noise would otherwise get a round-off-sized tolerance and refine without bound.
         type(auxiliary_grid), intent(in) :: g
         real(rk), intent(in) :: values(:,:), diffusion,h,tol
         integer, intent(in) :: k,min_level
         type(heat_statistics), intent(inout) :: stats
-        real(rk) :: output(g%nx,g%nz), first_error
+        real(rk), intent(in), optional :: scale
+        real(rk) :: output(g%nx,g%nz), first_error, tol_used
         type(adaptive_field) :: source, evolved
         integer :: passes, leaves
         if (h <= 0 .or. diffusion <= 0) error stop "invalid heat parameters"
@@ -3748,9 +3804,14 @@ contains
             output = 0
             return
         end if
-        call sample_grid_field(g,values,k,tol,min_level,source)
+        tol_used = tol
+        if (present(scale)) then
+            if (.not. (scale > 0)) error stop "tolerance scale must be positive"
+            tol_used = tol*scale
+        end if
+        call sample_grid_field(g,values,k,tol_used,min_level,source)
         stats%source_monitor = max(stats%source_monitor,maxval(source%indicator(1:source%nbox)))
-        call checked_heat_step(source,diffusion,h,1.0e-12_rk,8*tol,7,5,evolved,passes,first_error)
+        call checked_heat_step(source,diffusion,h,1.0e-12_rk,8*tol_used,7,5,evolved,passes,first_error)
         call evaluate_field(evolved,g%x,g%z,output)
         stats%calls = stats%calls+2*passes
         leaves = count(evolved%child(1,1:evolved%nbox) == 0)
@@ -3776,7 +3837,7 @@ end module slab_heat
 
 <!-- note-start: slab_heat-note-2 -->
 
-输入是辅助节点上的传播密度，输出仍是 `g%nx×g%nz` 辅助节点值。先源采样，再用 `fgt_eps=1e-12,output_tol=8*tol` 做输出检查，最后从接受的树插值回去。幅值小于 `1e-27` 返回零；统计增加每轮两次 FGT，并记录叶盒范围、最大层级与额外轮数，非全 PDE 误差估计。
+输入是辅助节点上的传播密度，输出仍是 `g%nx×g%nz` 辅助节点值。可选参数 `scale` 存在时阈值改为 `tol*scale`（相对容差，由求解器传入全状态尺度），缺省保持绝对容差。先源采样，再用 `fgt_eps=1e-12,output_tol=8*tol` 做输出检查，最后从接受的树插值回去。幅值小于 `1e-27` 返回零；统计增加每轮两次 FGT，并记录叶盒范围、最大层级与额外轮数，非全 PDE 误差估计。
 
 <!-- note-end: slab_heat-note-2 -->
 
@@ -4007,6 +4068,8 @@ module boussinesq_solver
         real(rk) :: pr = 1, ra = 0, dt = 0.001_rk, tolerance = 1.0e-10_rk
         integer :: k = 12, min_level = 1, steps = 0
         logical :: nonlinear = .true., thermal_feedback = .true.
+        ! .true.: tree tolerances are tol*max(|omega|,|mean_u|,|theta|) of the old state (default absolute).
+        logical :: relative_tolerance = .false.
     ! @note-end boussinesq_solver-note-1
     end type flow_solver
     abstract interface
@@ -4131,7 +4194,7 @@ contains
         integer, intent(in), optional :: corrections
         complex(rk) :: r0(s%grid%nx,s%grid%nz,3),r1(s%grid%nx,s%grid%nz,3),slope(s%grid%nx,s%grid%nz,3)
         complex(rk) :: om(s%grid%nx,s%grid%nz),boundary(s%grid%nx,2),rhs(s%grid%nx,s%grid%nz)
-        real(rk) :: v(s%grid%nx,s%grid%nz),evolved(s%grid%nx,s%grid%nz),u(s%grid%nx,s%grid%nz),w(s%grid%nx,s%grid%nz),spacing,cfl
+        real(rk) :: v(s%grid%nx,s%grid%nz),evolved(s%grid%nx,s%grid%nz),u(s%grid%nx,s%grid%nz),w(s%grid%nx,s%grid%nz),spacing,cfl,scale
         integer :: iteration,ncorrect,j,c
         ! @note-start boussinesq_solver-note-6
         ncorrect = 2
@@ -4147,6 +4210,7 @@ contains
         if (s%dt*sqrt(abs(s%ra*s%pr)) > 0.5_rk) error stop "coupling timestep too large"
         ! @note-end boussinesq_solver-note-6
         call zero_state(s,next)
+        scale = max(maxval(abs(state%omega)),maxval(abs(state%mean_u)),maxval(abs(state%theta)),tiny(1.0_rk))
         associate(g => s%grid)
             ! @note-start boussinesq_solver-note-7
             om = fourier(g,state%omega)
@@ -4163,14 +4227,14 @@ contains
                     if (c < 3) slope(:,:,c) = slope(:,:,c)/s%pr
                 end do
                 v = physical(g,om-apply_lift(g,g%lift,boundary)-r0(:,:,1)+slope(:,:,1))
-                evolved = heat_on_grid(g,v,s%pr,s%dt,s%k,s%tolerance,s%min_level,s%stats)
+                evolved = heat_channel(s,v,s%pr,scale)
                 rhs = fourier(g,evolved)+r1(:,:,1)-slope(:,:,1)+apply_lift(g,s%wall%j,boundary/s%dt)
                 next%omega = physical(g,impose_noslip(g,s%wall,rhs))
                 v = spread(state%mean_u,1,g%nx)-physical(g,r0(:,:,2)-slope(:,:,2))
-                evolved = heat_on_grid(g,v,s%pr,s%dt,s%k,s%tolerance,s%min_level,s%stats)+physical(g,r1(:,:,2)-slope(:,:,2))
+                evolved = heat_channel(s,v,s%pr,scale)+physical(g,r1(:,:,2)-slope(:,:,2))
                 next%mean_u = sum(evolved,dim=1)/g%nx
                 v = state%theta-physical(g,r0(:,:,3)-slope(:,:,3))
-                next%theta = heat_on_grid(g,v,1.0_rk,s%dt,s%k,s%tolerance,s%min_level,s%stats)+physical(g,r1(:,:,3)-slope(:,:,3))
+                next%theta = heat_channel(s,v,1.0_rk,scale)+physical(g,r1(:,:,3)-slope(:,:,3))
                 ! @note-end boussinesq_solver-note-8
         ! @note-start boussinesq_solver-note-9
                 next%time = state%time+s%dt
@@ -4181,6 +4245,18 @@ contains
         s%steps = s%steps+1
         ! @note-end boussinesq_solver-note-9
     end subroutine advance_flow
+
+    function heat_channel(s,v,diffusion,scale) result(evolved)
+        ! One heat propagation with either absolute or state-relative tree tolerances.
+        type(flow_solver), intent(inout) :: s
+        real(rk), intent(in) :: v(:,:),diffusion,scale
+        real(rk) :: evolved(s%grid%nx,s%grid%nz)
+        if (s%relative_tolerance) then
+            evolved = heat_on_grid(s%grid,v,diffusion,s%dt,s%k,s%tolerance,s%min_level,s%stats,scale)
+        else
+            evolved = heat_on_grid(s%grid,v,diffusion,s%dt,s%k,s%tolerance,s%min_level,s%stats)
+        end if
+    end function heat_channel
 
     ! @note-start boussinesq_solver-note-10
     function diagnostics(s,state) result(d)
@@ -4233,7 +4309,12 @@ contains
         character(*), intent(in) :: path
         integer :: unit
         open(newunit=unit,file=path,access="stream",form="unformatted",status="replace")
-        write(unit) "RBFGT002",s%grid%nx,s%grid%nz,s%k,s%min_level,s%dt,s%pr,s%ra,s%tolerance,s%nonlinear,s%thermal_feedback
+        ! RBFGT002 = absolute tree tolerance (original format); RBFGT003 appends relative_tolerance.
+        if (s%relative_tolerance) then
+            write(unit) "RBFGT003",s%grid%nx,s%grid%nz,s%k,s%min_level,s%dt,s%pr,s%ra,s%tolerance,s%nonlinear,s%thermal_feedback,s%relative_tolerance
+        else
+            write(unit) "RBFGT002",s%grid%nx,s%grid%nz,s%k,s%min_level,s%dt,s%pr,s%ra,s%tolerance,s%nonlinear,s%thermal_feedback
+        end if
         write(unit) state%time,state%omega,state%mean_u,state%theta
         close(unit)
     end subroutine save_checkpoint
@@ -4247,10 +4328,18 @@ contains
         character(8) :: magic
         integer :: unit,nx,nz,k,level,ios
         real(rk) :: dt,pr,ra,tol
-        logical :: nonlinear,thermal
+        logical :: nonlinear,thermal,relative
         open(newunit=unit,file=path,access="stream",form="unformatted",status="old")
-        read(unit,iostat=ios) magic,nx,nz,k,level,dt,pr,ra,tol,nonlinear,thermal
-        if (ios /= 0 .or. magic /= "RBFGT002") error stop "invalid checkpoint header"
+        read(unit,iostat=ios) magic
+        if (ios /= 0 .or. (magic /= "RBFGT002" .and. magic /= "RBFGT003")) error stop "invalid checkpoint header"
+        relative = .false.
+        if (magic == "RBFGT003") then
+            read(unit,iostat=ios) nx,nz,k,level,dt,pr,ra,tol,nonlinear,thermal,relative
+        else
+            read(unit,iostat=ios) nx,nz,k,level,dt,pr,ra,tol,nonlinear,thermal
+        end if
+        if (ios /= 0) error stop "invalid checkpoint header"
+        if (relative .neqv. s%relative_tolerance) error stop "checkpoint tolerance mode mismatch"
         if (nx /= s%grid%nx .or. nz /= s%grid%nz .or. k /= s%k .or. level /= s%min_level) error stop "checkpoint grid mismatch"
         if (abs(dt-s%dt)+abs(pr-s%pr)+abs(ra-s%ra)+abs(tol-s%tolerance) > 1.0e-15_rk) error stop "checkpoint parameter mismatch"
         if ((nonlinear .neqv. s%nonlinear) .or. (thermal .neqv. s%thermal_feedback)) error stop "checkpoint mode mismatch"
@@ -4268,7 +4357,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-1 -->
 
-`flow_state` 是一个时间层的 `omega,mean_u,theta,time`；`flow_solver` 保存固定辅助网格、壁算子、物理参数、控制参数及累计统计。`omega` 仅非零水平模态，平均速度另存。改变树盒数不会改变状态数组的 `nx×nz` 形状。
+`flow_state` 是一个时间层的 `omega,mean_u,theta,time`；`flow_solver` 保存固定辅助网格、壁算子、物理参数、控制参数及累计统计。`omega` 仅非零水平模态，平均速度另存。改变树盒数不会改变状态数组的 `nx×nz` 形状。开关 `relative_tolerance` 默认为假，即原始绝对树容差。
 
 <!-- note-end: boussinesq_solver-note-1 -->
 
@@ -4308,7 +4397,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-6 -->
 
-默认 `ncorrect=2`，加上 `iteration=0` 的预测共三轮。先恢复旧状态速度，用辅助节点间距检查对流 CFL，上限 0.9；另要求 `dt*sqrt(abs(Ra*Pr))<=0.5`。这些是程序保护条件，完整稳定性仍需耦合与收敛验证。
+默认 `ncorrect=2`，加上 `iteration=0` 的预测共三轮。先恢复旧状态速度，用辅助节点间距检查对流 CFL，上限 0.9；另要求 `dt*sqrt(abs(Ra*Pr))<=0.5`。这些是程序保护条件，完整稳定性仍需耦合与收敛验证。`scale` 是旧状态三个场的最大绝对值，只在相对容差模式下使用。
 
 <!-- note-end: boussinesq_solver-note-6 -->
 
@@ -4324,7 +4413,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-8 -->
 
-先再解一次 Poisson 得到 `slope=q=K(r1-r0)/h`，前两通道仍需除 `Pr`。每个通道按 $H(v_0-r_0+q)+r_1-q$ 组合；涡量额外减旧壁提升、加 `J*boundary/h`，再由 `impose_noslip` 求新壁。平均流热输出取水平平均，温度扩散系数为 1。这里热输入是组合场，不是原始 PDE 源。
+先再解一次 Poisson 得到 `slope=q=K(r1-r0)/h`，前两通道仍需除 `Pr`。每个通道按 $H(v_0-r_0+q)+r_1-q$ 组合，热传播经 `heat_channel` 按容差模式调用 `heat_on_grid`；涡量额外减旧壁提升、加 `J*boundary/h`，再由 `impose_noslip` 求新壁。平均流热输出取水平平均，温度扩散系数为 1。这里热输入是组合场，不是原始 PDE 源。
 
 <!-- note-end: boussinesq_solver-note-8 -->
 
@@ -4332,7 +4421,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-9 -->
 
-候选 `next%time` 始终为旧时间加一步。除最后一轮外，重新由候选新状态求 `r1`，再回到同一步的热传播组合。最后检查新涡量和温度有限性并累计步数；此循环不是三个连续时间步，也没有自适应非线性收敛停止。
+候选 `next%time` 始终为旧时间加一步。除最后一轮外，重新由候选新状态求 `r1`，再回到同一步的热传播组合。最后检查新涡量和温度有限性并累计步数；此循环不是三个连续时间步，也没有自适应非线性收敛停止。其后的 `heat_channel` 只是一层分派：相对模式传入 `scale`，绝对模式不传。
 
 <!-- note-end: boussinesq_solver-note-9 -->
 
@@ -4348,7 +4437,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-11 -->
 
-流式二进制文件先写版本标识 `RBFGT002`、辅助网格与物理/控制参数，再写时间层状态。该格式包含 `mean_u`，而终态绘图文件只保存恢复的速度与温度。它没有保存每次临时热树，树在下次热调用时重建。
+流式二进制文件先写版本标识、辅助网格与物理/控制参数，再写时间层状态。绝对容差写原格式 `RBFGT002`（与旧版逐字节相同）；相对容差写 `RBFGT003`，末尾多一个容差模式标志。该格式包含 `mean_u`，而终态绘图文件只保存恢复的速度与温度。它没有保存每次临时热树，树在下次热调用时重建。
 
 <!-- note-end: boussinesq_solver-note-11 -->
 
@@ -4356,7 +4445,7 @@ end module boussinesq_solver
 
 <!-- note-start: boussinesq_solver-note-12 -->
 
-`load_checkpoint` 核对版本、网格、阶数、层级、步长、物理参数与模式标志，匹配才读入状态并检查有限性。这个接口已经存在，但 `run_rb` 没有命令行恢复入口；若要续算，需要另外编写调用流程。
+`load_checkpoint` 先读 8 字节标识，按 `RBFGT002`/`RBFGT003` 读对应头部（旧格式视为绝对容差），核对版本、网格、阶数、层级、步长、物理参数、模式标志与容差模式，匹配才读入状态并检查有限性。这个接口已经存在，但 `run_rb` 没有命令行恢复入口；若要续算，需要另外编写调用流程。
 
 <!-- note-end: boussinesq_solver-note-12 -->
 
@@ -4486,29 +4575,60 @@ contains
     ! @note-end rb_linear_reference-note-4
 
     ! @note-start rb_linear_reference-note-5
-    real(rk) function reference_growth(ra,mode) result(sigma)
+    real(rk) function reference_growth(ra,mode,found) result(sigma)
+        ! Largest real growth rate of the symmetric (even-w) branch for Pr=1.
+        ! For Pr=1 the linear operator is self-adjoint after scaling theta by sqrt(Ra), so all
+        ! growth rates are real and sigma <= sqrt(Ra). The scan starts above that bound and moves
+        ! downward, so the first genuine root found is the most unstable one on this branch.
+        ! Sign changes caused by poles of the normalized determinant (sigma = q) are rejected.
         real(rk), intent(in) :: ra
         integer, intent(in) :: mode
-        real(rk) :: a,lo,hi,mid,flo,fhi,fmid
-        integer :: i
+        logical, intent(out), optional :: found
+        real(rk) :: a,lo,hi,mid,flo,fhi,fmid,top,bottom,step
+        integer :: i,nscan,j
+        if (ra <= 0) error stop "reference growth requires Ra > 0"
+        if (mode < 1) error stop "reference mode must be positive"
         a = 2*pi*mode
-        lo = -10
-        hi = 10
-        flo = determinant(ra,a,lo)
+        top = sqrt(ra)+1
+        ! The cubic has one real root (as characteristic_roots requires) iff sigma > -(27 Ra a^2/4)^(1/3).
+        bottom = -0.99_rk*(27*ra*a*a/4)**(1.0_rk/3)
+        step = 1.0e-2_rk*max(1.0_rk,sqrt(ra)/100)
+        nscan = ceiling((top-bottom)/step)
+        if (present(found)) found = .true.
+        hi = top
         fhi = determinant(ra,a,hi)
-        if (flo*fhi >= 0) error stop "growth rate not bracketed on near-onset branch"
-        do i = 1, 100
-            mid = (lo+hi)/2
-            fmid = determinant(ra,a,mid)
-            if (flo*fmid <= 0) then
-                hi = mid
-            else
-                lo = mid
-                flo = fmid
+        do j = 1, nscan
+            lo = max(bottom,top-j*step)
+            flo = determinant(ra,a,lo)
+            if (flo*fhi < 0) then
+                ! Bisect [lo,hi]; keep the bracket signs consistent.
+                mid = hi
+                do i = 1, 100
+                    mid = (lo+hi)/2
+                    fmid = determinant(ra,a,mid)
+                    if (flo*fmid <= 0) then
+                        hi = mid
+                    else
+                        lo = mid
+                        flo = fmid
+                    end if
+                    if (hi-lo < 1.0e-12_rk) exit
+                end do
+                sigma = (lo+hi)/2
+                if (abs(determinant(ra,a,sigma)) < 1.0e-6_rk) return
+                ! Pole, not a root: resume scanning below this bracket.
+                lo = max(bottom,top-j*step)
+                flo = determinant(ra,a,lo)
             end if
-            if (hi-lo < 1.0e-12_rk) exit
+            hi = lo
+            fhi = flo
         end do
-        sigma = (lo+hi)/2
+        sigma = 0
+        if (present(found)) then
+            found = .false.
+            return
+        end if
+        error stop "no symmetric-branch growth rate found in the admissible sigma range"
     end function reference_growth
     ! @note-end rb_linear_reference-note-5
 
@@ -4570,7 +4690,7 @@ end module rb_linear_reference
 
 <!-- note-start: rb_linear_reference-note-5 -->
 
-固定 Rayleigh 数与水平模态，扫描并二分行列式零点得到增长率 `sigma`。主程序在启动时计算它，用作初始化参考和摘要值；非线性后期的拟合增长率不必等于此值。
+固定 Rayleigh 数与水平模态，从上界 $\sqrt{\mathrm{Ra}}+1$ 向下扫描行列式变号，二分后用 $|\det|<10^{-6}$ 排除 $\sigma=q$ 处极点，第一个真根即对称分支最大增长率（推导见第 8.2.3 节）。下界取 Cardano 单实根条件。找不到时可选参数 `found` 返回假，否则报错。主程序在启动时计算它，用作初始化参考和摘要值；非线性后期的拟合增长率不必等于此值。
 
 <!-- note-end: rb_linear_reference-note-5 -->
 
@@ -4592,13 +4712,15 @@ program run_rb
     use numerical_tools, only: pi
     use boussinesq_solver
     use rb_linear_reference
+    use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     implicit none
     type(flow_solver) :: solver
     type(flow_state) :: state,next
     real(rk), allocatable :: u(:,:),w(:,:),vertical(:),derivative(:),thermal(:)
     real(rk) :: dt,final_time,ra,critical,sigma,amplitude,d(14),old(14),flux_integral(5),begin(14),fit_t,fit_y,fit_tt,fit_ty,fit_n,growth,y
     integer :: nx,nz,k,steps,n,j,unit,field_unit
-    character(256) :: argument,prefix,mode
+    character(256) :: argument,prefix,mode,tolerance_mode,comparison
+    logical :: have_reference
     mode = "super"
     dt = 0.002_rk
     final_time = 2
@@ -4607,6 +4729,7 @@ program run_rb
     k = 12
     ra = 0
     prefix = "rb"
+    tolerance_mode = "absolute"
     if (command_argument_count() >= 1) call get_command_argument(1,mode)
     if (command_argument_count() >= 2) then
         call get_command_argument(2,argument)
@@ -4629,19 +4752,32 @@ program run_rb
         read(argument,*) ra
     end if
     if (command_argument_count() >= 7) call get_command_argument(7,prefix)
+    if (command_argument_count() >= 8) call get_command_argument(8,tolerance_mode)
+    if (trim(tolerance_mode) /= "absolute" .and. trim(tolerance_mode) /= "relative") error stop "tolerance mode must be absolute or relative"
     critical = neutral_rayleigh(1)
     if (ra <= 0) ra = 1.2_rk*critical
-    sigma = reference_growth(ra,1)
+    ! The reference growth rate is optional: if no symmetric-branch root exists in the admissible
+    ! range, the solver still runs and starts from the neutral (sigma=0, Ra=Ra_c) eigenmode.
+    sigma = reference_growth(ra,1,have_reference)
+    if (.not. have_reference) then
+        sigma = ieee_value(sigma,ieee_quiet_nan)
+        print *, "warning: no reference growth rate at this Ra; using the neutral Ra_c eigenmode as initial shape"
+    end if
     steps = nint(final_time/dt)
     if (steps < 1 .or. abs(steps*dt-final_time) > 1.0e-10_rk) error stop "final time must be an integer number of steps"
     ! @note-start run_rb-note-1
     call configure_solver(solver,nx,nz,k,dt,1.0_rk,ra,2.0e-10_rk,1)
     solver%nonlinear = trim(mode) /= "linear"
+    solver%relative_tolerance = trim(tolerance_mode) == "relative"
     call zero_state(solver,state)
     ! @note-end run_rb-note-1
     allocate(u(nx,nz),w(nx,nz),vertical(nz),derivative(nz),thermal(nz))
     ! @note-start run_rb-note-2
-    call reference_mode(ra,1,sigma,solver%grid%z,vertical,derivative,thermal)
+    if (have_reference) then
+        call reference_mode(ra,1,sigma,solver%grid%z,vertical,derivative,thermal)
+    else
+        call reference_mode(critical,1,0.0_rk,solver%grid%z,vertical,derivative,thermal)
+    end if
     amplitude = 0.01_rk
     if (trim(mode) == "linear" .or. trim(mode) == "onset") amplitude = 1.0e-5_rk
     if (trim(mode) == "conduction") amplitude = 0
@@ -4671,7 +4807,7 @@ program run_rb
         flush(unit)
         ! @note-start run_rb-note-4
         flux_integral(1:3) = flux_integral(1:3)+dt*([old(4)-old(5),old(4)-old(3),old(3)-old(5)]+[d(4)-d(5),d(4)-d(3),d(3)-d(5)])/2
-        flux_integral(4) = flux_integral(4)+dt*(ra*(old(3)+d(3)-2)-old(13)-d(13))/2
+        flux_integral(4) = flux_integral(4)+dt*(ra*solver%pr*(old(3)+d(3)-2)-old(13)-d(13))/2
         flux_integral(5) = flux_integral(5)+dt*(old(3)+d(3)-2-old(14)-d(14))/2
         ! @note-end run_rb-note-4
         old = d
@@ -4690,11 +4826,23 @@ program run_rb
     close(unit)
     growth = 0
     if (fit_n > 1) growth = (fit_ty-fit_t*fit_y/fit_n)/(fit_tt-fit_t**2/fit_n)
+    ! The fitted slope equals the linear growth rate only while the run stays linear.
+    if (.not. have_reference) then
+        comparison = "not available (no reference growth rate at this Ra)"
+    else if (trim(mode) == "linear") then
+        comparison = "comparable (linear equations)"
+    else if (trim(mode) == "conduction") then
+        comparison = "not applicable (zero initial perturbation)"
+    else
+        comparison = "not comparable unless the fit window t>=T/4 is still in the linear phase (nonlinear run)"
+    end if
     open(newunit=unit,file=trim(prefix)//"_summary.txt",status="replace")
     write(unit,'(a,es24.16)') "critical Ra (symmetric m=1 ODE): ",critical
     write(unit,'(a,es24.16)') "Ra: ",ra
     write(unit,'(a,es24.16)') "reference growth: ",sigma
     write(unit,'(a,es24.16)') "measured amplitude growth: ",growth
+    write(unit,'(a,a)') "growth comparison: ",trim(comparison)
+    write(unit,'(a,a)') "tree tolerance mode: ",trim(tolerance_mode)
     write(unit,'(a,14es24.16)') "final diagnostics: ",d
     write(unit,'(a,3es24.16)') "heat window balance: ",d(6:8)-begin(6:8)-flux_integral(1:3)
     write(unit,'(a,2es24.16)') "energy window balance: ",d(2)-begin(2)-flux_integral(4),d(12)-begin(12)-flux_integral(5)
@@ -4716,6 +4864,7 @@ program run_rb
     ! @note-end run_rb-note-6
     print *, "E, NuV, wall, divergence:",d(2),d(3),d(9),d(11)
     print *, "amplitude growth / reference:",growth,sigma
+    print *, "growth comparison: ",trim(comparison)
 end program run_rb
 ```
 
@@ -4723,7 +4872,7 @@ end program run_rb
 
 <!-- note-start: run_rb-note-1 -->
 
-这里固定 `Pr=1`、源容差 `2e-10`、最小树层级 1，`nx,nz,k,dt,ra` 已由前文参数准备。`linear` 才关闭非线性，其他模式保留；`zero_state` 分配并清零辅助状态，尚未设置参考扰动。
+这里固定 `Pr=1`、源容差 `2e-10`、最小树层级 1，`nx,nz,k,dt,ra` 已由前文参数准备。`linear` 才关闭非线性，其他模式保留；第 8 个命令行参数为 `relative` 时开启相对树容差；`zero_state` 分配并清零辅助状态，尚未设置参考扰动。
 
 <!-- note-end: run_rb-note-1 -->
 
@@ -4731,7 +4880,7 @@ end program run_rb
 
 <!-- note-start: run_rb-note-2 -->
 
-调用连续参考剖面后，`super` 幅值为 0.01，`linear/onset` 为 `1e-5`，`conduction` 为零。按正弦/余弦组合速度与温度，再用 `set_velocity` 存平均流和非平均涡量。`onset` 不会在此修改 Ra。
+调用连续参考剖面后（若该 Ra 下没有参考增长率，则改用 $\mathrm{Ra}_c$、$\sigma=0$ 的中性剖面），`super` 幅值为 0.01，`linear/onset` 为 `1e-5`，`conduction` 为零。按正弦/余弦组合速度与温度，再用 `set_velocity` 存平均流和非平均涡量。`onset` 不会在此修改 Ra。
 
 <!-- note-end: run_rb-note-2 -->
 
@@ -4747,7 +4896,7 @@ end program run_rb
 
 <!-- note-start: run_rb-note-4 -->
 
-五份累计积分分别对应 $Q,Q_b,Q_t,E,K_\theta$ 的演化右端，逐步用梯形公式积分。最终用状态变化减累计积分得到窗口平衡误差。主程序 `Pr=1`，所以动能输入处直接用 `ra`；诊断的粘性耗散已包含 `Pr`。
+五份累计积分分别对应 $Q,Q_b,Q_t,E,K_\theta$ 的演化右端，逐步用梯形公式积分。最终用状态变化减累计积分得到窗口平衡误差。动能输入写作 `ra*solver%pr`，对应 $\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)$；诊断的粘性耗散已包含 `Pr`，不再乘。
 
 <!-- note-end: run_rb-note-4 -->
 
@@ -4755,7 +4904,7 @@ end program run_rb
 
 <!-- note-start: run_rb-note-5 -->
 
-取 `y=log(sqrt(E))`，累计线性回归所需的时间与交叉矩。窗口从 `final_time/4` 开始；只有仍处于线性阶段时才能与参考 `sigma` 直接比较。默认终止时间 2 的 `super` 摘要拟合约 2.889，不是早期约 5.138 的线性斜率。
+取 `y=log(sqrt(E))`，累计线性回归所需的时间与交叉矩。窗口从 `final_time/4` 开始；只有仍处于线性阶段时才能与参考 `sigma` 直接比较。默认终止时间 2 的 `super` 摘要拟合约 2.889，不是早期约 5.138 的线性斜率。因此结束时按模式生成 `comparison` 文字，写入摘要的 `growth comparison` 行并打印。
 
 <!-- note-end: run_rb-note-5 -->
 
@@ -4763,7 +4912,7 @@ end program run_rb
 
 <!-- note-start: run_rb-note-6 -->
 
-先保存二进制检查点，再恢复速度，逐辅助节点写 `x,z,u,w,theta,T`，其中 `T=1-z+theta`。这个 CSV 分辨率是 `nx×nz`，不包含临时树、压力或绘图插值网格；最后打印能量、热流、约束与拟合摘要。
+先保存二进制检查点，再恢复速度，逐辅助节点写 `x,z,u,w,theta,T`，其中 `T=1-z+theta`。这个 CSV 分辨率是 `nx×nz`，不包含临时树、压力或绘图插值网格；最后打印能量、热流、约束与拟合摘要；摘要另记 `growth comparison` 与 `tree tolerance mode` 两行。
 
 <!-- note-end: run_rb-note-6 -->
 
