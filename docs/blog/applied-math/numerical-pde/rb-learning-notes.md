@@ -1310,19 +1310,26 @@ $s$ 取自旧状态，整步的 9 次热传播共用。为什么不按每次输�
 
 ## 6. 处理无滑移壁面
 
-温度和平均水平流在两壁都是零 Dirichlet 条件，可以直接用第 3 节的公式加零壁热传播。非零水平模态的涡量却不同：**壁面涡量值事先不知道**，它要由“恢复出的速度在壁面切向为零”来决定。本节对一个非零水平模态推导这一过程。
+温度和平均水平流在两壁都是零 Dirichlet 条件，直接用第 3 节的公式加零壁热传播就能推进。非零水平模态的涡量不同：物理边界条件给的是速度 $u=w=0$，不是 $\omega$ 的壁值。涡量方程本身是扩散方程，推进时必须有壁值，但这个壁值**事先不知道**，只能由“恢复出的速度满足无滑移”反推。本章对一个非零水平模态推导怎样反推。
 
-先回顾哪些条件已经满足。第 2.1 节中 $\psi$ 两壁为零，所以 $w=-\psi_x=0$ 自动成立；平均流 $\overline u$ 用零壁条件推进，所以 $\overline u|_{\rm wall}=0$。剩下的只有非平均部分的
+**还剩哪些条件。** 第 2.1 节中 $\psi$ 两壁为零，所以 $w=-\psi_x=0$ 自动成立；平均流 $\overline u$ 用零壁条件推进，所以 $\overline u|_{\rm wall}=0$。剩下的只有非平均部分的
 
 $$
 \psi_z(x,0)=\psi_z(x,1)=0\quad\Longleftrightarrow\quad\widehat\psi_m'(0)=\widehat\psi_m'(1)=0\quad(m\ne1).
 $$
 
-每个模态两个条件，正好对应两个未知数：底壁涡量 $g_b$ 和顶壁涡量 $g_t$。整体思路是：
+每个模态两个条件，正好对应两个未知数：本步结束时的底壁涡量 $g_{1,b}$ 和顶壁涡量 $g_{1,t}$，合记为 $g_1$。
 
-1. 用“调和提升” $L g$ 把未知的壁面涡量值延伸到内部，使剩余部分两壁为零，可以交给零壁热传播；
-2. 把壁值在一步内的线性变化也视为源，推出新涡量对新壁值 $g_1$ 是仿射依赖：$\omega_1=R+Bg_1$；
-3. 把无滑移的两个条件写成 $2\times2$ 线性系统解出 $g_1$。
+**思路：影响矩阵。** 速度条件是关于 $\psi$ 的，而 $\psi$ 要经过“推进涡量 → 解 Poisson → 求壁面导数”这条链才由 $g_1$ 决定。关键观察是：这条链对 $g_1$ 是**仿射**的。于是：
+
+1. 第 6.1 节用“调和提升” $Lg$ 把壁值延伸到内部，使剩余部分两壁为零，可以交给零壁热传播；
+2. 第 6.2 节把壁值在一步内的线性变化也当作源，得到 $\omega_1=R+Bg_1$，其中 $R$ 不含 $g_1$，$B$ 是与状态无关的两列；
+3. 第 6.3 节利用 Poisson 求解和求导的线性，把两个无滑移条件写成 $2\times2$ 线性系统，解出 $g_1$；
+4. 第 6.4 节说明 $B$ 中的固定矩阵 $J$ 怎样预计算；第 6.5 节附带说明压力的后处理。
+
+$B$ 和 $2\times2$ 矩阵只依赖网格、步长和 $\Pr$，初始化时算好；每步只需算 $R$、解一次 Poisson、取两个壁面导数、解一个 $2\times2$ 系统。
+
+这与“按某个近壁离散公式（例如 Thom 公式）直接改写壁涡量”是不同的方法：后者用近壁 Taylor 展开估计壁值，这里则让新时刻的离散速度精确满足无滑移。本程序没有使用 Thom 类公式。
 
 ### 6.1 调和提升为什么是这两个函数
 
@@ -1356,7 +1363,7 @@ $$
 
 对 $0\le z\le1$，所有指数都 $\le0$，不会溢出，这正是 `make_grid` 中 `g%lift` 的公式。$a\to0$ 时，$\sinh(a(1-z))/\sinh a\to a(1-z)/a=1-z$、$\sinh(az)/\sinh a\to z$，代码对零模态直接使用这两个线性函数；但流动的零模态仍由平均流通道管理，不使用这个提升。
 
-**一个容易犯的错误。** 这里 $P_aLg=0$ 是内部微分方程意义的调和性。$Lg$ 的壁值一般非零，所以它**不在**齐次 Dirichlet 算子 $A=\Pr P_a$ 的定义域里，不能当作 $A$ 的零特征向量，进而错误地得出 $HL=L$。齐次热传播会立即施加零壁条件：$HL$ 在两壁为零，内部也会衰减（第 6.3 节）。
+**一个容易犯的错误。** 这里 $P_aLg=0$ 是内部微分方程意义的调和性。$Lg$ 的壁值一般非零，所以它**不在**齐次 Dirichlet 算子 $A=\Pr P_a$ 的定义域里，不能当作 $A$ 的零特征向量，进而错误地得出 $HL=L$。齐次热传播会立即施加零壁条件：$HL$ 在两壁为零，内部也会衰减（第 6.4 节）。
 
 ### 6.2 时变壁数据与源势一起变换
 
@@ -1398,6 +1405,8 @@ $$
 J=\int_0^hH(s)L\,ds,\qquad H(s)=e^{-sA}.
 $$
 
+$J$ 只依赖模态、网格、$h$ 和 $\Pr$，与当前状态无关，初始化时预计算，具体算法见第 6.4 节。本节和下一节只用到它的两个性质：它是线性的，且两壁为零（它是零壁传播结果的积分）。
+
 **第四步：恢复 $\omega_1$。** 由 $v=\omega-Lg-r+q$ 得 $\omega_1=v_1+Lg_1+r_1-q$，$v_0=\omega_0-Lg_0-r_0+q$。代入：
 
 $$
@@ -1423,9 +1432,86 @@ $$
 | $B=L-J/h$ | `wall%b = g%lift - wall%j/h` |
 | 求 $g_1$ 并得到 $\omega_1=R+Bg_1$ | `impose_noslip(g,s%wall,rhs)` |
 
-### 6.3 两列热响应的正弦系数如何算出
+### 6.3 从壁面速度约束写出 $2\times2$ 线性系统
 
-$J$ 需要 $H(s)L$，即两个提升函数的零壁热传播。它们只有两列，且是固定的解析函数，可以用正弦级数精确算，不必走 FGT。
+记内部 Poisson 矩阵 $P_{a,I}=a^2\mathsf I-\mathsf D^2_{II}$，$\mathcal P$ 为“取内部节点、乘 $P_{a,I}^{-1}$、补两壁零值”的映射（即 `poisson_dirichlet` 对单个模态的作用）。$B$ 有两列 $B_b,B_t$，定义
+
+$$
+\psi_R=\mathcal PR,\qquad \chi_b=\mathcal PB_b,\qquad\chi_t=\mathcal PB_t .
+$$
+
+**线性叠加。** $\omega_1=R+B_bg_{1,b}+B_tg_{1,t}$，$\mathcal P$ 是线性的，所以
+
+$$
+\psi_1=\mathcal P\omega_1=\psi_R+\chi_bg_{1,b}+\chi_tg_{1,t} .
+$$
+
+**壁值怎样影响流函数。** $\mathcal P$ 只读取内部节点，所以 $\omega_1$ 的壁值 $g_1$ 本身不进入 Poisson；$g_1$ 是通过 $B$ 的**内部值** $(L-J/h)_I$ 影响 $\psi_1$ 的。它不是简单的 $L_I$：$-J/h$ 体现了“壁值在这一步内从 $g_0$ 线性变到 $g_1$ 期间不断扩散进内部”的效应。正因为 $g_1$ 能通过内部值改变 $\psi_1$，调整这两个壁值才可能让 $\psi_1$ 满足两个壁面导数条件。
+
+**无滑移条件。** 对非零水平模态平均流没有贡献，$u$ 的该模态就是 $\psi_z$。要求 $\psi_1'(0)=\psi_1'(1)=0$，用微分矩阵首末行表示导数：$\psi'(0)=\sum_j\mathsf D_{1j}\psi(z_j)$，$\psi'(1)=\sum_j\mathsf D_{N_zj}\psi(z_j)$。逐项写出：
+
+$$
+\begin{aligned}
+\chi_b'(0)g_{1,b}+\chi_t'(0)g_{1,t}+\psi_R'(0)&=0,\\
+\chi_b'(1)g_{1,b}+\chi_t'(1)g_{1,t}+\psi_R'(1)&=0,
+\end{aligned}
+$$
+
+即
+
+$$
+\underbrace{\begin{pmatrix}\chi_b'(0)&\chi_t'(0)\\\chi_b'(1)&\chi_t'(1)\end{pmatrix}}_{M}
+\begin{pmatrix}g_{1,b}\\g_{1,t}\end{pmatrix}
+=-\underbrace{\begin{pmatrix}\psi_R'(0)\\\psi_R'(1)\end{pmatrix}}_{d}.
+$$
+
+**解 $2\times2$ 系统。** 若 $\det M=M_{11}M_{22}-M_{12}M_{21}\ne0$，可以直接验证 $MM^{-1}=\mathsf I$ 的逆矩阵为
+
+$$
+M^{-1}=\frac1{\det M}\begin{pmatrix}M_{22}&-M_{12}\\-M_{21}&M_{11}\end{pmatrix},
+$$
+
+（例如左上元：$\frac{M_{11}M_{22}-M_{12}M_{21}}{\det M}=1$；右上元：$\frac{-M_{11}M_{12}+M_{12}M_{11}}{\det M}=0$。）所以 $g_1=-M^{-1}d$，分量为
+
+$$
+g_{1,b}=\frac{-M_{22}d_b+M_{12}d_t}{\det M},\qquad
+g_{1,t}=\frac{M_{21}d_b-M_{11}d_t}{\det M}.
+$$
+
+**哪些部分可以预计算。** $M$ 只依赖模态 $a$、网格、$h$ 和 $\Pr$（通过 $B=L-J/h$，$J$ 的预计算见第 6.4 节），与当前状态无关，所以 `make_wall_operator` 一次算好 $\chi_b,\chi_t$ 和 $M^{-1}$（`influence_inverse`）。每一步只需：
+
+1. $\psi_R=\mathcal PR$（`psi = poisson_dirichlet(g,rhs)`）；
+2. $d$ 的两个分量（`sum(g%d(1,:)*psi(m,:))` 与 `sum(g%d(g%nz,:)*psi(m,:))`）；
+3. $g_1=-M^{-1}d$（`new_boundary`）；
+4. $\omega_1=R+Bg_1$。
+
+零模态（`m=1`）置零，因为平均涡量由 `mean_u` 管理；Nyquist 模态也置零（与第 2.4 节水平截断一致）。因此壁面条件是在求涡量时施加，而不是在速度恢复后强制把两个端点擦成零。影响矩阵取决于模态、网格、$h$ 和 $\Pr$，这些参数改变后必须重新初始化。
+
+### 6.4 预计算：$B$ 中的 $J$ 怎样算
+
+第 6.2 节的 $B=L-J/h$ 中，$L$ 是第 6.1 节的解析函数，$J=\int_0^hH(s)L\,ds$ 是两个提升函数在 $[0,h]$ 内零壁热传播的时间积分。每个模态只有两列，且与当前状态无关，所以 `make_wall_operator` 在初始化时一次算好，不走 FGT。计算分两步：先用一个恒等式把时间积分化成“一次热传播 $HL$ 加一次 Poisson 求解”，再用正弦级数精确算出 $HL$。
+
+**把时间积分化为 $HL$。** 因为 $\frac d{ds}H(s)=-AH(s)$，所以
+
+$$
+AJ=\int_0^hAH(s)L\,ds=-\int_0^h\frac{d}{ds}\big[H(s)L\big]ds=-\big[H(s)L\big]_0^h=L-HL .
+$$
+
+两边左乘 $K=A^{-1}$ 得
+
+$$
+\boxed{J=K(L-HL)} .
+$$
+
+注意：$L$ 本身两壁不为零，但 $L-HL$ 的“$K$”只作用在内部节点上（`g%inverse` 是内部 Poisson 逆），输出补零壁值。这与 $J$ 两壁为零一致。于是先计算 `heat`$=HL$（下文用正弦级数精确计算），再对内部的 `lift-heat` 做一次 Poisson 求解并除以 $\Pr$：
+
+$$
+J_{I}=\frac1{\Pr}\left(a^2\mathsf I-\mathsf D^2_{II}\right)^{-1}\big(L-HL\big)_I ,
+$$
+
+对应 `wall%j(2:nz-1,c,m) = matmul(g%inverse(:,:,m), g%lift(2:nz-1,c,m)-heat(2:nz-1,c))/diffusion`。
+
+**$HL$ 的正弦级数。** 两个提升函数是固定的解析函数，可以按零壁特征函数展开后逐项精确传播。
 
 **零壁特征函数。** $s_n(z)=\sin(n\pi z)$，$n\ge1$，两壁为零，$s_n''=-n^2\pi^2s_n$，所以
 
@@ -1484,94 +1570,23 @@ $$
 
 这正是 `make_wall_operator` 中 `rate`$=\lambda_n$、`coefficient`$=2\pi n e^{-Dh\lambda_n}/\lambda_n$，两列分别加 `coefficient*sin` 与 `-(-1)**n*coefficient*sin`。提升的正弦展开只在内部或 $L^2$ 意义下表示原函数，端点的非零提升值不由正弦级数表示（系数只按 $1/n$ 衰减）；但 $h>0$ 时每项多了 $e^{-\Pr h\lambda_n}$，级数快速收敛，热响应两壁严格为零，与齐次传播一致。
 
-**为什么不直接算 $J$ 的级数。** 对每个模态直接积分 $\int_0^he^{-\Pr\lambda_ns}ds=\frac{1-e^{-\Pr h\lambda_n}}{\Pr\lambda_n}$，可得
+**为什么不直接对 $J$ 做级数。** 对每个模态直接积分 $\int_0^he^{-\Pr\lambda_ns}ds=\frac{1-e^{-\Pr h\lambda_n}}{\Pr\lambda_n}$，可得
 
 $$
 J\ell_c=\sum_{n=1}^\infty b_{n,c}\frac{1-e^{-\Pr h\lambda_n}}{\Pr\lambda_n}\sin(n\pi z),\qquad c\in\{b,t\}.
 $$
 
-当 $n$ 很大时 $1-e^{-\Pr h\lambda_n}\to1$，系数只按 $b_n/\lambda_n\sim n^{-3}$ 代数衰减，截断很慢。实现改用
-
-$$
-\boxed{J=K(L-HL)} .
-$$
-
-推导：$\frac d{ds}H(s)=-AH(s)$，所以
-
-$$
-AJ=\int_0^hAH(s)L\,ds=-\int_0^h\frac{d}{ds}\big[H(s)L\big]ds=-\big[H(s)L\big]_0^h=L-HL .
-$$
-
-两边左乘 $K=A^{-1}$ 得 $J=K(L-HL)$。注意：$L$ 本身两壁不为零，但 $L-HL$ 的“$K$”只作用在内部节点上（`g%inverse` 是内部 Poisson 逆），输出补零壁值。这与 $J$ 两壁为零一致。于是先计算指数衰减很快的 `heat`$=HL$，再对内部的 `lift-heat` 做一次 Poisson 求解并除以 $\Pr$：
-
-$$
-J_{I}=\frac1{\Pr}\left(a^2\mathsf I-\mathsf D^2_{II}\right)^{-1}\big(L-HL\big)_I ,
-$$
-
-对应 `wall%j(2:nz-1,c,m) = matmul(g%inverse(:,:,m), g%lift(2:nz-1,c,m)-heat(2:nz-1,c))/diffusion`。
+当 $n$ 很大时 $1-e^{-\Pr h\lambda_n}\to1$，系数只按 $b_n/\lambda_n\sim n^{-3}$ 代数衰减，截断很慢。而 $HL$ 的系数带有因子 $e^{-\Pr h\lambda_n}$，指数衰减，很少几项就到舍入水平；$K$ 只是一次精确的矩阵求解。所以先算 $HL$、再用 $J=K(L-HL)$ 是更好的路线。
 
 **截断。** 指标上限 $n_{\max}=\lceil\sqrt{40/(\Pr h)}/\pi\rceil+1$。因为 $\Pr h\lambda_n\ge\Pr h\pi^2n^2$，当 $n\ge n_{\max}-1$ 时 $\Pr h\pi^2n^2\ge\Pr h\pi^2\cdot\frac{40}{\Pr h\pi^2}=40$，指数因子小于 $e^{-40}\approx4\times10^{-18}$。进一步，尾和中相邻项的指数比为 $e^{-\Pr h\pi^2(2n+1)}$，所以尾和被首项乘一个有界的等比因子控制；系数前的 $2n\pi/\lambda_n\le2/(n\pi)$ 也有界。这说明截断误差在双精度舍入水平以下，但本文不把它写成严格的常数界。
 
-### 6.4 从壁面速度约束写出完整的二阶线性系统
+**目前进展。** “未知的壁面涡量 $g_1$ 应该取多少”已转化为：每个非零水平模态一个 $2\times2$ 线性系统 $Mg_1=-d$。矩阵 $M$ 只依赖网格、$h$、$\Pr$，初始化时已求逆；右端 $d$ 是体积部分 $R$ 对应流函数的两个壁面导数，每步算一次。
 
-记内部 Poisson 矩阵 $P_{a,I}=a^2\mathsf I-\mathsf D^2_{II}$，$\mathcal P$ 为“取内部节点、乘 $P_{a,I}^{-1}$、补两壁零值”的映射（即 `poisson_dirichlet` 对单个模态的作用）。$B$ 有两列 $B_b,B_t$，定义
-
-$$
-\psi_R=\mathcal PR,\qquad \chi_b=\mathcal PB_b,\qquad\chi_t=\mathcal PB_t .
-$$
-
-**线性叠加。** $\omega_1=R+B_bg_{1,b}+B_tg_{1,t}$，$\mathcal P$ 是线性的，所以
-
-$$
-\psi_1=\mathcal P\omega_1=\psi_R+\chi_bg_{1,b}+\chi_tg_{1,t} .
-$$
-
-（$\mathcal P$ 只读取内部节点，$\omega_1$ 的壁值 $g_1$ 本身不进入 Poisson；$g_1$ 是通过 $B$ 的**内部值**影响 $\psi_1$ 的。）
-
-**无滑移条件。** 对非零水平模态平均流没有贡献，$u$ 的该模态就是 $\psi_z$。要求 $\psi_1'(0)=\psi_1'(1)=0$，用微分矩阵首末行表示导数：$\psi'(0)=\sum_j\mathsf D_{1j}\psi(z_j)$，$\psi'(1)=\sum_j\mathsf D_{N_zj}\psi(z_j)$。逐项写出：
-
-$$
-\begin{aligned}
-\chi_b'(0)g_{1,b}+\chi_t'(0)g_{1,t}+\psi_R'(0)&=0,\\
-\chi_b'(1)g_{1,b}+\chi_t'(1)g_{1,t}+\psi_R'(1)&=0,
-\end{aligned}
-$$
-
-即
-
-$$
-\underbrace{\begin{pmatrix}\chi_b'(0)&\chi_t'(0)\\\chi_b'(1)&\chi_t'(1)\end{pmatrix}}_{M}
-\begin{pmatrix}g_{1,b}\\g_{1,t}\end{pmatrix}
-=-\underbrace{\begin{pmatrix}\psi_R'(0)\\\psi_R'(1)\end{pmatrix}}_{d}.
-$$
-
-**解 $2\times2$ 系统。** 若 $\det M=M_{11}M_{22}-M_{12}M_{21}\ne0$，可以直接验证 $MM^{-1}=\mathsf I$ 的逆矩阵为
-
-$$
-M^{-1}=\frac1{\det M}\begin{pmatrix}M_{22}&-M_{12}\\-M_{21}&M_{11}\end{pmatrix},
-$$
-
-（例如左上元：$\frac{M_{11}M_{22}-M_{12}M_{21}}{\det M}=1$；右上元：$\frac{-M_{11}M_{12}+M_{12}M_{11}}{\det M}=0$。）所以 $g_1=-M^{-1}d$，分量为
-
-$$
-g_{1,b}=\frac{-M_{22}d_b+M_{12}d_t}{\det M},\qquad
-g_{1,t}=\frac{M_{21}d_b-M_{11}d_t}{\det M}.
-$$
-
-**哪些部分可以预计算。** $M$ 只依赖模态 $a$、网格、$h$ 和 $\Pr$（通过 $B=L-J/h$），与当前状态无关，所以 `make_wall_operator` 一次算好 $\chi_b,\chi_t$ 和 $M^{-1}$（`influence_inverse`）。每一步只需：
-
-1. $\psi_R=\mathcal PR$（`psi = poisson_dirichlet(g,rhs)`）；
-2. $d$ 的两个分量（`sum(g%d(1,:)*psi(m,:))` 与 `sum(g%d(g%nz,:)*psi(m,:))`）；
-3. $g_1=-M^{-1}d$（`new_boundary`）；
-4. $\omega_1=R+Bg_1$。
-
-零模态（`m=1`）置零，因为平均涡量由 `mean_u` 管理；Nyquist 模态也置零（与第 2.4 节水平截断一致）。因此壁面条件是在求涡量时施加，而不是在速度恢复后强制把两个端点擦成零。影响矩阵取决于模态、网格、$h$ 和 $\Pr$，这些参数改变后必须重新初始化。
-
-**为什么只修正壁值就够。** $\psi_1$ 对 $g_1$ 的依赖完全通过 $B$ 的内部值 $(L-J/h)_I$。它不是简单的 $L_I$：$-J/h$ 体现了“壁值在这一步内从 $g_0$ 线性变到 $g_1$ 期间不断扩散进内部”的效应。直接把 $\omega$ 的壁值改成满足某个离散公式（例如 Thom 公式）是另一类方法，这里没有使用。
+至此三个通道都能完整推进，第 1 节的全部壁面条件都已满足：$\theta=0$ 与 $\overline u=0$ 由零壁传播保证，$w=0$ 由 $\psi$ 两壁为零保证（第 2.1 节），非平均部分的 $u=\psi_z=0$ 由本节的影响系统保证。压力在需要时可单独恢复（第 6.5 节），不影响推进。
 
 ### 6.5 压力后处理的方程与边界不是零 Dirichlet
 
-压力不参与主状态推进，但 `flow_pressure` 可在任意时刻恢复它。
+前四节已经完成推进所需的全部壁面处理。压力不参与主状态推进，但 `flow_pressure` 可在任意时刻恢复它。放在本章，是因为它的壁面条件同样来自壁上的动量方程，而且和涡量一样不是简单的零 Dirichlet。
 
 **内部方程。** 对 $\boldsymbol v_t=-\nabla p+\Pr\Delta\boldsymbol v+\boldsymbol F$ 取散度，逐项：$\nabla\cdot\boldsymbol v_t=(\nabla\cdot\boldsymbol v)_t=0$；$\nabla\cdot\nabla p=\Delta p$；$\nabla\cdot\Delta\boldsymbol v=\Delta(\nabla\cdot\boldsymbol v)=0$。所以
 
@@ -1610,10 +1625,6 @@ $n=0$：$\int1\,d\xi=\xi=T_1$。$n=1$：$\int\xi\,d\xi=\xi^2/2=(T_2+1)/4$，即 
 
 **压力常数。** 最后减去全域平均使 $\int_\Omega p=0$。压力在方程中只以梯度出现，任意加法常数不影响速度；这只是选定一个代表。
 
-**目前进展。** “未知的壁面涡量 $g_1$ 应该取多少”已转化为：每个非零水平模态一个 $2\times2$ 线性系统 $Mg_1=-d$。矩阵 $M$ 只依赖网格、$h$、$\Pr$，初始化时已求逆；右端 $d$ 是体积部分 $R$ 对应流函数的两个壁面导数，每步算一次。
-
-至此三个通道都能完整推进，第 1 节的全部壁面条件都已满足：$\theta=0$ 与 $\overline u=0$ 由零壁传播保证，$w=0$ 由 $\psi$ 两壁为零保证（第 2.1 节），非平均部分的 $u=\psi_z=0$ 由本节的影响系统保证。压力在需要时可单独恢复，不影响推进。
-
 ## 7. 总体流程
 
 `run_rb` 先用连续线性参考问题生成初始模态（第 8.2 节），再调用 `configure_solver` 建立辅助网格（`make_grid`）与壁算子（`make_wall_operator`，依赖 $h$ 与 $\Pr$）。每个时间步的核心是 `advance_flow`：
@@ -1642,7 +1653,7 @@ q_c&=K_c\frac{r_{1,c}-r_{0,c}}h,\qquad c\in\{\omega,\overline u,\theta\},\\
 \end{aligned}
 $$
 
-其中 $\mathcal N[R]=R+Bg_1(R)$ 是第 6.4 节的无滑移修正，$K_c$ 用本通道的扩散系数。默认 `ncorrect=2`，循环 `iteration=0,1,2` 共三轮，每轮三次热传播，所以每步 9 次 `heat_on_grid`。校正次数固定，没有非线性迭代残差停止判据。
+其中 $\mathcal N[R]=R+Bg_1(R)$ 是第 6.3 节的无滑移修正，$K_c$ 用本通道的扩散系数。默认 `ncorrect=2`，循环 `iteration=0,1,2` 共三轮，每轮三次热传播，所以每步 9 次 `heat_on_grid`。校正次数固定，没有非线性迭代残差停止判据。
 
 **目前进展。** 第 2–6 节的组件已拼成完整的时间推进映射 $U_n\mapsto U_{n+1}$。给定初态和参数 $(\mathrm{Ra},\Pr)$，反复调用它就得到 RB 问题的数值解。
 
