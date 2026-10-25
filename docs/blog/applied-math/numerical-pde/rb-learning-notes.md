@@ -2,7 +2,7 @@
 title: Rayleigh–Bénard 学习笔记
 date: 2026-10-09
 code_notes: inline
-description: 对照最终交付的 14 份 Fortran 源码，串起二维 RB 方程、全局辅助表示、自适应 FGT 热传播、无滑移壁面、时间推进与验证，并给出重新运行的收敛、自适应对照与计时实验；完整源码附交互批注。
+description: 以求解二维 Rayleigh–Bénard 问题为主线，对照 14 份 Fortran 源码逐步推导无量纲方程、流函数–涡量表示、Fourier–Chebyshev 离散、仿射源积分、FGT 热传播、壁面影响系统、线性稳定性和守恒诊断；每一步代换与化简都写出，并保留源码交互批注与实验。
 hide:
   - navigation
 categories:
@@ -27,20 +27,26 @@ tags:
 
 ## 1. 问题
 
-上下两块板之间的流体，下热上冷。区域为 $x,z$ 方向 $\Omega=[0,1)\times[0,1]$：$x$ 方向周期，上下板固定温度且无滑移。令速度为 $\boldsymbol v=(u,w)$，温度写成
+上下两块水平板之间充满流体，下板热、上板冷。计算区域为
+
+$$
+\Omega=\{(x,z):0\le x<1,\ 0\le z\le1\},
+$$
+
+$x$ 是水平坐标（周期方向），$z$ 是竖直坐标（向上为正，$z=0$ 为下板，$z=1$ 为上板）。速度记为 $\boldsymbol v=(u,w)$，$u$ 是水平分量，$w$ 是竖直分量。温度写成
 
 $$
 T(x,z,t)=1-z+\theta(x,z,t).
 $$
 
-$1-z$ 是静止导热态，$\theta$ 是温度扰动。无量纲 Boussinesq 方程为
+$1-z$ 是静止导热态，$\theta$ 是温度扰动。程序最终求解的无量纲 Boussinesq 扰动方程为
 
 $$
 \begin{aligned}
 \boldsymbol v_t+\boldsymbol v\cdot\nabla\boldsymbol v
-&=-\nabla p+\Pr\Delta\boldsymbol v+\mathrm{Ra}\Pr\theta\boldsymbol e_z,\\
+&=-\nabla p+\Pr\Delta\boldsymbol v+\mathrm{Ra}\Pr\,\theta\,\boldsymbol e_z,\\
 \nabla\cdot\boldsymbol v&=0,\\
-\theta_t+u\theta_x+w\theta_z&=\Delta\theta+w.
+\theta_t+u\theta_x+w\theta_z&=\Delta\theta+w,
 \end{aligned}
 $$
 
@@ -48,12 +54,156 @@ $$
 
 $$
 u=w=\theta=0\quad(z=0,1),\qquad
-f(x+1,z,t)=f(x,z,t).
+f(x+1,z,t)=f(x,z,t)\quad(f=u,w,\theta,p).
 $$
 
-温度方程中的 $+w$ 来自 $w\partial_z(1-z)=-w$ 移到右端。静止导热态的浮力可以吸收到压力中，所以实际耦合浮力用 $\theta$。$\Pr$ 控制动量扩散与热扩散的比例，$\mathrm{Ra}$ 控制浮力强度；在本代码中我们固定 $\Pr=1$。
+这里 $\boldsymbol e_z=(0,1)$ 是竖直单位向量，$\Delta=\partial_{xx}+\partial_{zz}$，$\Pr$ 是 Prandtl 数（动量扩散与热扩散之比），$\mathrm{Ra}$ 是 Rayleigh 数（浮力驱动与两种扩散阻尼之比）。主程序固定 $\Pr=1$，但第 2–7 节的推导对一般 $\Pr>0$ 都成立，代码中凡是出现 $\Pr$ 的地方也都保留了这个参数。
 
-我们计算希望看到小扰动是否增长、怎样形成对流以及热传导如何变化。因此要同时检查速度、温度、边界约束、增长率和热量/能量平衡。
+我们关心小扰动是否增长、怎样形成对流卷，以及对流使热流增加多少。因此求解时要同时检查速度、温度、壁面约束、增长率和热量/能量平衡。下面三小节说明上面这组方程的每一项从哪里来。
+
+### 1.1 有量纲 Boussinesq 模型推导
+
+带星号的量都是有量纲量。记板间距离为 $H_*$，底、顶板温度为 $T_b^*>T_t^*$，温差 $\Delta T_*=T_b^*-T_t^*$；流体的参考密度为 $\rho_0$（在温度 $T_t^*$ 时的密度），运动黏度为 $\nu$，热扩散率为 $\kappa$，热膨胀系数为 $\alpha$，重力加速度大小为 $g_*$，重力方向为 $-\boldsymbol e_z$。
+
+**第一步：密度只在浮力中随温度变化。** 对小温差把状态方程在 $T_t^*$ 处线性化：
+
+$$
+\rho=\rho_0\left[1-\alpha(T^*-T_t^*)\right].
+$$
+
+Boussinesq 近似的含义是：惯性项 $\rho\,D\boldsymbol v^*/Dt^*$ 和连续方程中都把 $\rho$ 换成常数 $\rho_0$，只在重力项 $-\rho g_*\boldsymbol e_z$ 中保留密度变化。于是动量方程为
+
+$$
+\rho_0\left(\partial_{t^*}\boldsymbol v^*+(\boldsymbol v^*\cdot\nabla^*)\boldsymbol v^*\right)
+=-\nabla^*p_{\rm full}^*+\rho_0\nu\Delta^*\boldsymbol v^*-\rho g_*\boldsymbol e_z .
+$$
+
+**第二步：扣去静水压力。** 设 $p_h^*$ 满足 $\nabla^*p_h^*=-\rho_0g_*\boldsymbol e_z$，即 $p_h^*=p_0-\rho_0g_*z^*$（$p_0$ 为常数）。令 $p^*=p_{\rm full}^*-p_h^*$，则
+
+$$
+-\nabla^*p_{\rm full}^*-\rho g_*\boldsymbol e_z
+=-\nabla^*p^*-\nabla^*p_h^*-\rho_0g_*\boldsymbol e_z+\rho_0\alpha(T^*-T_t^*)g_*\boldsymbol e_z
+=-\nabla^*p^*+\rho_0g_*\alpha(T^*-T_t^*)\boldsymbol e_z .
+$$
+
+中间一步用了 $-\rho g_*=-\rho_0g_*+\rho_0\alpha(T^*-T_t^*)g_*$，再用 $-\nabla^*p_h^*-\rho_0g_*\boldsymbol e_z=0$。两边除以 $\rho_0$ 得到
+
+$$
+\partial_{t^*}\boldsymbol v^*+(\boldsymbol v^*\cdot\nabla^*)\boldsymbol v^*
+=-\rho_0^{-1}\nabla^*p^*+\nu\Delta^*\boldsymbol v^*
++g_*\alpha(T^*-T_t^*)\boldsymbol e_z .
+$$
+
+**第三步：连续方程与能量方程。** 密度在连续方程中取常数 $\rho_0$，$\partial_{t^*}\rho_0+\nabla^*\cdot(\rho_0\boldsymbol v^*)=0$ 化为 $\nabla^*\cdot\boldsymbol v^*=0$。温度满足对流扩散方程
+
+$$
+\partial_{t^*}T^*+\boldsymbol v^*\cdot\nabla^*T^*=\kappa\Delta^*T^* .
+$$
+
+边界条件：$z^*=0$ 处 $T^*=T_b^*$，$z^*=H_*$ 处 $T^*=T_t^*$，两板上 $\boldsymbol v^*=0$（无滑移、不穿透）；水平方向取周期 $L_*$。
+
+### 1.2 无量纲化：逐项算出每个系数
+
+取长度尺度 $H_*$、热扩散时间 $H_*^2/\kappa$ 作时间尺度，速度尺度为二者之比 $\kappa/H_*$，温度用 $T_t^*$ 作零点、$\Delta T_*$ 作单位，压力尺度选成能与惯性项匹配的 $\rho_0\kappa^2/H_*^2$：
+
+$$
+x^*=H_*x,\quad z^*=H_*z,\quad t^*=\frac{H_*^2}{\kappa}t,
+\quad\boldsymbol v^*=\frac{\kappa}{H_*}\boldsymbol v,
+\quad T^*=T_t^*+\Delta T_*\,T,
+\quad p^*=\frac{\rho_0\kappa^2}{H_*^2}\widetilde p .
+$$
+
+无星号的量都是无量纲量；$\widetilde p$ 是还未扣除导热态浮力的无量纲压力。链式法则给出
+
+$$
+\partial_{t^*}=\frac{\partial t}{\partial t^*}\partial_t=\frac{\kappa}{H_*^2}\partial_t,\qquad
+\nabla^*=\frac1{H_*}\nabla,\qquad
+\Delta^*=\frac1{H_*^2}\Delta .
+$$
+
+**动量方程逐项代入：**
+
+| 有量纲项 | 代入尺度 | 结果 |
+| --- | --- | --- |
+| $\partial_{t^*}\boldsymbol v^*$ | $\dfrac{\kappa}{H_*^2}\cdot\dfrac{\kappa}{H_*}\boldsymbol v_t$ | $\dfrac{\kappa^2}{H_*^3}\boldsymbol v_t$ |
+| $(\boldsymbol v^*\cdot\nabla^*)\boldsymbol v^*$ | $\dfrac{\kappa}{H_*}\cdot\dfrac1{H_*}\cdot\dfrac{\kappa}{H_*}(\boldsymbol v\cdot\nabla)\boldsymbol v$ | $\dfrac{\kappa^2}{H_*^3}\boldsymbol v\cdot\nabla\boldsymbol v$ |
+| $-\rho_0^{-1}\nabla^*p^*$ | $-\dfrac1{\rho_0}\cdot\dfrac1{H_*}\cdot\dfrac{\rho_0\kappa^2}{H_*^2}\nabla\widetilde p$ | $-\dfrac{\kappa^2}{H_*^3}\nabla\widetilde p$ |
+| $\nu\Delta^*\boldsymbol v^*$ | $\nu\cdot\dfrac1{H_*^2}\cdot\dfrac{\kappa}{H_*}\Delta\boldsymbol v$ | $\dfrac{\nu\kappa}{H_*^3}\Delta\boldsymbol v$ |
+| $g_*\alpha(T^*-T_t^*)\boldsymbol e_z$ | $g_*\alpha\,\Delta T_*\,T\,\boldsymbol e_z$ | $g_*\alpha\Delta T_*\,T\boldsymbol e_z$ |
+
+全式除以共同的惯性系数 $\kappa^2/H_*^3$：
+
+$$
+\boldsymbol v_t+\boldsymbol v\cdot\nabla\boldsymbol v
+=-\nabla\widetilde p+\frac{\nu}{\kappa}\Delta\boldsymbol v
++\frac{g_*\alpha\Delta T_*H_*^3}{\kappa^2}T\boldsymbol e_z .
+$$
+
+定义
+
+$$
+\Pr=\frac{\nu}{\kappa},\qquad
+\mathrm{Ra}=\frac{g_*\alpha\Delta T_*H_*^3}{\nu\kappa},
+$$
+
+则浮力系数可以拆成 $\dfrac{g_*\alpha\Delta T_*H_*^3}{\kappa^2}=\dfrac{g_*\alpha\Delta T_*H_*^3}{\nu\kappa}\cdot\dfrac{\nu}{\kappa}=\mathrm{Ra}\Pr$。于是
+
+$$
+\boldsymbol v_t+\boldsymbol v\cdot\nabla\boldsymbol v=-\nabla\widetilde p+\Pr\Delta\boldsymbol v+\mathrm{Ra}\Pr\,T\boldsymbol e_z .
+$$
+
+**连续方程：** $\nabla^*\cdot\boldsymbol v^*=H_*^{-1}(\kappa/H_*)\nabla\cdot\boldsymbol v=0$，系数非零，故 $\nabla\cdot\boldsymbol v=0$。
+
+**温度方程逐项代入：** $T^*$ 中的常数 $T_t^*$ 求导后消失，
+
+$$
+\partial_{t^*}T^*=\frac{\kappa\Delta T_*}{H_*^2}T_t,\quad
+\boldsymbol v^*\cdot\nabla^*T^*=\frac{\kappa}{H_*}\cdot\frac{\Delta T_*}{H_*}\boldsymbol v\cdot\nabla T,\quad
+\kappa\Delta^*T^*=\kappa\frac{\Delta T_*}{H_*^2}\Delta T .
+$$
+
+三项共同系数都是 $\kappa\Delta T_*/H_*^2$，约去后得到 $T_t+\boldsymbol v\cdot\nabla T=\Delta T$，即 $T_t+uT_x+wT_z=\Delta T$。这说明“时间以热扩散时间计”时温度方程没有任何参数，全部参数集中在动量方程里。
+
+**边界与区域：** $z^*=0\Rightarrow z=0$，此处 $T=(T_b^*-T_t^*)/\Delta T_*=1$；$z^*=H_*\Rightarrow z=1$，此处 $T=0$；两壁 $\boldsymbol v=0$。取水平周期 $L_*=H_*$，所以无量纲周期为 $1$。若改变周期，允许的水平波数 $2\pi m/(L_*/H_*)$ 会变，临界 Rayleigh 数也随之改变。
+
+### 1.3 扣掉导热态时每个符号如何变化
+
+**导热态。** 令 $\boldsymbol v=0$、$T=T_c(z)$ 不随时间变化。温度方程化为 $T_c''=0$，两次积分得 $T_c=az+b$；底壁 $T_c(0)=b=1$，顶壁 $T_c(1)=a+b=0$，故 $a=-1$，$T_c=1-z$。动量方程化为 $0=-\nabla\widetilde p_c+\mathrm{Ra}\Pr(1-z)\boldsymbol e_z$，只需 $\partial_x\widetilde p_c=0$、$\partial_z\widetilde p_c=\mathrm{Ra}\Pr(1-z)$，积分得 $\widetilde p_c=\mathrm{Ra}\Pr(z-z^2/2)+\text{常数}$。所以导热态确实是完整方程的精确静止解。
+
+**温度扰动方程。** 令 $T=1-z+\theta$，逐项求导：
+
+$$
+T_t=\theta_t,\quad T_x=\theta_x,\quad T_z=-1+\theta_z,
+\quad \Delta T=\Delta(1-z)+\Delta\theta=0+\Delta\theta .
+$$
+
+代入 $T_t+uT_x+wT_z=\Delta T$ 并展开乘积：
+
+$$
+\theta_t+u\theta_x+w(-1+\theta_z)=\Delta\theta
+\ \Longrightarrow\
+\theta_t+u\theta_x-w+w\theta_z=\Delta\theta
+\ \Longrightarrow\
+\theta_t+u\theta_x+w\theta_z=\Delta\theta+w .
+$$
+
+右端的 $+w$ 有清楚的物理意义：向上运动（$w>0$）的流体把下面较热的导热态温度带上来，使局部扰动温度升高。
+
+**动量扰动方程。** 浮力 $\mathrm{Ra}\Pr\,T\boldsymbol e_z=\mathrm{Ra}\Pr(1-z)\boldsymbol e_z+\mathrm{Ra}\Pr\,\theta\boldsymbol e_z$。第一部分是一个梯度：设
+
+$$
+\Phi(z)=\mathrm{Ra}\Pr\left(z-\frac{z^2}{2}\right),\qquad
+\nabla\Phi=\big(0,\ \Phi'(z)\big)=\mathrm{Ra}\Pr(1-z)\boldsymbol e_z .
+$$
+
+令 $p=\widetilde p-\Phi$，则 $-\nabla\widetilde p+\mathrm{Ra}\Pr(1-z)\boldsymbol e_z=-\nabla\widetilde p+\nabla\Phi=-\nabla(\widetilde p-\Phi)=-\nabla p$，得到第 1 节开头的扰动动量方程。$\Phi$ 只依赖 $z$，所以 $p$ 与 $\widetilde p$ 一样在 $x$ 方向周期。
+
+**扰动边界条件。** 底壁 $\theta=T-(1-0)=1-1=0$，顶壁 $\theta=T-(1-1)=0-0=0$；速度边界不变。
+
+!!! note "目前进展"
+    原问题是关于有量纲量 $(\boldsymbol v^*,T^*,p^*_{\rm full})$ 的方程组：温度壁值非齐次（底 $T_b^*$、顶 $T_t^*$），含 $H_*,\Delta T_*,\nu,\kappa,\alpha,g_*,\rho_0$ 七个物理参数。现在它已转化为关于无量纲扰动量 $(u,w,\theta,p)$ 的问题：所有壁面条件都是**齐次零值**，水平周期为 1，参数只剩 $\mathrm{Ra}$ 与 $\Pr$。
+
+    剩下的困难是压力 $p$：它没有自己的演化方程，只由不可压约束 $\nabla\cdot\boldsymbol v=0$ 隐式决定。下一节先把它从推进中消掉。
 
 ## 2. 程序设计
 
@@ -61,354 +211,1457 @@ $$
 
 我们用主状态 `flow_state` 保存 `omega(nx,nz)`、`mean_u(nz)`、`theta(nx,nz)` 和 `time`。`omega` 只保留非零水平模态，水平平均速度单独保存在 `mean_u`。计算非线性项或诊断时，程序需要从这两份数据恢复完整的速度 $u,w$。
 
-恢复过程是：**非平均涡量 → Poisson 求流函数 → 对流函数求导 → 加回平均水平流**。
+恢复过程是：**非平均涡量 → Poisson 求流函数 → 对流函数求导 → 加回平均水平流**。下面一步步说明为什么这样表示既完整又不丢信息。
 
-二维不可压条件为 $u_x+w_z=0$。把速度表示为
-
-$$
-u=\psi_z+\overline u(z),\qquad w=-\psi_x,
-$$
-
-其中 $\overline u(z)$ 表示水平平均速度，$\psi$ 表示非平均部分的流函数。由于平均流只依赖 $z$，便有
+**第一步：水平平均竖直速度为零。** 对不可压条件 $u_x+w_z=0$ 在 $x\in[0,1]$ 上积分。由周期性，
 
 $$
-u_x+w_z=\psi_{zx}-\psi_{xz}=0.
+\int_0^1u_x\,dx=u(1,z)-u(0,z)=0,
 $$
 
-所以，只要从同一个流函数求这两个导数，就可以得到不可压的速度场。水平平均竖直速度没有单独保存：对不可压条件取水平平均得到 $\partial_z\overline w=0$，再用壁面 $w=0$ 可知 $\overline w=0$。
+所以 $\partial_z\overline w=\overline{w_z}=-\overline{u_x}=0$（竖直求导与水平积分可交换）。$\overline w$ 不随 $z$ 变化，而底壁 $\overline w(0)=0$，故 $\overline w\equiv0$。因此只有水平速度有非零的水平平均 $\overline u(z)$。
 
-这里采用的总涡量符号约定是
-
-$$
-\zeta=w_x-u_z.
-$$
-
-代入流函数表示，得到
+**第二步：构造非平均部分的流函数。** 令非平均水平速度 $u^\perp=u-\overline u$，它满足 $\overline{u^\perp}=0$。定义
 
 $$
-\zeta=-\psi_{xx}-\psi_{zz}-\overline u'(z)
-=-\Delta\psi-\overline u'(z).
+\psi(x,z)=\int_0^z u^\perp(x,s)\,ds .
 $$
 
-程序把流函数的水平零模态设为零，因此 $\overline\psi=0$，进而 $\overline\zeta=-\overline u'(z)$。保存的 `omega` 是去掉平均分量后的涡量：
+由微积分基本定理，$\psi_z=u^\perp$，且 $\psi(x,0)=0$。再对 $x$ 求导并使用不可压性 $u_x=u^\perp_x=-w_z$（$\overline u$ 不依赖 $x$）：
 
 $$
-\omega=\zeta-\overline\zeta=-\Delta\psi.
+\psi_x=\int_0^z u_x(x,s)\,ds=-\int_0^z w_s(x,s)\,ds=-w(x,z)+w(x,0)=-w(x,z).
 $$
 
-于是，恢复流函数就是解
+最后一步用了底壁 $w(x,0)=0$。于是
+
+$$
+u=\psi_z+\overline u(z),\qquad w=-\psi_x .
+$$
+
+反过来，任何这样形式的速度都自动不可压：$u_x+w_z=\psi_{zx}+0-\psi_{xz}=0$。
+
+**第三步：两壁的流函数都为零。** 底壁 $\psi(x,0)=0$ 由定义直接得到。顶壁 $\psi_x(x,1)=-w(x,1)=0$，所以 $\psi(x,1)$ 是与 $x$ 无关的常数 $c$。又因为
+
+$$
+\overline\psi(z)=\int_0^1\!\!\int_0^z u^\perp(x,s)\,ds\,dx=\int_0^z\overline{u^\perp}(s)\,ds=0,
+$$
+
+取 $z=1$ 得 $c=\overline\psi(1)=0$。因此 $\psi(x,0)=\psi(x,1)=0$，且 $\psi$ 的水平平均处处为零。如果不先拆出 $\overline u$，$\psi(x,1)-\psi(x,0)=\int_0^1u\,dz$ 一般等于非零的净水平通量，两壁不能同时取零——这就是单独保存 `mean_u` 的原因。
+
+**第四步：涡量与流函数的关系。** 本文采用的总涡量符号为
+
+$$
+\zeta=w_x-u_z .
+$$
+
+代入 $u=\psi_z+\overline u$、$w=-\psi_x$：
+
+$$
+\zeta=(-\psi_x)_x-(\psi_z+\overline u)_z=-\psi_{xx}-\psi_{zz}-\overline u'(z)=-\Delta\psi-\overline u'(z).
+$$
+
+取水平平均：$\overline{\psi_{xx}}=\psi_x(1,z)-\psi_x(0,z)=0$（周期性），$\overline{\psi_{zz}}=\overline\psi''=0$（因为 $\overline\psi\equiv0$），$\overline{\overline u'}=\overline u'$，于是
+
+$$
+\overline\zeta=-\overline u'(z).
+$$
+
+保存的 `omega` 是去掉平均分量后的涡量：
+
+$$
+\omega=\zeta-\overline\zeta=\left(-\Delta\psi-\overline u'\right)-\left(-\overline u'\right)=-\Delta\psi .
+$$
+
+所以恢复流函数就是解
 
 $$
 \boxed{-\Delta\psi=\omega,\qquad \psi(x,0)=\psi(x,1)=0.}
 $$
 
-初始化接口 `set_velocity` 按同样的拆分保存状态：先求 $u$ 的水平平均，存入 `mean_u`；再计算 $w_x-u_z$，减掉它的水平平均，存入 `omega`。
+总涡量 $\zeta$ 被分成两部分：非平均部分 $\omega$ 存在 `omega` 里，平均部分 $-\overline u'$ 由 `mean_u` 隐含。两份数据合起来与 $(u,w)$ 一一对应，没有丢失信息。
 
-`get_velocity` 调用 `wall_stokes.velocity_from_vorticity`。这个函数先对涡量做水平 Fourier 变换，写成
+**第五步：初始化接口。** `set_velocity` 按同样的拆分保存状态：先求 $u$ 在每个高度上的离散水平平均 $\frac1{N_x}\sum_iu_{ij}$，存入 `mean_u`；再用第 2.3 节的微分算子计算 $w_x-u_z$，减掉它的离散水平平均，存入 `omega`。由于离散 Fourier 变换的零模态系数正好是 $\frac1{N_x}\sum_if_{ij}$（第 2.3 节），这一步就是把涡量的零模态置零。
 
-$$
-\omega(x,z)=\sum_k\widehat\omega_k(z)e^{ia_kx},\qquad
-\psi(x,z)=\sum_k\widehat\psi_k(z)e^{ia_kx},\qquad a_k=2\pi k.
-$$
-
-水平二阶导数变成乘 $-a_k^2$，所以每个水平模态分别满足
+**第六步：逐模态的 Poisson 问题。** `get_velocity` 调用 `wall_stokes.velocity_from_vorticity`。它先对涡量做水平 Fourier 变换，写成
 
 $$
-\boxed{\left(-\partial_{zz}+a_k^2\right)\widehat\psi_k
-=\widehat\omega_k,\qquad
-\widehat\psi_k(0)=\widehat\psi_k(1)=0.}
+\omega(x,z)=\sum_m\widehat\omega_m(z)e^{\mathrm i a_mx},\qquad
+\psi(x,z)=\sum_m\widehat\psi_m(z)e^{\mathrm i a_mx},\qquad a_m=2\pi\kappa_m ,
 $$
 
-不同水平模态之间没有耦合。竖直方向用 Chebyshev 二阶微分矩阵 $D_{zz}$ 离散，壁面值固定为零，只需求内部节点。记内部节点集合为 $I$，对应线性系统为
+$\kappa_m$ 是整数频率（定义见第 2.3 节）。对单个模态，$\partial_x e^{\mathrm i a_mx}=\mathrm i a_me^{\mathrm i a_mx}$，所以 $\partial_{xx}\mapsto(\mathrm i a_m)^2=-a_m^2$，于是
 
 $$
-\left(a_k^2\mathsf I-D_{zz,II}\right)\widehat\psi_{k,I}
-=\widehat\omega_{k,I},
+-\Delta\psi=\sum_m\left(a_m^2\widehat\psi_m-\widehat\psi_m''\right)e^{\mathrm i a_mx}.
 $$
 
-其中 $\mathsf I$ 是单位矩阵。`make_grid` 在初始化时预计算各模态矩阵的逆，存为 `g%inverse(:,:,m)`；`poisson_dirichlet` 每次将它乘到当前涡量的内部节点值上。两壁输出保持零。
+与 $\omega$ 的展开逐项比较（不同 $e^{\mathrm i a_mx}$ 线性无关），每个水平模态分别满足
+
+$$
+\boxed{\left(-\partial_{zz}+a_m^2\right)\widehat\psi_m
+=\widehat\omega_m,\qquad
+\widehat\psi_m(0)=\widehat\psi_m(1)=0.}
+$$
+
+不同水平模态之间没有耦合。零模态 $a_1=0$ 时方程是 $-\widehat\psi_1''=\widehat\omega_1=0$ 加零壁值，唯一解为 $\widehat\psi_1=0$，与第三步 $\overline\psi=0$ 一致。
+
+竖直方向用 Chebyshev 二阶微分矩阵 $\mathsf D^2$ 离散（第 2.3 节），壁面值固定为零，只需求内部节点。记内部节点集合为 $I=\{2,\ldots,N_z-1\}$，线性系统为
+
+$$
+\left(a_m^2\mathsf I-\mathsf D^2_{II}\right)\widehat\psi_{m,I}
+=\widehat\omega_{m,I},
+$$
+
+其中 $\mathsf I$ 是单位矩阵，$\mathsf D^2_{II}$ 是 $\mathsf D^2$ 去掉首末行列的子块（推导见第 2.3 节末）。`make_grid` 在初始化时预计算各模态矩阵的逆，存为 `g%inverse(:,:,m)`；`poisson_dirichlet` 每次将它乘到当前右端的内部节点值上，两壁输出保持零。注意它解的是 **$-\Delta p=\rho$**（带负号），这一约定在第 3 节除以扩散系数时还会用到。
 
 此时代码数组 `psi(m,j)` 的第一个指标是 **Fourier 模态编号**，第二个指标才是竖直节点编号。代码中的 `psi(1,:)=0` 清除水平零模态，不是把底壁设为零；两壁对应的是 `psi(:,1)` 和 `psi(:,g%nz)`，它们已经由 Poisson 求解器保持为零。
 
-得到流函数后，程序按 $u=\psi_z+\overline u$ 和 $w=-\psi_x$ 恢复速度。
+**第七步：由流函数恢复速度。** 得到 $\widehat\psi_m$ 后，按 $u=\psi_z+\overline u$、$w=-\psi_x$ 逐模态求导：
 
 | 操作 | 数学含义 | 对应代码 |
 | --- | --- | --- |
-| 对竖直节点求导 | 得到 $\widehat{\psi_z}$ | `matmul(psi,transpose(g%d))` |
-| 水平合成并加回平均流 | 得到 $u=\psi_z+\overline u$ | `physical(...)` 加 `spread(mean_u,1,g%nx)` |
-| 对水平模态求导并取负 | 得到 $\widehat w_k=-ia_k\widehat\psi_k$ | `-cmplx(0.0_rk,g%frequency(m),rk)*psi(m,:)` |
+| 对竖直节点求导 | $\widehat{(\psi_z)}_m=\mathsf D\widehat\psi_m$ | `matmul(psi,transpose(g%d))` |
+| 水平合成并加回平均流 | $u=\psi_z+\overline u$ | `physical(...)` 加 `spread(mean_u,1,g%nx)` |
+| 对水平模态求导并取负 | $\widehat w_m=-\mathrm ia_m\widehat\psi_m$ | `-cmplx(0.0_rk,g%frequency(m),rk)*psi(m,:)` |
 | 水平合成 | 得到节点值 $w$ | `physical(g,c)` |
 
-
-流函数在两壁恒为零，沿壁面的水平导数也为零，因此
+**第八步：哪些壁面条件已自动满足。** 流函数在两壁恒为零，沿壁面的水平导数也为零，因此
 
 $$
 w|_{\rm wall}=-\psi_x|_{\rm wall}=0,
 $$
 
-保证了不穿透。但 $\psi=0$ 不意味着 $\psi_z=0$，所以还不能单凭它保证切向无滑移：
+不穿透条件自动成立。但 $\psi=0$ 不意味着 $\psi_z=0$，所以还不能单凭它保证切向无滑移：
 
 $$
-u|_{\rm wall}=\psi_z|_{\rm wall}+\overline u|_{\rm wall}=0.
+u|_{\rm wall}=\psi_z|_{\rm wall}+\overline u|_{\rm wall}=0
 $$
 
-时间推进时，`impose_noslip` 调整非平均涡量，使恢复出来的两壁 $\psi_z=0$；平均水平流另以零壁条件推进。`velocity_from_vorticity` 使用这份已经受约束的状态求速度，没有在恢复后强行覆盖壁面速度。壁面影响系统如何决定这份涡量，放在第 6 节解释。
+需要另外两件事：平均流 $\overline u$ 以零壁条件推进（第 3 节），非平均部分 $\psi_z|_{\rm wall}=0$ 由 `impose_noslip` 调整壁面涡量来保证（第 6 节）。`velocity_from_vorticity` 使用这份已经受约束的状态求速度，没有在恢复后强行覆盖壁面速度。
+
+!!! note "目前进展"
+    四个未知量 $(u,w,\theta,p)$ 已换成三个存储量 $(\omega,\overline u,\theta)$：压力不再需要推进，速度 $(u,w)$ 也不再是独立未知量，而是随时可以从 $(\omega,\overline u)$ 算出来——逐模态解 $(-\partial_{zz}+a_m^2)\widehat\psi_m=\widehat\omega_m$，再求导。不穿透条件 $w=0$ 已自动满足。
+
+    代价是留下一个尚未满足的条件：壁面 $\psi_z=0$（切向无滑移）。它要靠选择合适的壁面涡量来实现，留到第 6 节。
 
 ### 2.2 全局辅助网格与局部自适应网格
 
-`slab_grid.make_grid` 在 $x$ 方向建立周期等距节点，在 $z$ 方向建立包含两壁的 Chebyshev–Lobatto 节点。水平导数在 Fourier 空间中乘 $ia_m$，其中 $a_m=2\pi m$；竖直导数使用微分矩阵。当前 Fourier 转换采用显式矩阵乘法。
+程序里有两套网格，分工不同：
 
-`poisson_dirichlet(g,rho)` 解的是 **$-\Delta p=\rho$**、上下壁为零的 Poisson 方程。
+- **辅助网格**（`slab_grid.make_grid`）：$x$ 方向 $N_x$ 个周期等距节点，$z$ 方向 $N_z$ 个包含两壁的 Chebyshev–Lobatto 节点。主状态、源项、Poisson 求解、壁面系统、诊断都在这里完成。水平导数在 Fourier 空间中乘 $\mathrm ia_m$；竖直导数用微分矩阵。当前 Fourier 变换用显式矩阵乘法实现（不是 FFT）。
+- **自适应四叉树**（第 5 节）：只在热传播 $H$ 内部临时建立，每个叶盒上有 $k\times k$ 个 Chebyshev 根节点。它从辅助网格的连续展开取样，传播后再求值回辅助网格。
+
+两者之间的桥梁是第 2.4 节的“辅助展开”：辅助网格节点值唯一确定一个 Fourier–Chebyshev 多项式，可以在任意点求值。
+
+### 2.3 从插值多项式推到实际微分矩阵
+
+以下公式对应 [slab_grid.f90](<C:/myproject/rb_project/learning/rb_plan_2D/slab_grid.f90>) 与 [numerical_tools.f90](<C:/myproject/rb_project/learning/rb_plan_2D/numerical_tools.f90>)。记 $N_x=\texttt{nx}$（要求为偶数）、$N_z=\texttt{nz}$。
+
+#### 节点与频率
+
+$$
+x_i=\frac{i-1}{N_x}\quad(1\le i\le N_x),\qquad
+z_j=\frac{1-\cos(\pi(j-1)/(N_z-1))}{2}\quad(1\le j\le N_z).
+$$
+
+$j=1$ 时 $\cos0=1$，$z_1=0$；$j=N_z$ 时 $\cos\pi=-1$，$z_{N_z}=1$；中间 $\cos$ 单调递减，所以节点从底壁向顶壁递增，并在两壁附近加密。存储编号 $m=1,\ldots,N_x$ 对应整数频率
+
+$$
+\kappa_m=\begin{cases}m-1,&m-1<N_x/2,\\m-1-N_x,&m-1\ge N_x/2,\end{cases}
+\qquad a_m=2\pi\kappa_m .
+$$
+
+例如 $N_x=8$ 时 $\kappa=0,1,2,3,-4,-3,-2,-1$。第 $m=N_x/2+1$ 个是 **Nyquist 模态** $\kappa=-N_x/2$，它没有对应的 $+N_x/2$ 伙伴，后面会单独处理。
+
+#### 离散 Fourier 变换为什么互逆
+
+对每个固定的 $z_j$，变换与合成为
+
+$$
+\widehat f_{mj}=\frac1{N_x}\sum_{i=1}^{N_x}f_{ij}e^{-\mathrm i a_mx_i},\qquad
+f_{ij}=\operatorname{Re}\sum_{m=1}^{N_x}\widehat f_{mj}e^{\mathrm i a_mx_i}.
+$$
+
+代码中矩阵 `transform(m,i)`$=e^{-\mathrm ia_mx_i}/N_x$，`synthesis(i,m)`$=e^{\mathrm ia_mx_i}$。验证二者互逆：
+
+$$
+(\texttt{transform}\cdot\texttt{synthesis})_{ml}
+=\frac1{N_x}\sum_{i=1}^{N_x}e^{\mathrm i(a_l-a_m)x_i}
+=\frac1{N_x}\sum_{n=0}^{N_x-1}\varrho^{\,n},\qquad
+\varrho=e^{2\pi\mathrm i(\kappa_l-\kappa_m)/N_x}.
+$$
+
+这里用了 $x_i=(i-1)/N_x$，令 $n=i-1$。若 $l=m$，$\varrho=1$，和为 $N_x$，结果为 1。若 $l\ne m$，整数 $r=\kappa_l-\kappa_m$ 满足 $0<|r|<N_x$，不是 $N_x$ 的倍数，所以 $\varrho\ne1$，等比数列求和
+
+$$
+\sum_{n=0}^{N_x-1}\varrho^{\,n}=\frac{1-\varrho^{N_x}}{1-\varrho}=\frac{1-e^{2\pi\mathrm ir}}{1-\varrho}=\frac{1-1}{1-\varrho}=0 .
+$$
+
+所以两矩阵乘积是单位阵；方阵的左逆也是右逆，合成后精确回到原节点值。对实数 $f$，$\widehat f_{-\kappa}=\overline{\widehat f_\kappa}$（共轭），Nyquist 系数 $\widehat f_{N}=\frac1{N_x}\sum_if_{ij}(-1)^{i-1}$ 是实数（因为 $e^{\mathrm i\pi N_xx_i}=e^{\mathrm i\pi(i-1)}=(-1)^{i-1}$），所以合成之和在节点上本来就是实数，`Re` 只去掉舍入虚部。
+
+**`Re` 在非节点处的作用。** 在任意 $x$ 求值时，Nyquist 项 $\widehat f_Ne^{-\mathrm i\pi N_xx}$ 不再是实数，取实部得到 $\widehat f_N\cos(\pi N_xx)$。因此程序约定的连续三角插值是
+
+$$
+f(x)=\sum_{|\kappa|<N_x/2}\widehat f_\kappa e^{2\pi\mathrm i\kappa x}+\widehat f_N\cos(\pi N_xx),
+$$
+
+Nyquist 项是一个余弦。这个约定在第 2.4 节的去混叠与内积中会用到。
+
+**水平导数。** 逐项求导 $\partial_xe^{\mathrm ia_mx}=\mathrm ia_me^{\mathrm ia_mx}$，再求一次得 $(\mathrm ia_m)^2=-a_m^2$。这就是 `dx` 中乘 `cmplx(0,frequency(m))` 和 `laplacian` 中乘 `-frequency(m)**2` 的来源。对 Nyquist 模态，$\mathrm ia_N\widehat f_N(-1)^{i-1}$ 在节点上是纯虚数，取实部为零——与 $\partial_x\cos(\pi N_xx)=-\pi N_x\sin(\pi N_xx)$ 在节点 $x_i$ 处为零一致。
+
+#### 竖直微分矩阵：从 Lagrange 基到重心公式
+
+设 $\ell_l(z)$ 是第 $l$ 个 Lagrange 基函数：
+
+$$
+\ell_l(z)=\prod_{r\ne l}\frac{z-z_r}{z_l-z_r},\qquad
+p(z)=\sum_{l=1}^{N_z}f_l\ell_l(z),\qquad
+p'(z_j)=\sum_l\ell_l'(z_j)f_l .
+$$
+
+$p$ 是过 $N_z$ 个点 $(z_l,f_l)$ 的唯一次数 $\le N_z-1$ 多项式。所以微分矩阵就是 $\mathsf D_{jl}=\ell_l'(z_j)$。
+
+定义重心权重 $\beta_l=1/\prod_{r\ne l}(z_l-z_r)$，则 $\ell_l(z)=\beta_l\prod_{r\ne l}(z-z_r)$。
+
+**非对角元 $j\ne l$。** 把乘积中的因子 $(z-z_j)$ 单独提出：
+
+$$
+\ell_l(z)=\beta_l\,(z-z_j)\,Q(z),\qquad Q(z)=\prod_{r\ne l,j}(z-z_r).
+$$
+
+乘积求导 $\ell_l'(z)=\beta_l[Q(z)+(z-z_j)Q'(z)]$，在 $z=z_j$ 处第二项为零，所以 $\ell_l'(z_j)=\beta_lQ(z_j)$。再用 $\beta_j$ 的定义把 $Q(z_j)$ 换掉：
+
+$$
+\frac1{\beta_j}=\prod_{r\ne j}(z_j-z_r)=(z_j-z_l)\prod_{r\ne j,l}(z_j-z_r)=(z_j-z_l)\,Q(z_j),
+\qquad Q(z_j)=\frac1{\beta_j(z_j-z_l)} .
+$$
+
+合起来
+
+$$
+\mathsf D_{jl}=\ell_l'(z_j)=\frac{\beta_l}{\beta_j(z_j-z_l)}\qquad(j\ne l).
+$$
+
+**对角元。** 常数 1 是次数 0 的多项式，被精确插值：$\sum_l\ell_l(z)\equiv1$。求导得 $\sum_l\ell_l'(z)\equiv0$，在 $z_j$ 取值即 $\sum_l\mathsf D_{jl}=0$，故
+
+$$
+\mathsf D_{jj}=-\sum_{l\ne j}\mathsf D_{jl}.
+$$
+
+这正是 `differentiation_matrix` 的两行：先填非对角元 `weights(j)/(weights(i)*(nodes(i)-nodes(j)))`，再令 `d(i,i)=-sum(d(i,:))`（此时对角元尚为 0，求和只含非对角元）。公式只用到权重的比值 $\beta_l/\beta_j$，所以所有权重可以同乘任意非零常数。
+
+#### Chebyshev–Lobatto 节点的权重为什么是 $(-1)^{j-1}$，两端再除以 2
+
+先在参考区间 $\xi\in[-1,1]$ 上讨论。记 $N=N_z-1$，Lobatto 节点为 $\xi_n=\cos(n\pi/N)$，$n=0,\ldots,N$。它们是 $T_N(\xi)=\cos(N\arccos\xi)$ 的全部极值点：内部节点是 $T_N'$ 的零点，两端是 $\pm1$。所以节点多项式可写成
+
+$$
+\varpi(\xi)=\prod_{n=0}^N(\xi-\xi_n)=c\,(\xi^2-1)\,T_N'(\xi),
+$$
+
+$c$ 是使首项系数为 1 的常数（右边次数为 $2+(N-1)=N+1$，与左边一致）。权重是 $\beta_n=1/\prod_{r\ne n}(\xi_n-\xi_r)=1/\varpi'(\xi_n)$（在根处对乘积求导，只剩不含 $(\xi-\xi_n)$ 的那一项）。
+
+求导：$\varpi'=c[2\xi T_N'+(\xi^2-1)T_N'']$。Chebyshev 多项式满足微分方程 $(1-\xi^2)T_N''-\xi T_N'+N^2T_N=0$，即 $(\xi^2-1)T_N''=N^2T_N-\xi T_N'$。代入：
+
+$$
+\varpi'(\xi)=c\left[2\xi T_N'+N^2T_N-\xi T_N'\right]=c\left[\xi T_N'(\xi)+N^2T_N(\xi)\right].
+$$
+
+- **内部节点** $0<n<N$：$T_N'(\xi_n)=0$，$T_N(\xi_n)=\cos(n\pi)=(-1)^n$，所以 $\varpi'(\xi_n)=cN^2(-1)^n$。
+- **端点** $\xi=1$：由 $T_N'(\cos\vartheta)=N\sin(N\vartheta)/\sin\vartheta$ 令 $\vartheta\to0$ 得 $T_N'(1)=N\cdot N=N^2$，$T_N(1)=1$，所以 $\varpi'(1)=c(N^2+N^2)=2cN^2$。
+- **端点** $\xi=-1$：令 $\vartheta=\pi-\epsilon$，$\sin(N\pi-N\epsilon)=-(-1)^N\sin(N\epsilon)$，$\sin\vartheta=\sin\epsilon$，极限 $T_N'(-1)=(-1)^{N-1}N^2$；又 $T_N(-1)=(-1)^N$。所以 $\varpi'(-1)=c[(-1)\cdot(-1)^{N-1}N^2+N^2(-1)^N]=2cN^2(-1)^N$。
+
+取倒数并去掉公共因子 $1/(cN^2)$：
+
+$$
+\beta_n\propto(-1)^n\delta_n,\qquad \delta_0=\delta_N=\tfrac12,\ \ \delta_n=1\ (0<n<N).
+$$
+
+（$1/(-1)^n=(-1)^n$。）
+
+**换到代码的节点顺序与物理区间。** 代码节点 $\xi=2z_j-1=-\cos(\pi(j-1)/N)=\cos(\pi-\pi(j-1)/N)=\xi_{N-j+1}$，即编号反过来，$n=N-j+1$。于是 $(-1)^n=(-1)^N(-1)^{-(j-1)}=(-1)^N(-1)^{j-1}$，公共符号 $(-1)^N$ 可去掉，得到代码的 `weights=(-1)**(i-1)`、首末除以 2。映射 $z=(1+\xi)/2$ 使每个差 $z_j-z_r=(\xi_j-\xi_r)/2$，乘积 $\prod_{r\ne j}$ 共 $N$ 个因子，整体多出公共因子 $2^{-N}$，同样可以去掉。
+
+**导数因子不能重复乘。** $\mathsf D_{jl}$ 的分母直接使用物理节点差 $z_j-z_l$，算出的就是 $d/dz$；映射 $z=(1+\xi)/2$ 带来的 $d/dz=2\,d/d\xi$ 已经包含在分母中，不能再乘一次 2。
+
+**二阶矩阵。** 若 $p$ 是次数 $\le N$ 的多项式，则 $p'$ 次数 $\le N-1$，仍被同一组节点精确插值；所以 $\mathsf D(\mathsf Dp)$ 的节点值就是 $p''$ 的节点值，即 $\mathsf D^2=\mathsf D\mathsf D$（代码 `g%d2 = matmul(g%d,g%d)`）。
+
+**数组方向。** 场数组形状为 $(N_x,N_z)$，第二个指标是竖直节点。$(f\mathsf D^T)_{ij}=\sum_lf_{il}(\mathsf D^T)_{lj}=\sum_lf_{il}\mathsf D_{jl}$，正是固定水平节点 $i$ 后沿竖直列求导，所以代码写 `matmul(v,transpose(g%d))`。
+
+#### Poisson 内部方程是怎样得到的
+
+对第 $m$ 个模态在内部节点 $j\in I$ 处离散 $a_m^2\widehat\psi-\widehat\psi''=\widehat\omega$，把 $\widehat\psi''(z_j)$ 换成 $\sum_l(\mathsf D^2)_{jl}\psi_{ml}$，并按 $l$ 是否为壁面节点拆开求和：
+
+$$
+a_m^2\psi_{mj}-\sum_{l\in I}(\mathsf D^2)_{jl}\psi_{ml}
+-(\mathsf D^2)_{j1}\psi_{m1}-(\mathsf D^2)_{jN_z}\psi_{mN_z}=\widehat\omega_{mj},
+\qquad j\in I .
+$$
+
+两壁的 $\psi$ 为零，最后两项消失，剩下 $N_z-2$ 个未知数、$N_z-2$ 个方程：矩阵就是 $a_m^2\mathsf I-\mathsf D^2_{II}$（代码 `matrix=-g%d2(2:nz-1,2:nz-1)` 再在对角加 `a*a`）。右端只用到内部节点的 $\widehat\omega$；壁面上的涡量值不进入 Poisson 方程，它由第 6 节的影响系统另行确定。
+
+### 2.4 辅助展开、乘积去混叠与积分
+
+#### 辅助展开：节点值 ↔ Fourier–Chebyshev 系数
+
+定义 Chebyshev 多项式 $T_n(\xi)=\cos(n\arccos\xi)$，$n=0,\ldots,N_z-1$，以及求值矩阵 $V_{j,n+1}=T_n(2z_j-1)$。$N_z$ 个互异节点上次数 $\le N_z-1$ 的插值唯一，所以 $V$ 可逆。若第 $m$ 个模态的竖直列向量 $\widehat f_m=(\widehat f_{m1},\ldots,\widehat f_{mN_z})^T$ 写成 $\widehat f_{mj}=\sum_nc_{mn}V_{j,n+1}$，则 $\widehat f_m=Vc_m$，$c_m=V^{-1}\widehat f_m$。代码把所有模态排成行：系数矩阵第 $m$ 行是 $c_m^T=\widehat f_m^TV^{-T}$，所以写成 `fourier(f)*transpose(iv)`（`iv`$=V^{-1}$）。任意位置的辅助场是
+
+$$
+f_{\rm aux}(x,z)=\operatorname{Re}\sum_m\sum_{n=0}^{N_z-1}c_{mn}e^{\mathrm i a_mx}T_n(2z-1).
+$$
+
+`evaluate_grid` 用矩阵 $E_{rm}=e^{\mathrm ia_mx_r}$、$W_{sn}=T_n(2z_s-1)$ 计算 $\operatorname{Re}(E\,c\,W^T)$；为避免舍入使 $2z-1$ 略超出 $[-1,1]$ 导致 `acos` 失败，代码先截断到 $[-1,1]$。这不是自适应树新产生的解，而是固定辅助网格已有场的连续插值表示。
+
+#### 为什么乘积会混叠
+
+两个 Fourier 模态相乘满足 $e^{\mathrm iax}e^{\mathrm ibx}=e^{\mathrm i(a+b)x}$，频率相加。两个 Chebyshev 模态相乘：令 $\xi=\cos\vartheta$，$T_n=\cos n\vartheta$、$T_l=\cos l\vartheta$，用积化和差 $2\cos A\cos B=\cos(A+B)+\cos(A-B)$，
+
+$$
+T_n(\xi)T_l(\xi)=\frac{\cos((n+l)\vartheta)+\cos((n-l)\vartheta)}2=\frac{T_{n+l}(\xi)+T_{|n-l|}(\xi)}2 ,
+$$
+
+最后一步用了 $\cos$ 是偶函数。因此两个辅助场的乘积，水平频率最高到 $|\kappa|\le N_x$，竖直次数最高到 $2(N_z-1)$，超出了原网格能表示的范围。若直接在原节点上相乘再变换，超出范围的频率会被“折”到低频上冒充低频分量，这就是混叠。
+
+#### 水平方向：为什么 $3N_x/2$ 个点足够
+
+代码在 $M=N_x^f=3N_x/2$ 个等距点上求值、相乘，再用 $M$ 点的变换 `fine_transform` 只取回原来 $N_x$ 个频率。在 $M$ 个等距点 $x_i=(i-1)/M$ 上，$e^{2\pi\mathrm i\kappa x_i}=e^{2\pi\mathrm i(\kappa+sM)x_i}$ 对任意整数 $s$ 成立，所以算出的频率 $\kappa$ 系数实际上等于真实乘积中所有频率 $\kappa'\equiv\kappa\pmod M$ 的系数之和。真实乘积的频率满足 $|\kappa'|\le N_x$。
+
+- **非 Nyquist 行** $|\kappa|\le N_x/2-1$：别的候选 $\kappa'=\kappa\pm M,\kappa\pm2M,\ldots$ 满足 $|\kappa'|\ge M-|\kappa|\ge\frac{3N_x}2-\frac{N_x}2+1=N_x+1>N_x$，不可能出现。所以这些行没有混叠，等于真实乘积的系数。
+- **Nyquist 行** $\kappa=-N_x/2$：$\kappa+M=N_x$ 恰好可以出现（例如两个 Nyquist 余弦相乘，$\cos^2(\pi N_xx)=\tfrac12+\tfrac12\cos(2\pi N_xx)$ 含频率 $\pm N_x$），所以这一行被污染。代码 `c(g%nx/2+1,:)=0` 把它清零。
+
+所以水平方向的结果是：真实乘积投影到 $|\kappa|\le N_x/2-1$ 的频率，Nyquist 分量丢弃。这是截断，而不是保留了乘积的全部高频。
+
+#### 竖直方向：为什么 $2N_z-1$ 个点足够
+
+`fine_values` 用系数在细 Lobatto 网格上求值，两个因子都是次数 $\le N_z-1$ 的多项式，乘积次数 $\le2N_z-2$。细网格有 $N_z^f=2N_z-1$ 个节点，恰好能唯一插值次数 $\le2N_z-2$ 的多项式，所以 `ivf` 给出的就是乘积的**精确** Chebyshev 系数，没有竖直混叠。随后只保留前 $N_z$ 个系数（$n\le N_z-1$），再用 $V$ 回到原节点：这是把乘积截断到原次数，而不是在原节点上重新插值。两者的差别正是被丢弃的高次项。
+
+非线性项中的导数（如 $u_x$、$u_z$）先在原网格上求，再用 `fine_values` 送到细网格，与 $u,w$ 相乘。
+
+#### 连续积分 $\int_0^1T_n(2z-1)\,dz$
+
+令 $\mu_n=\int_0^1T_n(2z-1)\,dz$。作代换 $\xi=2z-1$，$dz=d\xi/2$，$z:0\to1$ 对应 $\xi:-1\to1$；再令 $\xi=\cos\vartheta$，$d\xi=-\sin\vartheta\,d\vartheta$，$\xi:-1\to1$ 对应 $\vartheta:\pi\to0$：
+
+$$
+\mu_n=\frac12\int_{-1}^1T_n(\xi)\,d\xi
+=\frac12\int_\pi^0\cos(n\vartheta)(-\sin\vartheta)\,d\vartheta
+=\frac12\int_0^\pi\cos(n\vartheta)\sin\vartheta\,d\vartheta .
+$$
+
+用积化和差 $\sin\vartheta\cos(n\vartheta)=\tfrac12[\sin((1+n)\vartheta)+\sin((1-n)\vartheta)]$，以及对整数 $r\ne0$
+
+$$
+\int_0^\pi\sin(r\vartheta)\,d\vartheta=\left[-\frac{\cos(r\vartheta)}r\right]_0^\pi=\frac{1-(-1)^r}{r}
+=\begin{cases}2/r,&r\text{ 奇},\\0,&r\text{ 偶}.\end{cases}
+$$
+
+（$r=0$ 时被积函数 $\sin0=0$，积分也是 0。）
+
+- $n$ 偶：$r=1\pm n$ 都是奇数，$\mu_n=\frac12\cdot\frac12\left(\frac2{1+n}+\frac2{1-n}\right)=\frac12\cdot\frac{(1-n)+(1+n)}{(1+n)(1-n)}=\frac1{1-n^2}$。
+- $n$ 奇：$r=1\pm n$ 都是偶数，$\mu_n=0$。这也可以从 $T_n$ 是奇函数直接看出。
+
+$n=0$ 时 $\mu_0=1$，正是区间长度。这就是 `moment(n)` 的实现。
+
+**区域积分。** 水平方向 $\int_0^1e^{2\pi\mathrm i\kappa x}dx=0$（$\kappa\ne0$），Nyquist 余弦 $\int_0^1\cos(\pi N_xx)dx=\sin(\pi N_x)/(\pi N_x)=0$，只有零模态留下。零模态系数在每个节点上就是 $\frac1{N_x}\sum_if_{ij}$（DFT 的 $m=1$ 行），所以
+
+$$
+\int_\Omega f=\sum_{n=0}^{N_z-1}c_{1n}\mu_n,\qquad c_1=V^{-1}\Big(\tfrac1{N_x}\textstyle\sum_if_{ij}\Big)_j ,
+$$
+
+对应 `dot_product(matmul(g%iv,sum(v,dim=1)/g%nx),g%moments)`。这是对辅助插值多项式的精确积分，不是节点值的简单平均。
+
+#### 内积与 Gram 矩阵
+
+竖直方向需要 $G_{nl}=\int_0^1T_n(2z-1)T_l(2z-1)\,dz$。用上面的乘积公式逐项积分：
+
+$$
+G_{nl}=\int_0^1\frac{T_{n+l}+T_{|n-l|}}2\,dz=\frac{\mu_{n+l}+\mu_{|n-l|}}2 .
+$$
+
+代码 `gram(i,j)=(moment(i+j-2)+moment(abs(i-j)))/2`，其中 $i-1=n$、$j-1=l$。
+
+水平方向：把两个实场写成 $f=\sum_{|\kappa|<N_x/2}F_\kappa(z)e^{2\pi\mathrm i\kappa x}+F_N(z)\cos(\pi N_xx)$，$g$ 同理用 $G_\kappa$、$G_N$（$F_{-\kappa}=\overline{F_\kappa}$，$F_N$ 实）。逐对积分：
+
+- $\int_0^1e^{2\pi\mathrm i\kappa x}e^{2\pi\mathrm i\kappa'x}dx=1$ 当且仅当 $\kappa'=-\kappa$，否则为 0；
+- $\int_0^1e^{2\pi\mathrm i\kappa x}\cos(\pi N_xx)dx=\frac12\int_0^1\left(e^{2\pi\mathrm i(\kappa+N_x/2)x}+e^{2\pi\mathrm i(\kappa-N_x/2)x}\right)dx=0$（$|\kappa|<N_x/2$ 时两个频率都非零）；
+- $\int_0^1\cos^2(\pi N_xx)dx=\int_0^1\frac{1+\cos(2\pi N_xx)}2dx=\frac12$。
+
+所以
+
+$$
+\int_0^1fg\,dx=\sum_{|\kappa|<N_x/2}F_\kappa G_{-\kappa}+\frac12F_NG_N
+=\sum_{|\kappa|<N_x/2}\overline{F_\kappa}\,G_\kappa+\frac12F_NG_N ,
+$$
+
+第二个等号把求和指标 $\kappa\to-\kappa$ 并用 $F_{-\kappa}=\overline{F_\kappa}$。这个和是实数（$\kappa$ 与 $-\kappa$ 两项互为共轭）。再对 $z$ 积分，$\int_0^1\overline{F_\kappa}G_\kappa dz=\sum_{n,l}\overline{c_{\kappa n}}d_{\kappa l}G_{nl}=c_\kappa^*Gd_\kappa$（$*$ 为共轭转置，$c,d$ 分别是 $f,g$ 的系数）。于是
+
+$$
+\langle f,g\rangle=\operatorname{Re}\sum_{m\ne\text{Nyq}}c_m^*G\,d_m+\frac12\,c_{\rm Nyq}^TG\,d_{\rm Nyq}.
+$$
+
+代码复数 `dot_product(a,b)` 正好对第一参数取共轭；Nyquist 行（`m == g%nx/2+1`）额外除以 2。这个 1/2 的来源就是 Nyquist 项在实数合成中只是一个余弦，而不是一对共轭指数。
+
+!!! note "目前进展"
+    连续场 $(\omega,\overline u,\theta)$ 已换成辅助网格上的数组 `omega(nx,nz)`、`mean_u(nz)`、`theta(nx,nz)`，所有**空间**运算都有了确定的矩阵实现：$\partial_x$（乘 $\mathrm ia_m$）、$\partial_z$ 与 $\partial_{zz}$（$\mathsf D,\mathsf D^2$）、逐模态 Poisson 逆、去混叠乘积、精确积分与内积。也就是说，给定某一时刻的状态，任何空间导数、速度、乘积和积分都能算出来。
+
+    剩下的问题全部在**时间**方向：怎样把状态从 $t_0$ 推进到 $t_0+h$。
 
 ## 3. 拆分成三个扩散
 
-从当前状态恢复 $u,w$ 后，`physical_forcing` 计算
+这一节把 RB 方程改写成三个形式完全相同的“有源扩散方程”，每个通道只差一个扩散系数：
+
+$$
+\partial_t(\text{通道}) = D\,\Delta(\text{通道}) + (\text{源}),\qquad
+D=\Pr\ (\omega),\quad D=\Pr\ (\overline u),\quad D=1\ (\theta).
+$$
+
+这样，所有通道都能用同一个“齐次热传播 + 源势修正”的公式推进，热传播部分交给第 4、5 节的 FGT。
+
+### 3.0 把非扩散项收集为力 $\boldsymbol F$
+
+把扰动动量方程和温度方程中除压力、扩散以外的所有项移到右端，定义
 
 $$
 \begin{aligned}
 F_x&=-(u u_x+w u_z),\\
 F_z&=\mathrm{Ra}\Pr\theta-(u w_x+w w_z),\\
-F_\theta&=w-(u\theta_x+w\theta_z).
+F_\theta&=w-(u\theta_x+w\theta_z),
 \end{aligned}
 $$
 
-`linear` 模式去掉上述对流乘积，保留浮力与温度反馈。接着 `flow_forcing` 把其转为涡量源，并拆出平均水平流源：
+于是方程变成
+
+$$
+u_t=-p_x+\Pr\Delta u+F_x,\qquad
+w_t=-p_z+\Pr\Delta w+F_z,\qquad
+\theta_t=\Delta\theta+F_\theta .
+$$
+
+逐项核对：动量方程 $u_t+uu_x+wu_z=-p_x+\Pr\Delta u$ 移项即得第一式；竖直分量多出浮力 $\mathrm{Ra}\Pr\theta$；温度方程 $\theta_t+u\theta_x+w\theta_z=\Delta\theta+w$ 移项即得第三式。`physical_forcing` 正是这样计算的：先 `fz = ra*pr*theta`、`ft = w`，开启非线性时再减去去混叠后的对流乘积（第 2.4 节）。`linear` 模式关闭对流乘积，只保留浮力 $\mathrm{Ra}\Pr\theta$ 与温度反馈 $w$。
+
+### 3.1 涡量方程、平均流方程与温度方程
+
+**涡量方程。** 对竖直分量取 $\partial_x$，减去水平分量的 $\partial_z$：
 
 $$
 \begin{aligned}
-S_\omega&=\partial_xF_z-\partial_zF_x
--\overline{\partial_xF_z-\partial_zF_x},\\
-S_{\overline u}&=\overline{F_x},\qquad S_\theta=F_\theta.
+\partial_x w_t-\partial_z u_t
+&=\left(-p_{zx}+\Pr\partial_x\Delta w+\partial_xF_z\right)-\left(-p_{xz}+\Pr\partial_z\Delta u+\partial_zF_x\right)\\
+&=(-p_{zx}+p_{xz})+\Pr\left(\partial_x\Delta w-\partial_z\Delta u\right)+\partial_xF_z-\partial_zF_x .
 \end{aligned}
 $$
 
-三份源放在 `source(:,:,1:3)`。三个通道的扩散系数依次是 $\Pr,\Pr,1$。
-
-### 3.1 为什么源项还要解 Poisson 方程
-
-FGT 能计算齐次热方程的传播，但有源项时，一步之内不断加入的贡献应该怎样计算？暂时考虑上下壁为零的标量方程
+逐项化简：光滑函数的混合偏导可交换，$p_{zx}=p_{xz}$，压力项为零——**这就是用涡量消去压力的原因**。常系数算子 $\Delta$ 与 $\partial_x$、$\partial_z$ 可交换，$\partial_x\Delta w-\partial_z\Delta u=\Delta(w_x-u_z)=\Delta\zeta$。左边 $\partial_xw_t-\partial_zu_t=(w_x-u_z)_t=\zeta_t$。所以
 
 $$
-v_t=D\Delta v+S(t)=-Av+S(t),\qquad v|_{z=0,1}=0.
+\zeta_t=\Pr\Delta\zeta+\partial_xF_z-\partial_zF_x .
 $$
 
-这里的 $v$ 是某个通道的未知场，$S(t)$ 仍然依赖空间，只是暂时省略了空间坐标。定义
+**平均涡量方程。** 对周期函数 $f$，$\overline{f_x}=f(1,z)-f(0,z)=0$，同理 $\overline{f_{xx}}=0$；竖直求导与水平积分可交换。对上式取水平平均：
+
+$$
+\overline\zeta_t=\Pr\left(\overline{\zeta_{xx}}+\overline\zeta_{zz}\right)+\overline{\partial_xF_z}-\partial_z\overline{F_x}
+=\Pr\,\overline\zeta_{zz}-\partial_z\overline{F_x}.
+$$
+
+**非平均涡量方程。** 总方程减去平均方程，以 $\omega=\zeta-\overline\zeta$ 代换。因为 $\overline\zeta$ 不依赖 $x$，$\Delta\overline\zeta=\overline\zeta_{zz}$，所以
+
+$$
+\omega_t=\Pr\Delta\omega+\underbrace{\left(\partial_xF_z-\partial_zF_x\right)-\overline{\left(\partial_xF_z-\partial_zF_x\right)}}_{S_\omega}.
+$$
+
+$\overline{\partial_xF_z}=0$，所以减去的平均实际只剩 $-\partial_z\overline{F_x}$；代码直接把旋度减去它的离散水平平均，两者等价。
+
+**平均流方程。** 对水平动量方程取水平平均。$\overline{u_t}=\overline u_t$；压力是周期函数，$\overline{p_x}=0$（本项目没有外加平均压力梯度）；$\overline{\Delta u}=\overline{u_{xx}}+\overline u_{zz}=\overline u_{zz}$。所以
+
+$$
+\overline u_t=\Pr\,\overline u_{zz}+\overline{F_x},\qquad \overline u(0)=\overline u(1)=0 .
+$$
+
+**两个平均方程是相容的。** 第 2.1 节得到 $\overline\zeta=-\overline u'$。把平均流方程对 $z$ 求导并取负：$-\overline u'_t=-\Pr\overline u'''-\partial_z\overline{F_x}$，即 $\overline\zeta_t=\Pr\overline\zeta_{zz}-\partial_z\overline{F_x}$，与平均涡量方程完全相同。所以平均涡量的信息由 $\overline u$ 承载，不必单独推进；推进 $\overline u$ 时壁面条件是简单的零值，比推进 $\overline\zeta$ 更方便。
+
+**温度方程**无需改写：$\theta_t=\Delta\theta+F_\theta$，$\theta$ 两壁为零。
+
+`flow_forcing` 把三份源放在 `source(:,:,1:3)`：
+
+$$
+S_\omega=\partial_xF_z-\partial_zF_x-\overline{\partial_xF_z-\partial_zF_x},\qquad
+S_{\overline u}=\overline{F_x},\qquad S_\theta=F_\theta .
+$$
+
+$S_{\overline u}$ 被复制成与 $x$ 无关的二维数组（`spread`），这样三个通道可以用同一个二维热传播接口；对 $x$ 常数的场 $\partial_{xx}=0$，二维热方程退化为一维扩散。
+
+#### 源 $S$ 里哪些是给定的、哪些是算出来的、哪些是未知的
+
+“源”这个词容易让人以为 $S$ 是事先给定的已知函数。在 RB 问题里并非如此：这里的 $S$ 只是“扩散以外的所有项”的统称，它**依赖于未知解本身**。把三份源里出现的每个量分类如下：
+
+| 类别 | 量 | 说明 |
+| --- | --- | --- |
+| 给定参数 | $\mathrm{Ra}$、$\Pr$ | 运行前输入，整个计算中不变 |
+| 给定函数（可选） | 外力 $f_{x,\rm ext},f_{z,\rm ext},f_{\theta,\rm ext}$ | `external` 接口，显式依赖 $(x,z,t)$；主程序不使用，默认为零 |
+| 未知量（要求解的状态） | $\omega$、$\overline u$、$\theta$ | 程序真正推进的三个场 |
+| 由未知量算出的中间量 | $u,w$ | 第 2.1 节：由 $\omega,\overline u$ 解 Poisson 再求导，不是独立未知量 |
+| 由未知量算出的中间量 | $u_x,u_z,w_x,w_z,\theta_x,\theta_z$ | 第 2.3 节的微分矩阵作用在上面这些场上 |
+| 由未知量算出的中间量 | $uu_x+wu_z$ 等对流乘积 | 第 2.4 节的去混叠乘积 |
+
+导热背景 $1-z$ 的贡献已在第 1.3 节吸收进 $+w$ 与压力，不再单独出现在 $S$ 中。因此三份源都是**未知状态的已知函数**：
+
+$$
+\begin{aligned}
+S_\omega&=S_\omega(\omega,\overline u,\theta)=\underbrace{\mathrm{Ra}\Pr\,\theta_x}_{\text{线性：}\theta\to\omega}-\underbrace{\big(u\zeta_x+w\zeta_z-\overline{u\zeta_x+w\zeta_z}\big)}_{\text{二次：对流}},\\
+S_{\overline u}&=S_{\overline u}(\omega,\overline u)=-\overline{uu_x+wu_z},\\
+S_\theta&=S_\theta(\omega,\overline u,\theta)=\underbrace{w}_{\text{线性：}\omega\to\theta}-\underbrace{(u\theta_x+w\theta_z)}_{\text{二次：对流}} .
+\end{aligned}
+$$
+
+（第一式用到了下面对流旋度核对的结果，$\zeta=\omega-\overline u'$。）“已知函数”指公式已知：只要给出某一时刻的 $(\omega,\overline u,\theta)$，就能用第 2 节的算子把 $S$ 算出来；但在新时刻状态未知之前，这一时刻的 $S$ 也未知。
+
+由此得到三个直接后果：
+
+1. **三个通道只通过 $S$ 耦合。** 扩散部分 $D\Delta$ 对每个通道是独立的，浮力反馈 $\mathrm{Ra}\Pr\theta_x$、温度反馈 $w$ 和全部对流都藏在 $S$ 里。
+2. **方程是非线性的。** 即使在 `linear` 模式下删掉二次对流项，$S$ 仍是未知量的线性函数（$\theta_x$ 与 $w$），仍不是给定函数。
+3. **在一个时间步 $[t_0,t_0+h]$ 内，$S$ 的三种身份不同：**
+    - $S_0=S(U_0)$：旧状态 $U_0$ 已知，所以 $S_0$ **可以直接算出**（只有空间离散误差）；
+    - $S_1=S(U_1)$：新状态 $U_1$ 正是要求的东西，所以 $S_1$ **未知**，只能通过第 3.3 节的预测–校正逐步逼近；
+    - 中间时刻的 $S(t_0+\tau)$：程序**从不计算**，而是假设它在 $S_0$ 与 $S_1$ 之间线性变化——这是一个建模近似，误差在第 3.2 节第五步估计。
+
+所以第 3.2 节推导积分公式时，暂时把 $S(t)$ 当作已知的时间函数；这只是为了先得到“如果知道两端源，一步该怎么走”的公式，真正的未知性在第 3.3 节处理。
+
+#### 对流旋度的符号核对
+
+也可以直接验证非线性源的形式。令 $C_u=uu_x+wu_z$、$C_w=uw_x+ww_z$，则 $F_x=-C_u$、$F_z=\mathrm{Ra}\Pr\theta-C_w$。展开乘积求导：
+
+$$
+\begin{aligned}
+\partial_xC_w&=u_xw_x+uw_{xx}+w_xw_z+ww_{zx},\\
+\partial_zC_u&=u_zu_x+uu_{xz}+w_zu_z+wu_{zz}.
+\end{aligned}
+$$
+
+相减并按 $u$、$w$、其余三类项分组：
+
+$$
+\begin{aligned}
+\partial_xC_w-\partial_zC_u
+&=u(w_{xx}-u_{xz})+w(w_{zx}-u_{zz})
++\left(u_xw_x+w_xw_z-u_zu_x-w_zu_z\right)\\
+&=u\,\partial_x(w_x-u_z)+w\,\partial_z(w_x-u_z)+(u_x+w_z)(w_x-u_z)\\
+&=u\zeta_x+w\zeta_z .
+\end{aligned}
+$$
+
+第二行把剩余四项因式分解：$u_xw_x-u_xu_z+w_zw_x-w_zu_z=u_x(w_x-u_z)+w_z(w_x-u_z)$；最后一行使用 $u_x+w_z=0$。所以总涡量源为
+
+$$
+\partial_xF_z-\partial_zF_x=\mathrm{Ra}\Pr\theta_x-(u\zeta_x+w\zeta_z).
+$$
+
+注意被平流的是总涡量 $\zeta=\omega-\overline u'$，不能擅自用 $\omega$ 替换，否则遗漏平均剪切 $\overline u'$ 的贡献。代码从速度力的旋度出发，自动包含了这一项。
+
+!!! note "目前进展"
+    关于 $(\omega,\overline u,\theta)$ 的耦合非线性方程组，已写成三个形式完全相同的有源扩散方程 $v_t=D\Delta v+S_v$：$\omega$ 与 $\overline u$ 的 $D=\Pr$，$\theta$ 的 $D=1$，壁面条件除 $\omega$ 外都是零值。三个方程的扩散部分彼此独立；耦合与非线性全部集中在源 $S_v(\omega,\overline u,\theta)$ 中，而 $S_v$ 的每一项都可以从当前状态算出。
+
+    下一步：先假设一步内的源已知，推导一步推进的精确公式（3.2）；再处理“新端点的源其实依赖未知新状态”这件事（3.3）。
+
+### 3.2 为什么源项还要解 Poisson 方程：源势与积分因子
+
+FGT 能计算齐次热方程的传播，但有源项时，一步之内不断加入的贡献应该怎样计算？暂时只看一个通道，记未知场为 $v$（$\omega$、$\overline u$ 或 $\theta$ 之一；本小节 $v$ 不是速度向量），先假设它两壁为零（$\omega$ 的非零壁值在第 6 节处理）：
+
+$$
+v_t=D\Delta v+S(t)=-Av+S(t),\qquad v|_{z=0,1}=0 .
+$$
+
+这里 $S(t)$ 依赖空间，只是省略了空间坐标。按上一小节的说明，$S$ 实际上是未知状态的函数；本小节**暂时把它当作已知的时间函数**，推导完公式后再在第 3.3 节回到未知的问题。定义三个算子
 
 $$
 A=-D\Delta_D,\qquad K=A^{-1},\qquad H=e^{-hA}.
 $$
 
-下标 $D$ 表示采用齐次 Dirichlet 壁面条件，不是另一个扩散系数。三个算子的作用分别是：
+下标 $D$（正体）表示采用齐次 Dirichlet 壁面条件，不是扩散系数。
 
 | 算子 | 对输入场做什么 | 在程序中的实现 |
 | --- | --- | --- |
-| $A$ | 计算 $-D\Delta$ | 表示扩散方程的空间算子 |
-| $K$ | 解 $-D\Delta r=f$，且 $r$ 两壁为零 | `poisson_dirichlet` 后除以扩散系数 |
+| $A$ | 计算 $-D\Delta$ | 表示扩散方程的空间算子，不显式出现 |
+| $K$ | 解 $-D\Delta r=f$，且 $r$ 两壁为零 | `poisson_dirichlet` 解 $-\Delta r=f$，再除以 $D$ |
 | $H$ | 从输入场出发，解 $y_t=D\Delta y$ 并传播时间 $h$ | `heat_on_grid`，内部使用自适应 FGT |
 
-所以 $Hf$ 表示“让初始场 $f$ 自由扩散一个时间步”，而 $Kf$ 表示“以 $f$ 为右端求一个 Poisson 解”。
+$Hf$ 表示“让初始场 $f$ 自由扩散一个时间步”，$Kf$ 表示“以 $f$ 为右端求一个 Poisson 解”。$K$ 的“除以 $D$”来自 $-D\Delta r=f\iff-\Delta r=f/D$。$A$、$K$、$H$ 都是 $A$ 的函数，所以两两可交换：$KH=HK$、$KA=AK=I$。
 
-如果直接写出有源方程的一步解，会得到
+#### 第一步：积分因子给出一步解
 
-$$
-v(t_0+h)=Hv(t_0)+\int_0^h e^{-(h-\tau)A}S(t_0+\tau)\,d\tau.
-$$
-
-先假设一步内 $S$ 不随时间变化，令
+把 $v_t+Av=S(t)$ 左乘 $E(t)=e^{(t-t_0)A}$。因为 $E'(t)=AE(t)=E(t)A$，
 
 $$
-r=KS,\qquad Ar=S,
+\frac d{dt}\left[E(t)v(t)\right]=E(t)Av(t)+E(t)v_t(t)=E(t)\left[Av+v_t\right]=E(t)S(t).
 $$
 
-也就是解
+从 $t_0$ 积分到 $t_0+h$：左边是 $E(t_0+h)v_1-E(t_0)v_0=e^{hA}v_1-v_0$，于是
 
 $$
--D\Delta r=S,\qquad r|_{z=0,1}=0.
+e^{hA}v_1=v_0+\int_{t_0}^{t_0+h}e^{(t-t_0)A}S(t)\,dt .
 $$
 
-$r$ 正是这份固定源对应的稳态扩散场，因为 $D\Delta r+S=0$。令 $y=v-r$，由于 $r$ 不随时间变化，便有
+左乘 $e^{-hA}=H$，令 $\tau=t-t_0$：
 
 $$
-y_t=v_t=-Av+S=-Av+Ar=-A(v-r)=-Ay.
+v_1=Hv_0+\int_0^h e^{-(h-\tau)A}S(t_0+\tau)\,d\tau .
 $$
 
-原来的非齐次问题因此变成 $y$ 的齐次热方程。先传播 $v_0-r$，再加回 $r$：
+$e^{hA}$ 只是推导中的记号。按 $A$ 的特征函数 $\phi_n$（$A\phi_n=\lambda_n\phi_n$，$\lambda_n>0$）展开，每个系数满足标量方程 $v_n'=-\lambda_nv_n+S_n$，解为 $v_n(h)=e^{-\lambda_nh}v_n(0)+\int_0^he^{-\lambda_n(h-\tau)}S_n(\tau)d\tau$，全程只出现衰减因子。实现也不计算 $e^{hA}$。
+
+#### 第二步：常源时只需一次 Poisson
+
+若一步内 $S$ 不随时间变化，令
 
 $$
-v_1=H(v_0-r)+r.
+r=KS,\qquad\text{即}\qquad -D\Delta r=S,\quad r|_{z=0,1}=0 .
 $$
+
+$r$ 是这份固定源对应的稳态：$D\Delta r+S=0$。令 $y=v-r$，由于 $r$ 不随时间变化，
+
+$$
+y_t=v_t=-Av+S=-Av+Ar=-A(v-r)=-Ay .
+$$
+
+非齐次问题变成 $y$ 的齐次热方程，且 $y$ 两壁为零。所以先传播 $v_0-r$，再加回 $r$：
+
+$$
+v_1=y_1+r=H(v_0-r)+r .
+$$
+
+#### 第三步：仿射源时需要第二次 Poisson
 
 真实 RB 源依赖速度和温度，不会保持常数。程序在一个时间步内，用连接两端点的仿射函数近似它：
 
 $$
-S(t_0+\tau)=S_0+\frac{\tau}{h}(S_1-S_0),\qquad 0\le\tau\le h.
+S(t_0+\tau)=S_0+\frac{\tau}{h}(S_1-S_0),\qquad 0\le\tau\le h .
 $$
 
-这里的等式指本步采用的近似源模型。因为 $K$ 是固定的线性算子，相应源势也是仿射的：
+这里的等号指本步采用的近似源模型。$K$ 是线性算子，源势也是仿射的：
 
 $$
 r(t_0+\tau)=KS(t_0+\tau)
 =r_0+\frac{\tau}{h}(r_1-r_0),\qquad
-r_0=KS_0,\quad r_1=KS_1.
+r_0=KS_0,\quad r_1=KS_1 .
 $$
 
-此时 $Ar=S$ 仍成立，但 $r$ 会随时间移动。如果仍只令 $y=v-r$，求导便多出一项：
+此时 $Ar=S$ 仍成立，但 $r$ 随时间移动。若仍只令 $y=v-r$，求导多出一项：
 
 $$
-(v-r)_t=-A(v-r)-r_t,\qquad
+(v-r)_t=v_t-r_t=-Av+S-r_t=-Av+Ar-r_t=-A(v-r)-r_t,\qquad
 r_t=\frac{r_1-r_0}{h}.
 $$
 
-要消去这份额外的 $-r_t$，再求一个场 $q$，使
+要消去这份额外的常量 $-r_t$，再求一个场 $q$ 使
 
 $$
 Aq=r_t,\qquad
 \boxed{q=Kr_t=K\frac{r_1-r_0}{h}.}
 $$
 
-这就是第二次 Poisson 求解。由于本步的 $r_t$ 为常量，$q$ 也不随时间变化。现在取
-
-$$
-y=v-r+q.
-$$
-
-逐项代入即可看到两次消去：
+这就是第二次 Poisson 求解。$r_t$ 在本步是常量，$q$ 也不随时间变化。现在取 $y=v-r+q$，逐项代入：
 
 $$
 \begin{aligned}
 y_t
-&=v_t-r_t && (q_t=0)\\
-&=-Av+S-r_t\\
-&=-Av+Ar-Aq && (Ar=S,\ Aq=r_t)\\
-&=-A(v-r+q)\\
-&=-Ay.
+&=v_t-r_t+q_t=v_t-r_t && (q_t=0)\\
+&=-Av+S-r_t && (\text{原方程})\\
+&=-Av+Ar-Aq && (S=Ar,\ r_t=Aq)\\
+&=-A(v-r+q)=-Ay .
 \end{aligned}
 $$
 
-$v,r,q$ 都具有零壁值，因此 $y$ 也能交给零壁热传播器。它在两个端点的值为
-
-$$
-y_0=v_0-r_0+q,\qquad
-y_1=v_1-r_1+q.
-$$
-
-由 $y_1=Hy_0$，解回 $v_1$，得到
+$v,r,q$ 都具有零壁值，所以 $y$ 也能交给零壁热传播器。它在两个端点的值为 $y_0=v_0-r_0+q$、$y_1=v_1-r_1+q$。由 $y_1=Hy_0$ 解回 $v_1$：
 
 $$
 \boxed{v_1=H(v_0-r_0+q)+r_1-q.}
 $$
 
-当 $S_1=S_0$ 时，$r_1=r_0$、$q=0$，它就退回前面的常源公式。$q$ 的作用是补偿源势在本步内的变化，让变换后的场仍然满足齐次热方程。代码中变量 `slope` 保存的是 $q=Kr_t=K^2S_t$。
+当 $S_1=S_0$ 时 $r_1=r_0$、$q=0$，它退回常源公式。代码变量 `slope` 保存的就是 $q=Kr_t=K^2(S_1-S_0)/h$——不是简单的 $(S_1-S_0)/h$，而是多经过两次逆扩散算子。
 
-旧状态已知，所以 $S_0$ 和 $r_0$ 可直接计算。但 $S_1$ 取决于尚未知的新状态 $v_1$，形成耦合。
+#### 第四步：用 Duhamel 积分独立验证
 
-`advance_flow` 用预测和固定次数校正来处理它：
+上面的构造是“猜一个变换再验证”。也可以从第一步的积分公式直接算出同一结果。设 $\delta S=S_1-S_0$，作代换 $s=h-\tau$（$d\tau=-ds$，$\tau:0\to h$ 对应 $s:h\to0$，翻转上下限吸收负号）：
 
-1. 先令 `r1=r0`，即暂时把源当作本步内的常源；此时 `slope=0`，算出第一份候选新状态。
-2. 用候选新状态重新计算 `r1`，于是有了源随时间变化的估计；重新计算 `slope`，再用上面的仿射源公式推进同一个时间步。
-3. 默认再更新一次新端点源并校正。`iteration=0,1,2` 共一次预测、两次校正，每轮都从同一个旧状态出发，到达同一个 $t_0+h$。
+$$
+I_S:=\int_0^h e^{-(h-\tau)A}S(t_0+\tau)\,d\tau=\int_0^h e^{-sA}S(t_0+h-s)\,ds
+=\int_0^h e^{-sA}\left(S_0+\frac{h-s}{h}\delta S\right)ds .
+$$
 
-接下来来看如何计算 $Hf$：把构造好的传播输入 $f$ 交给自适应 FGT，计算一次齐次热传播。
+把 $\frac{h-s}h=1-\frac sh$ 拆开，
+
+$$
+I_S=I_0S_0+\left(I_0-\frac{I_1}h\right)\delta S,\qquad
+I_0:=\int_0^h e^{-sA}ds,\quad I_1:=\int_0^h s\,e^{-sA}ds .
+$$
+
+**算 $I_0$。** 因为 $\frac d{ds}\left(-Ke^{-sA}\right)=-K(-A)e^{-sA}=KAe^{-sA}=e^{-sA}$，
+
+$$
+I_0=\left[-Ke^{-sA}\right]_0^h=-KH+K=K(I-H).
+$$
+
+**算 $I_1$。** 分部积分，取 $\mathcal U=s$、$d\mathcal V=e^{-sA}ds$、$\mathcal V=-Ke^{-sA}$：
+
+$$
+I_1=\left[-sKe^{-sA}\right]_0^h+\int_0^hKe^{-sA}ds=-hKH+K\cdot K(I-H)=-hKH+K^2(I-H).
+$$
+
+**组合。**
+
+$$
+I_0-\frac{I_1}h=K(I-H)+KH-\frac{K^2(I-H)}h=K-\frac{K^2(I-H)}h .
+$$
+
+所以
+
+$$
+I_S=K(I-H)S_0+K\,\delta S-\frac{K^2(I-H)}h\,\delta S .
+$$
+
+**把每一项换成 $r_0,r_1,q$。** 利用可交换性：
+
+$$
+\begin{aligned}
+K(I-H)S_0&=(I-H)KS_0=(I-H)r_0=r_0-Hr_0,\\
+K\,\delta S&=KS_1-KS_0=r_1-r_0,\\
+\frac{K^2(I-H)}h\delta S&=(I-H)\,K\!\left(\frac{K\delta S}h\right)=(I-H)\,K\frac{r_1-r_0}h=(I-H)q=q-Hq .
+\end{aligned}
+$$
+
+代回：
+
+$$
+I_S=(r_0-Hr_0)+(r_1-r_0)-(q-Hq)=r_1-Hr_0-q+Hq .
+$$
+
+加上 $Hv_0$：$v_1=Hv_0-Hr_0+Hq+r_1-q=H(v_0-r_0+q)+r_1-q$，与第三步完全一致。
+
+#### 第五步：“精确”的范围与局部误差
+
+公式对**本步仿射源模型**是精确的。真实源 $S(t)$ 不是仿射的，误差来自线性插值余项。设 $e(\tau)=S(t_0+\tau)-S_{\rm lin}(t_0+\tau)$，则 $e(0)=e(h)=0$。对固定的 $\tau\in(0,h)$ 构造辅助函数
+
+$$
+\phi(\sigma)=e(\sigma)-e(\tau)\frac{\sigma(\sigma-h)}{\tau(\tau-h)} ,
+$$
+
+它在 $\sigma=0,\tau,h$ 三处为零。由 Rolle 定理，$\phi'$ 至少有两个零点，$\phi''$ 至少有一个零点 $\xi_\tau$。而 $e''=S''$（线性部分二阶导为零），$\frac{d^2}{d\sigma^2}\sigma(\sigma-h)=2$，所以 $0=\phi''(\xi_\tau)=S''(\xi_\tau)-\frac{2e(\tau)}{\tau(\tau-h)}$，即
+
+$$
+e(\tau)=\tfrac12\tau(\tau-h)S''(\xi_\tau).
+$$
+
+（对向量场逐分量或用积分形式余项可得同样的范数界。）假设热半群在所选范数下不增大范数，$\|S''\|\le M$，则这一步因源近似造成的误差为
+
+$$
+\left\|\int_0^he^{-(h-\tau)A}e(\tau)\,d\tau\right\|
+\le\int_0^h\|e(\tau)\|\,d\tau
+\le\frac M2\int_0^h\tau(h-\tau)\,d\tau
+=\frac M2\left[\frac{h\tau^2}2-\frac{\tau^3}3\right]_0^h
+=\frac M2\cdot\frac{h^3}6=\frac{Mh^3}{12}.
+$$
+
+每步 $O(h^3)$，固定终止时间共 $T/h$ 步，在稳定性、光滑性和端点求解误差受控时累计为 $O(h^2)$——这是通常的二阶全局时间行为，而不是“做两次校正就自动四阶”。实际还有壁数据插值、有限次非线性校正、空间截断和 FGT 误差；第 10 节某几档实验出现更高观测阶，不能替代这里的阶数分析。
+
+### 3.3 预测与校正：新端点源从哪里来
+
+现在回到 $S$ 的真实身份。旧状态 $U_0$ 已知，所以 $S_0=S(U_0)$ 和 $r_0=KS_0$ 可直接计算，并且整步保持不变。但 $S_1=S(U_1)$ 取决于尚未知的新状态 $U_1$，而 $U_1$ 又要用 $r_1=KS_1$ 才能算出——这是一个隐式耦合。把全状态记作 $U=(\omega,\overline u,\theta)$，上面的公式定义了一个映射 $U_1=\mathcal M_h(U_0,r_1)$。`advance_flow` 用固定次数的不动点迭代处理它：
+
+1. **预测**（`iteration=0`）：令 $r_1^{(0)}=r_0=KS(U_0)$，即暂时把源当作常源，此时 $q=0$，得到 $U_1^{(0)}=\mathcal M_h(U_0,r_1^{(0)})$。
+2. **第一次校正**（`iteration=1`）：用候选新状态重新计算 $r_1^{(1)}=KS(U_1^{(0)})$，重新计算 $q$，得到 $U_1^{(1)}=\mathcal M_h(U_0,r_1^{(1)})$。
+3. **第二次校正**（`iteration=2`）：同样得到 $U_1^{(2)}$，作为本步结果。
+
+默认 `ncorrect=2`，共一次预测、两次校正。每轮都从同一个旧状态 $U_0$ 出发，到达同一个时刻 $t_0+h$（而不是 $t_0+h,t_0+2h,t_0+3h$）。校正次数固定，没有残差停止判据。
+
+**三个通道的具体输入与输出**（对应 `advance_flow`；$D$ 为通道扩散系数，$r,q$ 都用本通道的 $D$ 计算——动量两通道的 Poisson 结果除以 $\Pr$，温度通道不除）：
+
+| 通道 | 交给 $H$ 的输入 | 传播后加回 | 再做什么 |
+| --- | --- | --- | --- |
+| $\theta$（$D=1$） | $\theta_0-(r_0-q)$ | $+(r_1-q)$ | 无 |
+| $\overline u$（$D=\Pr$） | $\overline u_0-(r_0-q)$，沿 $x$ 复制 | $+(r_1-q)$ | 取水平平均得到 `mean_u` |
+| $\omega$（$D=\Pr$） | $\omega_0-Lg_0-r_0+q$ | $+r_1-q+Jg_0/h$ | 解 $2\times2$ 壁面系统（第 6 节） |
+
+$\overline u$ 通道的输入沿 $x$ 为常数，精确传播后仍为常数；取水平平均只是去掉 FGT 数值误差带来的微小 $x$ 变化。下一步看如何计算 $Hf$：把构造好的传播输入 $f$ 交给自适应 FGT，计算一次齐次热传播。
+
+!!! note "目前进展"
+    “把 $(\omega,\overline u,\theta)$ 从 $t_0$ 推进到 $t_0+h$”已归结为三类子问题，它们的状态各不相同：
+
+    | 子问题 | 输入是否已知 | 状态 |
+    | --- | --- | --- |
+    | 算源 $S_0=S(U_0)$、$S_1^{(k)}=S(U_1^{(k)})$ | 旧状态已知；候选新状态由上一轮给出 | 已解决（第 2 节算子） |
+    | Poisson 求解 $r_0,r_1,q$ | 右端由上一行给出 | 已解决（第 2.1、2.3 节） |
+    | 齐次零壁热传播 $Hf$，每轮 3 次 | 输入 $f$ 由上两行组装 | **未解决**，交给第 4、5 节 |
+    | 涡量新壁值 $g_1$ | 依赖未知的 $\omega_1$ | **未解决**，交给第 6 节 |
+
+    真正的未知量 $S_1$ 已经用固定次数的预测–校正替代；时间方向剩下的近似只有“源在一步内是仿射的”这一条（以及校正次数有限）。
 
 ## 4. 热传播
 
-自由空间二维热核是
+第 3 节把每一步归结为若干次齐次热传播 $Hf$：给定两壁为零、水平周期的输入 $f$（例如 $f=v_0-r_0+q$），求 $y_t=D\Delta y$、$y(0)=f$ 在 $t=h$ 的解。本节从热核出发，推出程序实际调用的积分公式。
+
+### 4.1 自由空间热核：逐项验证与归一化
+
+自由空间二维热核为
 
 $$
 G_D(\boldsymbol r,h)=\frac{1}{4\pi Dh}
-\exp\!\left(-\frac{|\boldsymbol r|^2}{4Dh}\right).
+\exp\!\left(-\frac{|\boldsymbol r|^2}{4Dh}\right),\qquad \boldsymbol r=\boldsymbol x-\boldsymbol y,\quad r^2=r_x^2+r_z^2 .
 $$
 
-传播 $Hf$ 就是用这个核对输入函数积分。这里的“源密度”是传给 $H$ 的输入 $f=v_0-r_0+q$ 等组合。为了处理水平周期和竖直零壁条件，`heat_adaptive_mixed` 做延拓：水平重复，竖直关于 $z=1$ 反号反射，再在 $[0,2)\times[0,2)$ 上周期传播。也就是对 $1\le z\le2$ 定义 $\widetilde f(x,z)=-f(x,2-z)$。奇延拓和周期重复使 $z=0,1$ 处传播值为零；水平重复保持原来的周期为 1。
-
-程序令 $\delta=4Dh$，调用周期 `gaussian_tree` 计算
+**它满足热方程。** 记 $G=Ch^{-1}e^{-r^2/(4Dh)}$，取对数 $\ln G=\ln C-\ln h-\dfrac{r^2}{4Dh}$。逐个求导：
 
 $$
-P(\boldsymbol x)=\int_{\text{周期延拓区域}}
-\exp\!\left(-\frac{|\boldsymbol x-\boldsymbol y|^2}{\delta}\right)
-\widetilde f(\boldsymbol y)\,d\boldsymbol y,
+\frac{G_h}{G}=\partial_h\ln G=-\frac1h+\frac{r^2}{4Dh^2},\qquad
+\frac{G_{r_x}}{G}=\partial_{r_x}\ln G=-\frac{2r_x}{4Dh}=-\frac{r_x}{2Dh}.
 $$
 
-其中积分核包含相应周期像。除以 $\pi\delta$ 后得到归一化的二维热传播值。
+再对 $r_x$ 求一次导（乘积法则）：
 
-### 4.1 FGT
+$$
+G_{r_xr_x}=\partial_{r_x}\!\left(-\frac{r_x}{2Dh}G\right)=-\frac1{2Dh}G-\frac{r_x}{2Dh}G_{r_x}
+=\left(-\frac1{2Dh}+\frac{r_x^2}{4D^2h^2}\right)G .
+$$
 
-通过 FGT 利用高斯核可压缩的展开与树层级组织，复用盒间作用，减少逐对积分的工作。
+$z$ 分量同理。两式相加再乘 $D$：
 
-`fgt_tree_layout.pack_tree` 按层重排盒编号，建立父子索引与库要求的指针数组，并反转两个局部节点方向。`fgt_adaptive.gaussian_tree` 调用外部 `boxfgt`，再把编号和节点方向还原。
+$$
+D\Delta G=D\left(-\frac2{2Dh}+\frac{r_x^2+r_z^2}{4D^2h^2}\right)G=\left(-\frac1h+\frac{r^2}{4Dh^2}\right)G=G_h .
+$$
 
-FGT 的作用是快速算核积分；自适应树的作用是用合适的局部多项式表示输入与输出。
+二维时两个 $-\frac1{2Dh}$ 相加正好抵消 $h^{-1}$ 前因子的导数 $-1/h$；在 $d$ 维中前因子是 $h^{-d/2}$。因此卷积 $u(\boldsymbol x,h)=\int G_D(\boldsymbol x-\boldsymbol y,h)f(\boldsymbol y)d\boldsymbol y$ 满足 $u_h=D\Delta_{\boldsymbol x}u$（导数可移入积分）。
+
+**归一化常数。** 要求总质量为 1。极坐标面积元为 $r\,dr\,d\varphi$，令 $s=r^2/(4Dh)$，$ds=2r\,dr/(4Dh)$，即 $r\,dr=2Dh\,ds$：
+
+$$
+\int_{\mathbb R^2}e^{-r^2/(4Dh)}d\boldsymbol r
+=\int_0^{2\pi}\!\!d\varphi\int_0^\infty e^{-r^2/(4Dh)}r\,dr
+=2\pi\cdot2Dh\int_0^\infty e^{-s}ds=4\pi Dh .
+$$
+
+所以 $C=1/(4\pi D)$，$G=(4\pi Dh)^{-1}e^{-r^2/(4Dh)}$。质量为 1、宽度随 $h\downarrow0$ 收缩，卷积在连续点趋于输入 $f$，因此同时满足热方程和初值。
+
+**代码的参数 $\delta$。** 程序令 $\delta=4Dh$，于是 $G=\dfrac1{\pi\delta}e^{-r^2/\delta}$。FGT 计算的是不含前因子的高斯和
+
+$$
+P(\boldsymbol x)=\int e^{-|\boldsymbol x-\boldsymbol y|^2/\delta}\widetilde f(\boldsymbol y)\,d\boldsymbol y ,
+$$
+
+热传播封装最后除以 $\pi\delta$（`all_potential/(pi*delta)`）。
+
+### 4.2 镜像延拓：怎样用周期高斯和实现零壁条件
+
+热核卷积解的是全平面问题，而我们需要水平周期、两壁为零的问题。办法是把输入延拓到全平面，使延拓函数的对称性自动保证边界条件。
+
+**第一步：定义延拓。** 对 $(x,z)$ 定义 $\widetilde f$：
+
+$$
+\widetilde f(x,z)=\begin{cases}f(x\bmod1,\ z),&0\le z\le1,\\-f(x\bmod1,\ 2-z),&1<z<2,\end{cases}
+\qquad \widetilde f(x,z+2)=\widetilde f(x,z).
+$$
+
+即：水平以 1 为周期重复；竖直先关于 $z=1$ 反号反射到 $[1,2)$，再以 2 为周期重复。
+
+**第二步：验证两个奇对称。**
+
+- 关于 $z=0$：对 $0<z<1$，$\widetilde f(x,-z)=\widetilde f(x,2-z)$（周期 2），而 $2-z\in(1,2)$，按定义 $=-f(x,2-(2-z))=-f(x,z)=-\widetilde f(x,z)$。
+- 关于 $z=1$：对 $0<s<1$，$\widetilde f(x,1+s)=-f(x,2-(1+s))=-f(x,1-s)=-\widetilde f(x,1-s)$。
+
+**第三步：卷积的输出在两壁为零。** 令 $u=G*\widetilde f$。热核对每个坐标差是偶函数。在 $z=0$，作变量代换 $y_z\to-y_z$：
+
+$$
+u(x,0)=\int G(x-y_x,-y_z)\widetilde f(y_x,y_z)\,d\boldsymbol y
+=\int G(x-y_x,y_z)\widetilde f(y_x,-y_z)\,d\boldsymbol y
+=-\int G(x-y_x,-y_z)\widetilde f(y_x,y_z)\,d\boldsymbol y=-u(x,0),
+$$
+
+第二个等号是代换（积分区域 $\mathbb R$ 不变），第三个等号用了 $G$ 的偶性和 $\widetilde f$ 的奇对称。所以 $u(x,0)=0$。在 $z=1$ 用 $y_z\to2-y_z$ 配对，同理 $u(x,1)=0$。水平方向把 $y_x$ 平移 1，积分和延拓密度都不变，故 $u(x+1,z)=u(x,z)$。
+
+**第四步：它就是所求的 Dirichlet 热传播。** $u$ 在 $0<z<1$ 内满足热方程，在两壁为零，水平周期，初值在 $[0,1)\times[0,1]$ 上等于 $f$。这样的初边值问题解唯一，所以 $u|_{[0,1)\times[0,1]}=Hf$。
+
+**第五步：全平面积分改写成单元积分加周期核。** 把 $\mathbb R^2$ 切成平移单元 $[0,2)^2+(2p,2q)$，$p,q\in\mathbb Z$，在每个单元上令 $\boldsymbol y=\boldsymbol y'+(2p,2q)$：
+
+$$
+\int_{\mathbb R^2}G(\boldsymbol x-\boldsymbol y)\widetilde f(\boldsymbol y)d\boldsymbol y
+=\sum_{p,q}\int_{[0,2)^2}G\big(\boldsymbol x-\boldsymbol y'-(2p,2q)\big)\widetilde f\big(\boldsymbol y'+(2p,2q)\big)d\boldsymbol y'
+=\int_{[0,2)^2}\Big[\sum_{p,q}G\big(\boldsymbol x-\boldsymbol y'-(2p,2q)\big)\Big]\widetilde f(\boldsymbol y')d\boldsymbol y' .
+$$
+
+第二个等号用了 $\widetilde f$ 在两个方向都以 2 为周期（水平周期 1 蕴含周期 2），以及高斯和绝对收敛允许交换求和与积分。代入 $G=(\pi\delta)^{-1}e^{-r^2/\delta}$，得到代码实际调用的形式：
+
+$$
+(Hf)(x,z)=\frac1{\pi\delta}\int_0^2\!\!\int_0^2
+\sum_{p,q\in\mathbb Z}
+\exp\left[-\frac{(x-y_x-2p)^2+(z-y_z-2q)^2}{\delta}\right]
+\widetilde f(y_x,y_z)\,dy_x\,dy_z .
+$$
+
+$p,q$ 是镜像整数，不是压力和源势。面积为 4 的延拓单元**不需要**再除以 4：上式是精确改写，周期核对一个完整周期单元本来就归一化；重复的密度承担了对应的镜像贡献。
+
+**第六步：在树上实现奇反射。** 这对应 [heat_adaptive_mixed.f90](<C:/myproject/rb_project/learning/rb_plan_2D/heat_adaptive_mixed.f90>) 的 `extend_mixed`：新根盒中心 $(1,1)$、边长 2；四份物理树 $q=1,2,3,4$ 挂在根下，$q=2,4$ 水平平移 $+1$，$q=3,4$ 竖直反射。竖直反射必须同时做三件事：
+
+1. 盒中心 $z_c\mapsto2-z_c$；
+2. 局部竖直节点指标 $j\mapsto k+1-j$；
+3. 密度值乘 $-1$。
+
+第 2 条的原因：盒内 Chebyshev 根节点（第 5.3 节）满足 $\xi_{k+1-j}=\cos\big(\pi(k+\tfrac12-j)/k\big)=\cos\big(\pi-\pi(j-\tfrac12)/k\big)=-\xi_j$。反射盒第 $j$ 个节点的位置是 $z=(2-z_c)+b\xi_j/2$，它的镜像点 $2-z=z_c-b\xi_j/2=z_c+b\xi_{k+1-j}/2$ 正是原盒第 $k+1-j$ 个节点，所以反射盒的值是 $-f_{\cdot,k+1-j}$（代码 `-field%values(:,k:1:-1,b)`）。
+
+子盒编号约定为 $1$ 左下、$2$ 右下、$3$ 左上、$4$ 右上（`refine_leaves` 中偏移 $\big(2\,\mathrm{mod}(c-1,2)-1,\ 2\lfloor(c-1)/2\rfloor-1\big)$）。竖直反射交换上下，所以新的第 $c$ 个子盒对应原来的第 `reflected_child(c)` 个，$[1,2,3,4]\mapsto[3,4,1,2]$。只改密度负号而不反转位置，就不是奇反射。所有盒层级加 1，因为它们挂在边长 2 的新根下。传播后只取 $q=1$ 那份（编号 $2,\ldots,N_{\rm box}+1$）作为物理结果。
+
+### 4.3 盒积分与 FGT 的数学接口
+
+**单个叶盒的贡献。** 叶盒 $B$ 的中心为 $(c_x,c_z)$、边长为 $b$。参考坐标 $\xi=2(y_x-c_x)/b$、$\eta=2(y_z-c_z)/b$，即 $y_x=c_x+b\xi/2$、$y_z=c_z+b\eta/2$，Jacobian 为 $\frac{\partial(y_x,y_z)}{\partial(\xi,\eta)}=\frac b2\cdot\frac b2$，面积元 $dy_xdy_z=(b^2/4)d\xi d\eta$。盒内插值多项式写成 $p_B=\sum_{i,j}f_{ij}\ell_i(\xi)\ell_j(\eta)$。代入高斯积分：
+
+$$
+\begin{aligned}
+P_B(x,z)&=\int_B e^{-[(x-y_x)^2+(z-y_z)^2]/\delta}p_B(y_x,y_z)\,dy_xdy_z\\
+&=\frac{b^2}4\sum_{i,j}f_{ij}
+\left[\int_{-1}^1e^{-(x-c_x-b\xi/2)^2/\delta}\ell_i(\xi)d\xi\right]
+\left[\int_{-1}^1e^{-(z-c_z-b\eta/2)^2/\delta}\ell_j(\eta)d\eta\right].
+\end{aligned}
+$$
+
+这里先用 $e^{-(\alpha+\beta)}=e^{-\alpha}e^{-\beta}$ 把两个坐标分离，再把有限求和移出积分，最后用 Fubini 把二重积分拆成两个一维积分之积。$f_{ij}$ 是体密度的节点值，带面积权重 $b^2/4$，不是没有面积的点源。所有叶盒贡献相加并对周期像求和，才得到 $P$。FGT 库加速的是这种体密度积分，热传播封装最后再除以 $\pi\delta$。
+
+**为什么高斯可以压缩。** 取一维情况，以某个盒中心 $c$ 为原点，令 $X=x-c$、$Y=y-c$。展开平方 $(X-Y)^2=X^2-2XY+Y^2$：
+
+$$
+e^{-(X-Y)^2/\delta}=e^{-X^2/\delta}\,e^{2XY/\delta}\,e^{-Y^2/\delta}
+=e^{-X^2/\delta}e^{-Y^2/\delta}\sum_{n=0}^{\infty}\frac{1}{n!}\left(\frac{2XY}\delta\right)^n .
+$$
+
+于是一个源盒对目标点的作用
+
+$$
+\int e^{-(X-Y)^2/\delta}f(Y)dY=\sum_{n=0}^\infty\underbrace{\frac{(2X/\delta)^n}{n!}e^{-X^2/\delta}}_{\text{只依赖目标}}\ \underbrace{\int Y^ne^{-Y^2/\delta}f(Y)\,dY}_{\text{只依赖源：矩 }m_n}.
+$$
+
+源端的矩 $m_n$ 可以对整个盒预先算好，所有目标点复用。二维时两方向各有一个指标 $n,l$，矩为 $\int Y_x^nY_z^le^{-|Y|^2/\delta}f\,dY$。对有界盒和固定 $\delta>0$，指数级数一致收敛，允许逐项积分；截断到有限项后才引入近似误差。这个展开只解释“为什么可分离和复用”，**不声称外部 BoxFGT 就按这个 Taylor 式执行**；库内部的展开选择、近远场调度和容差策略与教学封装是不同层次。第 9 节的 14 份源码展示调用契约，不包含整个外部库的逐行算法证明。
+
+### 4.4 FGT 在程序中的调用路径
+
+FGT 利用高斯核可压缩的展开与树层级组织，复用盒间作用，减少逐对积分的工作。程序中：
+
+- `fgt_tree_layout.pack_tree` 按层重排盒编号，建立父子索引与库要求的指针数组，并反转两个局部节点方向（库与本程序的节点顺序相反）；
+- `fgt_adaptive.gaussian_tree` 调用外部 `boxfgt`，再把编号和节点方向还原；
+- `heat_adaptive_mixed.heat_step_adaptive` 先 `extend_mixed`，再以 $\delta=4Dh$、周期选项调用 `gaussian_tree`，最后除以 $\pi\delta$。
+
+FGT 的作用是快速算核积分；自适应树的作用是用合适的局部多项式表示输入与输出。二者的精度分别由库容差 $10^{-12}$ 与第 5 节的两个树容差控制。
+
+!!! note "目前进展"
+    零壁、水平周期的热传播 $Hf$ 已转化为：把 $f$ 奇反射、周期延拓到 $[0,2)^2$ 后，与周期高斯核做一次体积分，再除以 $\pi\delta$（$\delta=4Dh$）。零壁条件由奇对称自动满足，不需要额外施加；积分本身由外部 FGT 快速计算。
+
+    FGT 要求输入是一棵四叉树上的分片 Chebyshev 多项式，而我们手上只有辅助网格数组。下一节要解决：怎样把辅助网格上的场放到树上，并保证输入和输出都表示得足够准。
 
 ## 5. 自适应网格
 
-外层桥梁是 `slab_heat.heat_on_grid`：输入辅助网格值，输出同一辅助网格上的热传播值。中间经历两种精度检查。
+外层桥梁是 `slab_heat.heat_on_grid`：输入辅助网格值，输出同一辅助网格上的热传播值。中间经历两种精度检查：先保证**输入**在树上表示得足够好（5.1），再保证**输出**在同一棵树上表示得足够好（5.2）。
 
-### 5.1 源采样：
+### 5.1 源采样：输入表示得是否足够好
 
-`sample_grid_field` 先把辅助值转成固定的 Fourier–Chebyshev 系数。在每个叶盒的 $12\times12$ 节点求值，再用额外的 $25\times25$ 指针比较
+`sample_grid_field` 先把辅助值转成固定的 Fourier–Chebyshev 系数（第 2.4 节）。从单位根盒开始，每一轮对每个叶盒：
+
+1. 在 $k\times k=12\times12$ 个盒内 Chebyshev 根节点上求辅助展开 $f_{\rm aux}$，作为盒内插值多项式 $p_B$ 的节点值；
+2. 在额外的 $(2k+1)\times(2k+1)=25\times25$ 个探针点上比较
 
 $$
-\eta_{\rm source}(B)=\max_{\text{指针节点 }(x,z)\in B}
-|p_B(x,z)-f_{\rm aux}(x,z)|.
+\eta_{\rm source}(B)=\max_{\text{探针 }(x,z)\in B}
+|p_B(x,z)-f_{\rm aux}(x,z)| ;
 $$
 
-若误差超限或未到最小层级，就细分为四个子盒；下一轮在新叶盒上**重新求值同一个全局辅助展开**。
+3. 若 $\eta_{\rm source}>$ `tol` 或层级低于最小层级，就标记细分；
+4. `mark_unbalanced` 补充标记，使邻接叶盒的层级差至多为 1（含水平周期邻接）；
+5. 细分标记的叶，进入下一轮；下一轮在新叶盒上**重新求值同一个全局辅助展开**。
 
-默认源容差为 $2\times10^{-10}$，最小层级 1，最多 4096 个盒、层级 7，源采样最多 9 轮。`mark_unbalanced` 补充细化，使邻接叶盒的层级差至多为 1，包含水平方向周期邻接。
+没有任何标记时返回。默认源容差 $2\times10^{-10}$，最小层级 1，最多 4096 个盒、层级 7，最多 9 轮；超出这些限制时程序报错停止。
 
-### 5.2 输出检查：
+### 5.2 输出检查：传播结果能否在同一棵树上表示
 
 输入容易表示，并不自动意味着传播输出也能在相同树上充分表示。`checked_heat_step` 的检查过程为：
 
 1. 在当前输入树 `work` 上真正传播，得到 `coarse`。
-2. 复制输入树，将每个叶盒暂时细分一层。把父盒**输入多项式**限制到子盒，再真正传播，得到 `fine`。
+2. 复制输入树为 `probe`，将每个叶盒暂时细分一层：把父盒的**输入多项式**限制到子盒（用父多项式在子盒节点求值），再真正传播，得到 `fine`。
 3. 在这些子盒节点上，比较粗输出的插值值与细树独立传播值，得到每个父叶盒的 $\eta_{\rm output}$。
-4. 全部通过则接受当前树上的 `coarse`；否则细化超限盒，恢复平衡，并重新传播同一份数值输入。
+4. 全部 $\le$ `8*tol` 则接受当前树上的 `coarse`；否则细化超限盒，恢复 2:1 平衡，并对同一份数值输入重新传播。最多 5 轮。
+
+### 5.3 从重心插值到两个误差指示量
+
+#### 盒内节点与重心权重
+
+局部节点与辅助网格节点不同：[cheb_box.f90](<C:/myproject/rb_project/learning/rb_plan_2D/cheb_box.f90>) 使用不包含端点的 Chebyshev 根节点
+
+$$
+\xi_j=\cos\vartheta_j,\qquad \vartheta_j=\frac{\pi(j-1/2)}k,\quad j=1,\ldots,k .
+$$
+
+**它们是 $T_k$ 的零点**：$T_k(\xi_j)=\cos(k\vartheta_j)=\cos\big((j-\tfrac12)\pi\big)=0$。$k$ 个互异零点用完了 $k$ 次多项式的全部根，且 $T_k$ 的首项系数为 $2^{k-1}$，所以
+
+$$
+T_k(\xi)=2^{k-1}\prod_{r=1}^k(\xi-\xi_r).
+$$
+
+**权重。** 对这个乘积在根 $\xi_j$ 处求导，只剩不含 $(\xi-\xi_j)$ 的那一项：$T_k'(\xi_j)=2^{k-1}\prod_{r\ne j}(\xi_j-\xi_r)$。所以
+
+$$
+\beta_j=\frac1{\prod_{r\ne j}(\xi_j-\xi_r)}=\frac{2^{k-1}}{T_k'(\xi_j)} .
+$$
+
+**求 $T_k'(\xi_j)$。** 对恒等式 $T_k(\cos\vartheta)=\cos(k\vartheta)$ 两边关于 $\vartheta$ 求导：$T_k'(\cos\vartheta)\cdot(-\sin\vartheta)=-k\sin(k\vartheta)$，所以
+
+$$
+T_k'(\cos\vartheta)=\frac{k\sin(k\vartheta)}{\sin\vartheta}.
+$$
+
+在节点处 $k\vartheta_j=\pi j-\pi/2$，$\sin(\pi j-\pi/2)=-\cos(\pi j)=-(-1)^j=(-1)^{j-1}$，因此 $T_k'(\xi_j)=k(-1)^{j-1}/\sin\vartheta_j$。代回：
+
+$$
+\beta_j=\frac{2^{k-1}\sin\vartheta_j}{k(-1)^{j-1}}=\frac{2^{k-1}}k(-1)^{j-1}\sin\vartheta_j .
+$$
+
+去掉所有权重共有的 $2^{k-1}/k$，得到代码中的 `weights(j)=(-1)**(j-1)*sin(angle)`。
+
+#### 重心形式
+
+$\ell_j(\xi)=\beta_j\varpi(\xi)/(\xi-\xi_j)$，其中 $\varpi(\xi)=\prod_r(\xi-\xi_r)$。常数 1 被精确插值：
+
+$$
+1=\sum_j\ell_j(\xi)=\varpi(\xi)\sum_r\frac{\beta_r}{\xi-\xi_r}
+\quad\Longrightarrow\quad
+\varpi(\xi)=\frac1{\sum_r\beta_r/(\xi-\xi_r)} .
+$$
+
+代回 $\ell_j$，消去共同乘积 $\varpi$：
+
+$$
+\ell_j(\xi)=\frac{\beta_j/(\xi-\xi_j)}{\sum_r\beta_r/(\xi-\xi_r)},\qquad
+p(\xi)=\sum_jf_j\ell_j(\xi)=\frac{\sum_j\beta_j f_j/(\xi-\xi_j)}{\sum_j\beta_j/(\xi-\xi_j)} .
+$$
+
+`cheb_matrix` 每行先算 `weights/(target-nodes)`，再除以该行之和，正是 $\ell_j$。若目标等于某节点，上式是可去奇点，直接取对应节点值；代码在距离不超过 $8\epsilon_{\rm machine}$ 时使用单位行。
+
+#### 二维张量插值
+
+$$
+p_B(x,z)=\sum_{i=1}^k\sum_{j=1}^k f_{ij}\,
+\ell_i\!\left(\frac{2(x-c_x)}b\right)
+\ell_j\!\left(\frac{2(z-c_z)}b\right).
+$$
+
+若 $B_x,B_z$ 是两个方向目标点的基函数矩阵，$(B_x)_{ri}=\ell_i(\xi^{(x)}_r)$、$(B_z)_{sj}=\ell_j(\xi^{(z)}_s)$，则
+
+$$
+(B_xfB_z^T)_{rs}=\sum_i\sum_j(B_x)_{ri}f_{ij}(B_z^T)_{js}=\sum_{i,j}(B_x)_{ri}f_{ij}(B_z)_{sj},
+$$
+
+这正是二维插值在 $(x_r,z_s)$ 的值，解释了 `matmul(bx, matmul(values, transpose(bz)))` 中第二个矩阵为何必须转置。
+
+#### 细分的几何与“同一输入”
+
+每次细分，子盒边长为 $b/2$，中心为 $(c_x,c_z)+(b/4)(s_x,s_z)$，$s_x,s_z\in\{-1,1\}$：子盒中心到父盒中心的距离是子盒半边长 $b/4$。
+
+- **源采样阶段**在子盒节点重新计算 $f_{\rm aux}$，所以可以改善源表示。
+- **输出检查阶段**求父盒的 $p_B$ 在子盒节点的值。$p_B$ 每个方向次数 $\le k-1$，限制到子区间不会升高次数，而子盒的 $k$ 个节点能唯一插值次数 $\le k-1$ 的多项式，所以子盒多项式与父多项式在子盒上**完全相同**（忽略舍入）。这一阶段没有“换一份更精确的源”，只是用更细的输出表示检查同一个数值输入。
+
+#### 两个指示量的精确定义
+
+明确区分三个对象：$f_{\rm aux}$ 是辅助插值函数，$f_{\mathcal T}$ 是树 $\mathcal T$ 的分片多项式输入，$p_B^{\rm out}$ 是粗树上的输出插值多项式。源指示量为探针集合 $\mathcal P_B$ 上的
+
+$$
+\eta_{\rm source}(B)=\max_{\boldsymbol y\in\mathcal P_B}|p_B(\boldsymbol y)-f_{\rm aux}(\boldsymbol y)| .
+$$
+
+输出指示量是四个子盒节点集合 $\mathcal Q_C$ 上的
+
+$$
+\eta_{\rm output}(B)=\max_{C\text{ 为 }B\text{ 的子盒}}\max_{\boldsymbol y\in\mathcal Q_C}
+|p_B^{\rm out}(\boldsymbol y)-(Hf_{\mathcal T})_{\rm fine}(\boldsymbol y)| .
+$$
+
+右边的 fine 值来自第二次实际 FGT 调用，不是对 coarse 做插值。通过检查时返回 coarse；失败时细化原输入的多项式表示后重新传播，而不是把输出反复插值到满意为止。详细流程对应 [heat_output_control.f90](<C:/myproject/rb_project/learning/rb_plan_2D/heat_output_control.f90>)。
+
+#### 误差的分解
+
+这两者都是**有限探针上的后验指示量**，不能无条件宣称它们是整个连续盒上的严格最大误差界。若以 $f$ 表示欲传播的连续场，$\widetilde H$ 表示 FGT 加树表示的数值传播，通过加减中间量 $Hf_{\rm aux}$、$Hf_{\mathcal T}$ 并用三角不等式：
+
+$$
+\|Hf-\widetilde Hf_{\mathcal T}\|
+=\|H(f-f_{\rm aux})+H(f_{\rm aux}-f_{\mathcal T})+(Hf_{\mathcal T}-\widetilde Hf_{\mathcal T})\|
+\le\|H(f-f_{\rm aux})\|+\|H(f_{\rm aux}-f_{\mathcal T})\|
++\|Hf_{\mathcal T}-\widetilde Hf_{\mathcal T}\| .
+$$
+
+第一项是辅助空间误差，单纯细化热树不能消除；第二项由源指示量监测；第三项包含 FGT 截断与输出表示误差，由输出指示量与库容差监测。源容差、输出容差与库容差必须分别解释，不能把 `tol` 当作全程 RB 解误差的保证。
+
+### 5.4 探针位置、2:1 平衡与返回辅助网格
+
+**探针。** 源探针是每方向 $2k+1$ 个等距参考点 $r_i=-1+(i-1)/k$，$i=1,\ldots,2k+1$：$r_1=-1$，$r_{2k+1}=-1+2k/k=1$，间距 $1/k$。$k=12$ 时正好 25 点，包含参考端点；映射到盒上用 $x=c_x+br_i/2$、$z=c_z+br_j/2$。这些点与 $k$ 个 Chebyshev 根节点不同，所以指示量不会仅因插值在原节点精确就恒为零；包含端点也检查了根节点不覆盖的盒边缘。
+
+**邻接判定。** 对两叶盒 $A,B$，中心差为 $d_x=|c_{x,A}-c_{x,B}|$、$d_z=|c_{z,A}-c_{z,B}|$。水平周期 1 意味着可以从左右跨边界接近，实际比较 $d_x^{\rm per}=\min(d_x,1-d_x)$。设 $\rho=(b_A+b_B)/2$ 为两半边长之和。一维中两个区间 $[c_A-b_A/2,c_A+b_A/2]$、$[c_B-b_B/2,c_B+b_B/2]$ 相交（含端点接触）当且仅当 $|c_A-c_B|\le b_A/2+b_B/2=\rho$。所以若某个方向的中心距大于 $\rho$，两盒在该方向投影不相交，不邻接；若两个方向都不大于 $\rho$（加浮点几何容差 $32\epsilon$），两盒至少边或角接触。
+
+**2:1 平衡。** 对层级差大于 1 的邻接叶，细化层级较小（边长较大）的那个盒，重复直到所有邻接叶都满足层级差不超过 1。第 $\ell$ 层边长为 $2^{-\ell}$，相差一层对应边长比 2，这就是“2:1”的含义。
+
+**返回辅助节点。** 从根盒沿四叉树查找：子编号初值为 1，若 $x\ge c_x$ 加 1，若 $z\ge c_z$ 加 2。四种情况给出 $1$（左下）、$2$（右下）、$3$（左上）、$4$（右上），与细分编号一致。到叶盒后用张量插值求值。恰在分界处按右/上子盒归属，避免重复归属；相邻叶的数值多项式可能有微小接缝误差，不能因为来自同一棵树就宣称全局严格连续。
+
+**资源与特殊分支。** 桥接器使用源阈值 `tol`、输出阈值 `8*tol`、库参数 $10^{-12}$，并限制源细化轮数、盒数和最大层级。到达这些资源上限仍未通过时程序报错，而不是无条件接受未分辨结果。另有最大输入值小于 $10^{-27}$ 的直接置零分支；这也是一个明确的数值近似，不应描述成所有输入都必然经过 FGT。
+
+!!! note "目前进展"
+    $H$ 已经是一个完整的“辅助网格数组 → 辅助网格数组”映射（`heat_on_grid`）：辅助展开 → 源树（源指示量控制输入误差）→ 带输出检查的 FGT（输出指示量控制输出误差）→ 求值回辅助节点。
+
+    结合第 3 节，**温度 $\theta$ 与平均流 $\overline u$ 两个通道已经能完整推进一步**：它们的壁值本来就是零，不需要再做什么。唯一还缺的是涡量通道的壁值。
 
 ## 6. 处理无滑移壁面
 
-温度和平均水平流可以直接用零壁热传播。但非零水平模态的涡量壁值不能简单设为零：它必须让恢复出来的速度满足无滑移。
+温度和平均水平流在两壁都是零 Dirichlet 条件，可以直接用第 3 节的公式加零壁热传播。非零水平模态的涡量却不同：**壁面涡量值事先不知道**，它要由“恢复出的速度在壁面切向为零”来决定。本节对一个非零水平模态推导这一过程。
 
-对一个非零水平波数 $a_m$，准备两个满足 $(\partial_{zz}-a_m^2)\ell=0$ 的提升函数，分别承载底壁与顶壁涡量值。记提升映射为 $L_m$，旧壁涡量为 $g_0$；则 $\omega_0-L_mg_0$ 具有零壁值，可交给 FGT 热传播。
-
-新壁涡量 $g_1$ 尚未知。假设壁数据在一步内也作仿射变化，预计算
+先回顾哪些条件已经满足。第 2.1 节中 $\psi$ 两壁为零，所以 $w=-\psi_x=0$ 自动成立；平均流 $\overline u$ 用零壁条件推进，所以 $\overline u|_{\rm wall}=0$。剩下的只有非平均部分的
 
 $$
-J_m=\int_0^h H_{\Pr}(s)L_m\,ds,\qquad
-B_m=L_m-\frac{J_m}{h}.
+\psi_z(x,0)=\psi_z(x,1)=0\quad\Longleftrightarrow\quad\widehat\psi_m'(0)=\widehat\psi_m'(1)=0\quad(m\ne1).
 $$
 
-结合源势修正，体积部分先算成
+每个模态两个条件，正好对应两个未知数：底壁涡量 $g_b$ 和顶壁涡量 $g_t$。整体思路是：
+
+1. 用“调和提升” $L g$ 把未知的壁面涡量值延伸到内部，使剩余部分两壁为零，可以交给零壁热传播；
+2. 把壁值在一步内的线性变化也视为源，推出新涡量对新壁值 $g_1$ 是仿射依赖：$\omega_1=R+Bg_1$；
+3. 把无滑移的两个条件写成 $2\times2$ 线性系统解出 $g_1$。
+
+### 6.1 调和提升为什么是这两个函数
+
+固定一个非零水平模态，令 $a=|a_m|>0$，记一维算子 $P_a=-\partial_{zz}+a^2$（它是 $-\Delta$ 作用在 $e^{\mathrm ia_mx}$ 模态上的形式）。要把两个壁值 $g_b,g_t$ 延伸到内部，选择满足 $P_a\ell=0$（即 $\ell''=a^2\ell$）的两个函数，边界值分别为 $(1,0)$ 和 $(0,1)$。
+
+**求解 ODE。** $\ell''=a^2\ell$ 的特征方程 $s^2=a^2$ 给出 $s=\pm a$，一般解为 $C_1e^{az}+C_2e^{-az}$，等价地写成 $\sinh$ 的平移组合。
+
+- 底壁函数要求 $\ell_b(1)=0$：取 $\ell_b=C\sinh(a(1-z))$，它在 $z=1$ 为 $\sinh0=0$；再由 $\ell_b(0)=C\sinh a=1$ 得 $C=1/\sinh a$。
+- 顶壁函数要求 $\ell_t(0)=0$：取 $\ell_t=C\sinh(az)$；由 $\ell_t(1)=C\sinh a=1$ 得同样的 $C$。
 
 $$
-R_m=H_{\Pr}(\omega_0-L_mg_0-r_0+q)
-+r_1-q+\frac{J_mg_0}{h},
+\ell_b(z)=\frac{\sinh(a(1-z))}{\sinh a},\qquad
+\ell_t(z)=\frac{\sinh(az)}{\sinh a},\qquad
+L g=\ell_bg_b+\ell_tg_t .
 $$
 
-完整新涡量为 $\omega_1=R_m+B_mg_1$。对它解 $-\Delta\psi_1=\omega_1$，要求底、顶壁的 $\psi_{1,z}$ 都为零，就得到关于 $g_1$ 的 **$2\times2$ 影响系统**。`impose_noslip` 解这个系统，把壁修正加到 `rhs`，使两壁切向速度消失。
+验证：$\frac{d^2}{dz^2}\sinh(a(1-z))=(-a)^2\sinh(a(1-z))=a^2\sinh(a(1-z))$，$\frac{d^2}{dz^2}\sinh(az)=a^2\sinh(az)$，所以 $\ell''=a^2\ell$。
 
-`make_wall_operator` 在初始化时用正弦级数计算两个固定提升函数的热响应，并准备影响矩阵逆。这里仅两列壁响应走解析预计算，普通体积场仍由 FGT 传播。水平零模态由 `mean_u` 另行处理，代码还显式清除 Nyquist 涡量模态。
+**数值稳定形式。** $a$ 可达 $\pi N_x$，$\sinh a$ 会溢出。用 $\sinh y=(e^y-e^{-y})/2$ 展开，分子分母同乘 $2e^{-a}$：
+
+$$
+\ell_b=\frac{e^{a(1-z)}-e^{-a(1-z)}}{e^a-e^{-a}}\cdot\frac{e^{-a}}{e^{-a}}
+=\frac{e^{-az}-e^{-a(2-z)}}{1-e^{-2a}},
+$$
+
+分子中 $e^{a(1-z)}e^{-a}=e^{-az}$，$e^{-a(1-z)}e^{-a}=e^{-a(2-z)}$；分母 $e^ae^{-a}=1$，$e^{-a}e^{-a}=e^{-2a}$。同理
+
+$$
+\ell_t=\frac{e^{az}-e^{-az}}{e^a-e^{-a}}\cdot\frac{e^{-a}}{e^{-a}}=\frac{e^{-a(1-z)}-e^{-a(1+z)}}{1-e^{-2a}} .
+$$
+
+对 $0\le z\le1$，所有指数都 $\le0$，不会溢出，这正是 `make_grid` 中 `g%lift` 的公式。$a\to0$ 时，$\sinh(a(1-z))/\sinh a\to a(1-z)/a=1-z$、$\sinh(az)/\sinh a\to z$，代码对零模态直接使用这两个线性函数；但流动的零模态仍由平均流通道管理，不使用这个提升。
+
+**一个容易犯的错误。** 这里 $P_aLg=0$ 是内部微分方程意义的调和性。$Lg$ 的壁值一般非零，所以它**不在**齐次 Dirichlet 算子 $A=\Pr P_a$ 的定义域里，不能当作 $A$ 的零特征向量，进而错误地得出 $HL=L$。齐次热传播会立即施加零壁条件：$HL$ 在两壁为零，内部也会衰减（第 6.3 节）。
+
+### 6.2 时变壁数据与源势一起变换
+
+记 $D=\Pr$，$A=-D\Delta_{\rm D}$。设一步内壁值也仿射变化：
+
+$$
+g(t_0+\tau)=g_0+\frac\tau h(g_1-g_0),\qquad g'=\frac{g_1-g_0}h ,
+$$
+
+$g_0,g_1$ 都是 $(g_b,g_t)^T$ 这样的二元复列向量（每个 Fourier 模态一组）。$g_0$ 是旧涡量的壁值，已知；$g_1$ 未知。
+
+**第一步：减去提升。** 令 $y=\omega-Lg(t)$，则 $y$ 两壁为零（壁上 $\omega=g$，$Lg=g$）。在内部，$D\Delta(Lg)=-D P_a(Lg)=0$，所以 $D\Delta\omega=D\Delta y$，且 $L$ 不随时间变化：
+
+$$
+y_t=\omega_t-Lg'=D\Delta\omega+S-Lg'=D\Delta y+S-Lg'=-Ay+S-Lg' .
+$$
+
+**第二步：加入源势。** 同第 3.2 节，$r=KS$ 仿射变化，$q=Kr_t$ 为常量，$r_t=Aq$。令 $v=y-r+q$（两壁为零），逐项代入：
+
+$$
+\begin{aligned}
+v_t&=y_t-r_t+0=-Ay+S-Lg'-r_t\\
+&=-Ay+Ar-Aq-Lg' \qquad(S=Ar,\ r_t=Aq)\\
+&=-A(y-r+q)-Lg'=-Av-Lg' .
+\end{aligned}
+$$
+
+现在 $v$ 满足一个**常源**的零壁扩散方程，源为 $-Lg'$（$g'$ 在本步不变）。
+
+**第三步：常源 Duhamel。** 由第 3.2 节第一步的公式，
+
+$$
+v_1=Hv_0+\int_0^he^{-(h-\tau)A}(-Lg')\,d\tau=Hv_0-\left[\int_0^he^{-sA}L\,ds\right]g'=Hv_0-J\frac{g_1-g_0}h ,
+$$
+
+其中作了代换 $s=h-\tau$，并定义预计算矩阵
+
+$$
+J=\int_0^hH(s)L\,ds,\qquad H(s)=e^{-sA}.
+$$
+
+**第四步：恢复 $\omega_1$。** 由 $v=\omega-Lg-r+q$ 得 $\omega_1=v_1+Lg_1+r_1-q$，$v_0=\omega_0-Lg_0-r_0+q$。代入：
+
+$$
+\begin{aligned}
+\omega_1
+&=H(\omega_0-Lg_0-r_0+q)-\frac{Jg_1}h+\frac{Jg_0}h+r_1-q+Lg_1\\
+&=\underbrace{H(\omega_0-Lg_0-r_0+q)+r_1-q+\frac{Jg_0}h}_{R}
+ +\underbrace{\left(L-\frac Jh\right)}_{B}g_1 .
+\end{aligned}
+$$
+
+第二行只是把含 $g_1$ 的两项 $-Jg_1/h+Lg_1$ 合并。$Jg_0/h$ 的正号和 $-Jg_1/h$ 的负号都来自 $-Lg'$，不是人为的壁面惩罚项。
+
+**第五步：壁值核对。** $H(\cdot)$ 的输出两壁为零；$r_1,q$ 两壁为零；$J$ 是零壁传播结果的积分，两壁为零。所以 $R$ 两壁为零，$B$ 的壁值与 $L$ 相同，$\omega_1$ 在两壁的值恰好是 $g_1$。
+
+**与代码的对应。** `advance_flow` 中：
+
+| 数学量 | 代码 |
+| --- | --- |
+| $\omega_0-Lg_0-r_0+q$ | `om-apply_lift(g,g%lift,boundary)-r0(:,:,1)+slope(:,:,1)` |
+| $H(\cdot)$ | `heat_on_grid(g,v,s%pr,s%dt,...)` |
+| $R$ | `rhs = fourier(evolved)+r1(:,:,1)-slope(:,:,1)+apply_lift(g,s%wall%j,boundary/s%dt)` |
+| $B=L-J/h$ | `wall%b = g%lift - wall%j/h` |
+| 求 $g_1$ 并得到 $\omega_1=R+Bg_1$ | `impose_noslip(g,s%wall,rhs)` |
+
+### 6.3 两列热响应的正弦系数如何算出
+
+$J$ 需要 $H(s)L$，即两个提升函数的零壁热传播。它们只有两列，且是固定的解析函数，可以用正弦级数精确算，不必走 FGT。
+
+**零壁特征函数。** $s_n(z)=\sin(n\pi z)$，$n\ge1$，两壁为零，$s_n''=-n^2\pi^2s_n$，所以
+
+$$
+P_as_n=(a^2+n^2\pi^2)s_n=\lambda_ns_n,
+\qquad As_n=\Pr\lambda_ns_n,
+\qquad H(s)s_n=e^{-\Pr\lambda_ns}s_n,
+\qquad \lambda_n=a^2+n^2\pi^2>0 .
+$$
+
+**正交性。** $\int_0^1\sin(n\pi z)\sin(l\pi z)dz=\frac12\int_0^1[\cos((n-l)\pi z)-\cos((n+l)\pi z)]dz$。$n\ne l$ 时两项积分都是 $\sin(\cdot)/(\cdot)$ 在整数倍 $\pi$ 处的值，为 0；$n=l$ 时第一项为 $\frac12$，第二项为 0。所以 $\int_0^1s_ns_l\,dz=\delta_{nl}/2$，提升的正弦系数为 $b_n=2\int_0^1\ell\,s_n\,dz$。
+
+**用两次分部积分求系数。** 令 $I=\int_0^1\ell\,s_n\,dz$，利用 $\ell''=a^2\ell$：
+
+$$
+a^2I=\int_0^1\ell''s_n\,dz .
+$$
+
+第一次分部积分（$\mathcal U=s_n$，$d\mathcal V=\ell''dz$）：
+
+$$
+\int_0^1\ell''s_n\,dz=\big[\ell's_n\big]_0^1-\int_0^1\ell'\,s_n'\,dz=0-n\pi\int_0^1\ell'\cos(n\pi z)\,dz ,
+$$
+
+边界项因 $s_n(0)=s_n(1)=0$ 消失。第二次分部积分（$\mathcal U=\cos(n\pi z)$，$d\mathcal V=\ell'dz$）：
+
+$$
+\int_0^1\ell'\cos(n\pi z)dz=\big[\ell\cos(n\pi z)\big]_0^1+n\pi\int_0^1\ell\sin(n\pi z)dz
+=\ell(1)(-1)^n-\ell(0)+n\pi I .
+$$
+
+合起来
+
+$$
+a^2I=-n\pi\left[\ell(1)(-1)^n-\ell(0)\right]-n^2\pi^2I .
+$$
+
+把 $-n^2\pi^2I$ 移到左边，$(a^2+n^2\pi^2)I=\lambda_nI$：
+
+$$
+I=\frac{n\pi[\ell(0)-(-1)^n\ell(1)]}{\lambda_n} .
+$$
+
+代入两个提升的端点值：$\ell_b(0)=1,\ell_b(1)=0$ 给出 $I_b=n\pi/\lambda_n$；$\ell_t(0)=0,\ell_t(1)=1$ 给出 $I_t=-(-1)^nn\pi/\lambda_n$。乘 2 得
+
+$$
+b_{n,b}=\frac{2n\pi}{\lambda_n},\qquad b_{n,t}=-(-1)^n\frac{2n\pi}{\lambda_n}.
+$$
+
+**热响应。** 每个正弦分量独立衰减：
+
+$$
+(H\ell_b)(z)=\sum_{n=1}^\infty\frac{2n\pi e^{-\Pr h\lambda_n}}{\lambda_n}\sin(n\pi z),\qquad
+(H\ell_t)(z)=-\sum_{n=1}^\infty(-1)^n\frac{2n\pi e^{-\Pr h\lambda_n}}{\lambda_n}\sin(n\pi z).
+$$
+
+这正是 `make_wall_operator` 中 `rate`$=\lambda_n$、`coefficient`$=2\pi n e^{-Dh\lambda_n}/\lambda_n$，两列分别加 `coefficient*sin` 与 `-(-1)**n*coefficient*sin`。提升的正弦展开只在内部或 $L^2$ 意义下表示原函数，端点的非零提升值不由正弦级数表示（系数只按 $1/n$ 衰减）；但 $h>0$ 时每项多了 $e^{-\Pr h\lambda_n}$，级数快速收敛，热响应两壁严格为零，与齐次传播一致。
+
+**为什么不直接算 $J$ 的级数。** 对每个模态直接积分 $\int_0^he^{-\Pr\lambda_ns}ds=\frac{1-e^{-\Pr h\lambda_n}}{\Pr\lambda_n}$，可得
+
+$$
+J\ell_c=\sum_{n=1}^\infty b_{n,c}\frac{1-e^{-\Pr h\lambda_n}}{\Pr\lambda_n}\sin(n\pi z),\qquad c\in\{b,t\}.
+$$
+
+当 $n$ 很大时 $1-e^{-\Pr h\lambda_n}\to1$，系数只按 $b_n/\lambda_n\sim n^{-3}$ 代数衰减，截断很慢。实现改用
+
+$$
+\boxed{J=K(L-HL)} .
+$$
+
+推导：$\frac d{ds}H(s)=-AH(s)$，所以
+
+$$
+AJ=\int_0^hAH(s)L\,ds=-\int_0^h\frac{d}{ds}\big[H(s)L\big]ds=-\big[H(s)L\big]_0^h=L-HL .
+$$
+
+两边左乘 $K=A^{-1}$ 得 $J=K(L-HL)$。注意：$L$ 本身两壁不为零，但 $L-HL$ 的“$K$”只作用在内部节点上（`g%inverse` 是内部 Poisson 逆），输出补零壁值。这与 $J$ 两壁为零一致。于是先计算指数衰减很快的 `heat`$=HL$，再对内部的 `lift-heat` 做一次 Poisson 求解并除以 $\Pr$：
+
+$$
+J_{I}=\frac1{\Pr}\left(a^2\mathsf I-\mathsf D^2_{II}\right)^{-1}\big(L-HL\big)_I ,
+$$
+
+对应 `wall%j(2:nz-1,c,m) = matmul(g%inverse(:,:,m), g%lift(2:nz-1,c,m)-heat(2:nz-1,c))/diffusion`。
+
+**截断。** 指标上限 $n_{\max}=\lceil\sqrt{40/(\Pr h)}/\pi\rceil+1$。因为 $\Pr h\lambda_n\ge\Pr h\pi^2n^2$，当 $n\ge n_{\max}-1$ 时 $\Pr h\pi^2n^2\ge\Pr h\pi^2\cdot\frac{40}{\Pr h\pi^2}=40$，指数因子小于 $e^{-40}\approx4\times10^{-18}$。进一步，尾和中相邻项的指数比为 $e^{-\Pr h\pi^2(2n+1)}$，所以尾和被首项乘一个有界的等比因子控制；系数前的 $2n\pi/\lambda_n\le2/(n\pi)$ 也有界。这说明截断误差在双精度舍入水平以下，但本文不把它写成严格的常数界。
+
+### 6.4 从壁面速度约束写出完整的二阶线性系统
+
+记内部 Poisson 矩阵 $P_{a,I}=a^2\mathsf I-\mathsf D^2_{II}$，$\mathcal P$ 为“取内部节点、乘 $P_{a,I}^{-1}$、补两壁零值”的映射（即 `poisson_dirichlet` 对单个模态的作用）。$B$ 有两列 $B_b,B_t$，定义
+
+$$
+\psi_R=\mathcal PR,\qquad \chi_b=\mathcal PB_b,\qquad\chi_t=\mathcal PB_t .
+$$
+
+**线性叠加。** $\omega_1=R+B_bg_{1,b}+B_tg_{1,t}$，$\mathcal P$ 是线性的，所以
+
+$$
+\psi_1=\mathcal P\omega_1=\psi_R+\chi_bg_{1,b}+\chi_tg_{1,t} .
+$$
+
+（$\mathcal P$ 只读取内部节点，$\omega_1$ 的壁值 $g_1$ 本身不进入 Poisson；$g_1$ 是通过 $B$ 的**内部值**影响 $\psi_1$ 的。）
+
+**无滑移条件。** 对非零水平模态平均流没有贡献，$u$ 的该模态就是 $\psi_z$。要求 $\psi_1'(0)=\psi_1'(1)=0$，用微分矩阵首末行表示导数：$\psi'(0)=\sum_j\mathsf D_{1j}\psi(z_j)$，$\psi'(1)=\sum_j\mathsf D_{N_zj}\psi(z_j)$。逐项写出：
+
+$$
+\begin{aligned}
+\chi_b'(0)g_{1,b}+\chi_t'(0)g_{1,t}+\psi_R'(0)&=0,\\
+\chi_b'(1)g_{1,b}+\chi_t'(1)g_{1,t}+\psi_R'(1)&=0,
+\end{aligned}
+$$
+
+即
+
+$$
+\underbrace{\begin{pmatrix}\chi_b'(0)&\chi_t'(0)\\\chi_b'(1)&\chi_t'(1)\end{pmatrix}}_{M}
+\begin{pmatrix}g_{1,b}\\g_{1,t}\end{pmatrix}
+=-\underbrace{\begin{pmatrix}\psi_R'(0)\\\psi_R'(1)\end{pmatrix}}_{d}.
+$$
+
+**解 $2\times2$ 系统。** 若 $\det M=M_{11}M_{22}-M_{12}M_{21}\ne0$，可以直接验证 $MM^{-1}=\mathsf I$ 的逆矩阵为
+
+$$
+M^{-1}=\frac1{\det M}\begin{pmatrix}M_{22}&-M_{12}\\-M_{21}&M_{11}\end{pmatrix},
+$$
+
+（例如左上元：$\frac{M_{11}M_{22}-M_{12}M_{21}}{\det M}=1$；右上元：$\frac{-M_{11}M_{12}+M_{12}M_{11}}{\det M}=0$。）所以 $g_1=-M^{-1}d$，分量为
+
+$$
+g_{1,b}=\frac{-M_{22}d_b+M_{12}d_t}{\det M},\qquad
+g_{1,t}=\frac{M_{21}d_b-M_{11}d_t}{\det M}.
+$$
+
+**哪些部分可以预计算。** $M$ 只依赖模态 $a$、网格、$h$ 和 $\Pr$（通过 $B=L-J/h$），与当前状态无关，所以 `make_wall_operator` 一次算好 $\chi_b,\chi_t$ 和 $M^{-1}$（`influence_inverse`）。每一步只需：
+
+1. $\psi_R=\mathcal PR$（`psi = poisson_dirichlet(g,rhs)`）；
+2. $d$ 的两个分量（`sum(g%d(1,:)*psi(m,:))` 与 `sum(g%d(g%nz,:)*psi(m,:))`）；
+3. $g_1=-M^{-1}d$（`new_boundary`）；
+4. $\omega_1=R+Bg_1$。
+
+零模态（`m=1`）置零，因为平均涡量由 `mean_u` 管理；Nyquist 模态也置零（与第 2.4 节水平截断一致）。因此壁面条件是在求涡量时施加，而不是在速度恢复后强制把两个端点擦成零。影响矩阵取决于模态、网格、$h$ 和 $\Pr$，这些参数改变后必须重新初始化。
+
+**为什么只修正壁值就够。** $\psi_1$ 对 $g_1$ 的依赖完全通过 $B$ 的内部值 $(L-J/h)_I$。它不是简单的 $L_I$：$-J/h$ 体现了“壁值在这一步内从 $g_0$ 线性变到 $g_1$ 期间不断扩散进内部”的效应。直接把 $\omega$ 的壁值改成满足某个离散公式（例如 Thom 公式）是另一类方法，这里没有使用。
+
+### 6.5 压力后处理的方程与边界不是零 Dirichlet
+
+压力不参与主状态推进，但 `flow_pressure` 可在任意时刻恢复它。
+
+**内部方程。** 对 $\boldsymbol v_t=-\nabla p+\Pr\Delta\boldsymbol v+\boldsymbol F$ 取散度，逐项：$\nabla\cdot\boldsymbol v_t=(\nabla\cdot\boldsymbol v)_t=0$；$\nabla\cdot\nabla p=\Delta p$；$\nabla\cdot\Delta\boldsymbol v=\Delta(\nabla\cdot\boldsymbol v)=0$。所以
+
+$$
+0=-\Delta p+\nabla\cdot\boldsymbol F\qquad\Longrightarrow\qquad
+\Delta p=\partial_xF_x+\partial_zF_z .
+$$
+
+**边界条件。** 壁面 $w=0$ 对所有时间成立，所以壁上 $w_t=0$。竖直动量方程在壁上取值：$0=-p_z+\Pr\Delta w+F_z$，即
+
+$$
+p_z\big|_{\rm wall}=\left(\Pr\Delta w+F_z\right)\big|_{\rm wall}.
+$$
+
+这是 Neumann 条件，不是零 Dirichlet。两端这里都是同一坐标导数 $\partial_z$；若写成外法向导数，底壁需额外负号。
+
+**非零模态的离散系统。** 第 $m$ 个模态的内部方程为 $(\mathsf D^2-a_m^2\mathsf I)\widehat p_m=\widehat{(\nabla\cdot\boldsymbol F)}_m$。把矩阵的第一、最后一行换为 $\mathsf D$ 的对应行，右端换成这两个 $p_z$ 壁值。$a_m^2>0$ 时算子 $-\partial_{zz}+a_m^2$ 在 Neumann 条件下正定（$\int(|p'|^2+a^2|p|^2)>0$），连续问题唯一可解。
+
+**零模态。** 对竖直动量取水平平均：$\overline w=0$ 使 $\overline{w_t}=0$、$\overline{\Delta w}=0$，于是 $0=-\overline p_z+\overline{F_z}$，即 $\overline p_z=\overline{F_z}$，直接积分即可。设 $\overline{F_z}=\sum_nc_nT_n(\xi)$，$\xi=2z-1$。
+
+**Chebyshev 多项式的不定积分。** 令 $\xi=\cos\vartheta$，$d\xi=-\sin\vartheta d\vartheta$，积化和差 $\sin\vartheta\cos n\vartheta=\frac12[\sin((n+1)\vartheta)-\sin((n-1)\vartheta)]$：
+
+$$
+\int T_n(\xi)d\xi=-\int\cos(n\vartheta)\sin\vartheta\,d\vartheta
+=-\frac12\int\sin((n+1)\vartheta)d\vartheta+\frac12\int\sin((n-1)\vartheta)d\vartheta
+=\frac{\cos((n+1)\vartheta)}{2(n+1)}-\frac{\cos((n-1)\vartheta)}{2(n-1)} ,
+$$
+
+即对 $n\ge2$
+
+$$
+\int T_n(\xi)d\xi=\frac{T_{n+1}(\xi)}{2(n+1)}-\frac{T_{n-1}(\xi)}{2(n-1)}+C .
+$$
+
+$n=0$：$\int1\,d\xi=\xi=T_1$。$n=1$：$\int\xi\,d\xi=\xi^2/2=(T_2+1)/4$，即 $T_2/4$ 加常数（用了 $T_2=2\xi^2-1$）。转回 $z$：$\int\cdot\,dz=\frac12\int\cdot\,d\xi$，所以最后乘 $1/2$。代码数组 `antiderivative(n+1)` 存 $T_n$ 的系数：`antiderivative(2)=c(1)`、`antiderivative(3)=c(2)/4`，对 $n\ge2$ 把 `c(n+1)/(2(n+1))` 加到 $T_{n+1}$、把 `-c(n+1)/(2(n-1))` 加到 $T_{n-1}$，最后求值时除以 2。
+
+**压力常数。** 最后减去全域平均使 $\int_\Omega p=0$。压力在方程中只以梯度出现，任意加法常数不影响速度；这只是选定一个代表。
+
+!!! note "目前进展"
+    “未知的壁面涡量 $g_1$ 应该取多少”已转化为：每个非零水平模态一个 $2\times2$ 线性系统 $Mg_1=-d$。矩阵 $M$ 只依赖网格、$h$、$\Pr$，初始化时已求逆；右端 $d$ 是体积部分 $R$ 对应流函数的两个壁面导数，每步算一次。
+
+    至此三个通道都能完整推进，第 1 节的全部壁面条件都已满足：$\theta=0$ 与 $\overline u=0$ 由零壁传播保证，$w=0$ 由 $\psi$ 两壁为零保证（第 2.1 节），非平均部分的 $u=\psi_z=0$ 由本节的影响系统保证。压力在需要时可单独恢复，不影响推进。
 
 ## 7. 总体流程
 
-`run_rb` 先用连续线性参考问题生成初始模态，再调用 `configure_solver` 建立辅助网格与壁算子。每个时间步的核心是 `advance_flow`：
+`run_rb` 先用连续线性参考问题生成初始模态（第 8.2 节），再调用 `configure_solver` 建立辅助网格（`make_grid`）与壁算子（`make_wall_operator`，依赖 $h$ 与 $\Pr$）。每个时间步的核心是 `advance_flow`：
 
 ```text
 旧状态 omega、mean_u、theta
   → 恢复速度，检查步长保护条件
-  → 计算旧端点源势 r0，令 r1=r0 作预测
+  → 取旧壁涡量 g0；计算旧端点源势 r0，令 r1=r0 作预测
   → 对同一个时间区间做一次预测、两次端点校正
-      → 用 r0、r1 构造 q 和三个热传播输入
+      → 用 r0、r1 构造 q（slope）和三个热传播输入
       → heat_on_grid：辅助展开 → 源树 → 带输出检查的 FGT → 辅助值
-      → 涡量：解壁面影响系统；平均流：取水平平均；温度：加源势修正
+      → 涡量：加 r1-q+J g0/h，解壁面影响系统；平均流：取水平平均；温度：加 r1-q
       → 根据候选新状态重新计算 r1，供下一次校正
   → 返回 time+h 的新状态
   → diagnostics、写历史、累积平衡、检查约束
 ```
 
-默认 `ncorrect=2`，循环 `iteration=0,1,2` 共三轮。校正次数固定，没有非线性迭代残差停止判据。每轮通常传播涡量、平均流、温度三个通道。程序包含对流 CFL 上限 0.9 和 $h\sqrt{|\mathrm{Ra}\Pr|}\le0.5$ 的保护条件。
+把第 3、6 节合起来，一轮（给定 $r_1$）完整的数学映射 $\mathcal M_h(U_0,r_1)$ 是：
 
-### 7.1 调用关系
+$$
+\begin{aligned}
+q_c&=K_c\frac{r_{1,c}-r_{0,c}}h,\qquad c\in\{\omega,\overline u,\theta\},\\
+\omega_1&=\mathcal N\Big[H_{\Pr}(\omega_0-Lg_0-r_{0,\omega}+q_\omega)+r_{1,\omega}-q_\omega+Jg_0/h\Big],\\
+\overline u_1&=\operatorname{avg}_x\Big[H_{\Pr}(\overline u_0-r_{0,\overline u}+q_{\overline u})+r_{1,\overline u}-q_{\overline u}\Big],\\
+\theta_1&=H_1(\theta_0-r_{0,\theta}+q_\theta)+r_{1,\theta}-q_\theta ,
+\end{aligned}
+$$
+
+其中 $\mathcal N[R]=R+Bg_1(R)$ 是第 6.4 节的无滑移修正，$K_c$ 用本通道的扩散系数。默认 `ncorrect=2`，循环 `iteration=0,1,2` 共三轮，每轮三次热传播，所以每步 9 次 `heat_on_grid`。校正次数固定，没有非线性迭代残差停止判据。
+
+!!! note "目前进展"
+    第 2–6 节的组件已拼成完整的时间推进映射 $U_n\mapsto U_{n+1}$。给定初态和参数 $(\mathrm{Ra},\Pr)$，反复调用它就得到 RB 问题的数值解。
+
+    剩下的问题不再是“怎么解”，而是“解得对不对”：需要一个与离散无关的参考解（第 8.2 节的线性稳定性），以及若干在精确解上必须成立的平衡关系（第 8.3–8.6 节的热流与能量）。下面两个小节先说明步长保护和模块调用关系。
+
+### 7.1 步长保护的每个因子
+
+**对流 CFL。** 代码对内部高度 $z_j$ 定义局部最小间距 $\Delta z_j=\min(z_j-z_{j-1},z_{j+1}-z_j)$，水平间距为 $\Delta x=1/N_x$。一个时间步内的水平、竖直位移量分别为 $h|u_{ij}|$、$h|w_{ij}|$；各自除以对应网格间距再相加：
+
+$$
+C_{ij}=\frac{h|u_{ij}|}{\Delta x}+\frac{h|w_{ij}|}{\Delta z_j}
+=h\left(N_x|u_{ij}|+\frac{|w_{ij}|}{\Delta z_j}\right),\qquad C=\max_{i,\,2\le j\le N_z-1}C_{ij}.
+$$
+
+这解释了 `nx*abs(u)+abs(w)/spacing` 的每一项（$1/\Delta x=N_x$）。端点不参与（物理上壁面速度为零）。Lobatto 网格壁面附近间距约为 $\frac{1-\cos(\pi/(N_z-1))}{2}\approx\frac{\pi^2}{4(N_z-1)^2}$（用 $1-\cos\epsilon\approx\epsilon^2/2$），比中部的 $\approx\frac{\pi}{2(N_z-1)}$ 小得多，所以竖直项通常在壁附近起主导。非线性开启时要求 $C\le0.9$；它是经验保护阈值，不是这里已经证明的谱方法充分稳定条件。热扩散由半群传播处理，不需要显式 Euler 的扩散 CFL，但这不意味着耦合问题可以任意增大时间步。
+
+**浮力耦合。** 另一个检查为 $h\sqrt{|\mathrm{Ra}\Pr|}\le0.5$。忽略空间结构、压力约束和扩散，保留浮力与温度反馈：$w_t=\mathrm{Ra}\Pr\theta$、$\theta_t=w$。对第二式再求一次时间导数并代入第一式：$\theta_{tt}=w_t=\mathrm{Ra}\Pr\theta$。系数为正时解为 $e^{\pm\sqrt{\mathrm{Ra}\Pr}\,t}$，指数时间尺度为 $1/\sqrt{\mathrm{Ra}\Pr}$；要求 $h$ 不超过这一尺度的一半，就是 $h\sqrt{\mathrm{Ra}\Pr}\le0.5$。这解释了该无量纲组合为什么出现，但该简化系统不是实际 RB 特征值问题（真实增长率远小于 $\sqrt{\mathrm{Ra}\Pr}$），0.5 仍是代码设定的保护值。求解器不会在超限时自动把步长减半，而是停止，要求重新选择 $h$ 并重建依赖 $h$ 的壁面算子。
+
+### 7.2 调用关系
 
 | 层次 | 文件 | 
 | --- | --- | 
@@ -450,15 +1703,13 @@ $$
 
 ### 8.2 临界值
 
-当前水平周期为 1，允许波数为 $2\pi m$。`rb_linear_reference` 求的是 $\Pr=1$ 下的连续竖直 ODE 参考；主程序用对称 $m=1$ 模态，得到
+当前水平周期为 1，允许波数为 $a=2\pi m$，$m=1,2,\ldots$。`rb_linear_reference` 求的是 $\Pr=1$ 下的连续竖直 ODE 参考；主程序用对称 $m=1$ 模态，得到
 
 $$
 \mathrm{Ra}_c\approx3784.34062228677.
 $$
 
-默认 $\mathrm{Ra}\approx4541.20874674413$，对应线性参考增长率 $\sigma\approx5.13810399248$。
-
-初始场由参考模态 $W(z),\Theta(z)$ 构造：
+默认 $\mathrm{Ra}=1.2\,\mathrm{Ra}_c\approx4541.20874674413$，对应线性参考增长率 $\sigma\approx5.13810399248$。初始场由参考模态 $W(z),\Theta(z)$ 构造（第 8.2.4 节推导）：
 
 $$
 w=\varepsilon W\cos(2\pi x),\quad
@@ -466,7 +1717,195 @@ u=-\frac{\varepsilon W'}{2\pi}\sin(2\pi x),\quad
 \theta=\varepsilon\Theta\cos(2\pi x).
 $$
 
-它在连续层面满足不可压与壁面条件，随后采样到辅助网格。
+它在连续层面满足不可压与壁面条件，随后采样到辅助网格。下面四小节推导这些数从哪里来。
+
+#### 8.2.1 从线性方程消去压力与温度
+
+取单个实增长率 $\sigma$ 和非零水平波数 $a=2\pi m$。设
+
+$$
+(u,w,\theta,p)=\operatorname{Re}\{(U(z),W(z),\Theta(z),P(z))e^{\mathrm i ax+\sigma t}\},
+\qquad \mathcal L=\partial_{zz}-a^2.
+$$
+
+其中 $U,W,\Theta,P$ 是竖直振幅；$P$ 在本小节是压力振幅，不是 Poisson 算子。
+
+**线性化。** 小扰动时 $u,w,\theta$ 都是 $O(\varepsilon)$，对流项 $uu_x$、$u\theta_x$ 等是 $O(\varepsilon^2)$，略去；温度方程中的 $+w$ 是线性的，保留。线性方程为
+
+$$
+u_t=-p_x+\Pr\Delta u,\quad w_t=-p_z+\Pr\Delta w+\mathrm{Ra}\Pr\theta,\quad u_x+w_z=0,\quad \theta_t=\Delta\theta+w .
+$$
+
+**代入正规模态。** 对 $f=F(z)e^{\mathrm iax+\sigma t}$：$f_t=\sigma f$，$f_x=\mathrm iaf$，$f_{xx}=-a^2f$，$f_{zz}=F''e^{\mathrm iax+\sigma t}$，所以 $\Delta f=(F''-a^2F)e^{\mathrm iax+\sigma t}=(\mathcal LF)e^{\mathrm iax+\sigma t}$。约去公共因子 $e^{\mathrm iax+\sigma t}$：
+
+$$
+\sigma U=-\mathrm i aP+\Pr\mathcal LU,\quad
+\sigma W=-P'+\Pr\mathcal LW+\mathrm{Ra}\Pr\Theta,\quad
+\mathrm i aU+W'=0,\quad
+(\sigma-\mathcal L)\Theta=W.
+$$
+
+最后一式来自 $\sigma\Theta=\mathcal L\Theta+W$ 移项。
+
+**消去压力。** 给水平式乘 $\mathrm i a$，给竖直式对 $z$ 求一次导数，然后相加。逐项：
+
+- 左边：$\sigma(\mathrm iaU)+\sigma W'=\sigma(\mathrm i aU+W')=0$（连续方程）；
+- 黏性项：$\Pr\mathcal L(\mathrm iaU)+\Pr(\mathcal LW)'=\Pr\mathcal L(\mathrm i aU+W')=0$（$\mathcal L$ 是常系数算子，与 $\partial_z$、与乘常数都可交换）；
+- 压力项：$\mathrm ia\cdot(-\mathrm iaP)-P''=a^2P-P''=-\mathcal LP$；
+- 浮力项：$\mathrm{Ra}\Pr\Theta'$。
+
+于是 $0=-\mathcal LP+\mathrm{Ra}\Pr\Theta'$，即
+
+$$
+\mathcal LP=\mathrm{Ra}\Pr\Theta'.
+$$
+
+对竖直式两边作用 $\mathcal L$（注意 $\mathcal LP'=(\mathcal LP)'$），再代入 $(\mathcal LP)'=\mathrm{Ra}\Pr\Theta''$ 和 $\mathcal L\Theta=\Theta''-a^2\Theta$：
+
+$$
+\begin{aligned}
+\sigma\mathcal LW
+&=-(\mathcal LP)'+\Pr\mathcal L^2W+\mathrm{Ra}\Pr\mathcal L\Theta\\
+&=-\mathrm{Ra}\Pr\Theta''+\Pr\mathcal L^2W
+ +\mathrm{Ra}\Pr(\Theta''-a^2\Theta)\\
+&=\Pr\mathcal L^2W-\mathrm{Ra}\Pr a^2\Theta.
+\end{aligned}
+$$
+
+第二行中 $-\mathrm{Ra}\Pr\Theta''$ 与 $+\mathrm{Ra}\Pr\Theta''$ 相消。移项得到
+
+$$
+(\Pr\mathcal L-\sigma)\mathcal LW=\mathrm{Ra}\Pr a^2\Theta .
+$$
+
+**消去温度。** 在本参考程序的 $\Pr=1$ 情形，左边为 $(\mathcal L-\sigma)\mathcal LW$。两边再作用 $(\sigma-\mathcal L)$：右边 $\mathrm{Ra}a^2(\sigma-\mathcal L)\Theta=\mathrm{Ra}a^2W$（热方程）；左边 $(\sigma-\mathcal L)(\mathcal L-\sigma)\mathcal LW=-(\mathcal L-\sigma)^2\mathcal LW$（常系数算子可交换）。于是
+
+$$
+-\mathcal L(\mathcal L-\sigma)^2W=\mathrm{Ra}a^2W,
+\qquad
+[\mathcal L(\mathcal L-\sigma)^2+\mathrm{Ra}a^2]W=0.
+$$
+
+一般 $\Pr$ 时同样的步骤给出 $[(\Pr\mathcal L-\sigma)\mathcal L(\mathcal L-\sigma)+\mathrm{Ra}\Pr a^2]W=0$，三次式不再有重根结构；代码只实现 $\Pr=1$。（当 $\sigma=0$ 时两者都化为 $\mathcal L^3W=\mathrm{Ra}\,a^2W$，与 $\Pr$ 无关，所以中性 Rayleigh 数 $\mathrm{Ra}_c$ 对任意 $\Pr$ 都相同；只有增长率 $\sigma$ 依赖 $\Pr=1$ 的假设。）
+
+**特征多项式。** 这是六阶常系数 ODE。试探 $W=e^{sz}$：$W''=s^2W$，所以 $\mathcal LW=(s^2-a^2)W=qW$，其中 $q=s^2-a^2$。每作用一次 $\mathcal L$ 就乘一次 $q$，$(\mathcal L-\sigma)^2W=(q-\sigma)^2W$。除以非零的 $W$ 后得到
+
+$$
+q(q-\sigma)^2+\mathrm{Ra}a^2=0
+\ \Longleftrightarrow\ q^3-2\sigma q^2+\sigma^2q+\mathrm{Ra}a^2=0,
+$$
+
+第二式展开了 $(q-\sigma)^2=q^2-2\sigma q+\sigma^2$。这里 $q$ 是特征多项式变量，与第 3 节源势修正 $q$ 无关。
+
+**边界条件。** 共六个：$W=W'=\Theta=0$ 在 $z=0,1$。$W=0$ 是不穿透；$W'=0$ 来自连续方程 $U=-W'/(\mathrm i a)$ 与无滑移 $U=0$；$\Theta=0$ 是等温壁。不能只施加 $W=0$ 而得到自由滑移问题。六阶方程配六个条件，一般只有零解；只有当参数 $(\mathrm{Ra},a,\sigma)$ 取特殊值时才有非零解——这正是特征值问题。
+
+#### 8.2.2 三次方程每一次降次与开方
+
+以下逐项对应 [rb_linear_reference.f90](<C:/myproject/rb_project/learning/rb_plan_2D/rb_linear_reference.f90>) 的 `characteristic_roots`。
+
+**消去二次项。** 令 $q=y+2\sigma/3$（平移量是二次项系数 $-2\sigma$ 的 $-1/3$），用二项式展开三项：
+
+$$
+\begin{aligned}
+q^3&=y^3+3y^2\tfrac{2\sigma}3+3y\left(\tfrac{2\sigma}3\right)^2+\left(\tfrac{2\sigma}3\right)^3=y^3+2\sigma y^2+\frac{4\sigma^2}3y+\frac{8\sigma^3}{27},\\
+-2\sigma q^2&=-2\sigma\left(y^2+\tfrac{4\sigma}3y+\tfrac{4\sigma^2}9\right)=-2\sigma y^2-\frac{8\sigma^2}3y-\frac{8\sigma^3}9,\\
+\sigma^2q&=\sigma^2y+\frac{2\sigma^3}3.
+\end{aligned}
+$$
+
+按幂次合并：$y^2$ 系数 $2\sigma-2\sigma=0$；$y$ 系数 $\left(\frac43-\frac83+1\right)\sigma^2=-\frac{\sigma^2}3$；常数 $\left(\frac8{27}-\frac{24}{27}+\frac{18}{27}\right)\sigma^3=\frac{2\sigma^3}{27}$。加上 $\mathrm{Ra}a^2$，得到降次三次方程
+
+$$
+y^3+p_cy+q_c=0,\qquad p_c=-\sigma^2/3,\quad q_c=2\sigma^3/27+\mathrm{Ra}a^2.
+$$
+
+这里 $p_c,q_c$ 对应实现中的实数变量 `p,q`，不是压力或复根。
+
+**Cardano 公式。** 令 $y=u_c+v_c$，展开 $(u_c+v_c)^3=u_c^3+3u_c^2v_c+3u_cv_c^2+v_c^3=u_c^3+v_c^3+3u_cv_c(u_c+v_c)$。代入 $y^3+p_cy+q_c=0$：
+
+$$
+u_c^3+v_c^3+(3u_cv_c+p_c)(u_c+v_c)+q_c=0 .
+$$
+
+$u_c,v_c$ 有两个自由度而约束只有一个，所以可以额外要求 $3u_cv_c=-p_c$，让中间括号为零。于是只需 $u_c^3+v_c^3=-q_c$；同时 $u_c^3v_c^3=(u_cv_c)^3=(-p_c/3)^3$。已知两数之和与积，它们就是二次方程 $t^2+q_ct-(p_c/3)^3=0$ 的两根：
+
+$$
+u_c^3,v_c^3=\frac{-q_c\pm\sqrt{q_c^2+4(p_c/3)^3}}2=-\frac{q_c}2\pm\sqrt{\mathcal D},\qquad
+\mathcal D=\left(\frac{q_c}2\right)^2+\left(\frac{p_c}3\right)^3.
+$$
+
+源码只支持 $\mathcal D>0$ 的分支（`discriminant <= 0` 时报错），此时两个立方都是实数。先取实立方根 $v_c=\operatorname{cbrt}(-q_c/2-\sqrt{\mathcal D})$（代码用 `sign(abs(x)**(1/3),x)` 处理负数），再用 $u_c=-p_c/(3v_c)$ 而不是另开一次立方根——这样自动保持 $3u_cv_c=-p_c$，不会因为选错立方根分支而破坏乘积关系。
+
+**三个根。** 设 $\epsilon=e^{2\pi\mathrm i/3}=-\frac12+\mathrm i\frac{\sqrt3}2$，$\epsilon^3=1$，$\epsilon^2=\overline\epsilon$。$(\epsilon u_c,\epsilon^2v_c)$ 与 $(\epsilon^2u_c,\epsilon v_c)$ 的立方不变、乘积 $\epsilon^3u_cv_c=u_cv_c$ 不变，所以三个 $y$ 根为 $u_c+v_c$、$\epsilon u_c+\epsilon^2v_c$、$\epsilon^2u_c+\epsilon v_c$。展开第二个：
+
+$$
+\epsilon u_c+\epsilon^2v_c=\left(-\tfrac12+\mathrm i\tfrac{\sqrt3}2\right)u_c+\left(-\tfrac12-\mathrm i\tfrac{\sqrt3}2\right)v_c=-\frac{u_c+v_c}2+\mathrm i\frac{\sqrt3}2(u_c-v_c),
+$$
+
+第三个是它的共轭。加回 $2\sigma/3$ 得到三个 $q$ 根：
+
+$$
+q_r=u_c+v_c+2\sigma/3,\qquad
+q_\pm=-\frac{u_c+v_c}2+\frac{2\sigma}3\ \pm\ \mathrm i\frac{\sqrt3}2(u_c-v_c).
+$$
+
+代码 `qr`、`qc` 分别是 $q_r$ 和 $q_+$。
+
+**六个指数解。** 每个 $q$ 对应 $s^2=a^2+q$，$s=\pm\sqrt{a^2+q}$，因此共有六个指数解 $e^{\pm sz}$。$q_-=\overline{q_+}$ 给出的解是 $q_+$ 解的共轭；对实系数 ODE，把 $q_+$ 的复解取实部和虚部，就得到与这一对共轭解张成相同空间的两个实解。
+
+#### 8.2.3 对称性怎样把六个边界条件变成三行行列式
+
+令 $\xi=z-1/2$（中面为 $\xi=0$，两壁为 $\xi=\pm\frac12$），$s_r=\sqrt{a^2+q_r}$、$s_c=\sqrt{a^2+q_+}$。关于中面对称的三个实基为
+
+$$
+\phi_1=\operatorname{Re}\cosh(s_c\xi),\quad
+\phi_2=\operatorname{Im}\cosh(s_c\xi),\quad
+\phi_3=\operatorname{Re}\cosh(s_r\xi),\qquad W=\sum_{j=1}^3c_j\phi_j.
+$$
+
+**为什么用 $\cosh$。** 对同一个 $q$，$e^{s\xi}$ 与 $e^{-s\xi}$ 都是解，所以 $\cosh(s\xi)=\frac{e^{s\xi}+e^{-s\xi}}2$（偶）与 $\sinh(s\xi)$（奇）也都是解。$\mathcal L$ 只含偶数阶导数，在 $\xi\to-\xi$ 下不变，所以解空间分成偶、奇两个各三维的子空间，可以分别求解。$\cosh$ 是偶函数，$s\to-s$ 不产生新函数，这正是 $\pm s$ 只需计一次的原因。
+
+**导数。** $\frac d{dz}\cosh(s\xi)=s\sinh(s\xi)$，$\frac d{dz}\sinh(s\xi)=s\cosh(s\xi)$（$d\xi/dz=1$）。每求一次导数乘一个 $s$，并使 $\cosh$ 与 $\sinh$ 交换；因此偶数阶导数是 $s^d\cosh(s\xi)$，奇数阶是 $s^d\sinh(s\xi)$，对应 `basis` 中 `sr**derivative*cosh/sinh` 的分支。
+
+**温度基。** 对单个复指数基 $W_{\rm b}$，$\mathcal LW_{\rm b}=qW_{\rm b}$，热方程 $(\sigma-\mathcal L)\Theta=W$ 的同型解为 $\Theta_{\rm b}=W_{\rm b}/(\sigma-q)$：验证 $(\sigma-\mathcal L)\Theta_{\rm b}=\frac{(\sigma-q)W_{\rm b}}{\sigma-q}=W_{\rm b}$。对每个复基先做这个除法，再取实部或虚部；$q$ 是复数时 $\operatorname{Re}\frac{W}{\sigma-q}\ne\frac{\operatorname{Re}W}{\sigma-\operatorname{Re}q}$，不能把实部的商写成两个实部相除。代码中 `thermal=.true.` 时执行 `vr/(sigma-qr)`、`vc/(sigma-qc)`，再取 `real`、`aimag`。
+
+**对称性减少边界条件。** 在偶子空间中，$W(\xi)$ 与 $\Theta(\xi)$ 为偶函数，$W'$ 为奇函数。若顶壁 $\xi=\tfrac12$ 满足 $W=W'=\Theta=0$，则底壁 $\xi=-\tfrac12$ 处 $W(-\tfrac12)=W(\tfrac12)=0$、$W'(-\tfrac12)=-W'(\tfrac12)=0$、$\Theta(-\tfrac12)=\Theta(\tfrac12)=0$ 自动成立。六个条件减为三个，三个未知系数 $c_1,c_2,c_3$。用 $\tau_j$ 表示三个温度基，矩阵为
+
+$$
+M(\mathrm{Ra},a,\sigma)=\begin{pmatrix}
+\phi_1(1)&\phi_2(1)&\phi_3(1)\\
+\phi_1'(1)&\phi_2'(1)&\phi_3'(1)\\
+\tau_1(1)&\tau_2(1)&\tau_3(1)
+\end{pmatrix},\qquad Mc=0.
+$$
+
+（这里自变量写的是 $z=1$，即 $\xi=\tfrac12$。）存在非零系数向量 $c$ 的条件是 $\det M=0$。若三行分别为 $r_1,r_2,r_3$，则
+
+$$
+\det M=(r_1\times r_2)\cdot r_3,
+\quad r_1\times r_2=(r_{12}r_{23}-r_{13}r_{22},\ r_{13}r_{21}-r_{11}r_{23},\ r_{11}r_{22}-r_{12}r_{21}).
+$$
+
+这是三阶行列式按第三行的展开（混合积）：$(r_1\times r_2)_k$ 正是第三行第 $k$ 个元素的代数余子式。
+
+代码先将每行除以自身 Euclidean 范数：行列式对每行是线性的，每行乘正数 $1/\|r_i\|$ 使行列式乘 $\prod_i1/\|r_i\|>0$，不改变零点和符号；前提是行范数非零。这样做让二分时的函数值不被 $\cosh$ 的指数增长主导。
+
+**构造特征函数。** 取未归一化的 $c=r_1\times r_2$。叉积垂直于两个因子：$r_1\cdot c=0$、$r_2\cdot c=0$，即 $W(1)=W'(1)=0$ 自动满足；在 $\det M=0$ 的根上又有 $r_3\cdot c=\det M=0$，即 $\Theta(1)=0$。所以 $c$ 就是 $Mc=0$ 的非零解（只要 $r_1,r_2$ 不平行）。再除以 $\sum_jc_j\phi_j(1/2)=W(1/2)$，得到 $W(1/2)=1$。这种归一化只用于中面非零的对称模态。
+
+**反对称分支。** 改用 $\sinh(s\xi)$；实现对实根基额外除以 $s_r$，因为 $\sinh(s_r\xi)/s_r\to\xi$（$s_r\to0$ 时用 $\sinh x\approx x$），一阶导数趋于 1，避免退化成零基。`neutral_rayleigh` 可选反对称分支，但主程序初始化和增长率求解使用对称分支。
+
+**求根。** 中性值令 $\sigma=0$，固定 $a=2\pi m$ 后找 $\det M(\mathrm{Ra},a,0)=0$。源码从 $\mathrm{Ra}=100$ 开始每次乘 1.1，找到符号变化后进行二分，直到区间宽度小于 $10^{-9}$ 或达到迭代上限。增长率则固定 $\mathrm{Ra}$，在 $\sigma\in[-10,10]$ 检查异号后进行二分，区间阈值为 $10^{-12}$。二分每次把区间减半，并保留函数异号的那一半，所以连续函数在区间内一定有根。这是有指定分支和包围区间的求根，并非对所有复增长率或所有水平波数做谱扫描。因此上述 $3784.3406\ldots$ 应读作周期 1、对称 $m=1$ 分支的临界参考，不应与水平波数连续可选时的经典最小值（约 1708，在 $a\approx3.117$ 处）混为一谈——$a=2\pi$ 远离最不稳定波数，所以临界值更高。
+
+#### 8.2.4 初态的构造与检查
+
+取正规模态的实部：$\operatorname{Re}\{We^{\mathrm iax}\}=W\cos(ax)$。水平速度由连续方程 $\mathrm iaU=-W'$ 得 $U=-W'/(\mathrm ia)=\mathrm iW'/a$，于是 $\operatorname{Re}\{(\mathrm iW'/a)e^{\mathrm iax}\}=\operatorname{Re}\{(\mathrm iW'/a)(\cos ax+\mathrm i\sin ax)\}=-W'\sin(ax)/a$。$a=2\pi$、幅度 $\varepsilon$ 时就是开头的初态，与 `run_rb` 的 `u(:,j) = -amplitude*derivative(j)*sin(2*pi*x)/(2*pi)` 一致。
+
+逐项检查：$u_x=-\varepsilon W'\cos(ax)$、$w_z=\varepsilon W'\cos(ax)$，逐点相加为零；$W=0$ 保证壁面 $w=0$，$W'=0$ 保证 $u=0$，$\Theta=0$ 保证温度扰动为零。对应流函数为 $\psi=-\varepsilon W\sin(ax)/a$：$\psi_z=-\varepsilon W'\sin(ax)/a=u$，$-\psi_x=\varepsilon W\cos(ax)=w$。相应涡量为 $\omega=-\Delta\psi=\varepsilon(W''-a^2W)\sin(ax)/a$，其水平平均为零，平均流为零。程序不直接用这个解析涡量，而是在辅助网格上用 `set_velocity` 从 $u,w$ 数值计算，所以初始涡量带有辅助网格的离散误差。
+
+!!! note "目前进展"
+    关于扰动的线性特征值问题已转化为：先解一个三次方程得到三个 $q$ 根，再由对称性把六个边界条件减为三阶行列式 $\det M(\mathrm{Ra},a,\sigma)=0$，用二分求根。由此得到三个与数值格式无关的参考量：周期 1、对称 $m=1$ 分支的 $\mathrm{Ra}_c\approx3784.34$，给定 $\mathrm{Ra}$ 时的增长率 $\sigma$，以及满足全部壁面条件的初态 $(u,w,\theta)$。
+
+    时间推进器有了初态；它在线性阶段测得的增长率，就拿这里的 $\sigma$ 来比较。接下来定义判断解是否自洽的诊断量。
 
 ### 8.3 四类输出与诊断
 
@@ -485,13 +1924,13 @@ $$
 \mathrm{Nu}_t=1-\overline{\theta_z}|_{z=1}.
 $$
 
-瞬态时三种 Nusselt 数不必完全相等。令 $Q=\int\theta$、$Q_b=\int(1-z)\theta$、$Q_t=\int z\theta$，有
+所有积分都是第 2.4 节的辅助展开精确积分（`integral`、`inner_product`），壁面导数用 $\mathsf D$ 的首末行。瞬态时三种 Nusselt 数不必完全相等。令 $Q=\int\theta$、$Q_b=\int(1-z)\theta$、$Q_t=\int z\theta$，有（第 8.4 节推导）
 
 $$
 Q'=\mathrm{Nu}_b-\mathrm{Nu}_t,\quad Q_b'=\mathrm{Nu}_b-\mathrm{Nu}_V,\quad Q_t'=\mathrm{Nu}_V-\mathrm{Nu}_t.
 $$
 
-能量平衡为
+能量平衡为（第 8.5 节推导）
 
 $$
 E'=\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)-D_u,\qquad
@@ -501,6 +1940,202 @@ $$
 其中 $D_u=\Pr\int|\nabla\boldsymbol v|^2$，$D_\theta=\int|\nabla\theta|^2$。主程序用梯形公式累积右端，与状态变化比较。`wall`、`temp_wall`、`divergence` 分别监测两壁速度、两壁温度扰动、散度；任一超过 $10^{-7}$ 就停止。
 
 若在线性阶段 $E\propto e^{2\sigma t}$，可拟合 $\log\sqrt E$ 的斜率。主程序默认用 $[t_{\rm final}/4,t_{\rm final}]$ 拟合。
+
+### 8.4 三种热流与三个热矩的每一步积分
+
+**守恒形式。** 用乘积法则展开 $\partial_x(uT)+\partial_z(wT)=uT_x+wT_z+(u_x+w_z)T$，由不可压性最后一项为零，所以 $uT_x+wT_z=\partial_x(uT)+\partial_z(wT)$。又 $\Delta T=\partial_x(T_x)+\partial_z(T_z)$。总温度方程 $T_t+uT_x+wT_z=\Delta T$ 因此写成
+
+$$
+T_t+\partial_x(uT-T_x)+\partial_z(wT-T_z)=0.
+$$
+
+**水平平均。** 对 $x\in[0,1]$ 积分，周期函数的 $x$ 导数积分为 0，所以 $\overline{\partial_x(uT-T_x)}=0$，$\overline{\partial_z(\cdot)}=\partial_z\overline{(\cdot)}$，得到 $\overline T_t+\partial_zJ=0$，其中
+
+$$
+\begin{aligned}
+J&=\overline{wT}-\partial_z\overline T\\
+&=\overline{w(1-z+\theta)}-\partial_z(1-z+\overline\theta)\\
+&=(1-z)\overline w+\overline{w\theta}-(-1)-\partial_z\overline\theta\\
+&=\overline{w\theta}+1-\partial_z\overline\theta .
+\end{aligned}
+$$
+
+第三行中 $1-z$ 不依赖 $x$，可提出平均；最后一行用 $\overline w=0$（第 2.1 节第一步）。导热背景不随时间变化，$\overline T_t=\overline\theta_t$，所以 $\overline\theta_t=-J_z$。
+
+**$J$ 的意义。** $\overline{w\theta}$ 是对流热流，$1-\partial_z\overline\theta=-\partial_z\overline T$ 是传导热流，$J$ 是高度 $z$ 处单位水平长度上的总向上热流。纯导热态 $J\equiv1$。
+
+**三种 Nu。** 壁面 $w=0$，所以 $\overline{w\theta}=0$，$J(0)=1-\overline\theta_z(0)=\mathrm{Nu}_b$、$J(1)=1-\overline\theta_z(1)=\mathrm{Nu}_t$（$\overline{\theta_z}=\partial_z\overline\theta$）。对高度积分：
+
+$$
+\int_0^1J\,dz=\int_0^1\overline{w\theta}\,dz+\int_0^11\,dz-\int_0^1\partial_z\overline\theta\,dz
+=\int_\Omega w\theta+1-\left[\overline\theta\right]_0^1
+=1+\int_\Omega w\theta=\mathrm{Nu}_V.
+$$
+
+最后等号使用两壁 $\theta=0$。因此体积 Nu 是热流沿高度的平均，瞬态时并不强制等于某一壁面热流。
+
+**三个热矩。** 现在分别乘三个权函数 $\varphi(z)=1,\ 1-z,\ z$ 并对 $z$ 积分。因 $\int_\Omega\varphi\theta=\int_0^1\varphi\overline\theta\,dz$，统一的分部积分式为
+
+$$
+\frac d{dt}\int_0^1\varphi(z)\overline\theta(z)dz
+=-\int_0^1\varphi J_z\,dz=-[\varphi J]_0^1+\int_0^1\varphi'J\,dz.
+$$
+
+逐项代入，不省略端点：
+
+$$
+\begin{aligned}
+Q'&\ (\varphi=1,\ \varphi'=0):&&-[J]_0^1=-(J(1)-J(0))=\mathrm{Nu}_b-\mathrm{Nu}_t,\\
+Q_b'&\ (\varphi=1-z,\ \varphi'=-1):&&-[(1-z)J]_0^1-\int_0^1J\,dz
+=-(0\cdot J(1)-1\cdot J(0))-\mathrm{Nu}_V
+=\mathrm{Nu}_b-\mathrm{Nu}_V,\\
+Q_t'&\ (\varphi=z,\ \varphi'=1):&&-[zJ]_0^1+\int_0^1J\,dz
+=-(1\cdot J(1)-0\cdot J(0))+\mathrm{Nu}_V
+=\mathrm{Nu}_V-\mathrm{Nu}_t.
+\end{aligned}
+$$
+
+还可直接验证 $Q_b+Q_t=\int[(1-z)+z]\theta=Q$，所以后两个平衡式相加必须回到第一个：$(\mathrm{Nu}_b-\mathrm{Nu}_V)+(\mathrm{Nu}_V-\mathrm{Nu}_t)=\mathrm{Nu}_b-\mathrm{Nu}_t$，这是检查符号的简单办法。三个量不是三个独立的守恒定律，而是一个热方程的不同矩。统计稳态时左边时间平均为零，于是 $\langle\mathrm{Nu}_b\rangle=\langle\mathrm{Nu}_V\rangle=\langle\mathrm{Nu}_t\rangle$，这就是第 10 节用三者一致判断热平衡的依据。
+
+### 8.5 动能与温度扰动能：边界项为什么全部消失
+
+**动能的时间导数。** $E=\frac12\int_\Omega(u^2+w^2)$，对时间求导（积分区域不变，可移入）：$E'=\int_\Omega(uu_t+ww_t)=\int_\Omega\boldsymbol v\cdot\boldsymbol v_t$。将动量方程 $\boldsymbol v_t=-\boldsymbol v\cdot\nabla\boldsymbol v-\nabla p+\Pr\Delta\boldsymbol v+\mathrm{Ra}\Pr\theta\boldsymbol e_z$ 点乘速度并积分，逐项处理。
+
+**对流项。** 写成分量：$\boldsymbol v\cdot(\boldsymbol v\cdot\nabla\boldsymbol v)=u(uu_x+wu_z)+w(uw_x+ww_z)=u\,\partial_x\tfrac{u^2+w^2}2+w\,\partial_z\tfrac{u^2+w^2}2$，因为 $\partial_x\tfrac{u^2+w^2}2=uu_x+ww_x$、$\partial_z\tfrac{u^2+w^2}2=uu_z+ww_z$，按 $u$、$w$ 重新分组即得。所以 $\boldsymbol v\cdot(\boldsymbol v\cdot\nabla\boldsymbol v)=\boldsymbol v\cdot\nabla(|\boldsymbol v|^2/2)$。再由乘积法则
+
+$$
+\nabla\cdot\left(\boldsymbol v\frac{|\boldsymbol v|^2}2\right)=\boldsymbol v\cdot\nabla\frac{|\boldsymbol v|^2}2+(\nabla\cdot\boldsymbol v)\frac{|\boldsymbol v|^2}2 ,
+$$
+
+第二项为零。由散度定理，第一项的域积分变成边界通量 $\int_{\partial\Omega}\frac{|\boldsymbol v|^2}2\boldsymbol v\cdot\boldsymbol n$；上下壁 $\boldsymbol v=0$，左右周期边界上被积函数值相同、外法向相反（$\boldsymbol n=\mp\boldsymbol e_x$），积分相消。所以对流不改变总动能。
+
+**压力项。** 同理用 $\nabla\cdot(p\boldsymbol v)=\boldsymbol v\cdot\nabla p+p\nabla\cdot\boldsymbol v$：
+
+$$
+-\int_\Omega\boldsymbol v\cdot\nabla p
+=-\int_{\partial\Omega}p\,\boldsymbol v\cdot\boldsymbol n
++\int_\Omega p\,\nabla\cdot\boldsymbol v=0-0=0.
+$$
+
+这里 $\boldsymbol n$ 是外法向；壁上 $\boldsymbol v=0$，周期边界相消。
+
+**黏性项。** 对 $u,w$ 分别分部积分。任一分量 $f$ 用 $\nabla\cdot(f\nabla f)=|\nabla f|^2+f\Delta f$ 与散度定理：
+
+$$
+\int_\Omega f\Delta f
+=\int_{\partial\Omega}f\,\partial_n f-\int_\Omega[(f_x)^2+(f_z)^2]
+=-\int_\Omega|\nabla f|^2.
+$$
+
+上下壁 $f=0$，左右周期项相消，所以边界项消失。乘上 $\Pr$ 并对两分量相加，定义
+
+$$
+D_u=\Pr\int_\Omega(u_x^2+u_z^2+w_x^2+w_z^2)\ge0.
+$$
+
+代码 `d(13)` 就是这四个 `inner_product` 之和乘 `pr`。
+
+**浮力项。** 没有消失：$\int\boldsymbol v\cdot(\mathrm{Ra}\Pr\theta\boldsymbol e_z)=\mathrm{Ra}\Pr\int w\theta=\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)$。合起来得到
+
+$$
+E'=0-0-D_u+\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)=\mathrm{Ra}\Pr(\mathrm{Nu}_V-1)-D_u.
+$$
+
+浮力做功是唯一的动能来源：对流热流超过导热值（$\mathrm{Nu}_V>1$）的部分，乘 $\mathrm{Ra}\Pr$ 就是注入的动能。
+
+**温度扰动能。** $K_\theta=\frac12\int\theta^2$，$K_\theta'=\int\theta\theta_t$。将扰动温度方程 $\theta_t=-\boldsymbol v\cdot\nabla\theta+\Delta\theta+w$ 乘 $\theta$：
+
+$$
+K_\theta'=-\int\theta\,\boldsymbol v\cdot\nabla\theta+\int\theta\Delta\theta+\int w\theta.
+$$
+
+第一项：$\theta\,\boldsymbol v\cdot\nabla\theta=\boldsymbol v\cdot\nabla(\theta^2/2)=\nabla\cdot(\boldsymbol v\theta^2/2)-(\nabla\cdot\boldsymbol v)\theta^2/2$，不可压修正为零，边界通量也为零（壁上 $\boldsymbol v=0$，周期相消）。第二项分部积分给出 $\int_{\partial\Omega}\theta\partial_n\theta-\int|\nabla\theta|^2$，由于温度扰动壁值为零和水平周期性，边界项消失。第三项是 $\mathrm{Nu}_V-1$。因此
+
+$$
+D_\theta=\int(\theta_x^2+\theta_z^2)\ge0,\qquad
+K_\theta'=\mathrm{Nu}_V-1-D_\theta.
+$$
+
+**适用范围。** 上述等式假定没有额外外力、热源，且开启温度反馈；使用外部强迫接口时需分别加 $\int\boldsymbol v\cdot\boldsymbol f_{\rm ext}$ 和 $\int\theta f_{\theta,\rm ext}$，不能拿未修改的诊断平衡判断受迫问题。在线性模式中被删除的对流项本来就不贡献这两个能量积分，所以能量等式仍成立；但热矩中依赖非线性对流通量的关系应与线性化方程区分，不能无条件沿用完整非线性热流平衡。线性模式中平均方程为 $\overline\theta_t=\overline\theta_{zz}+\overline w=\overline\theta_{zz}$（$\overline{u\theta_x+w\theta_z}$ 已被删除），对应 $J_{\rm lin}=1-\overline\theta_z$、$\int_0^1J_{\rm lin}dz=1-[\overline\theta]_0^1=1$，所以 $Q_b'=\mathrm{Nu}_b-1$、$Q_t'=1-\mathrm{Nu}_t$，而 $Q'=\mathrm{Nu}_b-\mathrm{Nu}_t$ 不变；程序仍报告含 $w\theta$ 的 NuV 与原热矩窗口残差，解释线性算例输出时须注意这个区别。
+
+### 8.6 诊断数组、窗口残差与增长率拟合
+
+[run_rb.f90](<C:/myproject/rb_project/learning/rb_plan_2D/run_rb.f90>) 的 14 个诊断量按以下顺序写出：
+
+| 数组下标 | 数学定义 |
+| --- | --- |
+| 1–5 | $t,E,\mathrm{Nu}_V,\mathrm{Nu}_b,\mathrm{Nu}_t$ |
+| 6–8 | $Q,Q_b,Q_t$ |
+| 9 | 两壁所有辅助节点上 $\lvert u\rvert,\lvert w\rvert$ 的最大值 |
+| 10 | 两壁所有辅助节点上 $\lvert\theta\rvert$ 的最大值 |
+| 11 | 辅助节点上 $\lvert u_x+w_z\rvert$ 的最大值 |
+| 12–14 | $K_\theta,D_u,D_\theta$ |
+
+这些最大值是节点监测量，不是自动证明整个连续域满足约束的上界。
+
+**梯形累积。** 假设某个连续平衡为 $A'=F$，在 $[t_n,t_{n+1}]$ 以仿射函数近似 $F$，令 $\tau=t-t_n$：
+
+$$
+\int_{t_n}^{t_{n+1}}F(t)dt\approx\int_0^h\left(F_n+\frac\tau h(F_{n+1}-F_n)\right)d\tau
+=hF_n+\frac1h\cdot\frac{h^2}2(F_{n+1}-F_n)=\frac h2(F_n+F_{n+1}).
+$$
+
+所以窗口残差是
+
+$$
+R_A=A_N-A_0-\sum_{n=0}^{N-1}\frac h2(F_n+F_{n+1}).
+$$
+
+程序将 $A=(Q,Q_b,Q_t,E,K_\theta)$ 对应的五个右端分别累积：`flux_integral(1:3)` 累加 $[\mathrm{Nu}_b-\mathrm{Nu}_t,\ \mathrm{Nu}_b-\mathrm{Nu}_V,\ \mathrm{Nu}_V-\mathrm{Nu}_t]$，`flux_integral(4)` 累加 $\mathrm{Ra}(\mathrm{Nu}_V-1)-D_u$（写作 `ra*(old(3)+d(3)-2)-old(13)-d(13)`，即两端点之和），`flux_integral(5)` 累加 $\mathrm{Nu}_V-1-D_\theta$。主程序固定 $\Pr=1$，所以它的动能累计中直接使用 `ra`；通用求解器接口若改为其他 $\Pr$，累计也必须同步乘 $\Pr$。
+
+即使状态为精确解，梯形时间积分一般仍有误差，因此非零窗口残差不是某一类误差的唯一证据。梯形误差：设 $F$ 二阶连续可导，对 $e(\tau)=F(t_n+\tau)-F_{\rm lin}(\tau)$ 用第 3.2 节第五步同样的 Rolle 论证，$e(\tau)=\frac12\tau(\tau-h)F''(\xi_\tau)$，积分得每段误差 $\le\frac{h^3}{12}\max|F''|$，固定长度窗口共 $T/h$ 段，累计 $O(h^2)$。
+
+**为什么拟合 $\log\sqrt E$。** 若速度单模态为 $\boldsymbol v(t)=e^{\sigma t}\boldsymbol v(0)$，则
+
+$$
+E(t)=\tfrac12\int e^{2\sigma t}|\boldsymbol v(0)|^2=e^{2\sigma t}E(0),
+\quad y(t)=\log\sqrt{E(t)}=\tfrac12\log E(t)=\tfrac12\log E(0)+\sigma t.
+$$
+
+因此拟合 $\log E$ 会得到 $2\sigma$，拟合 $\log\sqrt E$ 才得到振幅增长率。
+
+**最小二乘。** 对选中的 $N$ 个样本 $(t_j,y_j)$，最小化 $\Phi(b,\sigma)=\sum_j(y_j-b-\sigma t_j)^2$。分别求偏导并置零：
+
+$$
+\frac{\partial\Phi}{\partial b}=-2\sum_j(y_j-b-\sigma t_j)=0,\qquad
+\frac{\partial\Phi}{\partial\sigma}=-2\sum_jt_j(y_j-b-\sigma t_j)=0 ,
+$$
+
+展开后即正规方程
+
+$$
+Nb+\sigma\sum_jt_j=\sum_jy_j,\qquad
+b\sum_jt_j+\sigma\sum_jt_j^2=\sum_jt_jy_j.
+$$
+
+记 $S_t=\sum t_j$、$S_y=\sum y_j$、$S_{tt}=\sum t_j^2$、$S_{ty}=\sum t_jy_j$。从第一式解出 $b=(S_y-\sigma S_t)/N$，代入第二式：
+
+$$
+\frac{S_t(S_y-\sigma S_t)}N+\sigma S_{tt}=S_{ty}
+\ \Longrightarrow\
+\sigma\left(S_{tt}-\frac{S_t^2}N\right)=S_{ty}-\frac{S_tS_y}N ,
+$$
+
+$$
+\widehat\sigma=
+\frac{S_{ty}-S_tS_y/N}
+{S_{tt}-S_t^2/N}.
+$$
+
+这与五个累计变量 `fit_n,fit_t,fit_y,fit_tt,fit_ty` 一一对应。分母 $S_{tt}-S_t^2/N=\sum_j(t_j-\bar t)^2$（$\bar t=S_t/N$），只要至少两个不同时间就为正；还需要 $E>0$ 才能取对数。非线性饱和期不再满足单指数假设，拟合斜率不能继续解释成线性特征值。
+
+!!! note "目前进展"
+    整条求解链已经闭合：
+
+    - **求解**：第 8.2 节给出初态 → 每步计算源与源势，做 9 次热传播、若干 Poisson 求解和 $2\times2$ 壁面系统（第 3–7 节）→ 得到各时刻的 $(\omega,\overline u,\theta)$，并由它恢复 $(u,w)$、必要时恢复 $p$。
+    - **检验**：线性阶段的拟合增长率对比参考 $\sigma$；三个热矩的窗口残差检查 $\mathrm{Nu}_b,\mathrm{Nu}_V,\mathrm{Nu}_t$ 的热平衡；动能与温度扰动能的窗口残差检查能量平衡；壁面速度、壁面温度和散度三个监测量检查约束。
+
+    第 9 节对照源码逐行看这些步骤的实现，第 10 节给出数值结果。
 
 ## 9. 完整源码与批注
 
@@ -3146,8 +4781,8 @@ end program run_rb
 后文反复出现几个计数量，含义如下：
 
 - **物理叶**：覆盖 $[0,1)\times[0,1]$ 的四叉树叶盒，每个叶上有 $k\times k=12\times12$ 个 Chebyshev 节点值。
-- **延拓叶**：`heat_adaptive_mixed` 为满足水平周期和两壁 $\theta=0$，把物理树做周期复制和竖直奇反射，得到交给 FGT 的扩展树（见第 9.6 节）。FGT 的实际工作量正比于延拓叶数，所以它比物理叶数更能代表成本。
-- **粗传播 / 细传播**：粗传播在当前树上进行；细传播把每个叶再分成 4 个子盒后重做一次，只用于检查粗传播结果能否在当前树上表示。细传播的叶数是粗传播的 4 倍，所以即使检查一次通过，每次热调用也至少要付出约 5 倍于单次粗传播的 FGT 工作量。
+- **延拓叶**：`heat_adaptive_mixed` 为满足水平周期和两壁 $\theta=0$，把物理树做周期复制和竖直奇反射，得到交给 FGT 的扩展树（见第 9.6 节）。在节点阶数和交互成本相近时，延拓叶数比物理叶数更接近 FGT 的实际输入规模；是否近似线性计时仍需测量，不能只由叶数保证。
+- **粗传播 / 细传播**：粗传播在当前树上进行；细传播把每个叶再分成 4 个子盒后重做一次，只用于检查粗传播结果能否在当前树上表示。细传播的叶数是粗传播的 4 倍，所以即使检查一次通过，粗细两次传播合计的叶数工作量也是单次粗传播的 5 倍；实际耗时比还需计时验证。
 - **检查轮数**：每轮包含一次粗传播和一次细传播。检查不通过时细化超标的叶，再进行下一轮。
 
 ### 10.2 完整非线性算例
@@ -3324,12 +4959,113 @@ Fourier–Chebyshev 是谱方法，对光滑解的误差随点数增加比任何
 
 - 热传播相关阶段合计 96.4%，流体算子（源项、Poisson、壁面）合计 2.1%。
 - **输出检查是最大成本。** 细传播把每个叶分成 4 份，延拓叶数是粗传播的 4.0 倍；内核时间比为 4.03，说明内核时间与延拓叶数成正比。即使检查一次通过，细传播也必须做一次，所以它是固定开销，不是失败时才有的开销。18000 次热调用共进行 20012 轮检查，多出的 2012 轮来自检查未通过、细化后重新传播的调用，约占 11%。粗、细传播内核合计占 77%。
-- 需要区分三种规模，它们不能互相换算：主状态自由度（3×32×41 加平均流）、单次热调用的物理叶数（源树平均 15.7，输出树平均 18.4），以及全程累计的延拓叶数（粗传播 1449608，细传播 5798432）。
+- 需要区分三种规模，它们不能互相换算：主状态存储槽数（2×32×41 加 41 个平均流节点；独立自由度还受边界与模态约束）、单次热调用的物理叶数（源树平均 15.7，输出树平均 18.4），以及全程累计的延拓叶数（粗传播 1449608，细传播 5798432）。
 - 降低检查频率是减少总时间最直接的方向，但本章只建立正确基线，**没有**实施这类优化。
 
 **计时扰动。** 在相同构建参数和输入下（32×41，$t\in[0,0.2]$），无计时与有计时程序交替各运行 5 次。两者的历史文件最大差为 0，末态逐字节相同；墙钟中位数为 70.6 s 和 70.8 s，相差 0.2%，小于轮间波动（67.5–86.4 s）。完整长运行中，计时版 794.6 s，无计时版 791.1 s（单次，+0.4%）。
 
-### 10.7 小结
+### 10.7 实验公式的逐步推导与可解释范围
+
+#### 高斯斑解析传播：把平方完整配出来
+
+第 10.4 节的解析参考不是经验拟合。设斑中心为 $\boldsymbol c$，初始宽度参数为 $s>0$，令 $A=4Dh$、$B=s^2$，二者都是长度平方。自由空间卷积是
+
+$$
+u(\boldsymbol x,h)=\frac1{\pi A}\int_{\mathbb R^2}
+\exp\left[-\frac{|\boldsymbol x-\boldsymbol y|^2}A-\frac{|\boldsymbol y-\boldsymbol c|^2}B\right]d\boldsymbol y.
+$$
+
+初始斑为 $e^{-|\boldsymbol y-\boldsymbol c|^2/B}$，热核为 $(\pi A)^{-1}e^{-|\boldsymbol x-\boldsymbol y|^2/A}$（第 4.1 节，$A$ 即 $\delta$）。把两个平方展开：$|\boldsymbol x-\boldsymbol y|^2=|\boldsymbol y|^2-2\boldsymbol x\cdot\boldsymbol y+|\boldsymbol x|^2$，$|\boldsymbol y-\boldsymbol c|^2=|\boldsymbol y|^2-2\boldsymbol c\cdot\boldsymbol y+|\boldsymbol c|^2$。分别除以 $A$、$B$ 后相加，$|\boldsymbol y|^2$ 的系数为 $\frac1A+\frac1B=\frac{A+B}{AB}$，因此指数中（去掉负号的）二次式为
+
+$$
+\frac{A+B}{AB}|\boldsymbol y|^2-2\left(\frac{\boldsymbol x}A+\frac{\boldsymbol c}B\right)\cdot\boldsymbol y
++\frac{|\boldsymbol x|^2}A+\frac{|\boldsymbol c|^2}B.
+$$
+
+定义加权中心 $\boldsymbol\mu=(B\boldsymbol x+A\boldsymbol c)/(A+B)$。因 $\frac{\boldsymbol x}A+\frac{\boldsymbol c}B=\frac{B\boldsymbol x+A\boldsymbol c}{AB}=\frac{A+B}{AB}\boldsymbol\mu$，线性项等于 $-2\frac{A+B}{AB}\boldsymbol\mu\cdot\boldsymbol y$。令 $\gamma=\frac{A+B}{AB}$，用 $\gamma|\boldsymbol y|^2-2\gamma\boldsymbol\mu\cdot\boldsymbol y=\gamma|\boldsymbol y-\boldsymbol\mu|^2-\gamma|\boldsymbol\mu|^2$ 配方，其中 $\gamma|\boldsymbol\mu|^2=\frac{A+B}{AB}\cdot\frac{|B\boldsymbol x+A\boldsymbol c|^2}{(A+B)^2}=\frac{|B\boldsymbol x+A\boldsymbol c|^2}{AB(A+B)}$：
+
+$$
+\frac{A+B}{AB}|\boldsymbol y-\boldsymbol\mu|^2
++\frac{|\boldsymbol x|^2}A+\frac{|\boldsymbol c|^2}B
+-\frac{|B\boldsymbol x+A\boldsymbol c|^2}{AB(A+B)}.
+$$
+
+把剩余常数通分到分母 $AB(A+B)$：$\frac{|\boldsymbol x|^2}A=\frac{B(A+B)|\boldsymbol x|^2}{AB(A+B)}$，$\frac{|\boldsymbol c|^2}B=\frac{A(A+B)|\boldsymbol c|^2}{AB(A+B)}$，再展开 $|B\boldsymbol x+A\boldsymbol c|^2=B^2|\boldsymbol x|^2+2AB\boldsymbol x\cdot\boldsymbol c+A^2|\boldsymbol c|^2$。分子为
+
+$$
+B(A+B)|\boldsymbol x|^2+A(A+B)|\boldsymbol c|^2
+-B^2|\boldsymbol x|^2-2AB\boldsymbol x\cdot\boldsymbol c-A^2|\boldsymbol c|^2
+=AB|\boldsymbol x|^2+AB|\boldsymbol c|^2-2AB\boldsymbol x\cdot\boldsymbol c
+=AB|\boldsymbol x-\boldsymbol c|^2.
+$$
+
+因此常数化简成 $\frac{AB|\boldsymbol x-\boldsymbol c|^2}{AB(A+B)}=\frac{|\boldsymbol x-\boldsymbol c|^2}{A+B}$。剩下的 $\boldsymbol y$ 积分用二维高斯积分：平移 $\boldsymbol y\to\boldsymbol y+\boldsymbol\mu$ 后，由第 4.1 节同样的极坐标计算，$\int e^{-\gamma|\boldsymbol y|^2}d\boldsymbol y=2\pi\int_0^\infty e^{-\gamma r^2}r\,dr=2\pi\cdot\frac1{2\gamma}=\frac\pi\gamma=\frac{\pi AB}{A+B}$。得到
+
+$$
+\begin{aligned}
+u(\boldsymbol x,h)
+&=\frac1{\pi A}e^{-|\boldsymbol x-\boldsymbol c|^2/(A+B)}\frac{\pi AB}{A+B}\\
+&=\frac B{A+B}e^{-|\boldsymbol x-\boldsymbol c|^2/(A+B)}
+=\frac{s^2}{s^2+4Dh}e^{-|\boldsymbol x-\boldsymbol c|^2/(s^2+4Dh)}.
+\end{aligned}
+$$
+
+积分质量为振幅乘 $\pi$ 倍宽度平方（宽度平方为 $A+B$，由上面的高斯积分公式取 $\gamma=1/(A+B)$），即 $[B/(A+B)]\cdot\pi(A+B)=\pi B$，与初始质量 $\int e^{-|\boldsymbol y-\boldsymbol c|^2/B}=\pi B$ 一致，检验了前置系数。宽度平方从 $s^2$ 增长为 $s^2+4Dh$，峰值按同一比例下降。对水平周期、竖直零壁的斑，可以从单位区域内中心 $(c_x,c_z)$ 写出镜像组合
+
+$$
+f(x,z)=\sum_{p,q\in\mathbb Z}\left[
+ e^{-[(x-c_x-p)^2+(z-c_z-2q)^2]/s^2}
+-e^{-[(x-c_x-p)^2+(z+c_z-2q)^2]/s^2}\right].
+$$
+
+逐条检查：
+
+- 水平周期：$x\mapsto x+1$ 使 $x-c_x-p\mapsto x-c_x-(p-1)$，把求和指标 $p$ 重编号为 $p-1$，整个双重和不变。
+- $z=0$：第一项指数含 $(-c_z-2q)^2=(c_z+2q)^2$，第二项含 $(c_z-2q)^2$。把第二项的求和指标 $q\mapsto-q$，它变成 $(c_z+2q)^2$，与第一项逐项相同，相减为零。
+- $z=1$：第一项含 $(1-c_z-2q)^2$，第二项含 $(1+c_z-2q)^2$。把第二项的 $q\mapsto1-q$：$1+c_z-2(1-q)=c_z-1+2q=-(1-c_z-2q)$，平方后与第一项相同，相减为零。
+
+热方程的线性性允许逐个像按上式传播再求和。实际有限镜像求和仍有截断尾项，不能把任意截断长度都称为数学上零误差。
+
+#### 相邻差、观测阶与增长率误差
+
+假设固定同一物理时刻的离散解有渐近展开 $u_h=u+Ch^p+o(h^p)$，其中 $u$ 是真解、$C$ 是与 $h$ 无关的领先误差场。步长减半后
+
+$$
+u_{h/2}=u+C(h/2)^p+o(h^p)=u+C2^{-p}h^p+o(h^p).
+$$
+
+相减时真解 $u$ 抵消，得到 $d_h=u_h-u_{h/2}=Ch^p-C2^{-p}h^p+o(h^p)=C(1-2^{-p})h^p+o(h^p)$。把 $h$ 换成 $h/2$ 再做一次，得到 $d_{h/2}=C(1-2^{-p})(h/2)^p+o(h^p)=C(1-2^{-p})2^{-p}h^p+o(h^p)$。两式相除，公共因子 $C(1-2^{-p})h^p$ 约去（要求 $C\ne0$，即领先误差未抵消，且步长已进入渐近区间使 $o(h^p)$ 可忽略），范数比趋于 $1/2^{-p}=2^p$，取以 2 为底的对数：
+
+$$
+p_{\rm obs}=\log_2\frac{\|d_h\|}{\|d_{h/2}\|}.
+$$
+
+相对误差表的分母是各档细解范数，只有这些范数已接近同一个非零值，才能近似用相对差的比值估阶。相邻差下降是收敛的证据，不是有限几档就能完成的收敛证明；多项误差抵消时 $p_{\rm obs}$ 可能偏高或偏低。第 10.3 节的时间数据不能单独推翻第 3.2 节对仿射源时间模型的精度分析。
+
+单指数情况下，若两档只有增长率不同、幅度与形状相同，则相对于第二档的差为
+
+$$
+\frac{\|Ae^{\sigma_1t}\phi-Ae^{\sigma_2t}\phi\|}{\|Ae^{\sigma_2t}\phi\|}
+=|e^{(\sigma_1-\sigma_2)t}-1|.
+$$
+
+令 $\varepsilon=(\sigma_1-\sigma_2)t$，Taylor 展开 $e^\varepsilon-1=\varepsilon+\varepsilon^2/2+\cdots$；只有 $|\varepsilon|\ll1$ 时才近似为 $|\sigma_1-\sigma_2|t$。若两档模态形状或初始投影不同，还要加入这些误差，不能一概归因于增长率。
+
+用共同评估网格求 L2 时，记差值为 $e_{ij}$、竖直求积权重为 $w_j^{\rm CC}$，则离散平方范数为 $N_x^{-1}\sum_i\sum_jw_j^{\rm CC}|e_{ij}|^2$，最后开平方。对已知谱插值多项式在新点求值不会增加表示截断阶数，但仍有舍入与后续求积误差；它不保证未知连续真解已经被原网格分辨。
+
+#### 叶数、调用数与自由度为什么不能混用
+
+四叉树每次细分把一个叶换成四个叶，所以叶数净增 3，总盒数净增 4。若内部盒数为 $I$、叶数为 $L$：每个内部盒恰有 4 条连向子盒的边，边数为 $4I$；除根外每个盒恰有一条连向父盒的边，边数又等于 $I+L-1$。令二者相等，$4I=I+L-1$，故 $L=3I+1$，$I=(L-1)/3$，总盒数 $I+L=\frac{L-1}3+L=\frac{4L-1}3$。均匀第 $\ell$ 层有 $L=4^\ell$，于是总盒数为 $(4^{\ell+1}-1)/3$。
+
+混合边界延拓把四份物理树挂到一个新根上，总盒数为 $1+4N_{\rm box}$、叶数为 $4L$。输出探针树把所有物理叶细分一次，所以叶数为 $4L$，延拓后为 $16L$。若一次粗细检查通过，两个 FGT 调用处理的延拓叶数合计为 $4L+16L=20L$，是单次粗传播 $4L$ 的 5 倍。**这是叶数工作量的比值，不是无条件的墙钟时间下界**；实际还取决于层级、盒间交互、固定开销和实现。
+
+例如均匀物理 L5 的 $L=4^5=1024$，细检查物理叶数是 4096，延拓叶数是 16384，对应总盒数 $(4\times16384-1)/3=21845$。因此不能只看到“物理树 1024 叶”就认为所有中间树都适合 4096 盒的固定存储。
+
+完整时间步有三轮候选、每轮三个通道，故是 9 次热接口调用。若第 $r$ 次非零输入热调用用了 $p_r$ 轮输出检查，则 FGT 调用数为 $2\sum_r p_r$；微小输入（最大绝对值小于 $10^{-27}$）会直接返回零，不实际调用 FGT。代码中的固定辅助主状态实际存储 $\omega$ 与 $\theta$ 两个二维数组、$\overline u$ 一个一维数组，所以是 $2N_xN_z+N_z$ 个实数加时间标量；这是存储槽数，不是扣除边界和零模态约束后的独立自由度，也不包含速度工作数组与树内存。
+
+时间比定义为 $S=T_{\rm uniform}/T_{\rm adaptive}$，$S>1$ 表示自适应更快。若已知两组样本分别落在 $[U_{\min},U_{\max}]$ 和 $[A_{\min},A_{\max}]$ 且时间均为正，比值 $U/A$ 对 $U$ 递增、对 $A$ 递减，最小值取分子最小、分母最大，最大值取分子最大、分母最小，所以任意配对比值落在 $[U_{\min}/A_{\max},U_{\max}/A_{\min}]$，解释了表中的极端比值范围。两组误差夹住参考误差时，只有额外假定误差—成本曲线在区间内可比较且单调，才可以把两个实测速度比作为等精度性能的估计范围，而不是严格已测得的等误差结果。
+
+### 10.8 小结
 
 - 完整 RB 算例的约束残差处在舍入水平。时间和空间相邻差在非线性时刻都单调下降；时间收敛没有给出确定阶数。
 - 热树容差在约 $10^{-10}$ 处有底噪，来源没有拆分。
