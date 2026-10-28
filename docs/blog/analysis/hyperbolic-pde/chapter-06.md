@@ -235,4 +235,4 @@ For the cubic Klein–Gordon example, we have proved local well-posedness, globa
 
     Equality holds when the tubes are disjoint up to null sets or coincide up to null sets. For partial overlap, the multiplicity is nonconstant on the union and Cauchy–Schwarz is strict.
 
-[Previous: Littlewood–Paley theory](chapter-05.md)
+[Previous: Littlewood–Paley theory](chapter-05.md) · [Next: square functions and paraproducts](chapter-07.md)
