@@ -183,6 +183,170 @@
     return element;
   }
 
+  // Original line icons for special rooms (24x24 grid). Plain strings are
+  // ink strokes; {d, a: "fill"} paints the accent fill, {d, a: "line"} an
+  // accent stroke.
+  function circlePath(cx, cy, r) {
+    return "M" + (cx - r) + " " + cy + "a" + r + " " + r + " 0 1 0 " + (2 * r) + " 0a" + r + " " + r + " 0 1 0 " + (-2 * r) + " 0Z";
+  }
+
+  function ellipsePath(cx, cy, rx, ry, degrees) {
+    var angle = degrees * Math.PI / 180;
+    var dx = Math.round(rx * Math.cos(angle) * 100) / 100;
+    var dy = Math.round(rx * Math.sin(angle) * 100) / 100;
+    var arc = "A" + rx + " " + ry + " " + degrees + " 1 0 ";
+    return "M" + (cx - dx) + " " + (cy - dy) + arc + (cx + dx) + " " + (cy + dy) + arc + (cx - dx) + " " + (cy - dy) + "Z";
+  }
+
+  var KEYHOLE = "M12 7.5a2.6 2.6 0 0 0-1.4 4.8l-.8 4.2h4.4l-.8-4.2A2.6 2.6 0 0 0 12 7.5Z";
+  var BED_FRAME = "M3 19V9.5M21 19v-4.5M3 15.5h18";
+
+  var ROOM_ICON_SHAPES = {
+    shop: [
+      "M12.6 3H5a2 2 0 0 0-2 2v7.6l9.4 9.4 9.6-9.6Z",
+      {d: circlePath(7.6, 7.6, 1.5), a: "fill"},
+      "M11.5 13.5l3-3"
+    ],
+    treasure: [
+      "M4 20h16",
+      "M4.5 16.5 3.5 7l4.8 4 3.7-5.5 3.7 5.5 4.8-4-1 9.5Z",
+      {d: circlePath(12, 13, 1.3), a: "fill"}
+    ],
+    boss: [
+      "M5 11a7 7 0 0 1 14 0v3.5l-2 1.5v3.5H7V16l-2-1.5Z",
+      {d: circlePath(9.2, 11.6, 1.6), a: "fill"},
+      {d: circlePath(14.8, 11.6, 1.6), a: "fill"},
+      "M10.4 19.5v-2.3M13.6 19.5v-2.3"
+    ],
+    miniboss: [
+      "M7.5 12.5a4.5 4.5 0 0 1 9 0v2.2l-1.3 1v2.3H8.8v-2.3l-1.3-1Z",
+      {d: circlePath(10.3, 12.8, 1), a: "fill"},
+      {d: circlePath(13.7, 12.8, 1), a: "fill"},
+      "M11 17.5v-1.3M13 17.5v-1.3"
+    ],
+    secret: [
+      circlePath(12, 12, 9),
+      KEYHOLE
+    ],
+    super_secret: [
+      circlePath(12, 12, 9),
+      KEYHOLE,
+      {d: "M19 1.8l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8Z", a: "fill"}
+    ],
+    ultra_secret: [
+      "M12 2.2 21.8 12 12 21.8 2.2 12Z",
+      {d: KEYHOLE, a: "fill"}
+    ],
+    arcade: [
+      "M5 16h14a1 1 0 0 1 1 1v3H4v-3a1 1 0 0 1 1-1Z",
+      "M12 16V9.2",
+      {d: circlePath(12, 6.6, 2.6), a: "fill"},
+      "M16.5 13.5h1"
+    ],
+    curse: [
+      "M12 20s-7.5-4.6-7.5-10A4.1 4.1 0 0 1 12 7.7 4.1 4.1 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z",
+      {d: "M12 7.7l-1.4 3.7 2.6 2-1.7 3.6", a: "line"}
+    ],
+    challenge: [
+      "M4.5 4.5 15 15M19.5 4.5 9 15",
+      "M12.5 17.5l5-5M6.5 12.5l5 5",
+      "M15.5 15.5l4 4M8.5 15.5l-4 4",
+      {d: "M4.5 4.5h2.4M4.5 4.5v2.4M19.5 4.5h-2.4M19.5 4.5v2.4", a: "line"}
+    ],
+    library: [
+      "M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5Z",
+      "M12 6.5v13",
+      {d: "M6 8.5c1.4-.1 2.7.1 3.8.6M6 11.5c1.4-.1 2.7.1 3.8.6M18 8.5c-1.4-.1-2.7.1-3.8.6", a: "line"}
+    ],
+    sacrifice: [
+      "M3.5 20h17M6 20v-4.5h12V20",
+      "M7.5 15.5 9 9l1.5 6.5M10.5 15.5 12 6l1.5 9.5M13.5 15.5 15 9l1.5 6.5",
+      {d: circlePath(12, 3.2, 0.9), a: "fill"}
+    ],
+    devil: [
+      circlePath(12, 14, 6),
+      {d: "M7.8 9.7C5.7 8.4 4.6 6 5 3.2c1.2 2 3 3.4 5.1 4.4Z", a: "fill"},
+      {d: "M16.2 9.7c2.1-1.3 3.2-3.7 2.8-6.5-1.2 2-3 3.4-5.1 4.4Z", a: "fill"},
+      "M9.2 13l1.8.8M14.8 13l-1.8.8M10 17c1.3.8 2.7.8 4 0"
+    ],
+    angel: [
+      {d: ellipsePath(12, 4.5, 4, 1.6, 0), a: "line"},
+      "M11 12.5C9 8.5 5.5 7 2.5 8c.5 2 1.6 3.4 3 4.2-1 .6-1.6 1.5-1.8 2.6 1.6.6 3.2.5 4.5-.2-.2 1.3.1 2.6.8 3.6 1.8-1.2 2.5-3.2 2-5.7Z",
+      "M13 12.5c2-4 5.5-5.5 8.5-4.5-.5 2-1.6 3.4-3 4.2 1 .6 1.6 1.5 1.8 2.6-1.6.6-3.2.5-4.5-.2.2 1.3-.1 2.6-.8 3.6-1.8-1.2-2.5-3.2-2-5.7Z"
+    ],
+    boss_rush: [
+      "M6 3h12M6 21h12",
+      "M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9",
+      {d: "M9.3 7h5.4L12 10Z", a: "fill"},
+      {d: "M9 19.5c.6-1.6 1.6-2.7 3-3.3 1.4.6 2.4 1.7 3 3.3Z", a: "fill"}
+    ],
+    isaacs: [
+      BED_FRAME,
+      {d: "M4.5 13.5v-2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2Z", a: "fill"},
+      "M11 15.5v-4a1 1 0 0 1 1-1h7a2 2 0 0 1 2 2v3"
+    ],
+    barren: [
+      BED_FRAME,
+      "M3 12.5h18",
+      "M7 12.5v3M11 12.5v3M15 12.5v3M19 12.5v3"
+    ],
+    chest: [
+      "M3.5 10h17v9.5h-17Z",
+      "M3.5 10V8a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3v2",
+      {d: "M10.5 11.5h3v3.5h-3Z", a: "fill"}
+    ],
+    dice: [
+      "M6 3.5h12A2.5 2.5 0 0 1 20.5 6v12a2.5 2.5 0 0 1-2.5 2.5H6A2.5 2.5 0 0 1 3.5 18V6A2.5 2.5 0 0 1 6 3.5Z",
+      {d: circlePath(8.3, 8.3, 1.2), a: "fill"},
+      {d: circlePath(12, 12, 1.2), a: "fill"},
+      {d: circlePath(15.7, 15.7, 1.2), a: "fill"}
+    ],
+    planetarium: [
+      {d: circlePath(12, 12, 4.8), a: "fill"},
+      ellipsePath(12, 12, 9.8, 3.2, -22),
+      {d: circlePath(19.5, 4.5, 0.6), a: "fill"}
+    ],
+    teleporter: [
+      circlePath(12, 12, 9),
+      circlePath(12, 12, 5.5),
+      {d: circlePath(12, 12, 2), a: "fill"}
+    ],
+    teleporter_exit: [
+      circlePath(10, 14, 7.5),
+      circlePath(10, 14, 3.5),
+      {d: "M12.5 11.5 20.5 3.5M15 3.5h5.5V9", a: "line"}
+    ]
+  };
+
+  function createRoomIcon(key, x, y, size) {
+    var shapes = ROOM_ICON_SHAPES[key];
+    if (!shapes) return null;
+    var icon = createSvg("svg", {
+      x: x,
+      y: y,
+      width: size,
+      height: size,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": 1.6,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "aria-hidden": "true",
+      focusable: "false",
+      "class": "zdd-isaac-room-icon",
+      "data-icon": key
+    });
+    shapes.forEach(function(shape) {
+      var spec = typeof shape === "string" ? {d: shape} : shape;
+      var attributes = {d: spec.d};
+      if (spec.a === "fill") attributes["class"] = "zdd-isaac-icon-accent";
+      if (spec.a === "line") attributes["class"] = "zdd-isaac-icon-accent-line";
+      icon.appendChild(createSvg("path", attributes));
+    });
+    return icon;
+  }
+
   function roomName(room) {
     if (room.generation_index === 0) return "Start";
     return ROOM_NAMES[room.room_type] || String(room.room_type_name || "Room").replace(/^ROOM_/, "").replace(/_/g, " ");
@@ -399,16 +563,9 @@
           }));
         });
         var center = roomCenter(room);
-        var iconKey = ROOM_ICONS[room.room_type];
-        if (iconKey) {
-          group.appendChild(createSvg("image", {
-            href: new URL(iconKey + ".png", new URL(root.dataset.iconRoot, window.location.href)).href,
-            x: center.x - 14,
-            y: center.y - 14,
-            width: 28,
-            height: 28,
-            "class": "zdd-isaac-room-icon"
-          }));
+        var icon = createRoomIcon(ROOM_ICONS[room.room_type], center.x - 14, center.y - 14, 28);
+        if (icon) {
+          group.appendChild(icon);
         } else {
           var label = createSvg("text", {
             x: center.x,

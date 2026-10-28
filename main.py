@@ -407,13 +407,20 @@ def _tag_index(counts):
     for tag in sorted(counts, key=str.casefold):
         initial = tag[:1].upper()
         letters.setdefault(initial if "A" <= initial <= "Z" else "#", []).append(tag)
+    anchor = {letter: "tag-" + ("other" if letter == "#" else letter.lower()) for letter in letters}
     blocks = "".join(
-        f'<div class="zdd-tag-letter"><h2>{html.escape(letter)}</h2>'
+        f'<div class="zdd-tag-letter" id="{anchor[letter]}"><h2>{html.escape(letter)}</h2>'
         + "".join(_tag_option(tag, counts[tag]) for tag in tags) + "</div>"
         for letter, tags in letters.items()
     )
+    # a dictionary's thumb index: every letter, the empty ones greyed out
+    thumbs = "".join(
+        f'<a href="#{anchor[letter]}">{letter}</a>' if letter in letters else f'<span>{letter}</span>'
+        for letter in [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ", *(["#"] if "#" in letters else [])]
+    )
     return (f'<section class="zdd-tag-index" aria-label="标签索引">'
             f'<header class="zdd-tag-index-head"><span>Index</span><span>{len(counts)} 个标签</span></header>'
+            f'<nav class="zdd-tag-thumbs" aria-label="按首字母跳转">{thumbs}</nav>'
             f'{blocks}</section>')
 
 

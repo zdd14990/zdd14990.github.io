@@ -1,15 +1,42 @@
 /* Archive cards revealed by exact searches (zdd-story.js). */
 .xh-card {
+    --xh-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+    position: relative;
     margin: 0;
     padding: 1rem 1.15rem 1.1rem;
     border-bottom: 1px solid var(--ed-rule-strong);
     border-left: 2px solid var(--ed-accent);
-    background: var(--ed-paper-deep, var(--ed-paper));
+    /* aged paper: grain, a foxed corner and a faint fold */
+    background:
+        linear-gradient(90deg, transparent 49.6%, rgba(90, 70, 40, 0.035) 50%, transparent 50.4%),
+        radial-gradient(circle at 100% 0, rgba(150, 110, 50, 0.12), transparent 30%),
+        var(--xh-grain),
+        var(--ed-paper-deep, var(--ed-paper));
     color: var(--ed-ink);
     font-family: var(--ed-serif);
     text-align: left;
 }
+/* the file number, stamped in seal red at the corner */
+.xh-stamp {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.9rem;
+    padding: 0.18rem 0.4rem;
+    border: 1.5px solid var(--ed-accent);
+    border-radius: 2px;
+    color: var(--ed-accent);
+    font-family: var(--ed-serif);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    opacity: 0.78;
+    rotate: -7deg;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+}
+body[data-md-color-scheme="slate"] .xh-stamp { mix-blend-mode: normal; opacity: 0.7; }
 .xh-card-head {
+    padding-right: 4.2rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
@@ -72,3 +99,48 @@
 .xh-answer button:hover,
 .xh-answer button:focus-visible { border-color: var(--ed-accent); color: var(--ed-accent); }
 .xh-ending { margin-top: 1rem; padding-top: 0.6rem; border-top: 1px solid var(--ed-rule-strong); }
+
+/* First reveal in a page view: ink spreads from the left edge, the stamp
+   lands, and on the cover the torn seal strip falls away. */
+.xh-card.is-fresh { animation: xh-ink 0.9s cubic-bezier(.2, .7, .2, 1) both; }
+.xh-card.is-fresh .xh-stamp { animation: xh-stamp 0.45s 0.55s cubic-bezier(.3, 1.6, .5, 1) both; }
+.xh-card--cover::after {
+    content: "封";
+    position: absolute;
+    top: 2.6rem;
+    left: -0.4rem;
+    right: -0.4rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--xh-grain), #efe3c8;
+    color: var(--ed-accent);
+    font-family: var(--ed-serif);
+    font-size: 0.8rem;
+    letter-spacing: 1.2em;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 0;
+    pointer-events: none;
+}
+.xh-card--cover.is-fresh::after { animation: xh-tear 1.3s 0.15s ease-in both; }
+@keyframes xh-ink {
+    from { opacity: 0; filter: blur(3px); clip-path: inset(0 100% 0 0); }
+    60% { opacity: 1; filter: blur(0.6px); }
+    to { opacity: 1; filter: none; clip-path: inset(0 0 0 0); }
+}
+@keyframes xh-stamp {
+    from { opacity: 0; scale: 1.8; }
+    to { opacity: 0.78; scale: 1; }
+}
+@keyframes xh-tear {
+    0%, 30% { opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); translate: 0 0; rotate: 0deg; }
+    45% { clip-path: polygon(0 0, 46% 0, 52% 40%, 47% 100%, 0 100%); }
+    100% { opacity: 0; clip-path: polygon(0 0, 46% 0, 52% 40%, 47% 100%, 0 100%); translate: -1rem 4rem; rotate: -14deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .xh-card.is-fresh,
+    .xh-card.is-fresh .xh-stamp,
+    .xh-card--cover.is-fresh::after { animation: none; }
+}

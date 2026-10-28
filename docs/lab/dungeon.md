@@ -12,7 +12,6 @@ hide:
   id="zdd-isaac-lab"
   data-worker-url="../../javascripts/isaac-runtime-worker.mjs"
   data-runtime-manifest="../../assets/isaac-runtime.json"
-  data-icon-root="../../assets/isaac-icons/"
 >
   <header class="zdd-isaac-page-intro">
     <h1 id="isaac-map-lab">Isaac Map Lab</h1>

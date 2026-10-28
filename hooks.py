@@ -176,6 +176,8 @@ def on_page_markdown(markdown, page, config, files):
     for asset in assets:
         if asset not in registry:
             raise ValueError(f"{source}: unknown page asset {asset!r}")
+    if source.startswith("lab/") and "lab" in registry:
+        assets = ["lab", *assets]  # every lab page shares the playground styles
     page.meta["zdd_assets"] = list(dict.fromkeys(assets))
     if source.startswith("blog/") and not source.endswith("index.md"):
         page.meta.update(normalize_metadata(page.meta, source))

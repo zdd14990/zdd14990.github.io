@@ -95,6 +95,7 @@
   }
 
   function updateReadingProgress() {
+    if (!document.body.classList.contains("article-layout")) return;
     var progressBar = ensureReadingProgress();
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;

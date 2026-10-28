@@ -84,15 +84,24 @@
     return String(html || "").split("{{XH_BASE}}").join(siteBase);
   }
 
+  var revealed = {};
+  function fresh(key) {
+    if (revealed[key]) return "";
+    revealed[key] = true;
+    return " is-fresh";
+  }
+
   function renderCard(payload) {
     if (payload.kind === "ending") {
-      return '<section class="xh-card xh-card--ending" aria-label="西荒档案 结局">'
+      return '<section class="xh-card xh-card--ending' + fresh("ending:" + payload.title) + '" aria-label="西荒档案 结局">'
         + '<header class="xh-card-head"><span>西荒档案 · 结局</span></header>'
         + '<h3 class="xh-card-title">' + escapeHtml(payload.title) + '</h3>'
         + '<div class="xh-card-body">' + withBase(payload.html) + '</div></section>';
     }
     var label = payload.kind === "cover" ? escapeHtml(payload.no) : escapeHtml(payload.no) + ' / ' + payload.total;
-    var html = '<section class="xh-card" aria-label="西荒档案 ' + escapeHtml(payload.no) + '">'
+    var stamp = payload.kind === "cover" ? "卷首" : escapeHtml(payload.no);
+    var html = '<section class="xh-card' + (payload.kind === "cover" ? " xh-card--cover" : "") + fresh("card:" + payload.no) + '" aria-label="西荒档案 ' + escapeHtml(payload.no) + '">'
+      + '<span class="xh-stamp" aria-hidden="true">' + stamp + '</span>'
       + '<header class="xh-card-head"><span>西荒档案 · ' + label + '</span>'
       + '<span class="xh-card-form">' + escapeHtml(payload.form) + '</span></header>'
       + '<h3 class="xh-card-title">' + escapeHtml(payload.title) + '</h3>'

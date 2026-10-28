@@ -188,6 +188,12 @@ body .zdd-header-nav a {
 
 body .zdd-header-nav a:hover,
 body .zdd-header-search:hover { color: var(--ed-accent) !important; }
+body .zdd-header-nav a[aria-current] {
+    text-decoration: underline;
+    text-decoration-color: var(--ed-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.5em;
+}
 
 body .md-content,
 body.article-layout .md-content {
@@ -980,3 +986,63 @@ body .md-typeset .zdd-404-only .zdd-404-text {
 body .md-typeset .zdd-404-only .zdd-404-links { margin: 0; font-family: var(--ed-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; }
 body .md-typeset .zdd-404-only .zdd-404-links a { color: var(--ed-ink); margin: 0 0.6rem; }
 body .md-typeset .zdd-404-only .zdd-404-links a:hover { color: var(--ed-accent); }
+
+/* ---------- Art: wordmark, colophon, drop cap, 404 shelf, lamplight ---------- */
+/* The wordmark is the logo and the link home. */
+body .md-header .zdd-wordmark { text-decoration: none !important; }
+body .md-header .zdd-wordmark:hover { color: var(--ed-accent) !important; }
+
+/* End of an article: a rule and 完. */
+body .md-typeset .zdd-colophon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    margin: 3.2rem 0 0;
+    color: var(--ed-muted);
+    font-family: var(--ed-serif);
+    font-size: 0.86em;
+    letter-spacing: 0.3em;
+}
+body .md-typeset .zdd-colophon::before { content: ""; flex: 0 0 3rem; height: 1px; background: var(--ed-rule-strong); }
+
+/* First paragraph after a chapter opener: a two-line drop initial. */
+body.article-layout .md-typeset .book-opener + p::first-letter {
+    float: left;
+    margin: 0.12em 0.14em 0 0;
+    color: var(--ed-accent);
+    font-family: var(--ed-serif);
+    font-size: 3.3em;
+    font-weight: 900;
+    line-height: 0.9;
+}
+
+/* 404: a shelf with one book missing (two masks: ink and accent). */
+body .md-typeset .zdd-404-only .zdd-404-art { position: relative; width: min(320px, 80vw); aspect-ratio: 260 / 150; margin-bottom: -1.4rem; }
+body .md-typeset .zdd-404-only .zdd-404-art span { position: absolute; inset: 0; -webkit-mask: var(--art) center / contain no-repeat; mask: var(--art) center / contain no-repeat; }
+body .md-typeset .zdd-404-only .zdd-404-art .is-ink { --art: url("../assets/art/shelf-gap-ink.svg"); background: var(--ed-ink); }
+body .md-typeset .zdd-404-only .zdd-404-art .is-accent { --art: url("../assets/art/shelf-gap-accent.svg"); background: var(--ed-accent); animation: zdd-404-leaf 6s ease-in-out infinite; }
+@keyframes zdd-404-leaf { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@media (prefers-reduced-motion: reduce) { body .md-typeset .zdd-404-only .zdd-404-art .is-accent { animation: none; } }
+
+/* Paper grain on both themes; in dark mode a warm lamplight falloff
+   instead of a flat dark fill. A fixed overlay (the body's own background
+   would hide anything behind it) that is faint enough to read through and
+   never takes the pointer. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .11 0 0 0 0 .1 0 0 0 0 .09 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.07;
+}
+body[data-md-color-scheme="slate"]::before {
+    background-image:
+        radial-gradient(ellipse 80% 70% at 50% 30%, rgba(224, 160, 95, 0.035), transparent 70%),
+        radial-gradient(ellipse 120% 100% at 50% 40%, transparent 60%, rgba(0, 0, 0, 0.22)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .9 0 0 0 0 .82 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 1;
+}
+@media print { body::before { display: none; } }

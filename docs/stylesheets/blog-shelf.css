@@ -2,6 +2,13 @@
    Behaviour lives in blog-shelf.js; without it the catalog stays nested <details>. */
 
 /* ===== 1. The library: an overview of shelves as strips, and one view per shelf ===== */
+/* blog-shelf.js rebuilds the nested <details> catalog into the library; keep the
+   plain catalog from painting first. If the script never runs it shows anyway. */
+html.zdd-js body.blog-index-layout .zdd-blog-catalog:not(.is-library) {
+    visibility: hidden;
+    animation: zdd-catalog-fallback 0s 2.5s forwards;
+}
+@keyframes zdd-catalog-fallback { to { visibility: visible; } }
 /* Folders are rebuilt into the views below; without the script they stay as <details>. */
 body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library > .zdd-catalog-folder { display: none !important; }
 body.blog-index-layout .md-typeset .zdd-blog-catalog.is-library { display: block !important; }
@@ -214,6 +221,14 @@ body.blog-index-layout .md-typeset .zdd-catalog-folder.is-shelved > .zdd-folder-
     overflow-wrap: anywhere;
 }
 .zdd-cover-rule { width: 1.6rem; height: 2px; margin-top: 0.6rem; background: var(--ed-accent); }
+/* the subject's line drawing between title and foot (blog-shelf.js) */
+.zdd-cover-motif { display: block; flex: 1 1 auto; min-height: 0; margin: 0.7rem 0 0.5rem; color: var(--ed-muted); }
+.zdd-cover-motif svg { display: block; width: 100%; height: 100%; max-height: 5.2rem; overflow: visible; }
+.zdd-cover-motif .is-fill { fill: currentColor; stroke: none; }
+.zdd-cover-motif .is-accent { stroke: var(--ed-accent); stroke-width: 1.3; }
+.zdd-cover-motif .is-accent-fill { fill: var(--ed-accent); stroke: none; }
+.zdd-cover:hover .zdd-cover-motif,
+.zdd-cover[aria-expanded="true"] .zdd-cover-motif { color: var(--ed-ink-soft); }
 .zdd-cover-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem; margin-top: auto; }
 .zdd-cover-count { font-family: var(--ed-serif); font-size: 1.7rem; font-weight: 300; line-height: 1; font-variant-numeric: lining-nums; }
 .zdd-cover-count small { margin-left: 0.3em; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.1em; }
@@ -333,7 +348,7 @@ body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-conte
 /* ===== 4. Tags: one alphabetical index ===== */
 body .md-typeset .zdd-tag-cloud:has(.zdd-tag-index) { display: block !important; max-width: 52rem; margin: 2rem auto 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
 body .md-typeset .zdd-tag-index {
-    columns: 4 12.5rem;
+    columns: 3 13.5rem;
     column-gap: 2.4rem;
     column-rule: 1px solid var(--ed-rule);
     padding: 1rem 0 1.6rem;
@@ -350,18 +365,52 @@ body .md-typeset .zdd-tag-index-head {
     letter-spacing: 0.14em;
     text-transform: uppercase;
 }
-body .md-typeset .zdd-tag-letter { break-inside: avoid; padding-bottom: 0.55rem; }
-body .md-typeset .zdd-tag-letter h2 {
-    margin: 0 0 0.1rem !important;
-    padding: 0 !important;
+/* the thumb index: A–Z across the top, letters with no tags greyed out */
+body .md-typeset .zdd-tag-thumbs {
+    column-span: all;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(1.7rem, 1fr));
+    margin: 0 0 1.4rem;
+    border-top: 1px solid var(--ed-rule);
+    border-bottom: 1px solid var(--ed-rule);
+    font-family: var(--ed-serif);
+    font-size: 0.78rem;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-thumbs :is(a, span) {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0.35rem 0 !important;
     border: 0 !important;
+    border-radius: 0 !important;
+    background: none;
+    font-family: var(--ed-serif) !important;
+    font-size: 0.82rem !important;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none !important;
+}
+body .md-typeset .zdd-tag-cloud .zdd-tag-thumbs a { color: var(--ed-ink) !important; font-weight: 900 !important; }
+body .md-typeset .zdd-tag-cloud .zdd-tag-thumbs a:hover { background: var(--ed-accent) !important; color: var(--ed-paper) !important; }
+body .md-typeset .zdd-tag-thumbs span { color: var(--ed-rule-strong); opacity: 0.25; }
+
+/* entries run down a column, then on to the next, as in a dictionary */
+body .md-typeset .zdd-tag-letter { break-inside: avoid; padding-bottom: 0.9rem; scroll-margin-top: 4.5rem; }
+body .md-typeset .zdd-tag-letter h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0 0 0.35rem !important;
+    padding: 0 0 0.2rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--ed-rule-strong) !important;
     color: var(--ed-accent) !important;
     font-family: var(--ed-serif);
-    font-size: 0.95rem !important;
+    font-size: 1.5rem !important;
     font-weight: 900;
-    line-height: 1.6;
+    line-height: 1.2;
     letter-spacing: 0;
 }
+body .md-typeset .zdd-tag-letter:target h2 { background: color-mix(in srgb, var(--ed-accent) 8%, transparent); }
 body .md-typeset .zdd-tag-cloud .zdd-tag-letter a {
     display: flex !important;
     align-items: flex-start;

@@ -95,12 +95,14 @@ updated: 2026-09-07
 
 ### 样式与资源
 
-- `docs/stylesheets/theme-tokens.css` 集中定义主题颜色；`site-layout.css` 负责页面背景和文章表面。
+- `docs/stylesheets/theme-tokens.css` 只保留共享 `--zdd-*` 变量的纸墨色回退值，实际配色由 `editorial.css` 的 `--ed-*` 统一映射；`site-layout.css` 负责页面背景和文章表面。
 - `docs/stylesheets/article-toc.css` 负责侧栏目录、手机目录弹窗和文章锚点间距。
 - `docs/stylesheets/solid-background.css` 保留导航和页眉配色；`extra.css` 保留既有组件样式。
 - `docs/stylesheets/reading.css` 负责固定正文排版、日期、表格和图片弹窗。
 - MathJax 仅在具有公式的页面和需要动态公式的实验工具中加载；含公式摘要的文章目录也会加载。
 - `docs/stylesheets/editorial.css` 最后加载，定义全站纸墨配色、衬线排版、章首页、编号定理与插图；文章结构由 `book_layout.py` 在构建时生成。
+- 页眉不放图形 logo，`zdd14990` 字标本身就是回首页的链接；顶部阅读进度条只在文章页出现。404 页的“缺一册的书架”插画在 `docs/assets/art/`，以 CSS mask 着色，深浅模式通用。
+- 书架页每本书的封面纹样由 `blog-shelf.js` 按书架学科生成，以书名作随机种子；Lab 的 `knowledge-playground.css` 通过 `page_assets` 按页加载（Lab 页由 `hooks.py` 自动附加 `lab`）；`blog-shelf.css/js` 仍全站加载，前者还包含标签索引和进出文章的过渡，后者要在首次绘制前把目录改成书架。
 - 正文字体为思源宋体（Noto Serif SC），经 jsDelivr 的 `@fontsource/noto-serif-sc` 按 unicode-range 分片加载，不可用时回落到系统宋体。
 
 ### CI 构建检查

@@ -64,8 +64,8 @@
   // Shelf and book, linking back to them on /blog/ (set by hooks.py from the catalog).
   var place = [];
   try { place = JSON.parse(header.getAttribute("data-zdd-place") || "[]"); } catch (error) {}
-  var logo = document.querySelector(".md-header__button.md-logo");
-  var blogRoot = new URL("blog/", logo ? logo.href : location.href).href;
+  var home = document.querySelector(".zdd-wordmark");
+  var blogRoot = new URL("blog/", home ? home.href : location.href).href;
   if (bar && title) {
     run = document.createElement("nav");
     run.className = "zdd-runhead";

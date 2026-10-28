@@ -14,7 +14,6 @@ import zipfile
 
 PYODIDE_VERSION = "314.0.5"
 EXPECTED_RESOURCE_FILES = 13
-EXPECTED_ICON_FILES = 22
 
 
 def _run(*args: str, cwd: Path) -> str:
@@ -88,38 +87,15 @@ def build_runtime(source: Path, output_dir: Path) -> dict[str, object]:
             if name.startswith("isaacmap/data/resources/")
             and not name.endswith("/")
         ]
-        icon_files = [
-            name
-            for name in names
-            if name.startswith("isaacmap/data/icons/") and name.endswith(".png")
-        ]
         if len(resource_files) != EXPECTED_RESOURCE_FILES:
             raise RuntimeError(
                 f"expected {EXPECTED_RESOURCE_FILES} resources, found {len(resource_files)}"
-            )
-        if len(icon_files) != EXPECTED_ICON_FILES:
-            raise RuntimeError(
-                f"expected {EXPECTED_ICON_FILES} icons, found {len(icon_files)}"
             )
 
         output_dir.mkdir(parents=True, exist_ok=True)
         wheel_name = f"isaacmap-runtime-{commit[:8]}.whl"
         destination = output_dir / wheel_name
         shutil.copy2(built_wheel, destination)
-
-    source_icons = source / "src" / "isaacmap" / "data" / "icons"
-    icon_destination = output_dir / "isaac-icons"
-    icon_destination.mkdir(parents=True, exist_ok=True)
-    expected_icon_names = {path.name for path in source_icons.glob("*.png")}
-    if len(expected_icon_names) != EXPECTED_ICON_FILES:
-        raise RuntimeError(
-            f"expected {EXPECTED_ICON_FILES} source icons, found {len(expected_icon_names)}"
-        )
-    for existing in icon_destination.glob("*.png"):
-        if existing.name not in expected_icon_names:
-            existing.unlink()
-    for icon in source_icons.glob("*.png"):
-        shutil.copy2(icon, icon_destination / icon.name)
 
     manifest = {
         "schema_version": 1,
@@ -130,7 +106,6 @@ def build_runtime(source: Path, output_dir: Path) -> dict[str, object]:
         "wheel_bytes": destination.stat().st_size,
         "wheel_sha256": _sha256(destination),
         "resource_files": len(resource_files),
-        "icon_files": len(icon_files),
     }
     (output_dir / "isaac-runtime.json").write_text(
         json.dumps(manifest, indent=2) + "\n",

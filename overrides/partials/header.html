@@ -3,9 +3,6 @@
 {% set current_url = page.url if page and page.url else "" %}
 <header class="{{ class }}" data-md-component="header"{% if page and page.meta.zdd_place %} data-zdd-place='{{ page.meta.zdd_place | tojson }}'{% endif %}>
   <nav class="md-header__inner md-grid" aria-label="{{ lang.t('header') }}">
-    <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}" title="{{ config.site_name | e }}" class="md-header__button md-logo" aria-label="{{ config.site_name }}" data-md-component="logo">
-      {% include "partials/logo.html" %}
-    </a>
     <label class="md-header__button md-icon" for="__drawer">
       {% set icon = config.theme.icon.menu or "material/menu" %}
       {% include ".icons/" ~ icon ~ ".svg" %}
@@ -13,9 +10,8 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            {{ config.site_name }}
-          </span>
+          {# The wordmark is the logo: no picture, the name links home. #}
+          <a class="md-ellipsis zdd-wordmark" href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}" title="{{ config.site_name | e }}">{{ config.site_name }}</a>
         </div>
       </div>
     </div>
@@ -27,21 +23,14 @@
     {% if not config.theme.palette is mapping %}
       {% include "partials/javascripts/palette.html" %}
     {% endif %}
+    {# The same five entries everywhere; the current section is marked, not removed. #}
+    {% set section = 'home' if page and page.is_homepage else 'blog' if current_url.startswith('blog/') else 'tags' if current_url.startswith('tags/') else 'friends' if current_url.startswith('friends/') else '' %}
     <div class="zdd-header-nav" aria-label="Primary navigation">
-      {% if not page or not page.is_homepage %}
-        <a href="{{ 'index.html' | url }}">Home</a>
-      {% endif %}
-      {% if current_url not in ['blog/', 'blog/index.html'] %}
-        <a href="{{ 'blog/' | url }}" data-zdd-nav="blog">Blog</a>
-      {% endif %}
-      {% if not current_url.startswith('tags/') %}
-        <a href="{{ 'tags/' | url }}" data-zdd-nav="tags">Tags</a>
-      {% endif %}
-      {% if page and page.is_homepage %}
-        <a href="{{ 'friends/friends/' | url }}" data-zdd-nav="friends">Friends</a>
-      {% else %}
-        <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
-      {% endif %}
+      <a href="{{ 'index.html' | url }}" data-zdd-nav="home"{% if section == 'home' %} aria-current="page"{% endif %}>Home</a>
+      <a href="{{ 'blog/' | url }}" data-zdd-nav="blog"{% if section == 'blog' %} aria-current="{{ 'page' if current_url in ['blog/', 'blog/index.html'] else 'true' }}"{% endif %}>Blog</a>
+      <a href="{{ 'tags/' | url }}" data-zdd-nav="tags"{% if section == 'tags' %} aria-current="page"{% endif %}>Tags</a>
+      <a href="{{ 'friends/friends/' | url }}" data-zdd-nav="friends"{% if section == 'friends' %} aria-current="page"{% endif %}>Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
     </div>
   </nav>
 </header>

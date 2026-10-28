@@ -9,8 +9,8 @@
   // Header menu order; moving between these slides sideways instead of up or down.
   var SECTIONS = ["", "blog/", "tags/", "friends/friends/"];
   function section(path) {
-    var logo = document.querySelector(".md-header__button.md-logo");
-    var root = norm(new URL(logo ? logo.href : "/", location.href).pathname);
+    var home = document.querySelector(".zdd-wordmark");
+    var root = norm(new URL(home ? home.href : "/", location.href).pathname);
     return path.indexOf(root) === 0 ? SECTIONS.indexOf(path.slice(root.length)) : -1;
   }
 
