@@ -1,0 +1,1916 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第三章：差分分析的原理与攻击模型、CipherFour 的差分路线与密钥恢复、信噪比与成功率、截断差分、飞去来器与矩形攻击、不可能差分、相关密钥差分。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-03-differential-cryptanalysis/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第三章：分组密码的差分分析及相关分析方法 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-03-differential-cryptanalysis/">
+  <meta property="og:title" content="第三章：分组密码的差分分析及相关分析方法 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第三章：差分分析的原理与攻击模型、CipherFour 的差分路线与密钥恢复、信噪比与成功率、截断差分、飞去来器与矩形攻击、不可能差分、相关密钥差分。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-03-differential-cryptanalysis/">
+  <meta name="twitter:title" content="第三章：分组密码的差分分析及相关分析方法 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第三章：差分分析的原理与攻击模型、CipherFour 的差分路线与密钥恢复、信噪比与成功率、截断差分、飞去来器与矩形攻击、不可能差分、相关密钥差分。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e09\u7ae0\uff1a\u5206\u7ec4\u5bc6\u7801\u7684\u5dee\u5206\u5206\u6790\u53ca\u76f8\u5173\u5206\u6790\u65b9\u6cd5",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e09\u7ae0\uff1a\u5dee\u5206\u5206\u6790\u7684\u539f\u7406\u4e0e\u653b\u51fb\u6a21\u578b\u3001CipherFour \u7684\u5dee\u5206\u8def\u7ebf\u4e0e\u5bc6\u94a5\u6062\u590d\u3001\u4fe1\u566a\u6bd4\u4e0e\u6210\u529f\u7387\u3001\u622a\u65ad\u5dee\u5206\u3001\u98de\u53bb\u6765\u5668\u4e0e\u77e9\u5f62\u653b\u51fb\u3001\u4e0d\u53ef\u80fd\u5dee\u5206\u3001\u76f8\u5173\u5bc6\u94a5\u5dee\u5206\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-03-differential-cryptanalysis/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-03-differential-cryptanalysis/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 差分分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 差分分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 差分分析原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 各部件的差分传播
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 差分路线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 差分与差分路线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 5 轮 CipherFour 的密钥恢复攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 信噪比与成功率
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 截断差分分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 截断差分分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 截断差分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 5 轮 CipherFour 的截断差分分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 飞去来器攻击与矩形攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 飞去来器攻击与矩形攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 飞去来器攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 增强的飞去来器攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 矩形攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 不可能差分分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 不可能差分分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 不可能差分原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Feistel 结构的不可能差分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 相关密钥差分分析
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 3 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">03</div>
+    <h1 id="top"><span class="book-visually-hidden">第 3 章：</span>分组密码的差分分析及相关分析方法</h1>
+  </div>
+  <p class="book-standfirst">差分分析利用满足特定输入差分 <span class="arithmatex">\(\Delta X\)</span> 的明文对，经过若干轮加密后输出差分 <span class="arithmatex">\(\Delta Y\)</span> 分布的不均匀性来构造区分器，进而恢复密钥。本章的几种方法都是这个思路的变形：截断差分把单个差分值放宽为集合；飞去来器与矩形攻击把两条短轮数的高概率差分“错位”拼接起来；不可能差分则反其道而行之，利用概率为 <span class="arithmatex">\(0\)</span> 的差分。最后讨论相关密钥差分。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>10,087 字 · 约 29 分钟</span>
+  </div>
+  
+</header>
+
+<p>实际使用的分组密码大多是迭代密码，即反复调用同一个轮函数 <span class="arithmatex">\(F\)</span>：</p>
+<div class="arithmatex">\[
+P\xrightarrow{F(\cdot,K_0)}\cdot\xrightarrow{F(\cdot,K_1)}\cdots\xrightarrow{F(\cdot,K_{r-1})}C,
+\]</div>
+<p>因此寻找区分器也从 <span class="arithmatex">\(F\)</span> 内部各部件的不随机性质入手。全章的例子都基于 CipherFour，其 S 盒、比特置换与轮结构见<a href="../appendix-algorithms/#cipherfour">算法附录</a>。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>差分分析</h2>
+<p>差分分析由 Biham 和 Shamir 于 1990 年在美密会 (CRYPTO) 上公开提出。事实上 NSA 在 1970 年代设计 DES 时就已经考虑了如何抵抗差分分析。如今它是衡量分组密码安全性的基本指标，也用于杂凑函数和流密码的分析。</p>
+<h3 id="s1-1">1.1 差分分析原理</h3>
+<p>先看一个最简单的“加密” <span class="arithmatex">\(C=P\oplus K\)</span>。对同一密钥下的一对明文 <span class="arithmatex">\((P,P')\)</span>，</p>
+<div class="arithmatex">\[
+C\oplus C'=(P\oplus K)\oplus(P'\oplus K)=P\oplus P'.
+\]</div>
+<p>密钥在异或中被抵消了！于是我们不必知道密钥，就能从明文对的异或值直接得到密文对的异或值。差分分析正是把这一现象推广到整个密码。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">差分值</span></p>
+<p>设 <span class="arithmatex">\(X,X'\)</span> 是两个长度为 <span class="arithmatex">\(n\)</span> 的比特串，称 <span class="arithmatex">\(\Delta X=X\oplus X'\)</span> 为 <span class="arithmatex">\(X\)</span> 与 <span class="arithmatex">\(X'\)</span> 的<strong>差分值</strong>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>差分的定义并不唯一，取决于密钥以何种运算介入。分组密码中密钥多以异或介入，故多用异或差分；若密钥以模加介入，即 <span class="arithmatex">\(Y=X+K\pmod{2^n}\)</span>，则用模减差分</p>
+<div class="arithmatex">\[
+\Delta Y=Y'-Y=(X'+K)-(X+K)=X'-X\pmod{2^n}
+\]</div>
+<p>同样能消去密钥。例如 <span class="arithmatex">\(X'=1001\mathrm B\)</span>，<span class="arithmatex">\(X=0011\mathrm B\)</span> 时，<span class="arithmatex">\(X\oplus X'=1010\mathrm B\)</span>，而 <span class="arithmatex">\(X'-X=0110\mathrm B\)</span>。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span><span class="book-name"><span class="arithmatex">\(i\)</span> 轮差分</span></p>
+<p>设 <span class="arithmatex">\(\beta_0,\beta_i\in\{0,1\}^n\)</span>。若输入对 <span class="arithmatex">\((X,X')\)</span> 满足 <span class="arithmatex">\(\Delta X=\beta_0\)</span>，经过 <span class="arithmatex">\(i\)</span> 轮加密后输出对 <span class="arithmatex">\((Y,Y')\)</span> 满足 <span class="arithmatex">\(\Delta Y=\beta_i\)</span>，则称 <span class="arithmatex">\(\beta_0\xrightarrow{i\text{ 轮}}\beta_i\)</span> 为一个 <strong><span class="arithmatex">\(i\)</span> 轮差分 (<span class="arithmatex">\(i\)</span>-round differential)</strong>。解密方向可类似定义。</p>
+</div>
+<p>由于非线性部件的存在，<span class="arithmatex">\(i\)</span> 轮差分一般不会以概率 <span class="arithmatex">\(1\)</span> 出现，因此我们关心的是它的概率。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span><span class="book-name"><span class="arithmatex">\(i\)</span> 轮差分概率</span></p>
+<p>设输入 <span class="arithmatex">\(X\)</span> 以及轮密钥 <span class="arithmatex">\(K_1,\cdots,K_i\)</span> 相互独立且均匀分布。满足 <span class="arithmatex">\(\Delta X=\beta_0\)</span> 的输入对经过 <span class="arithmatex">\(i\)</span> 轮后满足 <span class="arithmatex">\(\Delta Y=\beta_i\)</span> 的概率，称为 <span class="arithmatex">\(i\)</span> 轮差分的概率，记为 <span class="arithmatex">\(\mathrm{DP}(\beta_0\xrightarrow{i\text{ 轮}}\beta_i)\)</span>。</p>
+<p>把“<span class="arithmatex">\(i\)</span> 轮运算”换成轮函数 <span class="arithmatex">\(F\)</span> 或若干连续部件的复合，就得到相应部件的差分与差分概率。</p>
+</div>
+<p>对理想分组密码，即随机置换，固定输入差分 <span class="arithmatex">\(\alpha\)</span> 后，输出差分 <span class="arithmatex">\(\beta\)</span> 在 <span class="arithmatex">\(2^n\)</span> 种取值上（近似）均匀分布，即 <span class="arithmatex">\(\mathrm{DP}(\alpha\to\beta)\approx 2^{-n}\)</span>。（严格地说，<span class="arithmatex">\(\alpha\ne0\)</span> 时 <span class="arithmatex">\(\beta=0\)</span> 不可能出现，非零 <span class="arithmatex">\(\beta\)</span> 的概率是 <span class="arithmatex">\(1/(2^n-1)\)</span>。）所以构造差分区分器的关键就是找到</p>
+<div class="arithmatex">\[
+\mathrm{DP}(\alpha\xrightarrow{i\text{ 轮}}\beta)&gt;2^{-n}
+\]</div>
+<p>的高概率差分。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.4</span><span class="book-name">差分分析的基本原理</span></p>
+<p>差分分析是<strong>选择明文攻击</strong>。</p>
+<ol>
+<li>研究满足输入差分 <span class="arithmatex">\(\alpha\)</span> 的明文对经过若干轮后输出差分 <span class="arithmatex">\(\beta\)</span> 的不均匀性，建立 <span class="arithmatex">\(i\)</span> 轮区分器；</li>
+<li>在区分器头部或尾部添加若干轮，确定与头尾差分相关的密钥比特，即待恢复的密钥集合 <span class="arithmatex">\(\widetilde K\)</span>；</li>
+<li>利用明文对、密文对与 <span class="arithmatex">\((\alpha,\beta)\)</span> 建立关于 <span class="arithmatex">\(\widetilde K\)</span> 的方程或约束，分割密钥空间。</li>
+</ol>
+</div>
+<p>在区分器尾部添加 <span class="arithmatex">\(r-i\)</span> 轮时，对正确的 <span class="arithmatex">\(\widetilde K\)</span>，由 <span class="arithmatex">\((C_r,C_r')\)</span> 部分解密得到的 <span class="arithmatex">\((C_i,C_i')\)</span> 满足 <span class="arithmatex">\(C_i\oplus C_i'=\beta\)</span> 的概率接近 <span class="arithmatex">\(\mathrm{DP}(\alpha\to\beta)\)</span>；而对错误的 <span class="arithmatex">\(\widetilde K\)</span>，解密出的 <span class="arithmatex">\((C_i,C_i')\)</span> 可以看作随机的，<span class="arithmatex">\(\Pr(C_i\oplus C_i'=\beta)\approx2^{-n}\)</span>。由此得到一般的攻击模型。</p>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.5</span><span class="book-name">差分分析的攻击模型</span></p>
+<p>设 <span class="arithmatex">\(\mathrm{DP}(\alpha,\beta)=p&gt;2^{-n}\)</span>，<span class="arithmatex">\(|\widetilde K|=2^k\)</span>。对 <span class="arithmatex">\(\widetilde K\)</span> 的每个可能取值设置一个计数器，初始化为 <span class="arithmatex">\(0\)</span>。</p>
+<ol>
+<li><strong>采样</strong>：选择约 <span class="arithmatex">\(m\approx c/p\)</span> 对满足输入差分 <span class="arithmatex">\(\alpha\)</span> 的明文，获得相应密文，<span class="arithmatex">\(c\)</span> 为常数；</li>
+<li><strong>去噪</strong>：根据 <span class="arithmatex">\(\beta\)</span> 对密文对作初步过滤；</li>
+<li><strong>恢复密钥</strong>：对每个保留下来的密文对，建立关于 <span class="arithmatex">\(\widetilde K\)</span> 的方程，将每个解对应的计数器 <span class="arithmatex">\(+1\)</span>。全部处理完后按计数从大到小排序，取前 <span class="arithmatex">\(2^{k-a}\)</span> 个作为候选，再穷举确定正确密钥。</li>
+</ol>
+</div>
+<p>这样求出的通常只是部分密钥比特，但已经分割了密钥空间：剩下的比特可以换一个区分器继续求，或者直接穷举，再借助密钥编排恢复主密钥。只要总复杂度低于穷举，就算是攻破了算法。</p>
+<h3 id="s1-2">1.2 各部件的差分传播</h3>
+<p>下面以 CipherFour 为例，逐个分析差分经过 S 盒、比特置换 <span class="arithmatex">\(P\)</span> 和异或密钥 (AK) 的传播情况，再把它们链接起来。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.6</span><span class="book-name">S 盒的差分传播</span></p>
+<p>设 <span class="arithmatex">\(S:\mathbb F_2^m\to\mathbb F_2^n\)</span>，<span class="arithmatex">\(\alpha\in\{0,1\}^m\)</span>，<span class="arithmatex">\(\beta\in\{0,1\}^n\)</span>。记</p>
+<div class="arithmatex">\[
+\mathrm{IN}_S(\alpha,\beta)=\{X\in\mathbb F_2^m:S(X)\oplus S(X\oplus\alpha)=\beta\},\qquad N_S(\alpha,\beta)=\#\mathrm{IN}_S(\alpha,\beta),
+\]</div>
+<p>则 <span class="arithmatex">\(\alpha\xrightarrow{S}\beta\)</span> 的差分传播概率为</p>
+<div class="arithmatex">\[
+\mathrm{DP}(\alpha\xrightarrow{S}\beta)=\frac{N_S(\alpha,\beta)}{2^m}.
+\]</div>
+<p>以 <span class="arithmatex">\(\alpha\)</span> 为行标、<span class="arithmatex">\(\beta\)</span> 为列标、<span class="arithmatex">\(N_S(\alpha,\beta)\)</span> 为元素的 <span class="arithmatex">\(2^m\times2^n\)</span> 表称为<strong>差分分布表 (Differential Distribution Table, DDT)</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.7</span></p>
+<p>CipherFour 的 S 盒为</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(S(x)\)</span></td>
+<td>6</td>
+<td>4</td>
+<td>C</td>
+<td>5</td>
+<td>0</td>
+<td>7</td>
+<td>2</td>
+<td>E</td>
+<td>1</td>
+<td>F</td>
+<td>3</td>
+<td>D</td>
+<td>8</td>
+<td>A</td>
+<td>9</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<p>求 <span class="arithmatex">\(N_S(\mathrm{0x2},\mathrm{0x2})\)</span>。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>输入只有 4 比特，穷举 16 个满足 <span class="arithmatex">\(\alpha=\mathrm{0x2}\)</span> 的明文对 <span class="arithmatex">\((\mathrm{0x0},\mathrm{0x2}),(\mathrm{0x1},\mathrm{0x3}),\cdots\)</span> 即可。例如 <span class="arithmatex">\(S(\mathrm{0x0})\oplus S(\mathrm{0x2})=\mathrm{0x6}\oplus\mathrm{0xC}=\mathrm{0xA}\)</span>，<span class="arithmatex">\(S(\mathrm{0x1})\oplus S(\mathrm{0x3})=\mathrm{0x1}\)</span>。逐一验证可得 <span class="arithmatex">\(N_S(\mathrm{0x2},\mathrm{0x2})=6\)</span>，即</p>
+<div class="arithmatex">\[
+\mathrm{DP}(\mathrm{0x2}\xrightarrow{S}\mathrm{0x2})=\frac{6}{16}=\frac38&gt;\frac1{16}.
+\]</div>
+</details>
+<p>对每个 <span class="arithmatex">\(\alpha\)</span> 遍历 <span class="arithmatex">\(X\)</span>，计算 <span class="arithmatex">\(S(X)\oplus S(X\oplus\alpha)\)</span> 并累加，就得到完整的差分分布表：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(\alpha\backslash\beta\)</span></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0</strong></td>
+<td>16</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>0</td>
+<td>6</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>8</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>9</strong></td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>C</strong></td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>D</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+</tr>
+<tr>
+<td><strong>E</strong></td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+</tr>
+<tr>
+<td><strong>F</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>10</td>
+<td>0</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>注意到：</p>
+<ul>
+<li>对任意 S 盒，<span class="arithmatex">\(\mathrm{DP}(0\xrightarrow{S}0)=1\)</span>，<span class="arithmatex">\(\mathrm{DP}(0\xrightarrow{S}\beta)=0\ (\beta\ne0)\)</span>；若 S 盒是双射，还有 <span class="arithmatex">\(\mathrm{DP}(\alpha\xrightarrow{S}0)=0\ (\alpha\ne0)\)</span>。</li>
+<li>若 <span class="arithmatex">\(N_S(\alpha,\beta)=0\)</span>，称该差分不可能，记为 <span class="arithmatex">\(\alpha\overset{S}{\not\to}\beta\)</span>，例如 <span class="arithmatex">\(\mathrm{0x1}\overset{S}{\not\to}\mathrm{0x1}\)</span>。</li>
+<li>表中最大值为 <span class="arithmatex">\(10\)</span>，故 CipherFour 的 S 盒最大差分传播概率为 <span class="arithmatex">\(\mathrm{DP}(\mathrm{0xF}\xrightarrow{S}\mathrm{0xD})=10/16=5/8\)</span>。</li>
+</ul>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.8</span></p>
+<p>为何 S 盒差分分布表中的数都是偶数？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>若 <span class="arithmatex">\(X\in\mathrm{IN}_S(\alpha,\beta)\)</span>，则 <span class="arithmatex">\(X\oplus\alpha\)</span> 也满足 <span class="arithmatex">\(S(X\oplus\alpha)\oplus S(X)=\beta\)</span>，即 <span class="arithmatex">\(X\oplus\alpha\in\mathrm{IN}_S(\alpha,\beta)\)</span>。<span class="arithmatex">\(\alpha\ne0\)</span> 时 <span class="arithmatex">\(X\ne X\oplus\alpha\)</span>，所以 <span class="arithmatex">\(\mathrm{IN}_S(\alpha,\beta)\)</span> 中的元素两两配对；<span class="arithmatex">\(\alpha=0\)</span> 时表值为 <span class="arithmatex">\(2^m\)</span> 或 <span class="arithmatex">\(0\)</span>。</p>
+</details>
+<p>再看比特置换 <span class="arithmatex">\(P\)</span>。它只改变比特位置，是线性变换，于是</p>
+<div class="arithmatex">\[
+P(X)\oplus P(X')=P(X\oplus X'),
+\]</div>
+<p>即输出差分就是输入差分经过 <span class="arithmatex">\(P\)</span> 的像。例如 <span class="arithmatex">\(P(0000\,0000\,0000\,1101)=0001\,0001\,0000\,0001\)</span>。行移位、列混合、扩展变换等线性运算也是同理。最后，异或密钥 <span class="arithmatex">\((X\oplus K_i)\oplus(X'\oplus K_i)=X\oplus X'\)</span>，差分不变。总结如下：</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.9</span><span class="book-name">差分在常见部件中的传播规则</span></p>
+<ol>
+<li><strong>线性变换差分确定</strong>：若 <span class="arithmatex">\(P\)</span> 是线性变换，则 <span class="arithmatex">\(P(X)\oplus P(X')=P(\Delta X)\)</span>。特别地，异或密钥不改变差分。</li>
+<li><strong>非线性变换差分不确定，概率由 DDT 决定</strong>：若 <span class="arithmatex">\(\Delta X=0\)</span>，则 <span class="arithmatex">\(\mathrm{DP}(0\xrightarrow{S}0)=1\)</span>；若 <span class="arithmatex">\(\Delta X=\alpha\ne0\)</span>，则 <span class="arithmatex">\(\mathrm{DP}(\alpha\xrightarrow{S}\beta)=N_S(\alpha,\beta)/2^m\)</span>。</li>
+</ol>
+</div>
+<p>可见在轮密钥未知时，线性部件后的差分可以直接算出，而 S 盒后的差分只能以一定概率预测。所以 <strong>S 盒输入输出差分分布的不均匀性是差分分析的基础</strong>。</p>
+<h3 id="s1-3">1.3 差分路线</h3>
+<p>固定输入差分经过 S 盒后可能产生多种输出差分，就像一条路在 S 盒处分了岔。要精确刻画传播情况，就把每一轮的走法都记下来。</p>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.10</span><span class="book-name">差分路线</span></p>
+<p>记输入对为 <span class="arithmatex">\((X,X')\)</span>，第 <span class="arithmatex">\(j\)</span> 轮的输出对为 <span class="arithmatex">\((Y_j,Y_j')\)</span>，<span class="arithmatex">\(1\le j\le i\)</span>。若 <span class="arithmatex">\(\Delta X=\beta_0\)</span>，<span class="arithmatex">\(\Delta Y_j=\beta_j\)</span>，则称</p>
+<div class="arithmatex">\[
+\beta_0\xrightarrow{1\text{ 轮}}\beta_1\xrightarrow{1\text{ 轮}}\cdots\xrightarrow{1\text{ 轮}}\beta_i
+\]</div>
+<p>为一条 <strong><span class="arithmatex">\(i\)</span> 轮差分路线</strong>，也称<strong>差分特征 (differential trail / characteristic)</strong>。在输入与各轮密钥相互独立且均匀分布的假设下，其概率为各轮概率之积：</p>
+<div class="arithmatex">\[
+\mathrm{DP}(\beta_0\to\beta_1\to\cdots\to\beta_i)=\prod_{j=1}^{i}\mathrm{DP}(\beta_{j-1}\xrightarrow{1\text{ 轮}}\beta_j).
+\]</div>
+<p>所有 <span class="arithmatex">\(i\)</span> 轮路线中概率最大的称为 <strong><span class="arithmatex">\(i\)</span> 轮最优差分路线</strong>（可能不止一条）。</p>
+</div>
+<p>一轮路线的概率完全由该轮的 S 盒决定，具体地说，取决于<strong>输入差分非零的 S 盒个数</strong>以及<strong>这些 S 盒对应的输出差分</strong>。输入差分非零的 S 盒称为<strong>活跃 S 盒 (active S-box)</strong>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.11</span><span class="book-name">轮最优路线</span></p>
+<p>设输入与轮密钥相互独立且均匀分布，求 CipherFour 的 1 轮最优差分路线。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>除平凡的 <span class="arithmatex">\(0\to0\)</span> 外，活跃 S 盒至少 <span class="arithmatex">\(1\)</span> 个。要使概率最大，应恰有 <span class="arithmatex">\(1\)</span> 个活跃 S 盒，且取 DDT 的最大值：</p>
+<div class="arithmatex">\[
+\max\mathrm{DP}(\beta_0\xrightarrow{1\text{ 轮}}\beta_1)=\mathrm{DP}(\mathrm{0xF}\xrightarrow{S}\mathrm{0xD})=\frac58.
+\]</div>
+<p>活跃 S 盒可以在 4 个位置中任选，所以这样的路线共 4 条。例如活跃 S 盒在最右侧时，S 盒输出 <span class="arithmatex">\((0,0,0,\mathrm{D})\)</span> 经过 <span class="arithmatex">\(P\)</span> 得到 <span class="arithmatex">\((\mathrm{0x1},\mathrm{0x1},\mathrm{0x0},\mathrm{0x1})\)</span>。</p>
+</details>
+<p>自然的想法是以 1 轮最优路线的输出为输入继续传播。输入 <span class="arithmatex">\((\mathrm{0x1},\mathrm{0x1},\mathrm{0x0},\mathrm{0x1})\)</span> 有 3 个活跃 S 盒，DDT 第 1 行最大值在 <span class="arithmatex">\(\beta=\mathrm{0x2}\)</span>，三个 <span class="arithmatex">\(\mathrm{0x2}\)</span> 经过 <span class="arithmatex">\(P\)</span> 后得到 <span class="arithmatex">\((0,0,\mathrm{D},0)\)</span>，概率 <span class="arithmatex">\((3/8)^3\)</span>。于是得到 2 轮路线</p>
+<div class="arithmatex">\[
+(0,0,0,\mathrm{F})\xrightarrow{1\text{ 轮}}(1,1,0,1)\xrightarrow{1\text{ 轮}}(0,0,\mathrm{D},0),\qquad \mathrm{DP}=\frac58\cdot\left(\frac38\right)^3\approx0.033.
+\]</div>
+<p>这种把前一条路线的输出差分接到后一条路线的输入差分上的方式称为路线的<strong>级联</strong>：概率分别为 <span class="arithmatex">\(p_i,p_j\)</span> 的路线 <span class="arithmatex">\(\beta_0\to\cdots\to\beta_i\)</span> 与 <span class="arithmatex">\(\gamma_0\to\cdots\to\gamma_j\)</span>，若 <span class="arithmatex">\(\beta_i=\gamma_0\)</span>，则可级联为一条 <span class="arithmatex">\(i+j\)</span> 轮路线，概率为 <span class="arithmatex">\(p_ip_j\)</span>。</p>
+<p>但这条路线并不是 2 轮最优的！</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.12</span><span class="book-name">轮最优路线</span></p>
+<p>求 CipherFour 的 2 轮最优差分路线。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>2 轮至少有 2 个活跃 S 盒，我们先排查能否每轮恰有一个。这要求第 1 轮活跃 S 盒的输出差分只有 1 比特非零，即只能是 <span class="arithmatex">\(1,2,4,8\)</span>。在 DDT 中这四列最大的项是 <span class="arithmatex">\(\mathrm{0x1}\xrightarrow{S}\mathrm{0x2}\)</span> 与 <span class="arithmatex">\(\mathrm{0x2}\xrightarrow{S}\mathrm{0x2}\)</span>，概率均为 <span class="arithmatex">\(3/8\)</span>。再对活跃 S 盒的位置逐一尝试，可得一条 2 轮最优路线</p>
+<div class="arithmatex">\[
+(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0),\qquad \mathrm{DP}=\left(\frac38\right)^2&gt;\frac58\left(\frac38\right)^3.
+\]</div>
+<p>这里用到了 <span class="arithmatex">\(P\)</span> 的一个性质：差分 <span class="arithmatex">\((0,0,2,0)\)</span> 只有第 <span class="arithmatex">\(10\)</span> 比特非零，而 <span class="arithmatex">\(P(10)=10\)</span>，所以经过 <span class="arithmatex">\(P\)</span> 后差分不变。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>并非所有算法的 <span class="arithmatex">\(r\)</span> 轮路线都至少有 <span class="arithmatex">\(r\)</span> 个活跃 S 盒。例如 DES 存在只有 1 个活跃 S 盒的 2 轮路线，需结合算法结构具体分析。</p>
+</div>
+<p>可见 2 轮最优路线与 1 轮最优路线无关，在 1 轮最优的基础上逐轮贪心并不能得到最优路线。轮数一多，可能的走法增长极快，<strong>长轮数最优路线的搜索是差分分析的一个难点</strong>，这正是第九章自动化搜索要解决的问题。</p>
+<p>上面的 2 轮路线每轮输入、输出差分相同。一般地，若路线 <span class="arithmatex">\(\beta_0\to\cdots\to\beta_i\)</span> 满足 <span class="arithmatex">\(\beta_0=\beta_i\)</span>，则可将其迭代 <span class="arithmatex">\(k\)</span> 次得到 <span class="arithmatex">\(ki\)</span> 轮路线，概率为 <span class="arithmatex">\(p^k\)</span>，称为<strong>迭代型差分路线</strong>。由此立即得到 4 轮路线</p>
+<div class="arithmatex">\[
+(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0)\xrightarrow{1\text{ 轮}}(0,0,2,0),\qquad\mathrm{DP}=\left(\frac38\right)^4\approx0.02.\tag{1}
+\]</div>
+<h3 id="s1-4">1.4 差分与差分路线</h3>
+<p>教材做了这样一个实验：随机取 20 组密钥，对每组密钥把全部 <span class="arithmatex">\(2^{16}\)</span> 个明文对 <span class="arithmatex">\((x,x\oplus(0,0,2,0))\)</span> 输入 4 轮 CipherFour（末轮带 <span class="arithmatex">\(P\)</span>），统计输出差分 <span class="arithmatex">\((0,0,2,0)\)</span> 出现的频率；再对 20 个随机置换做同样的统计。结果是：</p>
+<ul>
+<li>对 CipherFour，频率随密钥略有波动，但都在 <span class="arithmatex">\(0.08\)</span> 附近；</li>
+<li>对随机置换，频率在 <span class="arithmatex">\(2^{-16}\approx0.000015\)</span> 附近。</li>
+</ul>
+<p>这里有两个现象值得注意。第一，<span class="arithmatex">\(0.08\)</span> 与路线 (1) 的概率 <span class="arithmatex">\(0.02\)</span> 差了好几倍；第二，<span class="arithmatex">\(0.08\gg0.000015\)</span>。</p>
+<p>第一个现象的原因是，实验测的其实是 4 轮<strong>差分</strong></p>
+<div class="arithmatex">\[
+(0,0,2,0)\xrightarrow{4\text{ 轮}}(0,0,2,0),
+\]</div>
+<p>它只规定了起点和终点，而路线 (1) 还规定了中间每一轮的差分。从起点到终点的所有路线互不相交，所以差分概率是所有路线概率之和。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.13</span><span class="book-name"><span class="arithmatex">\(i\)</span> 轮差分概率的计算</span></p>
+<p>设输入差分为 <span class="arithmatex">\(\beta_0\)</span>、<span class="arithmatex">\(i\)</span> 轮后输出差分为 <span class="arithmatex">\(\beta_i\)</span> 的路线共 <span class="arithmatex">\(s\)</span> 条，第 <span class="arithmatex">\(t\)</span> 条为 <span class="arithmatex">\(\beta_0\to\beta_1^t\to\cdots\to\beta_{i-1}^t\to\beta_i\)</span>，则</p>
+<div class="arithmatex">\[
+\mathrm{DP}(\beta_0\xrightarrow{i\text{ 轮}}\beta_i)=\sum_{t=1}^{s}\prod_{j=1}^{i}\mathrm{DP}(\beta_{j-1}^t\xrightarrow{1\text{ 轮}}\beta_j^t).
+\]</div>
+</div>
+<p>因此 <span class="arithmatex">\(i\)</span> 轮差分的概率一般大于单条路线的概率。上面的所有计算都依赖<strong>独立性假设</strong>：同一轮不同活跃 S 盒、不同轮、不同路线的传播都相互独立。来学嘉等把满足这一假设的算法称为 Markov 密码。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.14</span><span class="book-name">Markov 密码</span></p>
+<p>轮函数为 <span class="arithmatex">\(Y=f(X,k)\)</span> 的迭代密码，若当子密钥 <span class="arithmatex">\(k\)</span> 均匀随机选取时，对所有 <span class="arithmatex">\(\Delta_{\mathrm{in}}\ne0\)</span>，<span class="arithmatex">\(\Delta_{\mathrm{out}}\ne0\)</span>，</p>
+<div class="arithmatex">\[
+\Pr(\Delta Y=\Delta_{\mathrm{out}}\mid\Delta X=\Delta_{\mathrm{in}},X=\gamma)
+\]</div>
+<p>与 <span class="arithmatex">\(\gamma\)</span> 无关，则称其为 <strong>Markov 密码 (Markov cipher)</strong>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>在 Markov 假设下把所有路线加起来（逐轮对差分分布做转移即可），得到</p>
+<div class="arithmatex">\[
+\mathrm{DP}\big((0,0,2,0)\xrightarrow{4\text{ 轮}}(0,0,2,0)\big)=0.0791\cdots,
+\]</div>
+<p>与实验的 <span class="arithmatex">\(0.08\)</span> 吻合，而单条路线 (1) 只贡献了其中的 <span class="arithmatex">\(0.0198\)</span>。对具体算法，扩散、混淆效果和密钥编排都会影响独立性假设成立的程度，理论值与实测可能有较大偏差，仍需结合数据测试。</p>
+</div>
+<p>第二个现象说明我们找到了一个不随机事件，可以用来区分 4 轮 CipherFour 与随机置换。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.15</span><span class="book-name">区分攻击</span></p>
+<p>设一个黑盒，给定输入能得到输出，但内部构造未知。如何判断它是 4 轮 CipherFour 还是随机置换？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>随机选取 <span class="arithmatex">\(m\)</span> 对满足 <span class="arithmatex">\(P_i\oplus P_i'=(0,0,2,0)\)</span> 的输入，得到黑盒的 <span class="arithmatex">\(m\)</span> 对输出。记 <span class="arithmatex">\(T\)</span> 为输出差分等于 <span class="arithmatex">\((0,0,2,0)\)</span> 的对数，这是 <span class="arithmatex">\(m\)</span> 重 Bernoulli 试验：</p>
+<ul>
+<li>若黑盒为 4 轮 CipherFour，<span class="arithmatex">\(T\sim B(m,0.08)\)</span>；</li>
+<li>若黑盒为随机置换，<span class="arithmatex">\(T\sim B(m,2^{-16})\)</span>。</li>
+</ul>
+<p>于是若 <span class="arithmatex">\(T\)</span> 接近 <span class="arithmatex">\(0.08m\)</span> 就判定为 CipherFour，否则判定为随机置换。只需少量明文就能以很大概率判断正确，成功率可用假设检验计算。</p>
+</details>
+<h3 id="s1-5">1.5 5 轮 CipherFour 的密钥恢复攻击</h3>
+<p>现在把 5 轮 CipherFour 看作黑盒，在 4 轮区分器尾部添加 1 轮，即“4+1”模式。设明文对满足</p>
+<div class="arithmatex">\[
+P\oplus P'=\Delta_{\mathrm{in}}=(0,0,2,0),
+\]</div>
+<p>则 4 轮后的中间状态 <span class="arithmatex">\((C_4,C_4')\)</span> 以概率约 <span class="arithmatex">\(0.08\)</span> 满足 <span class="arithmatex">\(C_4\oplus C_4'=\Delta_{\mathrm{out}}=(0,0,2,0)\)</span>。探测这个中间变量的直接办法就是猜测末轮密钥 <span class="arithmatex">\(k_5\)</span>：</p>
+<ul>
+<li>若猜对，由 <span class="arithmatex">\((C,C')\)</span> 解密出正确的 <span class="arithmatex">\((C_4,C_4')\)</span>，以概率约 <span class="arithmatex">\(0.08\)</span> 满足 <span class="arithmatex">\(C_4\oplus C_4'=\Delta_{\mathrm{out}}\)</span>；</li>
+<li>若猜错，解密出的 <span class="arithmatex">\((C_4,C_4')\)</span> 可以看作随机的，满足的概率为 <span class="arithmatex">\(2^{-16}\)</span>。</li>
+</ul>
+<p>所以对 <span class="arithmatex">\(k_5\)</span> 的每个取值设一个计数器，处理完 <span class="arithmatex">\(m\)</span> 对后，正确密钥的计数（期望 <span class="arithmatex">\(0.08m\)</span>）明显高于错误密钥（期望 <span class="arithmatex">\(m/2^{16}\)</span>）。</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.16</span><span class="book-name">正确对与错误对</span></p>
+<p>对 <span class="arithmatex">\(i\)</span> 轮差分 <span class="arithmatex">\(\beta_0\xrightarrow{i\text{ 轮}}\beta_i\)</span>，若一个明文对的中间结果满足 <span class="arithmatex">\(C_k\oplus C_k'=\beta_0\)</span> 且 <span class="arithmatex">\(C_{k+i}\oplus C_{k+i}'=\beta_i\)</span>，即服从这个差分，则称其为<strong>正确对 (right pair)</strong>，否则称为<strong>错误对 (wrong pair)</strong>。（本节的“4+1”中 <span class="arithmatex">\(k=0\)</span>，即明文。）</p>
+</div>
+<p>用正确密钥解密正确对一定满足 <span class="arithmatex">\(C_4\oplus C_4'=\Delta_{\mathrm{out}}\)</span>，而错误对必有 <span class="arithmatex">\(C_4\oplus C_4'\ne\Delta_{\mathrm{out}}\)</span>，它们只会给计数器带来干扰。下面按三个步骤来看。</p>
+<p><strong>(1) 采样。</strong> 随机选 <span class="arithmatex">\(P\)</span>，令 <span class="arithmatex">\(P'=P\oplus(0,0,2,0)\)</span>，重复 <span class="arithmatex">\(m\)</span> 次，获得密文。采样阶段约有 <span class="arithmatex">\(0.08m\)</span> 个正确对与 <span class="arithmatex">\(0.92m\)</span> 个错误对。我们无法在采样时直接挑出正确对，但能从密文差分推出一部分信息。</p>
+<p><strong>(2) 去噪。</strong> 把第 5 轮的密文按半字节记为 <span class="arithmatex">\(C=(C_{5,0},C_{5,1},C_{5,2},C_{5,3})\)</span>。对正确对，末轮 S 盒层的输入差分为 <span class="arithmatex">\((0,0,2,0)\)</span>：输入差分为 <span class="arithmatex">\(0\)</span> 的 S 盒输出差分也为 <span class="arithmatex">\(0\)</span>；输入差分为 <span class="arithmatex">\(\mathrm{0x2}\)</span> 的 S 盒，查 DDT 第 2 行，输出差分只能是 <span class="arithmatex">\(\mathrm{0x1},\mathrm{0x2},\mathrm{0x9},\mathrm{0xA}\)</span>。故只保留满足</p>
+<div class="arithmatex">\[
+\Delta C\in\{(0,0,h,0):h\in\{\mathrm{0x1},\mathrm{0x2},\mathrm{0x9},\mathrm{0xA}\}\}
+\]</div>
+<p>的密文对，其余的一定是错误对。</p>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.17</span></p>
+<p>取 5 轮 CipherFour 的 6 个轮密钥为 <span class="arithmatex">\(\mathrm{0x5b92},\mathrm{0x064b},\mathrm{0x1e03},\mathrm{0xa55f},\mathrm{0xecbd},\mathrm{0x7ca5}\)</span>，对全部 <span class="arithmatex">\(2^{16}\)</span> 个满足输入差分 <span class="arithmatex">\((0,0,2,0)\)</span> 的明文对测试，统计去噪后保留的对数，估计去噪后正确对的占比。</p>
+</div>
+<p>教材的测试结果是去噪后约保留 <span class="arithmatex">\(7387\)</span> 对。去噪前正确对占比约 <span class="arithmatex">\(8\%\)</span>，去噪后变为</p>
+<div class="arithmatex">\[
+\frac{2^{16}\times0.08}{7387}\approx71\%,
+\]</div>
+<p>提升非常显著。（按附录的实现跑一遍，我得到的是保留 <span class="arithmatex">\(7216\)</span> 对、其中正确对 <span class="arithmatex">\(5080\)</span> 对，占比约 <span class="arithmatex">\(70\%\)</span>，同一量级；细小差别应来自比特编号等实现约定。）</p>
+<p><strong>(3) 恢复密钥。</strong> 由去噪条件，末轮只有第 3 个 S 盒的输入差分非零，可以只恢复它对应的 4 比特密钥 <span class="arithmatex">\(k_{5,2}\)</span>。设去噪后剩 <span class="arithmatex">\(\epsilon m\)</span> 对，每对给出一个方程</p>
+<div class="arithmatex">\[
+S^{-1}(C_{5,2}\oplus k_{5,2})\oplus S^{-1}(C_{5,2}'\oplus k_{5,2})=\mathrm{0x2}.\tag{2}
+\]</div>
+<p>对 <span class="arithmatex">\(k_{5,2}\)</span> 的每个可能值设计数器 <span class="arithmatex">\(T[k_{5,2}]\)</span>，若它是方程的解则 <span class="arithmatex">\(+1\)</span>。全部处理后排序，取前 <span class="arithmatex">\(2^{4-a}\)</span> 个为候选（<span class="arithmatex">\(a\)</span> 是控制成功率的参数）。其余 <span class="arithmatex">\(6\times16-4=92\)</span> 比特密钥可以用其他差分或穷举恢复。</p>
+<p>方程 (2) 一般化为 <span class="arithmatex">\(S(x\oplus k)\oplus S(x'\oplus k)=\beta\)</span>，其中 <span class="arithmatex">\(x,x',\beta\)</span> 已知。直接穷举 <span class="arithmatex">\(k\)</span> 需要 <span class="arithmatex">\(2^{s+1}\)</span> 次查表（<span class="arithmatex">\(s\)</span> 为 <span class="arithmatex">\(k\)</span> 的比特数）；更好的办法是借助 DDT：</p>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.18</span><span class="book-name">借助 DDT 求解密钥</span></p>
+<p>记 <span class="arithmatex">\(\alpha=x\oplus x'\)</span>，则方程 <span class="arithmatex">\(S(x\oplus k)\oplus S(x'\oplus k)=\beta\)</span> 的解集为</p>
+<div class="arithmatex">\[
+\{x\oplus X: X\in\mathrm{IN}_S(\alpha,\beta)\}.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>令 <span class="arithmatex">\(X=x\oplus k\)</span>，则 <span class="arithmatex">\(x'\oplus k=X\oplus\alpha\)</span>，方程化为 <span class="arithmatex">\(S(X)\oplus S(X\oplus\alpha)=\beta\)</span>，即 <span class="arithmatex">\(X\in\mathrm{IN}_S(\alpha,\beta)\)</span>，再由 <span class="arithmatex">\(k=x\oplus X\)</span> 即得。</p>
+</details>
+<h3 id="s1-6">1.6 信噪比与成功率</h3>
+<p>直观来看，要成功率高，就要正确密钥的计数明显高于错误密钥的计数。早期的差分分析用 Biham 和 Shamir 提出的信噪比衡量这一点。</p>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.19</span><span class="book-name">信噪比</span></p>
+<p>密钥恢复阶段中，正确对的个数与计数器的平均计数之比称为<strong>信噪比 (signal-to-noise ratio)</strong>，记为 <span class="arithmatex">\(S_N\)</span>。</p>
+</div>
+<p>正确对的个数就是正确密钥的计数；计数器的平均计数等于所有方程解的总数平均到 <span class="arithmatex">\(2^k\)</span> 个密钥上。设差分概率为 <span class="arithmatex">\(p\)</span>，恢复的密钥长 <span class="arithmatex">\(k\)</span> 比特，采样 <span class="arithmatex">\(m\)</span> 对，去噪后剩 <span class="arithmatex">\(\epsilon m\)</span> 对，每个方程平均 <span class="arithmatex">\(\eta\)</span> 个解，则</p>
+<div class="arithmatex">\[
+S_N=\frac{m\cdot p}{\epsilon m\cdot\eta/2^k}=\frac{p\cdot2^k}{\epsilon\cdot\eta}.
+\]</div>
+<p>Biham 和 Shamir 通过实验指出：信噪比在 <span class="arithmatex">\(1\)</span> 到 <span class="arithmatex">\(2\)</span> 之间时需要约 <span class="arithmatex">\(20\)</span> 到 <span class="arithmatex">\(40\)</span> 个正确对；信噪比较大时，三四个正确对就够了。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.20</span></p>
+<p>求上述攻击中恢复 <span class="arithmatex">\(k_{5,2}\)</span> 的信噪比。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><span class="arithmatex">\(p=0.08\)</span>，<span class="arithmatex">\(k=4\)</span>，<span class="arithmatex">\(\epsilon=7387/2^{16}\approx0.113\)</span>。去噪后方程 (2) 的解数为 <span class="arithmatex">\(N_S(\mathrm{0x2},\beta)\)</span>，<span class="arithmatex">\(\beta\in\{\mathrm{0x1},\mathrm{0x2},\mathrm{0x9},\mathrm{0xA}\}\)</span>。设各输出差分等可能出现，查 DDT 得</p>
+<div class="arithmatex">\[
+\eta=\frac{6+6+2+2}{4}=4,\qquad S_N=\frac{0.08\times2^4}{0.113\times4}\approx2.84.
+\]</div>
+<p>（教材此处把 <span class="arithmatex">\(\epsilon\)</span> 取整为 <span class="arithmatex">\(0.11\)</span>，得到 <span class="arithmatex">\(2.91\)</span>，后文计算成功率时用的是 <span class="arithmatex">\(2.84\)</span>。）</p>
+</details>
+<p>更精确的公式由 Selçuk 和 Biçak 于 2002 年给出。</p>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.21</span><span class="book-name">成功率</span></p>
+<p>设错误密钥的计数器相互独立且均匀分布，差分概率为 <span class="arithmatex">\(p\)</span>，恢复 <span class="arithmatex">\(k\)</span> 比特密钥，采样 <span class="arithmatex">\(m\)</span> 对，信噪比 <span class="arithmatex">\(S_N\)</span>，取前 <span class="arithmatex">\(2^{k-a}\)</span> 个计数器为候选，则对充分大的 <span class="arithmatex">\(k,m\)</span>，成功率</p>
+<div class="arithmatex">\[
+P_S=\Phi\left(\frac{\sqrt{pmS_N}-\Phi^{-1}(1-2^{-a})}{\sqrt{S_N+1}}\right),
+\]</div>
+<p>其中 <span class="arithmatex">\(\Phi\)</span> 为标准正态分布函数。反过来，要达到成功率 <span class="arithmatex">\(P_S\)</span> 需要的明文对数为</p>
+<div class="arithmatex">\[
+m=\frac{\left(\sqrt{S_N+1}\,\Phi^{-1}(P_S)+\Phi^{-1}(1-2^{-a})\right)^2}{S_N}\,p^{-1}.
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.22</span></p>
+<p>恢复 <span class="arithmatex">\(k_{5,2}\)</span> 时选 <span class="arithmatex">\(2^7\)</span> 个明文对，只输出计数最大的密钥，求成功率与复杂度。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><span class="arithmatex">\(p=0.08\)</span>，<span class="arithmatex">\(m=2^7\)</span>，<span class="arithmatex">\(S_N=2.84\)</span>，<span class="arithmatex">\(k=a=4\)</span>，代入得</p>
+<div class="arithmatex">\[
+P_S=\Phi\left(\frac{\sqrt{0.08\times2^7\times2.84}-\Phi^{-1}(1-2^{-4})}{\sqrt{2.84+1}}\right)\approx97.56\%.
+\]</div>
+<p>复杂度如下（具体数字随实现细节略有差异）：</p>
+<ul>
+<li><strong>数据</strong>：<span class="arithmatex">\(2^7\)</span> 个明文对，即 <span class="arithmatex">\(2^8\)</span> 个选择明文。</li>
+<li><strong>时间</strong>：采样需 <span class="arithmatex">\(2^8\)</span> 次 5 轮加密；去噪需 <span class="arithmatex">\(2^7\)</span> 次异或；恢复密钥时剩约 <span class="arithmatex">\(0.11\times2^7\approx14\)</span> 对，每对借助 DDT 得 4 个候选，约 <span class="arithmatex">\(56\)</span> 次异或。采样占主项，总计约 <span class="arithmatex">\(2^8\)</span> 次 5 轮加密。</li>
+<li><strong>存储</strong>：若逐对处理，只需存当前一对密文；16 个计数器各占 8 比特，共 <span class="arithmatex">\(2^7\)</span> 比特。</li>
+</ul>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span>截断差分分析</h2>
+<p>截断差分分析 (truncated differential cryptanalysis) 由 Knudsen 于 1994 年提出。“截断”是指把差分的一部分比特放宽为不确定，从而改变不随机事件的概率，构造新的区分器。</p>
+<h3 id="s2-1">2.1 截断差分</h3>
+<p>回顾 DDT 第 2 行：输入差分为 <span class="arithmatex">\(\mathrm{0x2}\)</span> 时，输出差分只能是 <span class="arithmatex">\(\mathrm{0x1},\mathrm{0x2},\mathrm{0x9},\mathrm{0xA}\)</span>。记输出差分为 <span class="arithmatex">\(b_0b_1b_2b_3\)</span>，则这四个值都满足 <span class="arithmatex">\(b_1=0\)</span>。也就是说，“输入差分为 <span class="arithmatex">\(\mathrm{0x2}\)</span> 时输出差分第 1 位为 <span class="arithmatex">\(0\)</span>”是概率为 <span class="arithmatex">\(1\)</span> 的事件！</p>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">截断</span></p>
+<p>设 <span class="arithmatex">\(m_0m_1\cdots m_{n-1}\)</span> 是 <span class="arithmatex">\(n\)</span> 比特串。称 <span class="arithmatex">\(m_0'm_1'\cdots m_{n-1}'\)</span> 为它的<strong>截断</strong>，若对所有 <span class="arithmatex">\(0\le i&lt;n\)</span>，<span class="arithmatex">\(m_i'=m_i\)</span> 或 <span class="arithmatex">\(m_i'\)</span> 不固定（记为 ?）。</p>
+</div>
+<p>例如 <span class="arithmatex">\(?0??\)</span> 是 <span class="arithmatex">\(0001\mathrm B\)</span> 的一个截断。去掉比特串本身和全不确定这两个平凡情形，一个 <span class="arithmatex">\(n\)</span> 比特串共有 <span class="arithmatex">\(2^n-2\)</span> 种截断。</p>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span><span class="book-name">截断差分路线与截断差分</span></p>
+<p>若 <span class="arithmatex">\(\beta_0\to\beta_1\to\cdots\to\beta_i\)</span> 是一条 <span class="arithmatex">\(i\)</span> 轮差分路线，<span class="arithmatex">\(\beta_j'\)</span> 是 <span class="arithmatex">\(\beta_j\)</span> 的截断，则称 <span class="arithmatex">\(\beta_0'\to\beta_1'\to\cdots\to\beta_i'\)</span> 为 <strong><span class="arithmatex">\(i\)</span> 轮截断差分路线</strong>。类似地，若 <span class="arithmatex">\(\beta_0\xrightarrow{i\text{ 轮}}\beta_i\)</span> 是 <span class="arithmatex">\(i\)</span> 轮差分，则称 <span class="arithmatex">\(\beta_0'\xrightarrow{i\text{ 轮}}\beta_i'\)</span> 为 <strong><span class="arithmatex">\(i\)</span> 轮截断差分 (truncated differential)</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.3</span></p>
+<p>CipherFour 的输入差分为 <span class="arithmatex">\((0000,0000,0010,0000)\)</span>，求概率为 <span class="arithmatex">\(1\)</span> 的截断差分。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>只有第 3 个 S 盒活跃，输出差分为 <span class="arithmatex">\(1,2,9,\mathrm A\)</span> 之一，经过比特拉线后 1 轮输出差分只有四种：</p>
+<div class="arithmatex">\[
+\begin{gathered}
+(0000,0000,0010,0000),\quad(0000,0000,0000,0010),\\
+(0010,0000,0010,0000),\quad(0010,0000,0000,0010).
+\end{gathered}
+\]</div>
+<p>取公共比特，得概率为 <span class="arithmatex">\(1\)</span> 的 1 轮截断差分路线</p>
+<div class="arithmatex">\[
+(0000,0000,0010,0000)\xrightarrow{1\text{ 轮}}(00?0,0000,00?0,00?0).
+\]</div>
+<p>不在第 1 轮就截断，而是把四种输出分别作为第 2 轮的输入继续追踪，结合 DDT 与比特拉线得到</p>
+<div class="arithmatex">\[
+\begin{aligned}
+(0000,0000,0010,0000)&amp;\xrightarrow{1\text{ 轮}}(00?0,0000,00?0,00?0),\\
+(0000,0000,0000,0010)&amp;\xrightarrow{1\text{ 轮}}(000?,0000,000?,000?),\\
+(0010,0000,0010,0000)&amp;\xrightarrow{1\text{ 轮}}(?0?0,0000,?0?0,?0?0),\\
+(0010,0000,0000,0010)&amp;\xrightarrow{1\text{ 轮}}(?00?,0000,?00?,?00?).
+\end{aligned}
+\]</div>
+<p>取公共比特，得概率为 <span class="arithmatex">\(1\)</span> 的 2 轮截断差分；再走一轮，得 3 轮截断差分：</p>
+<div class="arithmatex">\[
+(0000,0000,0010,0000)\xrightarrow{2\text{ 轮}}(?0??,0000,?0??,?0??),\qquad
+(0000,0000,0010,0000)\xrightarrow{3\text{ 轮}}(?0??,?0??,?0??,?0??).
+\]</div>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这里用的截断差分概率都是 <span class="arithmatex">\(1\)</span>，但实际上只要截断差分的概率与随机置换有差异，就可以用来区分和恢复密钥。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.4</span><span class="book-name"><span class="arithmatex">\(i+1\)</span> 轮截断差分攻击</span></p>
+<ol>
+<li>找到一条 <span class="arithmatex">\(i\)</span> 轮截断差分；</li>
+<li>选择满足截断差分头部的明文对，获得密文；</li>
+<li>根据截断差分尾部对密文对作初步过滤；</li>
+<li>对末轮密钥的 <span class="arithmatex">\(k\)</span> 比特建立方程组，每个解的计数器 <span class="arithmatex">\(+1\)</span>，按计数排序取前 <span class="arithmatex">\(2^{k-a}\)</span> 个为候选，穷举确定正确密钥。</li>
+</ol>
+</div>
+<h3 id="s2-2">2.2 5 轮 CipherFour 的截断差分分析</h3>
+<p>现在用概率为 <span class="arithmatex">\(1\)</span> 的 3 轮截断差分攻击 5 轮 CipherFour，采用“1+3+1”模式：区分器头部和尾部各加一轮。</p>
+<p><strong>1. 采样。</strong> 与“4+1”不同，区分器的头部差分 <span class="arithmatex">\((0000,0000,0010,0000)\)</span> 是第 2 轮的输入差分，所以第 1 轮 S 盒层的输出差分必须是 <span class="arithmatex">\(P^{-1}(0000,0000,0010,0000)=(0000,0000,0010,0000)\)</span>。输出差分为 <span class="arithmatex">\(0\)</span> 的 S 盒只需输入差分为 <span class="arithmatex">\(0\)</span>；输出差分非零的第 3 个 S 盒则要借助密钥猜测来筛选。具体地说，选取由 <span class="arithmatex">\(2^4\)</span> 个明文构成的结构体</p>
+<div class="arithmatex">\[
+\mathcal S=\{P_i:P_i=(t_0,t_1,i,t_3)\},\quad 0\le i\le15,
+\]</div>
+<p>其中 <span class="arithmatex">\(t_0,t_1,t_3\)</span> 为随机选取的 4 比特常数，于是任两个明文的差分都形如 <span class="arithmatex">\((0000,0000,????,0000)\)</span>。记 <span class="arithmatex">\(P_i=P_{i,0}\Vert P_{i,1}\Vert P_{i,2}\Vert P_{i,3}\)</span>，<span class="arithmatex">\(k_0=k_{0,0}\Vert\cdots\Vert k_{0,3}\)</span>。猜测 4 比特的 <span class="arithmatex">\(k_{0,2}\)</span>，从结构体中选出满足</p>
+<div class="arithmatex">\[
+S(P_{i,2}\oplus k_{0,2})\oplus S(P_{j,2}\oplus k_{0,2})=0010
+\]</div>
+<p>的明文对，记共有 <span class="arithmatex">\(s\)</span> 对。（对一般算法，可用 <span class="arithmatex">\(\binom{2^4}{2}\cdot2^{-4}=7.5\)</span> 估计 <span class="arithmatex">\(s\)</span>；CipherFour 很小，可以直接测出来。）</p>
+<p><strong>2. 去噪。</strong> 3 轮截断差分的尾部经过末轮 S 盒后没有确定的比特，无法过滤。</p>
+<p><strong>3. 恢复密钥。</strong></p>
+<ul>
+<li>若 <span class="arithmatex">\(k_{0,2}\)</span> 猜对，选出的 <span class="arithmatex">\(s\)</span> 对都满足截断差分的头部，从而尾部一定为 <span class="arithmatex">\((?0??,?0??,?0??,?0??)\)</span>，即若 <span class="arithmatex">\(k_5\)</span> 也猜对，由 <span class="arithmatex">\((C_i,C_j)\)</span> 解密一轮得到的差分满足尾部的对数恰为 <span class="arithmatex">\(s\)</span>；</li>
+<li>若 <span class="arithmatex">\(k_{0,2}\)</span> 猜错，选出的对只以小于 <span class="arithmatex">\(1\)</span> 的概率满足头部，即使 <span class="arithmatex">\(k_5\)</span> 猜对，满足尾部的对数也小于 <span class="arithmatex">\(s\)</span>。</li>
+</ul>
+<p>所以判定依据是：满足尾部的对数是否为 <span class="arithmatex">\(s\)</span>。由于 <span class="arithmatex">\(C_i=C_{i,0}\Vert\cdots\Vert C_{i,3}\)</span> 的各半字节独立，可以把 <span class="arithmatex">\(k_5=k_{5,0}\Vert\cdots\Vert k_{5,3}\)</span> 拆成四个半字节分别求解：</p>
+<div class="arithmatex">\[
+S^{-1}(C_{i,t}\oplus k_{5,t})\oplus S^{-1}(C_{j,t}\oplus k_{5,t})=?0??,\qquad t=0,1,2,3.
+\]</div>
+<p>对每个 <span class="arithmatex">\(k_{0,2}\)</span> 的猜测值，依次穷举 <span class="arithmatex">\(k_{5,0},k_{5,1},k_{5,2},k_{5,3}\)</span>，每一段只保留 <span class="arithmatex">\(s\)</span> 对全部满足方程的取值，四段都通过才把 <span class="arithmatex">\(k_{0,2}\Vert k_5\)</span> 输出为候选。共恢复 <span class="arithmatex">\(4+16=20\)</span> 比特密钥，候选可以再用多个结构体进一步筛选，其余密钥用穷举或其他截断差分恢复。</p>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>随机选一个 96 比特密钥，分别统计用 1、2、3 个结构体时正确恢复 20 比特密钥的次数。例如用 2 个结构体即 <span class="arithmatex">\(32\)</span> 个明文，重复 100 次，统计输出的 <span class="arithmatex">\(k_{0,2}\Vert k_5\)</span> 是正确密钥的次数。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>飞去来器攻击与矩形攻击</h2>
+<p>搜索路线时，常常能找到一些轮数短但概率高的路线，却无法首尾直接相接成长路线。<strong>飞去来器攻击 (boomerang attack)</strong> 由 Wagner 于 1999 年提出，用“错位”的方式连接两条短路线，并破解了 COCONUT98。但它需要选择密文的能力。Kelsey 等于 2000 年提出<strong>增强飞去来器攻击 (amplified boomerang attack)</strong>，以增大选择明文量为代价去掉了这一要求；Biham 等于 2001 年提出<strong>矩形攻击 (rectangle attack)</strong>，同时利用多条短路线提高区分器概率。</p>
+<h3 id="s3-1">3.1 飞去来器攻击</h3>
+<p>把加密分为三部分</p>
+<div class="arithmatex">\[
+C=E(P)=E_b(E_m(E_f(P))),
+\]</div>
+<p>明文 <span class="arithmatex">\(P\)</span> 经 <span class="arithmatex">\(E_f\)</span> 得中间状态 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(x\)</span> 经 <span class="arithmatex">\(E_m\)</span> 得 <span class="arithmatex">\(y\)</span>，<span class="arithmatex">\(y\)</span> 经 <span class="arithmatex">\(E_b\)</span> 得密文 <span class="arithmatex">\(C\)</span>。为简单起见，设 <span class="arithmatex">\(E_m\)</span> 是线性或仿射变换，记为 <span class="arithmatex">\(A\)</span>，它不影响差分传播的概率。设有三条高概率差分：</p>
+<div class="arithmatex">\[
+\alpha\xrightarrow{E_f}\beta\ (p_1),\qquad
+\beta\xrightarrow{E_f^{-1}}\alpha\ (p_2),\qquad
+\gamma\xrightarrow{E_b^{-1}}\phi\ (q).
+\]</div>
+<p>其中 <span class="arithmatex">\(E_f\)</span> 是加密方向，<span class="arithmatex">\(E_f^{-1},E_b^{-1}\)</span> 是解密方向。许多情况下，例如 SPN 结构且 S 盒为置换时，<span class="arithmatex">\(p_1=p_2\)</span>。</p>
+<p>所谓“错位”相连，是指中间差分 <span class="arithmatex">\(\beta\ne\phi\)</span> 时，一对明文满足中间差分 <span class="arithmatex">\(\beta\)</span>，而另一对满足 <span class="arithmatex">\(\phi\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.1</span><span class="book-name">飞去来器区分器</span></p>
+<p>按如下步骤得到 <span class="arithmatex">\((m_3,m_4)\)</span>：</p>
+<ol>
+<li>选择明文对 <span class="arithmatex">\((m_1,m_2)\)</span>，<span class="arithmatex">\(m_1\oplus m_2=\alpha\)</span>，得到密文 <span class="arithmatex">\((c_1,c_2)\)</span>；</li>
+<li>令 <span class="arithmatex">\(c_3=c_1\oplus\gamma\)</span>，<span class="arithmatex">\(c_4=c_2\oplus\gamma\)</span>，选择密文得到明文 <span class="arithmatex">\((m_3,m_4)\)</span>。</li>
+</ol>
+<p>分别对特定算法和随机置换求 <span class="arithmatex">\(\Pr(m_3\oplus m_4=\alpha)\)</span>。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>由 <span class="arithmatex">\(\gamma\xrightarrow{E_b^{-1}}\phi\)</span>，密文 <span class="arithmatex">\(c_1,c_2,c_3,c_4\)</span> 解密得到的中间值满足 <span class="arithmatex">\(\Pr(y_1\oplus y_3=\phi)=\Pr(y_2\oplus y_4=\phi)=q\)</span>，故</p>
+<div class="arithmatex">\[
+\Pr(y_1\oplus y_2\oplus y_3\oplus y_4=0)\ge q^2.
+\]</div>
+<p><span class="arithmatex">\(A\)</span> 仿射，所以 <span class="arithmatex">\(\Pr(x_1\oplus x_2\oplus x_3\oplus x_4=0)\ge q^2\)</span>。又 <span class="arithmatex">\((x_1,x_2)\)</span> 以概率 <span class="arithmatex">\(p_1\)</span> 满足 <span class="arithmatex">\(x_1\oplus x_2=\beta\)</span>，此时 <span class="arithmatex">\(x_3\oplus x_4=\beta\)</span>，即 <span class="arithmatex">\(\Pr(x_3\oplus x_4=\beta)\ge p_1q^2\)</span>。再由 <span class="arithmatex">\(\beta\xrightarrow{E_f^{-1}}\alpha\)</span>，</p>
+<div class="arithmatex">\[
+\Pr(m_3\oplus m_4=\alpha)\ge p_1p_2q^2.
+\]</div>
+<p>而对随机置换，这一概率为 <span class="arithmatex">\(2^{-n}\)</span>。</p>
+</details>
+<p>所以当 <span class="arithmatex">\(p_1p_2q^2&gt;2^{-n}\)</span> 时，可以构造飞去来器区分器；<span class="arithmatex">\(p_1=p_2=p\)</span> 时，条件化为 <span class="arithmatex">\(pq&gt;2^{-n/2}\)</span>。“飞去来器”这个名字很形象：差分 <span class="arithmatex">\(\alpha\)</span> 从明文出发，在密文端被 <span class="arithmatex">\(\gamma\)</span> 推回来，又回到明文端。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>要使 <span class="arithmatex">\(y_1\oplus y_2\oplus y_3\oplus y_4=0\)</span>，只需 <span class="arithmatex">\(y_1\oplus y_3=y_2\oplus y_4\)</span>，不必等于固定的 <span class="arithmatex">\(\phi\)</span>；<span class="arithmatex">\(\beta\)</span> 同理。因此概率可以进一步增大为</p>
+<div class="arithmatex">\[
+q^2=\sum_{\phi}\Pr(\gamma\xrightarrow{E_b^{-1}}\phi)^2,\qquad
+p_1p_2=\sum_{\beta}\Pr(\alpha\xrightarrow{E_f}\beta)\Pr(\beta\xrightarrow{E_f^{-1}}\alpha).
+\]</div>
+<p>另外，上面的计算把两条路线视为相互独立，这并不准确。为在连接处作更精确的估计，人们提出了与 DDT、LAT 类似的<strong>飞去来器连接表 (Boomerang Connectivity Table, BCT)</strong>；<span class="arithmatex">\(E_m\)</span> 也可以推广为多轮。</p>
+</div>
+<p>利用飞去来器区分器恢复密钥的原理与差分分析类似。以在尾部添加 1 轮为例：</p>
+<ol>
+<li>选择明文对 <span class="arithmatex">\((m_1,m_2)\)</span>，<span class="arithmatex">\(m_1\oplus m_2=\alpha\)</span>，得到密文 <span class="arithmatex">\((c_1,c_2)\)</span>；</li>
+<li>去噪，并猜测尾部涉及的密钥 <span class="arithmatex">\(K_2\)</span>，把 <span class="arithmatex">\((c_1,c_2)\)</span> 部分解密为 <span class="arithmatex">\((c_1',c_2')\)</span>；</li>
+<li>异或 <span class="arithmatex">\(\gamma\)</span> 得到 <span class="arithmatex">\((c_3',c_4')\)</span>，再在 <span class="arithmatex">\(K_2\)</span> 下加密回 <span class="arithmatex">\((c_3,c_4)\)</span>；</li>
+<li>选择密文 <span class="arithmatex">\((c_3,c_4)\)</span>，获得明文 <span class="arithmatex">\((m_3,m_4)\)</span>；</li>
+<li>若 <span class="arithmatex">\(m_3\oplus m_4=\alpha\)</span>，则 <span class="arithmatex">\(K_2\)</span> 的计数器 <span class="arithmatex">\(+1\)</span>。</li>
+</ol>
+<p>全部处理后按计数排序，取前 <span class="arithmatex">\(2^{k-a}\)</span> 个为候选。</p>
+<h3 id="s3-2">3.2 增强的飞去来器攻击</h3>
+<p>只用选择明文时，我们只能控制 <span class="arithmatex">\((x_1,x_2)\)</span> 与 <span class="arithmatex">\((x_3,x_4)\)</span> 的差分，<span class="arithmatex">\((y_1,y_3)\)</span> 的差分不可控，最差也服从均匀分布，即以随机概率 <span class="arithmatex">\(2^{-n}\)</span> 取到 <span class="arithmatex">\(\phi\)</span>。增强的飞去来器攻击就是基于这一思路的选择明文攻击，它使用两条加密方向的差分：</p>
+<div class="arithmatex">\[
+\alpha\xrightarrow{E_f}\beta\ (p),\qquad\phi\xrightarrow{E_b}\gamma\ (q).
+\]</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.2</span><span class="book-name">增强的飞去来器区分器</span></p>
+<p>选择四元组 <span class="arithmatex">\((m_1,m_2,m_3,m_4)\)</span>，满足 <span class="arithmatex">\(m_1\oplus m_2=m_3\oplus m_4=\alpha\)</span>，得到密文 <span class="arithmatex">\((c_1,c_2,c_3,c_4)\)</span>。分别对特定算法和随机置换求 <span class="arithmatex">\(\Pr(c_1\oplus c_3=c_2\oplus c_4=\gamma)\)</span>。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><span class="arithmatex">\(\Pr(x_1\oplus x_2=\beta)=\Pr(x_3\oplus x_4=\beta)=p\)</span>，故 <span class="arithmatex">\(\Pr(x_1\oplus x_2\oplus x_3\oplus x_4=0)\ge p^2\)</span>，由 <span class="arithmatex">\(A\)</span> 仿射，<span class="arithmatex">\(\Pr(y_1\oplus y_2\oplus y_3\oplus y_4=0)\ge p^2\)</span>。</p>
+<p><span class="arithmatex">\(y_1,y_3\)</span> 以随机概率 <span class="arithmatex">\(2^{-n}\)</span> 满足 <span class="arithmatex">\(y_1\oplus y_3=\phi\)</span>，此时 <span class="arithmatex">\(y_2\oplus y_4=\phi\)</span>，故 <span class="arithmatex">\(\Pr(y_1\oplus y_3=\phi,\ y_2\oplus y_4=\phi)\ge2^{-n}p^2\)</span>。再经过 <span class="arithmatex">\(E_b\)</span>，</p>
+<div class="arithmatex">\[
+\Pr(c_1\oplus c_3=c_2\oplus c_4=\gamma)\ge2^{-n}p^2q^2.
+\]</div>
+<p>对随机置换这一概率为 <span class="arithmatex">\(2^{-2n}\)</span>。</p>
+</details>
+<p>因此当 <span class="arithmatex">\(2^{-n}p^2q^2&gt;2^{-2n}\)</span>，即 <span class="arithmatex">\(pq&gt;2^{-n/2}\)</span> 时可以构造区分器。与飞去来器的条件一样，代价是数据量大得多。同样地，<span class="arithmatex">\(p^2,q^2\)</span> 可以换成对所有中间差分求和：</p>
+<div class="arithmatex">\[
+p^2=\sum_{\beta}\Pr(\alpha\xrightarrow{E_f}\beta)^2,\qquad q^2=\sum_{\phi}\Pr(\phi\xrightarrow{E_b}\gamma)^2.
+\]</div>
+<h3 id="s3-3">3.3 矩形攻击</h3>
+<p>矩形攻击也是选择明文攻击，区别是它把增强飞去来器中的 <span class="arithmatex">\(x_1\oplus x_2\oplus x_3\oplus x_4=0\)</span> 放宽为 <span class="arithmatex">\(x_1\oplus x_2\oplus x_3\oplus x_4=\epsilon\)</span>，从而包含更多的差分形式。具体地说，利用</p>
+<div class="arithmatex">\[
+\alpha\xrightarrow{E_f}\beta,\qquad\alpha\xrightarrow{E_f}\beta',\qquad\phi\xrightarrow{E_b}\gamma,\qquad\phi\oplus A(\beta\oplus\beta')\xrightarrow{E_b}\gamma,
+\]</div>
+<p>若 <span class="arithmatex">\(x_1\oplus x_2=\beta\)</span>，<span class="arithmatex">\(x_3\oplus x_4=\beta'\)</span>，记 <span class="arithmatex">\(\epsilon=\beta\oplus\beta'\)</span>，则</p>
+<div class="arithmatex">\[
+x_1\oplus x_2\oplus x_3\oplus x_4=\epsilon\iff y_1\oplus y_2\oplus y_3\oplus y_4=A(\epsilon).
+\]</div>
+<p>于是</p>
+<div class="arithmatex">\[
+\Pr(c_1\oplus c_3=c_2\oplus c_4=\gamma)
+=\sum_{\beta,\beta'}\left[\Pr(\alpha\xrightarrow{E_f}\beta)\Pr(\alpha\xrightarrow{E_f}\beta')\cdot2^{-n}\sum_{\phi}\Pr(\phi\xrightarrow{E_b}\gamma)\Pr(\phi\oplus A(\beta\oplus\beta')\xrightarrow{E_b}\gamma)\right].
+\]</div>
+<h2 id="s4"><span class="book-secnum">§ 04</span>不可能差分分析</h2>
+<p>差分分析利用 <span class="arithmatex">\(\mathrm{DP}&gt;2^{-n}\)</span> 的高概率差分。但从假设检验的角度看，概率小于随机概率同样与随机置换有区别。不可能差分分析考虑的是与高概率差分相反的极端情形：利用 <span class="arithmatex">\(\mathrm{DP}=0\)</span> 的差分构造区分器，再用<strong>排除法</strong>识别正确密钥。</p>
+<p>不可能事件在密码分析中并不罕见，例如 Enigma 的分析就利用了明文字母不会加密为自身这一点。不可能差分由两个团队独立提出：Knudsen 发现轮函数为双射的 Feistel 结构一定存在 5 轮不可能差分，从而可以攻击 6 轮；Biham 等发现 32 轮的 Skipjack 存在 24 轮不可能差分，从而攻击了 31 轮。</p>
+<h3 id="s4-1">4.1 不可能差分原理</h3>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span><span class="book-name"><span class="arithmatex">\(i\)</span> 轮不可能差分</span></p>
+<p>设 <span class="arithmatex">\(\beta_0,\beta_i\in\{0,1\}^n\)</span>。若对每一对满足 <span class="arithmatex">\(\Delta X=\beta_0\)</span> 的明文 <span class="arithmatex">\((X,X')\)</span>，经过 <span class="arithmatex">\(i\)</span> 轮后的输出对 <span class="arithmatex">\((Y,Y')\)</span> 都满足 <span class="arithmatex">\(\Delta Y\ne\beta_i\)</span>，则称 <span class="arithmatex">\(\beta_0\overset{i\text{ 轮}}{\not\to}\beta_i\)</span> 为一个 <strong><span class="arithmatex">\(i\)</span> 轮不可能差分 (impossible differential)</strong>。</p>
+</div>
+<p>此时随机选 <span class="arithmatex">\(m\)</span> 对满足输入差分 <span class="arithmatex">\(\beta_0\)</span> 的明文，该密码的输出差分一定不等于 <span class="arithmatex">\(\beta_i\)</span>，而随机置换平均有 <span class="arithmatex">\(m/2^n\)</span> 对的输出差分为 <span class="arithmatex">\(\beta_i\)</span>，这就是区分器。</p>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.2</span><span class="book-name">不可能差分的常见构造</span></p>
+<p><span class="arithmatex">\(i\)</span> 轮不可能差分通常用<strong>中间相错 (miss-in-the-middle)</strong> 的方式构造：从输入向加密方向、从输出向解密方向各推导一条概率为 <span class="arithmatex">\(1\)</span> 的差分（多为截断差分），使它们在中间矛盾。按矛盾的种类，常见的有三种：</p>
+<ol>
+<li><strong>零与非零的矛盾。</strong> 这是最常见的形式。为了以概率 <span class="arithmatex">\(1\)</span> 传播，把差分按非线性部件的规模分割，每段只考虑零和非零两种取值，此时非线性部件只有 <span class="arithmatex">\(0\xrightarrow{S}0\)</span> 与 <span class="arithmatex">\(*\xrightarrow{S}*\)</span> 两种可能（<span class="arithmatex">\(*\)</span> 表示任意非零差分）。</li>
+<li><strong>非零与非零的矛盾。</strong> 加密方向以概率 <span class="arithmatex">\(1\)</span> 推出某处差分为 <span class="arithmatex">\(\alpha\ne0\)</span>，解密方向推出该处为 <span class="arithmatex">\(\beta\ne0\)</span>，且 <span class="arithmatex">\(\alpha\ne\beta\)</span>。下面的 5 轮 Feistel 就是这一类。</li>
+<li><strong>其他矛盾。</strong> 结合算法的运算特性，发现字节之间甚至多个字节之间的关系矛盾。</li>
+</ol>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.3</span><span class="book-name">轮 AES 的不可能差分</span></p>
+<p>考虑 4 轮 AES（末轮无列混合 MC），按字节把状态分割。从头部只有 1 个活跃字节出发，由 MC 分支数为 5，加密 2 轮后 16 个字节全部活跃；而从尾部差分沿解密方向推 2 轮，得到的差分中有 4 个字节为零。二者在中间矛盾。</p>
+<p>类似地，4 轮 ARIA 的不可能差分属于第三类：加密方向 2 轮后某两个字节的差分相等（都为 <span class="arithmatex">\(\alpha\)</span>），而解密方向推出的这两处差分 <span class="arithmatex">\(\beta\ne\gamma\)</span>。</p>
+</div>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.4</span><span class="book-name">不可能差分的攻击模型</span></p>
+<p>设找到 <span class="arithmatex">\(r-1\)</span> 轮不可能差分 <span class="arithmatex">\(\beta_0\overset{(r-1)\text{ 轮}}{\not\to}\beta_{r-1}\)</span>，<span class="arithmatex">\(|\widetilde K|=2^k\)</span>，对 <span class="arithmatex">\(\widetilde K\)</span> 的每个取值设一个 1 比特计数器，初始为 <span class="arithmatex">\(0\)</span>。</p>
+<ol>
+<li><strong>采样</strong>：选择满足输入差分 <span class="arithmatex">\(\beta_0\)</span> 的明文对，获得密文；</li>
+<li><strong>去噪</strong>：根据 <span class="arithmatex">\(\beta_{r-1}\)</span> 对密文对作初步过滤；</li>
+<li><strong>恢复密钥</strong>：对每对建立关于 <span class="arithmatex">\(\widetilde K\)</span> 的方程组，<strong>满足方程的解一定是错误密钥</strong>，将其计数器置 <span class="arithmatex">\(1\)</span>。全部处理后计数器仍为 <span class="arithmatex">\(0\)</span> 的作为候选，必要时再穷举确定。</li>
+</ol>
+</div>
+<p>原因是对正确密钥，由 <span class="arithmatex">\((C_r,C_r')\)</span> 解密到的 <span class="arithmatex">\((C_{r-1},C_{r-1}')\)</span> 一定满足 <span class="arithmatex">\(C_{r-1}\oplus C_{r-1}'\ne\beta_{r-1}\)</span>；而对错误密钥，解密结果是随机的，以概率 <span class="arithmatex">\(2^{-n}\)</span> 落在 <span class="arithmatex">\(\beta_{r-1}\)</span> 上。注意判定方向与差分分析正好相反：差分分析选计数最大的，不可能差分排除计数非零的。</p>
+<h3 id="s4-2">4.2 Feistel 结构的不可能差分</h3>
+<p>约定 Feistel 一轮为 <span class="arithmatex">\((L,R)\mapsto(R,\ L\oplus f(R,k))\)</span>，最后一轮不交换左右。</p>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.5</span><span class="book-name">轮 Feistel 的不可能差分</span></p>
+<p>若 Feistel 结构的轮函数 <span class="arithmatex">\(f\)</span> 是双射，则对任意 <span class="arithmatex">\(\alpha\ne0\)</span>，</p>
+<div class="arithmatex">\[
+(\alpha,0)\overset{5\text{ 轮}}{\not\to}(\alpha,0).
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>加密方向：第 1 轮 <span class="arithmatex">\(f\)</span> 的输入差分为 <span class="arithmatex">\(0\)</span>，输出差分以概率 <span class="arithmatex">\(1\)</span> 为 <span class="arithmatex">\(0\)</span>，故 <span class="arithmatex">\((\Delta L_1,\Delta R_1)=(0,\alpha)\)</span>；第 2 轮 <span class="arithmatex">\(f\)</span> 的输入差分为 <span class="arithmatex">\(\alpha\ne0\)</span>，<span class="arithmatex">\(f\)</span> 是双射，输出差分以概率 <span class="arithmatex">\(1\)</span> 为某个 <span class="arithmatex">\(\beta\ne0\)</span>，故 <span class="arithmatex">\((\Delta L_2,\Delta R_2)=(\alpha,\beta)\)</span>。</p>
+<p>解密方向：输出差分为 <span class="arithmatex">\((\alpha,0)\)</span> 时，类似地逐轮向上可得</p>
+<div class="arithmatex">\[
+(\Delta L_4,\Delta R_4)=(\alpha,0),\quad(\Delta L_3,\Delta R_3)=(\gamma,\alpha),\quad(\Delta L_2,\Delta R_2)=(\alpha\oplus\delta,\gamma),
+\]</div>
+<p>其中 <span class="arithmatex">\(\gamma\ne0\)</span>，<span class="arithmatex">\(\delta\ne0\)</span>。于是 <span class="arithmatex">\(\Delta L_2=\alpha\oplus\delta\ne\alpha\)</span>，与加密方向矛盾。</p>
+</details>
+<p>在此基础上可以攻击 6 轮 Feistel，同样分为采样、去噪和恢复密钥三步。设分组长度为 <span class="arithmatex">\(b\)</span> 比特。</p>
+<p><strong>1. 采样。</strong> 构造由 <span class="arithmatex">\(2^{b/2}\)</span> 个明文组成的结构体</p>
+<div class="arithmatex">\[
+\mathcal S=\{m_i=(m_i^L,m_i^R)=(i,c)\},\quad i=0,1,\cdots,2^{b/2}-1,
+\]</div>
+<p><span class="arithmatex">\(c\)</span> 为任意常数。任取 <span class="arithmatex">\(m_i\ne m_j\)</span>，均有 <span class="arithmatex">\(m_i\oplus m_j=(i\oplus j,0)\)</span>，正是不可能差分的头部（<span class="arithmatex">\(\alpha\)</span> 可以取任意非零值）。只需保证尾部差分 <span class="arithmatex">\((\Delta L_5,\Delta R_5)=(0,\alpha)\)</span>（注意第 6 轮前左右已交换）。</p>
+<p><strong>2. 去噪。</strong> 由 Feistel 的结构，<span class="arithmatex">\(c^L=L_5\oplus f(R_5,k_6)\)</span>，<span class="arithmatex">\(c^R=R_5\)</span>。若 <span class="arithmatex">\((\Delta L_5,\Delta R_5)=(0,\alpha)\)</span>，则</p>
+<div class="arithmatex">\[
+\begin{cases}
+c_i^R\oplus c_j^R=\alpha=m_i^L\oplus m_j^L, &amp; (3\mathrm a)\\
+f(c_i^R,k_6)\oplus f(c_j^R,k_6)=c_i^L\oplus c_j^L. &amp; (3\mathrm b)
+\end{cases}
+\]</div>
+<p>与差分分析不同，满足这组方程的 <span class="arithmatex">\(k_6\)</span> 会导致不可能差分出现，所以一定是错误密钥。注意到 (3a) 与密钥无关，不满足 (3a) 的明文对对应的方程组一定无解，可以先筛掉。把 (3a) 改写为</p>
+<div class="arithmatex">\[
+c_i^R\oplus m_i^L=c_j^R\oplus m_j^L,
+\]</div>
+<p>就可以先按 <span class="arithmatex">\(c^R\oplus m^L\)</span> 排序，再把取值相等的两两组对。这样每个结构体约得到</p>
+<div class="arithmatex">\[
+\binom{2^{b/2}}{2}\cdot2^{-b/2}\approx2^{b/2-1}
+\]</div>
+<p>个满足头部差分及 (3a) 的明文对。</p>
+<p><strong>3. 恢复密钥。</strong> 设 (3b) 涉及的密钥 <span class="arithmatex">\(k_6\)</span> 有 <span class="arithmatex">\(k\)</span> 比特，对每个取值设 1 比特计数器 <span class="arithmatex">\(T[k_6]\)</span>。对每个去噪后的明文对求解 (3b)，解集中的 <span class="arithmatex">\(T[k_6]\)</span> 置 <span class="arithmatex">\(1\)</span>。最后计数器为 <span class="arithmatex">\(0\)</span> 的作为候选。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.6</span></p>
+<p>设 <span class="arithmatex">\(f\)</span> 为伪随机置换，需要多少个结构体，才能使计数器为 <span class="arithmatex">\(0\)</span> 的错误密钥个数的期望小于 <span class="arithmatex">\(1\)</span>？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>方程 (3b) 有 <span class="arithmatex">\(b/2\)</span> 比特，<span class="arithmatex">\(f\)</span> 为伪随机置换，一个方程平均有 <span class="arithmatex">\(2^k/2^{b/2}\)</span> 个解，即任一错误密钥落在一个方程解集中的概率为 <span class="arithmatex">\(2^{-b/2}\)</span>。处理完一个结构体的 <span class="arithmatex">\(2^{b/2-1}\)</span> 个方程后，一个错误密钥仍未被删除的概率为</p>
+<div class="arithmatex">\[
+\left(1-2^{-b/2}\right)^{2^{b/2-1}}\approx e^{-1/2}\approx0.61.
+\]</div>
+<p>处理完 <span class="arithmatex">\(s\)</span> 个结构体后，剩余错误密钥个数的期望为 <span class="arithmatex">\(2^k\cdot e^{-s/2}\)</span>。要使其小于 <span class="arithmatex">\(1\)</span>，需</p>
+<div class="arithmatex">\[
+s&gt;2\ln2\cdot k\approx1.39k.
+\]</div>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>实际攻击中，未被排除的错误密钥期望可以多于 1 个，再结合穷举进一步筛选，具体个数由总复杂度平衡决定。</p>
+</div>
+<p>以选择 <span class="arithmatex">\(s\)</span> 个结构体为例，复杂度如下：</p>
+<ul>
+<li><strong>数据</strong>：<span class="arithmatex">\(s\cdot2^{b/2}\)</span> 个选择明文。</li>
+<li>
+<p><strong>时间</strong>：采样需 <span class="arithmatex">\(s\cdot2^{b/2}\)</span> 次 6 轮加密；去噪只需异或和排序，不超过采样阶段。恢复密钥时，与差分分析不同，已经置 <span class="arithmatex">\(1\)</span> 的密钥无需再代入验证。以结构体为单位，第一个结构体需穷举 <span class="arithmatex">\(2^k\)</span> 个密钥，之后期望剩 <span class="arithmatex">\(2^k e^{-1/2}\)</span> 个，依此类推：</p>
+<div class="arithmatex">\[
+\left(2^k+2^ke^{-1/2}+2^ke^{-1}+\cdots+2^ke^{-(s-1)/2}\right)\cdot2^{b/2-1}\cdot2\approx2^{k+b/2+1.34}
+\]</div>
+<p>次一轮加密，约为 <span class="arithmatex">\(2^{k+b/2-1.24}\)</span> 次 6 轮加密。可见密钥恢复阶段占主项。
+- <strong>存储</strong>：计数器占主项，约 <span class="arithmatex">\(2^k\)</span> 比特。</p>
+</li>
+</ul>
+<h2 id="s5"><span class="book-secnum">§ 05</span>相关密钥差分分析</h2>
+<p>前面我们只假设敌手能控制明密文，用明文或密文的差分关系构造区分器。如果敌手还能查询不同密钥下的加密机，并知道（但不知道具体值）密钥之间的关系，就可以考察密钥编排对安全性的影响，这就是<strong>相关密钥攻击 (related-key attack)</strong>。差分、线性、积分三大方法都已推广到相关密钥场景。本节讨论密钥关系为差分时的情形，即<strong>相关密钥差分攻击</strong>，这是在选择密钥、选择明文场景下的攻击。</p>
+<p>在密钥上引入差分的主要目的是与状态上的差分抵消，以获得更长的路线。例如两个明文的差分为 <span class="arithmatex">\(\alpha\)</span>，两个主密钥的差分也为 <span class="arithmatex">\(\alpha\)</span>，则</p>
+<div class="arithmatex">\[
+X^1\oplus X^2=(P^1\oplus K^1)\oplus(P^2\oplus K^2)=\alpha\oplus\alpha=0,
+\]</div>
+<p>于是这一轮经过 S 盒时以概率 <span class="arithmatex">\(1\)</span> 传播。之后密钥差分经密钥编排传到后续轮密钥上，再转移到状态差分里，引入概率。因此相关密钥下的路线一般比单密钥下的长。Dunkelman 等在 CRYPTO 2010 上用相关密钥三明治攻击破解了 GSM 与 3G 中使用的 KASUMI。</p>
+<p>一条 <span class="arithmatex">\(r\)</span> 轮相关密钥差分路线 <span class="arithmatex">\(\alpha\xrightarrow{r\text{ 轮}}\beta\)</span> 包含两部分：</p>
+<ul>
+<li>算法上的差分路线 <span class="arithmatex">\(\alpha\to\beta\)</span>，概率为 <span class="arithmatex">\(p_1\)</span>；</li>
+<li>密钥编排上的差分路线 <span class="arithmatex">\(\{\Delta k_1,\cdots,\Delta k_r\}\)</span>，其中 <span class="arithmatex">\(\Delta k_i=K_i^1\oplus K_i^2\)</span> 是由主密钥 <span class="arithmatex">\(K^1,K^2\)</span> 生成的第 <span class="arithmatex">\(i\)</span> 轮子密钥之差，概率为 <span class="arithmatex">\(p_2\)</span>。</li>
+</ul>
+<p>设分组长度为 <span class="arithmatex">\(n\)</span>，主密钥长度为 <span class="arithmatex">\(k\)</span>。这条路线能用于攻击，必须同时满足</p>
+<div class="arithmatex">\[
+p_1&gt;2^{-n},\qquad p_2&gt;2^{-k},\qquad p_1p_2&gt;\max(2^{-n},2^{-k}).
+\]</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.1</span><span class="book-name"><span class="arithmatex">\(r+1\)</span> 轮相关密钥差分攻击</span></p>
+<ol>
+<li>找到一条高概率的相关密钥差分路线 <span class="arithmatex">\(\alpha\xrightarrow{r\text{ 轮}}\beta\)</span>；</li>
+<li>设置以第 <span class="arithmatex">\(r+1\)</span> 轮子密钥对为索引的计数器；</li>
+<li>对明文 <span class="arithmatex">\(P_1,P_2,\cdots\)</span>，计算 <span class="arithmatex">\(C_i^1=\mathrm{Enc}_{K^1}(P_i)\)</span>，<span class="arithmatex">\(C_i^2=\mathrm{Enc}_{K^2}(P_i\oplus\alpha)\)</span>，找出所有使 <span class="arithmatex">\(\mathrm{Dec}^{1r}_{K_{r+1}^1}(C_i^1)\oplus\mathrm{Dec}^{1r}_{K_{r+1}^2}(C_i^2)=\beta\)</span> 的子密钥对，相应计数器 <span class="arithmatex">\(+1\)</span>（<span class="arithmatex">\(\mathrm{Dec}^{1r}\)</span> 表示解密一轮）；</li>
+<li>按计数排序，取前 <span class="arithmatex">\(2^{k-a}\)</span> 个为候选，穷举确定正确密钥。</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这只是相关密钥差分攻击的一种形式，所有利用相关密钥差分路线的攻击都可以视为相关密钥差分攻击。除与差分结合外，还有相关密钥不可能差分、相关密钥矩形攻击等。</p>
+</div>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 3 章。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-02-enigma/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第二章：恩尼格玛密码机的破解</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-04-linear-cryptanalysis/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第四章：分组密码的线性分析及相关分析方法</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 3 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-01-overview/">第一章：密码分析学概述</a></li><li><a href="../chapter-11-stream-cipher-analysis/">第十一章：序列密码的经典安全性分析技术</a></li><li><a href="../chapter-12-cube-attacks/">第十二章：序列密码的立方攻击</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

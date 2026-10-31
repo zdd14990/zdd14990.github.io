@@ -1,0 +1,1574 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从不定矩问题理解 Hahn–Banach 与有限逼近，证明凸集的弱闭包性质、Goldstine 定理及自反性的紧性刻画。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-09/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第九章：弱拓扑、凸集分离与自反空间 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-09/">
+  <meta property="og:title" content="第九章：弱拓扑、凸集分离与自反空间 - zdd14990">
+  <meta property="og:description" content="从不定矩问题理解 Hahn–Banach 与有限逼近，证明凸集的弱闭包性质、Goldstine 定理及自反性的紧性刻画。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="weak-topology">
+
+  <meta property="article:tag" content="convexity">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-09/">
+  <meta name="twitter:title" content="第九章：弱拓扑、凸集分离与自反空间 - zdd14990">
+  <meta name="twitter:description" content="从不定矩问题理解 Hahn–Banach 与有限逼近，证明凸集的弱闭包性质、Goldstine 定理及自反性的紧性刻画。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e5d\u7ae0\uff1a\u5f31\u62d3\u6251\u3001\u51f8\u96c6\u5206\u79bb\u4e0e\u81ea\u53cd\u7a7a\u95f4",
+    "description": "\u4ece\u4e0d\u5b9a\u77e9\u95ee\u9898\u7406\u89e3 Hahn\u2013Banach \u4e0e\u6709\u9650\u903c\u8fd1\uff0c\u8bc1\u660e\u51f8\u96c6\u7684\u5f31\u95ed\u5305\u6027\u8d28\u3001Goldstine \u5b9a\u7406\u53ca\u81ea\u53cd\u6027\u7684\u7d27\u6027\u523b\u753b\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-09/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-09/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "weak-topology", "convexity", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-09" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 当测试函数不再稠密
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hahn–Banach：一个方向一个方向地扩张
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 为什么凸性会给出分离泛函
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 为什么凸性会给出分离泛函">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 有限维的最近点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 开凸集的规范函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 弱拓扑为什么适合凸问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 弱拓扑为什么适合凸问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 用泛函判断稠密性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 有限逼近、双对偶与自反性
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 有限逼近、双对偶与自反性">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 自然嵌入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Goldstine 定理与有限测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 自反性与弱紧性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 非自反空间的例子
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 非自反空间的例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 \(c_0\) 与 \(\ell^1\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 \(C[0,1]\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 一个真正不唯一的正矩问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 泛函扩张、商空间与有限维分离
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 泛函扩张、商空间与有限维分离">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把部分测试值延拓出去
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用对偶看商空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先在有限维理解分离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 一般凸集分离与弱闭包
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 一般凸集分离与弱闭包">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从局部分离到全空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        凸性连接弱极限和范数极限
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        双对偶中的有限测试逼近
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        检测自反性的失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-9-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核与余维由转置对应
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 10 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">09</div>
+    <h1 id="chapter-09"><span class="book-visually-hidden">第 9 章：</span>弱拓扑、凸集分离与自反空间</h1>
+  </div>
+  <p class="book-standfirst">第二章中，稠密测试函数上的有界数据唯一决定泛函。若测试空间 <span class="arithmatex">\(M\subset X\)</span> 不稠密，泛函在其闭包上仍唯一，但在整个 <span class="arithmatex">\(X\)</span> 上可能有不同扩张。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>7,022 字 · 约 20 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>当测试函数不再稠密</h2>
+<p>给定 <span class="arithmatex">\(x_j\in X\)</span> 和数 <span class="arithmatex">\(c_j\)</span>，寻找 <span class="arithmatex">\(f\in X^*\)</span> 使 <span class="arithmatex">\(f(x_j)=c_j\)</span>。必要条件是对所有有限系数族，</p>
+<div class="arithmatex">\[
+\left|\sum_ja_jc_j\right|\le C\left\|\sum_ja_jx_j\right\|.
+\]</div>
+<p>它已经保证数据在 <span class="arithmatex">\(M=\operatorname{span}\{x_j\}\)</span> 上定义一个有界泛函。剩下的问题是怎样将它扩张，且不增加范数。这就是 Hahn–Banach 的具体动机。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>Hahn–Banach：一个方向一个方向地扩张</h2>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">Hahn–Banach 定理</span></p>
+<p>赋范空间 <span class="arithmatex">\(X\)</span> 的任意线性子空间 <span class="arithmatex">\(M\)</span> 上的有界线性泛函 <span class="arithmatex">\(f\)</span>，都可扩张为 <span class="arithmatex">\(F\in X^*\)</span>，且 <span class="arithmatex">\(\|F\|=\|f\|\)</span>。<span class="arithmatex">\(M\)</span> 不要求闭，<span class="arithmatex">\(X\)</span> 不要求完备。</p>
+</div>
+<details class="proof">
+<summary>实数情形：一维扩张与极大扩张</summary>
+<p>更一般地，设实次线性函数 <span class="arithmatex">\(p\)</span> 满足正齐次性和次可加性，且 <span class="arithmatex">\(f(m)\le p(m)\)</span>。取 <span class="arithmatex">\(z\notin M\)</span>，令扩张在 <span class="arithmatex">\(z\)</span> 的值为 <span class="arithmatex">\(c\)</span>。</p>
+<p>保持支配关系恰要求</p>
+<div class="arithmatex">\[
+\sup_{m\in M}[f(m)-p(m-z)]
+\le c\le
+\inf_{n\in M}[p(n+z)-f(n)].
+\]</div>
+<p>左端不超过右端，因为</p>
+<div class="arithmatex">\[
+f(m)+f(n)=f(m+n)\le p(m+n)
+\le p(m-z)+p(n+z).
+\]</div>
+<p>故可以选 <span class="arithmatex">\(c\)</span>，将 <span class="arithmatex">\(f\)</span> 扩张到 <span class="arithmatex">\(M+\mathbb Rz\)</span>。按扩张包含关系排序，链的并仍是符合条件的泛函；Zorn 引理给出极大扩张。一维步骤说明极大定义域必是整个 <span class="arithmatex">\(X\)</span>。</p>
+<p>取 <span class="arithmatex">\(p(x)=\|f\|\|x\|\)</span>，同时对 <span class="arithmatex">\(x,-x\)</span> 使用支配关系，得到 <span class="arithmatex">\(|F(x)|\le\|f\|\|x\|\)</span>，限制回 <span class="arithmatex">\(M\)</span> 给出范数等式。</p>
+</details>
+<details class="proof">
+<summary>复数情形</summary>
+<p>先把 <span class="arithmatex">\(\operatorname{Re}f\)</span> 作为实线性泛函扩张为 <span class="arithmatex">\(g\)</span>，再定义 <span class="arithmatex">\(F(x)=g(x)-ig(ix)\)</span>。可检查 <span class="arithmatex">\(F(ix)=iF(x)\)</span>，且 <span class="arithmatex">\(F\)</span> 在 <span class="arithmatex">\(M\)</span> 上等于 <span class="arithmatex">\(f\)</span>。</p>
+<p>对 <span class="arithmatex">\(F(x)\ne0\)</span>，选 <span class="arithmatex">\(|\alpha|=1\)</span> 使 <span class="arithmatex">\(\alpha F(x)\)</span> 为非负实数，则</p>
+<div class="arithmatex">\[
+|F(x)|=g(\alpha x)\le\|g\|\|x\|.
+\]</div>
+<p>因此复扩张也不增加范数。单独扩张实部和虚部再随意拼接，未必保持所需范数。</p>
+</details>
+<p>若 <span class="arithmatex">\(X\)</span> 可分，可取可数个稠密方向，逐次作一维扩张，再连续延伸到闭包；不必使用一般形式的极大家族。可分性使一般的极大扩张构造转化为可数方向上的逐步扩张。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">泛函足以测量范数与距离</span></p>
+<p>对每个 <span class="arithmatex">\(x\in X\)</span>，</p>
+<div class="arithmatex">\[
+\|x\|=\sup_{\|f\|\le1}|f(x)|.
+\]</div>
+<p>对闭线性子空间 <span class="arithmatex">\(M\)</span>，</p>
+<div class="arithmatex">\[
+\operatorname{dist}(x,M)
+=\sup\{|f(x)|:\|f\|\le1,\ f|_M=0\}.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>上界由泛函估计直接得到。范数下界：在 <span class="arithmatex">\(\mathbb Fx\)</span> 上令 <span class="arithmatex">\(f(\alpha x)=\alpha\|x\|\)</span>，再等范数扩张。</p>
+<p>距离公式的下界：令 <span class="arithmatex">\(d=\operatorname{dist}(x,M)&gt;0\)</span>，在 <span class="arithmatex">\(M+\mathbb Fx\)</span> 上定义 <span class="arithmatex">\(f(m+\alpha x)=\alpha d\)</span>。因为 <span class="arithmatex">\(\|m+\alpha x\|\ge|\alpha|d\)</span>，它的范数至多为 <span class="arithmatex">\(1\)</span>，扩张后在 <span class="arithmatex">\(x\)</span> 上取值 <span class="arithmatex">\(d\)</span>。<span class="arithmatex">\(d=0\)</span> 时两边都为零。</p>
+</details>
+<p>于是 <span class="arithmatex">\(X^*\)</span> 分离点，弱拓扑是 Hausdorff；这不是对偶定义本身就自动保证的结论。</p>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>为什么凸性会给出分离泛函</h2>
+<h3 id="section-3-1">3.1 有限维的最近点</h3>
+<p>在欧氏空间中，若闭凸集 <span class="arithmatex">\(C\)</span> 不含 <span class="arithmatex">\(x_0\)</span>，选离 <span class="arithmatex">\(x_0\)</span> 最近的点 <span class="arithmatex">\(y\)</span>。沿 <span class="arithmatex">\(y+t(c-y)\)</span> 变分距离，得到</p>
+<div class="arithmatex">\[
+\langle x_0-y,c-y\rangle\le0,\qquad c\in C.
+\]</div>
+<p>因此向量 <span class="arithmatex">\(x_0-y\)</span> 定义一个把 <span class="arithmatex">\(C\)</span> 与 <span class="arithmatex">\(x_0\)</span> 严格分开的超平面。无限维一般范数下最近点未必存在，但可用 Minkowski 泛函保留同样的分离结构。</p>
+<h3 id="section-3-2">3.2 开凸集的规范函数</h3>
+<p>对含 <span class="arithmatex">\(0\)</span> 的开凸集 <span class="arithmatex">\(U\)</span>，定义</p>
+<div class="arithmatex">\[
+p_U(x)=\inf\{t&gt;0:x\in tU\}.
+\]</div>
+<p>它有限、次线性，且 <span class="arithmatex">\(U=\{p_U&lt;1\}\)</span>。若 <span class="arithmatex">\(B(0,r)\subset U\)</span>，则 <span class="arithmatex">\(p_U(x)\le\|x\|/r\)</span>，保证由它支配的线性泛函连续。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">点与闭凸集的严格分离</span></p>
+<p>若非空闭凸集 <span class="arithmatex">\(C\subset X\)</span> 不含 <span class="arithmatex">\(x_0\)</span>，则存在 <span class="arithmatex">\(f\in X^*\)</span> 与实数 <span class="arithmatex">\(a&lt;b\)</span>，使</p>
+<div class="arithmatex">\[
+\operatorname{Re}f(c)\le a&lt;b\le\operatorname{Re}f(x_0)
+\quad\forall c\in C.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>先在实空间证明。选 <span class="arithmatex">\(0&lt;r&lt;\operatorname{dist}(x_0,C)\)</span>，令开凸集 <span class="arithmatex">\(U=C+B(0,r)\)</span>。取 <span class="arithmatex">\(c_0\in C\)</span>，平移得 <span class="arithmatex">\(V=U-c_0\)</span>，它含 <span class="arithmatex">\(0\)</span>，而 <span class="arithmatex">\(z=x_0-c_0\notin V\)</span>，所以 <span class="arithmatex">\(p_V(z)\ge1\)</span>。</p>
+<p>在 <span class="arithmatex">\(\mathbb Rz\)</span> 上定义 <span class="arithmatex">\(g(tz)=t\)</span>，它被 <span class="arithmatex">\(p_V\)</span> 支配；对负 <span class="arithmatex">\(t\)</span>，左端非正而规范函数非负。用次线性版 Hahn–Banach 扩张。于是 <span class="arithmatex">\(g(z)=1\)</span>、<span class="arithmatex">\(g(v)&lt;1\)</span> 对 <span class="arithmatex">\(v\in V\)</span> 成立。</p>
+<p>对 <span class="arithmatex">\(c\in C\)</span>，<span class="arithmatex">\(c-c_0+B(0,r)\subset V\)</span>，所以 <span class="arithmatex">\(g(c-c_0)\le1-r\|g\|\)</span>。<span class="arithmatex">\(g(z)=1\)</span> 给出正间隙 <span class="arithmatex">\(r\|g\|\)</span>，完成严格分离。复空间先按实空间处理，再用上一节的复化公式，将实分离泛函写成复泛函的实部。</p>
+</details>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>弱拓扑为什么适合凸问题</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span><span class="book-name">弱拓扑</span></p>
+<p><span class="arithmatex">\(\sigma(X,X^*)\)</span> 是使全部 <span class="arithmatex">\(f\in X^*\)</span> 连续的最弱拓扑。<span class="arithmatex">\(x_\alpha\rightharpoonup x\)</span> 指 <span class="arithmatex">\(f(x_\alpha)\to f(x)\)</span> 对每个 <span class="arithmatex">\(f\)</span> 成立。</p>
+<p>若空间本身是一个对偶 <span class="arithmatex">\(Y^*\)</span>，它的弱-* 拓扑 <span class="arithmatex">\(\sigma(Y^*,Y)\)</span> 只测试来自 <span class="arithmatex">\(Y\)</span> 的泛函；弱拓扑 <span class="arithmatex">\(\sigma(Y^*,Y^{**})\)</span> 测试更多对象。二者不能只按名称互换。</p>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span><span class="book-name">凸集的弱闭包等于范数闭包</span></p>
+<p>对凸集 <span class="arithmatex">\(C\)</span>，<span class="arithmatex">\(\overline C^{\,w}=\overline C^{\,\|\cdot\|}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>范数拓扑更强，因此范数闭包包含于弱闭包。反过来，若 <span class="arithmatex">\(x\)</span> 不在范数闭包中，严格分离给出 <span class="arithmatex">\(f\)</span>，使 <span class="arithmatex">\(\operatorname{Re}f(x)\)</span> 与 <span class="arithmatex">\(C\)</span> 上的值之间有正间隙。由 <span class="arithmatex">\(f\)</span> 定义的弱邻域便避开 <span class="arithmatex">\(C\)</span>，所以 <span class="arithmatex">\(x\)</span> 也不在弱闭包中。</p>
+</details>
+<p>非凸集不能这样断言。例如无限维 Hilbert 空间的单位球面范数闭，却以正交单位向量列弱逼近 <span class="arithmatex">\(0\)</span>。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.3</span><span class="book-name">Mazur 引理</span></p>
+<p>若 <span class="arithmatex">\(x_n\rightharpoonup x\)</span>，则可以从每个尾部 <span class="arithmatex">\(\{x_n,x_{n+1},\ldots\}\)</span> 取有限凸组合 <span class="arithmatex">\(y_n\)</span>，使 <span class="arithmatex">\(\|y_n-x\|\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(x\)</span> 属于每个尾部的弱闭包，因而属于其凸包的弱闭包；凸性将它变为范数闭包。选择误差小于 <span class="arithmatex">\(1/n\)</span> 的有限凸组合即可。</p>
+</details>
+<p>Hilbert 空间还有更具体的 Banach–Saks 结论：弱收敛列有子列，其算术平均强收敛。对弱零列递归取子列，使后取向量与已有向量的内积小于 <span class="arithmatex">\(2^{-j}\)</span>；平均范数平方由对角项 <span class="arithmatex">\(O(1/k)\)</span> 和交叉项 <span class="arithmatex">\(O(1/k^2)\)</span> 控制，故趋于零。一般 Mazur 组合的权重则未必相等。</p>
+<h3 id="section-4-1">4.1 用泛函判断稠密性</h3>
+<p>对子空间 <span class="arithmatex">\(M\)</span>，令 <span class="arithmatex">\(M^\perp=\{f\in X^*:f|_M=0\}\)</span>，这里是对偶湮灭子，不是 Hilbert 内积正交补。Hahn–Banach 距离公式给出</p>
+<div class="arithmatex">\[
+\overline M=\{x:f(x)=0\ \forall f\in M^\perp\}.
+\]</div>
+<p>因此证明测试函数稠密，可以转化为证明“与全部测试函数配对为零的泛函只能为零”。第七章 Fourier 唯一性正是这种思路。</p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>有限逼近、双对偶与自反性</h2>
+<h3 id="section-5-1">5.1 自然嵌入</h3>
+<p>定义 <span class="arithmatex">\(J:X\to X^{**}\)</span>，<span class="arithmatex">\(Jx(f)=f(x)\)</span>。上一节范数公式说明 <span class="arithmatex">\(J\)</span> 是线性等距嵌入。</p>
+<p>对 <span class="arithmatex">\(T:X\to Y\)</span>，定义转置 <span class="arithmatex">\(T':Y^*\to X^*\)</span>，<span class="arithmatex">\(T'f=f\circ T\)</span>。有 <span class="arithmatex">\(\|T'\|=\|T\|\)</span>、<span class="arithmatex">\(T''J_X=J_YT\)</span>。它与 Hilbert 伴随通过 Riesz 表示联系，但两者作用的空间不同，不能只因都常写星号就认为相同。</p>
+<h3 id="section-5-2">5.2 Goldstine 定理与有限测试</h3>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span><span class="book-name">Goldstine 定理</span></p>
+<p><span class="arithmatex">\(J(B_X)\)</span> 在 <span class="arithmatex">\(B_{X^{**}}\)</span> 中弱-* 稠密。也就是说，每个范数至多为 <span class="arithmatex">\(1\)</span> 的 <span class="arithmatex">\(F\in X^{**}\)</span>，对有限个 <span class="arithmatex">\(f_j\in X^*\)</span> 的取值，都能由某个 <span class="arithmatex">\(\|x\|\le1\)</span> 任意逼近。</p>
+</div>
+<details class="proof">
+<summary>证明：有限维凸集分离</summary>
+<p>令 <span class="arithmatex">\(\Phi(x)=(f_1(x),\ldots,f_m(x))\)</span>。若 <span class="arithmatex">\((F(f_1),\ldots,F(f_m))\)</span> 不在 <span class="arithmatex">\(\Phi(B_X)\)</span> 的闭包中，有限维分离给出复系数 <span class="arithmatex">\(a_j\)</span>，使</p>
+<div class="arithmatex">\[
+\operatorname{Re}F\left(\sum_ja_jf_j\right)
+&gt;\sup_{\|x\|\le1}\operatorname{Re}\sum_ja_jf_j(x)
+=\left\|\sum_ja_jf_j\right\|.
+\]</div>
+<p>但 <span class="arithmatex">\(\|F\|\le1\)</span> 排除了这个严格不等式。故有限测试均可逼近；按有限测试集增大和误差缩小排序，便得到弱-* 逼近网。</p>
+</details>
+<p>有限逼近的做法是：先解决有限个矩约束，再利用统一范数界取得极限。但极限可能只属于双对偶，未必仍在原空间。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.2</span><span class="book-name">有限问题都有解，无限问题却离开原空间</span></p>
+<p>在 <span class="arithmatex">\(c_0\)</span> 中要求全部坐标为 <span class="arithmatex">\(1\)</span>。前 <span class="arithmatex">\(N\)</span> 个约束有解 <span class="arithmatex">\((1,\ldots,1,0,\ldots)\)</span>，范数始终为 <span class="arithmatex">\(1\)</span>，但没有 <span class="arithmatex">\(c_0\)</span> 元素满足全部约束。它们在 <span class="arithmatex">\(c_0^{**}=\ell^\infty\)</span> 的弱-* 极限是全为 <span class="arithmatex">\(1\)</span> 的数列。</p>
+</div>
+<h3 id="section-5-3">5.3 自反性与弱紧性</h3>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.3</span><span class="book-name">自反空间</span></p>
+<p>若自然嵌入 <span class="arithmatex">\(J:X\to X^{**}\)</span> 满射，称 <span class="arithmatex">\(X\)</span> 自反。要求的是这个具体嵌入满射，而不仅是与双对偶存在某个抽象同构。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.4</span><span class="book-name">自反性的紧性刻画</span></p>
+<p>Banach 空间 <span class="arithmatex">\(X\)</span> 自反，当且仅当闭单位球弱紧。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>自反时，<span class="arithmatex">\(J\)</span> 将 <span class="arithmatex">\(X\)</span> 的弱拓扑对应到 <span class="arithmatex">\(X^{**}\)</span> 的弱-* 拓扑，闭单位球对应整个双对偶闭单位球。Banach–Alaoglu 给出紧性。</p>
+<p>反过来，若 <span class="arithmatex">\(B_X\)</span> 弱紧，<span class="arithmatex">\(J(B_X)\)</span> 弱-* 紧，因弱-* 拓扑 Hausdorff，它闭。Goldstine 又说它在 <span class="arithmatex">\(B_{X^{**}}\)</span> 中稠密，故两者相等。缩放便得 <span class="arithmatex">\(J\)</span> 满射。</p>
+</details>
+<p>Hilbert 空间自反；在 <span class="arithmatex">\(\sigma\)</span>-有限测度下，<span class="arithmatex">\(1&lt;p&lt;\infty\)</span> 的 <span class="arithmatex">\(L^p\)</span> 由两次对偶表示得到自反，<span class="arithmatex">\(\ell^p\)</span> 同理。自反空间的闭子空间自反，因为其单位球是原弱紧球中的弱闭子集。</p>
+<p>当 <span class="arithmatex">\(X\)</span> 自反时，<strong>在 <span class="arithmatex">\(X^*\)</span> 上</strong>，弱拓扑 <span class="arithmatex">\(\sigma(X^*,X^{**})\)</span> 与弱-* 拓扑 <span class="arithmatex">\(\sigma(X^*,X)\)</span> 相同。讨论任何弱-* 拓扑时仍须说明前对偶。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.5</span><span class="book-name">变分法的直接方法</span></p>
+<p>在自反空间上，若非空约束集 <span class="arithmatex">\(C\)</span> 凸且范数闭，能量 <span class="arithmatex">\(J\)</span> 弱下半连续且强制，即 <span class="arithmatex">\(\|u\|\to\infty\)</span> 时 <span class="arithmatex">\(J(u)\to\infty\)</span>，则存在最小值。</p>
+<p>取最小化序列，强制性保证有界；弱紧性给出收敛子网，凸闭集弱闭保证极限可行，弱下半连续保证能量不增加。若 <span class="arithmatex">\(J\)</span> 严格凸，极小点唯一。</p>
+</div>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>非自反空间的例子</h2>
+<h3 id="section-6-1">6.1 <span class="arithmatex">\(c_0\)</span> 与 <span class="arithmatex">\(\ell^1\)</span></h3>
+<p><span class="arithmatex">\(c_0^*=\ell^1\)</span>、<span class="arithmatex">\(c_0^{**}=\ell^\infty\)</span>。自然嵌入只得到趋于零的数列，所以 <span class="arithmatex">\(c_0\)</span> 不自反。</p>
+<p>在收敛数列空间 <span class="arithmatex">\(c\subset\ell^\infty\)</span> 上，极限泛函 <span class="arithmatex">\(L(x)=\lim x_n\)</span> 的范数为 <span class="arithmatex">\(1\)</span>。Hahn–Banach 将它扩张到整个 <span class="arithmatex">\(\ell^\infty\)</span>。它杀掉每个 <span class="arithmatex">\(e_n\)</span>，却在常数 <span class="arithmatex">\(1\)</span> 上取值 <span class="arithmatex">\(1\)</span>，因此不可能由任何 <span class="arithmatex">\(\ell^1\)</span> 数列的坐标配对表示。这给出 <span class="arithmatex">\(\ell^1{}^{**}\)</span> 中不来自 <span class="arithmatex">\(\ell^1\)</span> 的元素，所以 <span class="arithmatex">\(\ell^1\)</span> 不自反。</p>
+<p><span class="arithmatex">\(\ell^\infty\)</span> 也不自反，因为它包含闭的非自反子空间 <span class="arithmatex">\(c_0\)</span>。在 <span class="arithmatex">\(L^1(0,1)\)</span> 上，集中列 <span class="arithmatex">\(n\mathbf1_{(0,1/n)}\)</span> 没有弱收敛子网：任何可能极限都由远离零点的示性函数测试迫为零，但常数 <span class="arithmatex">\(1\)</span> 的测试值始终为 <span class="arithmatex">\(1\)</span>。所以其单位球不弱紧。</p>
+<h3 id="section-6-2">6.2 <span class="arithmatex">\(C[0,1]\)</span></h3>
+<p>在一列互不相交、向 <span class="arithmatex">\(0\)</span> 聚集的小区间上取高度为 <span class="arithmatex">\(1\)</span> 的连续帐篷函数 <span class="arithmatex">\(\phi_n\)</span>。映射</p>
+<div class="arithmatex">\[
+(a_n)\in c_0\longmapsto\sum_na_n\phi_n
+\]</div>
+<p>等距嵌入 <span class="arithmatex">\(C[0,1]\)</span>：支撑不交给出一致范数等式，<span class="arithmatex">\(a_n\to0\)</span> 保证在聚点连续。像闭，因此 <span class="arithmatex">\(C[0,1]\)</span> 含闭非自反子空间，也不自反。</p>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>一个真正不唯一的正矩问题</h2>
+<p>令 <span class="arithmatex">\(Y\)</span> 为标准正态变量，<span class="arithmatex">\(X=e^Y\)</span>，其 lognormal 测度在 <span class="arithmatex">\(x&gt;0\)</span> 的密度为</p>
+<div class="arithmatex">\[
+w(x)=\frac1{x\sqrt{2\pi}}e^{-(\log x)^2/2}.
+\]</div>
+<p>对 <span class="arithmatex">\(|\varepsilon|\le1\)</span>，令 <span class="arithmatex">\(w_\varepsilon(x)=[1+\varepsilon\sin(2\pi\log x)]w(x)\)</span>，仍是非负密度。</p>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">不同测度具有全部相同的矩</span></p>
+<p>对全部非负整数 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\int_0^\infty x^nw_\varepsilon(x)\,\mathrm dx=e^{n^2/2}\)</span>，与 <span class="arithmatex">\(\varepsilon\)</span> 无关。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>代换 <span class="arithmatex">\(y=\log x\)</span>，新增部分的积分为</p>
+<div class="arithmatex">\[
+\operatorname{Im}\mathbb E[e^{(n+2\pi i)Y}]
+=e^{(n^2-4\pi^2)/2}\sin(2\pi n)=0.
+\]</div>
+<p><span class="arithmatex">\(n=0\)</span> 也表明总质量不变。不同参数的密度并非几乎处处相同，所以确实是不同测度。它们所有矩都有限，却无法由这些矩区分。</p>
+</details>
+<p>此例说明无界区间上多项式的测试能力可能不足，第四章的正性主要保证存在，而不自动保证唯一。矩空间上的对称乘法算子与不同自伴扩张也提供了理解不唯一性的另一条路线。</p>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>泛函扩张、商空间与有限维分离</h2>
+<p>约定 <span class="arithmatex">\(V,W\)</span> 为实或复赋范空间。复空间中的凸性和分离使用其底层实向量空间及泛函的实部；伴随仍留给 Hilbert 空间，连续对偶之间的映射记为转置。</p>
+<h3 id="topic-9-1-1">把部分测试值延拓出去</h3>
+<p>一个有界泛函只知道子空间上的数据，Hahn–Banach 保证扩到全空间时不增大范数。一维允许区间负责局部可行性，极大扩张负责穷尽全部方向。</p>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.1</span><span class="book-name">Hahn–Banach 定理</span></p>
+<p>任意线性子空间 <span class="arithmatex">\(U\subset V\)</span> 上的有界线性泛函 <span class="arithmatex">\(\phi\)</span> 都可延拓为 <span class="arithmatex">\(\Phi\in V^*\)</span>，且 <span class="arithmatex">\(\|\Phi\|=\|\phi\|\)</span>。子空间不必闭，原空间不必完备。</p>
+</div>
+<details class="proof">
+<summary>证明 9.1.1</summary>
+<p>实情形先用 9.1.2 每次扩张一个方向。把所有保持范数界的扩张按定义域包含排序，链的并仍为良定义的同界泛函；Zorn 引理给极大扩张。如果定义域尚未穷尽空间，一维扩张会违反极大性，故得到全空间延拓。限制使延拓范数不小于原范数，与保界合起来等号成立。</p>
+<p>复情形将实部作为实泛函等范数延拓，再用 9.1.5 的逆式复线性化。它在原复子空间上还原原泛函，且保持范数。</p>
+</details>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.2</span><span class="book-name">Helly 的一维扩张</span></p>
+<p>实赋范空间中，<span class="arithmatex">\(\|\phi\|\leq1\)</span>、<span class="arithmatex">\(e\notin U\)</span> 时，可将 <span class="arithmatex">\(\phi\)</span> 延拓到 <span class="arithmatex">\(U+\mathbb Re\)</span> 并保持范数至多一。允许的 <span class="arithmatex">\(\Phi(e)\)</span> 构成非空闭区间。</p>
+</div>
+<details class="proof">
+<summary>证明 9.1.2</summary>
+<p>令 <span class="arithmatex">\(\Phi(u+te)=\phi(u)+tc\)</span>。正负 <span class="arithmatex">\(t\)</span> 的范数限制经缩放等价于对全部 <span class="arithmatex">\(u\in U\)</span>，</p>
+<div class="arithmatex">\[
+\phi(u)-\|u-e\|\leq c\leq\|u+e\|-\phi(u).
+\]</div>
+<p>任意左端与任意右端的比较由 <span class="arithmatex">\(\phi(u)+\phi(v)\leq\|u+v\|\leq\|u-e\|+\|v+e\|\)</span> 得到。因此左端上确界不超过右端下确界；两端用 <span class="arithmatex">\(u=0\)</span> 夹在有限范围内，构成非空闭区间。在其中选 <span class="arithmatex">\(c\)</span>，全部范数限制成立。</p>
+</details>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.3</span><span class="book-name">复泛函与实部</span></p>
+<p>复线性泛函到实线性泛函的 <span class="arithmatex">\(\phi\mapsto\operatorname{Re}\phi\)</span> 为实线性双射，逆式为 <span class="arithmatex">\(\phi(v)=f(v)-if(iv)\)</span>；有界时 <span class="arithmatex">\(\|\phi\|=\|f\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.1.5</summary>
+<p>给实线性 <span class="arithmatex">\(f\)</span>，令 <span class="arithmatex">\(\phi(v)=f(v)-if(iv)\)</span>，则 <span class="arithmatex">\(\phi(iv)=i\phi(v)\)</span>，配合实线性给复线性，且实部正是 <span class="arithmatex">\(f\)</span>。逆式唯一。显然 <span class="arithmatex">\(\|f\|\leq\|\phi\|\)</span>；对任意 <span class="arithmatex">\(v\)</span>，选模为一的 <span class="arithmatex">\(a\)</span> 使 <span class="arithmatex">\(a\phi(v)=|\phi(v)|\)</span>，则 <span class="arithmatex">\(|\phi(v)|=f(av)\leq\|f\|\|v\|\)</span>，给出反向范数界。</p>
+</details>
+<h3 id="topic-9-2-1">用对偶看商空间</h3>
+<p>商范数测量离子空间的距离，湮灭子记录所有忽略该子空间的测试。有限维测试的值域与范数公式将这两种描述精确对应起来。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.4</span><span class="book-name">典范双对偶映射</span></p>
+<p>定义 <span class="arithmatex">\(J_V(v)(\phi)=\phi(v)\)</span>，它线性且 <span class="arithmatex">\(\|J_V\|\leq1\)</span>。Hahn–Banach 将该估计加强为等距性。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.1</summary>
+<p>上界由 <span class="arithmatex">\(|\phi(v)|\leq\|\phi\|\|v\|\)</span> 得到。若 <span class="arithmatex">\(v\ne0\)</span>，在一维张成上定义 <span class="arithmatex">\(\phi(av)=a\|v\|\)</span>，它范数为一；Hahn–Banach 延拓后仍范数为一且取值 <span class="arithmatex">\(\|v\|\)</span>，所以 <span class="arithmatex">\(\|J_Vv\|\geq\|v\|\)</span>，得到等距。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.5</span><span class="book-name">商范数</span></p>
+<p>闭子空间 <span class="arithmatex">\(U\)</span> 的商空间取 <span class="arithmatex">\(\|v+U\|=\operatorname{dist}(v,U)=\inf_{u\in U}\|v+u\|\)</span>。闭性保证零范数仅对应零陪集。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.3</summary>
+<p>变换代表元不改变到 <span class="arithmatex">\(U\)</span> 的距离。分别取近乎达到下确界的 <span class="arithmatex">\(u,w\in U\)</span>，三角不等式给商范数的三角不等式；非零标量通过 <span class="arithmatex">\(U\)</span> 的缩放不变性给齐次性。零范数意味着 <span class="arithmatex">\(v\)</span> 位于 <span class="arithmatex">\(U\)</span> 的闭包，闭性使 <span class="arithmatex">\(v\in U\)</span>，故确为范数。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.6</span><span class="book-name">通过商空间因子化</span></p>
+<p>商映射 <span class="arithmatex">\(\pi_U\)</span> 诱导线性等距嵌入 <span class="arithmatex">\(\mathcal L(V/U,W)\to\mathcal L(V,W)\)</span>，<span class="arithmatex">\(T\mapsto T\pi_U\)</span>，像恰为在 <span class="arithmatex">\(U\)</span> 上为零的算子。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.4</summary>
+<p>商映射范数至多一，所以 <span class="arithmatex">\(\|T\pi_U\|\leq\|T\|\)</span>。反向任意陪集 <span class="arithmatex">\(q\)</span> 可取代表 <span class="arithmatex">\(v\)</span> 使 <span class="arithmatex">\(\|v\|&lt;\|q\|+\varepsilon\)</span>，于是 <span class="arithmatex">\(\|Tq\|\leq\|T\pi_U\|(\|q\|+\varepsilon)\)</span>；令误差趋零得等范数。若算子在 <span class="arithmatex">\(U\)</span> 上为零，其值不依赖代表元，恰可因子化，并由相同估计保证因子有界。</p>
+</details>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.7</span><span class="book-name">湮灭子与预湮灭子</span></p>
+<p>对 <span class="arithmatex">\(E\subset V^*\)</span>、<span class="arithmatex">\(F\subset V\)</span>，定义 <span class="arithmatex">\({}^\perp E=\{v:\phi(v)=0\ \forall\phi\in E\}\)</span>、<span class="arithmatex">\(F^\perp=\{\phi:\phi(v)=0\ \forall v\in F\}\)</span>。二者均为闭线性子空间，后者还弱-* 闭。</p>
+</div>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.8</span><span class="book-name">商空间的对偶</span></p>
+<p><span class="arithmatex">\((V/U)^*\)</span> 等距同构于 <span class="arithmatex">\(U^\perp\)</span>，同构为 <span class="arithmatex">\(\psi\mapsto\psi\pi_U\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.6</summary>
+<p>将 9.2.4 取 <span class="arithmatex">\(W=\mathbb F\)</span>，像条件正是泛函消去 <span class="arithmatex">\(U\)</span>，即属于 <span class="arithmatex">\(U^\perp\)</span>。等距及满射到该像直接给出对偶同构。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.9</span><span class="book-name">预湮灭子的商</span></p>
+<p>对线性 <span class="arithmatex">\(X\subset V^*\)</span>，<span class="arithmatex">\((V/{}^\perp X)^*\cong({}^\perp X)^\perp\)</span>。若 <span class="arithmatex">\(X\)</span> 有限维，右侧等于 <span class="arithmatex">\(X\)</span>；一般应取 <span class="arithmatex">\(X\)</span> 的弱-* 闭包。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.7</summary>
+<p>前一同构由 9.2.6。若某个泛函不在 <span class="arithmatex">\(X\)</span> 的弱-* 闭包，弱-* 分离只需有限个原空间求值坐标：在有限维坐标像中分离，得到某个 <span class="arithmatex">\(v\)</span> 消去 <span class="arithmatex">\(X\)</span> 却不消去该泛函。因此 <span class="arithmatex">\(({}^\perp X)^\perp\)</span> 恰是弱-* 闭包。有限维子空间在此 Hausdorff 拓扑中闭，可直接由有限个独立测试坐标验证，故有限维时就是 <span class="arithmatex">\(X\)</span>。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.10</span><span class="book-name">有限维测试的值域</span></p>
+<p>若 <span class="arithmatex">\(X\subset V^*\)</span> 有限维，则 <span class="arithmatex">\(v+{}^\perp X\mapsto J_V(v)|_X\)</span> 为 <span class="arithmatex">\(V/{}^\perp X\)</span> 到 <span class="arithmatex">\(X^*\)</span> 的线性双射。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.9</summary>
+<p>核正是 $ {}^\perp X$，所以诱导映射单射。若其有限维值域是 <span class="arithmatex">\(X^*\)</span> 的真子空间，有限维代数对偶中存在非零 <span class="arithmatex">\(\phi\in X\)</span> 消去全部求值，即 <span class="arithmatex">\(\phi(v)=0\)</span> 对全部 <span class="arithmatex">\(v\)</span> 成立，矛盾。故满射。</p>
+</details>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.11</span><span class="book-name">有限维测试的范数</span></p>
+<p>上述双射为等距同构，即 <span class="arithmatex">\(\operatorname{dist}(v,{}^\perp X)=\sup_{\phi\in X,\,\|\phi\|\leq1}|\phi(v)|\)</span>。商范数的下确界不必由某个代表元达到。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.10</summary>
+<p>商空间 <span class="arithmatex">\(Q=V/{}^\perp X\)</span> 的对偶由 9.2.7 等距识别为 <span class="arithmatex">\(X\)</span>。Hahn–Banach 的等距求值性质给 <span class="arithmatex">\(\|q\|=\sup_{\|\phi\|_X\leq1}|\phi(q)|\)</span>。代入 <span class="arithmatex">\(q=v+{}^\perp X\)</span> 即得公式；它只确定下确界，没有宣称存在最小范数代表。</p>
+</details>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.12</span><span class="book-name">有限维自反性</span></p>
+<p>有限维赋范空间的典范映射 <span class="arithmatex">\(J_V:V\to V^{**}\)</span> 为线性等距同构。</p>
+</div>
+<details class="proof">
+<summary>证明 9.2.11</summary>
+<p>对单位向量用 9.3.5 分离开单位球与该点，9.3.1 给分离泛函范数至多一且该点求值为一；复情形用 9.1.5 恢复复泛函。于是典范映射等距、单射。有限维下 <span class="arithmatex">\(\dim V=\dim V^{**}\)</span>，所以也满射。这给出了通过有限维凸分离得到自反性的证明。</p>
+</details>
+<h3 id="topic-9-3-1">先在有限维理解分离</h3>
+<p>范数球的包含关系可以用一个半空间的不等式检测。有限维中，最近点和射线退出点给出分离超平面的几何构造；边界情形还需取极限。</p>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.13</span><span class="book-name">范数与半空间</span></p>
+<p>对实线性 <span class="arithmatex">\(\phi\)</span> 和 <span class="arithmatex">\(a,b&gt;0\)</span>，<span class="arithmatex">\(\|\phi\|\leq b/a\)</span> 当且仅当半径 <span class="arithmatex">\(a\)</span> 的球包含于 <span class="arithmatex">\(\{v:\phi(v)\leq b\}\)</span>。开球或闭球给出相同判据。</p>
+</div>
+<details class="proof">
+<summary>证明 9.3.1</summary>
+<p>范数上界立即使半径 <span class="arithmatex">\(a\)</span> 的球落在半空间。反向对单位 <span class="arithmatex">\(v\)</span> 及 <span class="arithmatex">\(a'&lt;a\)</span>，有 <span class="arithmatex">\(\phi(a'v)\leq b\)</span>，对 <span class="arithmatex">\(-v\)</span> 也成立，故 <span class="arithmatex">\(|\phi(v)|\leq b/a'\)</span>。令 <span class="arithmatex">\(a'\uparrow a\)</span> 得范数界，因而开球和闭球版本一致。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.14</span><span class="book-name">线段与凸集</span></p>
+<p><span class="arithmatex">\([p,q]\)</span>、<span class="arithmatex">\((p,q)\)</span> 等为仿射映射 <span class="arithmatex">\(t\mapsto(1-t)p+tq\)</span> 对相应实区间的像；射线 <span class="arithmatex">\([p,\infty q)\)</span> 使用 <span class="arithmatex">\(t\geq0\)</span>。集合凸指包含任意两点间的闭线段。</p>
+</div>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.15</span><span class="book-name">射线的退出点</span></p>
+<p>若开凸集 <span class="arithmatex">\(\Omega\)</span> 包含 <span class="arithmatex">\(p\)</span>，而从 <span class="arithmatex">\(p\)</span> 指向 <span class="arithmatex">\(v\)</span> 的射线与 <span class="arithmatex">\(\Omega\)</span> 的交在 <span class="arithmatex">\(p+r(v-p)\)</span> 之前结束，其中 <span class="arithmatex">\(0&lt;r&lt;1\)</span>，则 <span class="arithmatex">\(v\notin\Omega\)</span>。凸性保证射线上位于集合内的参数形成区间。</p>
+</div>
+<details class="proof">
+<summary>证明 9.3.3</summary>
+<p>射线与凸集的交在参数上为凸子集，开性使它为含零的相对开区间。若退出参数为 <span class="arithmatex">\(r&lt;1\)</span>，参数 <span class="arithmatex">\(1\)</span> 不在该区间，所以 <span class="arithmatex">\(v\notin\Omega\)</span>。特别当退出点是边界点时，更远的射线点也在闭包外：否则用含零的小球与该闭包点作凸组合，会把退出点推进到内部。</p>
+</details>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.16</span><span class="book-name">非零实泛函是开映射</span></p>
+<p>非零有界实线性泛函 <span class="arithmatex">\(\phi:W\to\mathbb R\)</span> 将开集映为开集；在一个 <span class="arithmatex">\(\phi(e)\ne0\)</span> 的方向上移动即可在像中得到开区间。</p>
+</div>
+<details class="proof">
+<summary>证明 9.3.4</summary>
+<p>取 <span class="arithmatex">\(\phi(e)\ne0\)</span>。若 <span class="arithmatex">\(B(w,\delta)\)</span> 包含于给定开集，那么 <span class="arithmatex">\(w+te\)</span> 在 <span class="arithmatex">\(|t|&lt;\delta/\|e\|\)</span> 时仍在其中，其像覆盖以 <span class="arithmatex">\(\phi(w)\)</span> 为中心的开区间。每个像点都有这种邻域，所以像开。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.17</span><span class="book-name">有限维开凸集分离</span></p>
+<p>有限维实空间中，若开凸 <span class="arithmatex">\(\Omega\)</span> 包含零，<span class="arithmatex">\(v\notin\Omega\)</span>，则有 <span class="arithmatex">\(\phi\in V^*\)</span> 满足 <span class="arithmatex">\(\phi(v)=1\)</span> 且 <span class="arithmatex">\(\phi(x)&lt;1\)</span> 对所有 <span class="arithmatex">\(x\in\Omega\)</span> 成立。</p>
+</div>
+<details class="proof">
+<summary>证明 9.3.5</summary>
+<p>换成等价欧氏范数。先假设 <span class="arithmatex">\(v\)</span> 在 <span class="arithmatex">\(\overline\Omega\)</span> 外，闭凸集的距离由有界最小化序列取得于 <span class="arithmatex">\(p\in\overline\Omega\)</span>。沿 <span class="arithmatex">\(p\)</span> 指向任意 <span class="arithmatex">\(x\in\overline\Omega\)</span> 的线段求距离平方的右导数，得 <span class="arithmatex">\(\langle v-p,x-p\rangle\leq0\)</span>。因零在内部，<span class="arithmatex">\(\langle v-p,v\rangle&gt;0\)</span>，故用该分母归一化的泛函满足 <span class="arithmatex">\(\phi(v)=1\)</span>、<span class="arithmatex">\(\phi(\Omega)\leq1\)</span>。</p>
+<p>若 <span class="arithmatex">\(v\)</span> 在边界，沿从零出发的射线取外点 <span class="arithmatex">\(v_k=(1+1/k)v\)</span>；凸性与零的内部性保证这些点在闭包外。各分离泛函因 <span class="arithmatex">\(\Omega\)</span> 包含固定小球而具有统一范数界，有限维紧性给收敛子列，极限满足弱分离和 <span class="arithmatex">\(\phi(v)=1\)</span>。最后非零泛函是开映射，若内部点取值为一，附近必有取值大于一的点，矛盾；故不等式严格。</p>
+</details>
+<details class="proof">
+<summary>一维扩张的取值区间</summary>
+<p>令 <span class="arithmatex">\(\Phi(u+te)=\phi(u)+tc\)</span>。保持范数至多一等价于对全部 <span class="arithmatex">\(u\in U\)</span>，<span class="arithmatex">\(\phi(u)-\|u-e\|\leq c\leq\|u+e\|-\phi(u)\)</span>。任一左端不大于任一右端，因为 <span class="arithmatex">\(\phi(u+w)\leq\|u+w\|\leq\|u-e\|+\|w+e\|\)</span>。因此取左端上确界与右端下确界之间的 <span class="arithmatex">\(c\)</span> 即可。反复扩张配合 Zorn 得到全空间的扩张；复情形先扩张实部再由逆式恢复。</p>
+<p>有限维商空间与 <span class="arithmatex">\(X^*\)</span> 的配对非退化：若 <span class="arithmatex">\(X\)</span> 中某个泛函在全部 <span class="arithmatex">\(V\)</span> 上为零，它自身为零，故测试映射满射。商范数等式来自商对偶的单位球范数公式以及 <span class="arithmatex">\(({}^\perp X)^\perp=X\)</span>。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>一般凸集分离与弱闭包</h2>
+<h3 id="topic-9-4-1">从局部分离到全空间</h3>
+<p>有限维分离加弱-* 紧性是一条路线，Minkowski 泛函加受支配延拓是另一条路线。严格分离还需要正的间隙，闭集与紧集条件正好保证这个间隙。</p>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.1</span><span class="book-name">开凸集分离</span></p>
+<p>任意赋范空间中，开凸集 <span class="arithmatex">\(\Omega\)</span> 包含零且 <span class="arithmatex">\(v\notin\Omega\)</span> 时，有 <span class="arithmatex">\(\phi\in V^*\)</span>，使 <span class="arithmatex">\(\operatorname{Re}\phi(v)=1\)</span>、<span class="arithmatex">\(\operatorname{Re}\phi(x)&lt;1\)</span> 对全部 <span class="arithmatex">\(x\in\Omega\)</span> 成立。</p>
+</div>
+<details class="proof">
+<summary>证明 9.4.1</summary>
+<p>第一种证明用有限逼近。对包含 <span class="arithmatex">\(v\)</span> 的每个有限维子空间 <span class="arithmatex">\(U\)</span>，9.3.5 给分离泛函；<span class="arithmatex">\(\Omega\)</span> 包含半径 <span class="arithmatex">\(a\)</span> 的球，使其范数至多 <span class="arithmatex">\(1/a\)</span>。Hahn–Banach 将其同界延拓到 <span class="arithmatex">\(V\)</span>，Banach–Alaoglu 给弱-* 收敛子网。任何固定点最终包含于这些测试空间，故极限满足 <span class="arithmatex">\(\phi(v)=1\)</span>、<span class="arithmatex">\(\phi(\Omega)\leq1\)</span>；开映射性质使后者严格。</p>
+<p>第二种证明定义 Minkowski 泛函 <span class="arithmatex">\(p(x)=\inf\{r&gt;0:x\in r\Omega\}\)</span>。球的包含给 <span class="arithmatex">\(p(x)\leq\|x\|/a\)</span>，凸性给次可加性，正缩放给正齐次性。<span class="arithmatex">\(p(v)\geq1\)</span>，而 <span class="arithmatex">\(\Omega=\{p&lt;1\}\)</span>。在 <span class="arithmatex">\(\mathbb Rv\)</span> 上定义 <span class="arithmatex">\(f(tv)=t\)</span>，对 <span class="arithmatex">\(t\geq0\)</span> 有 <span class="arithmatex">\(f\leq p\)</span>，对 <span class="arithmatex">\(t&lt;0\)</span> 因 <span class="arithmatex">\(p\geq0\)</span> 也成立。使用次线性版本的一维扩张及 Zorn 引理延拓 <span class="arithmatex">\(f\leq p\)</span>，便有 <span class="arithmatex">\(f(v)=1\)</span>、<span class="arithmatex">\(f(\Omega)&lt;1\)</span>；同时 <span class="arithmatex">\(|f(x)|\leq\|x\|/a\)</span>，故连续。复情形通过实部对应处理。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.2</span><span class="book-name">闭集与紧集的严格分离</span></p>
+<p>非空不交凸集 <span class="arithmatex">\(A,B\)</span>，其中一个闭、另一个紧，则存在 <span class="arithmatex">\(\phi\in V^*\)</span> 及实 <span class="arithmatex">\(a&lt;b\)</span>，使 <span class="arithmatex">\(\operatorname{Re}\phi(A)\leq a&lt;b\leq\operatorname{Re}\phi(B)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.4.3</summary>
+<p>紧集与不交闭集的距离为正：在紧集上，到闭集的连续正距离取得正最小值。令 <span class="arithmatex">\(C=A-B\)</span>，则零不在其闭包；取小球厚化 <span class="arithmatex">\(C\)</span> 得不含零的开凸集。对该集与零使用开凸分离，得到非零实泛函，厚化的小球使原两集间出现固定正间隙。调整符号后可取 <span class="arithmatex">\(\sup\operatorname{Re}\phi(A)&lt;\inf\operatorname{Re}\phi(B)\)</span>，在间隙中选 <span class="arithmatex">\(a&lt;b\)</span> 即得结果。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.3</span><span class="book-name">闭凸集的最佳逼近</span></p>
+<p>Hilbert 空间中，每个非空闭凸集 <span class="arithmatex">\(A\)</span> 和 <span class="arithmatex">\(v\notin A\)</span> 有唯一 <span class="arithmatex">\(\xi\in A\)</span> 满足 <span class="arithmatex">\(\|v-\xi\|=\operatorname{dist}(v,A)\)</span>。它由 <span class="arithmatex">\(\operatorname{Re}\langle v-\xi,y-\xi\rangle\leq0\)</span>（<span class="arithmatex">\(y\in A\)</span>）刻画。</p>
+</div>
+<details class="proof">
+<summary>证明 9.4.5</summary>
+<p>取距离最小化序列 <span class="arithmatex">\(x_n\in A\)</span>。中点仍在 <span class="arithmatex">\(A\)</span>，平行四边形恒等式给</p>
+<div class="arithmatex">\[
+\|x_n-x_m\|^2
+\leq2\|v-x_n\|^2+2\|v-x_m\|^2-4d^2\to0.
+\]</div>
+<p>完备性及闭性给极限 <span class="arithmatex">\(\xi\in A\)</span>，达到距离。沿 <span class="arithmatex">\(\xi+t(y-\xi)\)</span> 的距离平方右导数非负，得到刻画不等式。反向展开 <span class="arithmatex">\(\|v-y\|^2\)</span>，该不等式使它至少为 <span class="arithmatex">\(\|v-\xi\|^2+\|y-\xi\|^2\)</span>，因此既保证最小性也保证唯一。</p>
+</details>
+<h3 id="topic-9-5-1">凸性连接弱极限和范数极限</h3>
+<p>弱拓扑只要求泛函测试连续，通常比范数拓扑粗。凸集可由连续泛函分离，因此两种闭包在凸集上相同，弱极限也能用有限凸组合恢复为范数极限。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.4</span><span class="book-name">一般赋范空间的弱拓扑</span></p>
+<p><span class="arithmatex">\(\sigma(V,V^*)\)</span> 由全部连续线性泛函的数值坐标诱导，等价于经 <span class="arithmatex">\(J_V\)</span> 拉回 <span class="arithmatex">\(V^{**}\)</span> 的弱-* 拓扑。网弱收敛当且仅当所有 <span class="arithmatex">\(\phi(v_\alpha)\)</span> 收敛。</p>
+</div>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.5</span><span class="book-name">凸集的两种闭包</span></p>
+<p>凸集的范数闭包与弱闭包相同。因此范数闭凸集弱闭。</p>
+</div>
+<details class="proof">
+<summary>证明 9.5.3</summary>
+<p>弱拓扑较粗，范数闭包包含于弱闭包。若点在范数闭凸包外，9.4.3 将该点与闭凸包严格分离；分离泛函弱连续，提供一个弱开邻域不碰凸包，所以该点也不在弱闭包。这给出反向包含。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.6</span><span class="book-name">凸组合恢复范数极限</span></p>
+<p>定义 <span class="arithmatex">\(\operatorname{conv}E\)</span> 为有限非负系数、系数和为一的组合。若 <span class="arithmatex">\(E\)</span> 中有网弱趋于 <span class="arithmatex">\(v\)</span>，则存在 <span class="arithmatex">\(\operatorname{conv}E\)</span> 中的序列范数趋于 <span class="arithmatex">\(v\)</span>；对序列尾集分别应用得到 Mazur 型尾部凸组合。</p>
+</div>
+<details class="proof">
+<summary>证明 9.5.5</summary>
+<p>弱极限 <span class="arithmatex">\(v\)</span> 属于 <span class="arithmatex">\(E\)</span> 的弱闭包，从而属于 <span class="arithmatex">\(\operatorname{conv}E\)</span> 的弱闭包。9.5.3 将其转成范数闭包，每个半径 <span class="arithmatex">\(1/n\)</span> 的球于是含一个有限凸组合，得到范数收敛序列。若原序列弱收敛，<span class="arithmatex">\(v\)</span> 属于每个尾集的弱闭包，对第 <span class="arithmatex">\(n\)</span> 个尾集选误差小于 <span class="arithmatex">\(1/n\)</span> 的凸组合，便得 Mazur 型尾部结论。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.7</span><span class="book-name">双湮灭子</span></p>
+<p>任意线性子空间 <span class="arithmatex">\(U\)</span> 满足 <span class="arithmatex">\(\overline U={}^\perp(U^\perp)\)</span>，所以 <span class="arithmatex">\(U\)</span> 稠密当且仅当 <span class="arithmatex">\(U^\perp=\{0\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.5.7</summary>
+<p>闭包内的向量当然被 <span class="arithmatex">\(U^\perp\)</span> 消去。反向若 <span class="arithmatex">\(v\notin\overline U\)</span>，闭子空间与点的严格分离给泛函；由于 <span class="arithmatex">\(\overline U\)</span> 是线性空间，分离泛函必须在其上为零，否则缩放会使值无界。该泛函却不消去 <span class="arithmatex">\(v\)</span>，所以 <span class="arithmatex">\(v\notin{}^\perp(U^\perp)\)</span>。</p>
+</details>
+<h3 id="topic-9-6-1">双对偶中的有限测试逼近</h3>
+<p>典范映射保留范数，转置把算子作用拉回测试泛函。Goldstine 说明有限测试无法区分单位球与其双对偶单位球中的点；自反性则要求这些双对偶点确实来自原空间。</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.8</span><span class="book-name">有界映射的弱连续性</span></p>
+<p>任意有界线性 <span class="arithmatex">\(T:V\to W\)</span> 对两侧弱拓扑连续，因为每个 <span class="arithmatex">\(\psi\in W^*\)</span> 的复合 <span class="arithmatex">\(\psi T\)</span> 属于 <span class="arithmatex">\(V^*\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.1</summary>
+<p>若 <span class="arithmatex">\(v_\alpha\rightharpoonup v\)</span>，对每个 <span class="arithmatex">\(\psi\in W^*\)</span>，有 <span class="arithmatex">\(\psi(Tv_\alpha)=(\psi T)(v_\alpha)\to(\psi T)(v)\)</span>，因为 <span class="arithmatex">\(\psi T\in V^*\)</span>。这正是 <span class="arithmatex">\(Tv_\alpha\rightharpoonup Tv\)</span> 的定义。</p>
+</details>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.9</span><span class="book-name">转置</span></p>
+<p>定义 <span class="arithmatex">\(T':W^*\to V^*\)</span>，<span class="arithmatex">\(T'\psi=\psi\circ T\)</span>；其有界且范数至多为 <span class="arithmatex">\(\|T\|\)</span>。</p>
+</div>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.10</span><span class="book-name">双对偶与转置等距</span></p>
+<p><span class="arithmatex">\(J_V\)</span> 是线性等距嵌入；更一般地 <span class="arithmatex">\(T\mapsto T'\)</span> 为算子空间间的线性等距嵌入，<span class="arithmatex">\(\|T'\|=\|T\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.3</summary>
+<p><span class="arithmatex">\(J_V\)</span> 等距已由一维泛函延拓证明。对 <span class="arithmatex">\(T\)</span>，有 <span class="arithmatex">\(\|T'\|\leq\|T\|\)</span>；反向对每个单位 <span class="arithmatex">\(v\)</span>，<span class="arithmatex">\(W\)</span> 的等距求值给 <span class="arithmatex">\(\|Tv\|=\sup_{\|\psi\|\leq1}|\psi(Tv)|\leq\|T'\|\)</span>。再对 <span class="arithmatex">\(v\)</span> 取上确界得到等号。线性显然，等距也保证单射。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.11</span><span class="book-name">对偶分离点</span></p>
+<p><span class="arithmatex">\(V^*\)</span> 分离 <span class="arithmatex">\(V\)</span> 的点，故弱拓扑为 Hausdorff 拓扑。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.5</summary>
+<p>对不同 <span class="arithmatex">\(v,w\)</span>，等距 <span class="arithmatex">\(J_V\)</span> 使 <span class="arithmatex">\(J_V(v-w)\ne0\)</span>，故存在 <span class="arithmatex">\(\phi\)</span> 取不同值。分离两个标量值的小开邻域拉回便给弱拓扑中的不交邻域，因此 Hausdorff。</p>
+</details>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.12</span><span class="book-name">自反空间</span></p>
+<p><span class="arithmatex">\(J_V\)</span> 满射时称 <span class="arithmatex">\(V\)</span> 自反，即全部 <span class="arithmatex">\(V^*\)</span> 上的有界泛函都来自某个 <span class="arithmatex">\(v\)</span> 的求值。自反空间自动完备，因为双对偶完备。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.13</span><span class="book-name">一般全连续映射</span></p>
+<p>有界线性 <span class="arithmatex">\(T:V\to W\)</span> 全连续，指其闭单位球的限制由弱拓扑到值域范数拓扑连续。</p>
+</div>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.14</span><span class="book-name">自反定义域上的紧性</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 自反，则以下等价：<span class="arithmatex">\(T\)</span> 紧；<span class="arithmatex">\(T\)</span> 全连续；双线性配对 <span class="arithmatex">\((\psi,v)\mapsto\psi(Tv)\)</span> 在 <span class="arithmatex">\(W^*\)</span> 的弱-* 单位球与 <span class="arithmatex">\(V\)</span> 的弱单位球的乘积上联合连续。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.13</summary>
+<p>自反性使弱单位球经 <span class="arithmatex">\(J_V\)</span> 同构于双对偶的弱-* 单位球，后者紧。故全连续推出紧。紧映射把弱收敛网的像任何范数聚点都识别为弱极限，反证子网论证便给全连续。</p>
+<p>若像强收敛，与可变弱-* 单位球测试的配对误差由范数差和固定向量测试差控制，得到联合连续。反向用 9.6.14 将联合配对连续性恢复成像的范数收敛。三个条件遂等价。</p>
+</details>
+<div id="lem-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.15</span><span class="book-name">联合对偶测试判定范数</span></p>
+<p>单位球中 <span class="arithmatex">\(\eta_\alpha\rightharpoonup\eta\)</span>，则 <span class="arithmatex">\(\eta_\alpha\)</span> 在范数下收敛到 <span class="arithmatex">\(\eta\)</span> 当且仅当对每个独立指标的弱-* 收敛单位球网 <span class="arithmatex">\(\psi_\nu\to\psi\)</span>，乘积网 <span class="arithmatex">\(\psi_\nu(\eta_\alpha)\to\psi(\eta)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.14</summary>
+<p>若范数收敛，配对误差至多为 <span class="arithmatex">\(\|\eta_\alpha-\eta\|+|\psi_\nu(\eta)-\psi(\eta)|\)</span>，在乘积指标上趋零。反向若范数不收敛，取子网使距离至少为 <span class="arithmatex">\(\varepsilon\)</span>，Hahn–Banach 选单位泛函 <span class="arithmatex">\(\psi_\alpha\)</span> 使 <span class="arithmatex">\(|\psi_\alpha(\eta_\alpha-\eta)|\geq\varepsilon/2\)</span>。Banach–Alaoglu 再给弱-* 收敛子网。对固定 <span class="arithmatex">\(\eta\)</span> 的测试已收敛，上述正下界遂使配对沿对角子网不能趋于要求值，与乘积网收敛矛盾。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.16</span><span class="book-name">自反空间中的紧转置</span></p>
+<p>若 <span class="arithmatex">\(V,W\)</span> 自反，则 <span class="arithmatex">\(T:V\to W\)</span> 紧当且仅当 <span class="arithmatex">\(T':W^*\to V^*\)</span> 紧。更一般的 Banach 空间结论为 Schauder 定理。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.15</summary>
+<p>自反时 <span class="arithmatex">\(W^*\)</span> 的弱拓扑等于由 <span class="arithmatex">\(W\)</span> 求值的弱-* 拓扑。于是 <span class="arithmatex">\(T\)</span> 的联合连续配对 <span class="arithmatex">\((\psi,v)\mapsto\psi(Tv)\)</span>，交换两变量后就是 <span class="arithmatex">\(T'\)</span> 的相同判据，因为 <span class="arithmatex">\(V^{**}=J_V(V)\)</span>。9.6.13 两次应用得到紧性等价。</p>
+</details>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.17</span><span class="book-name">Goldstine 定理</span></p>
+<p><span class="arithmatex">\(J_V(B_V)\)</span> 在 <span class="arithmatex">\(V^{**}\)</span> 闭单位球中弱-* 稠密，故 <span class="arithmatex">\(J_V(V)\)</span> 在双对偶中弱-* 稠密。这里不要求原空间完备。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.16</summary>
+<p>固定有限个测试，其张成记为 <span class="arithmatex">\(X\subset V^*\)</span>，并取 <span class="arithmatex">\(F\in B_{V^{**}}\)</span>。限制 <span class="arithmatex">\(F|_X\)</span> 的范数至多一，9.2.9–9.2.10 给一个陪集代表，能以 <span class="arithmatex">\(\|v\|\leq1+\delta\)</span> 精确实现这些测试值。将 <span class="arithmatex">\(v\)</span> 除以 <span class="arithmatex">\(1+\delta\)</span> 使它落在单位球，有限个测试误差随 <span class="arithmatex">\(\delta\downarrow0\)</span> 消失。因此每个弱-* 基本邻域均碰到 <span class="arithmatex">\(J_V(B_V)\)</span>，证明稠密。</p>
+</details>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.18</span><span class="book-name">自反的弱紧判据</span></p>
+<p>赋范空间自反当且仅当其闭单位球弱紧。</p>
+</div>
+<details class="proof">
+<summary>证明 9.6.17</summary>
+<p>自反方向由 Banach–Alaoglu。反向弱紧单位球经 <span class="arithmatex">\(J_V\)</span> 映为弱-* 紧集，在 Hausdorff 双对偶中闭；Goldstine 又使它在双对偶单位球稠密，故两球相同。缩放后 <span class="arithmatex">\(J_V\)</span> 满射，即自反。</p>
+</details>
+<h3 id="topic-9-7-1">检测自反性的失败</h3>
+<p>点分离只要求测试族没有共同消去的非零向量，范数稠密则更强。非自反空间会出现分离点却不范数稠密的测试族，说明双对偶中仍有原空间外的信息。</p>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.19</span><span class="book-name">离散 <span class="arithmatex">\(C_0\)</span> 的对偶</span></p>
+<p>对任意离散集合 <span class="arithmatex">\(X\)</span>，<span class="arithmatex">\(C_0(X,\mathbb F)^*\cong\ell^1(X,\mathbb F)\)</span> 等距，同构为 <span class="arithmatex">\(f\mapsto[g\mapsto\sum_Xfg]\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 9.7.1</summary>
+<p>若 <span class="arithmatex">\(a\in\ell^1(X)\)</span>，求和泛函范数至多 <span class="arithmatex">\(\|a\|_1\)</span>；用有限集上的相位测试得到反向界。反过来对 <span class="arithmatex">\(\Lambda\in C_0(X)^*\)</span>，令 <span class="arithmatex">\(a_x=\Lambda(\mathbf1_{\{x\}})\)</span>。在任意有限集取相位，得 <span class="arithmatex">\(\sum_{x\in F}|a_x|\leq\|\Lambda\|\)</span>，所以 <span class="arithmatex">\(a\in\ell^1(X)\)</span>。有限支集函数在 <span class="arithmatex">\(C_0\)</span> 一致稠密，故 <span class="arithmatex">\(\Lambda(g)=\sum a_xg(x)\)</span>，得到全部表示及等距性。</p>
+</details>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.20</span><span class="book-name">非自反的测试族判据</span></p>
+<p><span class="arithmatex">\(V\)</span> 非自反，当且仅当存在分离 <span class="arithmatex">\(V\)</span> 的点的 <span class="arithmatex">\(X\subset V^*\)</span>，使 <span class="arithmatex">\(\overline{\operatorname{span}X}\)</span> 在 <span class="arithmatex">\(V^*\)</span> 中为真子空间。</p>
+</div>
+<details class="proof">
+<summary>证明 9.7.4</summary>
+<p>若 <span class="arithmatex">\(V\)</span> 非自反，取 <span class="arithmatex">\(F\in V^{**}\setminus J_V(V)\)</span>，令 <span class="arithmatex">\(X=\ker F\)</span>。它是范数闭真子空间。若 <span class="arithmatex">\(v\)</span> 被 <span class="arithmatex">\(X\)</span> 全部消去，则 <span class="arithmatex">\(J_Vv\)</span> 与 <span class="arithmatex">\(F\)</span> 有相同核包含，代数线性关系使 <span class="arithmatex">\(J_Vv=cF\)</span>；除 <span class="arithmatex">\(v=0\)</span> 外这会迫使 <span class="arithmatex">\(F\in J_V(V)\)</span>，矛盾。因此 <span class="arithmatex">\(X\)</span> 分离点。</p>
+<p>反向若 <span class="arithmatex">\(X\)</span> 分离点而 <span class="arithmatex">\(Y=\overline{\operatorname{span}X}\)</span> 真，Hahn–Banach 在 <span class="arithmatex">\(V^*\)</span> 上给非零 <span class="arithmatex">\(F\)</span> 消去 <span class="arithmatex">\(Y\)</span>。若 <span class="arithmatex">\(V\)</span> 自反，<span class="arithmatex">\(F=J_Vv\)</span>，点分离使 <span class="arithmatex">\(v=0\)</span>，与 <span class="arithmatex">\(F\ne0\)</span> 矛盾。</p>
+</details>
+<div id="cor-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.21</span><span class="book-name">对偶的自反性</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 是 Banach 空间，则 <span class="arithmatex">\(V\)</span> 自反当且仅当 <span class="arithmatex">\(V^*\)</span> 自反。</p>
+</div>
+<details class="proof">
+<summary>证明 9.7.7</summary>
+<p>若 <span class="arithmatex">\(V\)</span> 自反，对任意 <span class="arithmatex">\(F\in V^{***}\)</span>，定义 <span class="arithmatex">\(\phi(v)=F(J_Vv)\)</span>。全部 <span class="arithmatex">\(G\in V^{**}\)</span> 都为 <span class="arithmatex">\(J_Vv\)</span>，于是 <span class="arithmatex">\(F(G)=\phi(v)=G(\phi)\)</span>，所以 <span class="arithmatex">\(V^*\)</span> 自反。反向若 <span class="arithmatex">\(V^*\)</span> 自反而 <span class="arithmatex">\(J_V(V)\)</span> 是真子空间，Banach 性使等距像闭；Hahn–Banach 给非零 <span class="arithmatex">\(F\in V^{***}\)</span> 消去此像。但 <span class="arithmatex">\(F=J_{V^*}\phi\)</span>，消去条件就是 <span class="arithmatex">\(\phi(v)=0\)</span> 对全部 <span class="arithmatex">\(v\)</span>，矛盾。所以 <span class="arithmatex">\(J_V\)</span> 满射。</p>
+</details>
+<h3 id="topic-9-8-1">核与余维由转置对应</h3>
+<p>闭像的湮灭子就是转置的核。对紧算子的非零参数，核和像的稳定分解把这些空间缩到有限维，秩零度公式遂给四个维数的相等。</p>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.22</span><span class="book-name">指定测试族的弱拓扑</span></p>
+<p>对 <span class="arithmatex">\(X\subset V^*\)</span>，<span class="arithmatex">\(\sigma(V,X)\)</span> 由 <span class="arithmatex">\(v\mapsto(\phi(v))_{\phi\in X}\)</span> 的乘积拉回拓扑定义。<span class="arithmatex">\(X=V^*\)</span> 给通常弱拓扑；对偶空间上由原空间求值给弱-* 拓扑。</p>
+</div>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.23</span><span class="book-name">Fredholm 的核与余维</span></p>
+<p>Banach 空间上的紧 <span class="arithmatex">\(T\)</span> 和 <span class="arithmatex">\(\lambda\ne0\)</span> 满足 <span class="arithmatex">\(\dim\ker(T-\lambda)=\dim V/\operatorname{ran}(T-\lambda)=\dim\ker(T'-\lambda)=\dim V^*/\operatorname{ran}(T'-\lambda)&lt;\infty\)</span>。像闭，故商空间为赋范空间。</p>
+</div>
+<details class="proof">
+<summary>证明 9.8.6</summary>
+<p>令 <span class="arithmatex">\(A=T-\lambda\)</span>。先说明像闭：若没有 <span class="arithmatex">\(\|Av\|\geq c\,\operatorname{dist}(v,\ker A)\)</span>，利用有限维核选距核归一化的有界代表，再用紧性和 <span class="arithmatex">\(Av_n\to0\)</span>，会得到距核为一的向量却趋于核的矛盾。该下界及商空间完备性使像闭；<span class="arithmatex">\(A^n\)</span> 是非零标量加紧算子，同理其像闭。</p>
+<p>核链和像链由第八章的三角链判据最终稳定。取共同稳定次数 <span class="arithmatex">\(n\)</span>，令 <span class="arithmatex">\(N=\ker A^n\)</span>、<span class="arithmatex">\(R=A^nV\)</span>。<span class="arithmatex">\(N\)</span> 有限维，且 <span class="arithmatex">\(N\cap R=0\)</span>：若 <span class="arithmatex">\(A^ny\in N\)</span>，稳定性使 <span class="arithmatex">\(y\in N\)</span>。又 <span class="arithmatex">\(A^nV=A^{2n}V\)</span> 使每个 <span class="arithmatex">\(v\)</span> 可写成 <span class="arithmatex">\(v=(v-A^ny)+A^ny\)</span>，前项在 <span class="arithmatex">\(N\)</span>，所以 <span class="arithmatex">\(V=N\oplus R\)</span>。<span class="arithmatex">\(A\)</span> 在 <span class="arithmatex">\(R\)</span> 上可逆，在 <span class="arithmatex">\(N\)</span> 上为有限维算子。有限维秩零度公式于是给 <span class="arithmatex">\(\dim\ker A=\dim V/\operatorname{ran}A&lt;\infty\)</span>。</p>
+<p>紧转置结论可直接证明：<span class="arithmatex">\(K=\overline{T(B_V)}\)</span> 紧，对偶单位球限制到 <span class="arithmatex">\(K\)</span> 是一致有界且等度连续的标量函数族，有限网论证使它在一致范数下全有界；而此范数差正是 <span class="arithmatex">\(\|T'\psi-T'\chi\|\)</span>。<span class="arithmatex">\(V^*\)</span> 完备使 <span class="arithmatex">\(T'\)</span> 紧。因此上述核余维等式也用于 <span class="arithmatex">\(A'=T'-\lambda\)</span>。最后 <span class="arithmatex">\(\ker A'=(\operatorname{ran}A)^\perp\cong(V/\operatorname{ran}A)^*\)</span>，且像闭，故中间两个有限维数相等，四个量全部相同。</p>
+</details>
+<details class="proof">
+<summary>严格分离、Goldstine 与自反性</summary>
+<p>开凸集的 Minkowski 泛函是次线性的，且由原点附近的小球控制；在 <span class="arithmatex">\(\mathbb Rv\)</span> 上规定值为一，再作受它支配的 Hahn–Banach 扩张，得到连续分离泛函。闭凸集与紧凸集不交时，两者之差闭且不含零，零附近有一个小球与它不交；加入更小球后仍不交，开凸集分离产生严格间隙。</p>
+<p>若点在凸集范数闭包外，严格分离给出一个弱邻域与凸集不交，因此也不在弱闭包内。Goldstine 的一个弱-* 邻域只涉及有限个 <span class="arithmatex">\(V^*\)</span> 元素；在它们张成的有限维测试空间中，商范数的等距性允许用范数至多一的原空间向量任意逼近这些测试值。</p>
+<p>自反时，双对偶球的弱-* 紧性就是原空间球的弱紧性。反向，弱紧的 <span class="arithmatex">\(J_V(B_V)\)</span> 在双对偶球中弱-* 闭，而 Goldstine 又保证稠密，故等于整个球，<span class="arithmatex">\(J_V\)</span> 满射。紧算子的像有限逼近则与全连续性的联合测试相对应；Fredholm 的核余维等式可由有限维块分解或核像的湮灭关系得到。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.1</span><span class="book-name">为什么凸性不可删除</span></p>
+<p>在无限维 Hilbert 空间中，证明单位球面不是弱闭集；但闭单位球是弱闭集。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>正交单位列弱趋于 <span class="arithmatex">\(0\)</span>，而 <span class="arithmatex">\(0\)</span> 不在球面。闭单位球可写成 <span class="arithmatex">\(\bigcap_{\|y\|\le1}\{x:|\langle y,x\rangle|\le1\}\)</span>，是弱闭集；也可用凸集闭包定理。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.2</span><span class="book-name">把弱零列变成强零组合</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 中计算 <span class="arithmatex">\(y_N=N^{-1}\sum_{n=1}^Ne_n\)</span> 的范数。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>正交性给出 <span class="arithmatex">\(\|y_N\|^2=N/N^2=1/N\)</span>。每个 <span class="arithmatex">\(e_n\)</span> 的范数都是 <span class="arithmatex">\(1\)</span>，但平均强趋于零，直观展示 Mazur 与 Banach–Saks 的作用。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.3</span><span class="book-name">矩数据只看到一部分方向</span></p>
+<p>在 <span class="arithmatex">\(\mathbb R^2\)</span> 上给定 <span class="arithmatex">\(f(1,0)=1\)</span>，使用 Euclidean 范数，描述全部线性扩张，并找范数最小的扩张。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>扩张为 <span class="arithmatex">\(f_a(x,y)=x+ay\)</span>，范数为 <span class="arithmatex">\(\sqrt{1+a^2}\)</span>。全部扩张不唯一，但保持原范数 <span class="arithmatex">\(1\)</span> 的扩张只能取 <span class="arithmatex">\(a=0\)</span>。Hahn–Banach 保证等范数扩张存在，并不保证所有问题的等范数扩张唯一。</p>
+</details>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-08/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第八章：紧算子、Fredholm 二择一与 PDE</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-10/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第十章：完备性与 Banach 空间的基本定理</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 10 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=weak-topology">#weak-topology</a><a class="zdd-end-chip" href="../../../../tags/?tag=convexity">#convexity</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../appendix-a/">附录 A：选择公理与存在性方法</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1488 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第四章：渐近分析简介、非正则奇点附近的行为、指数代换法、主导平衡法、无穷处的非正则奇点、渐近幂级数、非齐次线性方程的局部分析、渐近关系。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-04/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第四章：线性微分方程的局部分析：非正则奇点与渐近关系 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-04/">
+  <meta property="og:title" content="第四章：线性微分方程的局部分析：非正则奇点与渐近关系 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第四章：渐近分析简介、非正则奇点附近的行为、指数代换法、主导平衡法、无穷处的非正则奇点、渐近幂级数、非齐次线性方程的局部分析、渐近关系。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="ode">
+
+  <meta property="article:tag" content="asymptotic-analysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-04/">
+  <meta name="twitter:title" content="第四章：线性微分方程的局部分析：非正则奇点与渐近关系 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第四章：渐近分析简介、非正则奇点附近的行为、指数代换法、主导平衡法、无穷处的非正则奇点、渐近幂级数、非齐次线性方程的局部分析、渐近关系。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u56db\u7ae0\uff1a\u7ebf\u6027\u5fae\u5206\u65b9\u7a0b\u7684\u5c40\u90e8\u5206\u6790\uff1a\u975e\u6b63\u5219\u5947\u70b9\u4e0e\u6e10\u8fd1\u5173\u7cfb",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u56db\u7ae0\uff1a\u6e10\u8fd1\u5206\u6790\u7b80\u4ecb\u3001\u975e\u6b63\u5219\u5947\u70b9\u9644\u8fd1\u7684\u884c\u4e3a\u3001\u6307\u6570\u4ee3\u6362\u6cd5\u3001\u4e3b\u5bfc\u5e73\u8861\u6cd5\u3001\u65e0\u7a77\u5904\u7684\u975e\u6b63\u5219\u5947\u70b9\u3001\u6e10\u8fd1\u5e42\u7ea7\u6570\u3001\u975e\u9f50\u6b21\u7ebf\u6027\u65b9\u7a0b\u7684\u5c40\u90e8\u5206\u6790\u3001\u6e10\u8fd1\u5173\u7cfb\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-04/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-04/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["ode", "asymptotic-analysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66", "computational-applied-math"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 渐近分析简介
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 非正则奇点附近的行为
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 指数代换法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 主导平衡法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 无穷处的非正则奇点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 渐近幂级数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 非齐次线性方程的局部分析
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 渐近关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 振荡函数的渐近关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 复平面上的渐近关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 斯托克斯现象与次支配性
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 4 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">04</div>
+    <h1 id="top"><span class="book-visually-hidden">第 4 章：</span>线性微分方程的局部分析：非正则奇点与渐近关系</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>6,012 字 · 约 17 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>渐近分析简介</h2>
+<p>引入两个新符号以描述函数相对行为：</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>记号 <span class="arithmatex">\(f(x) \ll g(x) ,x \to x_0\)</span> 定义为：</p>
+<div class="arithmatex">\[
+\lim_{x \to x_0} \frac{f(x)}{g(x)} = 0.
+\]</div>
+<p>记号 <span class="arithmatex">\(f(x) \sim g(x) ,x \to x_0\)</span> 定义为：</p>
+<div class="arithmatex">\[
+f(x) - g(x) \ll g(x), \quad x \to x_0,
+\]</div>
+<p>或等价于</p>
+<div class="arithmatex">\[
+\lim_{x \to x_0} \frac{f(x)}{g(x)} = 1.
+\]</div>
+<p>注意到若 <span class="arithmatex">\(f(x) \sim g(x)\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)，则 <span class="arithmatex">\(g(x) \sim f(x)\)</span> (<span class="arithmatex">\(x \to x_0\)</span>)。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>非正则奇点附近的行为</h2>
+<p>当前首要任务是求解本节开头两个无法用 Frobenius 级数求解的方程。先观察已知结果：(<a href="../chapter-03/">3.4.1</a>) 的两解：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;y(x) \sim c_1 x^{3/4} e^{2x^{-1/2}}, \quad x \to 0^+; \tag{1}\\
+&amp;y(x) \sim c_2 x^{3/4} e^{-2x^{-1/2}}, \quad x \to 0^+. \tag{2}
+\end{align*}
+\]</div>
+<p>(<a href="../chapter-03/">3.4.2</a>) 的缺失解：</p>
+<div class="arithmatex">\[
+y(x) \sim c_3 x^{-1} e^{x^{-1}}, \quad x \to 0^+. \tag{3.4.5}
+\]</div>
+<p>这些渐进行为均在 <span class="arithmatex">\(x=0\)</span> 有本性奇点。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>上述渐近行为实为解局部行为无穷级数表示的首项，称为<strong>主导行为(leading behavior)</strong>。主导行为在 <span class="arithmatex">\(x \to x_0\)</span> 时变化最快的部分称为<strong>控制因子(controlling factor)</strong>。例如上三例的控制因子分别为 <span class="arithmatex">\(e^{2x^{-1/2}}\)</span>,<span class="arithmatex">\(e^{-2x^{-1/2}}\)</span> ,<span class="arithmatex">\(e^{x^{-1}}\)</span>。级数 (<a href="../chapter-03/">3.4.3</a>) 的主导行为为 <span class="arithmatex">\(a_0\)</span>，Frobenius 级数 <span class="arithmatex">\(\sum a_n x^{\alpha+n}\)</span> 的主导行为为 <span class="arithmatex">\(a_0 x^\alpha\)</span>。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>指数代换法</h2>
+<p>要得知非正则奇点附近解的主导行为，首先要识别控制因子。因控制因子常呈指数形式，故采用代换：</p>
+<div class="arithmatex">\[
+y(x) = e^{S(x)}. \tag{3.4.6}
+\]</div>
+<p>此技巧将 <span class="arithmatex">\(n\)</span> 阶线性微分方程化为 <span class="arithmatex">\(S(x)\)</span> 的近似一阶方程，以二阶方程为例：</p>
+<div class="arithmatex">\[
+y'' + p(x)y' + q(x)y = 0 \tag{3.4.7}
+\]</div>
+<p>有非正则奇点 <span class="arithmatex">\(x_0\)</span> 。代入 <span class="arithmatex">\(y = e^S\)</span> 得：</p>
+<div class="arithmatex">\[
+S'' + (S')^2 + p(x)S' + q(x) = 0. \tag{3.4.8}
+\]</div>
+<p>若 <span class="arithmatex">\(x_0\)</span> 为非正则奇点，通常有：</p>
+<div class="arithmatex">\[
+S'' \ll (S')^2, \quad x \to x_0. \tag{3.4.9}
+\]</div>
+<p>略去 <span class="arithmatex">\(S''\)</span> 得渐近微分方程：</p>
+<div class="arithmatex">\[
+(S')^2 \sim -p(x)S' - q(x), \quad x \to x_0. \tag{3.4.10}
+\]</div>
+<p>此方程易解，且可验证近似 (3.4.9) 的有效性。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.1</span><span class="book-name">非正则奇点 <span class="arithmatex">\(0\)</span> 附近的控制因子</span></p>
+<p>回顾微分方程 (<a href="../chapter-03/">3.4.1</a>) <span class="arithmatex">\(x^3 y'' = y\)</span> 在非正则奇点 <span class="arithmatex">\(0\)</span> 附近。渐近微分方程 (3.4.10) 给出：<span class="arithmatex">\((S')^2 \sim x^{-3}, \quad x \to 0^+.\)</span>解得 <span class="arithmatex">\(S'(x) \sim \pm x^{-3/2}\)</span> (<span class="arithmatex">\(x \to 0^+\)</span>)，积分得：</p>
+<div class="arithmatex">\[
+S(x) \sim \pm 2x^{-1/2}, \quad x \to 0^+. \tag{3.4.11}
+\]</div>
+<p>此即 (1),(2) 中的控制因子。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.2</span><span class="book-name">非正则奇点 <span class="arithmatex">\(0\)</span> 附近的主导行为</span></p>
+<p>继续考虑解 <span class="arithmatex">\(S \sim 2x^{-1/2}\)</span> (<span class="arithmatex">\(x \to 0^+\)</span>)。设：</p>
+<div class="arithmatex">\[
+S(x) = 2x^{-1/2} + C(x), \quad C(x) \ll 2x^{-1/2}, \quad x \to 0^+. \tag{3.4.12}
+\]</div>
+<p>代入 (3.4.8)得：<span class="arithmatex">\(\frac{3}{2}x^{-5/2} + C'' - 2x^{-3/2}C' + (C')^2 = 0.\)</span>由 <span class="arithmatex">\(C' \ll x^{-3/2}\)</span> 得渐近方程：</p>
+<div class="arithmatex">\[
+\frac{3}{2}x^{-5/2} \sim 2x^{-3/2}C', \quad x \to 0^+, \tag{3.4.13}
+\]</div>
+<p>解得 <span class="arithmatex">\(C \sim \frac{3}{4} \ln x\)</span>，且满足 <span class="arithmatex">\(C'' \sim -\frac{3}{4}x^{-2} \ll x^{-5/2}\)</span> 成立。设：</p>
+<div class="arithmatex">\[
+S(x) = 2x^{-1/2} + \frac{3}{4} \ln x + D(x) \tag{3.4.14}
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+D(x) \ll \ln x, \quad x \to 0^+. \tag{3.4.15}
+\]</div>
+<p>代入 (3.4.8)得：<span class="arithmatex">\(-\frac{3}{16}x^{-2} + D'' + (D')^2 - 2x^{-3/2}D' + \frac{3}{2}x^{-1}D' = 0.\)</span>由</p>
+<div class="arithmatex">\[
+\frac{3}{2}x^{-1}D' \ll 2x^{-3/2}D',
+(D')^2 \ll x^{-1}D' ,
+D'' \ll x^{-2},
+\quad x \to 0^+.
+\]</div>
+<p>得渐近方程：</p>
+<div class="arithmatex">\[
+-2x^{-3/2}D' \sim \frac{3}{16}x^{-2}, \quad x \to 0^+.
+\]</div>
+<p>解得：</p>
+<div class="arithmatex">\[
+D' \sim -\frac{3}{32}x^{-1/2}\Longrightarrow D(x) - d \sim \frac{3}{16}x^{1/2}
+\]</div>
+<p>其中 <span class="arithmatex">\(d\)</span> 为常数，换句话说存在 <span class="arithmatex">\(\delta(x)\sim -3x^{1/2}/16\)</span>,<span class="arithmatex">\(x\to 0^+\)</span>：</p>
+<div class="arithmatex">\[
+D(x)=d+\delta(x).\tag{3.4.16}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.3</span><span class="book-name">数值验证</span></p>
+<p>我们先检验已有结果。设 <span class="arithmatex">\(e^{\delta(x)} = 1 + \varepsilon(x)\)</span>，其中 <span class="arithmatex">\(\varepsilon(x) \to 0\)</span> 当 <span class="arithmatex">\(x \to 0+\)</span>。为验证 <span class="arithmatex">\(\varepsilon(x)\)</span> 在 <span class="arithmatex">\(x \to 0+\)</span> 时趋近于零，取初值 <span class="arithmatex">\(y(1) = 1, \, y'(1) = 0\)</span> 数值求解(<a href="../chapter-03/">3.4.1</a>)。通过拟合数值解可检验主导行为预测：</p>
+<div class="arithmatex">\[
+y(x) = c_1 x^{3/4} e^{2x^{-1/2}} [1 + \varepsilon(x)]. \tag{3.4.17}
+\]</div>
+<p><span class="arithmatex">\(y(x)/(x^{3/4} e^{2x^{-1/2}})\)</span> 在 <span class="arithmatex">\(x \to 0+\)</span> 时趋近极限 <span class="arithmatex">\(c_1 \approx 0.1432 \neq 0\)</span>。</p>
+</div>
+<h2 id="s4"><span class="book-secnum">§ 04</span>主导平衡法</h2>
+<p><strong>主导平衡法(Method of dominant balance)</strong>用于识别在渐近极限下可能被忽略的方程中的那些项，这包含三个步骤：</p>
+<ol>
+<li>
+<p>丢弃所有小项，并用渐近关系取代精确方程。</p>
+</li>
+<li>
+<p>渐近关系替换为一个方程，把 <span class="arithmatex">\(\sim\)</span> 号换成等号，并精确求解所得方程。</p>
+</li>
+<li>
+<p>检查所得到的解是否与步骤(1)中所做的近似一致，并证明：通过从精确解本身中分解出主导平衡解而得到的关于剩余函数的方程，其解的变动比主导平衡解更缓慢。</p>
+</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.1</span><span class="book-name">修正原点附近的主导行为</span></p>
+<p>我们对(<a href="../chapter-03/">3.4.1</a>)式解的行为的分析仍不完整。我们的策略是计算(3.4.17)式中 <span class="arithmatex">\(\varepsilon(x)\)</span> 的逐次近似，首先找到 <span class="arithmatex">\(1 + \varepsilon(x)\)</span> 满足的微分方程，然后将以形式幂级数求解该方程，</p>
+<div class="arithmatex">\[
+1 + \varepsilon(x) = 1 + a_1 x^\alpha + a_2 (x^\alpha)^2 + a_3 (x^\alpha)^3 + \cdots,\tag{3.4.18}
+\]</div>
+<p>其中 <span class="arithmatex">\(\alpha\)</span> 是一个正数。我们将(3.4.17)代入(<a href="../chapter-03/">3.4.1</a>)来计算系数 <span class="arithmatex">\(a_n\)</span> 与 <span class="arithmatex">\(\alpha\)</span>，得到 <span class="arithmatex">\(w(x) = 1 + \varepsilon(x)\)</span> 满足的方程：</p>
+<div class="arithmatex">\[
+w'' + \left( \frac{3}{2x} - \frac{2}{x^{3/2}} \right) w' - \frac{3}{16x^2} w = 0.
+\tag{3.4.19}
+\]</div>
+<p>我们将 <span class="arithmatex">\(w(x) = 1 + \varepsilon(x)\)</span> 代入(3.4.19)，得到</p>
+<div class="arithmatex">\[
+\varepsilon'' + (3/2x - 2/x^{3/2})\varepsilon' - 3/16x^2 - 3\varepsilon/16x^2 = 0.
+\]</div>
+<p>注意到当 <span class="arithmatex">\(x \to 0+\)</span> 时 <span class="arithmatex">\(\varepsilon \ll 1\)</span>，从而</p>
+<div class="arithmatex">\[
+3\varepsilon / 16x^2 \ll 3/16x^2, \quad x \to 0+,
+\]</div>
+<p>并且</p>
+<div class="arithmatex">\[
+3x^{-1}/2 \ll 2x^{-3/2}, \quad x \to 0+,
+\]</div>
+<p>这给出了渐近微分方程</p>
+<div class="arithmatex">\[
+\varepsilon'' - \frac{2}{x^{3/2}} \varepsilon' \sim \frac{3}{16x^2}, \quad x \to 0+,\tag{3.4.20}
+\]</div>
+<ul>
+<li>(a) 当 <span class="arithmatex">\(x \to 0+\)</span> 时 <span class="arithmatex">\(\varepsilon'' \sim 3x^{-2}/16\)</span> 且<span class="arithmatex">\(2x^{-3/2}\varepsilon' \ll 3x^{-2}/16\)</span>。对前一个渐近关系积分两次得 <span class="arithmatex">\(\varepsilon(x) \sim -3 \ln x/16 (x \to 0+)\)</span>，这与 <span class="arithmatex">\(\varepsilon \to 0 ,x \to 0+\)</span>矛盾。</li>
+<li>(b) 当 <span class="arithmatex">\(x \to 0+\)</span> 时 <span class="arithmatex">\(\varepsilon''/\varepsilon' \sim 2x^{-3/2}\)</span> 且<span class="arithmatex">\(3x^{-2}/16 \ll 2x^{-3/2}\varepsilon'\)</span>。对前一个渐近关系积分得 <span class="arithmatex">\(\ln \varepsilon' \sim -4x^{-1/2}(x \to 0+)\)</span>，这与后者矛盾。</li>
+<li>(c) 当 <span class="arithmatex">\(x \to 0+\)</span> 时，(3.4.20)中没有一项相对于其他两项是可忽略的，留给读者证明矛盾。</li>
+<li>(d) 当 <span class="arithmatex">\(x \to 0+\)</span> 时<span class="arithmatex">\(-2x^{-3/2}\varepsilon' \sim 3x^{-2}/16\)</span> 且 <span class="arithmatex">\(\varepsilon'' \ll 2x^{-3/2}\varepsilon'\)</span>。对前一个渐近关系积分得 <span class="arithmatex">\(\varepsilon(x) \sim -3x^{1/2}/16 (x \to 0+)\)</span>，满足后者条件。</li>
+</ul>
+<p>因此存在<span class="arithmatex">\(\varepsilon_1 \ll 3x^{1/2}/16( x \to 0+)\)</span>满足：</p>
+<div class="arithmatex">\[
+w(x) = 1 - 3x^{1/2}/16 + \varepsilon_1(x),
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.2</span><span class="book-name">续</span></p>
+<p>我们现在可以通过类似刚才的论证来确定 <span class="arithmatex">\(\varepsilon_1(x)\)</span> 的主导行为：</p>
+<div class="arithmatex">\[
+\varepsilon_1(x) = -15x/512 + \varepsilon_2(x), \quad \varepsilon_2 \ll 15x/512, \quad x \to 0+.
+\]</div>
+<p>显然，我们可以永远继续这个过程，并生成 <span class="arithmatex">\(w(x)\)</span> 的一个级数表示。索性将完整的形式级数表示(3.4.18)（其中 <span class="arithmatex">\(\alpha = \frac{1}{2}, w(x) = \sum_{n=0}^{\infty} a_n x^{n/2} \, (a_0 = 1)\)</span>）直接代入(3.4.19)。我们得到</p>
+<div class="arithmatex">\[
+\sum_{n=1}^{\infty} \frac{n}{2} \left( \frac{n}{2} - 1 \right) a_n x^{n/2-2} + \frac{3}{2} \sum_{n=1}^{\infty} \frac{n}{2} a_n x^{n/2-2} - 2 \sum_{n=1}^{\infty} \frac{n}{2} a_n x^{n/2-5/2} - \frac{3}{16} \sum_{n=0}^{\infty} a_n x^{n/2-2} = 0.
+\]</div>
+<p>由此得递推关系：</p>
+<div class="arithmatex">\[
+a_{n+1} = \frac{(2n-1)(2n+3)}{16(n+1)} a_n, \quad n=0, 1, 2, \ldots. \tag{3.4.21}
+\]</div>
+<p>故有通项公式为：</p>
+<div class="arithmatex">\[
+a_n = -[\Gamma (n-\frac{1}{2})\Gamma (n+\frac{3}{2})] / \pi 4^n n! , \quad n=0, 1, 2, \ldots.
+\]</div>
+<p>由此完成(1)主导行为的解之局部分析：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+y(x) \sim -c_1 x^{3/4} e^{2x^{-1/2}} \sum_{n=0}^{\infty} \frac{\Gamma (n-\frac{1}{2})\Gamma (n+\frac{3}{2})}{\pi^4 n!} x^{n/2}, \quad x \to 0 +.
+\end{aligned}\tag{20}
+\]</div>
+<p>级数对所有 <span class="arithmatex">\(x\)</span> 发散，但作为渐近级数在 <span class="arithmatex">\(x \to 0+\)</span> 给出精确近似。类似分析(2)得：</p>
+<div class="arithmatex">\[
+y(x) \sim -c_2 x^{3/4} e^{-2x^{-1/2}} \sum_{n=0}^{\infty} (-1)^n \frac{\Gamma(n-\frac{1}{2})\Gamma(n+\frac{3}{2})}{\pi 4^n n!} x^{n/2}, \quad x \to 0 + . \tag{3.4.22b}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.3</span><span class="book-name">不规则奇点附近的局部行为</span></p>
+<p>在 (<a href="../chapter-03/">3.4.2</a>) 作指数替换 <span class="arithmatex">\(y = e^S\)</span> 得：</p>
+<div class="arithmatex">\[
+x^2 S'' + x^2 (S')^2 + (1 + 3x)S' + 1 = 0. \tag{3.4.23}
+\]</div>
+<p>忽略 <span class="arithmatex">\(x^2 S''\)</span> 和 <span class="arithmatex">\(3xS'\)</span>，解 <span class="arithmatex">\(S' + 1 \sim -x^2 (S')^2\)</span> 得两根：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;S' \sim -1 \quad (x \to 0+), \tag{22} \\
+&amp;S' \sim -x^{-2} \quad (x \to 0+). \tag{23}
+\end{align*}
+\]</div>
+<p>积分(22)得 <span class="arithmatex">\(y(x) \sim c_1\)</span>，积分(23)得 <span class="arithmatex">\(S \sim x^{-1}\)</span>，代入 <span class="arithmatex">\(S(x) = x^{-1} + C(x)\)</span> (<span class="arithmatex">\(C \ll x^{-1}\)</span>) 得：</p>
+<div class="arithmatex">\[
+x^2 C'' + x^2 (C')^2 - (1 - 3x)C' - x^{-1} + 1 = 0. \tag{3.4.25}
+\]</div>
+<p>渐近近似给出</p>
+<div class="arithmatex">\[
+C'(x) \sim -x^{-1}
+\tag{3.4.26}
+\]</div>
+<p>积分得 <span class="arithmatex">\(C(x) \sim -\ln x\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.4</span><span class="book-name"><span class="arithmatex">\(n\)</span> 阶薛定谔方程在奇点附近的局部行为</span></p>
+<p>对方程</p>
+<div class="arithmatex">\[
+\frac{d^n y}{dx^n} = Q(x)y \tag{3.4.27}
+\]</div>
+<p>在奇点 <span class="arithmatex">\(x_0\)</span> 附近，指数替换 <span class="arithmatex">\(y = e^S\)</span> 及渐近近似 <span class="arithmatex">\(d^k S / dx^k \ll (S')^k\)</span> (<span class="arithmatex">\(k \geq 2\)</span>) 得：</p>
+<div class="arithmatex">\[
+(S')^n \sim Q(x) \quad (x \to x_0).
+\]</div>
+<p>故 <span class="arithmatex">\(S(x) \sim \omega \int^x [Q(t)]^{1/n} dt\)</span>，其中 <span class="arithmatex">\(\omega^n = 1\)</span>。主导行为为：</p>
+<div class="arithmatex">\[
+y(x) \sim c[Q(x)]^{(1-n)/2n} \exp \left( \omega \int^x [Q(t)]^{1/n} dt \right), \quad x \to x_0. \tag{3.4.28}
+\]</div>
+<p>当 <span class="arithmatex">\(x_0 \neq \infty\)</span> 时要求 <span class="arithmatex">\(|(x - x_0)^n Q(x)| \to \infty\)</span>；当 <span class="arithmatex">\(x_0 = \infty\)</span> 时要求 <span class="arithmatex">\(|x^n Q(x)| \to \infty\)</span>。</p>
+<p>此公式是WKB理论基石，示例：</p>
+<ul>
+<li>(a) <span class="arithmatex">\(y'' = y/x^5\)</span>：<span class="arithmatex">\(y(x) \sim cx^{5/4} e^{\pm 2x^{-3/2}/3} \quad (x \to 0 + )\)</span></li>
+<li>(b) <span class="arithmatex">\(y''' = xy\)</span>：<span class="arithmatex">\(y(x) \sim cx^{-1/3} e^{3\omega x^{4/3}/4} \quad (x \to +\infty) \quad (\omega^3 = 1)\)</span></li>
+<li>(c) <span class="arithmatex">\(d^4 y/dy^4 = (x^4 + \sin x)y\)</span>：<span class="arithmatex">\(y(x) \sim cx^{-3/2} e^{\omega x^{2}/2} \quad (x \to +\infty) \quad (\omega = \pm 1, \pm i)\)</span></li>
+</ul>
+</div>
+<h2 id="s5"><span class="book-secnum">§ 05</span>无穷处的非正则奇点</h2>
+<p>许多著名微分方程在 <span class="arithmatex">\(\infty\)</span> 处存在不规则奇点。应用中，掌握这些方程解在大 <span class="arithmatex">\(|x|\)</span> 时的局部行为至关重要。前几节方法建议通过反演变换 <span class="arithmatex">\(x = 1/t\)</span> 将奇点映射至原点，再用3.4节方法分析新方程在原点处的行为。但更高效的方式是直接推导原方程在 <span class="arithmatex">\(\infty\)</span> 处有效的渐近级数表示。</p>
+<h2 id="s6"><span class="book-secnum">§ 06</span>渐近幂级数</h2>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.1</span></p>
+<p>若对任意 <span class="arithmatex">\(N\)</span> 满足 <span class="arithmatex">\(y(x) - \sum_{n=0}^{N} a_n (x - x_0)^n \ll (x - x_0)^N \ (x \to x_0)\)</span>，则称幂级数 <span class="arithmatex">\(\sum_{n=0}^{\infty} a_n (x - x_0)^n\)</span> 在 <span class="arithmatex">\(x \to x_0\)</span> 时渐近于函数 <span class="arithmatex">\(y(x)\)</span>，记为 <span class="arithmatex">\(y(x) \sim \sum_{n=0}^{\infty} a_n (x - x_0)^n \ (x \to x_0)\)</span>。</p>
+</div>
+<p>我们有等价定义，若 <span class="arithmatex">\(a_M\)</span> 是 <span class="arithmatex">\(a_N\)</span> 后首个非零系数，则 <span class="arithmatex">\(y(x) - \sum_{n=0}^{N} a_n (x - x_0)^n \sim a_M (x - x_0)^M \ (x \to x_0)\)</span>。当非零系数无限时，渐近幂级数等价于无限渐近关系序列。</p>
+<p>将其推广到分数幂：级数 <span class="arithmatex">\(\sum_{n=0}^{\infty} a_n (x - x_0)^{m_n} \ (m_n &gt; 0)\)</span> 渐近于 <span class="arithmatex">\(y(x)\)</span> 的条件是：对任意 <span class="arithmatex">\(N\)</span> 有 <span class="arithmatex">\(y(x) - \sum_{n=0}^{N} a_n (x - x_0)^{m_n} \ll (x - x_0)^{M_N} \ (x \to x_0)\)</span>。</p>
+<p>当 <span class="arithmatex">\(x_0 = \infty\)</span> 时：<span class="arithmatex">\(y(x) \sim \sum_{n=0}^{\infty} a_n x^{-m_n} \ (x \to \infty)\)</span> 需满足 <span class="arithmatex">\(y(x) - \sum_{n=0}^{N} a_n x^{-m_n} \ll x^{-M_N} \ (x \to \infty)\)</span>。</p>
+<p>注意非所有函数可展为渐近幂级数，且若存在则唯一。所有极限存在是函数具有渐近幂级数展开的条件。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.2</span><span class="book-name">泰勒级数在大 <span class="arithmatex">\(x\)</span> 时的行为</span></p>
+<p>考虑 Taylor 定义的函数：</p>
+<div class="arithmatex">\[
+y(x) = \sum_{n=0}^{\infty} \frac{x^n}{(n!)^2}. \tag{3.5.1}
+\]</div>
+<p>该级数对所有 <span class="arithmatex">\(x\)</span> 收敛，但小 <span class="arithmatex">\(x\)</span> 时收敛快，大 <span class="arithmatex">\(x\)</span> 时收敛慢。为求大 <span class="arithmatex">\(x\)</span> 行为，先构造 <span class="arithmatex">\(y(x)\)</span> 满足的二阶微分方程。由 <span class="arithmatex">\(y' = \sum_{n=1}^{\infty} x^{n-1} / [n! (n - 1)!]\)</span> 和 <span class="arithmatex">\((xy')' = \sum_{n=1}^{\infty} x^{n-1} / [(n - 1)!]^2 = y\)</span> 得：</p>
+<div class="arithmatex">\[
+xy'' + y' = y. \tag{3.5.2}
+\]</div>
+<p>此方程在 <span class="arithmatex">\(\infty\)</span> 处有不规则奇点。代入 <span class="arithmatex">\(y = e^S\)</span> 求主导行为：</p>
+<div class="arithmatex">\[
+xS'' + x(S')^2 + S' = 1. \tag{3.5.3}
+\]</div>
+<p>假设 <span class="arithmatex">\(xS'' \ll x(S')^2\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>)，得渐近方程 <span class="arithmatex">\(x(S')^2 \sim 1 - S'\)</span>。解出：</p>
+<div class="arithmatex">\[
+S'(x) \sim [-1 \pm (1 + 4x)^{1/2}] / 2x, \quad x \to +\infty.
+\]</div>
+<p>大 <span class="arithmatex">\(x\)</span> 时近似为：</p>
+<div class="arithmatex">\[
+S'(x) \sim \pm x^{-1/2}, \quad x \to +\infty.
+\]</div>
+<p>积分得：</p>
+<div class="arithmatex">\[
+S(x) = \pm 2x^{1/2} + C(x), \tag{3.5.4}
+\]</div>
+<p>其中 <span class="arithmatex">\(C(x) \ll 2x^{1/2}\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>)。因(3.5.1)系数全正，<span class="arithmatex">\(y(x)\)</span> 单调增，故取正号：<span class="arithmatex">\(S(x) = 2x^{1/2} + C(x)\)</span>。代入(3.5.3)得 <span class="arithmatex">\(C(x)\)</span> 方程：</p>
+<div class="arithmatex">\[
+xC'' + x(C')^2 + (2x^{1/2} + 1)C' + \frac{1}{2}x^{-1/2} = 0.
+\]</div>
+<p>由大 <span class="arithmatex">\(x\)</span> 条件 <span class="arithmatex">\(1 \ll 2x^{1/2}\)</span>, <span class="arithmatex">\(C' \ll x^{-1/2}\)</span>, <span class="arithmatex">\(C'' \ll x^{-3/2}\)</span> 得渐近方程：</p>
+<div class="arithmatex">\[
+C' \sim -\frac{1}{4}x^{-1}, \quad x \to +\infty,
+\]</div>
+<p>解为：</p>
+<div class="arithmatex">\[
+C(x) \sim -\frac{1}{4} \ln x, \quad x \to +\infty.
+\]</div>
+<p>故 <span class="arithmatex">\(y(x)\)</span> 主导行为：</p>
+<div class="arithmatex">\[
+y(x) \sim cx^{-1/4}e^{2x^{1/2}}, \quad x \to +\infty. \tag{3.5.5}
+\]</div>
+<p>可计算出 <span class="arithmatex">\(c = \frac{1}{2}\pi^{-1/2}\)</span> ，比值：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\frac{1}{2}\pi^{-1/2}x^{-1/4}e^{2x^{1/2}} /y(x)
+\end{aligned}\tag{33}
+\]</div>
+<p>在 <span class="arithmatex">\(x \to +\infty\)</span> 时趋近1，且在小 <span class="arithmatex">\(x\)</span> 时也接近1，表明主导行为在大区间有效。部分和比值：</p>
+<div class="arithmatex">\[
+\left[ \sum_{n=0}^{10} \frac{x^n}{(n!)^2} \right]/y(x). \tag{3.5.6b}
+\]</div>
+<p>是良好多项式近似。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.3</span><span class="book-name">修正Bessel函数在大 <span class="arithmatex">\(x\)</span> 时的行为</span></p>
+<p>修正Bessel方程</p>
+<div class="arithmatex">\[
+x^2 y'' + xy' - (x^2 + v^2)y = 0
+\]</div>
+<p>在 <span class="arithmatex">\(\infty\)</span> 处有不规则奇点，解的主导行为：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;y(x) \sim c_1 x^{-1/2} e^x, \quad x \to +\infty, \tag{34}\\
+&amp;y(x) \sim c_2 x^{-1/2} e^{-x}, \quad x \to +\infty. \tag{35}
+\end{align*}
+\]</div>
+<p>上主导行为虽与 <span class="arithmatex">\(v\)</span> 无关，但完整渐近展开的系数含 <span class="arithmatex">\(v\)</span> ，代入剥离形式：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+y(x)=c_{1}x^{-1/2}e^{x}w(x)
+\end{aligned}\tag{36}
+\]</div>
+<p>得 <span class="arithmatex">\(w(x)\)</span> 的方程：</p>
+<div class="arithmatex">\[
+x^{2}w^{\prime\prime}+2x^{2}w^{\prime}+(\frac{1}{4}-v^{2})w=0.
+\]</div>
+<p>设 <span class="arithmatex">\(w(x)=1+\varepsilon(x)\)</span>，由方程：</p>
+<div class="arithmatex">\[
+x^{2}\varepsilon^{\prime\prime}+2x^{2}\varepsilon^{\prime}+(\frac{1}{4}-v^{2})\varepsilon +\frac{1}{4}-v^{2}=0,
+\]</div>
+<p>利用近似：</p>
+<div class="arithmatex">\[
+(\frac{1}{4}-v^{2})\varepsilon\ll\frac{1}{4}-v^{2},\quad x^{2}\varepsilon^{\prime \prime}\ll x^{2}\varepsilon^{\prime} ,\quad x\rightarrow+\infty
+\]</div>
+<p>得渐近方程：</p>
+<div class="arithmatex">\[
+2x^{2}\varepsilon^{\prime}(x)\sim v^{2}-\frac{1}{4},\quad x\rightarrow+\infty.
+\]</div>
+<p>因 <span class="arithmatex">\(\varepsilon(x)\ll 1\)</span>，积分常数 <span class="arithmatex">\(c=0\)</span>，解得：</p>
+<div class="arithmatex">\[
+\varepsilon(x)\sim(\frac{1}{8}-\frac{1}{2}v^{2})x^{-1},\quad x\rightarrow+\infty.
+\]</div>
+<p>此分析可迭代得 <span class="arithmatex">\(w(x)\)</span> 的完整渐近展开。代入<span class="arithmatex">\(w(x)\sim\sum_{n=0}^{\infty}a_{n}x^{-n}\)</span> (<span class="arithmatex">\(a_{0}=1\)</span>)方程得：</p>
+<div class="arithmatex">\[
+0\sim\sum_{n=0}^{\infty}n(n+1)a_{n}x^{-n}-2\sum_{n=0}^{\infty}na_{n}x^{1-n}+( \frac{1}{4}-v^{2})\sum_{n=0}^{\infty}a_{n}x^{-n} ,\quad x\rightarrow+\infty.
+\]</div>
+<p>于是有：</p>
+<div class="arithmatex">\[
+\left[(n+\frac{1}{2})^{2}-v^{2}\right]a_{n}-2(n+ 1)a_{n+1}=0 ,\quad n=0,1,2,\ldots.
+\]</div>
+<p>由 <span class="arithmatex">\(a_{0}=1\)</span> 解递推得：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+w(x)\sim 1-\frac{(4v^{2}-1^{2})}{1!\,\mathrm{8}x}+\frac{(4v^{2}-1^{2})(4v^{2}-3^{2})}{2!\,(\mathrm{8}x)^{2}}-\cdots ,\quad x\rightarrow+\infty.
+\end{aligned}\tag{37}
+\]</div>
+<p>收敛半径为 <span class="arithmatex">\(0\)</span>。同理得 (35) 的解为</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;y(x)=c_2x^{-1/2}e^{-x}w(x)   \tag{3.5.8b}\\
+&amp;w(x)\sim 1+\frac{(4v^{2}-1^{2})}{1!\,\mathrm{8}x}+\frac{(4v^{2}-1^{2})(4v^{2}-3^{2})}{2!\,(\mathrm{8}x)^{2}}+\cdots ,\quad x\rightarrow+\infty.
+\end{align*}\tag{3.5.9b}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.4</span><span class="book-name">渐近级数数值计算 <span class="arithmatex">\(I_v(x)\)</span></span></p>
+<p>上例得到 <span class="arithmatex">\(I_v(x)\)</span> 在 <span class="arithmatex">\(x \to +\infty\)</span> 时的渐近展开。取 <span class="arithmatex">\(c_1 = (2\pi)^{-1/2}\)</span> 和 <span class="arithmatex">\(v = 5\)</span> 代入(3.5.8a)和(3.5.9a)，得 <span class="arithmatex">\(I_s(x)\)</span> 展开式：</p>
+<div class="arithmatex">\[
+I_s(x) \sim (2\pi)^{-1/2} e^{x} x^{-1/2} \left[ 1 - \frac{(100-1)}{1! 8x} + \frac{(100-1)(100-9)}{2! (8x)^2} - \cdots \right], \quad x \to +\infty. \tag{3.5.10}
+\]</div>
+<p>此级数为渐近级数（未证明但成立）。由本节定义，若在 <span class="arithmatex">\(x^{-N}\)</span> 项截断，余项（函数值与部分和之差）渐近于级数第 <span class="arithmatex">\(N+2\)</span> 项。当 <span class="arithmatex">\(x\)</span> 固定时，首项被略项仅为误差估计。</p>
+<p>数值计算规则：观察级数项——通常项先递减，但因级数发散最终递增。对每个 <span class="arithmatex">\(x\)</span> 定位最小项，将其前所有项相加（不包括最小项）。此有限和给出最优估计，因下一项（误差估计）是级数最小项，称为最优渐近近似。</p>
+<p>与收敛幂级数 <span class="arithmatex">\(\sum_{n=0}^{\infty} a_n (x-x_0)^n\)</span> 对比：收敛级数可通过增加项提高精度；发散渐近级数对固定 <span class="arithmatex">\(x\)</span> 存在精度上限，偏离最优项数会降低精度。若不满足精度，则需增大 <span class="arithmatex">\(x\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.5</span><span class="book-name">抛物柱函数在大 <span class="arithmatex">\(x\)</span> 时的行为</span></p>
+<p>考察抛物柱方程</p>
+<div class="arithmatex">\[
+y'' + (v + \frac{1}{2} - \frac{1}{4}x^2)y = 0 \tag{3.5.11}
+\]</div>
+<p>的解 <span class="arithmatex">\(y(x)\)</span> 在 <span class="arithmatex">\(x \to +\infty\)</span> 时的行为，其中<span class="arithmatex">\(v\)</span> 为参数。因方程在 <span class="arithmatex">\(\infty\)</span> 处有不规则奇点，作指数替换 <span class="arithmatex">\(y = e^S\)</span> 得：</p>
+<div class="arithmatex">\[
+S'' + (S')^2 + v + \frac{1}{2} - \frac{1}{4}x^2 = 0.
+\]</div>
+<p>由近似 <span class="arithmatex">\(S'' \ll (S')^2\)</span>, <span class="arithmatex">\(v + \frac{1}{2} \ll \frac{1}{4}x^2\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>) 得渐近方程 <span class="arithmatex">\((S')^2 \sim \frac{1}{4}x^2\)</span>，解为：</p>
+<div class="arithmatex">\[
+S(x) \sim \pm \frac{1}{4}x^2, \quad x \to +\infty.
+\]</div>
+<p>故 <span class="arithmatex">\(y(x)\)</span> 的控制因子可能为 <span class="arithmatex">\(e^{\pm x^2/4}\)</span>，可计算出可能的主导行为为：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;y(x) \sim c_1 x^{-\nu-1} e^{x^2/4}, \quad x \to +\infty, \tag{42}\\
+&amp;y(x) \sim c_2 x^\nu e^{-x^2/4}, \quad x \to +\infty. \tag{43}
+\end{align*}
+\]</div>
+<p>抛物柱函数(parabolic cylinder) <span class="arithmatex">\(D_v(x)\)</span> 定义为满足(3.5.11)且渐近行为为(43)取 <span class="arithmatex">\(c_2=1\)</span>的解。该条件唯一确定 <span class="arithmatex">\(D_v(x)\)</span>（因 <span class="arithmatex">\(c_1\)</span> 必为0）。对其进一步应用需知 <span class="arithmatex">\(D_v(x)\)</span> 在 <span class="arithmatex">\(x \to +\infty\)</span> 的完整渐近展开。代入：</p>
+<div class="arithmatex">\[
+D_v(x) = x^v e^{-x^2/4} w(x) \tag{3.5.13}
+\]</div>
+<p>可解得：</p>
+<div class="arithmatex">\[
+w(x) \sim 1 - \frac{v(v-1)}{2^1 \cdot 1! \cdot x^2} + \frac{v(v-1)(v-2)(v-3)}{2^2 \cdot 2! \cdot x^4} - \cdots, \quad x \to +\infty. \tag{3.5.14}
+\]</div>
+<p>若 <span class="arithmatex">\(v \notin \{0,1,2,3,\ldots\}\)</span>，由比值审敛法得级数收敛半径 <span class="arithmatex">\(R=0\)</span>。但当 <span class="arithmatex">\(v = N\)</span>时级数有限且等于Hermite多项式乘衰减指数：</p>
+<div class="arithmatex">\[
+D_N(x) = e^{-x^2/4} He_N(x).
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.6</span><span class="book-name">Airy函数在大 <span class="arithmatex">\(x\)</span> 时的行为</span></p>
+<p>Airy方程</p>
+<div class="arithmatex">\[
+y'' = xy \tag{3.5.15}
+\]</div>
+<p>在 <span class="arithmatex">\(\infty\)</span> 处有不规则奇点。由(3.4.28)式取<span class="arithmatex">\(n=2\)</span>, <span class="arithmatex">\(Q(x)=x\)</span>得大 <span class="arithmatex">\(x\)</span> 时解的主导行为：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;y(x) \sim c_1 x^{-1/4} e^{-2x^{3/2}/3}, \quad x \to +\infty, \tag{47}\\
+&amp;y(x) \sim c_2 x^{-1/4} e^{2x^{3/2}/3}, \quad x \to +\infty. \tag{48}
+\end{align*}
+\]</div>
+<p>定义 Airy函数 <span class="arithmatex">\(\text{Ai}(x)\)</span> 与 <span class="arithmatex">\(\text{Bi}(x)\)</span> 分别是唯一满足上两式的解（取 <span class="arithmatex">\(c_1 = \frac{1}{2}\pi^{-1/2}\)</span> ，<span class="arithmatex">\(c_2=\pi^{-1/2}\)</span>）：</p>
+<div class="arithmatex">\[
+\begin{align*}
+&amp;\text{Ai}(x) \sim \frac{1}{2}\pi^{-1/2}x^{-1/4}e^{-2x^{3/2}/3}, \quad x \to +\infty. \tag{49}\\
+&amp;\text{Bi}(x) \sim \pi^{-1/2}x^{-1/4}e^{2x^{3/2}/3}, \quad x \to +\infty. \tag{50}
+\end{align*}
+\]</div>
+<p>前者条件唯一，后者条件不唯一。完整渐近展开需剥离主导行为。对 <span class="arithmatex">\(\text{Ai}(x)\)</span> 代入：</p>
+<div class="arithmatex">\[
+y(x) = x^{-1/4}e^{-2x^{3/2}/3}w(x). \tag{3.5.18}
+\]</div>
+<p>则 <span class="arithmatex">\(w(x)\)</span> 满足方程：</p>
+<div class="arithmatex">\[
+x^2w'' - (2x^{5/2} + \frac{1}{2}x)w' + \frac{5}{16}w = 0 \tag{3.5.19}
+\]</div>
+<p>且 <span class="arithmatex">\(w(x) \to 1\)</span> (<span class="arithmatex">\(x \to +\infty\)</span>)。我们这里不采用常规方法，而直接假设渐近展开</p>
+<div class="arithmatex">\[
+w(x) \sim \sum_{n=0}^{\infty} a_n x^{\alpha n} \quad (\alpha&lt;0, \ a_0=1).
+\]</div>
+<p>代入(3.5.19)得：</p>
+<div class="arithmatex">\[
+\frac{5}{16} a_0 - 2 \alpha a_1 x^{\alpha+3/2} + (\alpha^2 - \frac{3}{2} \alpha + \frac{5}{16}) a_1 x^\alpha - \cdots \sim 0. \tag{3.5.20}
+\]</div>
+<p>由 <span class="arithmatex">\(a_0=1\)</span> 和 <span class="arithmatex">\(\alpha&lt;0\)</span> 得 <span class="arithmatex">\(\alpha=-\frac{3}{2}\)</span>, <span class="arithmatex">\(a_1=-\frac{5}{48}\)</span>。一般地，令 <span class="arithmatex">\((x^{-3/2})^n\)</span> 系数为零得递推关系：</p>
+<div class="arithmatex">\[
+a_{n+1} = -\frac{3}{4} \frac{(n + \frac{5}{6})(n + \frac{1}{6})}{n + 1} a_n, \quad n \geq 0.
+\]</div>
+<p>解为：</p>
+<div class="arithmatex">\[
+a_n = \frac{1}{2\pi} \left(-\frac{3}{4}\right)^n \frac{\Gamma(n + \frac{5}{6})\Gamma(n + \frac{1}{6})}{n!}.
+\]</div>
+</div>
+<h2 id="s7"><span class="book-secnum">§ 07</span>非齐次线性方程的局部分析</h2>
+<p>对于非齐次微分方程解的局部行为的方法，我们只需找到一个特解的局部行为即可，因为通解的局部行为可通过叠加关联齐次方程解的行为得到。我们倾向于直接对微分方程应用主导平衡法。需要考虑几种情形。</p>
+<p>若 <span class="arithmatex">\(x_0\)</span>是关联齐次微分方程的常点，且是非齐次项的解析点。在这种情况下，通解具有泰勒级数表示。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.1</span></p>
+<p>考虑在 <span class="arithmatex">\(x=0\)</span> 附近的微分方程</p>
+<div class="arithmatex">\[
+y'+xy=x^3
+\]</div>
+</div>
+<p>若<span class="arithmatex">\(x_0\)</span>是微分方程的常点，但不是非齐次项的解析点，则尽管齐次方程的所有解均可展开为泰勒级数，非齐次方程的特解却不具有泰勒级数展开。在这种情况下，我们使用主导平衡法确定特解的行为。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.2</span></p>
+<p>考虑在 <span class="arithmatex">\(x=0\)</span> 附近的微分方程</p>
+<div class="arithmatex">\[
+y'+xy=1/x^4
+\]</div>
+</div>
+<p>主导平衡法同样适用于关联齐次方程的奇点处。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.3</span></p>
+<p>考虑在 <span class="arithmatex">\(x=\infty\)</span> 附近的微分方程</p>
+<div class="arithmatex">\[
+y''=xy-1
+\]</div>
+</div>
+<p>使用主导平衡法时可能会遇到一个略显有趣的细微之处：所有两项平衡都可能是矛盾的。当这种情况发生时，我们必须考虑三项或更多项之间的可能主项平衡。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.4</span></p>
+<p>考虑在 <span class="arithmatex">\(x=0\)</span> 附近的微分方程</p>
+<div class="arithmatex">\[
+y' - y/x = (\cos x)/x^2
+\]</div>
+</div>
+<h2 id="s8"><span class="book-secnum">§ 08</span>渐近关系</h2>
+<p>本节详细研究渐近关系。</p>
+<h2 id="s9"><span class="book-secnum">§ 09</span>振荡函数的渐近关系</h2>
+<p>为说明渐近关系的一个微妙之处，我们考察 Airy方程<span class="arithmatex">\(y'' = xy\)</span>在大<span class="arithmatex">\(|x|\)</span>时解的主导行为。我们可以计算得到 Airy 函数<span class="arithmatex">\(\text{Ai}(x)\)</span>和<span class="arithmatex">\(\text{Bi}(x)\)</span>的主导行为为</p>
+<div class="arithmatex">\[
+\text{Ai}(x) \sim \frac{1}{2}\pi^{-1/2}x^{-1/4}e^{-2x^{3/2}/3}, \quad x \to +\infty
+\tag{3.7.1}
+\]</div>
+<div class="arithmatex">\[
+\text{Bi}(x) \sim \pi^{-1/2}x^{-1/4}e^{2x^{3/2}/3}, \quad x \to +\infty
+\tag{3.7.2}
+\]</div>
+<p>使用代换<span class="arithmatex">\(y = e^S\)</span>，得到<span class="arithmatex">\(S'' + (S')^2 = x\)</span>。忽略<span class="arithmatex">\(S''\)</span>，得到渐近微分方程<span class="arithmatex">\((S')^2 \sim x\)</span>，由此推出<span class="arithmatex">\(S \sim \pm \frac{2}{3}i(-x)^{3/2}\)</span>。这给出了<span class="arithmatex">\(y\)</span>在<span class="arithmatex">\(x \to -\infty\)</span>时主导行为的控制因子<span class="arithmatex">\(\exp\left[\pm \frac{2}{3}i(-x)^{3/2}\right]\)</span>，进而我们可以得到主导行为</p>
+<div class="arithmatex">\[
+y \sim c(-x)^{-1/4}\exp\left[\pm \frac{2}{3}i(-x)^{3/2}\right], \quad x \to -\infty.
+\tag{3.7.3}
+\]</div>
+<p>由于Airy函数在<span class="arithmatex">\(x\)</span>为实数时是实值的，我们必须将(3.7.3)中两个主导行为拆分成实线性组合：</p>
+<div class="arithmatex">\[
+y(x) \sim c_1(-x)^{-1/4}\sin\left[\frac{2}{3}(-x)^{3/2}\right] + c_2(-x)^{-1/4}\cos\left[\frac{2}{3}(-x)^{3/2}\right], \quad x \to -\infty.
+\]</div>
+<p>事实上，<span class="arithmatex">\(\text{Ai}(x)\)</span>在大负<span class="arithmatex">\(x\)</span>时的图像非常接近</p>
+<div class="arithmatex">\[
+\pi^{-1/2}(-x)^{-1/4}\sin\left[\frac{2}{3}(-x)^{3/2} + \frac{1}{4}\pi\right]
+\]</div>
+<p>的图像，而<span class="arithmatex">\(\text{Bi}(x)\)</span>的图像非常接近</p>
+<div class="arithmatex">\[
+\pi^{-1/2}(-x)^{-1/4}\cos\left[\frac{2}{3}(-x)^{3/2} + \frac{1}{4}\pi\right]
+\]</div>
+<p>的图像。然而写成</p>
+<div class="arithmatex">\[
+\text{Ai}(x) \sim \pi^{-1/2}(-x)^{-1/4}\sin\left[\frac{2}{3}(-x)^{3/2}+\frac{1}{4}\pi\right], \quad x \to -\infty
+\tag{3.7.4}
+\]</div>
+<p>和</p>
+<div class="arithmatex">\[
+\text{Bi}(x) \sim \pi^{-1/2}(-x)^{-1/4}\cos\left[\frac{2}{3}(-x)^{3/2}+\frac{1}{4}\pi\right], \quad x \to -\infty
+\tag{3.7.5}
+\]</div>
+<p>是错误的，因为对于大的负<span class="arithmatex">\(x\)</span>，左右两边的零点并不完全重合。接下来的两个例子将说明如何解决零点不重合的问题。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.1</span></p>
+<p>考虑函数<span class="arithmatex">\(\sin x\)</span>和<span class="arithmatex">\(\sin(x+x^{-1})\)</span>，我们倾向于说这两个函数当<span class="arithmatex">\(x \to \infty\)</span>时是渐近的。然而，根据渐近关系的定义，这些函数并非渐近的。</p>
+<p>问题在于如何描述<span class="arithmatex">\(\sin x\)</span>和<span class="arithmatex">\(\sin(x+x^{-1})\)</span>行为的高度相似性，同时避免除以零。一种方法是指出，当<span class="arithmatex">\(x \to \infty\)</span>时，正弦函数的自变量是渐近的：<span class="arithmatex">\(x+x^{-1} \sim x\)</span>，这避开了零点不重合的问题。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.2</span></p>
+<p>考虑函数 <span class="arithmatex">\(\sin x\)</span>和 <span class="arithmatex">\((1+x^{-1})\sin (x+x^{-1})\)</span>，将其写成</p>
+<div class="arithmatex">\[
+(1+x^{-1})\sin (x+x^{-1})=w_1(x)\sin x + w_2(x)\cos x,
+\]</div>
+<p>其中 <span class="arithmatex">\(w_1(x)=(1+x^{-1})\cos x^{-1}\)</span>，<span class="arithmatex">\(w_2(x)=(1+x^{-1})\sin x^{-1}\)</span>。当 <span class="arithmatex">\(x \to \infty\)</span> 时，<span class="arithmatex">\(w_1(x) \sim 1\)</span>，<span class="arithmatex">\(w_2(x) \ll 0\)</span>。</p>
+</div>
+<p>总的来说，两个不含相同零点的函数并非渐近的。上例提示我们将 Airy 函数写成</p>
+<div class="arithmatex">\[
+y(x)=w_1(x)(-x)^{-1/4}\sin\left[\frac{2}{3}(-x)^{3/2}+\frac{1}{4}\pi\right] + w_2(x)(-x)^{-1/4}\cos\left[\frac{2}{3}(-x)^{3/2}+\frac{1}{4}\pi\right]
+\tag{3.7.6}
+\]</div>
+<p>然后去考虑<span class="arithmatex">\(w_1(x)\)</span> 与 <span class="arithmatex">\(w_2(x)\)</span> 的行为，我们希望Airy函数 Ai<span class="arithmatex">\((x)\)</span> 可以由<span class="arithmatex">\(x \to -\infty\)</span> 时，<span class="arithmatex">\(w_1(x) \sim \pi^{-1/2}\)</span>，<span class="arithmatex">\(w_2(x) \ll w_1(x)\)</span>来表示，Bi<span class="arithmatex">\((x)\)</span> 可以由<span class="arithmatex">\(x \to -\infty\)</span> 时，<span class="arithmatex">\(w_2(x) \sim \pi^{-1/2}\)</span>，<span class="arithmatex">\(w_1(x) \ll w_2(x)\)</span>来表示。当然，这些行为中的常数 <span class="arithmatex">\(\pi^{-1/2}\)</span> 无法仅通过Airy方程的局部分析来确定。</p>
+<p>将(3.7.6)代入Airy方程<span class="arithmatex">\(y'' = xy\)</span>，经化简后得到：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\left[w_1'' - \frac{1}{2}x^{-1}w_1' + 2(-x)^{1/2}w_2' + \frac{5}{16}x^{-2}w_1\right](-x)^{-1/4} \sin\left[\frac{2}{3}(-x)^{3/2} + \frac{1}{4}\pi\right] \\
+&amp;+ \left[w_2'' - \frac{1}{2}x^{-1}w_2' - 2(-x)^{1/2}w_1' + \frac{5}{16}x^{-2}w_2\right](-x)^{-1/4} \cos\left[\frac{2}{3}(-x)^{3/2} + \frac{1}{4}\pi\right] = 0.
+\end{aligned}
+\tag{3.7.7}
+\]</div>
+<p>(3.7.6)中<span class="arithmatex">\(w_1(x)\)</span>和<span class="arithmatex">\(w_2(x)\)</span>的定义仅给出了一个约束条件，我们选择第二个约束条件为</p>
+<div class="arithmatex">\[
+w_1'' - \frac{1}{2}x^{-1}w_1' + 2(-x)^{1/2}w_2' + \frac{5}{16}x^{-2}w_1 = 0.
+\tag{3.7.8}
+\]</div>
+<p>则式(3.7.7)意味着</p>
+<div class="arithmatex">\[
+w_2'' - \frac{1}{2}x^{-1}w_2' - 2(-x)^{1/2}w_1' + \frac{5}{16}x^{-2}w_2 = 0.
+\tag{3.7.9}
+\]</div>
+<p>由此，我们得到了不含(3.7.6)中的振荡项的关于<span class="arithmatex">\(w_1\)</span>和<span class="arithmatex">\(w_2\)</span>的一对微分方程，分析可知，存在当<span class="arithmatex">\(x \to -\infty\)</span>时趋近于常数的解，而 <span class="arithmatex">\(w_1(x)\)</span>和<span class="arithmatex">\(w_2(x)\)</span>的完整渐近展开式如下：</p>
+<div class="arithmatex">\[
+w_1(x) \sim \sum_{n=0}^\infty a_n(-x)^{-3n/2}, \quad x \to -\infty,
+\tag{3.7.10}
+\]</div>
+<div class="arithmatex">\[
+w_2(x) \sim \sum_{n=0}^\infty b_n(-x)^{-3n/2}, \quad x \to -\infty.
+\tag{3.7.11}
+\]</div>
+<p>将这些级数代入(3.7.8)和(3.7.9)，解得</p>
+<div class="arithmatex">\[
+a_{2n} = a_0(-1)^n c_{2n}, \quad n = 0, 1, \ldots,
+\]</div>
+<div class="arithmatex">\[
+a_{2n+1} = b_0(-1)^n c_{2n+1}, \quad n = 0, 1, \ldots,
+\]</div>
+<div class="arithmatex">\[
+b_{2n} = b_0(-1)^n c_{2n}, \quad n = 0, 1, \ldots,
+\]</div>
+<div class="arithmatex">\[
+b_{2n+1} = a_0(-1)^{n+1} c_{2n+1}, \quad n = 0, 1, \ldots,
+\]</div>
+<p>其中</p>
+<div class="arithmatex">\[
+c_n = \frac{(2n + 1)(2n + 3) \cdots (6n - 1)}{144^n n!} = \frac{1}{2\pi}\left(\frac{3}{4}\right)^n \frac{\Gamma\left(n + \frac{5}{6}\right)\Gamma\left(n + \frac{1}{6}\right)}{n!}.
+\]</div>
+<p>Airy函数<span class="arithmatex">\(\text{Ai}(x)\)</span>当<span class="arithmatex">\(x \to -\infty\)</span>时的渐近行为可由<span class="arithmatex">\(a_0 = \pi^{-1/2}\)</span>，<span class="arithmatex">\(b_0 = 0\)</span>表示，其中</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;w_1(x) \sim \pi^{-1/2} \sum_{n=0}^\infty c_{2n}x^{-3n}, \quad x \to -\infty,  \\
+&amp;w_2(x) \sim -\pi^{-1/2}(-x)^{-3/2} \sum_{n=0}^\infty c_{2n+1}x^{-3n}, \quad x \to -\infty.
+\end{aligned}
+\]</div>
+<p>另一方面，<span class="arithmatex">\(\text{Bi}(x)\)</span>当<span class="arithmatex">\(x \to -\infty\)</span>时的渐近行为可由<span class="arithmatex">\(a_0 = 0\)</span>，<span class="arithmatex">\(b_0 = \pi^{-1/2}\)</span>表示，其中</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;w_1(x) \sim -\pi^{-1/2}(-x)^{-3/2} \sum_{n=0}^\infty c_{2n+1}x^{-3n}, \quad x \to -\infty,\\
+&amp;w_2(x) \sim \pi^{-1/2} \sum_{n=0}^\infty c_{2n}x^{-3n}, \quad x \to -\infty.
+\end{aligned}
+\]</div>
+<p>在许多其他情况下，必须使用此类分析来寻找渐近表示。</p>
+<h2 id="s10"><span class="book-secnum">§ 10</span>复平面上的渐近关系</h2>
+<p>到目前为止，我们仅在实轴上讨论了渐近关系，但要充分理解渐近关系的结构，必须在复平面中对其进行分析。将渐近关系的定义推广到复函数并非易事，若简单地定义<span class="arithmatex">\(f(z) \sim g(z)\)</span>(<span class="arithmatex">\(z \to z_0\)</span>)为<span class="arithmatex">\(\lim_{z \to z_0} f(z)/g(z) = 1\)</span>，其中极限<span class="arithmatex">\(z \to z_0\)</span>沿复平面中趋近于<span class="arithmatex">\(z_0\)</span>的任意路径取值，则会遇到严重困难。一个令人满意的复渐近关系定义必须是路径无关且唯一的，这需要小心排除那些在趋近<span class="arithmatex">\(z_0\)</span>过程中绕<span class="arithmatex">\(z_0\)</span>旋转的复路径。此类路径可能破坏渐近关系的单侧性，并导致非唯一极限。</p>
+<p>消除这类路径的最简单方法是要求路径完全位于复平面的一个扇形区域内。若扇形的边界在<span class="arithmatex">\(z_0\)</span>邻域内为光滑曲线，则在局部可由它们在<span class="arithmatex">\(z_0\)</span>处的切线近似。这些切线之间的夹角<span class="arithmatex">\(\theta_2 - \theta_1\)</span>称为扇形的张角。当<span class="arithmatex">\(z \to z_0\)</span>时两个函数在复平面内渐近的表述，必须满足<span class="arithmatex">\(z\)</span>沿位于扇形区域内的路径趋近于<span class="arithmatex">\(z_0\)</span>，其中张角的大小取决于渐近的函数。</p>
+<p class="book-figure"><img alt="插图" loading="lazy" src="../../../../assets/computational-applied-math/images/ch04-img-01.png" /><span class="book-caption"><b>Fig. 1</b>插图</span></p>
+<p>以下是复渐近关系的一些例子。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.1</span></p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;\sinh(z^{-1}) \sim \frac{1}{2}e^{z^{-1}}, \quad z \to 0; \quad|\arg z| &lt; \frac{1}{2}\pi,\\
+&amp;\sinh(z^{-1}) \sim -\frac{1}{2}e^{-z^{-1}}, \quad z \to 0; \quad \frac{1}{2}\pi &lt; \arg z &lt; \frac{3}{2}\pi.
+\end{aligned}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.2</span></p>
+<p><span class="arithmatex">\(\text{Bi}(z)\)</span>是Airy方程<span class="arithmatex">\(y''(z)=zy(z)\)</span>的一个解，当<span class="arithmatex">\(z\to+\infty\)</span>（<span class="arithmatex">\(\text{Im}\,z=0\)</span>）时指数增长，其在复平面中的主导行为为</p>
+<div class="arithmatex">\[
+\text{Bi}(z)\sim\pi^{-1/2}z^{-1/4}e^{2z^{3/2}/3},\quad z\to\infty;|\arg z|&lt;\frac{\pi}{3}.
+\tag{3.7.16}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.3</span></p>
+<p>渐近关系<span class="arithmatex">\(\sin z\sim z\)</span>（<span class="arithmatex">\(z\to0\)</span>）在复平面中沿任意路径<span class="arithmatex">\(z\to0\)</span>时均有效。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.4</span></p>
+<p>微分方程<span class="arithmatex">\(x^3y''=y\)</span>的解在<span class="arithmatex">\(x\to0^+\)</span>时的主导行为<span class="arithmatex">\(y(z)\sim c_1z^{1/4}e^{2z^{-1/2}}\)</span>(1)在<span class="arithmatex">\(|\arg z|&lt;\pi\)</span>内有效。当<span class="arithmatex">\(|\arg z|=\pi\)</span>时，该渐近关系失效。</p>
+</div>
+<h2 id="s11"><span class="book-secnum">§ 11</span>斯托克斯现象与次支配性</h2>
+<p>如果两个函数 <span class="arithmatex">\(f(z)\)</span> 和 <span class="arithmatex">\(g(z)\)</span> 在 <span class="arithmatex">\(z \to z_0\)</span> 时是渐近的，那么差值 <span class="arithmatex">\(f(z) - g(z)\)</span> 与 <span class="arithmatex">\(g(z)\)</span> 相比是很小的，即 <span class="arithmatex">\(\lim_{z \to z_0} [f(z) - g(z)]/g(z) = 0\)</span>。这个差值 <span class="arithmatex">\(f(z) - g(z)\)</span> 正是我们在构建一个渐近关系时所忽略的；如果我们考虑等式：<span class="arithmatex">\(f(z) = g(z) + [f(z) - g(z)]\)</span>，当 <span class="arithmatex">\(z\)</span> 位于扇形区域内部时，<span class="arithmatex">\(f(z) - g(z)\)</span> 被称为<strong>次主导的</strong>或<strong>隐性的</strong>，而 <span class="arithmatex">\(f(z)\)</span> 或 <span class="arithmatex">\(g(z)\)</span> 被称为<strong>主导的</strong>。</p>
+<p>当 <span class="arithmatex">\(z\)</span> 接近渐近线时，次主导项 <span class="arithmatex">\(f-g\)</span> 与主导项 <span class="arithmatex">\(g\)</span> 相比会增长。扇形区域的边缘称为<strong>斯托克斯线</strong>，在其上不再能有效地区分主导项和次主导项，因为 <span class="arithmatex">\(f\)</span> 和 <span class="arithmatex">\(f-g\)</span> 具有相同的数量级。当 <span class="arithmatex">\(z\)</span> 穿过斯托克斯线时，主导项和次主导项交换了它们的身份，这称为<strong>斯托克斯现象</strong>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 11.1</span></p>
+<p>函数 <span class="arithmatex">\(\sinh(z^{-1})\)</span> 及其渐近行为 <span class="arithmatex">\(\frac{1}{2} e^{z^{-1}}\)</span> 在右半平面 <span class="arithmatex">\(\text{Re } z &gt; 0\)</span> 中呈指数级增长，两者差值是 <span class="arithmatex">\(-\frac{1}{2} e^{-z^{-1}}\)</span>，它在右半平面 <span class="arithmatex">\(\text{Re } z &gt; 0\)</span> 中是指数级小的。如果我们将 <span class="arithmatex">\(z\)</span> 旋转到左半平面，<span class="arithmatex">\(\sinh(z^{-1}) - \frac{1}{2} e^{z^{-1}} (\to 0)\)</span> 的渐近关系就不再有效，因为次主导的误差项 <span class="arithmatex">\(-\frac{1}{2} e^{-z^{-1}}\)</span> 不再小。</p>
+<p>通常，任何渐近关系有效的扇形的张角是左右两侧相对误差最小的最大角度。</p>
+</div>
+<p>注意，当 <span class="arithmatex">\(z \to 0\)</span> 时，<span class="arithmatex">\(\sinh(z^{-1})\)</span> 有两个可能的主导渐近行为，它们在斯托克斯线上时的量级上是最不相等的，而在纯实数时的量级上是最相等的。主导行为最不相等的线被称为<strong>反斯托克斯线</strong>。</p>
+<p>斯托克斯现象是指数函数的一个性质。如果次主导项比主导项小一个幂次 <span class="arithmatex">\(z-z_0\)</span>，那么当 <span class="arithmatex">\(z \to z_0\)</span> 在复平面的所有方向上，就不会有斯托克斯现象。</p>
+<p>如果一个二阶微分方程的解的主导行为是 <span class="arithmatex">\(e^{S_1(z)}\)</span> 和 <span class="arithmatex">\(e^{S_2(z)}\)</span> 当 <span class="arithmatex">\(z \to z_0\)</span> 时，那么斯托克斯线是曲线的渐近线</p>
+<div class="arithmatex">\[
+\text{Re}\left[S_1(z) - S_2(z)\right] = 0
+\]</div>
+<p>反斯托克斯线是曲线的渐近线</p>
+<div class="arithmatex">\[
+\text{Im}\left[S_1(z) - S_2(z)\right] = 0
+\]</div>
+<p>注意，我们将斯托克斯线和反斯托克斯线定义为渐近线，因为这些渐近线决定了扇形区域的张角。斯托克斯和反斯托克斯线是函数行为的局部属性，它们仅在 <span class="arithmatex">\(z_0\)</span> 的邻域中有意义。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 11.2</span><span class="book-name">Airy方程的斯托克斯线</span></p>
+<p>Airy方程 <span class="arithmatex">\(y'' - zy = 0\)</span> 的解在大 <span class="arithmatex">\(z\)</span> 时的控制因子由 <span class="arithmatex">\(e^{\pm 2 z^{3/2}/3}\)</span> 给出。因此，斯托克斯线出现在 <span class="arithmatex">\(\text{Re } z^{3/2} = 0\)</span>，即 <span class="arithmatex">\(\arg z = \pm \frac{\pi}{3}\)</span>，<span class="arithmatex">\(\pi\)</span> (<span class="arithmatex">\(|z| \to \infty\)</span>)；反斯托克斯线出现在 <span class="arithmatex">\(\text{Im } z^{3/2} = 0\)</span>，即 <span class="arithmatex">\(\arg z = 0, \pm \frac{2\pi}{3}\)</span> (<span class="arithmatex">\(|z| \to \infty\)</span>)。</p>
+<p>Bi(<span class="arithmatex">\(z\)</span>) 的主导渐近行为在斯托克斯线<span class="arithmatex">\(\arg z = \pm \frac{\pi}{3}\)</span>之间 (3.7.16) 是有效的。另一方面，Ai(<span class="arithmatex">\(z\)</span>) 的主导渐近行为在一个更大的楔形区域内有效。</p>
+<div class="arithmatex">\[
+\text{Ai}(z) \sim \frac{1}{2} \pi^{-1/2} z^{-1/4} e^{-\frac{2}{3} z^{3/2}}, \quad z \to \infty; \quad |\arg z| &lt; \pi. \tag{3.7.17}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 11.3</span><span class="book-name">抛物柱函数方程的斯托克斯线</span></p>
+<p>抛物柱函数方程 <span class="arithmatex">\(y'' + (v + \frac{1}{2} - \frac{1}{4}z^2)y = 0\)</span> 解的行为的控制因子是 <span class="arithmatex">\(e^{\pm  z^2/4}\)</span> ( <span class="arithmatex">\(z \to \infty\)</span>)。因此，斯托克斯线出现在 <span class="arithmatex">\(\arg z = \pm \frac{\pi}{4}, \pm \frac{3\pi}{4}\)</span> (<span class="arithmatex">\(|z| \to \infty\)</span>)，反斯托克斯线出现在 <span class="arithmatex">\(\arg z = 0, \pm \frac{\pi}{2}, \pi\)</span> (<span class="arithmatex">\(|z| \to \infty\)</span>)。</p>
+<p>抛物柱函数 <span class="arithmatex">\(D_v(z)\)</span> 的主导渐近行为是</p>
+<div class="arithmatex">\[
+D_v(z) \sim z^v e^{-z^2/4}, \quad z \to \infty; \quad |\arg z| &lt; \frac{3\pi}{4}. \tag{3.7.18}
+\]</div>
+<p>上式沿正实轴指数衰减，在斯托克斯线 <span class="arithmatex">\(\arg z = \pm \frac{3\pi}{4}\)</span> 处失效。</p>
+</div>
+<p>一般来说，当 <span class="arithmatex">\(z\)</span> 沿着最靠近正实轴的斯托克斯线旋转时，衰减最快的解（例如 Ai(<span class="arithmatex">\(z\)</span>) 或 <span class="arithmatex">\(D_v(z)\)</span>）会增长，对于这类解，将其主导渐近行为解析延拓到最靠近正实轴的斯托克斯线之外是不正确的；继续解析延拓那些在正实轴附近增长的解（例如 Bi(<span class="arithmatex">\(z\)</span>)）的主导渐近行为，越过最靠近实轴的斯托克斯线也是不正确的。下一节中，我们会展示如何将一个完整的渐近级数延拓越过斯托克斯线，解释了为什么一些渐近关系在斯托克斯线之外仍然有效，并讨论了在 <span class="arithmatex">\(x \to x_0+\)</span> 和 <span class="arithmatex">\(x \to x_0-\)</span> 时具有不同行为的解之间的联系。</p>
+<p>正如我们反复说过的，使用渐近近似的原因是用更简单的表达式来取代复杂的超越函数，为这种便利付出的代价之一是必须处理这些超越函数的复杂性。斯托克斯现象不是 Ai(<span class="arithmatex">\(z\)</span>) 的内在属性，而是用于在渐近近似中逼近 Ai(<span class="arithmatex">\(z\)</span>) 的函数的属性，其反映了指数函数在渐近近似中存在。关系 Ai(<span class="arithmatex">\(z\)</span>) <span class="arithmatex">\(\sim\)</span> Ai(<span class="arithmatex">\(z\)</span>) 在 <span class="arithmatex">\(z \to \infty\)</span> 时在所有方向上都有效，它不表现出斯托克斯现象，但这个关系不包含任何有用的信息。相比之下，关系</p>
+<div class="arithmatex">\[
+\text{Ai}(z) \sim \frac{1}{2\sqrt{\pi}} z^{-1/4} e^{-2 z^{3/2}/3}, \quad z \to \infty; \quad |\arg z| &lt; \pi,
+\]</div>
+<p>取得了进展，但同时它在 <span class="arithmatex">\(|\arg z| = \pi\)</span> 时表现出斯托克斯现象。</p>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-03/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第三章：线性微分方程的局部分析：常点与正则奇点</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-05/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第五章：渐近级数</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 4 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#computational-applied-math">计算与应用数学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=ode">#ode</a><a class="zdd-end-chip" href="../../../../tags/?tag=asymptotic-analysis">#asymptotic-analysis</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1933 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="以 θ_t=Δθ+S（x 周期、两壁零 Dirichlet）为模型问题，从积分因子推出源势公式，用历史源值构造三阶、四阶指数 Adams 格式，比较 EAM 与 EAB，写出收敛证明，并在导师 FMM/FGT 自适应树上做数值验证。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/numerical-pde/heat-source-learning-notes/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>受迫热方程的高阶指数 Adams 方法学习笔记 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/heat-source-learning-notes/">
+  <meta property="og:title" content="受迫热方程的高阶指数 Adams 方法学习笔记 - zdd14990">
+  <meta property="og:description" content="以 θ_t=Δθ+S（x 周期、两壁零 Dirichlet）为模型问题，从积分因子推出源势公式，用历史源值构造三阶、四阶指数 Adams 格式，比较 EAM 与 EAB，写出收敛证明，并在导师 FMM/FGT 自适应树上做数值验证。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-28">
+
+
+
+
+  <meta property="article:tag" content="heat-equation">
+
+  <meta property="article:tag" content="exponential-integrator">
+
+  <meta property="article:tag" content="adams">
+
+  <meta property="article:tag" content="fgt">
+
+  <meta property="article:tag" content="fmm">
+
+  <meta property="article:tag" content="adaptive-mesh">
+
+  <meta property="article:tag" content="numerical-methods">
+
+  <meta property="article:tag" content="pde">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/heat-source-learning-notes/">
+  <meta name="twitter:title" content="受迫热方程的高阶指数 Adams 方法学习笔记 - zdd14990">
+  <meta name="twitter:description" content="以 θ_t=Δθ+S（x 周期、两壁零 Dirichlet）为模型问题，从积分因子推出源势公式，用历史源值构造三阶、四阶指数 Adams 格式，比较 EAM 与 EAB，写出收敛证明，并在导师 FMM/FGT 自适应树上做数值验证。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u53d7\u8feb\u70ed\u65b9\u7a0b\u7684\u9ad8\u9636\u6307\u6570 Adams \u65b9\u6cd5\u5b66\u4e60\u7b14\u8bb0",
+    "description": "\u4ee5 \u03b8_t=\u0394\u03b8+S\uff08x \u5468\u671f\u3001\u4e24\u58c1\u96f6 Dirichlet\uff09\u4e3a\u6a21\u578b\u95ee\u9898\uff0c\u4ece\u79ef\u5206\u56e0\u5b50\u63a8\u51fa\u6e90\u52bf\u516c\u5f0f\uff0c\u7528\u5386\u53f2\u6e90\u503c\u6784\u9020\u4e09\u9636\u3001\u56db\u9636\u6307\u6570 Adams \u683c\u5f0f\uff0c\u6bd4\u8f83 EAM \u4e0e EAB\uff0c\u5199\u51fa\u6536\u655b\u8bc1\u660e\uff0c\u5e76\u5728\u5bfc\u5e08 FMM/FGT \u81ea\u9002\u5e94\u6811\u4e0a\u505a\u6570\u503c\u9a8c\u8bc1\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/numerical-pde/heat-source-learning-notes/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/numerical-pde/heat-source-learning-notes/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-28",
+    "keywords": ["heat-equation", "exponential-integrator", "adams", "fgt", "fmm", "adaptive-mesh", "numerical-methods", "pde"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["PDE \u6570\u503c\u89e3", "numerical-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 记号
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 一步公式：源势
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 一步公式：源势">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 积分因子
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 多项式源的精确积分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 退回现有二阶格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 怎样算 \(P\)：两种实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 用历史源值构造三阶、四阶
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 用历史源值构造三阶、四阶">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 插值多项式的导数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-eam3eam4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 EAM3、EAM4 的显式公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-eab3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 EAB3 的显式公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 依赖解的源：预测–校正
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-eam-eab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 EAM 与 EAB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 启动
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 收敛证明
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 收敛证明">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 局部误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 全局误差：已知外源
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 依赖解的源
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-picard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Picard 启动的误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 证明没有覆盖的部分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 在自适应树上实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 在自适应树上实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 叶盒与自适应树
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 历史源的转移
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-wide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 小步长下的舍入：为什么需要 wide
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 数值验证
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 数值验证">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 算例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 已知外源：真实变树收敛
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 已知外源：固定树小步长
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 依赖解的源与非零初值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-eam-eab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 EAM 与 EAB 的实测比较
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <span>应用数学</span>
+    <span>2026 · 10</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="_1">受迫热方程</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-28">2026-10-28</time></span>
+    
+    <span>7,094 字 · 约 20 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="1"><span class="book-secnum">§ 01</span>问题</h2>
+<p>这是 Rayleigh–Bénard 笔记里温度通道单独拿出来的模型问题：</p>
+<div class="arithmatex">\[
+\theta_t=\Delta\theta+S,\qquad (x,z)\in\Omega=[0,1)\times[0,1],
+\]</div>
+<div class="arithmatex">\[
+\theta(x+1,z,t)=\theta(x,z,t),\qquad \theta(x,0,t)=\theta(x,1,t)=0,\qquad \theta(x,z,0)=\theta_0(x,z).
+\]</div>
+<p>源 <span class="arithmatex">\(S\)</span> 有两种情形：</p>
+<ul>
+<li><strong>已知外源</strong> <span class="arithmatex">\(S=f(x,z,t)\)</span>：任意时刻都能直接取样。</li>
+<li><strong>依赖解的源</strong> <span class="arithmatex">\(S=g(x,z,t)+F(\theta)\)</span>：例如 RB 中的对流项，取样必须先知道该时刻的 <span class="arithmatex">\(\theta\)</span>。</li>
+</ul>
+<p>本文只做一件事：像 ODE 线性多步法那样，只用历史源值构造全局三阶、四阶格式，不在步内增加新节点；给出推导、收敛证明和数值验证。现有二阶算法的完整算例（收敛、耗时、容差平台）和镜像法相对双周期的代价另写。</p>
+<h3 id="11">1.1 记号</h3>
+<p>全文只用两个算子，都带零 Dirichlet 壁条件和 <span class="arithmatex">\(x\)</span> 周期：</p>
+<div class="arithmatex">\[
+K=\Delta^{-1},\qquad H=e^{h\Delta}.
+\]</div>
+<table>
+<thead>
+<tr>
+<th>算子</th>
+<th>含义</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(Kf\)</span></td>
+<td>解 <span class="arithmatex">\(\Delta u=f\)</span>，<span class="arithmatex">\(u\)</span> 两壁为零</td>
+<td><code>adapfmm8</code></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(Hf\)</span></td>
+<td>以 <span class="arithmatex">\(f\)</span> 为初值让 <span class="arithmatex">\(y_t=\Delta y\)</span> 扩散时间 <span class="arithmatex">\(h\)</span></td>
+<td><code>boxfgt</code></td>
+</tr>
+</tbody>
+</table>
+<p>两者都是 <span class="arithmatex">\(\Delta\)</span> 的函数，所以 <span class="arithmatex">\(KH=HK\)</span>，<span class="arithmatex">\(\Delta K=K\Delta=I\)</span>。按特征函数 <span class="arithmatex">\(e^{2\pi ikx}\sin(l\pi z)\)</span> 展开，特征值为</p>
+<div class="arithmatex">\[
+\Delta\to-\lambda_{kl},\qquad \lambda_{kl}=4\pi^2k^2+\pi^2l^2\ge\pi^2,\qquad
+K\to-\frac1{\lambda_{kl}},\qquad H\to e^{-\lambda_{kl}h}.
+\]</div>
+<p><span class="arithmatex">\(K\)</span> 是负算子。程序里的 <code>op_K</code> 解的是 <span class="arithmatex">\(-\Delta u=f\)</span>，即 <code>op_K</code> <span class="arithmatex">\(=-K\)</span>。本文使用 <span class="arithmatex">\(\Delta^{-1}\)</span> 来避免公式里出现交替符号了。</p>
+<h2 id="2"><span class="book-secnum">§ 02</span>一步公式：源势</h2>
+<h3 id="21">2.1 积分因子</h3>
+<p>在一步 <span class="arithmatex">\([t_n,t_n+h]\)</span> 内记 <span class="arithmatex">\(\tau=t-t_n\)</span>。方程两边左乘 <span class="arithmatex">\(e^{-\tau\Delta}\)</span>：</p>
+<div class="arithmatex">\[
+\frac{d}{d\tau}\left[e^{-\tau\Delta}\theta\right]=e^{-\tau\Delta}\left(\theta_\tau-\Delta\theta\right)=e^{-\tau\Delta}S .
+\]</div>
+<p>从 <span class="arithmatex">\(0\)</span> 积分到 <span class="arithmatex">\(h\)</span>，再左乘 <span class="arithmatex">\(e^{h\Delta}\)</span>：</p>
+<div class="arithmatex">\[
+\theta_{n+1}=H\theta_n+\int_0^h e^{(h-\tau)\Delta}S(t_n+\tau)\,d\tau .
+\tag{2.1}
+\]</div>
+<p>这是精确的 Duhamel 公式。所有格式的区别只在于怎样近似这个积分。</p>
+<h3 id="22">2.2 多项式源的精确积分</h3>
+<p><strong>为什么不直接做数值积分。</strong> (2.1) 的积分核是 <span class="arithmatex">\(e^{(h-\tau)\Delta}\)</span>，用求积公式算，每个求积点都要做一次 FGT，而 FGT 正是一步里最贵的算子。我们希望一步只用一次 <span class="arithmatex">\(H\)</span>，其余都交给 <span class="arithmatex">\(K\)</span>。</p>
+<p><strong>思路：找一个特解把源消掉。</strong> 设一步内源被一个 <span class="arithmatex">\(m\)</span> 次多项式 <span class="arithmatex">\(p(\tau)\)</span> 代替（系数是空间函数），<span class="arithmatex">\(p^{(m+1)}=0\)</span>。方程 <span class="arithmatex">\(\theta'=\Delta\theta+p\)</span> 是线性的，如果能找到一个特解 <span class="arithmatex">\(-P(\tau)\)</span>，即</p>
+<div class="arithmatex">\[
+P'=\Delta P-p ,
+\tag{2.2a}
+\]</div>
+<p>那么 <span class="arithmatex">\(w=\theta+P\)</span> 满足齐次方程 <span class="arithmatex">\(w'=\Delta w\)</span>，一步只需一次 <span class="arithmatex">\(H\)</span>。这和常微分方程 <span class="arithmatex">\(y'=-\lambda y+c_0+c_1t\)</span> 的做法一样：右端是多项式，就用待定系数法猜一个多项式特解。</p>
+<p><strong>解 (2.2a)。</strong> 两边作用 <span class="arithmatex">\(K=\Delta^{-1}\)</span>，移项得</p>
+<div class="arithmatex">\[
+P=Kp+KP' .
+\]</div>
+<p>右端还含 <span class="arithmatex">\(P\)</span> 本身，把这个式子对 <span class="arithmatex">\(\tau\)</span> 求导再代回去：<span class="arithmatex">\(P'=Kp'+KP''\)</span>，所以</p>
+<div class="arithmatex">\[
+P=Kp+K^2p'+K^2P''=Kp+K^2p'+K^3p''+K^3P'''=\cdots
+\]</div>
+<p>每代一次，<span class="arithmatex">\(p\)</span> 的导数阶升一，<span class="arithmatex">\(K\)</span> 的幂升一。因为 <span class="arithmatex">\(p^{(m+1)}=0\)</span>，猜 <span class="arithmatex">\(P\)</span> 也是 <span class="arithmatex">\(\tau\)</span> 的 <span class="arithmatex">\(m\)</span> 次多项式，则 <span class="arithmatex">\(P^{(m+1)}=0\)</span>，代 <span class="arithmatex">\(m\)</span> 次后余项消失，得到有限和。这样定义<strong>源势</strong></p>
+<div class="arithmatex">\[
+P(\tau)=Kp+K^2p'+K^3p''+\dots+K^{m+1}p^{(m)}=\sum_{j=0}^{m}K^{j+1}p^{(j)}(\tau).
+\]</div>
+<p>换一种写法看得更清楚。记 <span class="arithmatex">\(D=d/d\tau\)</span>，(2.2a) 就是 <span class="arithmatex">\((\Delta-D)P=p\)</span>，形式上</p>
+<div class="arithmatex">\[
+P=(\Delta-D)^{-1}p=K\,(I-KD)^{-1}p=K\big(I+KD+K^2D^2+\cdots\big)p .
+\]</div>
+<p><span class="arithmatex">\(D\)</span> 作用在 <span class="arithmatex">\(m\)</span> 次多项式上 <span class="arithmatex">\(m+1\)</span> 次就是零，Neumann 级数自动截断，正好得到上面的有限和。这里 <span class="arithmatex">\(K\)</span> 与 <span class="arithmatex">\(D\)</span> 可交换，所以展开合法。</p>
+<p>下面直接验证这个 <span class="arithmatex">\(P\)</span> 满足 (2.2a)。</p>
+<p><strong>第一步：算 <span class="arithmatex">\(\Delta P\)</span> 和 <span class="arithmatex">\(P'\)</span>。</strong> 用 <span class="arithmatex">\(\Delta K^{j+1}=K^j\)</span>：</p>
+<div class="arithmatex">\[
+\Delta P=p+Kp'+K^2p''+\dots+K^mp^{(m)},
+\]</div>
+<div class="arithmatex">\[
+P'=Kp'+K^2p''+\dots+K^mp^{(m)}+K^{m+1}\underbrace{p^{(m+1)}}_{=0}.
+\]</div>
+<p>两式相减，除了第一项全部抵消：</p>
+<div class="arithmatex">\[
+P'=\Delta P-p .
+\]</div>
+<p><strong>第二步：消去源。</strong> 令 <span class="arithmatex">\(w=\theta+P\)</span>，代入方程：</p>
+<div class="arithmatex">\[
+w'=\theta'+P'=(\Delta\theta+p)+(\Delta P-p)=\Delta(\theta+P)=\Delta w .
+\]</div>
+<p><span class="arithmatex">\(w\)</span> 满足齐次热方程。<span class="arithmatex">\(P\)</span> 是 <span class="arithmatex">\(K\)</span> 的值域里的元素，两壁为零，所以 <span class="arithmatex">\(w\)</span> 也两壁为零，可以交给 <span class="arithmatex">\(H\)</span>：<span class="arithmatex">\(w(h)=Hw(0)\)</span>，即</p>
+<div class="arithmatex">\[
+\boxed{\theta_{n+1}=H\big(\theta_n+P(0)\big)-P(h).}
+\tag{2.2}
+\]</div>
+<p>只要 <span class="arithmatex">\(p\)</span> 是多项式，(2.2) 就是 <span class="arithmatex">\(S\)</span> 换成 <span class="arithmatex">\(p\)</span> 后的 (2.1) 的<strong>精确</strong>值。</p>
+<h3 id="23">2.3 退回现有二阶格式</h3>
+<p><strong><span class="arithmatex">\(m=0\)</span>（常源）：</strong> <span class="arithmatex">\(P=KS_n\)</span>，</p>
+<div class="arithmatex">\[
+\theta_{n+1}=H(\theta_n+KS_n)-KS_n .
+\]</div>
+<p><strong><span class="arithmatex">\(m=1\)</span>（端点线性插值）：</strong> <span class="arithmatex">\(p(\tau)=S_n+\frac{\tau}{h}(S_{n+1}-S_n)\)</span>，<span class="arithmatex">\(p'=(S_{n+1}-S_n)/h\)</span>。</p>
+<div class="arithmatex">\[
+P(0)=KS_n+q,\qquad P(h)=KS_{n+1}+q,\qquad q=K^2\frac{S_{n+1}-S_n}{h},
+\]</div>
+<div class="arithmatex">\[
+\theta_{n+1}=H(\theta_n+KS_n+q)-KS_{n+1}-q .
+\]</div>
+<p>现有算法就是 <span class="arithmatex">\(m=1\)</span> 的情形，每步 2 次 Poisson、1 次 FGT。</p>
+<h3 id="24-p">2.4 怎样算 <span class="arithmatex">\(P\)</span>：两种实现</h3>
+<p><strong>Horner 链。</strong> 把 <span class="arithmatex">\(P\)</span> 写成嵌套形式：</p>
+<div class="arithmatex">\[
+P(s)=K\Big(p+K\big(p'+K(p''+Kp''')\big)\Big).
+\]</div>
+<p><span class="arithmatex">\(P(0)\)</span> 和 <span class="arithmatex">\(P(h)\)</span> 各要一条链，但最内层 <span class="arithmatex">\(p^{(m)}\)</span> 是常数，两条链共用 <span class="arithmatex">\(Kp^{(m)}\)</span>。每步 Poisson 次数为 <span class="arithmatex">\(2m+1\)</span>。</p>
+<p><strong>apply（缓存）。</strong> 对每个新源值 <span class="arithmatex">\(S_{n+1}\)</span> 算并存下 <span class="arithmatex">\(KS_{n+1},K^2S_{n+1},\dots,K^{m+1}S_{n+1}\)</span>，旧节点的链直接复用。<span class="arithmatex">\(P\)</span> 是这些缓存的线性组合。每步 Poisson 次数为 <span class="arithmatex">\(m+1\)</span>。</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>Horner / wide</th>
+<th>apply</th>
+<th>FGT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二阶 <span class="arithmatex">\(m=1\)</span></td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>三阶 <span class="arithmatex">\(m=2\)</span></td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>四阶 <span class="arithmatex">\(m=3\)</span></td>
+<td>7</td>
+<td>4</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>apply 调用少，但要存 <span class="arithmatex">\((m+1)^2\)</span> 个缓存场，而且树一重建，缓存就要转移或重算（第 5.2 节）。在精确算术和固定线性算子下两者相等；差别在舍入，第 5.3 节详细讨论。</p>
+<h2 id="3"><span class="book-secnum">§ 03</span>用历史源值构造三阶、四阶</h2>
+<h3 id="31">3.1 插值多项式的导数</h3>
+<p>取归一化时间 <span class="arithmatex">\(s=\tau/h\)</span>，节点 <span class="arithmatex">\(s_q\)</span> 对应时刻 <span class="arithmatex">\(t_n+s_qh\)</span> 的源值 <span class="arithmatex">\(S_q\)</span>，Lagrange 基为 <span class="arithmatex">\(\ell_q(s)\)</span>：</p>
+<div class="arithmatex">\[
+p(\tau)=\sum_q\ell_q(s)S_q,\qquad p^{(j)}(\tau)=h^{-j}\sum_q\ell_q^{(j)}(s)S_q .
+\]</div>
+<p>代入 (2.2) 只需要两端 <span class="arithmatex">\(s=0,1\)</span> 的各阶导数。节点有两种取法，对应 ODE 的 Adams–Moulton 和 Adams–Bashforth：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>节点 <span class="arithmatex">\(s_q\)</span></th>
+<th>用到的源值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAM<span class="arithmatex">\((m+1)\)</span></td>
+<td><span class="arithmatex">\(1,0,-1,\dots,1-m\)</span></td>
+<td><span class="arithmatex">\(S_{n+1},S_n,\dots,S_{n+1-m}\)</span></td>
+</tr>
+<tr>
+<td>EAB<span class="arithmatex">\((m+1)\)</span></td>
+<td><span class="arithmatex">\(0,-1,\dots,-m\)</span></td>
+<td><span class="arithmatex">\(S_n,S_{n-1},\dots,S_{n-m}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-eam3eam4">3.2 EAM3、EAM4 的显式公式</h3>
+<p>用以 <span class="arithmatex">\(t_{n+1}\)</span> 为基点的后向差分 <span class="arithmatex">\(\nabla S_{n+1}=S_{n+1}-S_n\)</span>、<span class="arithmatex">\(\nabla^2S_{n+1}=S_{n+1}-2S_n+S_{n-1}\)</span>、<span class="arithmatex">\(\nabla^3S_{n+1}=S_{n+1}-3S_n+3S_{n-1}-S_{n-2}\)</span>，令 <span class="arithmatex">\(u=s-1\)</span>，Newton 后向插值为</p>
+<div class="arithmatex">\[
+p=S_{n+1}+u\nabla+\frac{u(u+1)}2\nabla^2+\frac{u(u+1)(u+2)}6\nabla^3 .
+\]</div>
+<p>逐次对 <span class="arithmatex">\(u\)</span> 求导（<span class="arithmatex">\(\tfrac{d}{d\tau}=h^{-1}\tfrac{d}{du}\)</span>）：</p>
+<div class="arithmatex">\[
+hp'=\nabla+\frac{2u+1}{2}\nabla^2+\frac{3u^2+6u+2}{6}\nabla^3,\qquad
+h^2p''=\nabla^2+(u+1)\nabla^3,\qquad
+h^3p'''=\nabla^3 .
+\]</div>
+<p><span class="arithmatex">\(\tau=h\)</span> 对应 <span class="arithmatex">\(u=0\)</span>，<span class="arithmatex">\(\tau=0\)</span> 对应 <span class="arithmatex">\(u=-1\)</span>。代入后展开成节点值：</p>
+<table>
+<thead>
+<tr>
+<th>量</th>
+<th><span class="arithmatex">\(u=-1\)</span>（<span class="arithmatex">\(\tau=0\)</span>）</th>
+<th><span class="arithmatex">\(u=0\)</span>（<span class="arithmatex">\(\tau=h\)</span>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(p\)</span></td>
+<td><span class="arithmatex">\(S_n\)</span></td>
+<td><span class="arithmatex">\(S_{n+1}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(hp'\)</span></td>
+<td><span class="arithmatex">\(\nabla-\tfrac12\nabla^2-\tfrac16\nabla^3=\tfrac16(2S_{n+1}+3S_n-6S_{n-1}+S_{n-2})\)</span></td>
+<td><span class="arithmatex">\(\nabla+\tfrac12\nabla^2+\tfrac13\nabla^3=\tfrac16(11S_{n+1}-18S_n+9S_{n-1}-2S_{n-2})\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(h^2p''\)</span></td>
+<td><span class="arithmatex">\(\nabla^2\)</span></td>
+<td><span class="arithmatex">\(\nabla^2+\nabla^3=2S_{n+1}-5S_n+4S_{n-1}-S_{n-2}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(h^3p'''\)</span></td>
+<td><span class="arithmatex">\(\nabla^3\)</span></td>
+<td><span class="arithmatex">\(\nabla^3\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>于是 <strong>EAM4</strong>：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+P(0)&amp;=KS_n+\frac{K^2}{6h}\left(2S_{n+1}+3S_n-6S_{n-1}+S_{n-2}\right)+\frac{K^3}{h^2}\nabla^2S_{n+1}+\frac{K^4}{h^3}\nabla^3S_{n+1},\\
+P(h)&amp;=KS_{n+1}+\frac{K^2}{6h}\left(11S_{n+1}-18S_n+9S_{n-1}-2S_{n-2}\right)+\frac{K^3}{h^2}\left(2S_{n+1}-5S_n+4S_{n-1}-S_{n-2}\right)+\frac{K^4}{h^3}\nabla^3S_{n+1}.
+\end{aligned}
+\]</div>
+<p><strong>EAM3</strong> 去掉 <span class="arithmatex">\(\nabla^3\)</span> 项，用 <span class="arithmatex">\(S_{n+1},S_n,S_{n-1}\)</span>：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+P(0)&amp;=KS_n+\frac{K^2}{2h}\left(S_{n+1}-S_{n-1}\right)+\frac{K^3}{h^2}\nabla^2S_{n+1},\\
+P(h)&amp;=KS_{n+1}+\frac{K^2}{2h}\left(3S_{n+1}-4S_n+S_{n-1}\right)+\frac{K^3}{h^2}\nabla^2S_{n+1}.
+\end{aligned}
+\]</div>
+<h3 id="33-eab3">3.3 EAB3 的显式公式</h3>
+<p>节点 <span class="arithmatex">\(S_n,S_{n-1},S_{n-2}\)</span>，以 <span class="arithmatex">\(t_n\)</span> 为基点：<span class="arithmatex">\(\nabla S_n=S_n-S_{n-1}\)</span>，<span class="arithmatex">\(\nabla^2S_n=S_n-2S_{n-1}+S_{n-2}\)</span>，<span class="arithmatex">\(u=s\)</span>，</p>
+<div class="arithmatex">\[
+p=S_n+u\nabla+\frac{u(u+1)}2\nabla^2,\qquad hp'=\nabla+\frac{2u+1}{2}\nabla^2,\qquad h^2p''=\nabla^2 .
+\]</div>
+<p>在 <span class="arithmatex">\(u=0\)</span> 和 <span class="arithmatex">\(u=1\)</span> 取值：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+P(0)&amp;=KS_n+\frac{K^2}{2h}\left(3S_n-4S_{n-1}+S_{n-2}\right)+\frac{K^3}{h^2}\nabla^2S_n,\\
+P(h)&amp;=K\left(3S_n-3S_{n-1}+S_{n-2}\right)+\frac{K^2}{2h}\left(5S_n-8S_{n-1}+3S_{n-2}\right)+\frac{K^3}{h^2}\nabla^2S_n .
+\end{aligned}
+\]</div>
+<h3 id="34">3.4 依赖解的源：预测–校正</h3>
+<p>EAM 要用 <span class="arithmatex">\(S_{n+1}=g(t_{n+1})+F(\theta_{n+1})\)</span>，而 <span class="arithmatex">\(\theta_{n+1}\)</span> 正是要求的量，所以 EAM 是隐式的。程序用固定次数的预测–校正：</p>
+<ol>
+<li><strong>预测</strong>：用同阶 EAB（只用旧源值）算出候选 <span class="arithmatex">\(\theta_{n+1}^{(0)}\)</span>。</li>
+<li><strong>校正</strong>：<span class="arithmatex">\(S_{n+1}^{(0)}=g_{n+1}+F(\theta_{n+1}^{(0)})\)</span>，代入 EAM 得 <span class="arithmatex">\(\theta_{n+1}^{(1)}\)</span>。可以重复 <span class="arithmatex">\(k\)</span> 次。</li>
+<li>用最终 <span class="arithmatex">\(\theta_{n+1}\)</span> 重新算 <span class="arithmatex">\(S_{n+1}\)</span> 存入历史。</li>
+</ol>
+<p>每次校正多 1 次 FGT 和一整条 Poisson 链。已知外源不需要这一步：<span class="arithmatex">\(S_{n+1}\)</span> 直接取样，EAM 是显式的。</p>
+<h3 id="35-eam-eab">3.5 EAM 与 EAB</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>EAM<span class="arithmatex">\((m+1)\)</span></th>
+<th>EAB<span class="arithmatex">\((m+1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>步内源近似</td>
+<td>插值（含 <span class="arithmatex">\(t_{n+1}\)</span>）</td>
+<td>外推</td>
+</tr>
+<tr>
+<td>局部误差常数（三阶/四阶）</td>
+<td><span class="arithmatex">\(1/24\)</span>，<span class="arithmatex">\(19/720\)</span></td>
+<td><span class="arithmatex">\(3/8\)</span>，<span class="arithmatex">\(251/720\)</span></td>
+</tr>
+<tr>
+<td>依赖解的源每步代价</td>
+<td>预测 + <span class="arithmatex">\(k\)</span> 次校正：<span class="arithmatex">\((1+k)\)</span> 倍</td>
+<td>1 倍，完全显式</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t_n\)</span> 之前需要的历史值</td>
+<td><span class="arithmatex">\(m-1\)</span> 个</td>
+<td><span class="arithmatex">\(m\)</span> 个</td>
+</tr>
+<tr>
+<td>强反应项的稳定性</td>
+<td>隐式求解时区域比 EAB 大，但不是无条件稳定</td>
+<td>区域较小</td>
+</tr>
+</tbody>
+</table>
+<p>误差常数之比：三阶 <span class="arithmatex">\(\tfrac{3/8}{1/24}=9\)</span>，四阶 <span class="arithmatex">\(\tfrac{251/720}{19/720}\approx13.2\)</span>。</p>
+<ul>
+<li><strong>已知外源</strong>：两者每步代价相同，EAM 误差小一个数量级，<strong>用 EAM</strong>。</li>
+<li><strong>依赖解的源</strong>：EAM 一次校正每步代价是 EAB 的 2 倍。要达到 EAM 的误差，EAB 步长需缩小 <span class="arithmatex">\(9^{1/3}\approx2.1\)</span>（三阶）或 <span class="arithmatex">\(13.2^{1/4}\approx1.9\)</span>（四阶）倍，两者总代价基本相同，实测也是如此。</li>
+</ul>
+<h3 id="36">3.6 启动</h3>
+<p><span class="arithmatex">\(m+1\)</span> 阶格式开头缺少 <span class="arithmatex">\(t&lt;0\)</span> 的历史源值。</p>
+<p><strong>shift 启动（已知外源）。</strong> 遇到负下标时改用节点 <span class="arithmatex">\(t_0,\dots,t_m\)</span>，即前几步都用同一个前向插值多项式（它在 <span class="arithmatex">\([t_0,t_m]\)</span> 上用的正是未来源值，已知外源可以直接取样）。每个启动步的局部误差仍是 <span class="arithmatex">\(O(h^{m+2})\)</span>。EAM4 前三个区间的常数为 <span class="arithmatex">\(19/720\)</span>、<span class="arithmatex">\(11/720\)</span>、<span class="arithmatex">\(19/720\)</span>，不比正常步大。</p>
+<p><strong>Picard 块启动（一般情形）。</strong> 在 <span class="arithmatex">\([0,mh]\)</span> 上取阶段 <span class="arithmatex">\(U_j\approx\theta(jh)\)</span>，<span class="arithmatex">\(j=0,\dots,m\)</span>，初猜 <span class="arithmatex">\(U_j^{(0)}=\theta_0\)</span>，迭代</p>
+<div class="arithmatex">\[
+U_j^{(r+1)}=e^{jh\Delta}\theta_0+\int_0^{jh}e^{(jh-\tau)\Delta}\sum_{l=0}^{m}\ell_l(\tau/h)\left[g(lh)+F(U_l^{(r)})\right]d\tau ,
+\]</div>
+<p>积分同样用源势 (2.2) 精确计算（传播时间改为 <span class="arithmatex">\(jh\)</span>）。迭代 <span class="arithmatex">\(m+1\)</span> 轮后统一刷新历史，从 <span class="arithmatex">\(t_m\)</span> 开始正常推进。只用给定初值，不用解析解。</p>
+<h2 id="4"><span class="book-secnum">§ 04</span>收敛证明</h2>
+<p>有如下假设：</p>
+<ol>
+<li>
+<p>在 <span class="arithmatex">\(L^\infty\)</span> 中，<span class="arithmatex">\(\lVert e^{t\Delta}\rVert\le1\)</span>；在 <span class="arithmatex">\(L^2\)</span> 中，<span class="arithmatex">\(\lVert e^{t\Delta}\rVert\le e^{-\pi^2t}\)</span> </p>
+</li>
+<li>
+<p><span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(H\)</span> 精确，没有空间离散和舍入</p>
+</li>
+<li>
+<p><span class="arithmatex">\(S\in C^{m+1}([0,T];X)\)</span>，<span class="arithmatex">\(M=\sup_t\lVert S^{(m+1)}(t)\rVert\)</span></p>
+</li>
+<li>
+<p>依赖解的源：<span class="arithmatex">\(\lVert F(u)-F(v)\rVert\le L\lVert u-v\rVert\)</span></p>
+</li>
+</ol>
+<p><strong><span class="arithmatex">\(L^2\)</span> 中。</strong> 把 <span class="arithmatex">\(y(0)\)</span> 按特征函数展开：<span class="arithmatex">\(y(0)=\sum_{k,l}c_{kl}\phi_{kl}\)</span>，<span class="arithmatex">\(\phi_{kl}=e^{2\pi ikx}\sin(l\pi z)\)</span>，它们在 <span class="arithmatex">\(L^2\)</span> 中正交。热方程逐模态解为 <span class="arithmatex">\(c_{kl}(t)=e^{-\lambda_{kl}t}c_{kl}\)</span>，由 Parseval 等式，</p>
+<div class="arithmatex">\[
+\lVert e^{t\Delta}y(0)\rVert_{L^2}^2=\sum_{k,l}e^{-2\lambda_{kl}t}\lvert c_{kl}\rvert^2\lVert\phi_{kl}\rVert^2\le e^{-2\pi^2t}\sum_{k,l}\lvert c_{kl}\rvert^2\lVert\phi_{kl}\rVert^2=e^{-2\pi^2t}\lVert y(0)\rVert_{L^2}^2 .
+\]</div>
+<p>这里用了 <span class="arithmatex">\(\lambda_{kl}\ge\lambda_{01}=\pi^2\)</span>。</p>
+<p><strong><span class="arithmatex">\(L^\infty\)</span> 中。</strong> 由最大值原理：在 <span class="arithmatex">\(\Omega\times(0,t]\)</span> 上，<span class="arithmatex">\(y_t=\Delta y\)</span> 的解的最大值和最小值只能在 <span class="arithmatex">\(t=0\)</span> 或壁面上取得；<span class="arithmatex">\(x\)</span> 方向周期没有边界，壁上 <span class="arithmatex">\(y=0\)</span>。所以 <span class="arithmatex">\(\lvert y(\cdot,t)\rvert\le\max\lvert y(\cdot,0)\rvert\)</span>。</p>
+<h3 id="41">4.1 局部误差</h3>
+<p>把格式看成一个映射：输入 <span class="arithmatex">\(\theta_n\)</span> 和历史源值 <span class="arithmatex">\(\{S_q\}\)</span>，输出 <span class="arithmatex">\(\theta_{n+1}\)</span>。由第 2.2 节，格式算出的正是</p>
+<div class="arithmatex">\[
+\theta_{n+1}=H\theta_n+\int_0^he^{(h-\tau)\Delta}p(\tau)\,d\tau ,
+\]</div>
+<p>其中 <span class="arithmatex">\(p\)</span> 是 <span class="arithmatex">\(\{S_q\}\)</span> 的插值多项式。现在把<strong>精确值</strong> <span class="arithmatex">\(\theta(t_n)\)</span> 和<strong>精确源值</strong> <span class="arithmatex">\(S(t_q)\)</span> 作为输入，与精确解的 Duhamel 公式 (2.1) 相减，<span class="arithmatex">\(H\theta(t_n)\)</span> 抵消：</p>
+<div class="arithmatex">\[
+d_n:=\theta(t_{n+1})-\Big[H\theta(t_n)+\int_0^he^{(h-\tau)\Delta}p(\tau)\,d\tau\Big]
+=\int_0^he^{(h-\tau)\Delta}\big(S(t_n+\tau)-p(\tau)\big)\,d\tau .
+\]</div>
+<p>设 <span class="arithmatex">\(f(\sigma)\)</span> 是 <span class="arithmatex">\(C^{m+1}\)</span> 的实函数，<span class="arithmatex">\(\pi(\sigma)\)</span> 是它在 <span class="arithmatex">\(m+1\)</span> 个不同节点 <span class="arithmatex">\(s_0,\dots,s_m\)</span> 上的插值多项式，<span class="arithmatex">\(\omega(\sigma)=\prod_q(\sigma-s_q)\)</span>。固定一个非节点的 <span class="arithmatex">\(s\)</span>，取常数 <span class="arithmatex">\(c\)</span> 使辅助函数</p>
+<div class="arithmatex">\[
+g(\sigma)=f(\sigma)-\pi(\sigma)-c\,\omega(\sigma)
+\]</div>
+<p>在 <span class="arithmatex">\(\sigma=s\)</span> 处为零。<span class="arithmatex">\(g\)</span> 在 <span class="arithmatex">\(m+1\)</span> 个节点上也为零（<span class="arithmatex">\(f=\pi\)</span>、<span class="arithmatex">\(\omega=0\)</span>），共 <span class="arithmatex">\(m+2\)</span> 个零点。由 Rolle 定理，<span class="arithmatex">\(g'\)</span> 至少有 <span class="arithmatex">\(m+1\)</span> 个零点，……，<span class="arithmatex">\(g^{(m+1)}\)</span> 至少有一个零点 <span class="arithmatex">\(\xi\)</span>。<span class="arithmatex">\(\pi\)</span> 是 <span class="arithmatex">\(m\)</span> 次多项式，<span class="arithmatex">\(\pi^{(m+1)}=0\)</span>；<span class="arithmatex">\(\omega\)</span> 首项为 <span class="arithmatex">\(\sigma^{m+1}\)</span>，<span class="arithmatex">\(\omega^{(m+1)}=(m+1)!\)</span>。所以</p>
+<div class="arithmatex">\[
+0=g^{(m+1)}(\xi)=f^{(m+1)}(\xi)-c\,(m+1)!\quad\Longrightarrow\quad
+f(s)-\pi(s)=c\,\omega(s)=\frac{f^{(m+1)}(\xi)}{(m+1)!}\,\omega(s).
+\]</div>
+<p>对任一有界线性泛函 <span class="arithmatex">\(\varphi\)</span>（<span class="arithmatex">\(\lVert\varphi\rVert\le1\)</span>），令 <span class="arithmatex">\(f(\sigma)=\varphi\big(S(t_n+h\sigma)\big)\)</span>，它是实函数。</p>
+<ul>
+<li>链式法则：<span class="arithmatex">\(f^{(m+1)}(\sigma)=h^{m+1}\varphi\big(S^{(m+1)}(t_n+h\sigma)\big)\)</span>，所以 <span class="arithmatex">\(\lvert f^{(m+1)}\rvert\le h^{m+1}M\)</span>。</li>
+<li>插值是线性的：<span class="arithmatex">\(f\)</span> 的插值多项式就是 <span class="arithmatex">\(\varphi(p)\)</span>。</li>
+</ul>
+<p>代入，</p>
+<div class="arithmatex">\[
+\big\lvert\varphi\big(S(t_n+hs)-p(hs)\big)\big\rvert\le\frac{h^{m+1}M}{(m+1)!}\,\lvert\omega(s)\rvert .
+\]</div>
+<p>由 Hahn–Banach 定理，<span class="arithmatex">\(\lVert v\rVert=\sup_{\lVert\varphi\rVert\le1}\lvert\varphi(v)\rvert\)</span>，对 <span class="arithmatex">\(\varphi\)</span> 取上确界：</p>
+<div class="arithmatex">\[
+\lVert S(t_n+hs)-p(hs)\rVert\le\frac{h^{m+1}M}{(m+1)!}\,\lvert\omega(s)\rvert .
+\tag{4.1}
+\]</div>
+<p>换元 <span class="arithmatex">\(\tau=hs\)</span>、<span class="arithmatex">\(d\tau=h\,ds\)</span>，代入 (4.1)：</p>
+<div class="arithmatex">\[
+\lVert d_n\rVert\le\int_0^h\lVert S(t_n+\tau)-p(\tau)\rVert\,d\tau
+=h\int_0^1\lVert S(t_n+hs)-p(hs)\rVert\,ds
+\le\frac{h^{m+2}M}{(m+1)!}\int_0^1\lvert\omega(s)\rvert\,ds .
+\]</div>
+<p>记</p>
+<div class="arithmatex">\[
+\boxed{\lVert d_n\rVert\le C\,M\,h^{m+2},\qquad C=\frac{1}{(m+1)!}\int_0^1\lvert\omega(s)\rvert\,ds .}
+\]</div>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th><span class="arithmatex">\(C\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAM2</td>
+<td><span class="arithmatex">\(\tfrac1{12}\)</span></td>
+</tr>
+<tr>
+<td>EAM3</td>
+<td><span class="arithmatex">\(\tfrac1{24}\)</span></td>
+</tr>
+<tr>
+<td>EAM4</td>
+<td><span class="arithmatex">\(\tfrac{19}{720}\)</span></td>
+</tr>
+<tr>
+<td>EAB2</td>
+<td><span class="arithmatex">\(\tfrac5{12}\)</span></td>
+</tr>
+<tr>
+<td>EAB3</td>
+<td><span class="arithmatex">\(\tfrac38\)</span></td>
+</tr>
+<tr>
+<td>EAB4</td>
+<td><span class="arithmatex">\(\tfrac{251}{720}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="42">4.2 全局误差：已知外源</h3>
+<p>已知外源时，<span class="arithmatex">\(p\)</span> 用的是精确源值 <span class="arithmatex">\(S(t_q)\)</span>，与 <span class="arithmatex">\(\theta_n\)</span> 无关。记 <span class="arithmatex">\(I_n=\int_0^he^{(h-\tau)\Delta}p(\tau)\,d\tau\)</span>，数值解和精确解分别满足</p>
+<div class="arithmatex">\[
+\theta_{n+1}=H\theta_n+I_n,\qquad
+\theta(t_{n+1})=H\theta(t_n)+I_n+d_n .
+\]</div>
+<p>相减，记 <span class="arithmatex">\(e_n=\theta(t_n)-\theta_n\)</span>，得 <span class="arithmatex">\(e_{n+1}=He_n+d_n\)</span>。逐步展开：</p>
+<div class="arithmatex">\[
+e_N=H^Ne_0+\sum_{n=0}^{N-1}H^{N-1-n}d_n .
+\]</div>
+<p>由假设 1，<span class="arithmatex">\(\lVert H^k\rVert\le1\)</span>；再用 <span class="arithmatex">\(\lVert d_n\rVert\le CMh^{m+2}\)</span> 和 <span class="arithmatex">\(Nh=T\)</span>：</p>
+<div class="arithmatex">\[
+\lVert e_N\rVert\le\lVert e_0\rVert+N\,CMh^{m+2}=\lVert e_0\rVert+C\,M\,T\,h^{m+1}.
+\]</div>
+<p>在 <span class="arithmatex">\(L^2\)</span> 中还可以用 <span class="arithmatex">\(\lVert H^k\rVert\le e^{-\pi^2kh}\)</span>，求和是几何级数，<span class="arithmatex">\(\sum_{k\ge0}e^{-\pi^2kh}=1/(1-e^{-\pi^2h})\)</span>。由 <span class="arithmatex">\(e^x\ge1+x\)</span> 得 <span class="arithmatex">\(1-e^{-x}\ge\frac{x}{1+x}\)</span>，于是</p>
+<div class="arithmatex">\[
+\lVert e_N\rVert_{L^2}\le e^{-\pi^2T}\lVert e_0\rVert+\frac{CM}{\pi^2}\,h^{m+1}(1+\pi^2h).
+\]</div>
+<p>右端与 <span class="arithmatex">\(T\)</span> 无关，误差不随积分时间累积，这是耗散性带来的。</p>
+<p>shift 启动时 <span class="arithmatex">\(e_0=0\)</span>。前 <span class="arithmatex">\(m-1\)</span> 步的插值节点换成 <span class="arithmatex">\(0,1,\dots,m\)</span>，第 <span class="arithmatex">\(m\)</span> 步的正常 EAM 节点恰好也是 <span class="arithmatex">\(0,\dots,m\)</span>，所以前 <span class="arithmatex">\(m\)</span> 个区间用同一个多项式，仍满足 <span class="arithmatex">\(e_{n+1}=He_n+d_n\)</span>，只是第 <span class="arithmatex">\(n\)</span> 个区间的常数换成</p>
+<div class="arithmatex">\[
+C_n=\frac1{(m+1)!}\int_n^{n+1}\Big\lvert\prod_{q=0}^{m}(\sigma-q)\Big\rvert\,d\sigma .
+\]</div>
+<p>二阶 <span class="arithmatex">\(\tfrac1{12}\)</span>；三阶 <span class="arithmatex">\(\tfrac1{24},\tfrac1{24}\)</span>；四阶 <span class="arithmatex">\(\tfrac{19}{720},\tfrac{11}{720},\tfrac{19}{720}\)</span>。以四阶中间区间为例，令 <span class="arithmatex">\(u=\sigma-\tfrac32\)</span>，</p>
+<div class="arithmatex">\[
+\prod_{q=0}^3(\sigma-q)=\left(u^2-\tfrac94\right)\left(u^2-\tfrac14\right),
+\qquad
+\int_{-1/2}^{1/2}\Big(u^4-\tfrac52u^2+\tfrac9{16}\Big)du=\tfrac{11}{30},
+\]</div>
+<p>除以 <span class="arithmatex">\(4!\)</span> 得 <span class="arithmatex">\(\tfrac{11}{720}\)</span>。这些常数都不超过正常步的常数，上面的界直接成立。</p>
+<div class="arithmatex">\[
+\boxed{\lVert\theta(T)-\theta_N\rVert\le C\,M\,T\,h^{m+1}.}
+\]</div>
+<h3 id="43">4.3 依赖解的源</h3>
+<p>现在 <span class="arithmatex">\(S_j=g(t_j)+F(\theta_j)\)</span> 用的是数值解，误差会通过源反馈回来。</p>
+<p>(2.2) 对 <span class="arithmatex">\(p\)</span> 是线性的，<span class="arithmatex">\(p=\sum_q\ell_q(\tau/h)S_q\)</span>，所以</p>
+<div class="arithmatex">\[
+\int_0^he^{(h-\tau)\Delta}p(\tau)\,d\tau=\sum_qW_qS_q,\qquad W_q=\int_0^he^{(h-\tau)\Delta}\ell_q(\tau/h)\,d\tau .
+\]</div>
+<p>由假设 1，</p>
+<div class="arithmatex">\[
+\lVert W_q\rVert\le h\beta_q,\qquad\beta_q=\int_0^1\lvert\ell_q(s)\rvert\,ds .
+\]</div>
+<p><span class="arithmatex">\(\ell_q\)</span> 在 <span class="arithmatex">\([0,1]\)</span> 上不变号，<span class="arithmatex">\(\beta_q\)</span> 就是经典 Adams 系数的绝对值：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th><span class="arithmatex">\(\beta_q\)</span></th>
+<th><span class="arithmatex">\(B=\sum_q\beta_q\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAB2</td>
+<td><span class="arithmatex">\(\tfrac32,\tfrac12\)</span></td>
+<td><span class="arithmatex">\(2\)</span></td>
+</tr>
+<tr>
+<td>EAB3</td>
+<td><span class="arithmatex">\(\tfrac{23}{12},\tfrac{16}{12},\tfrac5{12}\)</span></td>
+<td><span class="arithmatex">\(\tfrac{11}3\)</span></td>
+</tr>
+<tr>
+<td>EAB4</td>
+<td><span class="arithmatex">\(\tfrac{55}{24},\tfrac{59}{24},\tfrac{37}{24},\tfrac9{24}\)</span></td>
+<td><span class="arithmatex">\(\tfrac{20}3\)</span></td>
+</tr>
+<tr>
+<td>EAM2</td>
+<td><span class="arithmatex">\(\tfrac12,\tfrac12\)</span></td>
+<td><span class="arithmatex">\(1\)</span></td>
+</tr>
+<tr>
+<td>EAM3</td>
+<td><span class="arithmatex">\(\tfrac5{12},\tfrac8{12},\tfrac1{12}\)</span></td>
+<td><span class="arithmatex">\(\tfrac76\)</span></td>
+</tr>
+<tr>
+<td>EAM4</td>
+<td><span class="arithmatex">\(\tfrac9{24},\tfrac{19}{24},\tfrac5{24},\tfrac1{24}\)</span></td>
+<td><span class="arithmatex">\(\tfrac{17}{12}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>EAM 各行第一个数是新节点 <span class="arithmatex">\(S_{n+1}\)</span> 的权，记为 <span class="arithmatex">\(\beta_{\rm top}\)</span>。</p>
+<p><strong>EAB。</strong> 数值解与精确解相减，<span class="arithmatex">\(g\)</span> 项抵消：</p>
+<div class="arithmatex">\[
+e_{n+1}=He_n+\sum_{q=0}^{m}W_q\big[F(\theta(t_{n-q}))-F(\theta_{n-q})\big]+d_n .
+\]</div>
+<p>由假设 1、4，</p>
+<div class="arithmatex">\[
+\lVert e_{n+1}\rVert\le\lVert e_n\rVert+hL\sum_{q=0}^{m}\beta_q\lVert e_{n-q}\rVert+\lVert d_n\rVert .
+\]</div>
+<p>令 <span class="arithmatex">\(E_n=\max_{j\le n}\lVert e_j\rVert\)</span>，<span class="arithmatex">\(\delta=\max_n\lVert d_n\rVert\le CMh^{m+2}\)</span>。右端每个 <span class="arithmatex">\(\lVert e_{n-q}\rVert\le E_n\)</span>，所以</p>
+<div class="arithmatex">\[
+E_{n+1}\le(1+hLB)E_n+\delta .
+\]</div>
+<p>从启动结束的 <span class="arithmatex">\(n_0\)</span> 起归纳，并用 <span class="arithmatex">\((1+hLB)^k\le e^{LBkh}\)</span>：</p>
+<div class="arithmatex">\[
+E_n\le(1+hLB)^{n-n_0}\big(E_{n_0}+(n-n_0)\delta\big)
+\quad\Longrightarrow\quad
+\boxed{E_N\le e^{LBT}\big(E_{n_0}+CMT\,h^{m+1}\big).}
+\]</div>
+<p>只要启动误差 <span class="arithmatex">\(E_{n_0}=O(h^{m+1})\)</span>，全局就是 <span class="arithmatex">\(m+1\)</span> 阶。界中没有 <span class="arithmatex">\(\Delta\)</span> 的特征值，对 <span class="arithmatex">\(h\)</span> 也没有上限要求；代价是常数 <span class="arithmatex">\(e^{LBT}\)</span> 随 <span class="arithmatex">\(LT\)</span> 指数增长，并且 <span class="arithmatex">\(M\)</span> 要求精确解在时间上足够光滑。</p>
+<p><strong>EAM 预测–校正。</strong> 一次校正：</p>
+<div class="arithmatex">\[
+\theta^{(0)}_{n+1}=H\theta_n+\sum_qW^{\rm P}_qS_{n-q},\qquad
+\theta_{n+1}=H\theta_n+W_{\rm top}\big[g_{n+1}+F(\theta^{(0)}_{n+1})\big]+\sum_{q\ne\rm top}W_qS_{n+1-q}.
+\]</div>
+<p><span class="arithmatex">\(W^{\rm P}_q\)</span> 是预测器的权，常数 <span class="arithmatex">\(B_{\rm P}\)</span>；<span class="arithmatex">\(B_-=B-\beta_{\rm top}\)</span>。预测值误差与 EAB 相同：</p>
+<div class="arithmatex">\[
+\lVert e^{(0)}_{n+1}\rVert\le(1+hLB_{\rm P})E_n+\lVert d^{\rm P}_n\rVert .
+\]</div>
+<p>校正后新节点的源误差来自 <span class="arithmatex">\(e^{(0)}_{n+1}\)</span>，代入上式：</p>
+<div class="arithmatex">\[
+\lVert e_{n+1}\rVert\le E_n+hL\beta_{\rm top}\lVert e^{(0)}_{n+1}\rVert+hLB_-E_n+\lVert d_n\rVert
+\le\big(1+hLB'\big)E_n+\lVert d_n\rVert+hL\beta_{\rm top}\lVert d^{\rm P}_n\rVert ,
+\]</div>
+<p>其中 <span class="arithmatex">\(B'=B_-+\beta_{\rm top}(1+hLB_{\rm P})\)</span>，<span class="arithmatex">\(hL\le1\)</span> 时与 <span class="arithmatex">\(h\)</span> 无关，Gronwall 照搬。预测器为 <span class="arithmatex">\(p'+1\)</span> 阶时 <span class="arithmatex">\(\lVert d^{\rm P}_n\rVert=O(h^{p'+2})\)</span>，最后一项是 <span class="arithmatex">\(O(h^{p'+3})\)</span>。保持 <span class="arithmatex">\(m+1\)</span> 阶需要 <span class="arithmatex">\(p'\ge m-1\)</span>，即<strong>预测器低一阶就够</strong>，多出的 <span class="arithmatex">\(h\)</span> 来自 <span class="arithmatex">\(\lVert W_{\rm top}\rVert\le h\beta_{\rm top}\)</span>。校正 <span class="arithmatex">\(k\)</span> 次时，每多一次，预测误差的贡献再乘一个 <span class="arithmatex">\(hL\beta_{\rm top}\)</span>。</p>
+<h3 id="44-picard">4.4 Picard 启动的误差</h3>
+<p>精确解满足</p>
+<div class="arithmatex">\[
+\theta(jh)=e^{jh\Delta}\theta_0+\int_0^{jh}e^{(jh-\tau)\Delta}S(\tau)\,d\tau,\qquad S=g+F(\theta).
+\]</div>
+<p>Picard 迭代（第 3.6 节）把 <span class="arithmatex">\(S\)</span> 换成用 <span class="arithmatex">\(U^{(r)}_l\)</span> 算出的源值在节点 <span class="arithmatex">\(0,\dots,m\)</span> 上的插值。记 <span class="arithmatex">\(\hat p\)</span> 为精确源值 <span class="arithmatex">\(S(lh)\)</span> 的插值，加一项减一项：</p>
+<div class="arithmatex">\[
+U^{(r+1)}_j-\theta(jh)=\underbrace{\int_0^{jh}e^{(jh-\tau)\Delta}\sum_{l}\ell_l(\tau/h)\big[F(U^{(r)}_l)-F(\theta(lh))\big]d\tau}_{\text{迭代误差}}
+-\underbrace{\int_0^{jh}e^{(jh-\tau)\Delta}\big(S-\hat p\big)d\tau}_{\text{插值误差}} .
+\]</div>
+<p>由假设 1、4，迭代误差不超过 <span class="arithmatex">\(aE_r\)</span>，</p>
+<div class="arithmatex">\[
+a=hL\max_{1\le j\le m}\int_0^j\sum_l\lvert\ell_l(\sigma)\rvert\,d\sigma ,
+\]</div>
+<p><span class="arithmatex">\(a/(hL)\)</span> 在二、三、四阶分别为 <span class="arithmatex">\(1,\tfrac73,4\)</span>。插值误差同第 4.1 节，积分区间换成 <span class="arithmatex">\([0,j]\)</span>，不超过 <span class="arithmatex">\(C_{\rm P}h^{m+2}\)</span>。记 <span class="arithmatex">\(E_r=\max_j\lVert U^{(r)}_j-\theta(jh)\rVert\)</span>，</p>
+<div class="arithmatex">\[
+E_{r+1}\le aE_r+C_{\rm P}h^{m+2}
+\quad\Longrightarrow\quad
+E_r\le a^rE_0+\frac{C_{\rm P}h^{m+2}}{1-a}\qquad(a&lt;1).
+\]</div>
+<p>初猜 <span class="arithmatex">\(U^{(0)}_j=\theta_0\)</span>，<span class="arithmatex">\(E_0\le mh\sup\lVert\theta_t\rVert=O(h)\)</span>（非零初值需要 <span class="arithmatex">\(\theta_t\)</span> 在 <span class="arithmatex">\(t=0\)</span> 附近有界）。<span class="arithmatex">\(a=O(h)\)</span>，迭代 <span class="arithmatex">\(m+1\)</span> 轮后 <span class="arithmatex">\(a^{m+1}E_0=O(h^{m+2})\)</span>，满足第 4.3 节对启动误差的要求。已知外源时 <span class="arithmatex">\(a=0\)</span>，一轮即可，与 shift 启动一致。</p>
+<h3 id="45">4.5 证明没有覆盖的部分</h3>
+<p><strong>算子误差。</strong> 去掉假设 2，每步多一个误差 <span class="arithmatex">\(\eta_n\)</span>（FMM、FGT、树转移、舍入），<span class="arithmatex">\(e_{n+1}=He_n+d_n+\eta_n\)</span>。按第 4.2 节的几何级数，最坏情形下额外误差为</p>
+<div class="arithmatex">\[
+\max_n\lVert\eta_n\rVert\cdot\frac{1+\pi^2h}{\pi^2h},
+\]</div>
+<p>会随 <span class="arithmatex">\(1/h\)</span> 增长。但如果误差来自固定的线性 FMM，设源势算成 <span class="arithmatex">\(P+\eta_n(\tau)\)</span>，则</p>
+<div class="arithmatex">\[
+\tilde e_{n+1}=H\tilde e_n-(I-H)\eta_n(0)-\big[\eta_n(h)-\eta_n(0)\big].
+\]</div>
+<p>对第一项做 Abel 求和：</p>
+<div class="arithmatex">\[
+\sum_{n=0}^{N-1}H^{N-1-n}(I-H)\eta_n(0)
+=\eta_{N-1}(0)-H^N\eta_0(0)+\sum_{j=1}^{N-1}H^j\big[\eta_{N-1-j}(0)-\eta_{N-j}(0)\big].
+\]</div>
+<p>若 <span class="arithmatex">\(\lVert\eta_n\rVert\le\varepsilon\)</span>，且 <span class="arithmatex">\(\eta_n\)</span> 在 <span class="arithmatex">\(n\)</span> 和 <span class="arithmatex">\(\tau\)</span> 上的变化都是 <span class="arithmatex">\(c\,h\varepsilon\)</span>，则 <span class="arithmatex">\(\lVert\tilde e_N\rVert\le(2+2cT)\varepsilon\)</span>，与 <span class="arithmatex">\(h\)</span> 无关。这解释了实测中误差降到容差附近后出现的平坦平台。</p>
+<p><strong>刚性反应项。</strong> 取 <span class="arithmatex">\(F(\theta)=c\theta\)</span>，<span class="arithmatex">\(c&lt;0\)</span> 很大。<span class="arithmatex">\(\lambda h\to0\)</span> 时 EAM 退化为 Adams–Moulton。记 <span class="arithmatex">\(z=hc\)</span>，AM3 和 AM4 的特征多项式为</p>
+<div class="arithmatex">\[
+P_3(r)=\Big(1-\frac{5z}{12}\Big)r^2-\Big(1+\frac{8z}{12}\Big)r+\frac z{12},
+\qquad
+P_4(r)=\Big(1-\frac{9z}{24}\Big)r^3-\Big(1+\frac{19z}{24}\Big)r^2+\frac{5z}{24}r-\frac z{24}.
+\]</div>
+<p><span class="arithmatex">\(z=-100\)</span> 时分别有实根 <span class="arithmatex">\(r\approx-1.66\)</span> 和 <span class="arithmatex">\(r\approx-2.29\)</span>，模大于 1。所以高阶 EAM 对强负反应项不是无条件稳定的；第 4.3 节的界在 <span class="arithmatex">\(hL\)</span> 有界时成立，<span class="arithmatex">\(hL\)</span> 很大时 <span class="arithmatex">\(e^{LBT}\)</span> 没有实际意义。</p>
+<p><strong>初始层。</strong> 若 <span class="arithmatex">\(\theta_0\)</span> 与源在壁上不相容，近壁出现宽度约 <span class="arithmatex">\(\sqrt t\)</span> 的边界层，<span class="arithmatex">\(\lVert\partial_t^2\theta\rVert_\infty\sim t^{-1}\)</span>，假设 3 的 <span class="arithmatex">\(M\)</span> 不存在，可能阶降。本笔记的算例在 <span class="arithmatex">\(t=0\)</span> 都相容。</p>
+<h2 id="5"><span class="book-secnum">§ 05</span>在自适应树上实现</h2>
+<h3 id="51">5.1 叶盒与自适应树</h3>
+<p>所有场存在物理四叉树叶盒的 <span class="arithmatex">\(8\times8\)</span> Chebyshev 节点上（与 FMM <code>getxyclassical8</code>、boxfgt <code>ipoly=1</code> 的节点一致）。一个盒的 Chebyshev 系数中，总次数 <span class="arithmatex">\(\ge6\)</span> 的尾部系数绝对值之和（除以源或 <span class="arithmatex">\(\theta\)</span> 的最大值）超过 <code>tol</code> 时细分；建树后做 2:1 平衡（<span class="arithmatex">\(x\)</span> 方向周期）。</p>
+<p>真实变树时每步重建：新树按当前 <span class="arithmatex">\(\theta\)</span> 和需要的源时刻建立，再把 <span class="arithmatex">\(\theta\)</span> 和全部历史源 <span class="arithmatex">\(S_q\)</span>（apply 时还有缓存 <span class="arithmatex">\(K^jS_q\)</span>）放到新树上。</p>
+<p><span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(H\)</span> 的壁条件用镜像法实现：把场在 <span class="arithmatex">\(z\)</span> 方向奇延拓成周期函数，周期 FMM/FGT 的结果自动在两壁为零。缩放和代价见另一篇笔记，这里只用到 <span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(H\)</span> 本身。</p>
+<h3 id="52">5.2 历史源的转移</h3>
+<p>多步格式比单步格式多一个问题：树变化时，历史源 <span class="arithmatex">\(S_q\)</span> 要在新树上表示。</p>
+<ul>
+<li><strong>已知外源</strong>：直接在新树节点上对 <span class="arithmatex">\(S(t_q)\)</span> 重新取样，并重算缓存 <span class="arithmatex">\(K^jS_q\)</span>。这样每个 <span class="arithmatex">\(S_q\)</span> 都是真实 <span class="arithmatex">\(S\)</span> 在同一棵树上的同一个线性映射。</li>
+<li><strong>依赖解的源</strong>：过去的 <span class="arithmatex">\(S_q\)</span> 依赖过去的 <span class="arithmatex">\(\theta_q\)</span>，不能用当前 <span class="arithmatex">\(\theta\)</span> 重算，只能插值转移。程序在这种情况下禁用重采样。</li>
+</ul>
+<p>只转移不重算时，缓存势与新树算子不一致：<span class="arithmatex">\(K^1\)</span> 缓存在新树上的缺陷可达 <span class="arithmatex">\(5.8\times10^{-9}\)</span>。<span class="arithmatex">\(P\)</span> 里有 <span class="arithmatex">\(h^{-j}\)</span> 系数，小步长下这种缺陷会被放大，所以已知外源的主线一律重采样。</p>
+<h3 id="53-wide">5.3 小步长下的舍入：为什么需要 wide</h3>
+<p>四阶格式的 <span class="arithmatex">\(K^4h^{-3}\nabla^3S\)</span> 项是四个相近源值的带符号组合再乘 <span class="arithmatex">\(h^{-3}\)</span>。双精度下先乘 <span class="arithmatex">\(h^{-3}\)</span> 再逐项累加，舍入误差 <span class="arithmatex">\(\sim u\,h^{-3}\)</span>，<span class="arithmatex">\(h\)</span> 越小越大。用标量问题 <span class="arithmatex">\(a'=-\lambda a+\sin(20t)\)</span>（<span class="arithmatex">\(\lambda=5\pi^2\)</span>，精确的 <span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(H\)</span>）验证：</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>原双精度组合</th>
+<th>组合提升精度</th>
+<th>70 位参考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512</td>
+<td>4.73e-10</td>
+<td>6.15e-12</td>
+<td>6.15e-12</td>
+</tr>
+<tr>
+<td>1024</td>
+<td>3.75e-9</td>
+<td>3.85e-13</td>
+<td>3.84e-13</td>
+</tr>
+<tr>
+<td>4096</td>
+<td>2.43e-7</td>
+<td>1.84e-15</td>
+<td>1.50e-15</td>
+</tr>
+</tbody>
+</table>
+<p>即使 <span class="arithmatex">\(K\)</span>、<span class="arithmatex">\(H\)</span> 精确，原写法也出现反升；只把源值的组合提升到 <code>real128</code>，误差就回到四阶曲线上。树上的 <code>impl=wide</code> 照此实现：Lagrange 导数系数、<span class="arithmatex">\(h^{-j}\)</span> 缩放和每个节点的加权累加都用 <code>real128</code>，送入 FMM 前转回双精度；FMM、FGT 和状态仍是双精度，算子调用次数与 Horner 相同。完整步代价增加约 8%（A1，lev3，N64：84.95 ms → 91.72 ms）。</p>
+<h2 id="6"><span class="book-secnum">§ 06</span>数值验证</h2>
+<h3 id="61">6.1 算例</h3>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>源</th>
+<th>精确解/参考</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td><span class="arithmatex">\(\sin(20t)\sin(2\pi x)\sin(\pi z)\)</span></td>
+<td>解析</td>
+<td>固定树、小步长</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>两个移动高斯 <span class="arithmatex">\(e^{-r^2/0.0025}\)</span>（<span class="arithmatex">\(z\)</span> 奇镜像、<span class="arithmatex">\(x\)</span> 周期），中心以半径 0.25、角频率 <span class="arithmatex">\(20\pi\)</span> 和 <span class="arithmatex">\(40\pi\)</span> 转动</td>
+<td>正弦–Fourier 谱参考</td>
+<td>真实变树主算例</td>
+</tr>
+<tr>
+<td>A3</td>
+<td><span class="arithmatex">\(g+20\theta\)</span></td>
+<td>A1 的解</td>
+<td>线性反应</td>
+</tr>
+<tr>
+<td>A3N</td>
+<td><span class="arithmatex">\(g+\theta^2\)</span></td>
+<td>A1 的解</td>
+<td>非线性反应</td>
+</tr>
+<tr>
+<td>A1NZ</td>
+<td>A1 的源，<span class="arithmatex">\(\theta_0=0.1\sin(2\pi x)\sin(\pi z)\)</span></td>
+<td>解析</td>
+<td>非零初值</td>
+</tr>
+</tbody>
+</table>
+<p>除特别说明，<span class="arithmatex">\(T=0.1\)</span>，误差为叶节点上的相对最大误差，FMM <code>iprec=4</code>（<span class="arithmatex">\(10^{-12}\)</span>）、FGT <code>eps=1e-12</code>。全部运行单线程、单逻辑核。</p>
+<p><strong>误差分离。</strong> A2 没有解析解，另写了一个<strong>相同时间离散</strong>的谱解：同样的节点、同样的 shift 启动，逐个 Fourier–正弦模态用稳定的 <span class="arithmatex">\(\varphi\)</span> 权重精确推进，不经过树、FMM 或 FGT。于是</p>
+<ul>
+<li>树解 − 离散谱解 = 空间、算子、转移和舍入误差；</li>
+<li>离散谱解 − 连续谱参考 = 纯时间误差。</li>
+</ul>
+<p>两者都在 <span class="arithmatex">\(32\times33\)</span> 公共网格上比较，按解的最大值归一。</p>
+<h3 id="62">6.2 已知外源：真实变树收敛</h3>
+<p>A2，tol=1e-4，maxlev=5，每步重建，历史源重采样，shift 启动，EAM。</p>
+<p class="book-figure"><img alt="二三四阶真实变树收敛" src="../../../../assets/heat-source-learning-notes/convergence.svg" /><span class="book-caption"><b>Fig. 1</b>二三四阶真实变树收敛</span></p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>EAM2</th>
+<th>EAM3</th>
+<th>EAM4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64</td>
+<td>1.541e-2</td>
+<td>1.088e-2</td>
+<td>1.116e-2</td>
+</tr>
+<tr>
+<td>128</td>
+<td>4.186e-3（1.88）</td>
+<td>1.740e-3（2.64）</td>
+<td>1.126e-3（3.31）</td>
+</tr>
+<tr>
+<td>256</td>
+<td>1.063e-3（1.98）</td>
+<td>2.318e-4（2.91）</td>
+<td>7.900e-5（3.83）</td>
+</tr>
+<tr>
+<td>512</td>
+<td>2.674e-4（1.99）</td>
+<td>2.958e-5（2.97）</td>
+<td>5.000e-6（3.98）</td>
+</tr>
+</tbody>
+</table>
+<p>粗端源的移动还没被步长分辨，细端达到理论阶。树随 <span class="arithmatex">\(h\)</span> 变化（N512 平均 221 叶），不是固定空间离散下的纯时间实验。N512 的误差分解：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>时间误差</th>
+<th>空间/算子/转移/舍入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAM2</td>
+<td>2.31e-4</td>
+<td>3.58e-8</td>
+</tr>
+<tr>
+<td>EAM3</td>
+<td>2.47e-5</td>
+<td>3.81e-8</td>
+</tr>
+<tr>
+<td>EAM4</td>
+<td>3.60e-6</td>
+<td>8.46e-8</td>
+</tr>
+</tbody>
+</table>
+<p>空间部分比时间部分小 42 倍（四阶）到 6400 倍（二阶），细端阶数确实来自时间离散。同一组参数在固定 lev5（1024 叶）上，EAM4 N512 的误差为 4.9975e-6，与自适应的 4.9999e-6 一致。</p>
+<h3 id="63">6.3 已知外源：固定树小步长</h3>
+<p>A1，lev3，EAM4。</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>128</th>
+<th>256</th>
+<th>512</th>
+<th>1024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原 Horner</td>
+<td>1.57e-9</td>
+<td>1.51e-10</td>
+<td>6.29e-10</td>
+<td>4.82e-9</td>
+</tr>
+<tr>
+<td>wide</td>
+<td>1.56e-9</td>
+<td>9.24e-11</td>
+<td>7.59e-12</td>
+<td>7.54e-12</td>
+</tr>
+</tbody>
+</table>
+<p>Horner 在 N256 之后反升（第 5.3 节的舍入）；wide 一直降到约 7.5e-12 的平台。这个平台是 FMM、FGT 和空间表示的综合残差，没有进一步拆分。</p>
+<h3 id="64">6.4 依赖解的源与非零初值</h3>
+<p>固定 lev3，Picard 启动，一次校正。</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>16</th>
+<th>32</th>
+<th>64</th>
+<th>128</th>
+<th>256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A3N，EAM2</td>
+<td>1.30e-3</td>
+<td>3.26e-4</td>
+<td>8.14e-5</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>A3N，EAM3</td>
+<td>6.34e-7</td>
+<td>3.05e-7</td>
+<td>5.17e-8</td>
+<td>7.28e-9</td>
+<td>9.51e-10</td>
+</tr>
+<tr>
+<td>A3N，EAM4</td>
+<td>6.53e-6</td>
+<td>4.06e-7</td>
+<td>2.53e-8</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>A3，EAM4</td>
+<td>3.37e-6</td>
+<td>4.09e-7</td>
+<td>3.19e-8</td>
+<td>2.18e-9</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>EAM2 阶约 2.00，EAM4 阶约 4.01；EAM3 粗端只有 1.05、2.56，细端 2.83、2.94，趋近三阶。</p>
+<p><strong>非零初值（A1NZ，lev3，EAM4）。</strong> N16/32/64 误差 6.29e-6、3.91e-7、2.43e-8，阶 4.01。N32 改用 Picard 启动，误差 3.91e-7，与 shift 相同。</p>
+<h3 id="65-eam-eab">6.5 EAM 与 EAB 的实测比较</h3>
+<p>以下取自同一批旧运行（Horner，exact 启动；精度有效，计时无效），Poisson/FGT 次数是程序计数。</p>
+<p><strong>已知外源（A2，固定 lev5，N512）：</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>误差</th>
+<th>EAB/EAM</th>
+<th>理论比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAM3 / EAB3</td>
+<td>2.96e-5 / 2.91e-4</td>
+<td>9.8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>EAM4 / EAB4</td>
+<td>5.00e-6 / 7.43e-5</td>
+<td>14.9</td>
+<td>13.2</td>
+</tr>
+</tbody>
+</table>
+<p>每步代价相同（三阶都是 5K+1H，四阶都是 7K+1H），EAM 直接胜出。</p>
+<p><strong>依赖解的源（A3，线性反应，固定 lev3）：</strong> 让 EAB 用两倍步数，与 EAM 一次校正比较。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>N</th>
+<th>误差</th>
+<th>K / H 调用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAM3-PC</td>
+<td>128</td>
+<td>2.82e-8</td>
+<td>1260 / 252</td>
+</tr>
+<tr>
+<td>EAB3</td>
+<td>256</td>
+<td>3.53e-8</td>
+<td>1270 / 254</td>
+</tr>
+<tr>
+<td>EAM4-PC</td>
+<td>128</td>
+<td>2.19e-9</td>
+<td>1750 / 250</td>
+</tr>
+<tr>
+<td>EAB4</td>
+<td>256</td>
+<td>2.44e-9</td>
+<td>1771 / 253</td>
+</tr>
+</tbody>
+</table>
+<p>调用次数和误差都几乎相同，与第 3.5 节的估计一致。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#numerical-pde">PDE 数值解</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=heat-equation">#heat-equation</a><a class="zdd-end-chip" href="../../../../tags/?tag=exponential-integrator">#exponential-integrator</a><a class="zdd-end-chip" href="../../../../tags/?tag=adams">#adams</a><a class="zdd-end-chip" href="../../../../tags/?tag=fgt">#fgt</a><a class="zdd-end-chip" href="../../../../tags/?tag=fmm">#fmm</a><a class="zdd-end-chip" href="../../../../tags/?tag=adaptive-mesh">#adaptive-mesh</a><a class="zdd-end-chip" href="../../../../tags/?tag=numerical-methods">#numerical-methods</a><a class="zdd-end-chip" href="../../../../tags/?tag=pde">#pde</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>
