@@ -17,6 +17,12 @@ from zdd_build.code_notes import add_code_notes, prune_note_toc
 
 
 PDF_EMBED_RE = re.compile(r'(<embed\s+[^>]*?src=")([^"]+\.pdf)("[^>]*>)', re.IGNORECASE)
+# A paragraph that is nothing but one emphasised run ("*图 1：…*") is a figure caption.
+CAPTION_RE = re.compile(r'<p>(\s*<em>(?:(?!</?em>).)*</em>\s*)</p>', re.S)
+
+
+def _mark_captions(html):
+    return CAPTION_RE.sub(r'<p class="zdd-caption">\1</p>', html)
 
 
 def on_pre_build(config):
@@ -212,6 +218,7 @@ def on_page_markdown(markdown, page, config, files):
 
 
 def on_page_content(html, page, config, files):
+    html = _mark_captions(html)
     html = add_code_notes(html, page.meta.get("code_notes"))
     if page.meta.get("code_notes"):
         prune_note_toc(html, page.toc)
