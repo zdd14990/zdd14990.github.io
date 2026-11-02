@@ -214,6 +214,11 @@ body .md-typeset details.proof[open]::details-content { block-size: auto; }
     body.article-layout .md-content__inner { position: relative; padding-left: 120px !important; }
     body.article-layout .md-content__inner > .admonition:is(.note, .remark, .info, .tip) { width: 176px !important; }
 
+    /* Articles without margin notes give the margin column back to the text. */
+    body.article-layout:not(:has(.md-content__inner > .admonition:is(.note, .remark, .info, .tip))) { --ed-margin: 32px; }
+    body.article-layout:not(:has(.md-content__inner > .admonition:is(.note, .remark, .info, .tip))) .md-main__inner.md-grid { max-width: 1320px; }
+    body.article-layout:not(:has(.md-content__inner > .admonition:is(.note, .remark, .info, .tip))) .md-content { flex-basis: 1100px; max-width: 1100px; }
+
     .zdd-rail {
         display: block;
         position: absolute;

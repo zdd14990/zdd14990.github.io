@@ -237,7 +237,8 @@ $\tau=h$ 对应 $u=0$，$\tau=0$ 对应 $u=-1$。代入后展开成节点值：
 $$
 \begin{aligned}
 P(0)&=KS_n+\frac{K^2}{6h}\left(2S_{n+1}+3S_n-6S_{n-1}+S_{n-2}\right)+\frac{K^3}{h^2}\nabla^2S_{n+1}+\frac{K^4}{h^3}\nabla^3S_{n+1},\\
-P(h)&=KS_{n+1}+\frac{K^2}{6h}\left(11S_{n+1}-18S_n+9S_{n-1}-2S_{n-2}\right)+\frac{K^3}{h^2}\left(2S_{n+1}-5S_n+4S_{n-1}-S_{n-2}\right)+\frac{K^4}{h^3}\nabla^3S_{n+1}.
+P(h)&=KS_{n+1}+\frac{K^2}{6h}\left(11S_{n+1}-18S_n+9S_{n-1}-2S_{n-2}\right)\\
+&\quad+\frac{K^3}{h^2}\left(2S_{n+1}-5S_n+4S_{n-1}-S_{n-2}\right)+\frac{K^4}{h^3}\nabla^3S_{n+1}.
 \end{aligned}
 $$
 
@@ -280,7 +281,8 @@ $p=S_n+u\nabla+\frac{u(u+1)}2\nabla^2+\frac{u(u+1)(u+2)}6\nabla^3$，导数与 E
 $$
 \begin{aligned}
 P(0)&=KS_n+\frac{K^2}{6h}\left(11S_n-18S_{n-1}+9S_{n-2}-2S_{n-3}\right)+\frac{K^3}{h^2}\left(2S_n-5S_{n-1}+4S_{n-2}-S_{n-3}\right)+\frac{K^4}{h^3}\nabla^3S_n,\\
-P(h)&=K\left(4S_n-6S_{n-1}+4S_{n-2}-S_{n-3}\right)+\frac{K^2}{6h}\left(26S_n-57S_{n-1}+42S_{n-2}-11S_{n-3}\right)+\frac{K^3}{h^2}\left(3S_n-8S_{n-1}+7S_{n-2}-2S_{n-3}\right)+\frac{K^4}{h^3}\nabla^3S_n .
+P(h)&=K\left(4S_n-6S_{n-1}+4S_{n-2}-S_{n-3}\right)+\frac{K^2}{6h}\left(26S_n-57S_{n-1}+42S_{n-2}-11S_{n-3}\right)\\
+&\quad+\frac{K^3}{h^2}\left(3S_n-8S_{n-1}+7S_{n-2}-2S_{n-3}\right)+\frac{K^4}{h^3}\nabla^3S_n .
 \end{aligned}
 $$
 
