@@ -1,0 +1,1109 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学附录：恩尼格玛、CipherFour、AES、Mini-AES、Grain-128、Keccak、Whirlpool、MD4 与 MD5 的算法说明。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>附录：算法说明 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
+  <meta property="og:title" content="附录：算法说明 - zdd14990">
+  <meta property="og:description" content="密码分析学附录：恩尼格玛、CipherFour、AES、Mini-AES、Grain-128、Keccak、Whirlpool、MD4 与 MD5 的算法说明。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/">
+  <meta name="twitter:title" content="附录：算法说明 - zdd14990">
+  <meta name="twitter:description" content="密码分析学附录：恩尼格玛、CipherFour、AES、Mini-AES、Grain-128、Keccak、Whirlpool、MD4 与 MD5 的算法说明。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u9644\u5f55\uff1a\u7b97\u6cd5\u8bf4\u660e",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u9644\u5f55\uff1a\u6069\u5c3c\u683c\u739b\u3001CipherFour\u3001AES\u3001Mini-AES\u3001Grain-128\u3001Keccak\u3001Whirlpool\u3001MD4 \u4e0e MD5 \u7684\u7b97\u6cd5\u8bf4\u660e\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/appendix-algorithms/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        恩尼格玛密码机
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cipherfour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CipherFour
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CipherFour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S 盒与比特置换
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        加密过程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mini-aes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mini-AES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grain-128" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grain-128
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keccak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keccak
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whirlpool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Whirlpool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#md4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MD4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#md5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MD5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验前的核对表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 16 of 16</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="_1">附录：算法说明</h1>
+  </div>
+  <p class="book-standfirst">本附录记录前面分析中需要用到的状态布局、轮函数和参数。玩具算法用于验证分析方法，不用于实际保密；标准算法的生产实现应使用经过审计的密码库。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>2,782 字 · 约 8 分钟</span>
+  </div>
+  
+</header>
+
+<p>约定 <span class="arithmatex">\(\oplus\)</span> 为按比特异或，<span class="arithmatex">\(\Vert\)</span> 为拼接，<span class="arithmatex">\(\operatorname{ROL}_r\)</span> 为定长字的循环左移。除非另有说明，矩阵作用于列向量。</p>
+<h2 id="_2">恩尼格玛密码机</h2>
+<p>固定一次按键位置，设接线板为 <span class="arithmatex">\(S\)</span>、正向转子组为 <span class="arithmatex">\(R_i\)</span>、反射器为 <span class="arithmatex">\(U\)</span>，则</p>
+<div class="arithmatex">\[
+E_i=S^{-1}R_i^{-1}UR_iS.
+\]</div>
+<p>接线板是若干互不相交的换位与不动点，反射器是 13 个互不相交的换位。于是固定位置的 <span class="arithmatex">\(E_i\)</span> 是无不动点的对合。</p>
+<p>若接线板使用 <span class="arithmatex">\(p\)</span> 条线，其连接数为</p>
+<div class="arithmatex">\[
+\frac{26!}{(26-2p)!\,p!\,2^p}.
+\]</div>
+<p>从 <span class="arithmatex">\(t\)</span> 个转子中有序选取 <span class="arithmatex">\(s\)</span> 个，再考虑每个 26 种初始位置，简化模型的转子设置数为</p>
+<div class="arithmatex">\[
+\frac{t!}{(t-s)!}26^s.
+\]</div>
+<p>教材为说明分析原理采用简化步进。复现历史机器时，需另外定义型号、环设置、缺口位置和双步进，不能直接把转子看作简单的 26 进制计数器。攻击方法见<a href="../chapter-02-enigma/">第 2 章</a>。</p>
+<h2 id="cipherfour">CipherFour</h2>
+<p>CipherFour 是 16 比特 SPN 玩具密码。状态由 4 个 4 比特半字节组成，<span class="arithmatex">\(r\)</span> 轮版本使用 <span class="arithmatex">\(r+1\)</span> 个独立的 16 比特轮密钥 <span class="arithmatex">\(k_0,\ldots,k_r\)</span>。</p>
+<h3 id="s">S 盒与比特置换</h3>
+<p>十六进制 S 盒如下：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>x : 0 1 2 3 4 5 6 7 8 9 A B C D E F
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>S : 6 4 C 5 0 7 2 E 1 F 3 D 8 A 9 B
+</code></pre></div>
+<p>把状态最左侧标为第 0 比特，输入第 <span class="arithmatex">\(i\)</span> 比特送到第 <span class="arithmatex">\(P(i)\)</span> 比特，其中</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>i : 0 1 2  3 4 5 6  7 8 9 10 11 12 13 14 15
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>P : 0 4 8 12 1 5 9 13 2 6 10 14  3  7 11 15
+</code></pre></div>
+<p>这相当于转置一个 <span class="arithmatex">\(4\times4\)</span> 比特矩阵，故 <span class="arithmatex">\(P^{-1}=P\)</span>。<span class="arithmatex">\(S\)</span> 对每个半字节分别作用，记整个替换层为 <span class="arithmatex">\(\mathcal S\)</span>。</p>
+<h3 id="_3">加密过程</h3>
+<p>从 <span class="arithmatex">\(x_0=P_{\mathrm{plain}}\)</span> 开始，对 <span class="arithmatex">\(i=0,\ldots,r-2\)</span>，</p>
+<div class="arithmatex">\[
+x_{i+1}=P(\mathcal S(x_i\oplus k_i)).
+\]</div>
+<p>最后输出</p>
+<div class="arithmatex">\[
+C=\mathcal S(x_{r-1}\oplus k_{r-1})\oplus k_r.
+\]</div>
+<p>末轮没有比特置换。其目的之一是让末轮部分解密更容易说明，而不是因为最后一次置换会增加实质安全性。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">S</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">INV_S</span> <span class="o">=</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)]</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">box</span><span class="p">[(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">shift</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>               <span class="k">for</span> <span class="n">shift</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">permute</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="c1"># 教材编号从最高位开始，不是整数的最低位编号。</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">15</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">15</span> <span class="o">-</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="k">def</span><span class="w"> </span><span class="nf">encrypt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">permute</span><span class="p">(</span><span class="n">substitute</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="n">key</span><span class="p">,</span> <span class="n">S</span><span class="p">))</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="k">return</span> <span class="n">substitute</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">S</span><span class="p">)</span> <span class="o">^</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">decrypt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">substitute</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">INV_S</span><span class="p">)</span> <span class="o">^</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">substitute</span><span class="p">(</span><span class="n">permute</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">INV_S</span><span class="p">)</span> <span class="o">^</span> <span class="n">key</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="k">return</span> <span class="n">x</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x1234</span><span class="p">,</span> <span class="mh">0x5678</span><span class="p">,</span> <span class="mh">0x9ABC</span><span class="p">,</span> <span class="mh">0xDEF0</span><span class="p">,</span> <span class="mh">0x1357</span><span class="p">,</span> <span class="mh">0x2468</span><span class="p">]</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="n">encrypt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">keys</span><span class="p">),</span> <span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span>
+</code></pre></div>
+<p>这里输入与轮密钥均限定为 16 比特。5 轮版本的独立轮密钥总量为 96 比特，并不是标准 AES 式的 16 比特主密钥扩展。</p>
+<h2 id="aes">AES</h2>
+<p>AES 的分组长度固定为 128 比特，密钥长度与轮数为：</p>
+<table>
+<thead>
+<tr>
+<th>密钥长度</th>
+<th>轮数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>128 比特</td>
+<td>10</td>
+</tr>
+<tr>
+<td>192 比特</td>
+<td>12</td>
+</tr>
+<tr>
+<td>256 比特</td>
+<td>14</td>
+</tr>
+</tbody>
+</table>
+<p>输入 16 个字节按列装入状态，<span class="arithmatex">\(s_{r,c}=\mathrm{input}_{4c+r}\)</span>。先做一次 AddRoundKey，普通轮依次为 SubBytes、ShiftRows、MixColumns、AddRoundKey；末轮省去 MixColumns。</p>
+<ul>
+<li><strong>SubBytes</strong>：在 <span class="arithmatex">\(\mathbb F_{2^8}\)</span> 上求逆（0 映为 0），再作固定仿射变换。</li>
+<li><strong>ShiftRows</strong>：第 <span class="arithmatex">\(r\)</span> 行循环左移 <span class="arithmatex">\(r\)</span> 个字节。</li>
+<li><strong>MixColumns</strong>：每列左乘矩阵</li>
+</ul>
+<div class="arithmatex">\[
+\begin{pmatrix}
+02&amp;03&amp;01&amp;01\\
+01&amp;02&amp;03&amp;01\\
+01&amp;01&amp;02&amp;03\\
+03&amp;01&amp;01&amp;02
+\end{pmatrix}.
+\]</div>
+<ul>
+<li><strong>AddRoundKey</strong>：状态与该轮密钥逐比特异或。</li>
+</ul>
+<p>字节乘法在</p>
+<div class="arithmatex">\[
+\mathbb F_2[x]/(x^8+x^4+x^3+x+1)
+\]</div>
+<p>中进行，不是普通整数乘法。MixColumns 的字节分支数为 5，即非零输入列 <span class="arithmatex">\(u\)</span> 满足</p>
+<div class="arithmatex">\[
+\operatorname{wt}_{\mathrm{byte}}(u)
++\operatorname{wt}_{\mathrm{byte}}(Mu)\ge5.
+\]</div>
+<p>AES 轮密钥由同一个主密钥扩展生成，并非各轮独立随机。在攻击中可以把轮密钥暂作独立变量建模，但最后必须加入真实密钥编排约束。</p>
+<p>一个常用的 AES-128 核对向量为：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>key        = 000102030405060708090a0b0c0d0e0f
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>plaintext  = 00112233445566778899aabbccddeeff
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ciphertext = 69c4e0d86a7b0430d8cdb78070b4c55a
+</code></pre></div>
+<h2 id="mini-aes">Mini-AES</h2>
+<p>教材 Mini-AES 使用 16 比特状态，按列排列为</p>
+<div class="arithmatex">\[
+\begin{pmatrix}x_0&amp;x_2\\x_1&amp;x_3\end{pmatrix},
+\]</div>
+<p>其中每个 <span class="arithmatex">\(x_i\)</span> 为 4 比特。普通轮依次为 NibbleSub、ShiftRow、MixColumn、KeyAddition，另有初始白化，末轮省去 MixColumn。</p>
+<p>教材采用的 S 盒取自 LED，而不是所有其他资料中同名 Mini-AES 的 S 盒：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>x : 0 1 2 3 4 5 6 7 8 9 A B C D E F
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>S : C 5 6 B 9 0 A D 3 E F 8 4 7 1 2
+</code></pre></div>
+<p>第二行循环左移一个半字节；每列在 <span class="arithmatex">\(\mathbb F_2[x]/(x^4+x+1)\)</span> 上乘</p>
+<div class="arithmatex">\[
+\begin{pmatrix}3&amp;2\\2&amp;3\end{pmatrix}.
+\]</div>
+<p>默认主密钥为 16 比特，拆成 <span class="arithmatex">\(w_0,\ldots,w_3\)</span>。第 <span class="arithmatex">\(r\)</span> 轮的四个半字节可按下式扩展（<span class="arithmatex">\(r\ge1\)</span>，轮常数按所选版本定义）：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+w_{4r}&amp;=w_{4r-4}\oplus S(w_{4r-1})\oplus\mathrm{RC}_r,\\
+w_{4r+1}&amp;=w_{4r-3}\oplus w_{4r},\\
+w_{4r+2}&amp;=w_{4r-2}\oplus w_{4r+1},\\
+w_{4r+3}&amp;=w_{4r-1}\oplus w_{4r+2}.
+\end{aligned}
+\]</div>
+<p>教材基本公式使用轮编号作为轮常数。扩展到任意轮数时，必须明确它在 4 比特域内的编码，不应让数值无意溢出。</p>
+<p>教材部分攻击章节会替换密钥编排，例如使用 32 比特主密钥或交替轮密钥。复现实验必须使用该节的版本，不能把附录默认编排与正文改版混在一起。</p>
+<h2 id="grain-128">Grain-128</h2>
+<p>本节指原始 Grain-128 结构，不与 Grain-128a 或 Grain-128AEAD 混用。密钥为 128 比特、IV 为 96 比特，内部有一个 128 比特 LFSR 和一个 128 比特 NFSR。</p>
+<p>设两寄存器序列分别为 <span class="arithmatex">\(s_i,b_i\)</span>。LFSR 的正常反馈为</p>
+<div class="arithmatex">\[
+s_{i+128}=s_i\oplus s_{i+7}\oplus s_{i+38}
+\oplus s_{i+70}\oplus s_{i+81}\oplus s_{i+96}.
+\]</div>
+<p>NFSR 反馈包含线性项、若干 <span class="arithmatex">\(b\)</span> 比特的乘积以及 <span class="arithmatex">\(s_i\)</span>；输出函数再非线性组合两类寄存器抽头。</p>
+<p>写成抽象状态更新为</p>
+<div class="arithmatex">\[
+s_{i+128}=f(S_i),\qquad
+b_{i+128}=s_i\oplus g(B_i),\qquad
+z_i=h(S_i,B_i).
+\]</div>
+<p>初始化时把密钥装入 NFSR，把 IV 和规定的固定常数装入 LFSR，运行 256 次更新，且输出反馈到两个寄存器；随后进入正常密钥流生成阶段，不再把输出额外反馈进去。</p>
+<p>复现时必须核对所选版本的固定装入常数、反馈抽头、输出位编号和初始化轮数。尤其不能根据本文的结构摘要自行补全常数表；教材的减轮实验也不等于完整初始化版本。</p>
+<p>第 12 章利用的正是初始化阶段的非线性传播：通过输入条件让某些乘积因子为零，延缓公开变量的次数增长。</p>
+<h2 id="keccak">Keccak</h2>
+<p>Keccak 使用海绵结构，状态宽度为 <span class="arithmatex">\(b=r+c\)</span>。对 Keccak-f[1600]，状态排列为 <span class="arithmatex">\(5\times5\)</span> 个 64 比特 lane，共 24 轮。</p>
+<p>一轮依次执行</p>
+<div class="arithmatex">\[
+\theta\longrightarrow\rho\longrightarrow\pi
+\longrightarrow\chi\longrightarrow\iota.
+\]</div>
+<p>以下坐标 <span class="arithmatex">\(x,y\)</span> 均模 5，lane 内旋转模 64。</p>
+<p><strong><span class="arithmatex">\(\theta\)</span>：列奇偶扩散。</strong></p>
+<div class="arithmatex">\[
+C[x]=\bigoplus_y A[x,y],\qquad
+D[x]=C[x-1]\oplus\operatorname{ROL}_1(C[x+1]),
+\]</div>
+<p>再令 <span class="arithmatex">\(A[x,y]\leftarrow A[x,y]\oplus D[x]\)</span>。</p>
+<p><strong><span class="arithmatex">\(\rho\)</span>：</strong>各 lane 按固定偏移循环旋转。</p>
+<p><strong><span class="arithmatex">\(\pi\)</span>：</strong>重新排列 lane，例如把旋转后的 <span class="arithmatex">\(A[x,y]\)</span> 送到 <span class="arithmatex">\(B[y,2x+3y]\)</span>。</p>
+<p><strong><span class="arithmatex">\(\chi\)</span>：非线性层。</strong></p>
+<div class="arithmatex">\[
+A'[x,y]=B[x,y]\oplus
+\bigl((\neg B[x+1,y])\land B[x+2,y]\bigr).
+\]</div>
+<p><strong><span class="arithmatex">\(\iota\)</span>：</strong>对 <span class="arithmatex">\(A'[0,0]\)</span> 异或轮常数。</p>
+<p><span class="arithmatex">\(\chi\)</span> 的布尔代数次数为 2，其余步骤为线性或仿射。因此未经细化的 <span class="arithmatex">\(r\)</span> 轮次数上界为 <span class="arithmatex">\(2^r\)</span>，实际还受变量数、重复变量与条件抵消限制。</p>
+<table>
+<thead>
+<tr>
+<th>SHA-3 实例</th>
+<th>输出长度</th>
+<th>速率 <span class="arithmatex">\(r\)</span></th>
+<th>容量 <span class="arithmatex">\(c\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHA3-224</td>
+<td>224</td>
+<td>1152</td>
+<td>448</td>
+</tr>
+<tr>
+<td>SHA3-256</td>
+<td>256</td>
+<td>1088</td>
+<td>512</td>
+</tr>
+<tr>
+<td>SHA3-384</td>
+<td>384</td>
+<td>832</td>
+<td>768</td>
+</tr>
+<tr>
+<td>SHA3-512</td>
+<td>512</td>
+<td>576</td>
+<td>1024</td>
+</tr>
+</tbody>
+</table>
+<p>SHA-3 与早期 Keccak 实例的域分离后缀不完全相同，不能仅凭相同输出长度认为结果相同。SHAKE 的可扩展输出也有自己的域分离规则。分析时还要区分公开置换、海绵杂凑和带密钥 MAC 三个对象。</p>
+<h2 id="whirlpool">Whirlpool</h2>
+<p>Whirlpool 使用 512 比特消息块和 512 比特链接状态，摘要长为 512 比特。内部有一个 512 比特分组密码 <span class="arithmatex">\(W\)</span>，采用 Miyaguchi-Preneel 型反馈：</p>
+<div class="arithmatex">\[
+h_i=W_{h_{i-1}}(M_i)\oplus M_i\oplus h_{i-1}.
+\]</div>
+<p>这里链接状态用作 <span class="arithmatex">\(W\)</span> 的密钥，消息块用作输入。初始链接状态为零；消息填充包含长度信息。</p>
+<p>状态排成 <span class="arithmatex">\(8\times8\)</span> 字节矩阵，内部密码有 10 轮，主要步骤为字节替换、列移位、行混合与轮密钥加；密钥扩展也采用相近的变换。</p>
+<p>大状态与字节型扩散适合研究截断差分和反弹攻击，但最终碰撞必须满足反馈后的输出关系，不能仅让内部置换的某部分差分归零。减轮攻击轮数也应说明是否计入初始或最后的部分变换。</p>
+<h2 id="md4">MD4</h2>
+<p>MD4 使用 MD 迭代结构，消息块长为 512 比特，链接状态与摘要长为 128 比特。每块分成 16 个小端序 32 比特字。</p>
+<p>初始状态为：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>A = 67452301   B = efcdab89
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>C = 98badcfe   D = 10325476
+</code></pre></div>
+<p>填充先加一个 1 比特，再加若干 0，使长度达到模 512 余 448，最后附上原消息长度的 64 比特小端编码。</p>
+<p>压缩函数有 3 轮，每轮 16 步，共 48 步；轮布尔函数为</p>
+<div class="arithmatex">\[
+F(X,Y,Z)=(X\land Y)\lor(\neg X\land Z),
+\]</div>
+<div class="arithmatex">\[
+G(X,Y,Z)=(X\land Y)\lor(X\land Z)\lor(Y\land Z),
+\qquad H(X,Y,Z)=X\oplus Y\oplus Z.
+\]</div>
+<p>各步交替更新四个状态字，基本形式是</p>
+<div class="arithmatex">\[
+A\leftarrow\operatorname{ROL}_s(A+f(B,C,D)+M_j+T),
+\]</div>
+<p>其中加法模 <span class="arithmatex">\(2^{32}\)</span>。三轮常数分别为 0、<code>5a827999</code>、<code>6ed9eba1</code>，使用不同消息字顺序与旋转量。48 步结束后，将四个结果分别与输入链接状态模加，形成下一链接状态。</p>
+<p>“3 轮”和“48 步”是不同计数单位。描述减轮结果时，要明确删去的是整轮还是若干步。</p>
+<h2 id="md5">MD5</h2>
+<p>MD5 同样使用 512 比特消息块、128 比特状态和摘要，采用与 MD4 相同的初值及小端长度填充框架，但压缩函数改为 4 轮、共 64 步。</p>
+<p>四轮使用的布尔函数可以写为</p>
+<div class="arithmatex">\[
+\begin{aligned}
+F(B,C,D)&amp;=(B\land C)\lor(\neg B\land D),\\
+G(B,C,D)&amp;=(B\land D)\lor(C\land\neg D),\\
+H(B,C,D)&amp;=B\oplus C\oplus D,\\
+I(B,C,D)&amp;=C\oplus(B\lor\neg D).
+\end{aligned}
+\]</div>
+<p>每步的核心更新为</p>
+<div class="arithmatex">\[
+B'=B+\operatorname{ROL}_s(A+f(B,C,D)+M_j+T_i)
+\pmod{2^{32}},
+\]</div>
+<p>再重排四个状态字。与 MD4 相比，旋转结果外面多了对 <span class="arithmatex">\(B\)</span> 的模加，各步消息索引、常数和旋转量也不同。常数为</p>
+<div class="arithmatex">\[
+T_i=\lfloor2^{32}|\sin(i+1)|\rfloor,\qquad0\le i&lt;64.
+\]</div>
+<p>64 步之后仍进行链接状态的前馈模加。消息修改与差分分析必须连同这些模加的进位一起考虑。</p>
+<p>MD4、MD5 的碰撞安全性已被破坏，不应作为新系统的抗碰撞安全基础。它们在这里用于理解差分路线、消息修改和迭代结构，不作为部署建议。</p>
+<h2 id="_4">实验前的核对表</h2>
+<p>1) 固定算法版本、轮数和密钥编排，区分玩具版、减轮版与标准版。</p>
+<p>2) 明确最高位/最低位编号、字节序、状态按行还是按列装入。</p>
+<p>3) 核对末轮是否省略扩散、是否存在初始白化和最终反馈。</p>
+<p>4) 先测试加解密互逆，再测试公开标准向量；互逆测试本身不能证明实现符合标准。</p>
+<p>5) 小 S 盒先穷举检查 DDT、LAT 与 ANF，再测试整轮性质。</p>
+<p>参考：王美琴主编，《密码分析学》，附录 A。正文中的具体改版参数以相应攻击章节为准。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-15-side-channel-analysis/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">侧信道分析概述</span>
+    </a>
+    
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 16 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-02-enigma/">第二章：恩尼格玛密码机的破解</a></li><li><a href="../chapter-03-differential-cryptanalysis/">第三章：分组密码的差分分析及相关分析方法</a></li><li><a href="../chapter-04-linear-cryptanalysis/">第四章：分组密码的线性分析及相关分析方法</a></li><li><a href="../chapter-05-integral-cryptanalysis/">第五章：积分分析</a></li><li><a href="../chapter-06-meet-in-the-middle/">第六章：中间相遇攻击</a></li><li><a href="../chapter-08-equivalence-of-analysis-methods/">第八章：分组密码各种分析方法的等价性</a></li><li><a href="../chapter-09-automated-distinguisher-search/">第九章：区分器的自动化搜索</a></li><li><a href="../chapter-12-cube-attacks/">第十二章：序列密码的立方攻击</a></li><li><a href="../chapter-13-hash-function-analysis/">杂凑函数的安全性分析概述</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

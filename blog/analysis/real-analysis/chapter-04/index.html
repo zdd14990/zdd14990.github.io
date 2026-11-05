@@ -1,0 +1,1090 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="实分析笔记第四章：Boolean 代数、sigma-代数和可测空间、可数可加测度和测度空间、测度空间上的可测函数与积分、收敛定理。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-04/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第四章：抽象测度空间 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-04/">
+  <meta property="og:title" content="第四章：抽象测度空间 - zdd14990">
+  <meta property="og:description" content="实分析笔记第四章：Boolean 代数、sigma-代数和可测空间、可数可加测度和测度空间、测度空间上的可测函数与积分、收敛定理。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="measure-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/real-analysis/chapter-04/">
+  <meta name="twitter:title" content="第四章：抽象测度空间 - zdd14990">
+  <meta name="twitter:description" content="实分析笔记第四章：Boolean 代数、sigma-代数和可测空间、可数可加测度和测度空间、测度空间上的可测函数与积分、收敛定理。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u56db\u7ae0\uff1a\u62bd\u8c61\u6d4b\u5ea6\u7a7a\u95f4",
+    "description": "\u5b9e\u5206\u6790\u7b14\u8bb0\u7b2c\u56db\u7ae0\uff1aBoolean \u4ee3\u6570\u3001sigma-\u4ee3\u6570\u548c\u53ef\u6d4b\u7a7a\u95f4\u3001\u53ef\u6570\u53ef\u52a0\u6d4b\u5ea6\u548c\u6d4b\u5ea6\u7a7a\u95f4\u3001\u6d4b\u5ea6\u7a7a\u95f4\u4e0a\u7684\u53ef\u6d4b\u51fd\u6570\u4e0e\u79ef\u5206\u3001\u6536\u655b\u5b9a\u7406\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/real-analysis/chapter-04/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/real-analysis/chapter-04/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["measure-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u5b9e\u5206\u6790", "real-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Boolean 代数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. \(\sigma-\)代数和可测空间
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 可数可加测度和测度空间
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 测度空间上的可测函数与积分
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 收敛定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#real-analysis">实分析</a>
+    <span>Part 4 of 6</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">04</div>
+    <h1 id="top"><span class="book-visually-hidden">第 4 章：</span>抽象测度空间</h1>
+  </div>
+  <p class="book-standfirst">至此，我们对测度的讨论都在 <span class="arithmatex">\({\mathbb{R}^d}\)</span> 上，下面我们考虑更一般的空间 <span class="arithmatex">\(X\)</span> 上的测度。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>2,562 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>Boolean 代数</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 为任意集合。<span class="arithmatex">\(X\)</span> 上的<strong>Boolean 代数</strong> 为 <span class="arithmatex">\(X\)</span> 的子集族 <span class="arithmatex">\(\mathcal{B}\)</span> 满足：</p>
+<ul>
+<li><span class="arithmatex">\(\emptyset\in \mathcal{B}\)</span>。</li>
+<li>若 <span class="arithmatex">\(E\in \mathcal{B}\)</span>，则 <span class="arithmatex">\(E^c:=X\setminus E\in\mathcal{B}\)</span>。</li>
+<li>若 <span class="arithmatex">\(E,F\in \mathcal{B}\)</span>，则 <span class="arithmatex">\(E\cup F\in \mathcal{B}\)</span>。</li>
+</ul>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span><span class="book-name">Atomic algebra</span></p>
+<p>将空间 <span class="arithmatex">\(X\)</span> 分成不交的集合 <span class="arithmatex">\(\bigcup_{\alpha\in I} A_\alpha\)</span>，这里 <span class="arithmatex">\(A_\alpha\)</span> 称作 <strong>原子(atom)</strong>。这些集合生成 Boolean 代数 <span class="arithmatex">\(\mathcal{A}:=\left\{\bigcup_{\alpha\in J} A_\alpha\Big| J\subset I\right\}\)</span>，称作<strong>原子代数</strong>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.3</span></p>
+<p>设 <span class="arithmatex">\((\mathcal{B}_\alpha)_{\alpha\in I}\)</span> 为 <span class="arithmatex">\(X\)</span> 的一族 Boolean 代数，则 <span class="arithmatex">\(\land_{\alpha\in I} \mathcal{B}_\alpha:=\bigcap_{\alpha\in I} \mathcal{B}_\alpha\)</span> 也为 Boolean 代数。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p>令 <span class="arithmatex">\(\mathcal{F}\)</span>  为 <span class="arithmatex">\(X\)</span> 的子集族，定义 <span class="arithmatex">\(\left&lt;\mathcal{F}\right&gt;_{\text{bool}}\)</span> 为所有包含 <span class="arithmatex">\(\mathcal{F}\)</span> 的 Boolean 代数的交。称之为 <span class="arithmatex">\(\mathcal{F}\)</span> 生成的 Boolean 代数。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span><span class="arithmatex">\(\sigma-\)</span>代数和可测空间</h2>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name"><span class="arithmatex">\(\sigma-\)</span>代数</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 为任意集合。<span class="arithmatex">\(X\)</span> 上的 <strong><span class="arithmatex">\(\sigma-\)</span>代数</strong> 为 <span class="arithmatex">\(X\)</span> 的子集族 <span class="arithmatex">\(\mathcal{B}\)</span> 满足：</p>
+<ul>
+<li><span class="arithmatex">\(\emptyset\in \mathcal{B}\)</span>。</li>
+<li>若 <span class="arithmatex">\(E\in \mathcal{B}\)</span>，则 <span class="arithmatex">\(E^c:=X\setminus E\in\mathcal{B}\)</span>。</li>
+<li>若 <span class="arithmatex">\(E_1,E_2,\cdots\in \mathcal{B}\)</span>，则 <span class="arithmatex">\(\bigcup_{n=1}^\infty E_n\in \mathcal{B}\)</span>。</li>
+</ul>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.2</span></p>
+<p>设 <span class="arithmatex">\((\mathcal{B}_\alpha)_{\alpha\in I}\)</span> 为 <span class="arithmatex">\(X\)</span> 的一族 <span class="arithmatex">\(\sigma-\)</span>代数，则 <span class="arithmatex">\(\land_{\alpha\in I} \mathcal{B}_\alpha:=\bigcap_{\alpha\in I} \mathcal{B}_\alpha\)</span> 也为 <span class="arithmatex">\(\sigma-\)</span>代数。</p>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span></p>
+<p>令 <span class="arithmatex">\(\mathcal{F}\)</span>  为 <span class="arithmatex">\(X\)</span> 的子集族，定义 <span class="arithmatex">\(\left&lt;\mathcal{F}\right&gt;\)</span> 为所有包含 <span class="arithmatex">\(\mathcal{F}\)</span> 的 <span class="arithmatex">\(\sigma-\)</span>代数的交。称之为 <span class="arithmatex">\(\mathcal{F}\)</span> 生成的 <span class="arithmatex">\(\sigma-\)</span>代数。</p>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.4</span></p>
+<p>令 <span class="arithmatex">\(X\)</span> 为度量空间，由 <span class="arithmatex">\(X\)</span> 中所有开集生成的 <span class="arithmatex">\(\sigma-\)</span>代数称为 <span class="arithmatex">\(X\)</span> 的 <strong>Borel <span class="arithmatex">\(\sigma\)</span>-代数</strong>，记作 <span class="arithmatex">\(\mathcal{B}[X]\)</span>，其中的元素称为 <strong>Borel 可测的</strong>。</p>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.5</span></p>
+<p><span class="arithmatex">\(\mathcal{B}[{\mathbb{R}^d}]\)</span> 是由下任意一者生成的 <span class="arithmatex">\(\sigma-\)</span>代数：</p>
+<ul>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的开集；</li>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的闭集；</li>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的紧集；</li>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的开球；</li>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的长方体；</li>
+<li><span class="arithmatex">\({\mathbb{R}^d}\)</span> 中的简单集合。</li>
+</ul>
+<p><span class="arithmatex">\((X,\mathcal{B})\)</span> 称为<strong>可测空间(measurable space)</strong>。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>可数可加测度和测度空间</h2>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span></p>
+<p>设 <span class="arithmatex">\(\mathcal{B}\)</span> 是空间 <span class="arithmatex">\(X\)</span> 上的 Boolean 代数，一个 <span class="arithmatex">\(\mathcal{B}\)</span> 上的<strong>(无符号)有限可加测度(finitely additive measure)</strong> <span class="arithmatex">\(\mu\)</span> 为映射 <span class="arithmatex">\(\mu:\mathcal{B}\rightarrow [0,+\infty]\)</span> 满足：</p>
+<ul>
+<li><span class="arithmatex">\(\mu(\emptyset)=0\)</span>。</li>
+<li>对不交的 <span class="arithmatex">\(E,F\in \mathcal{B}\)</span>，<span class="arithmatex">\(\mu(E\cup F)=\mu(E)+\mu(F)\)</span>。</li>
+</ul>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.2</span></p>
+<p>设 <span class="arithmatex">\(\mathcal{B}\)</span> 是空间 <span class="arithmatex">\(X\)</span> 上的 Boolean 代数，一个 <span class="arithmatex">\(\mathcal{B}\)</span> 上的<strong>(无符号)可数可加测度(countably additive measure)</strong> <span class="arithmatex">\(\mu\)</span> 为映射 <span class="arithmatex">\(\mu:\mathcal{B}\rightarrow [0,+\infty]\)</span> 满足：</p>
+<ul>
+<li><span class="arithmatex">\(\mu(\emptyset)=0\)</span>。</li>
+<li>对不交的 <span class="arithmatex">\(E_1,E_2,\cdots\in \mathcal{B}\)</span>，<span class="arithmatex">\(\mu(\bigcup_{n=1}^\infty E_n)=\sum_{n=1}^\infty \mu(E_n)\)</span>。</li>
+</ul>
+<p><span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 称为<strong>测度空间(measure space)</strong>。</p>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.3</span></p>
+<p>设 <span class="arithmatex">\((X,\mathcal{B})\)</span> 是可测空间。</p>
+<ul>
+<li>若 <span class="arithmatex">\(\mu\)</span> 是 <span class="arithmatex">\(\mathcal{B}\)</span> 的可数可加测度，<span class="arithmatex">\(c\in [0,+\infty]\)</span>，则 <span class="arithmatex">\(c\mu\)</span> 也是可数可加测度。</li>
+<li>若 <span class="arithmatex">\(\mu_1,\mu_2,\cdots\)</span> 是 <span class="arithmatex">\(\mathcal{B}\)</span> 的可数可加测度，则 <span class="arithmatex">\(\sum_{n=1}^\infty \mu_n:E\rightarrow \sum_{n=1}^\infty \mu_n(E)\)</span> 也是可数可加测度。</li>
+</ul>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.4</span></p>
+<p>设 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间。</p>
+<ul>
+<li>
+<p>(可数次可加性)对 <span class="arithmatex">\(E_1,E_2,\cdots\in \mathcal{B}\)</span>，<span class="arithmatex">\(\mu(\bigcup_{n=1}^\infty E_n)\le\sum_{n=1}^\infty \mu(E_n)\)</span>。</p>
+</li>
+<li>
+<p>(向上单调收敛)若 <span class="arithmatex">\(E_1\subset E_2\subset \cdots\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测的，则</p>
+<div class="arithmatex">\[
+\mu(\bigcup_{n=1}^\infty E_n)=\lim_{n\rightarrow \infty} \mu(E_n)=\sup_n \mu(E_n)
+\]</div>
+</li>
+<li>
+<p>(向下单调收敛)若 <span class="arithmatex">\(E_1\supset E_2\supset \cdots\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测的，且至少一个 <span class="arithmatex">\(\mu(E_n)&lt;\infty\)</span>，则</p>
+<div class="arithmatex">\[
+\mu(\bigcap_{n=1}^\infty E_n)=\lim_{n\rightarrow \infty} \mu(E_n)=\inf_n \mu(E_n)
+\]</div>
+</li>
+</ul>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.5</span></p>
+<p>测度空间 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 中测度为零的 <span class="arithmatex">\(\mathcal{B}-\)</span>可测集称为<strong>零测集(null set)</strong>。零测集的子集称为<strong>子零测集(sub-null set)</strong>。一个测度空间称为<strong>完备的(complete)</strong>，若任意子零测集都是零测集。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.6</span></p>
+<p>测度空间 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 存在唯一的完备测度空间 <span class="arithmatex">\((X,\overline{\mathcal{B}},\overline{\mu})\)</span>。事实上，</p>
+<div class="arithmatex">\[
+\overline{\mathcal{B}}=\left\{B\setminus N\Big| B\in \mathcal{B},N \text{ 为 }\mathcal{B}-\text{子零测}\right\}
+\]</div>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.7</span></p>
+<p>Lebesgue 测度空间 <span class="arithmatex">\(({\mathbb{R}^d},\mathcal{L}[{\mathbb{R}^d}],m)\)</span> 是 Borel 测度空间 <span class="arithmatex">\(({\mathbb{R}^d},\mathcal{B}[{\mathbb{R}^d}],m)\)</span> 的完备。</p>
+</div>
+<h2 id="s4"><span class="book-secnum">§ 04</span>测度空间上的可测函数与积分</h2>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span></p>
+<p>设 <span class="arithmatex">\((X,\mathcal{B})\)</span> 为可测空间，<span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 或 <span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span> 为无符号或复值函数。称 <span class="arithmatex">\(f\)</span> 是可测的若任意开集 <span class="arithmatex">\(U\subset [0,+\infty]\)</span> 或 <span class="arithmatex">\(\mathbb{C}\)</span>，<span class="arithmatex">\(f^{-1}(U)\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测的。</p>
+</div>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.2</span></p>
+<p>设 <span class="arithmatex">\((X,\mathcal{B})\)</span> 是可测空间。</p>
+<ul>
+<li><span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 可测当且仅当对任意 <span class="arithmatex">\(\left\{x\in X\Big| f(x)&gt;\lambda\right\}\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测的。</li>
+<li>示性函数 <span class="arithmatex">\(1_E\)</span> 可测当且仅当 <span class="arithmatex">\(E\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测。</li>
+<li><span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 或 <span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span> 为无符号或复值函数，<span class="arithmatex">\(f\)</span> 是可测的当且仅当任意 Borel-可测集 <span class="arithmatex">\(E\subset [0,+\infty]\)</span> 或 <span class="arithmatex">\(\mathbb{C}\)</span>，<span class="arithmatex">\(f^{-1}(E)\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测的。</li>
+<li><span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span> 是可测的当且仅当实部和虚部都是可测的。</li>
+<li><span class="arithmatex">\(f:X\rightarrow \mathbb{R}\)</span> 是可测的当且仅当 <span class="arithmatex">\(f_+\)</span> 和 <span class="arithmatex">\(f_-\)</span> 都是可测的。</li>
+<li>若 <span class="arithmatex">\(f_n:X\rightarrow [0,\infty]\)</span> 是一列可测函数逐点收敛于 <span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span>，则 <span class="arithmatex">\(f\)</span> 可测。将 <span class="arithmatex">\([0,+\infty]\)</span> 改成 <span class="arithmatex">\(\mathbb{C}\)</span> 命题也成立。</li>
+<li><span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 是可测函数，<span class="arithmatex">\(\phi:[0,+\infty]\rightarrow [0,+\infty]\)</span> 连续，则 <span class="arithmatex">\(\phi\circ f\)</span> 是可测函数。将 <span class="arithmatex">\([0,+\infty]\)</span> 改成 <span class="arithmatex">\(\mathbb{C}\)</span> 命题也成立。</li>
+<li>证明两个 <span class="arithmatex">\([0,+\infty]\)</span> 或 <span class="arithmatex">\(\mathbb{C}\)</span> 上的可测函数的和或积还是可测函数。</li>
+</ul>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.3</span><span class="book-name">Egorov 定理</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 为有限测度空间，<span class="arithmatex">\(f_n:X\rightarrow \mathbb{C}\)</span> 为一列可测函数几乎处处逐点收敛于 <span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span>，对任意 <span class="arithmatex">\(\epsilon&gt;0\)</span>，存在可测集 <span class="arithmatex">\(E\)</span>，<span class="arithmatex">\(\mu(E)\le \epsilon\)</span> 满足 <span class="arithmatex">\(f_n\)</span> 在 <span class="arithmatex">\(E\)</span> 外一致收敛于 <span class="arithmatex">\(f\)</span>。</p>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.4</span></p>
+<p>可测空间 <span class="arithmatex">\((X,\mathcal{B})\)</span> 上的 <strong>简单函数</strong> <span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 为可测函数且取值 <span class="arithmatex">\(a_1,\cdots,a_k\)</span> 有限。定义积分</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X f\mathrm{d} \mu:=\sum_{j=1}^k a_j \mu(f^{-1}(\left\{a_j\right\}))
+\]</div>
+</div>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.5</span></p>
+<p>设 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 为测度空间，<span class="arithmatex">\(f,g:X\rightarrow [0,+\infty]\)</span> 是简单函数。</p>
+<ul>
+<li>
+<p>若 <span class="arithmatex">\(f\le g\)</span>，则</p>
+<div class="arithmatex">\[
+\mathrm{Simp}\int_X f\mathrm{d} \mu\le \mathrm{Simp} \int_X g\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>对任意 <span class="arithmatex">\(\mathcal{B}-\)</span>可测集 <span class="arithmatex">\(E\)</span>，有</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X 1_E\mathrm{d} \mu =\mu(E)
+\]</div>
+</li>
+<li>
+<p>对任意 <span class="arithmatex">\(c\in [0,+\infty]\)</span>，有</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X cf\mathrm{d} \mu=c\times \mathrm{Simp} \int _X f\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X (f+g)\mathrm{d} \mu =\mathrm{Simp} \int_X f\mathrm{d} \mu +\mathrm{Simp} \int_X g\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\((X,\mathcal{B}',\mu')\)</span> 是 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 的加细，即 <span class="arithmatex">\(\mathcal{B}'\supset \mathcal{B}\)</span> 且 <span class="arithmatex">\(\mu'\big|_\mathcal{B}=\mu\)</span>，则</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X f\mathrm{d} \mu=\mathrm{Simp} \int _X f\mathrm{d} \mu'
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(f,g\)</span> 在测度 <span class="arithmatex">\(\mu\)</span> 意义下几乎处处相等，则</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X f\mathrm{d}\mu =\mathrm{Simp} \int _X g\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathrm{Simp} \int_X f\mathrm{d} \mu&lt;\infty\)</span> 当且仅当 <span class="arithmatex">\(f\)</span> 几乎处处有限且支集测度有限。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathrm{Simp} \int_X f\mathrm{d} \mu=0\)</span> 当且仅当 <span class="arithmatex">\(f\)</span> 几乎处处为 <span class="arithmatex">\(0\)</span>。</p>
+</li>
+</ul>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.6</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f:X\rightarrow [0,+\infty]\)</span> 可测，则我们定义</p>
+<div class="arithmatex">\[
+\int_Xf\mathrm{d} \mu=\sup_{\substack{0\le g\le f\\ g \text{ 简单函数}}} \mathrm{Simp} \int_X g\mathrm{d} \mu
+\]</div>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.7</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f,g:X\rightarrow [0,+\infty]\)</span> 是可测函数。</p>
+<ul>
+<li>
+<p>若 <span class="arithmatex">\(f=g\)</span> 几乎处处成立，则</p>
+<div class="arithmatex">\[
+\int_X f\mathrm{d} \mu =\int_X g\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(f\le g\)</span> 几乎处处成立，则</p>
+<div class="arithmatex">\[
+\int_X f\mathrm{d} \mu \le\int_X g\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>对任意 <span class="arithmatex">\(c\in [0,+\infty]\)</span>，有</p>
+<div class="arithmatex">\[
+\int_X cf\mathrm{d} \mu=c\times \int _X f\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<div class="arithmatex">\[
+\int_X (f+g)\mathrm{d} \mu\ge \int_X f\mathrm{d}\mu +\int_X g\mathrm{d}\mu
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(f\)</span> 是简单函数，则</p>
+<div class="arithmatex">\[
+\mathrm{Simp} \int_X f\mathrm{d} \mu =\int _X f\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>(Markov 不等式)对任意 <span class="arithmatex">\(0&lt;\lambda &lt;\infty\)</span>，有</p>
+<div class="arithmatex">\[
+\mu\left(\left\{x\in X\Big| f(x)\ge \lambda \right\}\right)\le \frac{1}{\lambda}\int_X f\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\int_X f\mathrm{d} \mu&lt;\infty\)</span> 当且仅当 <span class="arithmatex">\(f\)</span> 几乎处处有限且支集测度有限。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\int_X f\mathrm{d} \mu=0\)</span> 当且仅当 <span class="arithmatex">\(f\)</span> 几乎处处为 <span class="arithmatex">\(0\)</span>。</p>
+</li>
+<li>
+<div class="arithmatex">\[
+\lim_{n\rightarrow \infty}\int_X \min(f,n)\mathrm{d} \mu=\int_X f\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>设 <span class="arithmatex">\(E_1\subset E_2\subset\cdots\)</span> 是 <span class="arithmatex">\(\mathcal{B}-\)</span>可测集，则</p>
+<div class="arithmatex">\[
+\lim_{n\rightarrow \infty} \int_X f1_{E_n}\mathrm{d} \mu=\int_X f1_{\bigcup_{n=1}^\infty E_n}\mathrm{d} \mu
+\]</div>
+</li>
+<li>
+<p>设 <span class="arithmatex">\(Y\)</span> 是 <span class="arithmatex">\(X\)</span> 的可测子集，则</p>
+<div class="arithmatex">\[
+\int_X f1_X\mathrm{d}\mu=\int_Y f\big|_Y \mathrm{d} \mu\big|_Y
+\]</div>
+</li>
+</ul>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.8</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f,g:X\rightarrow [0,+\infty]\)</span> 是可测函数。则</p>
+<div class="arithmatex">\[
+\int_X(f+g)\mathrm{d} \mu=\int_X f\mathrm{d} \mu+\int_X g\mathrm{d} \mu
+\]</div>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.9</span></p>
+<p>从一个可测空间 <span class="arithmatex">\((X, \mathcal{B})\)</span> 到另一个可测空间 <span class="arithmatex">\((Y, \mathcal{C})\)</span> 的<strong>可测态射(measurable morphism)</strong> <span class="arithmatex">\(f\)</span> 为一个函数 <span class="arithmatex">\(f: X \to Y\)</span>，满足对每个 <span class="arithmatex">\(\mathcal{C}\)</span>-可测集 <span class="arithmatex">\(E\)</span>，原像 <span class="arithmatex">\(f^{-1}(E)\)</span> 是 <span class="arithmatex">\(\mathcal{B}\)</span>-可测的。</p>
+</div>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.10</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(\phi:X\rightarrow Y\)</span> 是可测态射，定义 <span class="arithmatex">\(\phi\)</span> 对 <span class="arithmatex">\(\mu\)</span> 的拉回 <span class="arithmatex">\(\phi_*\mu :\mathcal{C}\rightarrow [0,+\infty]\)</span> 为 <span class="arithmatex">\(\phi_*\mu(E):=\mu(\phi^{-1}(E))\)</span>。</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\phi_*\mu\)</span> 是 <span class="arithmatex">\(\mathcal{C}\)</span> 上的测度，即 <span class="arithmatex">\((Y,\mathcal{C},\phi_*\mu)\)</span> 是测度空间。</p>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(f:Y\rightarrow [0,+\infty]\)</span> 可测，则</p>
+<div class="arithmatex">\[
+\int_Y f\mathrm{d} \phi_*\mu=\int_X(f\circ \phi)\mathrm{d} \mu
+\]</div>
+</li>
+</ul>
+</div>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.11</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，可测函数 <span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span> 称为<strong>绝对可积的</strong>，若</p>
+<div class="arithmatex">\[
+\left\|f\right\|_{L^1(X,\mathcal{B},\mu)}:=\int_X\left|f\right|\mathrm{d} \mu
+\]</div>
+<p>有限，并用 <span class="arithmatex">\(L^1(X,\mathcal{B},\mu),L^1(X),L^1(\mu)\)</span> 表示绝对可积函数空间。</p>
+<p>若 <span class="arithmatex">\(f\)</span> 是实值且绝对可积的，则其积分 <span class="arithmatex">\(\int_X f(x) \, \mathrm{d} \mu\)</span> 定义为</p>
+<div class="arithmatex">\[
+\quad \int_X f(x) \, \mathrm{d} \mu := \int_{X} f_+(x) \, \mathrm{d} \mu -  \int_{X} f_-(x) \, \mathrm{d} \mu,
+\]</div>
+<p>若 <span class="arithmatex">\(f\)</span> 是复值且绝对可积的，则其积分 <span class="arithmatex">\(\int_{X} f(x) \, \mathrm{d} \mu\)</span> 定义为</p>
+<div class="arithmatex">\[
+\int_{X} f(x) \, \mathrm{d} \mu := \int_{X} \operatorname{Re} f(x) \, \mathrm{d} \mu + i \int_{X} \operatorname{Im} f(x) \, \mathrm{d} \mu,
+\]</div>
+</div>
+<h2 id="s5"><span class="book-secnum">§ 05</span>收敛定理</h2>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span><span class="book-name">单调收敛定理</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(0\le f_1\le f_2\le \cdots\)</span> 为 <span class="arithmatex">\(X\)</span> 上的单调不减的无符号可测函数列，则我们有</p>
+<div class="arithmatex">\[
+\lim_{n\rightarrow \infty} \int_X f_n \mathrm{d} \mu =\int_X \lim_{n\rightarrow \infty} f_n\mathrm{d} \mu
+\]</div>
+</div>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.2</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f_1,f_2,\cdots:X\rightarrow [0,+\infty]\)</span> 为一列无符号可测函数，则</p>
+<div class="arithmatex">\[
+\int_X \sum_{n=1}^\infty f_n \mathrm{d} \mu=\sum_{n=1}^\infty \int _X f_n \mathrm{d} \mu
+\]</div>
+</div>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.3</span><span class="book-name">Borel-Cantelli lemma</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(E_1,E_2,\cdots\)</span> 为一列 <span class="arithmatex">\(\mathcal{B}-\)</span>可测集满足</p>
+<div class="arithmatex">\[
+\sum_{n=1}^\infty \mu(E_n)&lt;\infty
+\]</div>
+<p>则几乎所有的 <span class="arithmatex">\(x\in X\)</span> 仅被包含于有限个 <span class="arithmatex">\(E_n\)</span> 中。</p>
+</div>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 5.4</span><span class="book-name">Fatou&#x27;s lemma</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f_1,f_2,\cdots:X\rightarrow [0,+\infty]\)</span> 为一列无符号可测函数，则</p>
+<div class="arithmatex">\[
+\int_X \liminf_{n\rightarrow \infty} f_n\mathrm{d} \mu \le \liminf_{n\rightarrow \infty } f_n \mathrm{d} \mu
+\]</div>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.5</span><span class="book-name">控制收敛定理</span></p>
+<p>令 <span class="arithmatex">\((X,\mathcal{B},\mu)\)</span> 是测度空间，<span class="arithmatex">\(f_1,f_2,\cdots:X\rightarrow \mathbb{C}\)</span> 为一列可测函数且几乎处处逐点收敛于可测函数 <span class="arithmatex">\(f:X\rightarrow \mathbb{C}\)</span>。设存在无符号绝对收敛函数 <span class="arithmatex">\(G:X\rightarrow [0,+\infty]\)</span> 满足对任意 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\left|f_n\right|\le G\)</span> 几乎处处成立，则我们有</p>
+<div class="arithmatex">\[
+\lim_{n\rightarrow \infty} \int_X f_n\mathrm{d} \mu=\int_X f\mathrm{d} \mu
+\]</div>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="real-analysis.pdf" href="../../../../assets/real-analysis.pdf">下载 PDF 完整版</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="实分析章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-03/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第三章：Lebesgue 积分</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-05/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第五章：收敛模式</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#real-analysis">实分析 · 第 4 / 6 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#real-analysis">实分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=measure-theory">#measure-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

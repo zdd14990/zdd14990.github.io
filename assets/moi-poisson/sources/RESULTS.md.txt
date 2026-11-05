@@ -1,0 +1,131 @@
+# K 目标裁剪最小原型：执行结果（2026-11-04）
+
+## 结论
+
+1. **在本次四种源、六棵树及 K^1–K^4 的测试范围内通过正确性验证。** 裁剪/原 MOI 最大归一化节点差为 7.50e-12，不是逐位一致证明，也不是任意源的严格误差定理。
+2. **固定树完整 K 调用平均节省约54%（64叶）和59%（256叶）。**
+3. **裁剪 K / DP 的逐轮配对比值平均为1.55和1.61。** 这不是整个热方程步、变树成本或内存压缩比。
+
+导师源码、原项目 src、已有导师目标文件和FGT静态库均与首次构建哈希一致。没有修改H、矩形根盒、源展开复用或原实现。所有新增文件位于研究目录。七次数值运行（含首轮失败及预热）共92.31秒，最长29.75秒；每次运行硬超时540秒。
+
+## 1. 独立实现与已核查差异
+
+实验前端为 [hho_ops.f90](<C:/dev/research/rb_project/learning/heat_higher_order/prototypes/kclip_20261104/hho_ops.f90>) 和 [hho_clipcache.f90](<C:/dev/research/rb_project/learning/heat_higher_order/prototypes/kclip_20261104/hho_clipcache.f90>)。保留原模块名hho_ops，但在独立构建目录编译，未覆盖原模块或原可执行文件。clip_enabled=false为原MOI/DP路径，true只影响MOI。三个模式共享同一个缓存前端、工作空间、清零策略和导师目标文件。
+
+底层iperiod=2相对1的全部直接行为差异（导师源文件行号）：
+
+- [adapfmm8:985–1030](<C:/dev/research/rb_project/code/src/advisor_poisson/adaptfmm2d8.f#L985-L1030>)：scaletemp从1变2；localonoff由全盒开启改为根与左下象限开启。
+- [adapfmm8:1093–1178](<C:/dev/research/rb_project/code/src/advisor_poisson/adaptfmm2d8.f#L1093-L1178>)：scale(l)减半，叶源及下行xlength翻倍；两者同调用psppin/psppta周期根转换。
+- [adapfmm8:1182–1342](<C:/dev/research/rb_project/code/src/advisor_poisson/adaptfmm2d8.f#L1182-L1342>)：近场t1、t3缩小四倍，t2翻倍，tlog/tlogs长度对数项同时改变。
+- [mkcolls](<C:/dev/research/rb_project/code/src/advisor_poisson/treerouts.f#L1159-L1256>)与[mklists_ps](<C:/dev/research/rb_project/code/src/advisor_poisson/fmmrouts8_before.f#L2883-L3124>)对1/2共用周期逻辑，后者按目标mask筛选。
+- 源Chebyshev变换、源多极、上行、所有源方向展开、预计算和完整树存储仍保留。根向四个孩子的下行仍可能执行，不能说所有目标阶段严格减为1/4。
+
+缩放：旧fr=-4f、内部根边长1；新fr=-f、内部根边长2。新coeff是旧1/4，而叶盒xlength是旧2倍，因此multipole中的coeff*xlength^2保持不变，父/root矩不需额外乘4；近场coeff/t1同样保持。长度对数项必须整体处理，不能只改一个开关。对奇延拓净电荷为零，统一尺度改变的log2乘总电荷常数理论上相消。
+
+常数处理：裁剪模式不再对未求值的全胞输出算均值，也不删除物理均值。保留导师周期转换中的b0和b1修正，未用解析解拟合或扣除常数。原模式仍保留原全胞均值校正，CSV记录其移除值，旧raw可由原输出加该值重构。
+
+**接口限制：** 裁剪op_K_ext输出只有物理象限有效，不得直接作为下一个扩展域K/H的源。当前op_K和时间推进每次从物理值重新延拓，符合该合同。未压缩四份树或源工作空间。
+
+## 2. 正确性测试
+
+原始结果：[最终verify.csv](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_verify_20261104_203933/verify.csv>)；[测试驱动](<C:/dev/research/rb_project/learning/heat_higher_order/prototypes/kclip_20261104/kclip_probe.f90>)。
+
+物理节点始终是8x8第一类Chebyshev根节点。iprec=4。四种源：
+
+1. sin(pi*z)，op_K精确解sin(pi*z)/pi^2，检验非零物理均值和符号。
+2. cos(2*pi*x)*sin(pi*z)，精确特征值5*pi^2，横向周期缝上不为零。
+3. BIPER=sin(2*pi*x)sin(2*pi*z)+0.3sin(6*pi*x)sin(4*pi*z)，特征值8*pi^2与52*pi^2；这是公平MOI/DP计时源。
+4. f=1，op_K精确解z(1-z)/2；高次K参考通过多项式二次积分、两壁零值递推构造，专查常数与不相容源的壁延拓。
+
+每个模式独立连续应用K，j=1..4，不用解析值重新设置中间源。故比较的是整个K链的差。
+
+| 树 | 叶数 | 原MOI最大解析相对节点误差 | 裁剪最大解析相对节点误差 | 最大裁剪/原差，除以精确解节点最大值 |
+|---|---:|---:|---:|---:|
+| uniform3 |64|4.16e-8|4.16e-8|4.15e-13|
+| uniform4 |256|7.18e-11|7.18e-11|9.54e-13|
+| asym3to4 |94|3.18e-6|3.18e-6|7.88e-13|
+| asym3to5 |190|3.10e-6|3.10e-6|2.18e-12|
+| uniform5 |1024|4.27e-13|1.21e-12|1.63e-12|
+| asym4to6 |565|6.43e-10|6.36e-10|7.50e-12|
+
+非对称树分别在(x,z)约(0.035,0.07)与(0.68,0.96)附近加密，前者跨x周期缝并触及下壁，后者触及上壁且不与前者反射对称。stdout记录边角邻接抽查中的不等层与边界不等层计数；这些是交互覆盖诊断，不冒充穷尽树平衡证明。
+
+### 首轮失败没有隐藏
+
+[首轮记录](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_verify_20261104_203017/verify.csv>)因粗非均匀树BIPER K^4解析误差超过2e-6而失败；原MOI也同样超过。之后增加uniform5与asym4to6空间对照，将判定分为新旧等价与原有空间精度两部分。粗asym3to5的BIPER K^4误差3.10e-6，加密到asym4to6下降至6.36e-10。支持原有离散/插值误差解释，不是靠放宽阈值声称达到12位。细uniform5存在原/裁几倍的舍入量级差异，也已如实列出。
+
+最终门槛：新旧节点差<=2e-10（归一化）；裁剪解析误差不得超出max(2e-6,原误差的1.01倍)；加密树另需解析误差<=2e-6；尺度拟合差<=2e-6。这些是冒烟门槛，实际精度以表中数值为准。
+
+### 壁值与周期缝
+
+不是取Chebyshev最外节点充当壁。先选择内部叶，再将该叶的7次张量积插值多项式外推到实际z=0/1或x=0/1。129个等距坐标包含四角及当前最大层6的全部dyadic边界叶端点；不是连续边界最大范数认证。
+
+同时对精确解节点值做相同外推，记录其插值残差。粗BIPER周期缝的总残差约1e-8量级，不能全部归因于FMM。另直接对裁剪减原节点场做同样求值，而非比较两个最大值。最终所有测试最大归一化壁差1.88e-14，周期缝差1.06e-14；二者均纳入2e-10门槛。
+
+[缓存状态测试](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_state_20261104_203950/state.csv>)覆盖uniform3→uniform4→uniform3、精度4→2→3→4、三模式和源→零→源。零残留与重复调用差均为0。该测试只检查状态一致性，不据此认证低精度解析误差。
+
+## 3. 公平短计时
+
+原始数据：[bench.csv](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_bench_20261104_204030/bench.csv>)；汇总：[timing_summary.csv](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_summary_20261104/timing_summary.csv>)、[summary.json](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_summary_20261104/summary.json>)。
+
+- 固定均匀树lev3/4；建树和计算树构造在计时之外，不报告自适应树性能或变树性能。
+- BIPER公共精确解，iprec=4。三模式实际误差基本相同：64叶4.16e-8，256叶7.18e-11。
+- 相同可执行文件与编译选项：gfortran16.1，项目前端-O3 -ffree-line-length-none -std=f2018 -fall-intrinsics -fcheck=bounds；导师部分三模式共享完全相同的既有预编译对象，不宣称其历史编译参数已重新认证。
+- 固定单一允许逻辑核(mask=1)，正常优先级，OMP/OPENBLAS线程数1。
+- 每棵树三模式共同预热至少8秒；随后9轮，模式次序轮换的回文6块，每块8次完整调用。每轮每模式两个块取均值，再计算配对比值。预热和验证不计入单调用时间。
+- 计时包含驱动输出清零、op_K包装、分配、扩展、缓存清零、FMM、常数处理和物理输出取回；不只测后端。各模式都有相同的外层清零。
+- 不测/不反推导师库各阶段占比；无分阶段性能结论。
+
+|物理叶数|原MOI ms，均值±轮间SD|裁剪MOI ms|DP ms|平均配对节省比例|裁剪/DP 平均配对比±SD|
+|---:|---:|---:|---:|---:|---:|
+|64|11.674±0.713|5.367±0.364|3.492±0.399|53.99%|1.550±0.159|
+|256|44.424±1.830|18.372±1.127|11.413±0.598|58.58%|1.610±0.075|
+
+配对裁剪/DP中位数[IQR]：64叶1.500[1.449,1.628]；256叶1.595[1.561,1.655]。逐轮范围分别1.337–1.857、1.519–1.760，仅描述波动，未以最小值当性能结果。9轮不是9个独立进程，SD不是置信区间。配对比均值不必等于三个绝对时间均值之比。
+
+## 4. 通过后的短完整步回归
+
+仅新增A1、固定lev3、EAM4 wide、shift、T=0.1、N16/32/64、iprec4、FGT1e-12，原/裁各一次；H与时间格式不改。不是完整阶数campaign或完整步计时实验。
+
+[regress.csv](<C:/dev/research/rb_project/learning/heat_higher_order/data/kclip_regress_20261104_204000/regress.csv>)：
+
+|N|原MOI相对最大误差|裁剪MOI相对最大误差|裁剪观测阶|
+|---:|---:|---:|---:|
+|16|6.52956268e-6|6.52956270e-6|—|
+|32|4.06179233e-7|4.06179251e-7|4.00680|
+|64|2.52756169e-8|2.52756613e-8|4.00630|
+
+二者调用数相同，分别112/224/448次K、16/32/64次H。原/裁误差最大绝对差约4.45e-14；注意这是误差指标差，不是输出场逐点差。
+
+## 5. 已有阶数证据清单（未重跑）
+
+- 精确模态二三四阶：[results.json](<C:/dev/research/rb_project/learning/heat_higher_order/data/modal_verify/results.json#L47-L88>)；精确算子，T1，shift；不等同Chebyshev FMM验证。
+- A2真实变树wide/shift/历史重采样：[二阶](<C:/dev/research/rb_project/learning/heat_higher_order/audit/adaptive_summary_20261028_010012/summary.csv>)、[三阶](<C:/dev/research/rb_project/learning/heat_higher_order/audit/adaptive_summary_20261028_010018/summary.csv>)、[四阶](<C:/dev/research/rb_project/learning/heat_higher_order/audit/adaptive_summary_20261027_210556/summary.csv>)；N256→512阶1.99/2.97/3.98。
+- A1固定树wide/apply/Horner小步长：[笔记7.6](<C:/dev/research/rb_project/learning/heat_higher_order/heat-source-learning-notes.md#L1233-L1250>)；apply已观察到反升，wide存在误差平台。
+- A3N非线性固定树Picard/PC：[笔记7.4](<C:/dev/research/rb_project/learning/heat_higher_order/heat-source-learning-notes.md#L1194-L1207>)；不是非线性变树验证。
+- A2L线性解相关源变树Picard/PC：[笔记7.7](<C:/dev/research/rb_project/learning/heat_higher_order/heat-source-learning-notes.md#L1252-L1266>)；真正非线性变树仍缺，A2L独立参考求积日志仍缺。
+- 抛物论文对传播后的U插值，当前源势格式对S插值，不直接借用其启动结论。
+
+## 6. 限制与下一步建议
+
+- 目前K已经在64/256叶固定均匀树达到约1.5–1.6倍DP，但不能说完整步已达到1–2倍，H未优化；没有测变树完整成本。
+- 目标裁剪后仍保留4份源展开、4份树与工作空间，不能声称内存省75%。
+- 暂不自动继续源展开复用。建议先由用户决定：是否补一个固定非均匀树公平计时/更大树复核，然后再依据收益需求进入源复用；若用DP基线，先核查其z周期缝平衡。
+- 只读审计还发现导师既有源中的潜在越界：mklists_ps将长度3的inbig12/isbig34在j=1..4初始化，以及部分.and.条件可能在检查正索引前访问-1。见[源位置](<C:/dev/research/rb_project/code/src/advisor_poisson/fmmrouts8_before.f#L2663-L2700>)及[条件](<C:/dev/research/rb_project/code/src/advisor_poisson/fmmrouts8_before.f#L3189-L3191>)。它们并非本轮引入，也未擅自修复。本次共享既有目标文件下未见由此造成的重复调用不稳定，但项目前端-fcheck不能证明预编译库内部无未定义行为。
+
+## 7. 复现与溯源
+
+从工作目录运行：
+
+```bash
+bash prototypes/kclip_20261104/build.sh
+python prototypes/kclip_20261104/run.py build/<新构建>/kclip_probe.exe verify
+python prototypes/kclip_20261104/run.py build/<新构建>/kclip_probe.exe state
+# verify/state成功后再运行：
+python prototypes/kclip_20261104/run.py build/<新构建>/kclip_probe.exe bench
+python prototypes/kclip_20261104/run.py build/<新构建>/kclip_regress.exe regress
+```
+
+最终构建为[构建日志](<C:/dev/research/rb_project/learning/heat_higher_order/build/kclip_20261104_203917/build.log>)，含source_sha256_before、binary_sha256和source_snapshot。第一轮及加密轮也已按当时哈希恢复并核验源码快照，保存于各自构建目录，不用最终源码冒充早期实验源码。
+
+[run.py](<C:/dev/research/rb_project/learning/heat_higher_order/prototypes/kclip_20261104/run.py>)每次创建独立时间戳数据目录，CSV为独占创建；[汇总脚本](<C:/dev/research/rb_project/learning/heat_higher_order/prototypes/kclip_20261104/summarize.py>)针对本批明确路径生成一次性汇总。初始tmp生成器只负责首次创建实验副本，当前代码以最终构建快照为准，不应再次运行生成器覆盖。

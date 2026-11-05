@@ -1,0 +1,2086 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="计算与应用数学笔记第六章：一些符号约定、凸集与凸函数、可微凸函数、凸包、仿射包和相对内点、凸函数的性质、局部与全局最小值、渐进序列、超平面。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-06/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第六章：凸优化 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-06/">
+  <meta property="og:title" content="第六章：凸优化 - zdd14990">
+  <meta property="og:description" content="计算与应用数学笔记第六章：一些符号约定、凸集与凸函数、可微凸函数、凸包、仿射包和相对内点、凸函数的性质、局部与全局最小值、渐进序列、超平面。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-07">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="optimization">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-06/">
+  <meta name="twitter:title" content="第六章：凸优化 - zdd14990">
+  <meta name="twitter:description" content="计算与应用数学笔记第六章：一些符号约定、凸集与凸函数、可微凸函数、凸包、仿射包和相对内点、凸函数的性质、局部与全局最小值、渐进序列、超平面。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u516d\u7ae0\uff1a\u51f8\u4f18\u5316",
+    "description": "\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66\u7b14\u8bb0\u7b2c\u516d\u7ae0\uff1a\u4e00\u4e9b\u7b26\u53f7\u7ea6\u5b9a\u3001\u51f8\u96c6\u4e0e\u51f8\u51fd\u6570\u3001\u53ef\u5fae\u51f8\u51fd\u6570\u3001\u51f8\u5305\u3001\u4eff\u5c04\u5305\u548c\u76f8\u5bf9\u5185\u70b9\u3001\u51f8\u51fd\u6570\u7684\u6027\u8d28\u3001\u5c40\u90e8\u4e0e\u5168\u5c40\u6700\u5c0f\u503c\u3001\u6e10\u8fdb\u5e8f\u5217\u3001\u8d85\u5e73\u9762\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-06/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/computational-applied-math/chapter-06/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-07",
+    "dateModified": "2026-10-15",
+    "keywords": ["optimization"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["\u8ba1\u7b97\u4e0e\u5e94\u7528\u6570\u5b66", "computational-applied-math"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 一些符号约定
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 凸集与凸函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 可微凸函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 凸包、仿射包和相对内点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 凸函数的性质
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 局部与全局最小值
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 渐进序列
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 超平面
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 最小公共点和最大相交点问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 零和游戏
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#computational-applied-math">计算与应用数学</a>
+    <span>Part 6 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">06</div>
+    <h1 id="top"><span class="book-visually-hidden">第 6 章：</span>凸优化</h1>
+  </div>
+  <p class="book-standfirst">给定集合 <span class="arithmatex">\(X\subset \mathbb{R}^n\)</span>。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-07">2026-07-07</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>7,348 字 · 约 21 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>一些符号约定</h2>
+<ul>
+<li>我们只考虑 <span class="arithmatex">\(\mathbb{R}^n\)</span> 空间上的优化问题。</li>
+<li>所有的向量约定为列向量。</li>
+<li><span class="arithmatex">\('\)</span>表示转置。</li>
+<li><span class="arithmatex">\(x'y\)</span> 为 <span class="arithmatex">\(\sum_{i=1}^{n}\)</span> 表示 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(y\)</span> 的内积。</li>
+<li><span class="arithmatex">\(||x||_2 = (x'x)^{1/2}\)</span> 为 <span class="arithmatex">\(x\)</span> 的欧几里得范数。</li>
+</ul>
+<h2 id="s2"><span class="book-secnum">§ 02</span>凸集与凸函数</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">凸集</span></p>
+<p>设 <span class="arithmatex">\(C \subseteq \mathbb{R}^n\)</span>，如果对于任意 <span class="arithmatex">\(x,y \in C\)</span> 和 <span class="arithmatex">\(\alpha \in [0,1]\)</span>，都有</p>
+<div class="arithmatex">\[
+\alpha x + (1-\alpha)y \in C,
+\]</div>
+<p>则称 <span class="arithmatex">\(C\)</span> 是<strong>凸集(convex set)</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span></p>
+<ul>
+<li>
+<p><strong>Polyhedron sets</strong>：非空的满足</p>
+<div class="arithmatex">\[
+C = \left\{x \Big| a'_jx \le b_j,j=1,\cdots,r\right\}
+\]</div>
+</li>
+<li>
+<p><strong>Cones</strong>：满足对任意的 <span class="arithmatex">\(x\in C,\lambda&gt;0\)</span> 均有 <span class="arithmatex">\(\lambda x \in C\)</span> 的集合。</p>
+</li>
+</ul>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span><span class="book-name">凸函数</span></p>
+<p>设 <span class="arithmatex">\(C \subseteq \mathbb{R}^n\)</span> 是凸集，<span class="arithmatex">\(f: C \to \mathbb{R}\)</span>，如果对于任意 <span class="arithmatex">\(x,y \in C\)</span> 和 <span class="arithmatex">\(\alpha \in [0,1]\)</span>，都有</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)y) \le \alpha f(x) + (1-\alpha)f(y),
+\]</div>
+<p>则称 <span class="arithmatex">\(f\)</span> 是定义在 <span class="arithmatex">\(C\)</span> 上的<strong>凸函数(convex function)</strong>。若等号当且仅当 <span class="arithmatex">\(x=y\)</span> 时成立，则称 <span class="arithmatex">\(f\)</span> 是<strong>严格凸函数(strictly convex function)</strong>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.4</span></p>
+<p>若 <span class="arithmatex">\(f\)</span> 是凸函数，则 <span class="arithmatex">\(\left\{ x\in C\Big| f(x)\le \gamma\right\}\)</span> 与 <span class="arithmatex">\(\left\{ x\in C\Big| f(x)&lt; \gamma\right\}\)</span> 均为凸集。</p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.5</span></p>
+<p><span class="arithmatex">\(f:X\rightarrow [-\infty,+\infty]\)</span> 的 <strong>epigraph</strong> 定义为</p>
+<div class="arithmatex">\[
+\text{epi} (f) = \left\{(x,w) \Big| x\in X,w\in \mathbb{R},w\ge f(x)\right\}.
+\]</div>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.6</span></p>
+<p><span class="arithmatex">\(f\)</span> 的 <strong>effective domain</strong> 定义为</p>
+<div class="arithmatex">\[
+\text{dom} (f) = \left\{x\in X \Big| f(x)&lt;+\infty\right\}.
+\]</div>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.7</span></p>
+<p>我们称 <span class="arithmatex">\(f\)</span> 是 <strong>凸的</strong>，若 <span class="arithmatex">\(\text{epi}(f)\)</span> 是凸集。</p>
+</div>
+<p>注意到，若 <span class="arithmatex">\(f(x)\in \mathbb{R}\)</span>，则该定义与之前的定义等价。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.8</span></p>
+<p>我们称 <span class="arithmatex">\(f\)</span> 是<strong>闭的</strong>，若 <span class="arithmatex">\(\text{epi}(f)\)</span> 是闭集。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.9</span></p>
+<p>我们称 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(x\in X\)</span> 处是<strong>下半连续的(lower semicontinuous)</strong>，若对于任意 <span class="arithmatex">\(\{x_k\}\subseteq X\)</span> 满足 <span class="arithmatex">\(x_k\to x\)</span> 时，有</p>
+<div class="arithmatex">\[
+\liminf_{k\to\infty} f(x^k) \ge f(x).
+\]</div>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.10</span></p>
+<p>对函数 <span class="arithmatex">\(f:\mathbb{R}^n \to [-\infty,+\infty]\)</span>，下列命题等价：</p>
+<ul>
+<li>对任意 <span class="arithmatex">\(\gamma \in \mathbb{R}\)</span>，集合 <span class="arithmatex">\(V_\gamma=\left\{x\in \mathbb{R}^n\Big| f(x)\le \gamma\right\}\)</span> 是闭集；</li>
+<li><span class="arithmatex">\(f\)</span> 在任意 <span class="arithmatex">\(x\in \mathbb{R}^n\)</span> 处是下半连续的；</li>
+<li><span class="arithmatex">\(f\)</span> 是闭的。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\Longrightarrow(2)\)</span>：设 <span class="arithmatex">\(\{x_k\}\subseteq \mathbb{R}^n\)</span> 且 <span class="arithmatex">\(x_k\to x\)</span>，则对任意 <span class="arithmatex">\(\varepsilon&gt;0\)</span>，存在 <span class="arithmatex">\(N&gt;0\)</span> 使得当 <span class="arithmatex">\(k&gt;N\)</span> 时，有 <span class="arithmatex">\(f(x_k)&gt;f(x)-\varepsilon\)</span>。因此，</p>
+<div class="arithmatex">\[
+\liminf_{k\to\infty} f(x_k) \ge f(x)-\varepsilon.
+\]</div>
+<p>由于 <span class="arithmatex">\(\varepsilon&gt;0\)</span> 是任意的，故 <span class="arithmatex">\(\liminf_{k\to\infty} f(x_k) \ge f(x)\)</span>。</p>
+<p><span class="arithmatex">\((2)\Longrightarrow(3)\)</span>：设 <span class="arithmatex">\(\{(x_k,w_k)\}\subseteq \text{epi}(f)\)</span> 且 <span class="arithmatex">\((x_k,w_k)\to (x,w)\)</span>，则 <span class="arithmatex">\(w_k \ge f(x_k)\)</span>。由下半连续性可知</p>
+<div class="arithmatex">\[
+w = \lim_{k\to\infty} w_k \ge \liminf_{k\to\infty} f(x_k) \ge f(x),
+\]</div>
+<p>因此，<span class="arithmatex">\((x,w)\in \text{epi}(f)\)</span>。</p>
+<p><span class="arithmatex">\((3)\Longrightarrow(1)\)</span>：设 <span class="arithmatex">\(\{x_k\}\subseteq V_\gamma\)</span> 且 <span class="arithmatex">\(x_k\to x\)</span>，则 <span class="arithmatex">\((x_k,\gamma)\in \text{epi}(f)\)</span>。由闭性可知 <span class="arithmatex">\((x,\gamma)\in \text{epi}(f)\)</span>，即 <span class="arithmatex">\(f(x)\le \gamma\)</span>，所以 <span class="arithmatex">\(x\in V_\gamma\)</span>。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.11</span></p>
+<p>设 <span class="arithmatex">\(f:X\rightarrow [-\infty,+\infty]\)</span>，则若 <span class="arithmatex">\(\text{dom}(f)\)</span> 是闭集且 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(\text{dom}(f)\)</span> 上下半连续，则 <span class="arithmatex">\(f\)</span> 是闭的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\{(x_k,w_k)\}\subseteq \text{epi}(f)\)</span> 且 <span class="arithmatex">\((x_k,w_k)\to (x,w)\)</span>，则 <span class="arithmatex">\(w_k \ge f(x_k)\)</span>。若 <span class="arithmatex">\(x\in \text{dom}(f)\)</span>，则由下半连续性可知</p>
+<div class="arithmatex">\[
+w = \lim_{k\to\infty} w_k \ge \liminf_{k\to\infty} f(x_k) \ge f(x),
+\]</div>
+<p>因此，<span class="arithmatex">\((x,w)\in \text{epi}(f)\)</span>。若 <span class="arithmatex">\(x\notin \text{dom}(f)\)</span>，则 <span class="arithmatex">\(f(x)=+\infty\)</span>，显然 <span class="arithmatex">\((x,w)\in \text{epi}(f)\)</span>。</p>
+</details>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.12</span></p>
+<p>我们称 <span class="arithmatex">\(f\)</span> 是 <strong>proper</strong> 若 <span class="arithmatex">\(\text{dom}(f)\neq \emptyset\)</span> 且 <span class="arithmatex">\(f(x)&gt;-\infty\)</span> 对任意 <span class="arithmatex">\(x\in X\)</span> 成立。我们称 <span class="arithmatex">\(f\)</span> 是 <strong>improper</strong> 若 <span class="arithmatex">\(f\)</span> 不是 proper。</p>
+</div>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.13</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(g:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 由下式给出</p>
+<div class="arithmatex">\[
+g(x)=\lambda_1f_1(x)+\cdots+\lambda_mf_m(x),
+\]</div>
+<p>其中 <span class="arithmatex">\(\lambda_i&gt; 0\)</span>，若 <span class="arithmatex">\(f_i:\mathbb{R}^n\rightarrow [-\infty,+\infty]\)</span> 是凸(闭)函数，则 <span class="arithmatex">\(g\)</span> 是凸(闭)函数。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(g:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 由下式给出</p>
+<div class="arithmatex">\[
+g(x)=f(Ax)
+\]</div>
+<p>其中 <span class="arithmatex">\(A\in \mathbb{R}^{m\times n}\)</span>，若 <span class="arithmatex">\(f:\mathbb{R}^m\rightarrow [-\infty,+\infty]\)</span> 是凸(闭)函数，则 <span class="arithmatex">\(g\)</span> 是凸(闭)函数。</p>
+</li>
+<li>
+<p>考虑 <span class="arithmatex">\(f_i:\mathbb{R}^n\rightarrow (-\infty,\infty]\)</span>，<span class="arithmatex">\(i\in I\)</span>，<span class="arithmatex">\(g:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 由下式给出</p>
+<div class="arithmatex">\[
+g(x)=\max_{i\in I} f_i(x)
+\]</div>
+<p>若<span class="arithmatex">\(f_i\)</span> 是凸(闭)函数，则 <span class="arithmatex">\(g\)</span> 是凸(闭)函数。</p>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>证明留给读者。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>可微凸函数</h2>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.1</span></p>
+<p>设 <span class="arithmatex">\(C\subset \mathbb{R}^n\)</span> 是凸集，<span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 是可微函数，则 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的凸函数当且仅当</p>
+<div class="arithmatex">\[
+f(z) \ge f(x) + (z-x)'\nabla f(x), \forall x,z\in C
+\]</div>
+<p>若等号当且仅当 <span class="arithmatex">\(x=z\)</span> 时成立，则 <span class="arithmatex">\(f\)</span> 是严格凸函数。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：设 <span class="arithmatex">\(x,y\in C\)</span>，<span class="arithmatex">\(\alpha\in [0,1]\)</span>，<span class="arithmatex">\(z=\alpha x+(1-\alpha)y\)</span>，则</p>
+<div class="arithmatex">\[
+\begin{aligned}
+f(z) &amp;\ge f(x) + (z-x)'\nabla f(x) \\
+&amp;= f(x) + (1-\alpha)(y-x)'\nabla f(x) \\
+&amp;\ge f(x) + (1-\alpha)(f(y)-f(x)) \\
+&amp;= \alpha f(x) + (1-\alpha)f(y)
+\end{aligned}
+\]</div>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”：设 <span class="arithmatex">\(x,z\in C\)</span>，<span class="arithmatex">\(\alpha\in (0,1)\)</span>，<span class="arithmatex">\(y=\frac{z-\alpha x}{1-\alpha}\)</span>，则</p>
+<div class="arithmatex">\[
+\begin{aligned}
+f(z) &amp;= f(\alpha x + (1-\alpha)y) \\
+&amp;\le \alpha f(x) + (1-\alpha)f(y)
+\end{aligned}
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+f(y) \ge \frac{f(z)-\alpha f(x)}{1-\alpha}.
+\]</div>
+<p>由 <span class="arithmatex">\(y=\frac{z-\alpha x}{1-\alpha}\)</span> 可知</p>
+<div class="arithmatex">\[
+z = \alpha x + (1-\alpha)y.
+\]</div>
+<p>对上式两边关于 <span class="arithmatex">\(\alpha\)</span> 求导，得</p>
+<div class="arithmatex">\[
+0 = x - y + (1-\alpha)\frac{\partial y}{\partial \alpha},
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+\frac{\partial y}{\partial \alpha} = \frac{y-x}{1-\alpha}.
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+\frac{\partial}{\partial \alpha} f(y) = \nabla f(y)' \frac{\partial y}{\partial \alpha} = \nabla f(y)' \frac{y-x}{1-\alpha}.
+\]</div>
+<p>对不等式两边关于 <span class="arithmatex">\(\alpha\)</span> 求导，得</p>
+<div class="arithmatex">\[
+0 \le -\frac{f(z)-f(x)}{(1-\alpha)^2} + \frac{1}{1-\alpha} \nabla f(y)'(y-x).
+\]</div>
+<p>令 <span class="arithmatex">\(\alpha\to 0\)</span>，则 <span class="arithmatex">\(y\to z\)</span>，从而</p>
+<div class="arithmatex">\[
+f(z) \ge f(x) + (z-x)'\nabla f(z).
+\]</div>
+</details>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.2</span><span class="book-name">optimality condition</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空凸集，<span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 是凸函数且在 <span class="arithmatex">\(C\)</span> 上可微，则 <span class="arithmatex">\(x^*\in C\)</span> 是 <span class="arithmatex">\(\min_{x\in C} f(x)\)</span> 的解当且仅当</p>
+<div class="arithmatex">\[
+(x-x^*)'\nabla f(x^*) \ge 0, \forall x\in C.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”：设 <span class="arithmatex">\(x\in C\)</span>，<span class="arithmatex">\(\alpha\in (0,1)\)</span>，则 <span class="arithmatex">\(\alpha x + (1-\alpha)x^* \in C\)</span>，因此</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)x^*) \ge f(x^*).
+\]</div>
+<p>由凸性可知</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)x^*) \le \alpha f(x) + (1-\alpha)f(x^*),
+\]</div>
+<p>故</p>
+<div class="arithmatex">\[
+\alpha f(x) + (1-\alpha)f(x^*) \ge f(x^*).
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+f(x) - f(x^*) \ge 0.
+\]</div>
+<p>对上式两边关于 <span class="arithmatex">\(\alpha\)</span> 求导，得</p>
+<div class="arithmatex">\[
+0 \le f(x) - f(x^*) = (x-x^*)'\nabla f(x^*).
+\]</div>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”：设 <span class="arithmatex">\(x\in C\)</span>，<span class="arithmatex">\(\alpha\in [0,1]\)</span>，则 <span class="arithmatex">\(\alpha x + (1-\alpha)x^* \in C\)</span>，由凸性可知</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)x^*) \le \alpha f(x) + (1-\alpha)f(x^*).
+\]</div>
+<p>由假设可知</p>
+<div class="arithmatex">\[
+f(x) - f(x^*) \ge 0.
+\]</div>
+<p>因此，</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)x^*) \le \alpha f(x) + (1-\alpha)f(x^*) \le \alpha f(x^*) + (1-\alpha)f(x^*) = f(x^*).
+\]</div>
+</details>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.3</span><span class="book-name">projection theorem</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集。</p>
+<ul>
+<li>
+<p>对于任意 <span class="arithmatex">\(z\in \mathbb{R}^n\)</span>，存在唯一的 <span class="arithmatex">\(x^*\in C\)</span> 使得 <span class="arithmatex">\(f(x)=||x-z||^2\)</span> 在 <span class="arithmatex">\(C\)</span> 上取得最小值，<span class="arithmatex">\(x^*\)</span>称为 <span class="arithmatex">\(z\)</span> 在 <span class="arithmatex">\(C\)</span> 上的<strong>投影(projection)</strong>。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(x^*\)</span> 是 <span class="arithmatex">\(z\)</span> 在 <span class="arithmatex">\(C\)</span> 上的投影当且仅当</p>
+<div class="arithmatex">\[
+(x-x^*)'(z-x^*) \le 0, \forall x\in C.
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>: 设 <span class="arithmatex">\(\{x_k\}\subseteq C\)</span> 且 <span class="arithmatex">\(f(x_k)\to \inf_{x\in C} f(x)\)</span>，则 <span class="arithmatex">\(\{x_k\}\)</span> 有界，因此存在 <span class="arithmatex">\(\{x_{k_i}\}\subseteq \{x_k\}\)</span> 和 <span class="arithmatex">\(x^*\in \mathbb{R}^n\)</span> 使得 <span class="arithmatex">\(x_{k_i}\to x^*\)</span>。由于 <span class="arithmatex">\(C\)</span> 是闭集，故 <span class="arithmatex">\(x^*\in C\)</span>。由<span class="arithmatex">\(f\)</span>的连续性可知</p>
+<div class="arithmatex">\[
+f(x^*) = \lim_{i\to\infty} f(x_{k_i}) = \inf_{x\in C} f(x).
+\]</div>
+<p>若 <span class="arithmatex">\(y^*\in C\)</span> 且 <span class="arithmatex">\(y^*\neq x^*\)</span>，则</p>
+<div class="arithmatex">\[
+||y^*-z||^2 = ||y^*-x^* + x^*-z||^2 = ||y^*-x^*||^2 + ||x^*-z||^2 + 2(y^*-x^*)'(x^*-z) &gt; ||x^*-z||^2,
+\]</div>
+<p>因此，<span class="arithmatex">\(x^*\)</span> 是唯一的。</p>
+<p><span class="arithmatex">\((b)\)</span>: 由上一定理可知，<span class="arithmatex">\(x^*\)</span> 是 <span class="arithmatex">\(z\)</span> 在 <span class="arithmatex">\(C\)</span> 上的投影当且仅当</p>
+<div class="arithmatex">\[
+(x-x^*)'\nabla f(x^*) \ge 0, \forall x\in C.
+\]</div>
+<p>由于 <span class="arithmatex">\(\nabla f(x) = 2(x-z)\)</span>，因此结论成立。</p>
+</details>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.4</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集，<span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 上的二阶连续可微函数。</p>
+<ul>
+<li>若 <span class="arithmatex">\(\nabla^2 f(x)\)</span> 在 <span class="arithmatex">\(C\)</span> 上半正定，则 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的凸函数。</li>
+<li>若 <span class="arithmatex">\(\nabla^2 f(x)\)</span> 在 <span class="arithmatex">\(C\)</span> 上正定，则 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的严格凸函数。</li>
+<li>若 <span class="arithmatex">\(C\)</span> 是开的且 <span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的凸函数，则 <span class="arithmatex">\(\nabla^2 f(x)\)</span> 在 <span class="arithmatex">\(C\)</span> 上半正定。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：由中值定理可知对 <span class="arithmatex">\(x,y\in C\)</span>，存在 <span class="arithmatex">\(\alpha\in (0,1)\)</span> 使得</p>
+<div class="arithmatex">\[
+f(y) = f(x) + (y-x)'\nabla f(x)+\frac{1}{2}(y-x)'\nabla^2 f(x+\alpha(y-x))(y-x).
+\]</div>
+<p>由于 <span class="arithmatex">\(\nabla^2 f(x+\alpha(y-x))\)</span> 半正定，故</p>
+<div class="arithmatex">\[
+f(y) \ge f(x) + (y-x)'\nabla f(x).
+\]</div>
+<p>由前命题可知，<span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的凸函数。</p>
+<p><span class="arithmatex">\((b)\)</span>：同<span class="arithmatex">\((a)\)</span>，由于 <span class="arithmatex">\(\nabla^2 f(x+\alpha(y-x))\)</span> 正定，故</p>
+<div class="arithmatex">\[
+f(y) &gt; f(x) + (y-x)'\nabla f(x).
+\]</div>
+<p>由前命题可知，<span class="arithmatex">\(f\)</span> 是 <span class="arithmatex">\(C\)</span> 上的严格凸函数。</p>
+<p><span class="arithmatex">\((c)\)</span>：由反证法，设存在 <span class="arithmatex">\(x\in C\)</span> 和 <span class="arithmatex">\(d\in \mathbb{R}^n\)</span> 使得 <span class="arithmatex">\(d'\nabla^2 f(x)d &lt; 0\)</span>，则存在 <span class="arithmatex">\(\alpha&gt;0\)</span> 使得</p>
+<div class="arithmatex">\[
+f(x+\alpha d) &lt; f(x) + \alpha d'\nabla f(x).
+\]</div>
+<p>由于 <span class="arithmatex">\(C\)</span> 是开的，故 <span class="arithmatex">\(x+\alpha d\in C\)</span>。由前命题可知，<span class="arithmatex">\(f\)</span> 不是 <span class="arithmatex">\(C\)</span> 上的凸函数，这与假设矛盾。</p>
+</details>
+<h2 id="s4"><span class="book-secnum">§ 04</span>凸包、仿射包和相对内点</h2>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span></p>
+<p><span class="arithmatex">\(X\)</span> 中元素的一个<strong>凸组合(convex combination)</strong>是形如</p>
+<div class="arithmatex">\[
+\sum_{i=1}^k \alpha_i x_i,
+\]</div>
+<p>其中 <span class="arithmatex">\(x_i\in X\)</span>，<span class="arithmatex">\(\alpha_i\ge 0\)</span> 且 <span class="arithmatex">\(\sum_{i=1}^k \alpha_i = 1\)</span> 的向量。</p>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.2</span></p>
+<p><span class="arithmatex">\(X\)</span> 的<strong>凸包(convex hull)</strong>是包含 <span class="arithmatex">\(X\)</span> 的所有凸集的交集，记为 <span class="arithmatex">\(\text{conv}(X)\)</span>。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.3</span></p>
+<p>一个<strong>仿射集(affine set)</strong>形如 <span class="arithmatex">\(\bar{x}+S\)</span>，其中 <span class="arithmatex">\(\bar{x}\in \mathbb{R}^n\)</span>，<span class="arithmatex">\(S\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 的子空间。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.4</span></p>
+<p><span class="arithmatex">\(X\)</span> 的<strong>仿射包(affine hull)</strong>是包含 <span class="arithmatex">\(X\)</span> 的所有仿射集的交集，记为 <span class="arithmatex">\(\text{aff}(X)\)</span>。</p>
+</div>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.5</span></p>
+<p><span class="arithmatex">\(X\)</span> 中元素的一个<strong>非负线性组合(nonnegative linear combination)</strong>是形如<span class="arithmatex">\(\sum_{i=1}^k \alpha_i x_i,\)</span>其中 <span class="arithmatex">\(x_i\in X\)</span>，<span class="arithmatex">\(\alpha_i\ge 0\)</span> 的向量。</p>
+</div>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.6</span></p>
+<p><span class="arithmatex">\(X\)</span> 生成的<strong>锥(cone)</strong>是所有 <span class="arithmatex">\(X\)</span> 中元素的非负线性组合的集合，记为 <span class="arithmatex">\(\text{cone}(X)\)</span>。</p>
+</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.7</span><span class="book-name">Caratheodory&#x27;s theorem</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 的子集。</p>
+<ul>
+<li>任意非零元 <span class="arithmatex">\(x\in \text{cone}(X)\)</span> 可表示为 <span class="arithmatex">\(X\)</span> 中至多 <span class="arithmatex">\(n\)</span> 个元素的非负线性组合。</li>
+<li>任意非零元 <span class="arithmatex">\(x\in \text{conv}(X)\)</span> 可表示为 <span class="arithmatex">\(X\)</span> 中至多 <span class="arithmatex">\(n+1\)</span> 个元素的凸组合。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：设 <span class="arithmatex">\(x\in \text{cone}(X)\)</span>，则存在 <span class="arithmatex">\(x_i\in X\)</span> 和 <span class="arithmatex">\(\alpha_i\ge 0\)</span> 使得</p>
+<div class="arithmatex">\[
+x = \sum_{i=1}^m \alpha_i x_i.
+\]</div>
+<p>若 <span class="arithmatex">\(m\le n\)</span>，则结论成立。若 <span class="arithmatex">\(m&gt;n\)</span>，则 <span class="arithmatex">\(\{x_1,\cdots,x_m\}\)</span> 线性相关，故存在不全为零的 <span class="arithmatex">\(\beta_i\)</span> 使得</p>
+<div class="arithmatex">\[
+\sum_{i=1}^m \beta_i x_i = 0.
+\]</div>
+<p>设 <span class="arithmatex">\(I=\{i|\beta_i&gt;0\}\)</span>，<span class="arithmatex">\(J=\{i|\beta_i&lt;0\}\)</span>，则 <span class="arithmatex">\(I\cup J=\{1,\cdots,m\}\)</span>。由于 <span class="arithmatex">\(x\neq 0\)</span>，故 <span class="arithmatex">\(I\neq \emptyset\)</span>。令</p>
+<div class="arithmatex">\[
+\theta = \min_{i\in I} \frac{\alpha_i}{\beta_i} &gt; 0,
+\]</div>
+<p>则对任意 <span class="arithmatex">\(i\in I\)</span>，都有 <span class="arithmatex">\(\alpha_i - \theta \beta_i \ge 0\)</span>，且存在 <span class="arithmatex">\(i_0\in I\)</span> 使得 <span class="arithmatex">\(\alpha_{i_0} - \theta \beta_{i_0} = 0\)</span>。因此，</p>
+<div class="arithmatex">\[
+x = \sum_{i=1}^m \alpha_i x_i = \sum_{i=1}^m (\alpha_i - \theta \beta_i) x_i,
+\]</div>
+<p>其中 <span class="arithmatex">\(\alpha_i - \theta \beta_i \ge 0\)</span> 且 <span class="arithmatex">\(\alpha_{i_0} - \theta \beta_{i_0} = 0\)</span>。由此可去掉 <span class="arithmatex">\(x_{i_0}\)</span>，得到 <span class="arithmatex">\(x\)</span> 的一个新的表示。反复进行该过程，直到表示中不超过 <span class="arithmatex">\(n\)</span> 个元素为止。</p>
+<p><span class="arithmatex">\((b)\)</span>：将 <span class="arithmatex">\((a)\)</span> 应用于 <span class="arithmatex">\(X' = \{(x,1)|x\in X\}\subseteq \mathbb{R}^{n+1}\)</span> 即可。</p>
+</details>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.8</span></p>
+<p>紧集的凸包是紧集。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(X\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的紧集，<span class="arithmatex">\(\{y_k\}\subseteq \text{conv}(X)\)</span> 且 <span class="arithmatex">\(y_k\to y\)</span>，则存在 <span class="arithmatex">\(x_{k,i}\in X\)</span> 和 <span class="arithmatex">\(\alpha_{k,i}\ge 0\)</span> 使得</p>
+<div class="arithmatex">\[
+y_k = \sum_{i=1}^{m_k} \alpha_{k,i} x_{k,i}, \quad \sum_{i=1}^{m_k} \alpha_{k,i} = 1.
+\]</div>
+<p>由Caratheodory定理可知，<span class="arithmatex">\(m_k\le n+1\)</span>。因此，存在 <span class="arithmatex">\(m\le n+1\)</span> 和 <span class="arithmatex">\(\{y_{k_j}\}\subseteq \{y_k\}\)</span> 使得</p>
+<div class="arithmatex">\[
+y_{k_j} = \sum_{i=1}^m \alpha_{k_j,i} x_{k_j,i}, \quad \sum_{i=1}^m \alpha_{k_j,i} = 1.
+\]</div>
+<p>由于 <span class="arithmatex">\(X\)</span> 是紧集，故存在 <span class="arithmatex">\(\{x_i\}\subseteq X\)</span> 和 <span class="arithmatex">\(\{\alpha_i\}\)</span> 使得 <span class="arithmatex">\(x_{k_j,i}\to x_i\)</span> 和 <span class="arithmatex">\(\alpha_{k_j,i}\to \alpha_i\)</span>。由 <span class="arithmatex">\(\sum_{i=1}^m \alpha_{k_j,i} = 1\)</span> 可知 <span class="arithmatex">\(\sum_{i=1}^m \alpha_i = 1\)</span>。因此，</p>
+<div class="arithmatex">\[
+y = \lim_{j\to\infty} y_{k_j} = \sum_{i=1}^m \alpha_i x_i,
+\]</div>
+<p>即 <span class="arithmatex">\(y\in \text{conv}(X)\)</span>。</p>
+</details>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.9</span></p>
+<p>称 <span class="arithmatex">\(x\)</span> 是 <span class="arithmatex">\(C\)</span> 的<strong>相对内点(relative interior)</strong>，记为 <span class="arithmatex">\(\text{ri}(C)\)</span>，若 <span class="arithmatex">\(x\)</span> 是一个 <span class="arithmatex">\(C\)</span> 在 <span class="arithmatex">\(\text{aff}(C)\)</span> 中的内点。</p>
+</div>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.10</span></p>
+<p>记 <span class="arithmatex">\(\text{ri}(C)\)</span> 为 <span class="arithmatex">\(C\)</span> 所有相对内点的集合。</p>
+</div>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.11</span><span class="book-name">Line Segment Principle</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空凸集，则对任意 <span class="arithmatex">\(x\in \text{ri}(C)\)</span> 和 <span class="arithmatex">\(\bar{x}\in \text{cl}(C)\)</span>，都有</p>
+<div class="arithmatex">\[
+\alpha x + (1-\alpha)\bar{x} \in \text{ri}(C), \forall \alpha\in [0,1).
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>固定 <span class="arithmatex">\(\alpha \in (0, 1]\)</span>。考虑 <span class="arithmatex">\(x_\alpha = \alpha x + (1 - \alpha)\bar{x}\)</span>。</p>
+<p>令 <span class="arithmatex">\(L\)</span> 为平行于 <span class="arithmatex">\(\text{aff}(C)\)</span> 的子空间。定义 <span class="arithmatex">\(B_L(0, \epsilon) := \{z \in L \mid \|z\| &lt; \epsilon\}\)</span>。</p>
+<p>由于 <span class="arithmatex">\(\bar{x} \in \text{cl}(C)\)</span>，对于所有 <span class="arithmatex">\(\epsilon &gt; 0\)</span>，有 <span class="arithmatex">\(\bar{x} \in C + B_L(0, \epsilon)\)</span>。那么</p>
+<div class="arithmatex">\[
+\begin{aligned}
+B(x_\alpha; \epsilon) \cap \text{aff}(C)
+&amp;= \{\alpha x + (1 - \alpha)\bar{x}\} + B_L(0; \epsilon) \\
+&amp;\subset \{\alpha x\} + (1 - \alpha)C + (2 - \alpha)B_L(0; \epsilon) \\
+&amp;= (1 - \alpha)C + \alpha \left[x + B_L\left(0; \frac{2 - \alpha}{\alpha}\epsilon\right)\right]
+\end{aligned}
+\]</div>
+<p>由于 <span class="arithmatex">\(x \in \text{ri}(C)\)</span>，对于足够小的 <span class="arithmatex">\(\epsilon\)</span>，有 <span class="arithmatex">\(x + B_L\left(0; \frac{2 - \alpha}{\alpha}\epsilon\right) \subset C\)</span>。</p>
+<p>因此 <span class="arithmatex">\(B(x_\alpha; \epsilon) \cap \text{aff}(C) \subset \alpha C + (1 - \alpha)C = C\)</span>（因为 <span class="arithmatex">\(C\)</span> 是凸集）。所以，<span class="arithmatex">\(x_\alpha \in \text{ri}(C)\)</span>。</p>
+</details>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.12</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是非空凸集。</p>
+<ul>
+<li><span class="arithmatex">\(\text{ri}(C)\)</span> 是非空凸集，且其仿射包与 <span class="arithmatex">\(C\)</span> 相同。</li>
+<li><strong>Prolongation Lemma</strong>：<span class="arithmatex">\(x\in \text{ri}(C)\)</span> 当且仅当对任意以 <span class="arithmatex">\(x\)</span> 为端点的所有线段可以延伸超过 <span class="arithmatex">\(x\)</span> 的另一端点而仍在 <span class="arithmatex">\(C\)</span> 内。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：设 <span class="arithmatex">\(0\in C\)</span>。取 <span class="arithmatex">\(m\)</span> 个线性独立向量 <span class="arithmatex">\(z_1,\cdots,z_m\in C\)</span>，其中 <span class="arithmatex">\(m\)</span> 是 <span class="arithmatex">\(\text{aff}(C)\)</span> 的维数，设</p>
+<div class="arithmatex">\[
+X=\left\{ \sum_{i=1}^m \alpha_i z_i\Big| \sum_{i=1}^m \alpha_i&lt;1,\alpha_i&gt;0,i=1,\cdots, m \right\}
+\]</div>
+<p>则 <span class="arithmatex">\(X\subseteq \text{ri}(C)\)</span> 且 <span class="arithmatex">\(\text{aff}(X)=\text{aff}(C)\)</span>。因此，<span class="arithmatex">\(\text{ri}(C)\)</span> 是非空的。由凸性可知，<span class="arithmatex">\(\text{ri}(C)\)</span> 是凸集。</p>
+<p><span class="arithmatex">\((b)\)</span>：必要性显然。充分性：任取 <span class="arithmatex">\(\bar{x}\in C\)</span> ，由 Line Segment Principle 可知</p>
+<div class="arithmatex">\[
+\alpha x + (1-\alpha)\bar{x} \in \text{ri}(C), \forall \alpha\in [0,1).
+\]</div>
+<p>因此，<span class="arithmatex">\(x\in \text{ri}(C)\)</span>。</p>
+</details>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.13</span></p>
+<p>一个凹函数 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 在 <span class="arithmatex">\(X\)</span> 上的最小值在 <span class="arithmatex">\(x^*\in \text{ri}(X)\)</span> 处取得，则 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上为常值。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>反证法，设存在 <span class="arithmatex">\(x\in X\)</span> 使得 <span class="arithmatex">\(f(x)&gt;f(x^*)\)</span>。 由 Line Segment Principle 可知</p>
+<div class="arithmatex">\[
+\alpha x + (1-\alpha)x^* \in \text{ri}(X), \forall \alpha\in [0,1).
+\]</div>
+<p>由凸性可知</p>
+<div class="arithmatex">\[
+f(\alpha x + (1-\alpha)x^*) \le \alpha f(x) + (1-\alpha)f(x^*) &lt; f(x^*),
+\]</div>
+<p>矛盾。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 4.14</span></p>
+<p>一个非常值线性函数在其定义域的相对内点上没有极值。</p>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.15</span></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\text{cl}(C)=\text{cl}(\text{ri}(C))\)</span> 且 <span class="arithmatex">\(\text{ri}(\text{cl}(C))=\text{ri}(C)\)</span>。</p>
+</li>
+<li>
+<p>设 <span class="arithmatex">\(\bar{C}\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集，则</p>
+<ul>
+<li><span class="arithmatex">\(C\)</span> 和 <span class="arithmatex">\(\bar{C}\)</span> 有相同的相对内点；</li>
+<li><span class="arithmatex">\(C\)</span> 和 <span class="arithmatex">\(\bar{C}\)</span> 有相同的闭包；</li>
+<li><span class="arithmatex">\(\text{ri}(C)\subset \bar{C}\subset \text{cl}(C)\)</span>。</li>
+</ul>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：由定义可知 <span class="arithmatex">\(\text{cl}(\text{ri}(C))\subseteq \text{cl}(C)\)</span>。反过来，设 <span class="arithmatex">\(\bar{x}\in \text{cl}(C)\)</span>，<span class="arithmatex">\(x\in \text{ri}(C)\)</span>，则由 Line Segment Principle 可知</p>
+<div class="arithmatex">\[
+\alpha x + (1-\alpha)\bar{x} \in \text{ri}(C), \forall \alpha\in (0,1].
+\]</div>
+<p>因此，<span class="arithmatex">\(\bar{x}\in \text{cl}(\text{ri}(C))\)</span>，从而 <span class="arithmatex">\(\text{cl}(C)\subseteq \text{cl}(\text{ri}(C))\)</span>。</p>
+<p>其余同理。</p>
+</details>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.16</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空凸集且 <span class="arithmatex">\(A\)</span> 是 <span class="arithmatex">\(m\times n\)</span> 矩阵，则</p>
+<ul>
+<li><span class="arithmatex">\(A\cdot (\text{ri}(C))=\text{ri}(A\cdot C)\)</span>；</li>
+<li><span class="arithmatex">\(A\cdot (\text{cl}(C))\subset \text{cl}(A\cdot C)\)</span>。若 <span class="arithmatex">\(C\)</span> 是有界的，则等号成立。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：由 <span class="arithmatex">\(C\)</span> 中(关于仿射包)的邻域映射为 <span class="arithmatex">\(A\cdot C\)</span> 中的邻域即得。</p>
+<p><span class="arithmatex">\((b)\)</span>：我们有 <span class="arithmatex">\(A\cdot \text{cl}(C)\subseteq \text{cl}(A\cdot C)\)</span>，这是因为对序列 <span class="arithmatex">\(\left\{x_k\right\}\subset C\)</span>，若 <span class="arithmatex">\(x_k\to x\in \text{cl}(C)\)</span>，则 <span class="arithmatex">\(Ax_k\to Ax\in \text{cl}(A\cdot C)\)</span>。</p>
+<p>反过来，设 <span class="arithmatex">\(C\)</span> 是有界的，取任意 <span class="arithmatex">\(z\in \text{cl}(A\cdot C)\)</span>，则存在 <span class="arithmatex">\(\{x_k\}\subseteq A\cdot C\)</span> 使得 <span class="arithmatex">\(x_k\to z\)</span>。由 <span class="arithmatex">\(C\)</span> 有界可知存在 <span class="arithmatex">\(\{x_{k_j}\}\subseteq \{x_k\}\)</span> 和 <span class="arithmatex">\(x\in \mathbb{R}^n\)</span> 使得 <span class="arithmatex">\(x_{k_j}\to x\)</span>。由于 <span class="arithmatex">\(C\)</span> 是闭集，故 <span class="arithmatex">\(x\in C\)</span>，于是有 <span class="arithmatex">\(z=Ax\)</span>。因此，<span class="arithmatex">\(z\in A\cdot \text{cl}(C)\)</span>。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.17</span></p>
+<p>设 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空凸集，则</p>
+<ul>
+<li>
+<div class="arithmatex">\[
+\text{ri}(C_1)+\text{ri}(C_2)=\text{ri}(C_1+C_2);
+\]</div>
+<div class="arithmatex">\[
+\text{cl}(C_1)+\text{cl}(C_2)\subset \text{cl}(C_1+C_2).
+\]</div>
+<p>若 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 都是有界的，则等号成立。</p>
+</li>
+<li>
+<div class="arithmatex">\[
+\text{ri}(C_1)\cap \text{ri}(C_2)\subset \text{ri}(C_1\cap C_2)\quad \text{cl}(C_1\cap C_2)\subset \text{cl}(C_1)\cap\text{cl}( C_2).
+\]</div>
+<p>若 <span class="arithmatex">\(\text{ri}(C_1)\cap \text{ri}(C_2)\neq \emptyset\)</span>，则等号成立。</p>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>证明留给读者。</p>
+</details>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.18</span><span class="book-name">Cartesian product</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^{n+m}\)</span> 中的非空凸集，对 <span class="arithmatex">\(x\in \mathbb{R}^n\)</span>，定义</p>
+<div class="arithmatex">\[
+C_x = \{y\in \mathbb{R}^m | (x,y)\in C\}.
+\]</div>
+<p>与</p>
+<div class="arithmatex">\[
+D=\left\{ x\Big| C_x\neq \emptyset\right\}
+\]</div>
+<p>则</p>
+<div class="arithmatex">\[
+\text{ri}(C)=\left\{(x,y)|x\in \text{ri}(D), y\in \text{ri}(C_x)\right\}
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由于 <span class="arithmatex">\(D\)</span> 是 <span class="arithmatex">\(C\)</span> 的投影，故</p>
+<div class="arithmatex">\[
+\text{ri}(D)=\left\{x\Big| \exists y\in \mathbb{R}^m ,(x,y)\in \text{ri}(C)\right\}
+\]</div>
+<p>于是</p>
+<div class="arithmatex">\[
+\text{ri}(C)=\bigcup_{x\in \text{ri}(D)}(M_x\cap \text{ri}(C))
+\]</div>
+<p>其中 <span class="arithmatex">\(M_x=\{(x,y)|y\in \mathbb{R}^m\}\)</span>。对任意 <span class="arithmatex">\(x\in \text{ri}(D)\)</span>，<span class="arithmatex">\(M_x\cap \text{ri}(C)=\text{ri}(M_x\cap C)=\left\{ (x,y)\Big| y\in \text{ri}(C_x)\right\}\)</span></p>
+</details>
+<h2 id="s5"><span class="book-secnum">§ 05</span>凸函数的性质</h2>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.1</span></p>
+<p>若 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 是凸的，则 <span class="arithmatex">\(f\)</span> 连续。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们来证明 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(0\)</span> 处连续。由凸性，<span class="arithmatex">\(f\)</span> 在单位正方体上有界且最大值在顶点处取得。</p>
+<p>考虑 <span class="arithmatex">\(x_k\rightarrow 0\)</span>，令 <span class="arithmatex">\(y_k=x_k/\|x_k\|_\infty\)</span>，<span class="arithmatex">\(z_k=-x_k/\|x_k\|_\infty\)</span>，则</p>
+<div class="arithmatex">\[
+f(x_k)\le (1-\|x_k\|_\infty ) f(0)+\|x_k\|_\infty f(y_k)
+\]</div>
+<div class="arithmatex">\[
+f(0)\le \frac{\|x_k\|_\infty }{\|x_k\|_\infty +1}f(z_k)+\frac{1}{\|x_k\|_\infty +1}f(x_k)
+\]</div>
+<p>令 <span class="arithmatex">\(k\rightarrow \infty\)</span> 即得。</p>
+</details>
+<p>不仅如此，我们还可以将连续性延拓到 <span class="arithmatex">\(\text{ri} (\text{dom}(f))\)</span> 上。</p>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.2</span></p>
+<p>函数 <span class="arithmatex">\(f:X\rightarrow [-\infty,+\infty]\)</span> 的<strong>闭包</strong>为函数 <span class="arithmatex">\(\text{cl} f:\mathbb{R}^n\rightarrow [-\infty,+\infty]\)</span> 定义为</p>
+<div class="arithmatex">\[
+\text{epi}(\text{cl} f)=\text{cl}(\text{epi}(f)).
+\]</div>
+</div>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.3</span></p>
+<p><span class="arithmatex">\(f\)</span> 的 <strong>凸包</strong> 为函数 <span class="arithmatex">\(\check{\text{cl}}f\)</span> 定义为</p>
+<div class="arithmatex">\[
+\text{epi}(\check{\text{cl}} f)=\text{cl}(\text{conv}(\text{epi}(f))).
+\]</div>
+</div>
+<div id="prop-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.4</span></p>
+<p>对任意 <span class="arithmatex">\(f:X\rightarrow [-\infty,+\infty]\)</span>，</p>
+<div class="arithmatex">\[
+\inf_{x\in X} f(x)=\inf _{x\in \mathbb{R}^n}(\text{cl} f)(x)=\inf_{x\in \mathbb{R}^n}(\check{\text{cl}} f)(x).
+\]</div>
+</div>
+<div id="prop-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.5</span></p>
+<p>对任意 <span class="arithmatex">\(f:X\rightarrow [-\infty,+\infty]\)</span>，则</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\text{cl} f\)</span>(或 <span class="arithmatex">\(\check{\text{cl}} f\)</span>) 是最大的闭(或闭凸)函数满足被 <span class="arithmatex">\(f\)</span> 优化。</p>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(f\)</span> 是凸的，则 <span class="arithmatex">\(\text{cl} f\)</span> 是凸的。其 proper 当且仅当 <span class="arithmatex">\(f\)</span> proper。且</p>
+<div class="arithmatex">\[
+(\text{cl}f)(x)=f(x), \forall x\in \text{ri}(\text{dom}(f)).
+\]</div>
+<p>且若 <span class="arithmatex">\(x\in \text{ri}(\text{dom}(f))\)</span>，<span class="arithmatex">\(y\in \text{dom}(\text{cl}f)\)</span>，则</p>
+<div class="arithmatex">\[
+(\text{cl}f)(y)=\lim_{\alpha\rightarrow 0^+} f(y+\alpha(x-y)).
+\]</div>
+</li>
+</ul>
+</div>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.6</span></p>
+<p>给定非空凸集 <span class="arithmatex">\(C\)</span>，向量 <span class="arithmatex">\(d\)</span> 称为 <strong>回收方向(a direction of recession)</strong>，若从任意点 <span class="arithmatex">\(x\in C\)</span> 沿 <span class="arithmatex">\(d\)</span> 方向出发的射线都包含在 <span class="arithmatex">\(C\)</span> 中，即</p>
+<div class="arithmatex">\[
+x+\alpha d\in C, \forall x\in C, \forall \alpha\ge 0.
+\]</div>
+</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.7</span></p>
+<p><span class="arithmatex">\(C\)</span> 的<strong>回收锥(recession cone)</strong> 定义为所有回收方向构成的集合，记为 <span class="arithmatex">\(R_C\)</span>。</p>
+</div>
+<p>容易看到 <span class="arithmatex">\(R_C\)</span> 是包含原点的锥。</p>
+<div id="prop-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.8</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是非空闭凸集。</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(R_C\)</span> 是闭凸锥。</p>
+</li>
+<li>
+<p>向量 <span class="arithmatex">\(d\in R_C\)</span> 当且仅当存在向量 <span class="arithmatex">\(x\in C\)</span> 使得 <span class="arithmatex">\(x+\alpha d\in C, \forall \alpha\ge 0\)</span>。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(R_C\)</span> 含非零向量当且仅当 <span class="arithmatex">\(C\)</span> 是无界的。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(C\)</span> 和 <span class="arithmatex">\(\text{ri}(C)\)</span> 有相同的回收锥。</p>
+</li>
+<li>
+<p>若 <span class="arithmatex">\(D\)</span> 为另一个闭凸集满足 <span class="arithmatex">\(C\cap D\neq \emptyset\)</span>，则</p>
+<div class="arithmatex">\[
+R_{C\cap D}=R_C\cap R_D
+\]</div>
+<p>更一般的对一族闭凸集 <span class="arithmatex">\(\{C_i\}_{i\in I}\)</span>，若 <span class="arithmatex">\(\cap_{i\in I} C_i\neq \emptyset\)</span>，则</p>
+<div class="arithmatex">\[
+R_{\cap_{i\in I} C_i}=\cap_{i\in I} R_{C_i}.
+\]</div>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary><span class="arithmatex">\((b)\)</span>的证明</summary>
+<p>设 <span class="arithmatex">\(d\neq 0\)</span>，存在 <span class="arithmatex">\(x\in C\)</span> 使得 <span class="arithmatex">\(x+\alpha d\in C, \forall \alpha\ge 0\)</span>。固定 <span class="arithmatex">\(\bar{x}\in C,\alpha&gt;0\)</span>，我们来证明 <span class="arithmatex">\(\bar{x}+\alpha d\in C\)</span>。通过单位化 <span class="arithmatex">\(d\)</span> 只需证明 <span class="arithmatex">\(\bar{x}+d\in C\)</span>。</p>
+<p>对 <span class="arithmatex">\(k=1,2\cdots\)</span>，令</p>
+<div class="arithmatex">\[
+z_k=x_k+kd,d_k=\frac{(z_k-\bar{x})}{\|z_k-\bar{x}\|}\|d\|
+\]</div>
+<p>我们有</p>
+<div class="arithmatex">\[
+\frac{d_k}{\|d_k\|}=\frac{z_k-\bar{x}}{\|z_k-\bar{x}\|}\frac{d}{\|d\|}+\frac{x-\bar{x}}{\|z_k-\bar{x}\|},\frac{z_k-\bar{x}}{\|z_k-\bar{x}\|}\rightarrow 1,\frac{x-\bar{x}}{\|z_k-\bar{x}\|}\rightarrow 0
+\]</div>
+<p>故 <span class="arithmatex">\(d_k\rightarrow d\)</span> 且 <span class="arithmatex">\(\bar{x}+d_k\rightarrow \bar{x}+d\)</span>。由于 <span class="arithmatex">\(C\)</span> 是闭凸集，故 <span class="arithmatex">\(\bar{x}+d\in C\)</span>。</p>
+</details>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.9</span></p>
+<p>凸集 <span class="arithmatex">\(C\)</span> 的<strong>线性空间(lineality space)</strong> 定义为 <span class="arithmatex">\(C\)</span> 的回收锥与其负回收锥的交集，记为</p>
+<div class="arithmatex">\[
+L_C=R_C\cap (-R_C).
+\]</div>
+</div>
+<p>若 <span class="arithmatex">\(d\in L_C\)</span>，这表明 <span class="arithmatex">\(C\)</span> 包含经过任意点 <span class="arithmatex">\(x\in C\)</span> 的方向为 <span class="arithmatex">\(d\)</span> 的直线。由此我们可以将凸集 <span class="arithmatex">\(C\)</span> 分解为</p>
+<div class="arithmatex">\[
+C=L_C +(C\cap L_C^\perp).
+\]</div>
+<p>这使得我们可以将证明关于 <span class="arithmatex">\(C\)</span> 的结论归结为关于 <span class="arithmatex">\(C\cap L_C^\perp\)</span> 的结论。该分解将 <span class="arithmatex">\(L_C\)</span> 换成其子空间 <span class="arithmatex">\(S\)</span> 同样成立。</p>
+<p>接下来我们的目标是刻画凸函数的单调递减方向。</p>
+<div id="prop-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.10</span></p>
+<p>设 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 是闭且 proper 的凸函数，考虑水平集 <span class="arithmatex">\(V_\gamma=\left\{ x\Big| f(x)\le \gamma\right\}\)</span>，其中 <span class="arithmatex">\(\gamma\)</span> 是标量，则：</p>
+<ul>
+<li>
+<p>所有非空水平集 <span class="arithmatex">\(V_\gamma\)</span> 有相同的回收锥：</p>
+<div class="arithmatex">\[
+R_{V_\gamma}=\left\{ d\Big| (d,0)\in R_{\text{epi}(f)}\right\}.
+\]</div>
+</li>
+<li>
+<p>若某个非空水平集 <span class="arithmatex">\(V_\gamma\)</span> 是紧的，则所有水平集都是紧的。</p>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：显然。</p>
+<p><span class="arithmatex">\((b)\)</span>：由<span class="arithmatex">\((a)\)</span>即得。</p>
+</details>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.11</span></p>
+<p>对闭且 proper 的凸函数 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span>，<span class="arithmatex">\(V_\gamma\)</span> 的回收锥称为称为 <span class="arithmatex">\(f\)</span> 的<strong>回收锥(recession cone)</strong>，记为 <span class="arithmatex">\(R_f\)</span>。同上定义 <span class="arithmatex">\(d\in R_f\)</span> 为 <span class="arithmatex">\(f\)</span> 的<strong>回收方向</strong>，<span class="arithmatex">\(L_f=R_f\cap (-R_f)\)</span> 为 <span class="arithmatex">\(f\)</span> 的<strong>线性空间</strong>，<span class="arithmatex">\(d\in L_f\)</span> 称为 <span class="arithmatex">\(f\)</span> 的<strong>不变空间</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 5.12</span></p>
+<p>对半正定矩阵 <span class="arithmatex">\(Q\)</span>，函数 <span class="arithmatex">\(f(x)=x'Qx+a'x+b\)</span>，我们有</p>
+<div class="arithmatex">\[
+R_f=\left\{ d\Big|Qd=0,a'd\le 0\right\},L_f=\left\{d\Big| Qd=0,a'd=0\right\}.
+\]</div>
+</div>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.13</span></p>
+<p>定义 <span class="arithmatex">\(f\)</span> 的<strong>回收函数(recession function)</strong> 为 <span class="arithmatex">\(r_f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span>，其满足</p>
+<div class="arithmatex">\[
+\text{epi}(r_f)=R_{\text{epi}(f)}.
+\]</div>
+</div>
+<div id="prop-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.14</span></p>
+<div class="arithmatex">\[
+R_f=\left\{ d\Big| r_f(d)\le 0\right\},L_f=\left\{ d\Big| r_f(d)=r_f(-d)=0\right\}.
+\]</div>
+</div>
+<div id="prop-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 5.15</span></p>
+<div class="arithmatex">\[
+r_f(d)=\sup_\alpha \frac{f(x+\alpha d)-f(x)}{\alpha}=\lim_{\alpha\rightarrow +\infty}\frac{f(x+\alpha d)-f(x)}{\alpha}, \forall x\in \text{dom}(f).
+\]</div>
+</div>
+<p>因此 <span class="arithmatex">\(r_f(d)\)</span> 描述了 <span class="arithmatex">\(f\)</span> 的渐进线。事实上若 <span class="arithmatex">\(f\)</span> 可微，</p>
+<div class="arithmatex">\[
+r_f(d)=\lim_{\alpha\rightarrow +\infty} \nabla f(x+\alpha d)'d, \forall x,d \in \mathbb{R}^n.
+\]</div>
+<h2 id="s6"><span class="book-secnum">§ 06</span>局部与全局最小值</h2>
+<p>考虑在集合 <span class="arithmatex">\(X\subset \mathbb{R}^n\)</span> 上极小化 <span class="arithmatex">\(f:\mathbb{R}^n \rightarrow \mathbb{R}\)</span> 的问题。</p>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.1</span></p>
+<ul>
+<li>称 <span class="arithmatex">\(x\)</span> 是<strong>可行的(feasible)</strong> 若 <span class="arithmatex">\(x\in X\cap \text{dom}(f)\)</span> 。</li>
+<li>称 <span class="arithmatex">\(x^*\)</span> 是 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的(全局) <strong>最小值点(minimum)</strong>，若 <span class="arithmatex">\(x^*\)</span> 可行且 <span class="arithmatex">\(f(x^*)=\inf_{x\in X} f(x)\)</span>。</li>
+<li>称 <span class="arithmatex">\(x^*\)</span> 是 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的<strong>局部最小值点(local minimum)</strong>，若存在某个 <span class="arithmatex">\(\epsilon&gt;0\)</span> 使得 <span class="arithmatex">\(x^*\)</span> 是 <span class="arithmatex">\(X\cap B(x^*;\epsilon)\)</span> 上的最小值点。</li>
+</ul>
+</div>
+<div id="prop-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.2</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 是凸集且 <span class="arithmatex">\(f\)</span> 是凸的，则</p>
+<ul>
+<li>任意局部最小值点都是全局最小值点；</li>
+<li>若 <span class="arithmatex">\(f\)</span> 是严格凸的，则最小值点唯一。</li>
+</ul>
+</div>
+<p>下面我们考虑优化问题的解的存在性问题。</p>
+<p>注意到 <span class="arithmatex">\(f\)</span> 最小值点的集合是 <span class="arithmatex">\(f\)</span> 的水平集的交集。若某个水平集是紧的，则所有水平集都是紧的，且最小值点存在。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.3</span><span class="book-name">An Extension of the) Weierstrass&#x27;s theorem</span></p>
+<p><span class="arithmatex">\(f\)</span> 最小值点的集合是非空且紧的，若 <span class="arithmatex">\(X\)</span> 是闭的，<span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上下半连续，且下述条件有一者成立：</p>
+<ul>
+<li><span class="arithmatex">\(X\)</span> 有界；</li>
+<li>某个水平集 <span class="arithmatex">\(V_\gamma=\{x\in X|f(x)\le \gamma\}\)</span> 是非空的且有界。</li>
+<li>对任意子序列 <span class="arithmatex">\(\{x_k\}\subset X\)</span>，若 <span class="arithmatex">\(\|x_k\|\rightarrow +\infty\)</span>，则 <span class="arithmatex">\(f(x_k)\rightarrow +\infty\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>在每种情形下，<span class="arithmatex">\(f\)</span> 的水平集 <span class="arithmatex">\(\cap X\)</span> 均为紧集。</p>
+</details>
+<div id="prop-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.4</span><span class="book-name">Weierstrass&#x27; Theorem specialized to convex function</span></p>
+<p>设 <span class="arithmatex">\(X\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集，<span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 是闭且凸的函数满足 <span class="arithmatex">\(X\cap \text{dom}(f)\neq \emptyset\)</span>，则 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的最小值点存在当且仅当 <span class="arithmatex">\(R_X\cap R_f=\{0\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(f^*=\inf_{x\in X} f(x)\)</span>。注意到由于 <span class="arithmatex">\(X\cap \text{dom}(f)\neq \emptyset\)</span>，故 <span class="arithmatex">\(f^*&lt;\infty\)</span>。设 <span class="arithmatex">\(\left\{\gamma_k\right\}\)</span> 是一个递减到 <span class="arithmatex">\(f^*\)</span> 的数列，考虑</p>
+<div class="arithmatex">\[
+V_k=\{x\in X|f(x)\le \gamma_k\}
+\]</div>
+<p>则 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的最小值点为</p>
+<div class="arithmatex">\[
+X^*=\cap_{k=1}^\infty (X\cap V_k).
+\]</div>
+<p>其中 <span class="arithmatex">\(X\cap V_k\)</span> 是非空的且 <span class="arithmatex">\(R_f\cap R_X\)</span> 是其回收锥，当 <span class="arithmatex">\(X\neq 0\)</span> 时这也是 <span class="arithmatex">\(X^*\)</span> 的回收锥。这表明 <span class="arithmatex">\(X^*\)</span> 是非空且紧的当且仅当 <span class="arithmatex">\(R_f\cap R_X=\{0\}\)</span>。</p>
+</details>
+<div id="prop-23" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.5</span></p>
+<p>设 <span class="arithmatex">\(f_i:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span>，<span class="arithmatex">\(i=1,2\)</span> 是闭且 proper 的凸函数，且满足</p>
+<div class="arithmatex">\[
+f=f_1+\cdots +f_m
+\]</div>
+<p>是 proper 的。若存在一个 <span class="arithmatex">\(f_i\)</span> 满足 <span class="arithmatex">\(r_{f_i}(d)=\infty\)</span> 对任意非零 <span class="arithmatex">\(d\in R_{f}\)</span>，则 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(\mathbb{R}^n\)</span> 上的最小值点集非空且紧。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由假设可知 <span class="arithmatex">\(r_f(d)=\infty\)</span> 对任意非零 <span class="arithmatex">\(d\in R_f\)</span>。因此，<span class="arithmatex">\(R_f=\{0\}\)</span>，由 Weierstrass 定理即得。</p>
+</details>
+<p>将 <span class="arithmatex">\(f\)</span> 改为 <span class="arithmatex">\(\max\{f_1,\cdots,f_m\}\)</span> 结论同样成立。</p>
+<p>考虑一个基础的问题：给定 <span class="arithmatex">\(\mathbb{R}^n\)</span> 上的非空闭集序列 <span class="arithmatex">\(\left\{C_k\right\}\)</span>  满足 <span class="arithmatex">\(C_{k+1}\subseteq C_k\)</span>，则 <span class="arithmatex">\(\cap_{k=1}^\infty C_k\)</span> 是否非空？由此可以借由 <span class="arithmatex">\(X\cap V_k\)</span> 的交集非空判断 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的最小值点集是否非空。</p>
+<p>还有一个相关的问题：若 <span class="arithmatex">\(C\)</span> 是闭的，<span class="arithmatex">\(A\)</span> 是矩阵，则 <span class="arithmatex">\(AC\)</span> 是否是闭的？更特别的若 <span class="arithmatex">\(C_1,C_2\)</span> 是闭的，<span class="arithmatex">\(C_1+C_2\)</span> 是否是闭的？注意到 <span class="arithmatex">\(C_1+C_2= A(C_1\times C_2)\)</span>，其中 <span class="arithmatex">\(A(x_1,x_2)=x_1+x_2\)</span>。</p>
+<div id="prop-24" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.6</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是非空闭凸集，<span class="arithmatex">\(A\)</span> 是矩阵，<span class="arithmatex">\(N(A)\)</span> 是其零空间。则 <span class="arithmatex">\(AC\)</span> 是闭的当且仅当 <span class="arithmatex">\(N(A)\cap R_C=\{0\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\left\{y_k\right\}\subset AC\)</span> 满足 <span class="arithmatex">\(y_k\rightarrow \bar{y}\)</span>。定义 <span class="arithmatex">\(C_k=C\cap N_k\)</span> ，其中</p>
+<div class="arithmatex">\[
+N_k=\left\{x\Big| Ax\in W_k\right\},\quad W_k=\left\{z\Big| \|z-\bar{y}\|\le \|y_k-\bar{y}\| \right\}
+\]</div>
+<p>我们有 <span class="arithmatex">\(R_{N_k}=N(A)\)</span>，故 <span class="arithmatex">\(C_k\)</span> 是紧的，且 <span class="arithmatex">\(C_k\)</span> 的交不空。取 <span class="arithmatex">\(x\in \cap_{k=1}^\infty C_k\)</span>，则 <span class="arithmatex">\(Ax=\bar{y}\)</span>，从而 <span class="arithmatex">\(\bar{y}\in AC\)</span>。</p>
+</details>
+<p>于是我们有：<span class="arithmatex">\(C_1+C_2\)</span> 是闭的当且仅当 <span class="arithmatex">\(C_1,C_2\)</span> 是闭的且有一者是紧的。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.7</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 是多面体，则 <span class="arithmatex">\(AX\)</span> 是闭的。</p>
+</div>
+<p>设 <span class="arithmatex">\(F:\mathbb{R}^{n+m}\rightarrow (-\infty,+\infty]\)</span> 是闭且 proper 的凸函数，定义 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 为</p>
+<div class="arithmatex">\[
+f(x)=\inf_{z\in \mathbb{R}^m} F(x,z).
+\]</div>
+<div id="prop-25" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.8</span></p>
+<p>若 <span class="arithmatex">\(F\)</span> 是凸的，则 <span class="arithmatex">\(f\)</span> 是凸的。</p>
+</div>
+<p>若 <span class="arithmatex">\(F(x,z)\)</span> 是闭的，<span class="arithmatex">\(f(x)\)</span> 不一定是闭的。考虑闭的凸函数</p>
+<div class="arithmatex">\[
+F(x,z)=\begin{cases}
+e^{-\sqrt{xz}}\quad&amp;\text{if } x\ge 0,z\ge 0\\
+\infty &amp;\text{otherwise}
+\end{cases}
+\]</div>
+<p>但是</p>
+<div class="arithmatex">\[
+f(x)=\inf_{z\in \mathbb{R}^m} F(x,z)=\begin{cases}
+0 \quad &amp;x&gt;0\\
+1 &amp;x=0\\
+\infty &amp;x&lt;0
+\end{cases}
+\]</div>
+<p>不是闭的</p>
+<div id="prop-26" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.9</span></p>
+<div class="arithmatex">\[
+P(\text{epi}(F))\subset \text{epi}(f)\subset \text{cl}(P(\text{epi}(F))),
+\]</div>
+<p>其中 <span class="arithmatex">\(P(x,z,w)=(x,w)\)</span>。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.10</span><span class="book-name">Preservation of Closedness Under Compactness</span></p>
+<p>设 <span class="arithmatex">\(F:\mathbb{R}^{n+m}\rightarrow (-\infty,+\infty]\)</span> 是闭且 proper 的凸函数，定义 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> 为 <span class="arithmatex">\(f(x)=\inf_{z\in \mathbb{R}^m} F(x,z).\)</span>若存在某个 <span class="arithmatex">\(\bar{x}\in \mathbb{R}^n,\bar{\gamma}\in \mathbb{R}\)</span> 满足</p>
+<div class="arithmatex">\[
+\left\{z\Big| F(\bar{x},z)\le \bar{\gamma}\right\}
+\]</div>
+<p>是非空且紧的，则 <span class="arithmatex">\(f\)</span> 是闭且 proper 的凸函数。同样的，对任意 <span class="arithmatex">\(x\in \text{dom}(f)\)</span>，都有 <span class="arithmatex">\(F(x,\cdot)\)</span> 的极小值点是非空且紧的。</p>
+</div>
+<h2 id="s7"><span class="book-secnum">§ 07</span>渐进序列</h2>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.1</span><span class="book-name">asymptotic sequence</span></p>
+<p>给定闭凸集序列 <span class="arithmatex">\(\left\{C_k\right\}\)</span>，<span class="arithmatex">\(\left\{x_k\right\}\)</span> 称为 <strong>渐近序列(asymptotic sequence)</strong>，若</p>
+<div class="arithmatex">\[
+0\neq x_k\in C_k,\|x_k\|\rightarrow +\infty,\lim_{k\rightarrow \infty}\frac{x_k}{\|x_k\|}=\frac{d}{\|d\|}
+\]</div>
+<p>其中 <span class="arithmatex">\(d\)</span> 是 <span class="arithmatex">\(C_k\)</span> 共有的非零回收方向。</p>
+</div>
+<div id="prop-27" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.2</span></p>
+<p>任意无界序列 <span class="arithmatex">\(\left\{x_k\right\}\)</span> 中存在一个渐近子序列。</p>
+</div>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.3</span><span class="book-name">retractive</span></p>
+<p><span class="arithmatex">\(\left\{x_k\right\}\)</span> 称为 <strong>可收缩的(retractive)</strong>，若存在某个非零回收方向 <span class="arithmatex">\(d\)</span> ，存在某个 <span class="arithmatex">\(\bar{k}&gt;0\)</span> 使得</p>
+<div class="arithmatex">\[
+x_k-d\in C_k,\forall k\ge \bar{k}.
+\]</div>
+</div>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.4</span></p>
+<p>一个闭凸集序列 <span class="arithmatex">\(\left\{C_k\right\}\)</span> 称为 <strong>可收缩的(retractive)</strong>，若其任意渐近序列都是可收缩的。</p>
+</div>
+<div id="prop-28" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.5</span></p>
+<p>设 <span class="arithmatex">\(\left\{C_k\right\}\)</span> 是闭凸集序列，<span class="arithmatex">\(X\)</span> 是可收缩集，即 <span class="arithmatex">\(\bar{C_k}=X\cap C_k\)</span> 是非空集。设</p>
+<div class="arithmatex">\[
+R_X\cap R\subset L
+\]</div>
+<p>，其中</p>
+<div class="arithmatex">\[
+R=\cap_{k=0}^\infty R_{C_k},\quad L=\cap_{k=0}^\infty L_{C_k}
+\]</div>
+<p>则 <span class="arithmatex">\(\left\{\bar{C_k}\right\}\)</span> 是可收缩的且 <span class="arithmatex">\(\cap_{k=0}^\infty \bar{C_k}\)</span> 非空。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(\left\{\bar{C_k}\right\}\)</span> 共有的回收方向为 <span class="arithmatex">\(R_X\cap R\)</span>。对任意 <span class="arithmatex">\(\left\{x_k\right\}\)</span>，其渐近方向 <span class="arithmatex">\(d\in R_X\cap R\)</span>，由 <span class="arithmatex">\(d\in L\)</span> 有 <span class="arithmatex">\(x_k-d\in C_k\)</span>，由 <span class="arithmatex">\(X\)</span> 可收缩有 <span class="arithmatex">\(x_k-d\in X\)</span>，从而 <span class="arithmatex">\(x_k-d\in \bar{C_k}\)</span>。因此，<span class="arithmatex">\(\left\{\bar{C_k}\right\}\)</span> 是可收缩的。由 Weierstrass 定理即得。</p>
+</details>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.6</span></p>
+<p>设</p>
+<div class="arithmatex">\[
+f(x)=x'Qx+c'x,X=\left\{x\Big| a_j'x+b_j\le 0,j=1,\cdots,r\right\}
+\]</div>
+<p>其中 <span class="arithmatex">\(Q\)</span> 是半正定对称矩阵。若 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上的最小值有限，则 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(X\)</span> 上存在最小值点。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>我们有</p>
+<div class="arithmatex">\[
+\text{最小值点集}=\cap _{k=0}^\infty \left(X\cap \left\{x\Big| x'Qx+c'x\le \gamma_k\right\} \right)
+\]</div>
+<p>其中 <span class="arithmatex">\(\gamma_k \downarrow f^*=\inf_{x\in X} f(x)\)</span>。设 <span class="arithmatex">\(R_X\)</span> 和 <span class="arithmatex">\(R_f\)</span> 分别为 <span class="arithmatex">\(X\)</span> 和 <span class="arithmatex">\(f\)</span> 的回收锥，则共有的回收锥为 <span class="arithmatex">\(R_X\cap R_f\)</span>。注意到</p>
+<div class="arithmatex">\[
+R_f=\left\{d\Big| Qd=0,c'd\le 0\right\},L_f=\left\{d\Big| Qd=0,c'd=0\right\}.
+\]</div>
+<p>由 <span class="arithmatex">\(f^*&gt;-\infty\)</span> 可知 <span class="arithmatex">\(R_X\cap R_f\subseteq L_f\)</span>，由此可知该闭凸集序列是可收缩的。由此由前一命题即得。</p>
+</details>
+<div id="prop-29" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.7</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是非空闭凸集，设 <span class="arithmatex">\(A\)</span> 是矩阵其零空间为 <span class="arithmatex">\(N(A)\)</span>。</p>
+<ul>
+<li>若 <span class="arithmatex">\(R_C\cap N(A)\subset L_C\)</span>，则 <span class="arithmatex">\(AC\)</span> 是闭的。</li>
+<li>若 <span class="arithmatex">\(X\)</span> 是可收缩的且 <span class="arithmatex">\(R_X\cap R_C\cap N(A)\subset L_C\)</span>，则 <span class="arithmatex">\(A(X\cap C)\)</span> 是可收缩的。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\left\{y_k\right\}\subset AC\)</span> 满足 <span class="arithmatex">\(y_k\rightarrow \bar{y}\)</span>。我们来证明 <span class="arithmatex">\(\cap_{k=0}^\infty C_k\neq \emptyset\)</span>，其中</p>
+<div class="arithmatex">\[
+C_k=C\cap N_k,\quad N_k=\left\{x\Big| Ax\in W_k\right\},\quad W_k=\left\{z\Big| \|z-\bar{y}\|\le \|y_k-\bar{y}\| \right\}.
+\]</div>
+<p>由于 <span class="arithmatex">\(R_{N_k}=N(A)\)</span>，故共有的回收锥为 <span class="arithmatex">\(R_C\cap N(A)\)</span>。由假设可知该闭凸集序列是可收缩的。由 Weierstrass 定理即得。</p>
+</details>
+<div id="prop-30" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 7.8</span></p>
+<p>设 <span class="arithmatex">\(C_1,\cdots,C_m\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 的非空闭凸子集满足若 <span class="arithmatex">\(d_1+\cdots +d_m=0\)</span> 且 <span class="arithmatex">\(d_i\in R_{C_i}\)</span>，则有 <span class="arithmatex">\(d_i=0\)</span>。则 <span class="arithmatex">\(C_1+\cdots +C_m\)</span> 是闭的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(C=C_1\times \cdots \times C_m\)</span> 是 <span class="arithmatex">\(\mathbb{R}^{nm}\)</span> 的非空闭凸子集，且其回收锥 <span class="arithmatex">\(R_C=R_{C_1}\times \cdots \times R_{C_m}\)</span>。定义 <span class="arithmatex">\(A\)</span> 满足：</p>
+<div class="arithmatex">\[
+A(x_1,\cdots,x_m)=x_1+\cdots +x_m
+\]</div>
+<p>则 <span class="arithmatex">\(N(A)=\left\{(x_1,\cdots,x_m)\Big| x_1+\cdots +x_m=0\right\}\)</span>。由假设可知 <span class="arithmatex">\(R_C\cap N(A)=\{0\}\)</span>，由前一命题即得。</p>
+</details>
+<h2 id="s8"><span class="book-secnum">§ 08</span>超平面</h2>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span></p>
+<p>一个<strong>超平面(hyperplane)</strong> 是形如</p>
+<div class="arithmatex">\[
+H=\left\{ x\Big| a'x=b\right\}
+\]</div>
+<p>的集合，其中 <span class="arithmatex">\(a\in \mathbb{R}^n,b\in \mathbb{R}\)</span> 且 <span class="arithmatex">\(a\neq 0\)</span>。</p>
+</div>
+<div id="def-29" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.2</span></p>
+<p>我们称两个集合 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 被超平面 <span class="arithmatex">\(H\)</span> <strong>分离(separated)</strong>，若</p>
+<div class="arithmatex">\[
+a'x\le b,\forall x\in C_1,\quad a'x\ge b,\forall x\in C_2.
+\]</div>
+<p>或 者</p>
+<div class="arithmatex">\[
+a'x\ge b,\forall x\in C_1,\quad a'x\le b,\forall x\in C_2.
+\]</div>
+<p>若 上述不等式均严格成立，则称 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 被 <span class="arithmatex">\(H\)</span> <strong>严格分离(strictly separated)</strong>。</p>
+</div>
+<div id="def-30" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.3</span></p>
+<p>若 <span class="arithmatex">\(\bar{x}\)</span> 属于 <span class="arithmatex">\(C\)</span> 的闭包和一个分离 <span class="arithmatex">\(C\)</span> 超平面 <span class="arithmatex">\(H\)</span>，则称单点集 <span class="arithmatex">\(\left\{\bar{x}\right\}\)</span> 是 <span class="arithmatex">\(C\)</span> 在 <span class="arithmatex">\(\bar{x}\)</span> 处的<strong>支撑(supporting)</strong>。</p>
+</div>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.4</span><span class="book-name">supporting hyperplane theorem</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是凸集，<span class="arithmatex">\(\bar{x}\)</span> 不是 <span class="arithmatex">\(C\)</span> 的内点，则存在一个超平面经过 <span class="arithmatex">\(\bar{x}\)</span> 且支撑 <span class="arithmatex">\(C\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>取 <span class="arithmatex">\(\left\{x_k\right\}\)</span> 不属于 <span class="arithmatex">\(\text{cl}(C)\)</span> 且 <span class="arithmatex">\(x_k\rightarrow \bar{x}\)</span>。设 <span class="arithmatex">\(\hat{x_k}\)</span> 为 <span class="arithmatex">\(x_k\)</span> 在 <span class="arithmatex">\(\text{cl}(C)\)</span> 上的投影，我们有对任意 <span class="arithmatex">\(x\in \text{cl}(C)\)</span>，</p>
+<div class="arithmatex">\[
+a'_kx\ge a_k'x_k,\forall k=0,1,\cdots
+\]</div>
+<p>其中 <span class="arithmatex">\(a_k=(x_k-\hat{x_k})/\left\|x_k-\hat{x_k}\right\|\)</span>。令 <span class="arithmatex">\(k\rightarrow \infty\)</span> 即得。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.5</span><span class="book-name">separating hyperplane theorem</span></p>
+<p>设 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空凸集且 <span class="arithmatex">\(\text{ri}(C_1)\cap \text{ri}(C_2)=\emptyset\)</span>，则存在一个超平面分离 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>考虑凸集</p>
+<div class="arithmatex">\[
+C_1-C_2=\left\{x_1 -x_2|x_1\in C_1,x_2\in C_2\right\}.
+\]</div>
+<p>由于 <span class="arithmatex">\(C_1,C_2\)</span> 是不交的，故 <span class="arithmatex">\(0\notin \text{ri}(C_1-C_2)\)</span>。由支持超平面定理可知，存在 <span class="arithmatex">\(0\neq a\in \mathbb{R}^n\)</span> 使得</p>
+<div class="arithmatex">\[
+a'x\ge 0,\forall x\in C_1-C_2.
+\]</div>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.6</span><span class="book-name">strict separation theorem</span></p>
+<p>设 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集且 <span class="arithmatex">\(C_1\cap C_2=\emptyset\)</span>。若 <span class="arithmatex">\(C_1\)</span> 是闭的，<span class="arithmatex">\(C_2\)</span> 是紧的，则存在一个超平面严格分离 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>考虑 <span class="arithmatex">\(C_1-C_2\)</span>，由于 <span class="arithmatex">\(C_1\)</span> 闭 <span class="arithmatex">\(C_2\)</span> 紧，<span class="arithmatex">\(C_1-C_2\)</span> 是闭的。设 <span class="arithmatex">\(\bar{x_1}-\bar{x_2}\)</span> 是 <span class="arithmatex">\(0\)</span> 在 <span class="arithmatex">\(C_1-C_2\)</span> 上的投影，则 <span class="arithmatex">\(\|\bar{x_1}-\bar{x_2}\|&gt;0\)</span>。令 <span class="arithmatex">\(a=\bar{x_1}-\bar{x_2}\)</span>，则</p>
+<div class="arithmatex">\[
+a'x\ge \|a\|^2,\forall x\in C_1-C_2.
+\]</div>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.7</span><span class="book-name">fundamental characterization</span></p>
+<p>集合 <span class="arithmatex">\(C\)</span> 的凸包的闭包为所有包含 <span class="arithmatex">\(C\)</span> 的闭半平面的交。</p>
+</div>
+<div id="def-31" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.8</span></p>
+<p>我们称超平面 properly 分离 两个集合 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span>，若其分离 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 且不完全包含 <span class="arithmatex">\(C_1\)</span> 或 <span class="arithmatex">\(C_2\)</span>。</p>
+</div>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.9</span><span class="book-name">proper separation theorem</span></p>
+<p>设 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 是 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的非空闭凸集且 <span class="arithmatex">\(C_1\cap C_2=\emptyset\)</span>。则存在一个超平面 properly 分离 <span class="arithmatex">\(C_1\)</span> 和 <span class="arithmatex">\(C_2\)</span> 当且仅当 <span class="arithmatex">\(\text{ri}(C_1)\cap \text{ri}(C_2)=\emptyset\)</span>。</p>
+</div>
+<div id="def-32" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.10</span><span class="book-name">nonvertical</span></p>
+<p>一个 <span class="arithmatex">\(\mathbb{R}^{n+1}\)</span> 中的超平面伴有法向量 <span class="arithmatex">\((\mu,\beta)\)</span> 称为<strong>非垂直的(nonvertical)</strong>，若 <span class="arithmatex">\(\beta\neq 0\)</span>。</p>
+</div>
+<p>其与第 <span class="arithmatex">\(n+1\)</span> 维轴交于 <span class="arithmatex">\(\xi=(\mu/\beta)'\bar{u}+\bar{w}\)</span>，其中 <span class="arithmatex">\((\bar{u},\bar{w})\)</span> 是超平面上的任意点。</p>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.11</span><span class="book-name">novertical hyperplane theoram</span></p>
+<p>设 <span class="arithmatex">\(C\)</span> 是 <span class="arithmatex">\(\mathbb{R}^{n+1}\)</span> 中的非空闭凸集且 <span class="arithmatex">\(C\)</span> 不包含某个垂直方向的直线，则：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(C\)</span> 包含于某个非垂直超平面的一侧，即存在 <span class="arithmatex">\(\mu \in \mathbb{R}^n,\beta\in \mathbb{R}\backslash \{0\}\)</span> 使得</p>
+<div class="arithmatex">\[
+\mu'u+\beta w\ge \gamma,\forall (u,w)\in C.
+\]</div>
+</li>
+<li>
+<p>若 <span class="arithmatex">\((\bar{u},\bar{w})\notin \text{cl}(C)\)</span>，则存在一个非垂直超平面严格分离 <span class="arithmatex">\(C\)</span> 和 <span class="arithmatex">\((\bar{u},\bar{w})\)</span>。</p>
+</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>由于 <span class="arithmatex">\(C\)</span> 不包含任意方向的垂线，故 <span class="arithmatex">\(\text{ri}(C)\)</span> 不包含任意方向的垂线，而 <span class="arithmatex">\(\text{ri}(C)\)</span> 和 <span class="arithmatex">\(\text{cl}(C)\)</span> 有相同的回收锥，故 <span class="arithmatex">\(\text{cl}(C)\)</span> 也不包含任意方向的垂线。故我们只考虑 <span class="arithmatex">\(C\)</span> 是闭的。</p>
+<p><span class="arithmatex">\((a)\)</span>：<span class="arithmatex">\(C\)</span> 为所有包含 <span class="arithmatex">\(C\)</span> 的闭半平面的交，若这些半平面均垂直，则 <span class="arithmatex">\(C\)</span> 包含某个垂直方向的直线，矛盾。</p>
+<p><span class="arithmatex">\((b)\)</span>：由支持超平面定理可知，存在一个超平面分离 <span class="arithmatex">\(C\)</span> 和 <span class="arithmatex">\((\bar{u},\bar{w})\)</span>。若该超平面垂直，则 <span class="arithmatex">\(C\)</span> 包含某个垂直方向的直线，矛盾。</p>
+</details>
+<div id="def-33" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.12</span><span class="book-name">conjugate convex function</span></p>
+<p>对任意 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow [-\infty,+\infty]\)</span>，其<strong>共轭凸函数(conjugate convex function)</strong> 定义为</p>
+<div class="arithmatex">\[
+f^*(y)=\sup_{x\in \mathbb{R}^n} (x'y -f(x)), \forall y\in \mathbb{R}^n.
+\]</div>
+</div>
+<div id="prop-31" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.13</span></p>
+<p><span class="arithmatex">\(f^*\)</span> 是闭且凸的函数。</p>
+</div>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.14</span><span class="book-name">conjugacy theorem</span></p>
+<p>若 <span class="arithmatex">\(f\)</span> 是闭且proper的凸函数，则 <span class="arithmatex">\(f^{**}=f\)</span>。</p>
+</div>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.15</span><span class="book-name">conjugacy theorem</span></p>
+<p>设 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow (-\infty,+\infty]\)</span> ，设 <span class="arithmatex">\(\check{\text{cl}}f\)</span> 为其凸闭包，设 <span class="arithmatex">\(f^*\)</span> 是其共轭凸函数，考虑 <span class="arithmatex">\(f^*\)</span> 的共轭</p>
+<div class="arithmatex">\[
+f^{**}(x)=\sup_{y\in \mathbb{R}^n} (x'y -f^*(y)), \forall x\in \mathbb{R}^n.
+\]</div>
+<ul>
+<li><span class="arithmatex">\(f(x)\ge f^{**}(x),\forall x\in \mathbb{R}^n.\)</span></li>
+<li>若 <span class="arithmatex">\(f\)</span> 是凸的，则 <span class="arithmatex">\(f,f^*,f^{**}\)</span> 中任意一者是 proper 给出 另两者是 proper。</li>
+<li>若 <span class="arithmatex">\(f\)</span> 是闭且 proper 的凸函数，则 <span class="arithmatex">\(f=f^{**}\)</span>。</li>
+<li>若 <span class="arithmatex">\(\check{\text{cl}}f(x)&gt;-\infty\)</span> ，则 <span class="arithmatex">\(\check{\text{cl}}f=f^{**}\)</span>。</li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((a)\)</span>：显然。</p>
+<p><span class="arithmatex">\((b)\)</span>：由定义即得。</p>
+<p><span class="arithmatex">\((c)\)</span>：设 <span class="arithmatex">\(g=f^{**}\)</span>，则 <span class="arithmatex">\(g\)</span> 是闭且 proper 的凸函数且 <span class="arithmatex">\(f(x)\ge g(x),\forall x\in \mathbb{R}^n\)</span>。由支持超平面定理可知，<span class="arithmatex">\(f\)</span> 的任意支撑超平面也是 <span class="arithmatex">\(g\)</span> 的支撑超平面，故 <span class="arithmatex">\(f=g\)</span>。</p>
+<p><span class="arithmatex">\((d)\)</span>：由<span class="arithmatex">\((a)\)</span>和<span class="arithmatex">\((c)\)</span>即得。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.16</span></p>
+<ul>
+<li>对 <span class="arithmatex">\(\frac{1}{p}+\frac{1}{q}=1\)</span>，<span class="arithmatex">\(p&gt;1\)</span> 的 <span class="arithmatex">\(f(x)=\frac{1}{p}\|x\|^p\)</span>，其共轭函数为 <span class="arithmatex">\(f^*(y)=\frac{1}{q}\|y\|^q\)</span>。</li>
+<li><span class="arithmatex">\(f(x)=\frac{1}{2}x'Qx+a'x+b\)</span>，<span class="arithmatex">\(Q\)</span> 为半正定矩阵，则 <span class="arithmatex">\(f^*(y)=\frac{1}{2}(y-a)'Q^{-1}(y-a)-b\)</span>。</li>
+<li><span class="arithmatex">\(f(x)=p(A(x-c))+a'x+b\)</span>，则 <span class="arithmatex">\(f^*(y)=q((A')^{-1}(y-a))+c'y+d\)</span>，其中 <span class="arithmatex">\(q\)</span> 是 <span class="arithmatex">\(p\)</span> 的共轭函数，<span class="arithmatex">\(d=-(c'a+b)\)</span>。</li>
+</ul>
+</div>
+<div id="def-34" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.17</span><span class="book-name">support function</span></p>
+<p><span class="arithmatex">\(X\)</span> 的示性函数 <span class="arithmatex">\(\delta_X\)</span></p>
+<div class="arithmatex">\[
+\sigma_X(y)=\sup_{x\in X} y'x
+\]</div>
+<p>称为 <span class="arithmatex">\(X\)</span> 的<strong>支撑函数(support function)</strong>。</p>
+</div>
+<div id="prop-32" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.18</span></p>
+<p><span class="arithmatex">\(\text{epi}(\sigma_X)\)</span> 是闭凸锥。</p>
+</div>
+<div id="prop-33" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.19</span></p>
+<p><span class="arithmatex">\(X,\text{cl}(X),\text{conv}(X),\text{cl}(\text{conv}(X))\)</span> 有相同的支撑函数。</p>
+</div>
+<div id="prop-34" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.20</span></p>
+<p>若 <span class="arithmatex">\(C\)</span> 是锥，</p>
+<div class="arithmatex">\[
+\sigma_C(y)=\begin{cases}
+0 \quad &amp;if \,y'x\le 0,\forall x\in C\\
++\infty &amp;otherwise
+\end{cases}
+\]</div>
+<p>即 <span class="arithmatex">\(\sigma_C\)</span> 是 <span class="arithmatex">\(C^*\)</span> 的示性函数，其中</p>
+<div class="arithmatex">\[
+C^*=\left\{ y\Big| y'x\le 0,\forall x\in C\right\}
+\]</div>
+<p>称为 <span class="arithmatex">\(C\)</span> 的<strong>极锥(polar cone)</strong>。</p>
+</div>
+<p>由共轭定理可知 <span class="arithmatex">\(C^*\)</span> 的极锥为 <span class="arithmatex">\(\text{cl}(\text{conv}(C))\)</span>，这称为<strong>极锥定理(polar cone theorem)</strong>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.21</span></p>
+<p>若 <span class="arithmatex">\(C=\text{cone}\left(\left\{a_1,\cdots,a_r\right\}\right)\)</span>，则</p>
+<div class="arithmatex">\[
+C^*=\left\{x\Big| a_j'x\le 0,j=1,\cdots,r\right\}.
+\]</div>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.22</span><span class="book-name">Farkas&#x27; lemma</span></p>
+<div class="arithmatex">\[
+(C^*)^*=C
+\]</div>
+</div>
+<p>我们已经将对偶的概念从集合的对偶延伸至函数的对偶，现在我们考虑问题的对偶。</p>
+<h2 id="s9"><span class="book-secnum">§ 09</span>最小公共点和最大相交点问题</h2>
+<p>我们介绍一对基本问题。</p>
+<div id="def-35" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 是 <span class="arithmatex">\(\mathbb{R}^{n+1}\)</span> 的非空子集。</p>
+<ul>
+<li><strong>最小公共点问题(minimum common point problem)</strong>：寻找点 <span class="arithmatex">\((x,w)\in M\)</span> 使得 <span class="arithmatex">\(w\)</span> 最小化。</li>
+<li><strong>最大相交点问题(maximum intersecting point problem)</strong>：考虑所有包含了 <span class="arithmatex">\(M\)</span> 的非垂直超平面，寻找其中与第 <span class="arithmatex">\(n+1\)</span> 维轴交点最大的超平面。</li>
+</ul>
+</div>
+<p>对最小公共问题 <span class="arithmatex">\(w^*=\inf\{w|(x,w)\in M\}\)</span>，对最大相交点问题，我们考虑法向量为 <span class="arithmatex">\((\mu,1)\)</span> 的超平面其相交点 <span class="arithmatex">\(\xi\)</span> 满足</p>
+<div class="arithmatex">\[
+\xi\le w+\mu'u,\forall (u,w)\in M
+\]</div>
+<p>从而最大相交点问题可表述为最大化 <span class="arithmatex">\(\xi\le \inf_{(u,w)\in M} (w+\mu'u),\mu\in \mathbb{R}^n\)</span>，即</p>
+<div class="arithmatex">\[
+\text{maximize } q(\mu)=\inf_{(u,w)\in M} (w+\mu'u),\quad \text{subject }\mu\in \mathbb{R}^n.
+\]</div>
+<p>容易得到如下的<strong>弱对偶(weak duality)</strong>结果：</p>
+<div class="arithmatex">\[
+q(\mu)=\inf_{(u,w)\in M} (w+\mu'u)\le \inf_{(0,w)\in M} w=w^*,\forall \mu\in \mathbb{R}^n.
+\]</div>
+<p>我们称<strong>强对偶(strong duality)</strong>成立，若 <span class="arithmatex">\(q^*=w^*\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.2</span></p>
+<div class="arithmatex">\[
+M=\text{epi}(p)
+\]</div>
+<p>其中 <span class="arithmatex">\(p:\mathbb{R}^n\rightarrow [-\infty,\infty]\)</span>，则 <span class="arithmatex">\(w^*=p(0)\)</span>，且</p>
+<div class="arithmatex">\[
+q(\mu)=\inf_{(u,w)\in \text{epi}(p)} (w+\mu'u)=\inf_{u\in \mathbb{R}^n} (p(u)+\mu'u)=-p^*(-\mu).
+\]</div>
+<p>进而有</p>
+<div class="arithmatex">\[
+q^*=\sup_{\mu\in \mathbb{R}^n} q(\mu)=\sup_{\mu\in \mathbb{R}^n}\left\{0\cdot (-\mu)-p^*(-\mu)\right\}=p^{**}(0)
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.3</span></p>
+<p>考虑更一般的最小化 <span class="arithmatex">\(f:\mathbb{R}^n \rightarrow [-\infty ,\infty]\)</span> 的问题 。设 <span class="arithmatex">\(F:\mathbb{R}^{n+r}\rightarrow [-\infty ,\infty]\)</span> 为</p>
+<div class="arithmatex">\[
+f(x)=F(x,0),\forall x\in \mathbb{R}^n.
+\]</div>
+<p>考虑<strong>扰动函数(perturbation function)</strong></p>
+<div class="arithmatex">\[
+p(u)=\inf_{x\in \mathbb{R}^n} F(x,u),\forall u\in \mathbb{R}^r.
+\]</div>
+<p>且 MC/MC 框架为 <span class="arithmatex">\(M=\mathrm{epi}(p)\)</span>。</p>
+<p>其最小公共值</p>
+<div class="arithmatex">\[
+w^*=p(0)=\inf_{x\in \mathbb{R}^n} F(x,0)=\inf_{x\in \mathbb{R}^n} f(x).
+\]</div>
+<p>其对偶函数为</p>
+<div class="arithmatex">\[
+q(\mu)=\inf_{u\in \mathbb{R}^r} (p(u)+\mu'u)=\inf_{(x,u)\in \mathbb{R}^{n+r}} (F(x,u)+\mu'u).
+\]</div>
+<p>故 <span class="arithmatex">\(q(\mu)=-F^*(0,-\mu)\)</span>，其中 <span class="arithmatex">\(F^*\)</span> 是 <span class="arithmatex">\(F\)</span> 的共轭函数，视作 <span class="arithmatex">\((x,u)\)</span> 的函数。</p>
+<p>我们有</p>
+<div class="arithmatex">\[
+q^*=\sup_{\mu\in \mathbb{R}^r} q(\mu)=-\inf_{\mu \in \mathbb{R}^r} F^*(0,-\mu)=-\inf_{\mu \in \mathbb{R}^r} F^*(0,\mu)
+\]</div>
+<p>且弱对偶性形如：</p>
+<div class="arithmatex">\[
+w^*=\inf_{x\in \mathbb{R}^n} F(x,0)\ge =-\inf_{\mu \in \mathbb{R}^r} F^*(0,\mu)=q^*.
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.4</span></p>
+<p>考虑约束优化：最小化 <span class="arithmatex">\(f:\mathbb{R}^n\rightarrow \mathbb{R}\)</span> 在</p>
+<div class="arithmatex">\[
+C=\left\{x\in X\Big| g(x)\le 0\right\}
+\]</div>
+<p>其中 <span class="arithmatex">\(X\subset \mathbb{R}^n\)</span>，<span class="arithmatex">\(g:\mathbb{R}^n\rightarrow \mathbb{R}^r\)</span>。</p>
+<p>考虑<strong>扰动约束集(perturbed constraint set)</strong></p>
+<div class="arithmatex">\[
+C_u=\left\{x\in X\Big| g(x)\le u\right\},\forall u\in \mathbb{R}^r.
+\]</div>
+<p>与函数</p>
+<div class="arithmatex">\[
+F(x,u)=\begin{cases}
+f(x)\quad &amp;if \,x\in C_u\\
++\infty &amp;otherwise\end{cases}
+\]</div>
+<p>这满足 <span class="arithmatex">\(F(x,0)=f(x),\forall x\in C\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.5</span></p>
+<p>考虑扰动函数</p>
+<div class="arithmatex">\[
+p(u)=\inf_{x\in \mathbb{R}^n} F(x,u)=\inf_{x\in C_u} f(x),\forall u\in \mathbb{R}^r.
+\]</div>
+<p>且 MC/MC 框架为 <span class="arithmatex">\(M=\mathrm{epi}(p)\)</span>。</p>
+<p>设 <span class="arithmatex">\(L(x,\mu)=f(x)+\mu'g(x)\)</span> 为 Lagrange 函数，则</p>
+<div class="arithmatex">\[
+q(\mu)=\inf_{u\in \mathbb{R}^r}\left\{p(u)+\mu'u\right\}=\inf_{u\in \mathbb{R}^r,x\in X,g(x)\le u}\left\{f(x)+\mu'u\right\}=\begin{cases}
+\inf_{x\in X} L(x,\mu)\quad &amp;if \,\mu\ge 0\\
+-\infty &amp;otherwise
+\end{cases}
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.6</span></p>
+<p>考虑线性规划问题：最小化 <span class="arithmatex">\(c'x\)</span> 在</p>
+<div class="arithmatex">\[
+C=\left\{x\in \mathbb{R}^n\Big| a'_jx\ge b_j,j=1,\cdots,r\right\}
+\]</div>
+<p>其中 <span class="arithmatex">\(c\in \mathbb{R}^n\)</span>，<span class="arithmatex">\(a_j\in \mathbb{R}^n\)</span>，<span class="arithmatex">\(b_j\in \mathbb{R}\)</span>。</p>
+<p>对 <span class="arithmatex">\(\mu\ge 0\)</span>，对偶函数</p>
+<div class="arithmatex">\[
+q(\mu)=\inf_{x\in \mathbb{R}^n} \left\{c'x+\sum_{j=1}^r \mu_j(b_j -a'_jx)\right\}=\begin{cases}
+b'\mu \quad &amp;if \,c=\sum_{j=1}^r \mu_ja_j\\
+-\infty &amp;otherwise\end{cases}
+\]</div>
+<p>因此其对偶问题为</p>
+<div class="arithmatex">\[
+\text{maximize } b'\mu,\quad \text{subject to } A\mu=c,\mu\ge 0.
+\]</div>
+</div>
+<div id="def-36" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.7</span><span class="book-name">minimax problem</span></p>
+<p>给定函数 <span class="arithmatex">\(\phi:X\times Z\rightarrow \mathbb{R}\)</span>，其中 <span class="arithmatex">\(X\subset \mathbb{R}^n\)</span>，<span class="arithmatex">\(Z\subset \mathbb{R}^m\)</span>，考虑</p>
+<div class="arithmatex">\[
+\text{minimize } \sup_{z\in Z} \phi(x,z),\quad \text{subject to } x\in X.
+\]</div>
+<p>或</p>
+<div class="arithmatex">\[
+\text{maximize } \inf_{x\in X} \phi(x,z),\quad \text{subject to } z\in Z.
+\]</div>
+</div>
+<p>我们总是有</p>
+<div class="arithmatex">\[
+\sup_{z\in Z} \inf_{x\in X} \phi(x,z)\le \inf_{x\in X} \sup_{z\in Z} \phi(x,z).
+\]</div>
+<p>一个关键问题是：何时等号成立？</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 9.8</span></p>
+<p>对于约束问题</p>
+<div class="arithmatex">\[
+\text{minimize } f(x),\quad \text{subject to } g(x)\le 0,x\in X
+\]</div>
+<p>其 Lagrange 函数为 <span class="arithmatex">\(L(x,\mu)=f(x)+\mu'g(x)\)</span>，其原始问题为</p>
+<div class="arithmatex">\[
+\min_{x\in X} \sup_{\mu\ge 0} L(x,\mu)
+\]</div>
+<p>其对偶问题为</p>
+<div class="arithmatex">\[
+\max_{\mu\ge 0} \inf_{x\in X} L(x,\mu).
+\]</div>
+<p>其等号成立需考虑何时</p>
+<div class="arithmatex">\[
+\sup_{\mu\ge 0} \inf_{x\in X} L(x,\mu)=w^*\overset{?}{=}q^*=\inf_{x\in X} \sup_{\mu\ge 0} L(x,\mu).
+\]</div>
+</div>
+<h2 id="s10"><span class="book-secnum">§ 10</span>零和游戏</h2>
+<div id="def-37" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.1</span><span class="book-name">zero sum games</span></p>
+<p>两个玩家：第一个选择 <span class="arithmatex">\(i\in \left\{1,\cdots, n\right\}\)</span>，第二个选择 <span class="arithmatex">\(j\in \left\{1,\cdots, m\right\}\)</span>。支付矩阵为 <span class="arithmatex">\(A\in \mathbb{R}^{n\times m}\)</span>，则第一个玩家从第二个玩家处获得 <span class="arithmatex">\(a_{ij}\)</span>。两个玩家选择</p>
+<div class="arithmatex">\[
+x=(x_1,\cdots,x_n)\quad z=(z_1,\cdots,z_m)
+\]</div>
+<p>其中 <span class="arithmatex">\(x_i\)</span> 和 <span class="arithmatex">\(z_j\)</span> 分别为两个玩家选择 <span class="arithmatex">\(i\)</span> 和 <span class="arithmatex">\(j\)</span> 的概率。则第一个玩家的期望收益为</p>
+<div class="arithmatex">\[
+\phi(x,z)=x'Az=\sum_{i=1}^n \sum_{j=1}^m a_{ij}x_iz_j.
+\]</div>
+<p>第一个玩家的目标是最大化其最小收益：<span class="arithmatex">\(\text{minmize } \max_{z} \phi(x,z)\)</span></p>
+<p>第二个玩家的目标是最小化其最大损失： <span class="arithmatex">\(\text{maximize } \min_{x} \phi(x,z)\)</span></p>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="computational-applied-math.pdf" href="../../../../assets/computational-applied-math.pdf">下载 PDF 完整版</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="计算与应用数学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-05/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第五章：渐近级数</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-07/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第七章：PDE 数值解</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#computational-applied-math">计算与应用数学 · 第 6 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#computational-applied-math">计算与应用数学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=optimization">#optimization</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

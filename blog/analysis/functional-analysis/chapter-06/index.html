@@ -1,0 +1,1873 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="系统学习无界算子的图、闭包、伴随、亏指数及 Cayley 变换，并证明无界自伴谱定理。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-06/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第六章：无界算子、定义域与自伴扩张 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-06/">
+  <meta property="og:title" content="第六章：无界算子、定义域与自伴扩张 - zdd14990">
+  <meta property="og:description" content="系统学习无界算子的图、闭包、伴随、亏指数及 Cayley 变换，并证明无界自伴谱定理。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="unbounded-operators">
+
+  <meta property="article:tag" content="spectral-theory">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-06/">
+  <meta name="twitter:title" content="第六章：无界算子、定义域与自伴扩张 - zdd14990">
+  <meta name="twitter:description" content="系统学习无界算子的图、闭包、伴随、亏指数及 Cayley 变换，并证明无界自伴谱定理。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u516d\u7ae0\uff1a\u65e0\u754c\u7b97\u5b50\u3001\u5b9a\u4e49\u57df\u4e0e\u81ea\u4f34\u6269\u5f20",
+    "description": "\u7cfb\u7edf\u5b66\u4e60\u65e0\u754c\u7b97\u5b50\u7684\u56fe\u3001\u95ed\u5305\u3001\u4f34\u968f\u3001\u4e8f\u6307\u6570\u53ca Cayley \u53d8\u6362\uff0c\u5e76\u8bc1\u660e\u65e0\u754c\u81ea\u4f34\u8c31\u5b9a\u7406\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-06/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-06/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "unbounded-operators", "spectral-theory", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-06" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 为什么不能只写一个微分表达式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 图、闭性、闭包与核心
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 伴随与对称性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cayley 变换：把无界问题变成等距扩张
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 亏空间与所有自伴扩张
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 一个完整例子：区间上的动量算子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 无界自伴谱定理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 无界自伴谱定理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 先理解无界乘法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 无界 Borel 函数演算
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-7-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 强交换与联合谱
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 为什么有限截断不再自动确定极限
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 定义域、图像与 Cayley 变换
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 定义域、图像与 Cayley 变换">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先核对定义域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把无界问题变成等距问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用图像保留极限中的作用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        缺少的方向来自亏空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 伴随、自伴性与一阶微分算子
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 伴随、自伴性与一阶微分算子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        伴随是图像的正交条件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        自伴要求没有剩余亏方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从抽象扩张到边界条件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 联合无界演算、谱与预解式极限
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 联合无界演算、谱与预解式极限">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-9-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        谱投影交换才允许同时演算
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-10-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用可积性规定演算域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-11-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实结构配对两个亏空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-6-12-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        谱判据与极限
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 7 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">06</div>
+    <h1 id="chapter-06"><span class="book-visually-hidden">第 6 章：</span>无界算子、定义域与自伴扩张</h1>
+  </div>
+  <p class="book-standfirst">在 <span class="arithmatex">\(L^2\)</span> 中，位置算子 <span class="arithmatex">\(u(x)\mapsto xu(x)\)</span> 和动量表达式 <span class="arithmatex">\(-i\,\mathrm{d}/\mathrm{d}x\)</span> 通常无界。高频函数的导数可以很大，而函数自身的 <span class="arithmatex">\(L^2\)</span> 范数不变。它们仍然是重要的算子，但不能定义在所有 <span class="arithmatex">\(L^2\)</span> 元素上。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>3,766 字 · 约 11 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>为什么不能只写一个微分表达式</h2>
+<p>更重要的是，同一个表达式配上不同边界条件，可以给出不同谱。例如在 <span class="arithmatex">\((0,1)\)</span> 上，<span class="arithmatex">\(-i\,\mathrm{d}/\mathrm{d}x\)</span> 配周期条件与配相位周期条件的特征值就不同。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">算子包含定义域</span></p>
+<p>无界算子 <span class="arithmatex">\(T:H\supset D(T)\to K\)</span> 是定义在线性子空间 <span class="arithmatex">\(D(T)\)</span> 上的线性映射。“无界算子”作为理论类别也允许实际有界的映射。</p>
+<p><span class="arithmatex">\(S\subset T\)</span> 表示 <span class="arithmatex">\(D(S)\subset D(T)\)</span> 且二者在 <span class="arithmatex">\(D(S)\)</span> 上相同。算子相等必须同时有相同定义域和相同作用。</p>
+</div>
+<p>本章对伴随使用<strong>稠密定义</strong>的算子，保证伴随表示向量唯一。非稠密定义情形需要线性关系等额外语言，此处不混入基本定义。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>图、闭性、闭包与核心</h2>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">图与闭算子</span></p>
+<p><span class="arithmatex">\(G(T)=\{(x,Tx):x\in D(T)\}\subset H\oplus K\)</span>。若 <span class="arithmatex">\(G(T)\)</span> 闭，称 <span class="arithmatex">\(T\)</span> 闭。</p>
+<p>等价地，若 <span class="arithmatex">\(x_n\in D(T)\)</span>、<span class="arithmatex">\(x_n\to x\)</span>、<span class="arithmatex">\(Tx_n\to y\)</span>，则 <span class="arithmatex">\(x\in D(T)\)</span> 且 <span class="arithmatex">\(Tx=y\)</span>。</p>
+<p>图范数为 <span class="arithmatex">\(\|x\|_T=(\|x\|^2+\|Tx\|^2)^{1/2}\)</span>。<span class="arithmatex">\(T\)</span> 闭等价于 <span class="arithmatex">\(D(T)\)</span> 在图范数下完备。</p>
+</div>
+<p>闭性不等于有界性。它只说输入和输出同时收敛时，极限仍符合算子关系。第十章的闭图像定理只有在定义域是整个 Banach 空间时才推出有界性。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span><span class="book-name">可闭与核心</span></p>
+<p>若 <span class="arithmatex">\(\overline{G(T)}\)</span> 仍是某个算子的图，称 <span class="arithmatex">\(T\)</span> 可闭，所得算子记为 <span class="arithmatex">\(\overline T\)</span>。线性子空间 <span class="arithmatex">\(D_0\subset D(T)\)</span> 在图范数下稠密时，称 <span class="arithmatex">\(T\)</span> 的核心；于是 <span class="arithmatex">\(\overline{T|_{D_0}}=T\)</span>，前提是 <span class="arithmatex">\(T\)</span> 闭。</p>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span><span class="book-name">可闭判据</span></p>
+<p><span class="arithmatex">\(T\)</span> 可闭，当且仅当每个 <span class="arithmatex">\(x_n\in D(T)\)</span> 若满足 <span class="arithmatex">\(x_n\to0\)</span>、<span class="arithmatex">\(Tx_n\to y\)</span>，就有 <span class="arithmatex">\(y=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>图闭包是线性子空间。它是一个映射的图，当且仅当同一输入不能对应两个输出；两个图点相减后，这等价于不存在非零竖直图点 <span class="arithmatex">\((0,y)\)</span>。在 Hilbert 直和这个度量空间中，闭包中的竖直图点正由这样的序列产生。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span><span class="book-name">一个不可闭算子</span></p>
+<p>令 <span class="arithmatex">\(T:C[0,1]\subset L^2[0,1]\to\mathbb C\)</span>，<span class="arithmatex">\(Tf=f(0)\)</span>。第一章中的连续尖峰满足 <span class="arithmatex">\(f_n\to0\)</span> 于 <span class="arithmatex">\(L^2\)</span>，但 <span class="arithmatex">\(Tf_n=1\)</span>，所以它不可闭。</p>
+</div>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>伴随与对称性</h2>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span><span class="book-name">无界算子的伴随</span></p>
+<p>若 <span class="arithmatex">\(D(T)\)</span> 在 <span class="arithmatex">\(H\)</span> 中稠密，定义</p>
+<div class="arithmatex">\[
+D(T^*)=\{y\in K:\exists z\in H,\ \langle Tx,y\rangle=\langle x,z\rangle\ \forall x\in D(T)\},
+\]</div>
+<p>并令 <span class="arithmatex">\(T^*y=z\)</span>。唯一性由 <span class="arithmatex">\(D(T)\)</span> 稠密保证。等价条件是左端关于 <span class="arithmatex">\(x\)</span> 的作用可被 <span class="arithmatex">\(C_y\|x\|\)</span> 控制。</p>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.2</span><span class="book-name">伴随的闭性与可闭性</span></p>
+<p><span class="arithmatex">\(T^*\)</span> 总是闭的。<span class="arithmatex">\(T\)</span> 可闭当且仅当 <span class="arithmatex">\(D(T^*)\)</span> 稠密；此时 <span class="arithmatex">\(\overline T=T^{**}\)</span>，且 <span class="arithmatex">\((\overline T)^*=T^*\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若 <span class="arithmatex">\(y_n\to y\)</span>、<span class="arithmatex">\(T^*y_n\to z\)</span>，对每个固定 <span class="arithmatex">\(x\in D(T)\)</span> 将伴随等式取极限，便得 <span class="arithmatex">\(y\in D(T^*)\)</span>、<span class="arithmatex">\(T^*y=z\)</span>。</p>
+<p>图的正交补有精确形式</p>
+<div class="arithmatex">\[
+G(T)^\perp=\{(-T^*y,y):y\in D(T^*)\}.
+\]</div>
+<p>因此 <span class="arithmatex">\((0,z)\in\overline{G(T)}\)</span> 当且仅当 <span class="arithmatex">\(z\)</span> 与 <span class="arithmatex">\(D(T^*)\)</span> 中所有向量正交。图闭包没有非零竖直点，当且仅当 <span class="arithmatex">\(D(T^*)\)</span> 稠密。再对图取两次正交补，得到 <span class="arithmatex">\(G(T^{**})=\overline{G(T)}\)</span>。伴随等式对图极限仍成立，故闭包不改变伴随。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.3</span><span class="book-name">对称、自伴、本质自伴</span></p>
+<p>稠密定义的 <span class="arithmatex">\(T:H\supset D(T)\to H\)</span> 若满足 <span class="arithmatex">\(T\subset T^*\)</span>，称对称，也称 Hermitian。若 <span class="arithmatex">\(T=T^*\)</span>，称自伴。若 <span class="arithmatex">\(\overline T\)</span> 自伴，称本质自伴。</p>
+</div>
+<p>对称性只检验定义域内的配对；自伴性还要求伴随没有更大的定义域。对称算子自动可闭，因为 <span class="arithmatex">\(D(T)\subset D(T^*)\)</span> 稠密。</p>
+<p>对稠密定义的算子，始终有 <span class="arithmatex">\((\operatorname{Ran}T)^\perp=\ker T^*\)</span>。反向的像空间描述要加闭包。算子和与积也有定义域：</p>
+<div class="arithmatex">\[
+D(S+T)=D(S)\cap D(T),
+\qquad D(ST)=\{x\in D(T):Tx\in D(S)\}.
+\]</div>
+<p>对无界算子不能任意交换乘积，也不能无条件套用有界算子的伴随乘法公式。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>Cayley 变换：把无界问题变成等距扩张</h2>
+<p>若 <span class="arithmatex">\(T\)</span> 对称，则</p>
+<div class="arithmatex">\[
+\|(T\pm iI)x\|^2=\|Tx\|^2+\|x\|^2.
+\]</div>
+<p>因此 <span class="arithmatex">\(T\pm iI\)</span> 单射，且在 <span class="arithmatex">\(T\)</span> 闭时其像闭。定义</p>
+<div class="arithmatex">\[
+U_T=(T-iI)(T+iI)^{-1}:
+\operatorname{Ran}(T+iI)\to\operatorname{Ran}(T-iI).
+\]</div>
+<p>这是两个像空间间的等距满射，称 Cayley 变换。它把寻找对称扩张的问题，变成寻找等距映射扩张的问题。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">自伴性的满射判据</span></p>
+<p>对稠密定义对称 <span class="arithmatex">\(T\)</span>，</p>
+<div class="arithmatex">\[
+T=T^*\quad\Longleftrightarrow\quad
+\operatorname{Ran}(T+iI)=\operatorname{Ran}(T-iI)=H.
+\]</div>
+<p>因而自伴算子的 Cayley 变换是全空间上的酉算子。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>若 <span class="arithmatex">\(T\)</span> 自伴，它闭；上面的估计使像闭。像的正交补为 <span class="arithmatex">\(\ker(T\mp iI)=0\)</span>，所以像稠密，继而满射。</p>
+<p>反过来，设两个像都为 <span class="arithmatex">\(H\)</span>。对 <span class="arithmatex">\(y\in D(T^*)\)</span>，由满射性选 <span class="arithmatex">\(x\in D(T)\)</span>，使 <span class="arithmatex">\((T-iI)x=(T^*-iI)y\)</span>。于是 <span class="arithmatex">\(y-x\in\ker(T^*-iI)\)</span>，而此核等于 <span class="arithmatex">\(\operatorname{Ran}(T+iI)^\perp=0\)</span>，故 <span class="arithmatex">\(y=x\in D(T)\)</span>。因此 <span class="arithmatex">\(T^*=T\)</span>。</p>
+</details>
+<p>反向变换为</p>
+<div class="arithmatex">\[
+T=i(I+U)(I-U)^{-1},\qquad D(T)=\operatorname{Ran}(I-U).
+\]</div>
+<p>需要 <span class="arithmatex">\(\ker(I-U)=0\)</span>，否则逆的输入不能唯一决定原像。酉性使此像稠密；所得算子自伴。即使 <span class="arithmatex">\(U\)</span> 没有特征值 <span class="arithmatex">\(1\)</span>，<span class="arithmatex">\(1\)</span> 仍可属于连续谱，因此 <span class="arithmatex">\(T\)</span> 可能无界。</p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>亏空间与所有自伴扩张</h2>
+<p>设 <span class="arithmatex">\(T\)</span> 闭、稠密定义且对称。定义</p>
+<div class="arithmatex">\[
+N_+=\ker(T^*-iI),\qquad N_-=\ker(T^*+iI),
+\qquad n_\pm=\dim N_\pm.
+\]</div>
+<p>它们正是 Cayley 变换定义空间与像空间的正交补：<span class="arithmatex">\(N_+=\operatorname{Ran}(T+iI)^\perp\)</span>，<span class="arithmatex">\(N_-=\operatorname{Ran}(T-iI)^\perp\)</span>。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span><span class="book-name">von Neumann 自伴扩张定理</span></p>
+<p><span class="arithmatex">\(T\)</span> 存在自伴扩张，当且仅当 <span class="arithmatex">\(n_+=n_-\)</span>。每个酉映射 <span class="arithmatex">\(V:N_+\to N_-\)</span> 对应一个自伴扩张 <span class="arithmatex">\(T_V\)</span>：</p>
+<div class="arithmatex">\[
+D(T_V)=D(T)\mathbin{\dot+}\{u+Vu:u\in N_+\},
+\]</div>
+<div class="arithmatex">\[
+T_V(x+u+Vu)=Tx+iu-iVu.
+\]</div>
+<p>点号表示代数直和。<span class="arithmatex">\(n_+=n_-=0\)</span> 等价于 <span class="arithmatex">\(T\)</span> 自伴；对未闭对称算子，则先取闭包，零亏指数对应本质自伴。</p>
+</div>
+<details class="proof">
+<summary>证明：缺少的边界信息藏在何处</summary>
+<p>先建立图范数正交分解</p>
+<div class="arithmatex">\[
+D(T^*)=D(T)\mathbin{\dot+}N_+\mathbin{\dot+}N_-.
+\]</div>
+<p>对 <span class="arithmatex">\(y\in D(T^*)\)</span>，把 <span class="arithmatex">\((T^*+iI)y\)</span> 按闭空间 <span class="arithmatex">\(\operatorname{Ran}(T+iI)\)</span> 与其正交补 <span class="arithmatex">\(N_+\)</span> 分解为 <span class="arithmatex">\((T+iI)x+v\)</span>。令 <span class="arithmatex">\(u=v/(2i)\in N_+\)</span>，则 <span class="arithmatex">\(y-x-u\in N_-\)</span>。各部分在图内积下正交，因此分解唯一。</p>
+<p>在此分解中，边界形式</p>
+<div class="arithmatex">\[
+\mathfrak b(y,z)=\langle T^*y,z\rangle-\langle y,T^*z\rangle
+\]</div>
+<p>在 <span class="arithmatex">\(D(T)\)</span> 部分为零，在 <span class="arithmatex">\(N_+\)</span> 上为 <span class="arithmatex">\(-2i\langle u,v\rangle\)</span>，在 <span class="arithmatex">\(N_-\)</span> 上为 <span class="arithmatex">\(2i\langle u,v\rangle\)</span>，交叉部分为零。</p>
+<p>所以 <span class="arithmatex">\(u+Vu\)</span> 形成对称扩张，恰要求 <span class="arithmatex">\(V\)</span> 保持内积。要让扩张与其伴随的定义域相同，还必须把全部两个亏空间匹配，即 <span class="arithmatex">\(V\)</span> 酉且满射。得到定理的条件和公式。</p>
+<p>从 Cayley 角度，同样是在两个正交补之间补上酉映射；按本节的 <span class="arithmatex">\(u+Vu\)</span> 记法，补在 Cayley 变换上的映射是 <span class="arithmatex">\(-V\)</span>。这个负号只来自参数化约定。</p>
+</details>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>一个完整例子：区间上的动量算子</h2>
+<p>在 <span class="arithmatex">\(H=L^2(0,1)\)</span> 上定义</p>
+<div class="arithmatex">\[
+T_0=-i\frac{\mathrm d}{\mathrm dx},\qquad D(T_0)=C_c^\infty(0,1).
+\]</div>
+<p>分部积分给出对称性。其闭包 <span class="arithmatex">\(T\)</span> 的定义域是 <span class="arithmatex">\(H_0^1(0,1)\)</span>，伴随 <span class="arithmatex">\(T^*\)</span> 的定义域是 <span class="arithmatex">\(H^1(0,1)\)</span>，两者作用均为 <span class="arithmatex">\(-iu'\)</span>。</p>
+<p>这里 <span class="arithmatex">\(H^1\)</span> 的函数有绝对连续代表，弱导数属于 <span class="arithmatex">\(L^2\)</span>，因此端点值有意义。伴随条件正是弱导数条件；图范数等于 <span class="arithmatex">\(H^1\)</span> 范数，紧支撑光滑函数的图闭包给出 <span class="arithmatex">\(H_0^1\)</span>。</p>
+<p>对 <span class="arithmatex">\(u,v\in H^1\)</span>，边界形式为</p>
+<div class="arithmatex">\[
+\langle T^*u,v\rangle-\langle u,T^*v\rangle
+=i[\overline u v]_0^1.
+\]</div>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">相位周期边界给出全部自伴扩张</span></p>
+<p>对 <span class="arithmatex">\(\theta\in[0,2\pi)\)</span>，</p>
+<div class="arithmatex">\[
+D(T_\theta)=\{u\in H^1(0,1):u(1)=e^{i\theta}u(0)\},
+\qquad T_\theta u=-iu'.
+\]</div>
+<p>它自伴，谱为 <span class="arithmatex">\(\theta+2\pi\mathbb Z\)</span>，特征函数为 <span class="arithmatex">\(e^{i(\theta+2\pi k)x}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>代入边界形式，两个端点项相消，得到对称性。若 <span class="arithmatex">\(v\)</span> 属于其伴随定义域，弱导数条件给出 <span class="arithmatex">\(v\in H^1\)</span>；对所有满足该边界条件的 <span class="arithmatex">\(u\)</span>，边界形式为零，得到 <span class="arithmatex">\(v(1)=e^{i\theta}v(0)\)</span>，所以伴随定义域相同。</p>
+<p>方程 <span class="arithmatex">\(-iu'=\lambda u\)</span> 给出 <span class="arithmatex">\(u(x)=Ce^{i\lambda x}\)</span>。边界条件要求 <span class="arithmatex">\(e^{i\lambda}=e^{i\theta}\)</span>，故特征值如上。乘以 <span class="arithmatex">\(e^{-i\theta x}\)</span> 把特征函数族变为通常 Fourier 正交基，因此没有遗漏其他谱。</p>
+<p>此外 <span class="arithmatex">\(N_+\)</span> 由 <span class="arithmatex">\(e^{-x}\)</span> 张成，<span class="arithmatex">\(N_-\)</span> 由 <span class="arithmatex">\(e^x\)</span> 张成，亏指数为 <span class="arithmatex">\((1,1)\)</span>，所以全部自伴扩张由一个相位参数决定。仅要求两个端点都为零得到的是对称闭算子，不是自伴动量算子。</p>
+</details>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>无界自伴谱定理</h2>
+<h3 id="section-7-1">7.1 先理解无界乘法</h3>
+<p>对可测实函数 <span class="arithmatex">\(m\)</span>，定义</p>
+<div class="arithmatex">\[
+M_mf=mf,\qquad D(M_m)=\{f\in L^2:mf\in L^2\}.
+\]</div>
+<p>截断 <span class="arithmatex">\(f\mathbf1_{\{|m|\le n\}}\)</span> 证明定义域稠密；伴随定义用相同截断测试给出 <span class="arithmatex">\(M_m^*=M_m\)</span>。事实上复可测 <span class="arithmatex">\(m\)</span> 有 <span class="arithmatex">\(M_m^*=M_{\overline m}\)</span>。自伴乘法模型的定义域是乘积可积的<strong>最大定义域</strong>，任意缩小它一般会破坏自伴性。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">无界自伴算子的谱定理</span></p>
+<p>每个自伴 <span class="arithmatex">\(T\)</span> 都存在唯一 PVM <span class="arithmatex">\(E\)</span>，使</p>
+<div class="arithmatex">\[
+T=\int_{\mathbb R}\lambda\,\mathrm dE(\lambda),
+\qquad
+D(T)=\left\{x:\int\lambda^2\,\mathrm d\mu_x(\lambda)&lt;\infty\right\},
+\]</div>
+<p>其中 <span class="arithmatex">\(\mu_x(B)=\langle x,E(B)x\rangle\)</span>。等价地，<span class="arithmatex">\(T\)</span> 酉等价于若干 <span class="arithmatex">\(L^2\)</span> 空间上乘以实变量的直和。</p>
+</div>
+<details class="proof">
+<summary>证明：经 Cayley 变换使用有界谱定理</summary>
+<p><span class="arithmatex">\(U=(T-iI)(T+iI)^{-1}\)</span> 酉，且 <span class="arithmatex">\(\ker(I-U)=0\)</span>。第五章给出单位圆上的谱测度 <span class="arithmatex">\(E_U\)</span>，其中 <span class="arithmatex">\(E_U(\{1\})=0\)</span>。</p>
+<p>把单位圆除去 <span class="arithmatex">\(1\)</span> 后映到实轴：</p>
+<div class="arithmatex">\[
+\lambda=i\frac{1+z}{1-z},\qquad z=\frac{\lambda-i}{\lambda+i}.
+\]</div>
+<p>在乘法模型中，这个实函数产生最大定义域上的自伴乘法算子。其 Cayley 变换仍是 <span class="arithmatex">\(U\)</span>，因此由反向变换，它就是原来的 <span class="arithmatex">\(T\)</span>。推前 <span class="arithmatex">\(E_U\)</span> 得到 <span class="arithmatex">\(E\)</span>，平方可积条件正是乘法算子的定义域。</p>
+<p>唯一性由 Cayley 变换及其有界谱测度的唯一性得到。无界性集中在函数 <span class="arithmatex">\(i(1+z)/(1-z)\)</span> 靠近 <span class="arithmatex">\(z=1\)</span> 的增长，而不是有界谱测度本身。</p>
+</details>
+<h3 id="section-7-2">7.2 无界 Borel 函数演算</h3>
+<p>对任意复 Borel 函数 <span class="arithmatex">\(f\)</span>，</p>
+<div class="arithmatex">\[
+D(f(T))=\left\{x:\int|f|^2\,\mathrm d\mu_x&lt;\infty\right\},
+\qquad\|f(T)x\|^2=\int|f|^2\,\mathrm d\mu_x.
+\]</div>
+<p>使用 <span class="arithmatex">\(f_n=f\mathbf1_{\{|f|\le n\}}\)</span> 的有界演算，<span class="arithmatex">\(f_n(T)x\)</span> 在上述定义域内收敛，定义 <span class="arithmatex">\(f(T)x\)</span>。实 <span class="arithmatex">\(f\)</span> 给出自伴算子。</p>
+<div class="admonition warning">
+<p class="admonition-title">无界演算中的等式必须检查定义域</p>
+<p>总有 <span class="arithmatex">\(f(T)g(T)\subset(fg)(T)\)</span>，但两者未必具有同样定义域。例如 <span class="arithmatex">\(T=M_x\)</span> 在 <span class="arithmatex">\(L^2(\mathbb R)\)</span> 上，<span class="arithmatex">\(g=0\)</span>：<span class="arithmatex">\(T\cdot0\)</span> 在全空间定义，而 <span class="arithmatex">\(0\cdot T\)</span> 只在 <span class="arithmatex">\(D(T)\)</span> 上定义，虽然二者的作用都为零。</p>
+<p>同样，<span class="arithmatex">\(f(T)+g(T)\)</span> 的定义域是交集；若函数恰好相消，<span class="arithmatex">\((f+g)(T)\)</span> 的最大定义域可能更大。</p>
+</div>
+<h3 id="section-7-3">7.3 强交换与联合谱</h3>
+<p>自伴 <span class="arithmatex">\(T_1,T_2\)</span> 称强交换，若所有谱投影彼此可交换。这等价于有界演化群 <span class="arithmatex">\(e^{itT_1}\)</span> 与 <span class="arithmatex">\(e^{isT_2}\)</span> 对所有实 <span class="arithmatex">\(t,s\)</span> 可交换。</p>
+<p>强交换的有限自伴族具有 <span class="arithmatex">\(\mathbb R^N\)</span> 上的联合 PVM 和坐标乘法模型，<span class="arithmatex">\(f(T_1,\ldots,T_N)\)</span> 的定义域仍由 <span class="arithmatex">\(\int|f|^2\,\mathrm d\mu_x\)</span> 给出。证明对各 Cayley 变换使用联合有界谱定理，再将圆周坐标映回实轴。</p>
+<p>仅在某个稠密公共域上写 <span class="arithmatex">\(T_1T_2=T_2T_1\)</span>，一般不足以保证谱投影交换。定义域条件和强交换条件承担不同任务。</p>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>为什么有限截断不再自动确定极限</h2>
+<p>有界自伴算子的连续演算有统一的谱区间与范数估计。无界对称算子的有限截断虽然仍可对角化，却可能对应不同的自伴边界条件，进而产生不同的极限谱测度。不定矩问题正体现这种不唯一性。</p>
+<p>因此，无界谱定理必须先确定自伴算子，而不仅是对称的表达式。Cayley 变换把缺少的定义域信息转化为等距扩张问题，使定义域问题转化为有界映射的扩张问题。</p>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>定义域、图像与 Cayley 变换</h2>
+<p>以下算子允许无界，但默认定义域稠密；不要求稠密时会明确说明。算子的等式同时要求定义域相同，包含关系也包含定义域的包含。<span class="arithmatex">\(H,K,L\)</span> 均为 Hilbert 空间。</p>
+<h3 id="topic-6-2-1">先核对定义域</h3>
+<p>相同微分表达式可以配上不同的定义域，得到不同算子。因此加法、复合、逆和乘法模型的每一条等式，都要同时检查允许输入的向量。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span><span class="book-name">无界算子</span></p>
+<p>无界算子 <span class="arithmatex">\(T:H\to K\)</span> 是线性子空间 <span class="arithmatex">\(D(T)\subset H\)</span> 到 <span class="arithmatex">\(K\)</span> 的线性映射。这里“无界”意为不预设有界，允许通常的有界算子；<span class="arithmatex">\(D(T)=H\)</span> 时称处处定义。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.2</span><span class="book-name">限制算子</span></p>
+<p>对线性 <span class="arithmatex">\(D_0\subset D(T)\)</span>，<span class="arithmatex">\(T|_{D_0}\)</span> 的定义域为 <span class="arithmatex">\(D_0\)</span>，作用与 <span class="arithmatex">\(T\)</span> 相同。限制可能不再稠密定义。</p>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.3</span><span class="book-name">算子的和</span></p>
+<p><span class="arithmatex">\(D(S+T)=D(S)\cap D(T)\)</span>，<span class="arithmatex">\((S+T)\xi=S\xi+T\xi\)</span>。即使两者各自稠密定义，交域仍须另行检查。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.4</span><span class="book-name">复合与标量乘法</span></p>
+<p><span class="arithmatex">\(D(ST)=\{\xi\in D(T):T\xi\in D(S)\}\)</span>；<span class="arithmatex">\(D(\lambda T)=D(T)\)</span>，<span class="arithmatex">\((\lambda T)\xi=\lambda T\xi\)</span>，包括 <span class="arithmatex">\(\lambda=0\)</span>。零倍算子不自动扩大为全空间零算子。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.5</span><span class="book-name">加法结合律</span></p>
+<p>允许非稠密定义的算子满足 <span class="arithmatex">\((A+B)+C=A+(B+C)\)</span>，两侧定义域均为三个定义域的交。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.6</summary>
+<p>两侧定义域都是 <span class="arithmatex">\(D(A)\cap D(B)\cap D(C)\)</span>，在此域上的值都是 <span class="arithmatex">\(A\xi+B\xi+C\xi\)</span>。因此不仅作用相等，定义域也相等。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.6</span><span class="book-name">复合结合律</span></p>
+<p>允许非稠密定义的算子满足 <span class="arithmatex">\((AB)C=A(BC)\)</span>，定义域均要求 <span class="arithmatex">\(\xi\in D(C)\)</span>、<span class="arithmatex">\(C\xi\in D(B)\)</span>、<span class="arithmatex">\(BC\xi\in D(A)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.7</summary>
+<p>两侧均要求 <span class="arithmatex">\(\xi\in D(C)\)</span>、<span class="arithmatex">\(C\xi\in D(B)\)</span>、<span class="arithmatex">\(B(C\xi)\in D(A)\)</span>，在共同域上都取值 <span class="arithmatex">\(A(B(C\xi))\)</span>。故复合结合律成立。</p>
+</details>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.7</span><span class="book-name">分配律的定义域</span></p>
+<p><span class="arithmatex">\((A+B)C=AC+BC\)</span>，而 <span class="arithmatex">\(A(C+D)\supset AC+AD\)</span>。若 <span class="arithmatex">\(A\)</span> 处处定义，则后一包含成为等式；否则 <span class="arithmatex">\(C\xi+D\xi\)</span> 可能因相消而属于 <span class="arithmatex">\(D(A)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.8</summary>
+<p>前一等式的两侧域均为 <span class="arithmatex">\(\{\xi\in D(C):C\xi\in D(A)\cap D(B)\}\)</span>。后一式中，<span class="arithmatex">\(AC+AD\)</span> 的域要求 <span class="arithmatex">\(C\xi,D\xi\)</span> 分别属于 <span class="arithmatex">\(D(A)\)</span>，其和当然属于该线性域，故只有包含。若 <span class="arithmatex">\(A\)</span> 处处定义，此额外要求消失，两侧域同为 <span class="arithmatex">\(D(C)\cap D(D)\)</span>，包含成为等式。</p>
+</details>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.8</span><span class="book-name">扩张</span></p>
+<p><span class="arithmatex">\(S\subset T\)</span> 指 <span class="arithmatex">\(D(S)\subset D(T)\)</span> 且 <span class="arithmatex">\(T|_{D(S)}=S\)</span>。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.9</span><span class="book-name">对称算子</span></p>
+<p>稠密定义的 <span class="arithmatex">\(T:H\to H\)</span> 对称，指 <span class="arithmatex">\(\langle\eta,T\xi\rangle=\langle T\eta,\xi\rangle\)</span> 对全部 <span class="arithmatex">\(\xi,\eta\in D(T)\)</span> 成立。也称 Hermitian 算子；其定义域上的形式为 <span class="arithmatex">\(\omega_T(\eta,\xi)=\langle\eta,T\xi\rangle\)</span>。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.10</span><span class="book-name">最大乘法算子</span></p>
+<p>有限值可测函数 <span class="arithmatex">\(f\)</span> 定义 <span class="arithmatex">\(M_f\xi=f\xi\)</span>，<span class="arithmatex">\(D(M_f)=\{\xi\in L^2:f\xi\in L^2\}\)</span>。此域稠密；实 <span class="arithmatex">\(f\)</span> 给出对称算子，实际上在此最大域上自伴。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.14</summary>
+<p>对任意 <span class="arithmatex">\(\xi\in L^2\)</span>，<span class="arithmatex">\(\xi_n=\mathbf1_{\{|f|\leq n\}}\xi\)</span> 属于 <span class="arithmatex">\(D(M_f)\)</span> 且趋于 <span class="arithmatex">\(\xi\)</span>，故域稠密。分部乘法的内积直接给 <span class="arithmatex">\(M_{\bar f}\subset M_f^*\)</span>。若 <span class="arithmatex">\(\eta\in D(M_f^*)\)</span>，将伴随恒等式限制到 <span class="arithmatex">\(\{|f|\leq n\}\)</span>，在该处用任意 <span class="arithmatex">\(L^2\)</span> 测试可得 <span class="arithmatex">\(M_f^*\eta=\bar f\eta\)</span>；这些集合穷尽空间，故 <span class="arithmatex">\(\bar f\eta\in L^2\)</span>。因此 <span class="arithmatex">\(M_f^*=M_{\bar f}\)</span>，实 <span class="arithmatex">\(f\)</span> 时自伴。</p>
+</details>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.11</span><span class="book-name">无界算子的直和</span></p>
+<p><span class="arithmatex">\(\bigoplus_\alpha T_\alpha\)</span> 的定义域为满足各 <span class="arithmatex">\(\xi_\alpha\in D(T_\alpha)\)</span> 且 <span class="arithmatex">\(\sum_\alpha\|T_\alpha\xi_\alpha\|^2&lt;\infty\)</span> 的 Hilbert 直和向量；作用逐分量定义。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.15</summary>
+<p>定义域中的有限分量向量在直和中稠密，只要各 <span class="arithmatex">\(D(T_\alpha)\)</span> 稠密。定义中平方可和的条件恰好保证像属于目标直和。对称算子的直和仍对称，因为内积的分量求和绝对收敛，可以逐项使用对称性；最大域实乘法算子的直和也自伴，可逐分量使用伴随判据并检查像的平方可和。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.12</span><span class="book-name">乘法算子的幂</span></p>
+<p>对每个非负整数 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(M_f^n=M_{f^n}\)</span>，定义域也相同。较高幂的可积性结合 <span class="arithmatex">\(\xi\in L^2\)</span> 保证所有中间幂可积。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.19</summary>
+<p><span class="arithmatex">\(n=0\)</span> 时两侧都是全空间单位算子。对 <span class="arithmatex">\(n\geq1\)</span>，点态作用相同；需要核对域。若 <span class="arithmatex">\(f^n\xi\in L^2\)</span> 且 <span class="arithmatex">\(\xi\in L^2\)</span>，则对 <span class="arithmatex">\(0\leq k\leq n\)</span>，</p>
+<div class="arithmatex">\[
+|f|^{2k}|\xi|^2\leq(1+|f|^{2n})|\xi|^2,
+\]</div>
+<p>所以所有中间幂均在 <span class="arithmatex">\(L^2\)</span>，<span class="arithmatex">\(\xi\)</span> 属于复合域。反向复合域自然要求最终幂在 <span class="arithmatex">\(L^2\)</span>。</p>
+</details>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.13</span><span class="book-name">无界逆</span></p>
+<p>若 <span class="arithmatex">\(T\)</span> 单射，定义 <span class="arithmatex">\(T^{-1}\)</span> 于 <span class="arithmatex">\(\operatorname{ran}T\)</span>，令 <span class="arithmatex">\(T^{-1}(T\xi)=\xi\)</span>。有 <span class="arithmatex">\(D(T^{-1})=\operatorname{ran}T\)</span>、<span class="arithmatex">\(\operatorname{ran}T^{-1}=D(T)\)</span>、<span class="arithmatex">\((T^{-1})^{-1}=T\)</span>；逆稠密定义当且仅当 <span class="arithmatex">\(T\)</span> 有稠密像。</p>
+</div>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.14</span><span class="book-name">复合的逆</span></p>
+<p>单射算子 <span class="arithmatex">\(A,B\)</span> 的复合也单射，且 <span class="arithmatex">\((AB)^{-1}=B^{-1}A^{-1}\)</span>，按实际定义域理解。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.22</summary>
+<p><span class="arithmatex">\(AB\xi=AB\eta\)</span> 先由 <span class="arithmatex">\(A\)</span> 单射得 <span class="arithmatex">\(B\xi=B\eta\)</span>，再得 <span class="arithmatex">\(\xi=\eta\)</span>。<span class="arithmatex">\(B^{-1}A^{-1}\)</span> 的域要求 <span class="arithmatex">\(y\in\operatorname{ran}A\)</span> 且 <span class="arithmatex">\(A^{-1}y\in\operatorname{ran}B\)</span>，即 <span class="arithmatex">\(y=AB\xi\)</span> 且 <span class="arithmatex">\(B\xi\in D(A)\)</span>。这正是 <span class="arithmatex">\(\operatorname{ran}(AB)\)</span>，在此域上逆式逐项相消。</p>
+</details>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.15</span><span class="book-name">处处定义的有界逆</span></p>
+<p><span class="arithmatex">\(T^{-1}\in\mathcal L(K,H)\)</span> 表示 <span class="arithmatex">\(T\)</span> 单射、像为全部 <span class="arithmatex">\(K\)</span> 且其逆有界。等价于 <span class="arithmatex">\(T=S^{-1}\)</span>，其中 <span class="arithmatex">\(S:K\to H\)</span> 有界、单射且像稠密。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.16</span><span class="book-name">有界算子的核像关系</span></p>
+<p>有界 <span class="arithmatex">\(T:H\to K\)</span> 满足 <span class="arithmatex">\(\ker T=(\operatorname{ran}T^*)^\perp\)</span>、<span class="arithmatex">\(\overline{\operatorname{ran}T}=(\ker T^*)^\perp\)</span>。因此 <span class="arithmatex">\(T\)</span> 的像稠密当且仅当 <span class="arithmatex">\(T^*\)</span> 单射。</p>
+</div>
+<details class="proof">
+<summary>证明 6.2.26</summary>
+<p><span class="arithmatex">\(T\xi=0\)</span> 等价于 <span class="arithmatex">\(\langle\eta,T\xi\rangle=\langle T^*\eta,\xi\rangle=0\)</span> 对全部 <span class="arithmatex">\(\eta\)</span> 成立，故 <span class="arithmatex">\(\ker T=(\operatorname{ran}T^*)^\perp\)</span>。把 <span class="arithmatex">\(T\)</span> 换成 <span class="arithmatex">\(T^*\)</span> 并取正交补，利用 <span class="arithmatex">\(T^{**}=T\)</span>，得到第二式。像稠密恰是其正交补为零。</p>
+</details>
+<h3 id="topic-6-3-1">把无界问题变成等距问题</h3>
+<p>对称性使 <span class="arithmatex">\(T+i\)</span> 与 <span class="arithmatex">\(T-i\)</span> 在图像范数下等长，Cayley 变换据此得到两个子空间间的等距映射。扩张 <span class="arithmatex">\(T\)</span> 遂转成扩张这个等距映射。</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.17</span><span class="book-name">对称算子的特征值</span></p>
+<p>对称算子的全部特征值为实数，因为 <span class="arithmatex">\(T\xi=\lambda\xi\)</span> 时 <span class="arithmatex">\(\lambda\|\xi\|^2=\langle\xi,T\xi\rangle\)</span> 为实数。</p>
+</div>
+<details class="proof">
+<summary>证明 6.3.1</summary>
+<p>特征向量 <span class="arithmatex">\(\xi\ne0\)</span> 给出 <span class="arithmatex">\(\lambda=\langle\xi,T\xi\rangle/\|\xi\|^2\)</span>。对称性使分子等于自己的复共轭，因此 <span class="arithmatex">\(\lambda\in\mathbb R\)</span>。</p>
+</details>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.18</span><span class="book-name">Cayley 变换</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 的 Cayley 变换 <span class="arithmatex">\(U_T=(T-i)(T+i)^{-1}\)</span> 定义于 <span class="arithmatex">\(\operatorname{ran}(T+i)\)</span>，将 <span class="arithmatex">\((T+i)\xi\)</span> 送到 <span class="arithmatex">\((T-i)\xi\)</span>。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.19</span><span class="book-name">Cayley 变换的等距性</span></p>
+<p><span class="arithmatex">\(U_T\)</span> 是 <span class="arithmatex">\(\operatorname{ran}(T+i)\)</span> 到 <span class="arithmatex">\(\operatorname{ran}(T-i)\)</span> 的满射等距映射，并有 <span class="arithmatex">\(\operatorname{ran}(U_T-1)=D(T)\)</span>，故该像稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 6.3.3</summary>
+<p>对称性消掉交叉项，得到</p>
+<div class="arithmatex">\[
+\|(T\pm i)\xi\|^2=\|T\xi\|^2+\|\xi\|^2.
+\]</div>
+<p>故 <span class="arithmatex">\(T+i\)</span> 单射，变换良定义，且保持范数；它按定义满射到 <span class="arithmatex">\(\operatorname{ran}(T-i)\)</span>。又 <span class="arithmatex">\(U_T(T+i)\xi-(T+i)\xi=-2i\xi\)</span>，所以 <span class="arithmatex">\(\operatorname{ran}(U_T-1)=D(T)\)</span>。</p>
+</details>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.20</span><span class="book-name">固定向量的排除</span></p>
+<p>线性子空间间的满射等距 <span class="arithmatex">\(U\)</span> 若 <span class="arithmatex">\(\operatorname{ran}(U-1)\)</span> 稠密，则 <span class="arithmatex">\(\ker(U-1)=0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.3.4</summary>
+<p>若 <span class="arithmatex">\(U\eta=\eta\)</span>，等距性经极化给 <span class="arithmatex">\(\langle U\eta,U\xi\rangle=\langle\eta,\xi\rangle\)</span>，从而 <span class="arithmatex">\(\langle\eta,(U-1)\xi\rangle=0\)</span> 对所有 <span class="arithmatex">\(\xi\in D(U)\)</span> 成立。该像稠密，故 <span class="arithmatex">\(\eta=0\)</span>。</p>
+</details>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.21</span><span class="book-name">Cayley 对应</span></p>
+<p>稠密定义对称算子与满足 <span class="arithmatex">\(\operatorname{ran}(U-1)\)</span> 稠密的子空间间满射等距 <span class="arithmatex">\(U\)</span> 一一对应。逆式为 <span class="arithmatex">\(T=-i(U+1)(U-1)^{-1}=i(1+U)(1-U)^{-1}\)</span>。对应保持扩张关系：<span class="arithmatex">\(T\subset\widetilde T\)</span> 当且仅当 <span class="arithmatex">\(U_T\subset U_{\widetilde T}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.3.5</summary>
+<p>给定 <span class="arithmatex">\(U\)</span>，6.3.4 保证 <span class="arithmatex">\(U-1\)</span> 单射，所以逆变换良定义于稠密域 <span class="arithmatex">\(\operatorname{ran}(U-1)\)</span>。令 <span class="arithmatex">\(\xi=(U-1)\eta\)</span>，则</p>
+<div class="arithmatex">\[
+\langle\xi,T\xi\rangle
+=-i\langle U\eta-\eta,U\eta+\eta\rangle
+=-i(\langle U\eta,\eta\rangle-\langle\eta,U\eta\rangle)\in\mathbb R.
+\]</div>
+<p>极化给出对称性。计算 <span class="arithmatex">\((T+i)(U-1)\eta=-2i\eta\)</span>、<span class="arithmatex">\((T-i)(U-1)\eta=-2iU\eta\)</span>，便还原 <span class="arithmatex">\(U\)</span>；由 6.3.3 的公式也还原 <span class="arithmatex">\(T\)</span>。图像 Cayley 映射可逆并线性，故图像包含在对应前后等价，也就是扩张关系等价。</p>
+</details>
+<h3 id="topic-6-4-1">用图像保留极限中的作用</h3>
+<p>图像把输入及输出一起作为向量。闭性要求它们的联合极限仍满足同一个作用关系；可闭性则要求图像闭包没有多值的竖直部分。</p>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.22</span><span class="book-name">算子图像</span></p>
+<p><span class="arithmatex">\(G(T)=\{\xi\oplus T\xi:\xi\in D(T)\}\subset H\oplus K\)</span>，取子空间内积。算子扩张等价于图像包含。</p>
+</div>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.23</span><span class="book-name">线性关系的定义域</span></p>
+<p>对线性 <span class="arithmatex">\(G\subset H\oplus K\)</span>，<span class="arithmatex">\(D(G)=\{\xi:\exists\eta,\ \xi\oplus\eta\in G\}\)</span>。此域稠密时称关系稠密定义。</p>
+</div>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.24</span><span class="book-name">何时关系是算子</span></p>
+<p><span class="arithmatex">\(G\)</span> 是某个算子的图像，当且仅当每个 <span class="arithmatex">\(\xi\)</span> 至多对应一个 <span class="arithmatex">\(\eta\)</span>，也当且仅当 <span class="arithmatex">\(0\oplus\eta\in G\)</span> 蕴含 <span class="arithmatex">\(\eta=0\)</span>。</p>
+</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.25</span><span class="book-name">闭算子与可闭算子</span></p>
+<p>图像闭时称算子闭。图像闭包仍是算子图像时称可闭，其对应算子记 <span class="arithmatex">\(\overline T\)</span>。可闭等价于：若 <span class="arithmatex">\(\xi_n\to0\)</span> 且 <span class="arithmatex">\(T\xi_n\to\eta\)</span>，则 <span class="arithmatex">\(\eta=0\)</span>；用网代替序列给出等价条件，亦可将像收敛换成像 Cauchy。</p>
+</div>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.26</span><span class="book-name">闭扩张判据</span></p>
+<p><span class="arithmatex">\(T\)</span> 可闭当且仅当存在闭算子扩张它。可闭时 <span class="arithmatex">\(\overline T\)</span> 是最小闭扩张。</p>
+</div>
+<details class="proof">
+<summary>证明 6.4.7</summary>
+<p>若闭 <span class="arithmatex">\(S\)</span> 扩张 <span class="arithmatex">\(T\)</span>，则 <span class="arithmatex">\(\overline{G(T)}\subset G(S)\)</span>。后者没有非零竖直向量，所以前者也是算子图像；于是 <span class="arithmatex">\(T\)</span> 可闭。反向由定义 <span class="arithmatex">\(\overline T\)</span> 就是闭扩张。任一闭扩张的图像均含图像闭包，故 <span class="arithmatex">\(\overline T\)</span> 最小。</p>
+</details>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.27</span><span class="book-name">有界限制的闭包</span></p>
+<p>若 <span class="arithmatex">\(T\)</span> 在 <span class="arithmatex">\(D(T)\)</span> 的原空间范数下有界，则可闭，闭包是到 <span class="arithmatex">\(\overline{D(T)}\)</span> 的唯一连续延拓；此时 <span class="arithmatex">\(T\)</span> 闭当且仅当 <span class="arithmatex">\(D(T)\)</span> 闭。</p>
+</div>
+<details class="proof">
+<summary>证明 6.4.8</summary>
+<p>若 <span class="arithmatex">\(\xi_n\to\xi\)</span> 于 <span class="arithmatex">\(\overline{D(T)}\)</span>，有界性使 <span class="arithmatex">\(T\xi_n\)</span> Cauchy，目标完备给出唯一极限，定义连续延拓 <span class="arithmatex">\(\widetilde T\)</span>。图像极限正是 <span class="arithmatex">\((\xi,\widetilde T\xi)\)</span>，故 <span class="arithmatex">\(G(\widetilde T)=\overline{G(T)}\)</span>。若原域闭，延拓没有新增向量；若 <span class="arithmatex">\(T\)</span> 闭，图像闭包等于原图像，也迫使原域等于其闭包。</p>
+</details>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.28</span><span class="book-name">算子核域</span></p>
+<p><span class="arithmatex">\(D_0\subset D(T)\)</span> 是 <span class="arithmatex">\(T\)</span> 的核域（core，也称核心），指 <span class="arithmatex">\(G(T|_{D_0})\)</span> 在 <span class="arithmatex">\(G(T)\)</span> 中稠密。等价于每个 <span class="arithmatex">\(\xi\in D(T)\)</span> 可由 <span class="arithmatex">\(D_0\)</span> 中序列或网满足 <span class="arithmatex">\(\xi_n\to\xi\)</span>、<span class="arithmatex">\(T\xi_n\to T\xi\)</span>。可闭算子的原定义域是其闭包的核域。</p>
+</div>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.29</span><span class="book-name">图像的对角反射</span></p>
+<p>定义 <span class="arithmatex">\(G^{-1}=\{\eta\oplus\xi:\xi\oplus\eta\in G\}\)</span>，由酉映射 <span class="arithmatex">\(r(\xi\oplus\eta)=\eta\oplus\xi\)</span> 给出。单射算子时它是逆算子的图像。</p>
+</div>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.30</span><span class="book-name">图像的 Cayley 变换</span></p>
+<p>定义 <span class="arithmatex">\(\operatorname{Cay}(\xi\oplus\phi)=2^{-1/2}(\phi+i\xi)\oplus2^{-1/2}(\phi-i\xi)\)</span>，其逆将 <span class="arithmatex">\(\alpha\oplus\beta\)</span> 送到 <span class="arithmatex">\(2^{-1/2}i(\beta-\alpha)\oplus2^{-1/2}(\beta+\alpha)\)</span>。</p>
+</div>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.31</span><span class="book-name">图像变换为酉映射</span></p>
+<p><span class="arithmatex">\(\operatorname{Cay}\)</span> 及其逆都是 <span class="arithmatex">\(H\oplus H\)</span> 上的酉映射，因而保持闭包、正交性和闭子空间。</p>
+</div>
+<details class="proof">
+<summary>证明 6.4.12</summary>
+<p>由平行四边形恒等式，</p>
+<div class="arithmatex">\[
+\tfrac12\|\phi+i\xi\|^2+\tfrac12\|\phi-i\xi\|^2=\|\phi\|^2+\|\xi\|^2.
+\]</div>
+<p>所以 Cayley 映射等距；给出的逆公式直接代入相消，故它满射并酉。酉映射及其逆都连续，也保持内积，因而保持闭包与正交关系。</p>
+</details>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.32</span><span class="book-name">对称算子可闭</span></p>
+<p>每个稠密定义对称算子可闭，闭包仍对称；闭包的 Cayley 变换是 <span class="arithmatex">\(U_T\)</span> 到 <span class="arithmatex">\(\overline{D(U_T)}\)</span> 的连续延拓。<span class="arithmatex">\(T\)</span> 闭当且仅当 <span class="arithmatex">\(D(U_T)\)</span> 闭，也当且仅当 <span class="arithmatex">\(\operatorname{ran}U_T\)</span> 闭。</p>
+</div>
+<details class="proof">
+<summary>证明 6.4.16</summary>
+<p>若 <span class="arithmatex">\(\xi_n\to0\)</span>、<span class="arithmatex">\(T\xi_n\to\eta\)</span>，则对任意 <span class="arithmatex">\(\zeta\in D(T)\)</span>，
+<span class="arithmatex">\(\langle\zeta,\eta\rangle=\lim_n\langle T\zeta,\xi_n\rangle=0\)</span>。域稠密迫使 <span class="arithmatex">\(\eta=0\)</span>，故可闭。将对称恒等式在两个图像逼近序列上取极限，闭包仍对称。</p>
+<p>Cayley 酉映射将 <span class="arithmatex">\(G(T)\)</span> 化为 <span class="arithmatex">\(G(U_T)\)</span>，所以将其闭包化为后者的闭包。等距 <span class="arithmatex">\(U_T\)</span> 的图像闭包是其到 <span class="arithmatex">\(\overline{D(U_T)}\)</span> 的连续延拓。等距映射的图像闭等价于定义域闭；它的像完备又等价于其域完备，故域闭与像闭等价。</p>
+</details>
+<h3 id="topic-6-5-1">缺少的方向来自亏空间</h3>
+<p>闭对称算子的 Cayley 域、像都闭，其正交补记录尚未覆盖的方向。新增等距映射只能连接这两个正交补，所以扩张的自由度由亏空间决定。</p>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.33</span><span class="book-name">闭对称扩张的分类</span></p>
+<p>闭对称 <span class="arithmatex">\(T\)</span> 的闭对称扩张，与两个亏空间的闭子空间间的满射等距 <span class="arithmatex">\(V:D(V)\subset\operatorname{ran}(T+i)^\perp\to\operatorname{ran}(T-i)^\perp\)</span> 一一对应。扩张域为 <span class="arithmatex">\(D(T)+\operatorname{ran}(V-1)\)</span>，在新增向量上作用为 <span class="arithmatex">\(i(V\eta-\eta)\mapsto V\eta+\eta\)</span>。去掉扩张闭性时，对应子空间不要求闭。</p>
+</div>
+<details class="proof">
+<summary>证明 6.5.1</summary>
+<p>令 <span class="arithmatex">\(U=U_T\)</span>，其域 <span class="arithmatex">\(M\)</span> 与像 <span class="arithmatex">\(L\)</span> 均闭。任何等距扩张 <span class="arithmatex">\(\widetilde U\)</span> 的新增部分可先正交分解为 <span class="arithmatex">\(M\)</span> 与 <span class="arithmatex">\(M^\perp\)</span>：若 <span class="arithmatex">\(\eta\)</span> 是新增域中垂直 <span class="arithmatex">\(M\)</span> 的向量，保持内积迫使 <span class="arithmatex">\(\widetilde U\eta\perp L\)</span>。因此扩张恰为 <span class="arithmatex">\(U\oplus V\)</span>，其中 <span class="arithmatex">\(V\)</span> 是 <span class="arithmatex">\(M^\perp\)</span> 和 <span class="arithmatex">\(L^\perp\)</span> 的子空间间满射等距。域闭恰好要求 <span class="arithmatex">\(D(V)\)</span> 闭。</p>
+<p>应用逆 Cayley 变换，原域与新增域为 <span class="arithmatex">\(\operatorname{ran}(U-1)+\operatorname{ran}(V-1)\)</span>，并在新增向量 <span class="arithmatex">\(i(V\eta-\eta)\)</span> 上取值 <span class="arithmatex">\(V\eta+\eta\)</span>。等距扩张的 <span class="arithmatex">\((\widetilde U-1)\)</span> 像仍含稠密的原像，所以逆变换合法，分类一一对应。</p>
+</details>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.34</span><span class="book-name">亏指数</span></p>
+<p>约定 <span class="arithmatex">\(N_+=\operatorname{ran}(T+i)^\perp=\ker(T^*-i)\)</span>，<span class="arithmatex">\(N_-=\operatorname{ran}(T-i)^\perp=\ker(T^*+i)\)</span>，亏指数为 <span class="arithmatex">\(n_\pm=\dim N_\pm\)</span>，维数可为无限基数。<span class="arithmatex">\(T\)</span> 与 <span class="arithmatex">\(\overline T\)</span> 的亏指数相同。</p>
+</div>
+<details class="proof">
+<summary>Cayley 对应及闭扩张</summary>
+<p>对称性使 <span class="arithmatex">\(\|(T\pm i)\xi\|^2=\|T\xi\|^2+\|\xi\|^2\)</span>，故两者单射，Cayley 变换等距。其差作用在 <span class="arithmatex">\((T+i)\xi\)</span> 上为 <span class="arithmatex">\(-2i\xi\)</span>，得到像为 <span class="arithmatex">\(D(T)\)</span>。若 <span class="arithmatex">\(U\eta=\eta\)</span>，等距性说明 <span class="arithmatex">\(\eta\)</span> 与全部 <span class="arithmatex">\((U-1)\zeta\)</span> 正交，稠密性迫使 <span class="arithmatex">\(\eta=0\)</span>，逆变换于是有定义。</p>
+<p>图像的酉 Cayley 变换将对称算子图像变为等距映射图像；等距映射能在定义域闭包上连续延拓，故原算子可闭。闭等距映射的扩张只能在原定义域和像的正交补之间添加一个等距块 <span class="arithmatex">\(V\)</span>；逆 Cayley 变换给出全部闭对称扩张。这使扩张问题成为亏空间间的等距匹配问题。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>伴随、自伴性与一阶微分算子</h2>
+<h3 id="topic-6-6-1">伴随是图像的正交条件</h3>
+<p>伴随恒等式可以写成一个旋转图像的正交补。这种几何表达同时解释伴随的闭性、双伴随的闭包，以及可闭性为何等价于伴随域稠密。</p>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.1</span><span class="book-name">关系的伴随</span></p>
+<p><span class="arithmatex">\(\operatorname{Ad}G=\{\eta\oplus\psi:\langle\eta,\phi\rangle=\langle\psi,\xi\rangle\text{ 对全部 }\xi\oplus\phi\in G\}\)</span>。若 <span class="arithmatex">\(J_{H,K}(\xi\oplus\phi)=i\phi\oplus(-i\xi)\)</span>，则 <span class="arithmatex">\(\operatorname{Ad}G=(JG)^\perp\)</span>。</p>
+</div>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.2</span><span class="book-name">旋转映射的逆</span></p>
+<p><span class="arithmatex">\(J_{K,H}J_{H,K}=1\)</span>，故 <span class="arithmatex">\(J_{H,K}^*=J_{H,K}^{-1}=J_{K,H}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.2</summary>
+<p>连续应用两次 <span class="arithmatex">\(J\)</span> 得 <span class="arithmatex">\(J_{K,H}(i\phi\oplus(-i\xi))=\xi\oplus\phi\)</span>。又 <span class="arithmatex">\(\|J(\xi\oplus\phi)\|^2=\|\phi\|^2+\|\xi\|^2\)</span>，故 <span class="arithmatex">\(J\)</span> 酉，其伴随就是给出的逆。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.3</span><span class="book-name">正交补与反射</span></p>
+<p>在对应直和空间中，<span class="arithmatex">\(J(G^\perp)=(JG)^\perp\)</span>，<span class="arithmatex">\((JG)^{-1}=J(G^{-1})\)</span>（此处使用相应方向的 <span class="arithmatex">\(J\)</span>），<span class="arithmatex">\((G^{-1})^\perp=(G^\perp)^{-1}\)</span>。因此 <span class="arithmatex">\(\operatorname{Ad}(G^{-1})=(\operatorname{Ad}G)^{-1}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.3</summary>
+<p>任一酉映射 <span class="arithmatex">\(V\)</span> 满足 <span class="arithmatex">\(V(G^\perp)=(VG)^\perp\)</span>，分别用于 <span class="arithmatex">\(J\)</span> 和反射 <span class="arithmatex">\(r\)</span> 得第一、三式。第二式用 <span class="arithmatex">\(rJ=-Jr\)</span>；线性子空间与其负号相同，故 <span class="arithmatex">\((JG)^{-1}=J(G^{-1})\)</span>。将这些恒等式代入 <span class="arithmatex">\(\operatorname{Ad}G=(JG)^\perp\)</span> 即得最后一式。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.4</span><span class="book-name">双伴随关系</span></p>
+<p><span class="arithmatex">\(\operatorname{Ad}(\operatorname{Ad}G)=\overline G\)</span>；<span class="arithmatex">\(G\)</span> 稠密定义当且仅当 <span class="arithmatex">\(\operatorname{Ad}G\)</span> 为算子图像。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.4</summary>
+<p>由 <span class="arithmatex">\(J^2=1\)</span>（按正确空间方向理解）及酉性，</p>
+<div class="arithmatex">\[
+\operatorname{Ad}(\operatorname{Ad}G)
+=J((JG)^\perp)^\perp=G^{\perp\perp}=\overline G.
+\]</div>
+<p>竖直向量 <span class="arithmatex">\(0\oplus\psi\)</span> 属于 <span class="arithmatex">\(\operatorname{Ad}G\)</span>，当且仅当 <span class="arithmatex">\(\langle\psi,\xi\rangle=0\)</span> 对全部 <span class="arithmatex">\(\xi\in D(G)\)</span> 成立。故伴随关系没有非零竖直向量，当且仅当 <span class="arithmatex">\(D(G)\)</span> 稠密；这恰是算子图像判据。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.5</span><span class="book-name">图像判据的对偶形式</span></p>
+<p><span class="arithmatex">\(\overline G\)</span> 为算子图像当且仅当 <span class="arithmatex">\(\operatorname{Ad}G\)</span> 稠密定义。特别，当 <span class="arithmatex">\(G\)</span> 本身闭时，可将 <span class="arithmatex">\(\overline G\)</span> 换成 <span class="arithmatex">\(G\)</span>；一般算子图像还须检查可闭性。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.5</summary>
+<p>对 <span class="arithmatex">\(\operatorname{Ad}G\)</span> 应用 6.6.4 的第二部分，得到其定义域稠密当且仅当双伴随关系是算子图像。第一部分识别双伴随为 <span class="arithmatex">\(\overline G\)</span>。这里闭包不可省略：对不可闭算子，原图像是算子图像，但其伴随域并不稠密。</p>
+</details>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.6</span><span class="book-name">伴随算子</span></p>
+<p>稠密定义 <span class="arithmatex">\(T:H\to K\)</span> 的伴随 <span class="arithmatex">\(T^*:K\to H\)</span> 由 <span class="arithmatex">\(G(T^*)=\operatorname{Ad}G(T)\)</span> 定义。具体地，<span class="arithmatex">\(\eta\in D(T^*)\)</span> 当且仅当存在 <span class="arithmatex">\(\psi\)</span> 使全部 <span class="arithmatex">\(\xi\in D(T)\)</span> 满足 <span class="arithmatex">\(\langle\eta,T\xi\rangle=\langle\psi,\xi\rangle\)</span>，并令 <span class="arithmatex">\(T^*\eta=\psi\)</span>。</p>
+</div>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.7</span><span class="book-name">可闭性与双伴随</span></p>
+<p><span class="arithmatex">\(T\)</span> 可闭当且仅当 <span class="arithmatex">\(D(T^*)\)</span> 稠密。伴随总是闭；可闭时 <span class="arithmatex">\(\overline T=T^{**}\)</span>，且 <span class="arithmatex">\((\overline T)^*=T^*=T^{***}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.9</summary>
+<p>伴随图像是某个子空间的正交补，故总闭。由 6.6.5，<span class="arithmatex">\(D(T^*)\)</span> 稠密恰等价于 <span class="arithmatex">\(\overline{G(T)}\)</span> 是算子图像，即 <span class="arithmatex">\(T\)</span> 可闭。此时 6.6.4 给 <span class="arithmatex">\(\overline T=T^{**}\)</span>。正交补不因先取闭包而变化，故 <span class="arithmatex">\((\overline T)^*=T^*\)</span>；再对闭 <span class="arithmatex">\(T^*\)</span> 应用双伴随公式得 <span class="arithmatex">\(T^{***}=T^*\)</span>。</p>
+</details>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.8</span><span class="book-name">无界算子的核像关系</span></p>
+<p><span class="arithmatex">\(\ker T^*=(\operatorname{ran}T)^\perp\)</span>。若 <span class="arithmatex">\(T\)</span> 还闭，则 <span class="arithmatex">\(\ker T=(\operatorname{ran}T^*)^\perp\)</span>，特别闭算子的核闭。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.11</summary>
+<p><span class="arithmatex">\(\eta\in\ker T^*\)</span> 等价于 <span class="arithmatex">\(\langle\eta,T\xi\rangle=0\)</span> 对全部 <span class="arithmatex">\(\xi\in D(T)\)</span> 成立，给出第一式。若 <span class="arithmatex">\(T\)</span> 闭，它等于 <span class="arithmatex">\(T^{**}\)</span>；对 <span class="arithmatex">\(T^*\)</span> 应用第一式得第二式。正交补闭，故闭算子的核闭。</p>
+</details>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.9</span><span class="book-name">闭逆的伴随</span></p>
+<p>闭、单射且有稠密像的 <span class="arithmatex">\(T\)</span>，其 <span class="arithmatex">\(T^{-1}\)</span> 和 <span class="arithmatex">\(T^*\)</span> 也闭、单射且有稠密像，并有 <span class="arithmatex">\((T^*)^{-1}=(T^{-1})^*\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.12</summary>
+<p>交换图像两分量是酉映射，故闭 <span class="arithmatex">\(T\)</span> 的逆也闭。<span class="arithmatex">\(\operatorname{ran}T\)</span> 稠密使逆稠密定义；<span class="arithmatex">\(D(T)\)</span> 稠密使逆有稠密像。6.6.11 又给 <span class="arithmatex">\(\ker T^*=0\)</span> 与 <span class="arithmatex">\(\overline{\operatorname{ran}T^*}=H\)</span>。最后 6.6.3 将图像反射与伴随交换，得到 <span class="arithmatex">\((T^{-1})^*=(T^*)^{-1}\)</span>，包括两边域。</p>
+</details>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.10</span><span class="book-name">初始微分算子</span></p>
+<p>在开集 <span class="arithmatex">\(\Omega\subset\mathbb R^N\)</span> 上，<span class="arithmatex">\(\partial^\alpha\)</span> 初始定义域为 <span class="arithmatex">\(C_c^\infty(\Omega)\)</span>，<span class="arithmatex">\(|\alpha|=\sum_j\alpha_j\)</span>。梯度从标量 <span class="arithmatex">\(L^2\)</span> 到向量 <span class="arithmatex">\(L^2\)</span>，散度方向相反，初始域分别为 <span class="arithmatex">\(C_c^\infty(\Omega)\)</span> 与其 <span class="arithmatex">\(N\)</span> 重直和。</p>
+</div>
+<div id="prop-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.11</span><span class="book-name">分部积分与可闭性</span></p>
+<p>上述微分算子均可闭，且 <span class="arithmatex">\((\partial^\alpha)^*\supset(-1)^{|\alpha|}\partial^\alpha\)</span>、<span class="arithmatex">\(\nabla^*\supset-\operatorname{div}\)</span>、<span class="arithmatex">\(\operatorname{div}^*\supset-\nabla\)</span>。这些首先是初始测试域上的包含，不能直接当作所有边界条件下的等式。</p>
+</div>
+<details class="proof">
+<summary>证明 6.6.14</summary>
+<p>紧支撑测试函数消去边界项，反复分部积分给</p>
+<div class="arithmatex">\[
+\langle f,\partial^\alpha g\rangle
+=\langle(-1)^{|\alpha|}\partial^\alpha f,g\rangle.
+\]</div>
+<p>故初始域包含于伴随域。这个域在 <span class="arithmatex">\(L^2\)</span> 中稠密，6.6.9 保证可闭。对各坐标导数求和，得到梯度与负散度的两条包含，同样由测试域稠密得可闭。</p>
+</details>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.12</span><span class="book-name">图像内积</span></p>
+<p><span class="arithmatex">\(D(T)\)</span> 上取 <span class="arithmatex">\(\langle\xi,\eta\rangle_T=\langle\xi,\eta\rangle+\langle T\xi,T\eta\rangle\)</span>。它与图像等距；<span class="arithmatex">\(T\)</span> 闭当且仅当图像范数下定义域完备。</p>
+</div>
+<h3 id="topic-6-7-1">自伴要求没有剩余亏方向</h3>
+<p>对称性只给 <span class="arithmatex">\(T\subset T^*\)</span>，自伴还要求没有新增伴随域。von Neumann 分解把这些新增方向显式拆成两个亏空间，从而得到满射与扩张判据。</p>
+<div id="def-29" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.13</span><span class="book-name">自伴与本质自伴</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 自伴，指 <span class="arithmatex">\(T=T^*\)</span>，包括定义域相等；本质自伴，指 <span class="arithmatex">\(\overline T\)</span> 自伴。自伴算子必闭。</p>
+</div>
+<div id="prop-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.14</span><span class="book-name">极大对称性</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 没有严格的对称扩张，当且仅当 <span class="arithmatex">\(\operatorname{ran}(T+i)=H\)</span> 或 <span class="arithmatex">\(\operatorname{ran}(T-i)=H\)</span>。等价于 <span class="arithmatex">\(T\)</span> 闭且至少一个亏指数为零；只有一个为零时未必自伴。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.2</summary>
+<p>极大对称算子必须闭，否则对称闭包给出严格扩张。闭时用 6.5.1 分类：若两个亏空间都非零，取各自单位向量便可构造一维等距 <span class="arithmatex">\(V\)</span>，得到严格扩张；若至少一个为零，则没有非零 <span class="arithmatex">\(V\)</span>。亏空间为零等价于对应闭像为全空间，因此得到满射判据。</p>
+</details>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.15</span><span class="book-name">伴随图像的 Cayley 刻画</span></p>
+<p><span class="arithmatex">\(\operatorname{Cay}G(T^*)\)</span> 恰由满足 <span class="arithmatex">\(\langle\alpha,\eta\rangle=\langle\beta,U_T\eta\rangle\)</span> 对全部 <span class="arithmatex">\(\eta\in D(U_T)\)</span> 成立的 <span class="arithmatex">\(\alpha\oplus\beta\)</span> 构成。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.4</summary>
+<p>将 <span class="arithmatex">\(\eta\oplus T\eta\)</span> 及候选伴随向量代入 Cayley 变换，并展开内积，伴随恒等式恰化为 <span class="arithmatex">\(\langle\alpha,\zeta\rangle=\langle\beta,U_T\zeta\rangle\)</span> 对全部 <span class="arithmatex">\(\zeta\in D(U_T)\)</span> 成立。变换可逆，故这个条件既必要也充分。</p>
+</details>
+<div id="prop-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.16</span><span class="book-name">变换后的三块分解</span></p>
+<p>闭对称 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\(\operatorname{Cay}G(T^*)=G(U_T)\oplus(N_+\oplus0)\oplus(0\oplus N_-)\)</span>，三项在直和空间中互相正交且闭。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.5</summary>
+<p>记 <span class="arithmatex">\(M=D(U_T)\)</span>、<span class="arithmatex">\(L=\operatorname{ran}U_T\)</span>。把 <span class="arithmatex">\(\alpha=m+n_+\)</span>、<span class="arithmatex">\(\beta=\ell+n_-\)</span> 按 <span class="arithmatex">\(M\oplus N_+\)</span>、<span class="arithmatex">\(L\oplus N_-\)</span> 分解，6.7.4 的条件变成 <span class="arithmatex">\(\langle m,\eta\rangle=\langle\ell,U_T\eta\rangle\)</span>，即 <span class="arithmatex">\(\ell=U_Tm\)</span>。所以关系恰为 <span class="arithmatex">\((m,U_Tm)+(n_+,0)+(0,n_-)\)</span>。三项正交且闭，得到分解。</p>
+</details>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.17</span><span class="book-name">von Neumann 定义域分解</span></p>
+<p>闭对称 <span class="arithmatex">\(T\)</span> 满足 <span class="arithmatex">\(D(T^*)=D(T)\oplus N_+\oplus N_-\)</span>，正交性相对于 <span class="arithmatex">\(T^*\)</span> 的图像内积；<span class="arithmatex">\(T^*\)</span> 在三部分上分别作用为 <span class="arithmatex">\(T,i,-i\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.6</summary>
+<p>对 6.7.5 的三块应用逆 Cayley 酉映射。第一块还原 <span class="arithmatex">\(G(T)\)</span>；第二块给 <span class="arithmatex">\((-in_+,n_+)/\sqrt2\)</span>，其第二分量为第一分量的 <span class="arithmatex">\(i\)</span> 倍；第三块给 <span class="arithmatex">\((in_-,n_-)/\sqrt2\)</span>，对应 <span class="arithmatex">\(-i\)</span> 倍。故定义域分解及作用公式成立。图像中的正交性就是图像内积的正交性。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.18</span><span class="book-name">自伴的满射判据</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 自伴当且仅当 <span class="arithmatex">\(\operatorname{ran}(T+i)=\operatorname{ran}(T-i)=H\)</span>，亦即其 Cayley 变换为全空间酉算子。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.8</summary>
+<p>若两像为全空间，Cayley 变换全空间酉，且 <span class="arithmatex">\(T\)</span> 闭；6.7.6 中两亏空间为零，故 <span class="arithmatex">\(D(T^*)=D(T)\)</span>。反之自伴时两亏核 <span class="arithmatex">\(\ker(T^*\mp i)\)</span> 均为零，因为对称算子没有非实特征值；闭对称算子的 <span class="arithmatex">\(T\pm i\)</span> 像闭且稠密，故满射。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.19</span><span class="book-name">本质自伴的稠密判据</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 本质自伴当且仅当 <span class="arithmatex">\(\operatorname{ran}(T+i)\)</span> 与 <span class="arithmatex">\(\operatorname{ran}(T-i)\)</span> 均稠密。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.9</summary>
+<p>6.4.16 将闭包的 Cayley 域、像识别为原域、像的闭包。故原两像稠密等价于闭包的两像为全空间，再用 6.7.8 即得本质自伴性。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.20</span><span class="book-name">闭扩张的唯一性</span></p>
+<p>本质自伴 <span class="arithmatex">\(T\)</span> 的闭包为唯一闭对称扩张，并自伴。特别，自伴算子没有严格的对称扩张。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.10</summary>
+<p>任何闭对称扩张均含 <span class="arithmatex">\(\overline T\)</span>。它自伴，6.7.2 排除严格对称扩张，故候选必等于 <span class="arithmatex">\(\overline T\)</span>。自伴算子本身就是自己的闭包，特别结论随之成立。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.21</span><span class="book-name">自伴扩张的存在</span></p>
+<p>对称 <span class="arithmatex">\(T\)</span> 存在自伴扩张当且仅当 <span class="arithmatex">\(n_+=n_-\)</span>，包括无限维基数相等的情形。</p>
+</div>
+<details class="proof">
+<summary>证明 6.7.11</summary>
+<p>自伴扩张对应把 Cayley 变换扩成全空间酉，6.5.1 表明这要求 <span class="arithmatex">\(V:N_+\to N_-\)</span> 满射等距。两个 Hilbert 空间存在这种映射当且仅当正交基的基数相等，正是 <span class="arithmatex">\(n_+=n_-\)</span>。非闭的 <span class="arithmatex">\(T\)</span> 先取闭包，不改变亏指数。</p>
+</details>
+<h3 id="topic-6-8-1">从抽象扩张到边界条件</h3>
+<p>区间导数的伴随先由分部积分得到最大 Sobolev 域，亏方程则化为指数函数。端点边界形式把一维酉参数转成具体的相位边界条件。</p>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.22</span><span class="book-name">区间导数的核</span></p>
+<p>在有界区间 <span class="arithmatex">\(I=(a,b)\)</span> 上，令 <span class="arithmatex">\(T_0=-i\,d/dx\)</span> 的初始域为 <span class="arithmatex">\(C_c^\infty(I)\)</span>，<span class="arithmatex">\(T=\overline{T_0}\)</span>。则 <span class="arithmatex">\(\ker T^*=\ker T_0^*\)</span> 恰为几乎处处常数函数。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.1</summary>
+<p>常数 <span class="arithmatex">\(f\)</span> 满足 <span class="arithmatex">\(\langle f,-ig'\rangle=0\)</span> 对全部紧支撑 <span class="arithmatex">\(g\)</span> 成立，故属于伴随核。反之伴随核给 <span class="arithmatex">\(\int\bar f g'=0\)</span>；6.8.2 将此泛函识别为常数乘积分，故 <span class="arithmatex">\(\bar f\)</span> 也几乎处处为常数。闭包不改变伴随，因此两核相同。</p>
+</details>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.23</span><span class="book-name">零导数分布</span></p>
+<p>若线性泛函 <span class="arithmatex">\(\Lambda:C_c^\infty(I)\to\mathbb C\)</span> 满足 <span class="arithmatex">\(\Lambda(g')=0\)</span> 对全部 <span class="arithmatex">\(g\)</span> 成立，则存在 <span class="arithmatex">\(c\)</span>，使 <span class="arithmatex">\(\Lambda(h)=c\int_Ih\,dx\)</span>。不必额外假设泛函连续。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.2</summary>
+<p>取 <span class="arithmatex">\(h_0\in C_c^\infty(I)\)</span>，使 <span class="arithmatex">\(\int h_0=1\)</span>。若 <span class="arithmatex">\(\int h=0\)</span>，原函数 <span class="arithmatex">\(g(x)=\int_a^xh(t)\,dt\)</span> 在两端邻域均为零，故 <span class="arithmatex">\(g\in C_c^\infty(I)\)</span> 且 <span class="arithmatex">\(g'=h\)</span>，于是 <span class="arithmatex">\(\Lambda(h)=0\)</span>。任意 <span class="arithmatex">\(h\)</span> 拆为 <span class="arithmatex">\((\int h)h_0+[h-(\int h)h_0]\)</span>，第二项积分为零。令 <span class="arithmatex">\(c=\Lambda(h_0)\)</span> 即得结论，无须连续性。</p>
+</details>
+<div id="prop-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.24</span><span class="book-name">导数的亏空间</span></p>
+<p>在该有界区间，<span class="arithmatex">\(\ker(T^*-i)=\operatorname{span}\{e^{-x}\}\)</span>、<span class="arithmatex">\(\ker(T^*+i)=\operatorname{span}\{e^x\}\)</span>，故亏指数为 <span class="arithmatex">\((1,1)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.3</summary>
+<p>伴随方程 <span class="arithmatex">\(T^*f=if\)</span> 化为分布方程 <span class="arithmatex">\(f'=-f\)</span>。乘以光滑积分因子 <span class="arithmatex">\(e^x\)</span> 得 <span class="arithmatex">\((e^xf)'=0\)</span>，6.8.2 给出 <span class="arithmatex">\(f=ce^{-x}\)</span>。同理 <span class="arithmatex">\(T^*f=-if\)</span> 得 <span class="arithmatex">\(f=ce^x\)</span>。两函数在有界区间均属 <span class="arithmatex">\(L^2\)</span> 且满足伴随积分恒等式，所以不是仅仅必要候选，亏空间恰如所述。</p>
+</details>
+<div id="cor-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 10.25</span><span class="book-name">Sobolev 域的分解</span></p>
+<p>相对于 <span class="arithmatex">\(H^1\)</span> 的图像内积，<span class="arithmatex">\(H^1(I)=H_0^1(I)\oplus\operatorname{span}\{e^{-x}\}\oplus\operatorname{span}\{e^x\}\)</span>，<span class="arithmatex">\(T^*e^{-x}=ie^{-x}\)</span>、<span class="arithmatex">\(T^*e^x=-ie^x\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.4</summary>
+<p><span class="arithmatex">\(D(T)=H_0^1(I)\)</span>、<span class="arithmatex">\(D(T^*)=H^1(I)\)</span> 是这里通过图像域定义的空间；将 6.8.3 的亏空间代入 6.7.6，即得正交分解及作用。下一个定理再将这两个抽象域识别成具体绝对连续函数空间。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.26</span><span class="book-name">一维 Sobolev 代表</span></p>
+<p><span class="arithmatex">\(H^1(I)\)</span> 的元素具有唯一连续的绝对连续代表，满足 <span class="arithmatex">\(f'\in L^2\)</span>；反之这些函数属于 <span class="arithmatex">\(H^1\)</span>。<span class="arithmatex">\(H_0^1(I)\)</span> 对应再满足 <span class="arithmatex">\(f(a)=f(b)=0\)</span> 的代表，且 <span class="arithmatex">\(T^*f=-if'\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.5</summary>
+<p>若 <span class="arithmatex">\(f\in D(T)\)</span>，取测试函数 <span class="arithmatex">\(f_n\)</span> 使 <span class="arithmatex">\(f_n\to f\)</span>、<span class="arithmatex">\(f_n'\to iTf\)</span> 于 <span class="arithmatex">\(L^2\)</span>。令 <span class="arithmatex">\(F(x)=\int_a^xiTf\)</span>，Cauchy–Schwarz 给</p>
+<div class="arithmatex">\[
+\sup_x\left|f_n(x)-F(x)\right|\leq\sqrt{b-a}\,\|f_n'-iTf\|_2\to0.
+\]</div>
+<p>所以 <span class="arithmatex">\(f=F\)</span> 几乎处处，且 <span class="arithmatex">\(F(a)=F(b)=0\)</span>。由 6.8.4，<span class="arithmatex">\(D(T^*)\)</span> 中每个元素再加上 <span class="arithmatex">\(e^{\pm x}\)</span> 的线性组合，因此均有绝对连续代表且 <span class="arithmatex">\(T^*f=-if'\)</span>。</p>
+<p>反向，绝对连续且导数在 <span class="arithmatex">\(L^2\)</span> 的函数经分部积分满足伴随定义，所以属于 <span class="arithmatex">\(D(T^*)\)</span>。若再两端为零，用 6.8.4 写为 <span class="arithmatex">\(f=f_0+c_-e^{-x}+c_+e^x\)</span>，其中 <span class="arithmatex">\(f_0\in D(T)\)</span>。两端值给非奇异二元线性方程，迫使 <span class="arithmatex">\(c_-=c_+=0\)</span>，于是 <span class="arithmatex">\(f\in D(T)\)</span>。连续代表若几乎处处相同则处处相同，所以唯一。</p>
+</details>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.27</span><span class="book-name">相位边界条件</span></p>
+<p><span class="arithmatex">\(T_0\)</span> 的自伴扩张与 <span class="arithmatex">\(\lambda\in\mathbb S^1\)</span> 一一对应，扩张为 <span class="arithmatex">\(-if'\)</span>，定义域 <span class="arithmatex">\(D_\lambda=\{f\in H^1(I):f(b)=\lambda f(a)\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.8.6</summary>
+<p>分部积分得到边界形式</p>
+<div class="arithmatex">\[
+\langle f,T^*g\rangle-\langle T^*f,g\rangle
+=-i[\bar f g]_a^b.
+\]</div>
+<p>迹映射 <span class="arithmatex">\(f\mapsto(f(a),f(b))\)</span> 满射到 <span class="arithmatex">\(\mathbb C^2\)</span>，其核为 <span class="arithmatex">\(H_0^1\)</span>。自伴扩张对应此边界形式下等于自身正交补的子空间。各向同性条件要求 <span class="arithmatex">\(|u_a|=|u_b|\)</span>，非零这样的子空间必为一维直线 <span class="arithmatex">\(u_b=\lambda u_a\)</span>，<span class="arithmatex">\(|\lambda|=1\)</span>。每条直线的边界正交补又是自己，故对应限制算子确实自伴；不同相位给不同域。这也把亏空间间的一维酉参数转成了具体边界条件。</p>
+</details>
+<details class="proof">
+<summary>一维导数、绝对连续与边界形式</summary>
+<p>若测试函数 <span class="arithmatex">\(h\)</span> 的积分为零，则 <span class="arithmatex">\(g(x)=\int_a^x h(t)\,dt\)</span> 仍是紧支集光滑函数，<span class="arithmatex">\(h=g'\)</span>。所以零导数泛函在积分为零的测试函数上消失，选一个积分为一的测试函数即可得到 6.8.2。若 <span class="arithmatex">\(f\)</span> 的弱导数为 <span class="arithmatex">\(g\in L^2\)</span>，减去 <span class="arithmatex">\(\int_a^xg\)</span> 后弱导数为零，因此它是常数，得到绝对连续代表。</p>
+<p>分部积分给出边界形式 <span class="arithmatex">\(\langle f,T^*g\rangle-\langle T^*f,g\rangle=-i[\overline f g]_a^b\)</span>。两端取值满足同一单位相位关系时边界项为零；再利用伴随域的同一边界关系得到自伴性。亏空间由一阶方程 <span class="arithmatex">\(-if'=\pm if\)</span> 求解。闭对称扩张的分类保证这些相位域已穷尽所有自伴扩张。</p>
+</details>
+<h2 id="section-11"><span class="book-secnum">§ 11</span>联合无界演算、谱与预解式极限</h2>
+<h3 id="topic-6-9-1">谱投影交换才允许同时演算</h3>
+<p>无界复合的域可能太小，形式上的交换不能代替共同谱模型。强交换用有界 Cayley 变换表达这一要求，再通过逆换元恢复实坐标乘法。</p>
+<div id="def-30" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.1</span><span class="book-name">强交换</span></p>
+<p>自伴 <span class="arithmatex">\(A,B\)</span> 强交换，指其酉 Cayley 变换交换。等价于各自全部谱投影交换；形式上的 <span class="arithmatex">\(AB=BA\)</span> 若未说明域，不足以代替此条件。</p>
+</div>
+<div id="lem-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 11.2</span><span class="book-name">可测换元的酉性</span></p>
+<p>可测同构 <span class="arithmatex">\(\phi:X\to Y\)</span> 及测度族 <span class="arithmatex">\(\nu_\alpha\)</span> 给出酉映射 <span class="arithmatex">\(\bigoplus L^2(Y,\nu_\alpha)\to\bigoplus L^2(X,\phi^*\nu_\alpha)\)</span>，<span class="arithmatex">\(\eta_\alpha\mapsto\eta_\alpha\circ\phi\)</span>；它将最大域乘法 <span class="arithmatex">\(M_g\)</span> 共轭为 <span class="arithmatex">\(M_{g\circ\phi}\)</span>，同时映射相应定义域。</p>
+</div>
+<details class="proof">
+<summary>证明 6.9.3</summary>
+<p>换元公式给 <span class="arithmatex">\(\int_X|\eta\circ\phi|^2\,d(\phi^*\nu)=\int_Y|\eta|^2\,d\nu\)</span>，故逐分量及直和映射等距。可测逆 <span class="arithmatex">\(\phi^{-1}\)</span> 给出其逆，所以酉。<span class="arithmatex">\(g\eta\in L^2(\nu)\)</span> 恰等价于 <span class="arithmatex">\((g\circ\phi)(\eta\circ\phi)\in L^2(\phi^*\nu)\)</span>，同时验证作用和最大定义域的对应。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.3</span><span class="book-name">联合无界谱定理</span></p>
+<p>有限个强交换自伴 <span class="arithmatex">\(T_j\)</span> 可同时酉化为 <span class="arithmatex">\(\bigoplus_\alpha L^2(\mathbb R^N,\mu_\alpha)\)</span> 上的坐标乘法 <span class="arithmatex">\(M_{x_j}\)</span>，各 <span class="arithmatex">\(\mu_\alpha\)</span> 为有限正 Borel 测度；等式包括最大乘法定义域。</p>
+</div>
+<details class="proof">
+<summary>证明 6.9.4</summary>
+<p>强交换使酉 Cayley 变换 <span class="arithmatex">\(U_j\)</span> 伴随交换，用有界联合谱定理把它们化为单位环面上的坐标乘法。因为 <span class="arithmatex">\(\ker(U_j-I)=0\)</span>，坐标等于 <span class="arithmatex">\(1\)</span> 的集合在每个循环测度下质量为零，故可删去这些集合。逐坐标逆 Cayley 映射</p>
+<div class="arithmatex">\[
+x_j=i\frac{1+u_j}{1-u_j}
+\]</div>
+<p>把剩余环面可测同构到 <span class="arithmatex">\(\mathbb R^N\)</span>；6.9.3 的换元酉映射把逆变换算子化为最大域 <span class="arithmatex">\(M_{x_j}\)</span>。由 Cayley 对应的唯一性，这些正是原 <span class="arithmatex">\(T_j\)</span>，包括域。</p>
+</details>
+<h3 id="topic-6-10-1">用可积性规定演算域</h3>
+<p>无界谱函数的像不能对所有向量都有意义。向量谱测度上的平方可积条件精确规定最大定义域，也使复合规则和酉换元包含域的等式。</p>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.4</span><span class="book-name">无界 Borel 演算</span></p>
+<p>强交换自伴族有唯一的全部有限值 Borel 函数演算。其有界部分为正常酉表示，将 <span class="arithmatex">\((x_j-i)/(x_j+i)\)</span> 送到 Cayley 变换；对向量测度 <span class="arithmatex">\(\mu_\xi\)</span>，<span class="arithmatex">\(D(f(T_\bullet))=\{\xi:\int|f|^2\,d\mu_\xi&lt;\infty\}\)</span>，且 <span class="arithmatex">\(\|f(T_\bullet)\xi\|^2=\int|f|^2\,d\mu_\xi\)</span>、<span class="arithmatex">\(\langle\xi,f(T_\bullet)\xi\rangle=\int f\,d\mu_\xi\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.1</summary>
+<p>在 6.9.4 的模型中定义 <span class="arithmatex">\(f(T_\bullet)=\bigoplus M_f\)</span>。向量测度为 <span class="arithmatex">\(d\mu_\xi=\sum_\alpha|\xi_\alpha|^2d\mu_\alpha\)</span>，故定义域、范数及对角积分公式都由乘法算子直接给出；截断 <span class="arithmatex">\(\mathbf1_{\{|f|\leq n\}}\xi\)</span> 证明域稠密。</p>
+<p>唯一性先对有界部分证明：将实坐标空间嵌入 Cayley 环面并对遗漏集合取零测度，环面坐标分离点，故有界表示由各 <span class="arithmatex">\(U_j\)</span> 唯一确定。它遂确定全部 <span class="arithmatex">\(\mu_\xi\)</span>，也确定每个无界 <span class="arithmatex">\(f\)</span> 的域。对角积分公式经极化确定该共同稠密域上的所有矩阵元，因此确定算子本身。</p>
+</details>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.5</span><span class="book-name">乘法模型中的演算</span></p>
+<p>对任意可测实函数族 <span class="arithmatex">\(f_j\)</span> 和测度族，最大域实乘法 <span class="arithmatex">\(M_{f_j}\)</span> 强交换且自伴，<span class="arithmatex">\(g(M_{f_1},\ldots,M_{f_N})=M_{g\circ(f_1,\ldots,f_N)}\)</span>，定义域也一致。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.2</summary>
+<p>最大域实乘法自伴，其 Cayley 变换是相应模为 <span class="arithmatex">\(1\)</span> 的乘法算子，彼此交换。定义 <span class="arithmatex">\(\pi(g)=M_{g\circ f_\bullet}\)</span>，有界部分的正常性来自单调收敛；向量测度是 <span class="arithmatex">\(\sum_\alpha(f_\bullet)_*(|\xi_\alpha|^2\mu_\alpha)\)</span>。于是</p>
+<div class="arithmatex">\[
+\int|g|^2\,d\mu_\xi
+=\sum_\alpha\int|g\circ f_\bullet|^2|\xi_\alpha|^2\,d\mu_\alpha.
+\]</div>
+<p>该量有限恰是右侧最大域条件，范数和积分公式也成立。6.10.1 的唯一性完成识别。</p>
+</details>
+<div id="prop-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11.6</span><span class="book-name">有界时强交换即交换</span></p>
+<p>有限个有界自伴算子强交换当且仅当通常的算子复合交换；两种理论定义的有界 Borel 演算一致。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.4</summary>
+<p>通常交换的有界自伴算子的全部 Borel 演算交换，特别 Cayley 变换交换。反向，两个 Cayley 变换交换时，6.9.4 给出共同乘法模型，其中原有界算子自然交换。两种演算的有界正常表示满足相同坐标要求，由唯一性相等。</p>
+</details>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.7</span><span class="book-name">无界复合规则</span></p>
+<p>实 Borel <span class="arithmatex">\(g_1,\ldots,g_L\)</span> 给出强交换自伴 <span class="arithmatex">\(g_j(T_\bullet)\)</span>，且对任意 Borel <span class="arithmatex">\(f:\mathbb R^L\to\mathbb C\)</span>，<span class="arithmatex">\(f(g_1(T_\bullet),\ldots,g_L(T_\bullet))=(f\circ(g_1,\ldots,g_L))(T_\bullet)\)</span>，使用两侧的最大演算定义域。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.5</summary>
+<p>把 <span class="arithmatex">\(T_\bullet\)</span> 化为坐标乘法，<span class="arithmatex">\(g_j(T_\bullet)=M_{g_j}\)</span>。6.10.2 说明这些实乘法自伴并强交换，其演算就是 <span class="arithmatex">\(M_{f\circ g_\bullet}\)</span>。把模型换回原空间便得等式；两侧域都是满足 <span class="arithmatex">\(\int|f\circ g_\bullet|^2\,d\mu_\xi&lt;\infty\)</span> 的向量，所以也确实同域。</p>
+</details>
+<div id="cor-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 11.8</span><span class="book-name">演算的坐标限制</span></p>
+<p>只依赖前 <span class="arithmatex">\(L\)</span> 个坐标的 Borel 函数，满足 <span class="arithmatex">\(f(T_1,\ldots,T_L)=f(T_1,\ldots,T_N)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.6</summary>
+<p>在 6.10.5 中取 <span class="arithmatex">\(g_j(x)=x_j\)</span>，<span class="arithmatex">\(1\leq j\leq L\)</span>，复合函数恰是将 <span class="arithmatex">\(f\)</span> 忽略其余变量后的函数。公式同时识别作用和定义域。</p>
+</details>
+<div id="prop-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11.9</span><span class="book-name">酉算子与自伴算子的交换</span></p>
+<p>酉 <span class="arithmatex">\(V\)</span> 满足 <span class="arithmatex">\(VT=TV\)</span>（含域相等）当且仅当它与 <span class="arithmatex">\(T\)</span> 的 Cayley 变换交换。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.7</summary>
+<p>若 <span class="arithmatex">\(VT=TV\)</span> 且 <span class="arithmatex">\(VD(T)=D(T)\)</span>，则 <span class="arithmatex">\(V(T+i)=(T+i)V\)</span>，两侧满射，取逆并相乘得到 <span class="arithmatex">\(VU_T=U_TV\)</span>。反向用 <span class="arithmatex">\(D(T)=\operatorname{ran}(U_T-1)\)</span>：交换性及 <span class="arithmatex">\(V^{-1}\)</span> 的交换性保证该域被 <span class="arithmatex">\(V\)</span> 双向保持；逆 Cayley 公式再给出 <span class="arithmatex">\(VT=TV\)</span>。</p>
+</details>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.10</span><span class="book-name">强交换的五个判据</span></p>
+<p>自伴 <span class="arithmatex">\(T_1,T_2\)</span> 强交换、<span class="arithmatex">\(U_1T_2=T_2U_1\)</span>、<span class="arithmatex">\(U_2T_1=T_1U_2\)</span>、全部有界实 Borel 演算互相交换、全部有界复 Borel 演算互相伴随交换，这五个条件等价。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.8</summary>
+<p>前两个单边交换判据分别由 6.10.7 化为 <span class="arithmatex">\(U_1U_2=U_2U_1\)</span>。强交换给出共同乘法模型，所以全部有界复演算伴随交换，实演算当然交换。反向，复演算条件直接用于 Cayley 函数；实演算条件先用于 Cayley 函数的实部、虚部，再线性组合得到 Cayley 变换交换。</p>
+</details>
+<div id="def-31" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.11</span><span class="book-name">无界联合谱</span></p>
+<p>有界部分演算的表示支集称 <span class="arithmatex">\(\sigma(T_1,\ldots,T_N)\)</span>，是 <span class="arithmatex">\(\mathbb R^N\)</span> 中的闭集；其每个邻域对应非零谱投影。谱一般不紧。</p>
+</div>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.12</span><span class="book-name">乘法模型的联合谱</span></p>
+<p>若各测度 <span class="arithmatex">\(\mu_\alpha\)</span> 为 <span class="arithmatex">\(\sigma\)</span>-有限，则 <span class="arithmatex">\(\sigma(M_{f_1},\ldots,M_{f_N})=\overline{\bigcup_\alpha\operatorname{essran}_{\mu_\alpha}(f_1,\ldots,f_N)}\)</span>。坐标乘法的联合谱为各测度支集并集的闭包。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.10</summary>
+<p>开邻域 <span class="arithmatex">\(U\)</span> 的联合谱投影为各分量的 <span class="arithmatex">\(M_{\mathbf1_{f_\bullet^{-1}(U)}}\)</span>。在 <span class="arithmatex">\(\sigma\)</span>-有限测度下，该乘法非零当且仅当该原像有正测度：正测度集合含一个有限正测度子集，其指标提供非零向量。因此一个点属于表示支集恰是其每个邻域都碰到某个分量的本质像，这等价于本质像并集的闭包。坐标函数时本质像闭集正是测度支集。</p>
+</details>
+<div id="prop-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 11.13</span><span class="book-name">无界联合谱的包含</span></p>
+<p><span class="arithmatex">\(\sigma(T_1,\ldots,T_N)\subset\sigma(T_1,\ldots,T_L)\times\sigma(T_{L+1},\ldots,T_N)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.10.12</summary>
+<p>若某个坐标组在其谱外，取该组的开邻域 <span class="arithmatex">\(U\)</span> 使谱投影为零。6.10.6 将其识别为全演算中柱状集合的投影，所以全坐标点也不在联合谱。对两组分别运用即得包含。</p>
+</details>
+<h3 id="topic-6-11-1">实结构配对两个亏空间</h3>
+<p>复共轭型的反酉映射会交换 <span class="arithmatex">\(+i\)</span> 与 <span class="arithmatex">\(-i\)</span>。若它与原算子相容，就能把两个亏空间一一对应，从而保证存在自伴扩张。</p>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.14</span><span class="book-name">实结构保证自伴扩张</span></p>
+<p>若反酉 <span class="arithmatex">\(C:H\to H\)</span> 满足 <span class="arithmatex">\(C^2=1\)</span>、<span class="arithmatex">\(CD(T)\subset D(T)\)</span> 且 <span class="arithmatex">\(TC=CT\)</span> 于定义域，其中 <span class="arithmatex">\(T\)</span> 对称，则 <span class="arithmatex">\(CD(T)=D(T)\)</span>，并存在自伴扩张。<span class="arithmatex">\(C\)</span> 将两个亏空间互相反酉对应，故亏指数相等。固定点空间 <span class="arithmatex">\(H_{\mathbb R}=\{\xi:C\xi=\xi\}\)</span> 给出对应实 Hilbert 空间。</p>
+</div>
+<details class="proof">
+<summary>证明 6.11.1</summary>
+<p><span class="arithmatex">\(C^2=I\)</span> 使 <span class="arithmatex">\(CD(T)\subset D(T)\)</span> 自动成为等式。反线性给 <span class="arithmatex">\(C(T+i)\xi=(T-i)C\xi\)</span>，故 <span class="arithmatex">\(C\)</span> 将两像互相映射；反酉保持正交补，因此也将 <span class="arithmatex">\(N_+\)</span> 与 <span class="arithmatex">\(N_-\)</span> 反酉对应。亏指数相等，6.7.11 便给出自伴扩张。固定点空间的内积为实，任意 <span class="arithmatex">\(\xi\)</span> 都可唯一写成 <span class="arithmatex">\((\xi+C\xi)/2+i(\xi-C\xi)/(2i)\)</span>，说明它给出实结构。</p>
+</details>
+<h3 id="topic-6-12-1">谱判据与极限</h3>
+<p>近似特征向量把谱支集与可逆性连接起来。对无界算子，预解式是适合比较的有界对象；它的强收敛还可控制有界连续谱函数的演算。</p>
+<div id="def-32" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.15</span><span class="book-name">正负惯性指数</span></p>
+<p>可分 Hilbert 空间上的有界 Hermitian 形式 <span class="arithmatex">\(\omega\)</span>，其正、负惯性指数分别为使 <span class="arithmatex">\(\omega\)</span>、<span class="arithmatex">\(-\omega\)</span> 在闭子空间上正定的最大可能维数。它们等于对应正、负谱子空间的维数。</p>
+</div>
+<details class="proof">
+<summary>证明 6.12.1</summary>
+<p>谱演算给出正、零、负三个正交谱子空间，正谱子空间上的形式严格正，负谱子空间上严格负。若闭子空间 <span class="arithmatex">\(L\)</span> 上形式严格正，则到正谱子空间的投影在 <span class="arithmatex">\(L\)</span> 上单射：投影为零的非零向量只能落在零、负谱部分，其形式不可能正。这个有界单射使 <span class="arithmatex">\(\dim L\)</span> 不超过正谱空间的维数（可用其极分解识别闭像的支撑空间）；反向正谱空间达到此维数。负指数同理。</p>
+</details>
+<div id="def-33" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.16</span><span class="book-name">联合近似特征值</span></p>
+<p><span class="arithmatex">\(\lambda\in\mathbb C^N\)</span> 为联合近似特征值，指每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span> 都有非零 <span class="arithmatex">\(\xi\in\bigcap_jD(T_j)\)</span> 满足 <span class="arithmatex">\(\sum_j\|(T_j-\lambda_j)\xi\|^2\leq\varepsilon\|\xi\|^2\)</span>。等价于存在单位向量序列使每一项误差趋零；对强交换自伴族，这些点恰为联合谱，因而实际位于 <span class="arithmatex">\(\mathbb R^N\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 6.12.3</summary>
+<p>若 <span class="arithmatex">\(\lambda\in\sigma(T_\bullet)\)</span>，小球内的联合谱投影非零。取其像中的单位向量，因各坐标在此球上有界，该向量属于全部 <span class="arithmatex">\(D(T_j)\)</span>，且误差平方和至多为球半径平方。反向若 <span class="arithmatex">\(\lambda\)</span> 在闭谱外，<span class="arithmatex">\(\sum_j|x_j-\lambda_j|^2\)</span> 在谱上有严格正下界，积分后得到误差平方和的正下界，排除近似特征值。非实坐标也有由其虚部提供的正下界。</p>
+</details>
+<div id="def-34" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.17</span><span class="book-name">通过可逆性定义的谱</span></p>
+<p>对稠密定义算子，<span class="arithmatex">\(\sigma_{\mathrm{inv}}(T)=\{\lambda:(\lambda I-T)^{-1}\notin\mathcal L(H)\}\)</span>；预解集为其补集。有界逆必须处处定义。</p>
+</div>
+<div id="thm-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 11.18</span><span class="book-name">两种谱定义一致</span></p>
+<p>自伴算子的谱演算支集等于通过可逆性定义的谱。</p>
+</div>
+<details class="proof">
+<summary>证明 6.12.5</summary>
+<p>若 <span class="arithmatex">\(\lambda\)</span> 距离实谱为正，谱上的 <span class="arithmatex">\(r(x)=(\lambda-x)^{-1}\)</span> 有界，且 <span class="arithmatex">\(xr(x)\)</span> 也有界。因此 <span class="arithmatex">\(r(T)\)</span> 取值在 <span class="arithmatex">\(D(T)\)</span>，并满足 <span class="arithmatex">\((\lambda-T)r(T)=I\)</span>、<span class="arithmatex">\(r(T)(\lambda-T)=I\)</span>，给出处处有界逆。若 <span class="arithmatex">\(\lambda\)</span> 在谱内，6.12.3 给单位近似特征向量；有界逆会强制 <span class="arithmatex">\(\|(\lambda-T)\xi\|\geq\|(\lambda-T)^{-1}\|^{-1}\|\xi\|\)</span>，矛盾。</p>
+</details>
+<div id="def-35" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.19</span><span class="book-name">强预解式收敛</span></p>
+<p>自伴算子网 <span class="arithmatex">\(T_\alpha\)</span> 强预解式趋于自伴 <span class="arithmatex">\(T\)</span>，指其 Cayley 变换 SOT 收敛到 <span class="arithmatex">\(U_T\)</span>；等价于某个（从而每个）非实 <span class="arithmatex">\(z\)</span> 处 <span class="arithmatex">\((z-T_\alpha)^{-1}\)</span> SOT 趋于 <span class="arithmatex">\((z-T)^{-1}\)</span>。</p>
+</div>
+<div id="cor-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 11.20</span><span class="book-name">有界 SOT 极限的连续演算</span></p>
+<p>若有界自伴 <span class="arithmatex">\(T_\alpha\)</span> SOT 趋于有界自伴 <span class="arithmatex">\(T\)</span>，则对每个有界连续 <span class="arithmatex">\(f:\mathbb R\to\mathbb C\)</span>，<span class="arithmatex">\(f(T_\alpha)\to f(T)\)</span> 在 SOT* 下收敛。不要求整个算子网一致范数有界。</p>
+</div>
+<details class="proof">
+<summary>证明 6.12.7</summary>
+<p>预解式恒等式及 <span class="arithmatex">\(\|(z-T_\alpha)^{-1}\|\leq|\operatorname{Im}z|^{-1}\)</span> 给</p>
+<div class="arithmatex">\[
+(z-T_\alpha)^{-1}-(z-T)^{-1}
+=(z-T_\alpha)^{-1}(T_\alpha-T)(z-T)^{-1}\longrightarrow0
+\]</div>
+<p>强收敛。非实预解式函数及其共轭生成一致稠密于 <span class="arithmatex">\(C_0(\mathbb R)\)</span> 的代数，故由一致有界的演算估计，所有 <span class="arithmatex">\(h\in C_0\)</span> 的演算也强收敛。</p>
+<p>对一般有界连续 <span class="arithmatex">\(f\)</span>，固定 <span class="arithmatex">\(\xi\)</span>，取 <span class="arithmatex">\(0\leq\chi_R\leq1\)</span> 的紧支撑连续截断，<span class="arithmatex">\(\chi_R\uparrow1\)</span>。先对极限向量测度选 <span class="arithmatex">\(R\)</span> 使 <span class="arithmatex">\(\|(1-\chi_R(T))\xi\|\)</span> 小，再用 <span class="arithmatex">\(\chi_R(T_\alpha)\to\chi_R(T)\)</span> 使同一尾部对充分大的 <span class="arithmatex">\(\alpha\)</span> 也小。分解 <span class="arithmatex">\(f=f\chi_R+f(1-\chi_R)\)</span>，后一项范数至多为 <span class="arithmatex">\(\|f\|_\infty\)</span> 乘尾部误差，前一项已强收敛。这证明 <span class="arithmatex">\(f(T_\alpha)\to f(T)\)</span>；对 <span class="arithmatex">\(\bar f\)</span> 同理，得到 SOT*。全过程只需要逐向量的最终控制。</p>
+</details>
+<details class="proof">
+<summary>从 Cayley 变换恢复无界谱与极限</summary>
+<p>Cayley 函数 <span class="arithmatex">\(c(t)=(t-i)/(t+i)\)</span> 将实轴 Borel 同构到圆周去掉 <span class="arithmatex">\(1\)</span> 的部分。自伴算子的 Cayley 变换没有特征值 <span class="arithmatex">\(1\)</span>，故对应单点投影为零；将酉谱测度经 <span class="arithmatex">\(c^{-1}\)</span> 拉回实轴便得到无界乘法模型。最大定义域由 <span class="arithmatex">\(|f|^2\)</span> 的向量积分确定，使变换前后的算子域严格对应。</p>
+<p>在谱外，<span class="arithmatex">\((z-t)^{-1}\)</span> 在谱上有界，演算给出处处有界逆；在谱内任意小邻域有非零谱投影，取其中单位向量构造近似特征向量，排除有界逆。联合情况用小球同时控制全部坐标误差。</p>
+<p>有界 SOT 自伴极限在预解式处满足恒等式 <span class="arithmatex">\(R_\alpha(z)-R(z)=R_\alpha(z)(T_\alpha-T)R(z)\)</span>，而 <span class="arithmatex">\(\|R_\alpha(z)\|\leq|\operatorname{Im}z|^{-1}\)</span>，故强预解式收敛。先对由预解式生成的连续函数应用逼近，再对固定向量控制谱测度的尾部，得到所有有界连续 <span class="arithmatex">\(f\)</span> 的 SOT* 收敛。</p>
+</details>
+<h2 id="section-12"><span class="book-secnum">§ 12</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.1</span><span class="book-name">一个有界表达式的非闭限制</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 的有限支撑子空间上定义恒等映射。它是否闭？闭包是什么？</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>它不闭：取一个无限支撑向量的有限截断，输入输出同时收敛，但极限不在定义域中。其闭包是全 <span class="arithmatex">\(\ell^2\)</span> 上的恒等算子。此例说明闭性既涉及作用，也涉及定义域。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.2</span><span class="book-name">图核心</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 上令 <span class="arithmatex">\(Tx=(nx_n)\)</span>，<span class="arithmatex">\(D(T)=\{x:\sum n^2|x_n|^2&lt;\infty\}\)</span>。证明有限支撑数列是核心。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对有限截断 <span class="arithmatex">\(x^{(N)}\)</span>，图误差平方为 <span class="arithmatex">\(\sum_{n&gt;N}(1+n^2)|x_n|^2\to0\)</span>。这同时控制输入和输出。只知道 <span class="arithmatex">\(\|x^{(N)}-x\|_2\to0\)</span> 还不能证明是核心。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.3</span><span class="book-name">两个不同边界条件</span></p>
+<p>对区间动量算子，分别求 <span class="arithmatex">\(\theta=0\)</span> 与 <span class="arithmatex">\(\theta=\pi\)</span> 的谱，判断常数函数是否在定义域。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>周期情形谱为 <span class="arithmatex">\(2\pi\mathbb Z\)</span>，常数在定义域；反周期情形谱为 <span class="arithmatex">\(\pi+2\pi\mathbb Z\)</span>，非零常数不满足边界条件。二者具有相同微分表达式，却是不同的自伴算子。</p>
+</details>
+<p>下一章会用闭梯度、能量形式与酉群构造具体的自伴算子。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-05/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第五章：有界自伴与正规算子的谱理论</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-07/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第七章：自伴算子、能量形式与 Fourier 分析</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 7 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=unbounded-operators">#unbounded-operators</a><a class="zdd-end-chip" href="../../../../tags/?tag=spectral-theory">#spectral-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1919 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="交换代数笔记：素谱与 Zariski 拓扑、局部化、整扩张、Noether 环、准素分解与维数理论等内容。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/commutative-algebra/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>交换代数 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/commutative-algebra/">
+  <meta property="og:title" content="交换代数 - zdd14990">
+  <meta property="og:description" content="交换代数笔记：素谱与 Zariski 拓扑、局部化、整扩张、Noether 环、准素分解与维数理论等内容。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="commutative-algebra">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/commutative-algebra/">
+  <meta name="twitter:title" content="交换代数 - zdd14990">
+  <meta name="twitter:description" content="交换代数笔记：素谱与 Zariski 拓扑、局部化、整扩张、Noether 环、准素分解与维数理论等内容。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u4ea4\u6362\u4ee3\u6570",
+    "description": "\u4ea4\u6362\u4ee3\u6570\u7b14\u8bb0\uff1a\u7d20\u8c31\u4e0e Zariski \u62d3\u6251\u3001\u5c40\u90e8\u5316\u3001\u6574\u6269\u5f20\u3001Noether \u73af\u3001\u51c6\u7d20\u5206\u89e3\u4e0e\u7ef4\u6570\u7406\u8bba\u7b49\u5185\u5bb9\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/commutative-algebra/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/commutative-algebra/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["commutative-algebra"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u4ee3\u6570", "algebra"], ["\u4ea4\u6362\u4ee3\u6570", "commutative-algebra"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 环和理想
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 环和理想">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.3
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.5
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.6
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.7
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.9
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.10
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.11
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.12
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.13
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.14
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.15
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.16
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.17
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.18
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.19
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.20
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        性质1.21
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.22
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        性质1.23
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.24
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.25
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-26" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题1.26
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义1.27
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        性质1.28
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-29" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        性质1.29
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        断言：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-37" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-38" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-39" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-47" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-48" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-49" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-54" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-56" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-57" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-0-0-58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明：
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 模
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 模">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.3
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.5
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.6
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题2.7
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.9
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.10
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题2.11
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题2.12
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        推论2.13
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题2.14
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        推论2.15
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命题2.16
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-0-0-17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定义2.17
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PDF 原文
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <span>代数</span>
+    <span>2025 · 11</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="top">交换代数</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>8,199 字 · 约 23 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>环和理想</h2>
+<p><strong>环与环同态</strong></p>
+<h5 id="s1-0-0-1">定义1.1</h5>
+<p><strong>环</strong><span class="arithmatex">\(A\)</span>是具有两个二元运算<strong>加法</strong>和<strong>乘法</strong>的集合，满足：</p>
+<p>1)<span class="arithmatex">\(A\)</span>对加法是一个交换群(这样<span class="arithmatex">\(A\)</span>有零元素，记为0)</p>
+<p>2)对乘法是结合的：</p>
+<div class="arithmatex">\[
+(xy)z=x(yz)
+\]</div>
+<p>且对加法是分配的：</p>
+<div class="arithmatex">\[
+x(y+z)=xy+xz
+\]</div>
+<div class="arithmatex">\[
+(y+z)x=yz+zx
+\]</div>
+<p><strong>在本文中提到的环都表示具有单位元的交换环.</strong></p>
+<p>3)对乘法是交换的：</p>
+<div class="arithmatex">\[
+xy=yx
+\]</div>
+<p>且具有<strong>单位元</strong>(记为1)</p>
+<p>4)<span class="arithmatex">\(\exists1\in A\)</span>,使得对所有<span class="arithmatex">\(x\in A,x1=1x=x\)</span></p>
+<p>当<span class="arithmatex">\(1=0\)</span>时，<span class="arithmatex">\(A\)</span>是平凡的环，它只含零元，这种环称为<strong>零环</strong>.</p>
+<h5 id="s1-0-0-2">定义1.2</h5>
+<p><strong>环同态</strong><span class="arithmatex">\(f\)</span>是指一个从环<span class="arithmatex">\(A\)</span>映入环<span class="arithmatex">\(B\)</span>的映射，满足：</p>
+<p>1)<span class="arithmatex">\(f(x+y)=f(x)+f(y)\)</span></p>
+<p>2)<span class="arithmatex">\(f(xy)=f(x)f(y)\)</span></p>
+<p>3)<span class="arithmatex">\(f(1)=1\)</span></p>
+<p>环<span class="arithmatex">\(A\)</span>的子集<span class="arithmatex">\(S\)</span>称为<span class="arithmatex">\(A\)</span>的<strong>子环</strong>，如果<span class="arithmatex">\(S\)</span>是加法子群且对乘法封闭，并且含有<span class="arithmatex">\(A\)</span>的单位元.  此时从<span class="arithmatex">\(S\)</span>映入<span class="arithmatex">\(A\)</span>的恒同映射是环同态.</p>
+<p>环同态的复合也是环同态.</p>
+<p><strong>理想. 商环</strong></p>
+<h5 id="s1-0-0-3">定义1.3</h5>
+<p>环<span class="arithmatex">\(A\)</span>的加法子群<span class="arithmatex">\(\mathfrak{a}\)</span>称为<span class="arithmatex">\(A\)</span>的一个<strong>理想</strong>，若<span class="arithmatex">\(A\mathfrak{a}\subseteq\mathfrak{a}\)</span>.    <span class="arithmatex">\(A\)</span>中乘法诱导出商群<span class="arithmatex">\(A/\mathfrak{a}\)</span>中的乘法，故<span class="arithmatex">\(A/\mathfrak{a}\)</span>是一个环，称为<strong>商环</strong>.因而映射<span class="arithmatex">\(\varphi:A\rightarrow A/\mathfrak{a},x\rightarrow x+\mathfrak{a}\)</span>是环的满同态.</p>
+<h5 id="s1-0-0-4">命题1.4</h5>
+<p>环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{a}\)</span>与<span class="arithmatex">\(\mathfrak{b}\)</span>满足<span class="arithmatex">\(\mathfrak{a} \subseteq \mathfrak{b}\)</span>与环<span class="arithmatex">\(A/\mathfrak{a}\)</span>的理想<span class="arithmatex">\(\mathfrak{\bar{b}}\)</span>之间存在保持包含关系的一一对应：</p>
+<div class="arithmatex">\[
+\mathfrak{b}=\varphi^{-1}(\mathfrak{\bar{b}})
+\]</div>
+<h5 id="s1-0-0-5">定义1.5</h5>
+<p>环同态<span class="arithmatex">\(f:A\rightarrow B\)</span>的<strong>核</strong><span class="arithmatex">\(\boldsymbol{f^{-1}(0)}\)</span>是<span class="arithmatex">\(A\)</span>的理想，记作<span class="arithmatex">\(\boldsymbol{\mathbf{Ker}(f)}\)</span>；<span class="arithmatex">\(f\)</span>的<strong>象</strong><span class="arithmatex">\(\boldsymbol{f(A)}\)</span>是环<span class="arithmatex">\(B\)</span>中的子环，记作<span class="arithmatex">\(\boldsymbol{\mathbf{Im}(f)}\)</span>.同态<span class="arithmatex">\(f\)</span>导出环同构:</p>
+<div class="arithmatex">\[
+A/Ker(f)\cong Im(f)
+\]</div>
+<p>若<span class="arithmatex">\(x-y\in \mathfrak{a}\)</span>，可写作<span class="arithmatex">\(x\equiv y(mod \text{ }    \mathfrak{a})\)</span></p>
+<p><strong>零因子. 幂零元. 可逆元</strong></p>
+<h5 id="s1-0-0-6">定义1.6</h5>
+<p>i) <span class="arithmatex">\(x\in A\)</span> 称为<strong>零因子</strong>，如果<span class="arithmatex">\(\exists y\in A,y\ne 0,xy=0\)</span>.没有非零零因子(且<span class="arithmatex">\(1\ne 0\)</span>)的环叫做<strong>整环</strong>.如<span class="arithmatex">\(\mathbb{Z}\)</span>和<span class="arithmatex">\(\mathcal{K}[x_1,\dots,x_n]\)</span>(其中<span class="arithmatex">\(\mathcal{K}\)</span>是域而<span class="arithmatex">\(x_1,\dots,x_n\)</span>是无关变元)都是整环.</p>
+<p>ii) <span class="arithmatex">\(x\in A\)</span>称为<strong>幂零的</strong>，如果<span class="arithmatex">\(\exists n\in \mathbb{N}^*,x^n=0\)</span>.</p>
+<p>iii) <span class="arithmatex">\(x\in A\)</span>称为<strong>可逆元</strong>，如果<span class="arithmatex">\(\exists y\in A,xy=1\)</span>.显然<span class="arithmatex">\(y\)</span>唯一，记作<span class="arithmatex">\(\boldsymbol{x^{-1}}\)</span>.</p>
+<p>iv) <span class="arithmatex">\(x\in A\)</span>,称<span class="arithmatex">\(Ax\)</span>或<span class="arithmatex">\((x)\)</span>为<strong>主理想</strong>.<span class="arithmatex">\(x\)</span>是可逆元当且仅当<span class="arithmatex">\((x)=A=(1)\)</span>.<strong>零理想</strong><span class="arithmatex">\((0)\)</span>通常记作<span class="arithmatex">\(0\)</span>.</p>
+<p>v) 若环<span class="arithmatex">\(A\)</span>中<span class="arithmatex">\(1\ne 0\)</span>且每个非零元都是可逆元，则称<span class="arithmatex">\(A\)</span>为<strong>域</strong>，任一域都是整环，但反之不对.</p>
+<h5 id="s1-0-0-7">命题1.7</h5>
+<p>设<span class="arithmatex">\(A\)</span>是非零环，则下述条件等价:</p>
+<p>1)<span class="arithmatex">\(A\)</span>是域.</p>
+<p>2)<span class="arithmatex">\(A\)</span>除平凡的理想(<span class="arithmatex">\(0\)</span>与<span class="arithmatex">\((1)\)</span>)外无别的理想.</p>
+<p>3)任一从<span class="arithmatex">\(A\)</span>映入非零环的同态都是单的.</p>
+<p><strong>素理想和极大理想</strong></p>
+<h5 id="s1-0-0-8">定义1.8</h5>
+<p>i) 环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{p}\)</span>称做<strong>素理想</strong>，若<span class="arithmatex">\(\mathfrak{p}\ne (1)\)</span>，且可以从<span class="arithmatex">\(xy\in \mathfrak{p}\)</span>推出<span class="arithmatex">\(x\in \mathfrak{p}\)</span>或<span class="arithmatex">\(y\in \mathfrak{p}\)</span>.</p>
+<p><span class="arithmatex">\(\mathfrak{p}\)</span>是素理想<span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(A/\mathfrak{p}\)</span>是整环.</p>
+<p>ii) 环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{m}\)</span>称做<strong>极大理想</strong>，如果<span class="arithmatex">\(\mathfrak{m}\ne (1)\)</span>，且不存在理想<span class="arithmatex">\(\mathfrak{a}\)</span>满足<span class="arithmatex">\(\mathfrak{m}\subset \mathfrak{a} \subset (1)\)</span></p>
+<p><span class="arithmatex">\(\mathfrak{m}\)</span>是极大理想<span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(A/\mathfrak{m}\)</span>是域.</p>
+<p>考虑所有不为<span class="arithmatex">\((1)\)</span>的理想的并集，可知每个非零环<span class="arithmatex">\(A\)</span>都有极大理想。同样的，对于A的每个不为<span class="arithmatex">\((1)\)</span>的理想<span class="arithmatex">\(\mathfrak{a}\)</span>，考虑所有包含<span class="arithmatex">\(\mathfrak{a}\)</span>且不为<span class="arithmatex">\((1)\)</span>的理想的并集，可知有一个包含<span class="arithmatex">\(\mathfrak{a}\)</span>的极大理想。(或者考虑<span class="arithmatex">\(A/\mathfrak{a}\)</span>即可)。于是，我们有<strong><span class="arithmatex">\(A\)</span>中任一不可逆元都包含在一个极大理想内。</strong></p>
+<h5 id="s1-0-0-9">定义1.9</h5>
+<p>恰有一个极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>的环<span class="arithmatex">\(A\)</span>叫做<strong>局部环</strong>，域<span class="arithmatex">\(\mathcal{K}=A/\mathfrak{m}\)</span>叫做环A的<strong>同余类域</strong>。</p>
+<h5 id="s1-0-0-10">命题1.10</h5>
+<p>i) 环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{m}\)</span>使得<span class="arithmatex">\(A/\mathfrak{m}\)</span>中均为可逆元，则<span class="arithmatex">\(A\)</span>是局部环，<span class="arithmatex">\(\mathfrak{m}\)</span>是<span class="arithmatex">\(A\)</span>的极大理想。</p>
+<p>ii) 环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{m}\)</span>使得<span class="arithmatex">\(1+\mathfrak{m}\)</span>中均为可逆元，则<span class="arithmatex">\(A\)</span>是局部环。</p>
+<p><strong>证明：</strong>i) 任一不为<span class="arithmatex">\((1)\)</span>的理想都由不可逆元组成，由条件它们都在<span class="arithmatex">\(\mathfrak{m}\)</span>中，进而<span class="arithmatex">\(\mathfrak{m}\)</span>是<span class="arithmatex">\(A\)</span>中唯一的极大理想。</p>
+<p>ii) 取<span class="arithmatex">\(\boldsymbol{x} \in A/\mathfrak{m}\)</span>。由于<span class="arithmatex">\(\mathfrak{m}\)</span>是极大理想，因此<span class="arithmatex">\(\boldsymbol{x}\)</span>与<span class="arithmatex">\(\mathfrak{m}\)</span>可以生成<span class="arithmatex">\((1)\)</span>，即存在<span class="arithmatex">\(y\in A\)</span>和<span class="arithmatex">\(z\in \mathfrak{m}\)</span>满足<span class="arithmatex">\(\boldsymbol{x}y+z=1\)</span>，进而<span class="arithmatex">\(\boldsymbol{x}y=1-t\in\mathfrak{m}\)</span>，故是<span class="arithmatex">\(\boldsymbol{x}\)</span>是可逆元，由i)即证。</p>
+<h5 id="s1-0-0-11">定义1.11</h5>
+<p>i) 仅有有限个极大理想的环叫做<strong>半局部环</strong>。</p>
+<p>ii) 所有理想都是主理想的整环称作<strong>主理想整环(PID)</strong>.在这种环里非零素理想都是极大的。</p>
+<p><strong>小根和大根</strong></p>
+<h5 id="s1-0-0-12">命题1.12</h5>
+<p>环<span class="arithmatex">\(A\)</span>所有幂零元的集合<span class="arithmatex">\(\Re\)</span>是一个理想，且环<span class="arithmatex">\(A/\Re\)</span>中无非零幂零元。<span class="arithmatex">\(\Re\)</span>称作环<span class="arithmatex">\(A\)</span>的<strong>小根</strong>。</p>
+<h5 id="s1-0-0-13">命题1.13</h5>
+<p><span class="arithmatex">\(A\)</span>的小根是<span class="arithmatex">\(A\)</span>中所有素理想的交。</p>
+<p><strong>证明：</strong>设<span class="arithmatex">\(\Re^\prime\)</span>为<span class="arithmatex">\(A\)</span>中所有素理想的交。</p>
+<p>一方面，任意<span class="arithmatex">\(a\in \Re\)</span>以及任一素理想<span class="arithmatex">\(\mathfrak{p}\)</span>，有<span class="arithmatex">\(n&gt;0\)</span>使得<span class="arithmatex">\(a^n=0\in \mathfrak{p}\)</span>，由<span class="arithmatex">\(\mathfrak{p}\)</span>是素理想得到<span class="arithmatex">\(a \in  \mathfrak{p}\)</span>，故<span class="arithmatex">\(\Re\subset  \Re^\prime\)</span>。</p>
+<p>另一方面，对任一非幂零元<span class="arithmatex">\(a\)</span>，考虑所有对任意<span class="arithmatex">\(n\)</span>均不包含<span class="arithmatex">\(a^n\)</span>的理想，它们构成的集合记为<span class="arithmatex">\(\varSigma\)</span>。<span class="arithmatex">\(0\in \varSigma\)</span>，再按包含关系对<span class="arithmatex">\(\varSigma\)</span>使用Zorn引理得到<span class="arithmatex">\(\varSigma\)</span>中的最大元<span class="arithmatex">\(\mathfrak{p}\)</span>。设<span class="arithmatex">\(x,y\notin  \mathfrak{p}\)</span>，那么理想<span class="arithmatex">\(\mathfrak{p} + (x)\)</span>与<span class="arithmatex">\(\mathfrak{p}+(y)\)</span>都严格包含<span class="arithmatex">\(\mathfrak{p}\)</span>，故不属于<span class="arithmatex">\(\varSigma\)</span>，因此有<span class="arithmatex">\(a^n\in  \mathfrak{p}+(x), a^m\in  \mathfrak{p}+(y)\)</span>，于是<span class="arithmatex">\(a^{n+m}\in  \mathfrak{p}+(xy)\)</span>，即<span class="arithmatex">\(\mathfrak{p}+(xy)\notin \varSigma\)</span>，所以<span class="arithmatex">\(xy\notin  \mathfrak{p}\)</span>，这表示<span class="arithmatex">\(\mathfrak{p}\)</span>是素理想且不包含<span class="arithmatex">\(a\)</span>，因此<span class="arithmatex">\(a\notin  \Re^\prime\)</span>。</p>
+<h5 id="s1-0-0-14">定义1.14</h5>
+<p>环<span class="arithmatex">\(A\)</span>的<strong>大根</strong><span class="arithmatex">\(\mathfrak{R}\)</span>为它的所有极大理想的交。</p>
+<h5 id="s1-0-0-15">命题1.15</h5>
+<p><span class="arithmatex">\(x\in \mathfrak{R}\Longleftrightarrow\)</span>对任意<span class="arithmatex">\(y\in A,1-xy\)</span>是可逆元。</p>
+<p><strong>证明：</strong>“<span class="arithmatex">\(\Longrightarrow\)</span>” 若<span class="arithmatex">\(1-xy\)</span>不可逆那么它就属于某个极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>，又<span class="arithmatex">\(x\in \mathfrak{R} \subset \mathfrak{m}\)</span>，故<span class="arithmatex">\(xy\in \mathfrak{m}\)</span>，进而<span class="arithmatex">\(1\in \mathfrak{m}\)</span>，矛盾！</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>” 若<span class="arithmatex">\(x\notin \mathfrak{m}\)</span>，任取极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>，那么<span class="arithmatex">\(x\)</span>与<span class="arithmatex">\(\mathfrak{m}\)</span>可以生成(1)，因此存在<span class="arithmatex">\(z\in \mathfrak{m}\)</span>和<span class="arithmatex">\(y\in A\)</span>满足<span class="arithmatex">\(z+xy=1\)</span>，即<span class="arithmatex">\(1-xy\in \mathfrak{m}\)</span>不是可逆元。</p>
+<p><strong>理想的运算</strong></p>
+<h5 id="s1-0-0-16">定义1.16</h5>
+<p>设<span class="arithmatex">\(\mathfrak{a}\)</span>和<span class="arithmatex">\(\mathfrak{b}\)</span>均为环<span class="arithmatex">\(A\)</span>的理想，定义</p>
+<p><span class="arithmatex">\(\mathfrak{a}+\mathfrak{b}=\left\{x+y\Big| x\in \mathfrak{a},y \in \mathfrak{b} \right\}\)</span></p>
+<p><span class="arithmatex">\(\mathfrak{a}\mathfrak{b}=\left\{ \sum_{i=1}^n x_iy_i\Big| x_i \in \mathfrak{a},y \in \mathfrak{b},i=1,2,\dots,n\right\}\)</span></p>
+<p>这个定义满足分配律，即<span class="arithmatex">\(\mathfrak{a(b+c)=ab+ac}\)</span>。另外如果<span class="arithmatex">\(\mathfrak{a\supseteq b,c}\)</span>，我们就有<span class="arithmatex">\(\mathfrak{a\cap (b+c)=a\cap b+a\cap c}\)</span>。若<span class="arithmatex">\(\mathfrak{a+b}=(1)\)</span>，称它们是<strong>互素</strong>的。此时我们有<span class="arithmatex">\(\mathfrak{a\cap b=ab}\)</span>(因为<span class="arithmatex">\(\mathfrak{(a+b)(a\cap b)=a(a \cap b)+b(a\cap b)}\)</span>)。</p>
+<h5 id="s1-0-0-17">定义1.17</h5>
+<p>环<span class="arithmatex">\(A_1,A_2,\dots,A_n\)</span>的<strong>直积</strong><span class="arithmatex">\(A=\prod_{i=1}^{n}A_i=\left\{ (x_1,x_2,\dots,x_n)\Big| x_i\in A_i,i=1,2,\dots,n\right\}\)</span>是一个有单位元<span class="arithmatex">\((1,1,\dots,1)\)</span>的交换环。反过来，投影<span class="arithmatex">\(p_i:A\rightarrow A_i\)</span>由<span class="arithmatex">\((x_1,x_2,\dots,x_n)\mapsto x_i\)</span>所定义是环同态。</p>
+<p>用环<span class="arithmatex">\(A\)</span>的理想们<span class="arithmatex">\(\mathfrak{a}_1,\mathfrak{a}_2,\dots,\mathfrak{a}_n\)</span>定义同态</p>
+<p><span class="arithmatex">\(\varphi:A\rightarrow \prod_{i=1}^{n}(A/\mathfrak{a}_i)\)</span></p>
+<p><span class="arithmatex">\(x\mapsto (x+\mathfrak{a}_1,x+\mathfrak{a}_2,\dots,x+\mathfrak{a}_n)\)</span></p>
+<h5 id="s1-0-0-18">命题1.18</h5>
+<p>i) 如果对任意<span class="arithmatex">\(i\neq j\)</span>,<span class="arithmatex">\(\mathfrak{a}_i\)</span>和<span class="arithmatex">\(\mathfrak{a}_j\)</span>互素，那么<span class="arithmatex">\(\prod \mathfrak{a}_i=\cap \mathfrak{a}_i\)</span></p>
+<p>ii) 同态<span class="arithmatex">\(\varphi\)</span>是满的<span class="arithmatex">\(\Longleftrightarrow\)</span>对任意<span class="arithmatex">\(i\neq j\)</span>,<span class="arithmatex">\(\mathfrak{a}_i\)</span>和<span class="arithmatex">\(\mathfrak{a}_j\)</span>互素。</p>
+<p>iii) 同态<span class="arithmatex">\(\varphi\)</span>是单的<span class="arithmatex">\(\Longleftrightarrow\cap \mathfrak{a}_i = (0)\)</span>。</p>
+<h5 id="s1-0-0-19">命题1.19</h5>
+<p>i) 设<span class="arithmatex">\(\mathfrak{p}_1,\dots,\mathfrak{p}_n\)</span>是素理想，理想<span class="arithmatex">\(\mathfrak{a}\subset\bigcup_{i=1}^{n}\mathfrak{p}_i\)</span>,则存在某个<span class="arithmatex">\(i,\mathfrak{a}\subseteq\mathfrak{p}_i\)</span>。</p>
+<p>ii) 设<span class="arithmatex">\(\mathfrak{a}_1,\dots,\mathfrak{a}_n\)</span>是理想，素理想<span class="arithmatex">\(\mathfrak{p}\subset\bigcap_{i=1}^{n}\mathfrak{a}_i\)</span>,则存在某个<span class="arithmatex">\(i,\mathfrak{p}\supseteq\mathfrak{a}_i\)</span>。</p>
+<p>进而若<span class="arithmatex">\(\mathfrak{p}=\prod_{i=1}^{n}\mathfrak{a}_i\)</span>，则存在某个<span class="arithmatex">\(i\)</span>,<span class="arithmatex">\(\mathfrak{p}=\mathfrak{a}_i\)</span>。</p>
+<h5 id="s1-0-0-20">定义1.20</h5>
+<p>对环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{a,b}\)</span>定义<strong>商</strong>为：</p>
+<p><span class="arithmatex">\((\mathfrak{a:b})=\left\{ x\in A \Big| x\mathfrak{b}\subseteq \mathfrak{a}\right\}\)</span></p>
+<p>它是一个理想。特别地，<span class="arithmatex">\((0:\mathfrak{b})\)</span>叫做<span class="arithmatex">\(\mathfrak{b}\)</span>的<strong>零化子</strong>并记作<span class="arithmatex">\(\mathrm{Ann}(\mathfrak{b})\)</span>。另外，如果<span class="arithmatex">\(\mathfrak{b}\)</span>是主理想<span class="arithmatex">\((x)\)</span>，我们也将<span class="arithmatex">\((\mathfrak{a}:(x))\)</span>记作<span class="arithmatex">\((\mathfrak{a}:x)\)</span>。</p>
+<h5 id="s1-0-0-21">性质1.21</h5>
+<p>i) <span class="arithmatex">\(\mathfrak{a}\subseteq(\mathfrak{a}:\mathfrak{b})\)</span>.</p>
+<p>ii) <span class="arithmatex">\((\mathfrak{(a:b)b\subseteq a}\)</span>.</p>
+<p>iii) <span class="arithmatex">\(\mathfrak{((a:b):c)=(a:bc)=(a:(b:c))}\)</span>.</p>
+<p>iv) <span class="arithmatex">\((\cap_i \mathfrak{a}_i:\mathfrak{b})=\cap_i (\mathfrak{a}_i:\mathfrak{b})\)</span>.</p>
+<p>v) <span class="arithmatex">\((\mathfrak{a}:\sum_i \mathfrak{b}_i)=\cap_i (\mathfrak{a}:\mathfrak{b}_i)\)</span>.</p>
+<h5 id="s1-0-0-22">定义1.22</h5>
+<p>环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{a}\)</span>的<strong>根</strong>定义为集合：</p>
+<p><span class="arithmatex">\(r(a)=\left\{ x\in A \Big| x^n\in  \mathfrak{a},n&gt;0\right\}\)</span></p>
+<p>若<span class="arithmatex">\(\varphi:A\rightarrow A/\mathfrak{a}\)</span>是自然同态，那么<span class="arithmatex">\(r(a)=\varphi^{-1}(\Re_{A/\mathfrak{a}})\)</span>，故它是理想。</p>
+<h5 id="s1-0-0-23">性质1.23</h5>
+<p>i) <span class="arithmatex">\(r(\mathfrak{a})\supseteq \mathfrak{a}\)</span>.</p>
+<p>ii) <span class="arithmatex">\(r(r(\mathfrak{a}))=r(\mathfrak{a})\)</span>.</p>
+<p>iii) <span class="arithmatex">\(r(\mathfrak{ab})=r(\mathfrak{a\cap b})=r(\mathfrak{a})\cap r(\mathfrak{b})\)</span>.</p>
+<p>iv) <span class="arithmatex">\(r(\mathfrak{a})=(1)\Leftrightarrow \mathfrak{a}=(1)\)</span>.</p>
+<p>v) <span class="arithmatex">\(r(\mathfrak{a+b})=r(r(\mathfrak{a})+r(\mathfrak{b}))\)</span>.</p>
+<p>vi) 若<span class="arithmatex">\(\mathfrak{p}\)</span>是素理想，那么<span class="arithmatex">\(r(\mathfrak{p}^n)=r(\mathfrak{p})\)</span>对一切<span class="arithmatex">\(n&gt;0\)</span>成立.</p>
+<h5 id="s1-0-0-24">命题1.24</h5>
+<p>理想<span class="arithmatex">\(\mathfrak{p}\)</span>的根是包含<span class="arithmatex">\(\mathfrak{p}\)</span>的一切素理想的交。</p>
+<p><strong>证明：</strong>对<span class="arithmatex">\(A/\mathfrak{a}\)</span>同<strong>命题1.13</strong>证明即可。</p>
+<h5 id="s1-0-0-25">命题1.25</h5>
+<p><span class="arithmatex">\(D=A\)</span>中零因子的集合<span class="arithmatex">\(=r(D)=r(\cup_{x\neq 0}\mathrm{Ann}(x))=\cup_{x\neq 0}r(\mathrm{Ann}(x))\)</span></p>
+<h5 id="s1-0-0-26">命题1.26</h5>
+<p>若环<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{a,b}\)</span>的根<span class="arithmatex">\(r(\mathfrak{a})\)</span>和<span class="arithmatex">\(r(\mathfrak{b})\)</span>互素，则<span class="arithmatex">\(\mathfrak{a,b}\)</span>互素。</p>
+<p><strong>扩张和局限</strong></p>
+<h5 id="s1-0-0-27">定义1.27</h5>
+<p>设<span class="arithmatex">\(f:A\rightarrow B\)</span>是环同态，<span class="arithmatex">\(\mathfrak{a}\)</span>是<span class="arithmatex">\(A\)</span>的理想，则<span class="arithmatex">\(\mathfrak{a}\)</span>的象<span class="arithmatex">\(f(\mathfrak{a})\)</span>在<span class="arithmatex">\(B\)</span>中生成的理想<span class="arithmatex">\(Bf(\mathfrak{a})\)</span>叫做理想<span class="arithmatex">\(\mathfrak{a}\)</span>的<strong>扩理想</strong><span class="arithmatex">\(\mathfrak{a}^e\)</span>。<span class="arithmatex">\(B\)</span>的理想<span class="arithmatex">\(\mathfrak{b}\)</span>的<strong>局限理想</strong><span class="arithmatex">\(\mathfrak{b}^c\)</span>定义为<span class="arithmatex">\(f^{-1}(\mathfrak{b})\)</span>。<span class="arithmatex">\(\mathfrak{b}\)</span>是素理想可以推出<span class="arithmatex">\(\mathfrak{b}^c\)</span>是素理想，但是<span class="arithmatex">\(\mathfrak{a}\)</span>是素理想不能推出<span class="arithmatex">\(\mathfrak{a}^e\)</span>是素理想。</p>
+<h5 id="s1-0-0-28">性质1.28</h5>
+<p>i) <span class="arithmatex">\(\mathfrak{a}\subseteq {\mathfrak{a}^e}^c\)</span>，<span class="arithmatex">\(\mathfrak{b}\supseteq {\mathfrak{b}^c}^e\)</span>.</p>
+<p>ii) <span class="arithmatex">\(\mathfrak{a}^e= { {\mathfrak{a}^e}^c}^e\)</span>，<span class="arithmatex">\(\mathfrak{b}^c ={ {\mathfrak{b}^c}^e}^c\)</span>.</p>
+<p>iii) 设<span class="arithmatex">\(C\)</span>包含<span class="arithmatex">\(B\)</span>中所有理想的局限理想，设<span class="arithmatex">\(E\)</span>包含<span class="arithmatex">\(A\)</span>中所有理想的扩张理想。则</p>
+<p><span class="arithmatex">\(C=\left\{ \mathfrak{a}\Big| {\mathfrak{a}^e}^c=\mathfrak{a}\right\}\)</span>,<span class="arithmatex">\(E=\left\{ \mathfrak{b}\Big| {\mathfrak{b}^c}^e=\mathfrak{b}\right\}\)</span>。</p>
+<p>而<span class="arithmatex">\(\mathfrak{a}\mapsto \mathfrak{a}^e\)</span>是<span class="arithmatex">\(C\)</span>到<span class="arithmatex">\(E\)</span>的一一映射，它的逆是<span class="arithmatex">\(\mathfrak{b}\mapsto \mathfrak{b}^c\)</span>。</p>
+<h5 id="s1-0-0-29">性质1.29</h5>
+<p>设<span class="arithmatex">\(\mathfrak{a}_1,\mathfrak{a}_2\)</span>是<span class="arithmatex">\(A\)</span>中的理想，<span class="arithmatex">\(\mathfrak{b}_1,\mathfrak{b}_2\)</span>是<span class="arithmatex">\(B\)</span>中的理想，那么：</p>
+<p><span class="arithmatex">\((\mathfrak{a}_1+\mathfrak{a}_2)^e=\mathfrak{a}_1^e+\mathfrak{a}_2^e\)</span>，<span class="arithmatex">\((\mathfrak{b}_1+\mathfrak{b}_2)^c\supseteq\mathfrak{b}_1^c+\mathfrak{b}_2^c\)</span></p>
+<p><span class="arithmatex">\((\mathfrak{a}_1\cap \mathfrak{a}_2)^e\subseteq \mathfrak{a}_1^e\cap\mathfrak{a}_2^e\)</span>，<span class="arithmatex">\((\mathfrak{b}_1\cap \mathfrak{b}_2)^c= \mathfrak{b}_1^c\cap\mathfrak{b}_2^c\)</span></p>
+<p><span class="arithmatex">\((\mathfrak{a}_1\mathfrak{a}_2)^e=\mathfrak{a}_1^e\mathfrak{a}_2^e\)</span>，<span class="arithmatex">\((\mathfrak{b}_1\mathfrak{b}_2)^c\supseteq\mathfrak{b}_1^c\mathfrak{b}_2^c\)</span></p>
+<p><span class="arithmatex">\((\mathfrak{a}_1:\mathfrak{a}_2)^e\subseteq \mathfrak{a}_1^e:\mathfrak{a}_2^e\)</span>，<span class="arithmatex">\((\mathfrak{b}_1:\mathfrak{b}_2)^c\subseteq \mathfrak{b}_1^c:\mathfrak{b}_2^c\)</span></p>
+<p><span class="arithmatex">\(r(\mathfrak{a})^e\subseteq r(\mathfrak{a}^e)\)</span>，<span class="arithmatex">\(r(\mathfrak{b})^c= r(\mathfrak{b}^c)\)</span></p>
+<p><strong>习题</strong></p>
+<h5 id="s1-0-0-30">1.</h5>
+<p>设<span class="arithmatex">\(x\)</span>是环<span class="arithmatex">\(A\)</span>中幂零元，证明<span class="arithmatex">\(1+x\)</span>是<span class="arithmatex">\(A\)</span>的可逆元，由此推出幂零元和可逆元的和是可逆元。</p>
+<h5 id="s1-0-0-31">证明：</h5>
+<p>存在<span class="arithmatex">\(n,x^n=0\)</span>,则<span class="arithmatex">\((1+x)(1-x+\dots +(-1)^{n-1}x^{n-1})=1+(-1)^nx^n=1\)</span>，故<span class="arithmatex">\(1+x\)</span>可逆。</p>
+<p>设<span class="arithmatex">\(a\)</span>是可逆元，则<span class="arithmatex">\((a^{-1}x)^n=a^{-n}x^n=0\)</span>，即<span class="arithmatex">\(a^{-1}x\)</span>为幂零元，由上知<span class="arithmatex">\(1+a^{-1}x\)</span>可逆，故<span class="arithmatex">\(a+x=a(1+a^{-1}x)\)</span>为可逆元之积可逆。</p>
+<h5 id="s1-0-0-32">2.</h5>
+<p><span class="arithmatex">\(A\)</span>是环，<span class="arithmatex">\(A[x]\)</span>是对应的多项式环。令<span class="arithmatex">\(f=a_0+a_1x+\dots+a_nx^n\in A[x]\)</span>，证明：</p>
+<p>i) <span class="arithmatex">\(f\)</span>是<span class="arithmatex">\(A[x]\)</span>中可逆元<span class="arithmatex">\(\Longleftrightarrow a_0\)</span>是<span class="arithmatex">\(A\)</span>中可逆元，且<span class="arithmatex">\(a_1,a_2,\dots,a_n\)</span>是幂零元。</p>
+<p>ii) <span class="arithmatex">\(f\)</span>幂零<span class="arithmatex">\(\Longleftrightarrow a_0,a_1,\dots,a_n\)</span>幂零。</p>
+<p>iii) <span class="arithmatex">\(f\)</span>是零因子<span class="arithmatex">\(\Longleftrightarrow\)</span> 存在环<span class="arithmatex">\(A\)</span>的非零元<span class="arithmatex">\(a\)</span>使得<span class="arithmatex">\(af=0\)</span></p>
+<p>iv)如果<span class="arithmatex">\((a_0,a_1,\dots ,a_n)=(1)\)</span>,<span class="arithmatex">\(f\)</span>就叫做<strong>本原多项式</strong>，证明，如果<span class="arithmatex">\(f,g\in A[x]\)</span>，那么<span class="arithmatex">\(fg\)</span>本原<span class="arithmatex">\(\Longleftrightarrow f\)</span>和<span class="arithmatex">\(g\)</span>都是本原</p>
+<h5 id="s1-0-0-33">证明：</h5>
+<p>i)<span class="arithmatex">\(f\)</span>可逆<span class="arithmatex">\(\Longleftrightarrow\)</span>存在<span class="arithmatex">\(g=\sum_{j=0}^m b_jx^j\in A[x]\)</span>使得<span class="arithmatex">\(fg=\sum_{i=0}^n a_ix^i\sum_{j=0}^m b_jx^j=1\)</span></p>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>” 若<span class="arithmatex">\(f\)</span>可逆，则<span class="arithmatex">\(1=[x^0]fg=a_0b_0\Longrightarrow a_0,b_0\)</span>可逆</p>
+<p><span class="arithmatex">\(0=[x^{n+m}]fg=a_nb_m\)</span></p>
+<p><span class="arithmatex">\(0=[x^{n+m-1}]fg\Longrightarrow 0=a_n\cdot [x^{n+m-1}]fg=a_n(a_nb_{m-1}+a_{n-1}b_m)=a_n^2b_{m-1}\)</span></p>
+<p><span class="arithmatex">\(0=[x^{n+m-1}]fg\Longrightarrow 0=a_n^2\cdot [x^{n+m-1}]fg=a_n^2(a_nb_{m-2}+a_{n-1}b_{m-1}+a_{n-2}b_m)=a_n^3b_{m-2}\)</span></p>
+<p>…</p>
+<p><span class="arithmatex">\(0=[x^{n+m-r}]fg\Longrightarrow 0=a_n^r\cdot [x^{n+m-r}]fg=a_n^r(a_nb_{m-r}+\dots+a_{n-r}b_m)=a_n^{r+1}b_{m-r}\)</span></p>
+<p>…</p>
+<p><span class="arithmatex">\(0=[x^{n}]fg\Longrightarrow 0=a_n^m\cdot [x^{n}]fg=a_n^m(a_nb_0+\dots)=a_n^{m+1}b_{0}\)</span>，又<span class="arithmatex">\(b_0\)</span>可逆，故<span class="arithmatex">\(a_n\)</span>是幂零的。</p>
+<p>由<strong>1.</strong>知<span class="arithmatex">\(f-a_nx^n\)</span>也是可逆的，继续如上证明可依次得到<span class="arithmatex">\(a_{n-1},a_{n-2},\dots,a_1\)</span>均是幂零的。</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>” 设<span class="arithmatex">\(a_i^{k_i}=0\)</span>，则<span class="arithmatex">\((\sum_{i=1}^n a_ix^i)^{\sum_{i=1}^n k_i}=0\)</span>。<span class="arithmatex">\(a_0\)</span>可逆且<span class="arithmatex">\(\sum_{i=1}^n a_ix^i\)</span>幂零，由<strong>1.</strong>知<span class="arithmatex">\(f\)</span>可逆。</p>
+<p>ii) “<span class="arithmatex">\(\Longleftarrow\)</span>”<span class="arithmatex">\(f^{\sum_{i=0}^n k_i}=(\sum_{i=0}^n a_ix^i)^{\sum_{i=0}^n k_i}=0\)</span>故幂零。</p>
+<p>“<span class="arithmatex">\(\Longrightarrow\)</span>”设<span class="arithmatex">\(f^m=0\)</span>，则<span class="arithmatex">\(0=[x^{nm}]f^m=a_n^m\)</span>故<span class="arithmatex">\(a_n\)</span>幂零。进而<span class="arithmatex">\(f-a_nx^n\)</span>也是幂零的，继续如上证明可依次得到<span class="arithmatex">\(a_{n-1},a_{n-2},\dots,a_0\)</span>均是幂零的。</p>
+<p>iii)“<span class="arithmatex">\(\Longrightarrow\)</span>”设<span class="arithmatex">\(g=\sum_{j=0}^m b_jx^j\in A[x]\)</span>是使得<span class="arithmatex">\(fg=\sum_{i=0}^n a_ix^i\sum_{j=0}^m b_jx^j=0\)</span>且<span class="arithmatex">\(m\)</span>最小的一个<span class="arithmatex">\(g\)</span>。</p>
+<p><span class="arithmatex">\(0=[x^{n+m}]fg=a_nb_m\)</span>，进而<span class="arithmatex">\(a_ng=0\)</span>否则<span class="arithmatex">\(a_ng\)</span>是次数更小的满足要求的多项式。</p>
+<p><span class="arithmatex">\(0=[x^{n+m-1}]fg=a_nb_{m-1}+a_{n-1}bm=a_{n_1}b_m\)</span>，同上可知<span class="arithmatex">\(a_{n-1}g=0\)</span>。</p>
+<p>…</p>
+<p><span class="arithmatex">\(0=a_0b_m\)</span>，至此，我们有<span class="arithmatex">\(fb_m=0\)</span></p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”是显然的。</p>
+<p>iv)“<span class="arithmatex">\(\Longrightarrow\)</span>”<span class="arithmatex">\((1)=(a_0b_0,a_0b_1+a_1b_0,\dots)\subseteq(a_0,a_0b_1,a_1b_0,\dots)=(a_0,a_1b_0,\dots)\subseteq(a_0,a_1,\dots)=\dots=(a_0,a_1,\dots,a_n)\subseteq (1)\)</span>，因此<span class="arithmatex">\((a_0,a_1,\dots,a_n)=(1)\)</span>，故<span class="arithmatex">\(f\)</span>是本原的，<span class="arithmatex">\(g\)</span>同理。</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”若<span class="arithmatex">\(fg\)</span>不是本原的，设<span class="arithmatex">\((1)\supsetneq I=(a_0b_0,a_0b_1+a_1b_0,\dots)\)</span>，取包含<span class="arithmatex">\(I\)</span>的极大理想<span class="arithmatex">\(I_{max}\)</span>。</p>
+<p>考虑域<span class="arithmatex">\(A/I_{max}\)</span>上的多项式整环<span class="arithmatex">\((A/I_{max})[x]\)</span>中的元素</p>
+<p><span class="arithmatex">\(F=f+I_{max}=\sum_{i=0}^n (a_i+I_{max})x^i\)</span></p>
+<p><span class="arithmatex">\(G=g+I_{max}=\sum_{j=0}^m (b_j+I_{max})x^j\)</span></p>
+<p>因为<span class="arithmatex">\((a_0b_0,a_0b_1+a_1b_0,\dots)\subseteq I_{max}\)</span>，故<span class="arithmatex">\(FG=(a_0b_0+I_{max})+(a_0b_1+a_1b_0+I_{max})x+\dots=0\)</span>，进而<span class="arithmatex">\(F=0\)</span>或<span class="arithmatex">\(G=0\)</span>，不妨是前者。这表示<span class="arithmatex">\(a_i\in I_{max}\)</span>对<span class="arithmatex">\(i=0,1,\dots,n\)</span>均成立，这与<span class="arithmatex">\((a_0,a_1,\dots,a_n)=(1)\)</span>矛盾！</p>
+<h5 id="s1-0-0-34">3.</h5>
+<p>推广<strong>2.</strong>至环<span class="arithmatex">\(A[x_1,\dots,x_r]\)</span>上。</p>
+<p>设<span class="arithmatex">\(f=\sum_{i_1,i_2,\dotsm,i_r}a_{i_1,i_2,\dots,i_r}x_1^{i_1}x_2^{i_2}\dots x_r^{i_r}\)</span></p>
+<h5 id="s1-0-0-35">断言：</h5>
+<p>i)<span class="arithmatex">\(f\)</span>可逆<span class="arithmatex">\(\Longleftrightarrow a_{0,0,\dots,0}\)</span>可逆且<span class="arithmatex">\(a_{i_1,i_2,\dots,i_r}\)</span>幂零，其中<span class="arithmatex">\(i_1,i_2,\dots,i_r\)</span>不全为零。</p>
+<p>ii)<span class="arithmatex">\(f\)</span>幂零<span class="arithmatex">\(\Longleftrightarrow a_{i_1,i_2,\dots,i_r}\)</span>幂零，对于任意的<span class="arithmatex">\(i_1,i_2,\dots,i_r\)</span>。</p>
+<p>iii)iv)均同<strong>2.</strong></p>
+<h5 id="s1-0-0-36">证明：</h5>
+<p>均将<span class="arithmatex">\(A[x_1,\dots,x_r]\)</span>视为<span class="arithmatex">\(A[x_1,\dots,x_{r-1}][x_r]\)</span>利用<strong>2.</strong>归纳即可。</p>
+<h5 id="s1-0-0-37">4.</h5>
+<p>在环<span class="arithmatex">\(A[x]\)</span>中，大根与小根重合。</p>
+<h5 id="s1-0-0-38">证明：</h5>
+<p>由<strong>2.</strong>与<strong>命题1.15</strong>，小根<span class="arithmatex">\(\Re=\left\{f=\sum_{i} a_ix^i \Big| a_i\text{幂零}\right\}\)</span>，大根<span class="arithmatex">\(\mathfrak{R}=\left\{g=\sum_j b_jx^j \Big|\forall h\in A[x],1+gh\text{可逆}\right\}\)</span></p>
+<p>一方面，任取<span class="arithmatex">\(f\in \Re\)</span>，由于<span class="arithmatex">\(f\)</span>幂零，则<span class="arithmatex">\(\forall h \in A[x]\)</span>，<span class="arithmatex">\(fh\)</span>也幂零。由<strong>1.</strong>知<span class="arithmatex">\(1+fh\)</span>可逆，因此<span class="arithmatex">\(\Re \subset \mathfrak{R}\)</span>。</p>
+<p>另一方面，任取<span class="arithmatex">\(g\in \mathfrak{R}\)</span>，取<span class="arithmatex">\(h=x\in A[x]\)</span>，则<span class="arithmatex">\(1+xg\)</span>可逆，由<strong>2.</strong>知<span class="arithmatex">\(b_j\)</span>均幂零，因此<span class="arithmatex">\(\mathfrak{R}\subset \Re\)</span>。</p>
+<h5 id="s1-0-0-39">5.</h5>
+<p>设<span class="arithmatex">\(A\)</span>是环，<span class="arithmatex">\(A[[x]]\)</span>是<span class="arithmatex">\(A\)</span>上的形式幂级数，设<span class="arithmatex">\(f=\sum_{n=0}^{\infty}a_nx^n\in A[[x]]\)</span>，证明：</p>
+<p>i)<span class="arithmatex">\(f\)</span>是<span class="arithmatex">\(A[[x]]\)</span>中可逆元<span class="arithmatex">\(\Longleftrightarrow a_0\)</span>是<span class="arithmatex">\(A\)</span>中可逆元。</p>
+<p>ii)如果<span class="arithmatex">\(f\)</span>幂零，则对一切<span class="arithmatex">\(n\ge 0\)</span>，<span class="arithmatex">\(a_n\)</span>都幂零。逆命题是否成立？</p>
+<p>iii)<span class="arithmatex">\(f\)</span>属于环<span class="arithmatex">\(A[[x]]\)</span>的大根<span class="arithmatex">\(\Longleftrightarrow a_0\)</span>属于环<span class="arithmatex">\(A\)</span>的大根。</p>
+<p>iv)环<span class="arithmatex">\(A[[x]]\)</span>中任一极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>对<span class="arithmatex">\(A\)</span>的局限理想都是<span class="arithmatex">\(A\)</span>中的极大理想，而<span class="arithmatex">\(\mathfrak{m}\)</span>由<span class="arithmatex">\(\mathfrak{m}^c\)</span>和<span class="arithmatex">\(x\)</span>生成。</p>
+<p>v)<span class="arithmatex">\(A\)</span>中任一素理想都是<span class="arithmatex">\(A[[x]]\)</span>中一个素理想的局限理想。</p>
+<h5 id="s1-0-0-40">证明：</h5>
+<p>i)“<span class="arithmatex">\(\Longrightarrow\)</span>”是显然的。</p>
+<p>“<span class="arithmatex">\(\Longleftarrow\)</span>”设<span class="arithmatex">\(g=\sum_{n=0}^{\infty}b_nx^n\in A[[x]]\)</span>，我们来求解满足<span class="arithmatex">\(fg=1\)</span>的<span class="arithmatex">\(g\)</span>。</p>
+<p><span class="arithmatex">\(\begin{cases} 1=[x^0]fg=a_0b_0\Longrightarrow b_0=a_0^{-1}\\ 0=[x^n]fg=a_0b_n+\sum_{i=1}^n a_ib_{n-i}\Longrightarrow b_n=-a_0^{-1}\sum_{i=1}^n a_ib_{n-i},n=1,2,\dots\\ \end{cases}\)</span></p>
+<p>这样我们便确定了唯一的<span class="arithmatex">\(g\)</span>。因此<span class="arithmatex">\(f\)</span>可逆。</p>
+<p>ii)与<span class="arithmatex">\(A[x]\)</span>上的情形相同，不再赘述。</p>
+<p>iii)<span class="arithmatex">\(f\)</span>属于环<span class="arithmatex">\(A[[x]]\)</span>的大根<span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(\forall g=\sum_{n=0}^{\infty}b_nx^n\in A[[x]],1+fg\)</span>可逆</p>
+<p><span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(\forall b_0 \in A,1+a_0b_0\)</span>是<span class="arithmatex">\(A\)</span>中可逆元<span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(a_0\)</span>属于环<span class="arithmatex">\(A\)</span>的大根。</p>
+<p>iv)<span class="arithmatex">\(\mathfrak{m}^c=\mathfrak{m}\cap A\)</span>，若<span class="arithmatex">\(\mathfrak{m}^c\)</span>不是极大的，取极大理想<span class="arithmatex">\(I_{max}\supsetneq \mathfrak{m}^c\)</span>。</p>
+<p>则<span class="arithmatex">\((I_{max},x)\supsetneq \mathfrak{m}\)</span>且<span class="arithmatex">\((I_{max},x)^c=I_{max}\)</span>，所以<span class="arithmatex">\((I_{max},x)\neq A[[x]]\)</span>，这与<span class="arithmatex">\(\mathfrak{m}\)</span>是极大的矛盾。</p>
+<p>由<span class="arithmatex">\(\mathfrak{m}^c=\mathfrak{m}\cap A\)</span>可知<span class="arithmatex">\(\mathfrak{m}^c\)</span>是<span class="arithmatex">\(\mathfrak{m}\)</span>中所有常数项的集合。因此<span class="arithmatex">\((\mathfrak{m}^c,x)\)</span>是所有常数项属于<span class="arithmatex">\(\mathfrak{m}^c\)</span>的形式幂级数，自然包含<span class="arithmatex">\(\mathfrak{m}\)</span>。再由<span class="arithmatex">\(\mathfrak{m}\)</span>的极大性，可知<span class="arithmatex">\(\mathfrak{m}=(\mathfrak{m}^c,x)\)</span>。</p>
+<p>v)设<span class="arithmatex">\(\mathfrak{p}\)</span>是<span class="arithmatex">\(A\)</span>中的素理想，则<span class="arithmatex">\(\mathfrak{p}=(\mathfrak{p},x)\cap A=(\mathfrak{p},x)^c\)</span>。下证<span class="arithmatex">\((\mathfrak{p},x)\)</span>是<span class="arithmatex">\(A[[x]]\)</span>的素理想。</p>
+<p>设<span class="arithmatex">\(f=\sum_{n=0}^{\infty}a_nx^n,g=\sum_{n=0}^{\infty}b_nx^n\)</span>，<span class="arithmatex">\(fg=a_0b_0+(a_0b_1+a_1b_0)x+\dots\in (\mathfrak{p},x)\)</span>。</p>
+<p>则<span class="arithmatex">\(a_0b_0\in \mathfrak{p}\)</span>，所以<span class="arithmatex">\(a_0\in \mathfrak{p}\)</span>或<span class="arithmatex">\(b_0 \in \mathfrak{p}\)</span>，进而<span class="arithmatex">\(f\in (\mathfrak{p},x)\)</span>或<span class="arithmatex">\(g \in (\mathfrak{p},x)\)</span>。</p>
+<h5 id="s1-0-0-41">6.</h5>
+<p>假定环<span class="arithmatex">\(A\)</span>中任一不含在小根中的理想都包含非<span class="arithmatex">\(0\)</span>幂等元，证明，<span class="arithmatex">\(A\)</span>的小根与大根重合。</p>
+<h5 id="s1-0-0-42">证明：</h5>
+<p>显然<span class="arithmatex">\(\Re\subset \mathfrak{R}\)</span>。若<span class="arithmatex">\(\Re \subsetneq \mathfrak{R}\)</span>，由定义，存在幂等元<span class="arithmatex">\(x\in \mathfrak{R}\)</span>，则<span class="arithmatex">\(\forall y \in A\)</span>，<span class="arithmatex">\(1+xy\)</span>是可逆元。取<span class="arithmatex">\(y=-1\)</span>我们得到<span class="arithmatex">\(1-x\)</span>是可逆元。但是<span class="arithmatex">\(x(1-x)=x-x^2=0\)</span>矛盾！</p>
+<h5 id="s1-0-0-43">7.</h5>
+<p>设环<span class="arithmatex">\(A\)</span>中任意元素<span class="arithmatex">\(x\)</span>都适合<span class="arithmatex">\(x^n=x\)</span>对某个<span class="arithmatex">\(n&gt;1\)</span>，证明<span class="arithmatex">\(A\)</span>中任一素理想都极大。</p>
+<h5 id="s1-0-0-44">证明：</h5>
+<p>设<span class="arithmatex">\(\mathfrak{p}\)</span>是素理想。若不然<span class="arithmatex">\(A/\mathfrak{p}\)</span>中有不可逆元<span class="arithmatex">\(\bar{x}=x+\mathfrak{p}\)</span>。</p>
+<p>但<span class="arithmatex">\(\bar{x}^n=x^n+\mathfrak{p}=x+\mathfrak{p}=\bar{x}\)</span>，故<span class="arithmatex">\(\bar{x}^{n-1}=1\)</span>，这与它不可逆矛盾！</p>
+<h5 id="s1-0-0-45">8.</h5>
+<p>设<span class="arithmatex">\(A\)</span>是非零环，证明<span class="arithmatex">\(A\)</span>中素理想的集合有一个极小元素。</p>
+<h5 id="s1-0-0-46">证明：</h5>
+<p>由Zorn引理，我们只需证明对于任一个素理想的降链<span class="arithmatex">\(\left\{\mathfrak{p}_\alpha\right\}\)</span>，<span class="arithmatex">\(\cap_{\alpha} \mathfrak{p}_\alpha=\mathfrak{p}\)</span>也是素理想。</p>
+<p>设<span class="arithmatex">\(xy\in \mathfrak{p}\)</span>，对任意的<span class="arithmatex">\(\alpha\)</span>，<span class="arithmatex">\(x\in \mathfrak{p}_\alpha\)</span>或<span class="arithmatex">\(y\in \mathfrak{p}_\alpha\)</span>。若<span class="arithmatex">\(x\notin \mathfrak{p}\)</span>，则存在<span class="arithmatex">\(\alpha\)</span>使得<span class="arithmatex">\(x\notin \mathfrak{p}_\alpha\)</span>。</p>
+<p>对于任意的<span class="arithmatex">\(\beta\)</span>，若<span class="arithmatex">\(\mathfrak{p}_\alpha \subset \mathfrak{p}_\beta\)</span>，则<span class="arithmatex">\(y\in \mathfrak{p}_\alpha \subset \mathfrak{p}_\beta\)</span>；若<span class="arithmatex">\(\mathfrak{p}_\alpha \supset \mathfrak{p}_\beta\)</span>，则<span class="arithmatex">\(x \notin \mathfrak{p}_\beta\)</span>，只能<span class="arithmatex">\(y\in \mathfrak{p}_\beta\)</span>。由上可知<span class="arithmatex">\(y\in \mathfrak{p}\)</span>。于是<span class="arithmatex">\(\mathfrak{p}\)</span>是素理想。</p>
+<h5 id="s1-0-0-47">9.</h5>
+<p>设<span class="arithmatex">\(\mathfrak{a}\neq (1)\)</span>是环<span class="arithmatex">\(A\)</span>中的理想。证明<span class="arithmatex">\(\mathfrak{a}=r(\mathfrak{a})\Longleftrightarrow \mathfrak{a}\)</span>是素理想。</p>
+<h5 id="s1-0-0-48">证明：</h5>
+<p><span class="arithmatex">\(\mathfrak{a}=r(\mathfrak{a})\Longleftrightarrow \forall x \notin \mathfrak{a},\forall n, x^n \notin \mathfrak{a}\Longleftrightarrow A/\mathfrak{a}\)</span>中无非零幂零元<span class="arithmatex">\(\Longleftrightarrow \Re_{A/\mathfrak{a}}=0\)</span>。</p>
+<p>设<span class="arithmatex">\(f:A\rightarrow A/\mathfrak{a}\)</span>是自然同态。<span class="arithmatex">\(\Re_{A/\mathfrak{a}}=0\Longleftrightarrow \mathfrak{a}=f^{-1}(0)=f^{-1}\left(\displaystyle\bigcap_{\mathfrak{p}\in \mathrm{Spec}(A/\mathfrak{a})}\mathfrak{p}\right)=\displaystyle\bigcap_{\mathfrak{p}\in \mathrm{Spec}(A/\mathfrak{a})}f^{-1}(\mathfrak{p})\)</span>是一些素理想的交。</p>
+<h5 id="s1-0-0-49">10.</h5>
+<p>设<span class="arithmatex">\(A\)</span>是环，<span class="arithmatex">\(\Re\)</span>是它的小根，证明下列诸断言等价：</p>
+<p>i)<span class="arithmatex">\(A\)</span>恰好只有一个素理想。</p>
+<p>ii)<span class="arithmatex">\(A\)</span>中任意元素或者是可逆元，或者是幂零元。</p>
+<p>iii)<span class="arithmatex">\(A/\Re\)</span>是域。</p>
+<h5 id="s1-0-0-50">证明：</h5>
+<p>i)<span class="arithmatex">\(\Longrightarrow\)</span>iii) 对于包含<span class="arithmatex">\(\Re\)</span>的极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>，则<span class="arithmatex">\(\mathfrak{m}\)</span>是素的，进而<span class="arithmatex">\(\mathfrak{p}=\mathfrak{m}\)</span>，故<span class="arithmatex">\(A/\mathfrak{R}\)</span>是域。</p>
+<p>iii)<span class="arithmatex">\(\Longrightarrow\)</span>i)<span class="arithmatex">\(A/\Re\)</span>是域可知<span class="arithmatex">\(\Re\)</span>是极大理想，对于任一素理想<span class="arithmatex">\(\mathfrak{p},p\subset \Re\Longrightarrow \mathfrak{p}=\Re\)</span>，即<span class="arithmatex">\(A\)</span>有唯一素理想。</p>
+<p>iii)<span class="arithmatex">\(\Longrightarrow\)</span>ii)<span class="arithmatex">\(A/\Re\)</span>是域可知<span class="arithmatex">\(\forall x\in A\)</span>，要么<span class="arithmatex">\(x\in \Re\)</span>，要么<span class="arithmatex">\(x+\Re\)</span>可逆，即<span class="arithmatex">\(x\)</span>可逆。</p>
+<p>ii)<span class="arithmatex">\(\Longrightarrow\)</span>iii)因此<span class="arithmatex">\(A\)</span>中除了<span class="arithmatex">\(\Re\)</span>中的元素均可逆，即得<span class="arithmatex">\(A/\Re\)</span>中非零元均可逆。</p>
+<h5 id="s1-0-0-51">11.</h5>
+<p>环<span class="arithmatex">\(A\)</span>叫做<strong>Boole环</strong>如果<span class="arithmatex">\(x^2=x\)</span>对一切<span class="arithmatex">\(x\in A\)</span>。在Boole环中证明：</p>
+<p>i)<span class="arithmatex">\(2x=0\)</span>对一切<span class="arithmatex">\(x\in A\)</span></p>
+<p>ii)任意素理想<span class="arithmatex">\(\mathfrak{p}\)</span>均极大，而<span class="arithmatex">\(A/\mathfrak{p}\)</span>是由两个元素组成的域。</p>
+<p>iii)任一具有有限个生成元的理想<span class="arithmatex">\(A\)</span>都是主理想。</p>
+<h5 id="s1-0-0-52">证明：</h5>
+<p>i)<span class="arithmatex">\(2x=x+x=(x+x)^2=4x^2=4x\Longrightarrow 2x=0\)</span></p>
+<p>ii)同<strong>7.</strong>所证，<span class="arithmatex">\(A/\mathfrak{p}\)</span>中元素<span class="arithmatex">\(\bar{x}\)</span>满足<span class="arithmatex">\(\bar{x}(\bar{x}-1)=\mathfrak{p}\Longrightarrow \bar{x}=\mathfrak{p}\text{或}1+\mathfrak{p}\)</span>。</p>
+<p>iii)只需证二元情形。注意到<span class="arithmatex">\((x+y-xy)x=x\)</span>与<span class="arithmatex">\((x+y-xy)y=y\)</span>可知<span class="arithmatex">\((x,y)=(x+y-xy)\)</span>。</p>
+<h5 id="s1-0-0-53">12.</h5>
+<p>局部环里除了0和1之外没有别的幂等元。</p>
+<h5 id="s1-0-0-54">证明：</h5>
+<p>设<span class="arithmatex">\(x^2=x\)</span>，则<span class="arithmatex">\(x(x-1)=0\)</span>。若<span class="arithmatex">\(x\)</span>不为0和1，则<span class="arithmatex">\(x\)</span>和<span class="arithmatex">\(x-1\)</span>均为零因子。又<span class="arithmatex">\(x\)</span>与<span class="arithmatex">\(x-1\)</span>至多一个在<span class="arithmatex">\(A\)</span>的唯一极大理想<span class="arithmatex">\(\mathfrak{m}\)</span>中，不妨是后者。则理想<span class="arithmatex">\((x)\)</span>是极大的，与<span class="arithmatex">\(\mathfrak{m}\)</span>的唯一性矛盾！</p>
+<p><strong>域的代数闭包的造法(E.Artin)</strong></p>
+<h5 id="s1-0-0-55">13.</h5>
+<p>设<span class="arithmatex">\(K\)</span>是域，<span class="arithmatex">\(\Sigma\)</span>是系数属于<span class="arithmatex">\(K\)</span>的，首项系数等于<span class="arithmatex">\(1\)</span>的一个未定元的不可约多项式<span class="arithmatex">\(f\)</span>的全体所组成的集合。对每个<span class="arithmatex">\(f \in \Sigma\)</span>，相应一个未定元<span class="arithmatex">\(x_{f}\)</span>。用<span class="arithmatex">\(A\)</span>表这些未定元<span class="arithmatex">\(x_{f}\)</span>在<span class="arithmatex">\(K\)</span>上生成的多项式环。由<span class="arithmatex">\(\mathfrak{a}\)</span>表由所有的多项式<span class="arithmatex">\(f\left(x_{f}\right)\)</span>，对一切<span class="arithmatex">\(f \in \Sigma\)</span>，在<span class="arithmatex">\(A\)</span>中生成的理想。证明<span class="arithmatex">\(\mathfrak{a} \neq(1)\)</span>。</p>
+<p>设<span class="arithmatex">\(\mathfrak{m}\)</span>是<span class="arithmatex">\(A\)</span>中的一个包有<span class="arithmatex">\(\mathfrak{a}\)</span>的极大理想，并令<span class="arithmatex">\(K_{1}=A / \mathfrak{m}\)</span>。那么<span class="arithmatex">\(K_{1}\)</span>是<span class="arithmatex">\(K\)</span>的扩域，在其中每个多项式<span class="arithmatex">\(f \in \Sigma\)</span>都有根。对<span class="arithmatex">\(K_{1}\)</span>重复对<span class="arithmatex">\(K\)</span>的作法，得到域<span class="arithmatex">\(K_{2}\)</span>，等等。令<span class="arithmatex">\(L=\displaystyle\bigcup_{n=1}^{\infty} K_{n}\)</span>。那么<span class="arithmatex">\(L\)</span>是域，在其中每个多项式<span class="arithmatex">\(f \in \Sigma\)</span>都分解成线性因式之积。用<span class="arithmatex">\(\vec{K}\)</span>表<span class="arithmatex">\(L\)</span>中在<span class="arithmatex">\(K\)</span>上代数的那些元素的集合。那么<span class="arithmatex">\(\bar{K}\)</span>是<span class="arithmatex">\(K\)</span>的代数闭包。</p>
+<h5 id="s1-0-0-56">证明：</h5>
+<p>若不然，<span class="arithmatex">\(1=\displaystyle\sum_{i=1}^n g_if_i(x_{f_i})\)</span>，其中<span class="arithmatex">\(g_i\in A,f_i\in \Sigma\)</span>。</p>
+<p>考虑<span class="arithmatex">\(K\)</span>的环扩张<span class="arithmatex">\(E=K[x_{f_1},\dots,x_{f_n}]/(f_1(x_{f_1})\dots,f_n(x_{f_n}))\)</span>，在<span class="arithmatex">\(E\)</span>上取<span class="arithmatex">\(\alpha_i\)</span>使<span class="arithmatex">\(f_i(\alpha_i)=0\)</span>，令<span class="arithmatex">\(x_{f_i}=\alpha_i\)</span>带回上式得到<span class="arithmatex">\(1=0\)</span>，矛盾！</p>
+<h5 id="s1-0-0-57">14.</h5>
+<p>用<span class="arithmatex">\(\Sigma\)</span>表环<span class="arithmatex">\(A\)</span>中完全由零因子组成的理想的全体所组成的集合。证明<span class="arithmatex">\(\Sigma\)</span>有一个极大元，而且<span class="arithmatex">\(\Sigma\)</span>的每个极大元都是素理想。因此<span class="arithmatex">\(A\)</span>中零因子的集合是素理想的并。</p>
+<h5 id="s1-0-0-58">证明：</h5>
+<p>对于任一个<span class="arithmatex">\(\Sigma\)</span>中的升链<span class="arithmatex">\(\left\{\mathfrak{m}_\alpha\right\}\)</span>，设<span class="arithmatex">\(\cup_{\alpha} \mathfrak{m}_\alpha=\mathfrak{m}\)</span>。对任意<span class="arithmatex">\(x\in \mathfrak{m}\)</span>，存在<span class="arithmatex">\(\alpha\)</span>使<span class="arithmatex">\(x\in \mathfrak{m}_\alpha\)</span>，进而对任意<span class="arithmatex">\(y\in A\)</span>，<span class="arithmatex">\(xy\in \mathfrak{m}_\alpha \subset \mathfrak{m}\)</span>。再取<span class="arithmatex">\(z\in \mathfrak{m}_\beta \subset \mathfrak{m}\)</span>，不妨<span class="arithmatex">\(\mathfrak{m}_\alpha \subset \mathfrak{m}_\beta\)</span>，则<span class="arithmatex">\(x+z\in \mathfrak{m}_\alpha \subset \mathfrak{m}\)</span>。故<span class="arithmatex">\(\mathfrak{m}\)</span>是理想。由Zorn引理知<span class="arithmatex">\(\Sigma\)</span>中有极大元，记为<span class="arithmatex">\(\mathfrak{M}\)</span>。</p>
+<p>若<span class="arithmatex">\(xy\in \mathfrak{M}\)</span>，则<span class="arithmatex">\(x,y\)</span>至少有一零因子，不妨是<span class="arithmatex">\(x\)</span>。由于<span class="arithmatex">\(\mathfrak{M}\subset(\mathfrak{M},x)\in \Sigma\)</span>，故<span class="arithmatex">\((\mathfrak{M},x)=\mathfrak{M}\)</span>，即<span class="arithmatex">\(x\in \mathfrak{M}\)</span>，进而<span class="arithmatex">\(\mathfrak{M}\)</span>是素理想。</p>
+<p>对于任一零因子<span class="arithmatex">\(a\)</span>，设<span class="arithmatex">\(\Sigma_a\)</span>是<span class="arithmatex">\(\Sigma\)</span>中包含<span class="arithmatex">\(a\)</span>的那些理想，同上可知<span class="arithmatex">\(\Sigma_a\)</span>有极大元且是素理想，这就得出了最后一个结论。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>模</h2>
+<p><strong>模和模同态</strong></p>
+<h5 id="s2-0-0-1">定义2.1</h5>
+<p>设<span class="arithmatex">\(A\)</span>是一个交换环，<span class="arithmatex">\(M\)</span>是一个交换群，如果<span class="arithmatex">\(A\)</span>线性地作用在它上面，就叫做一个<span class="arithmatex">\(A\)</span>-<strong>模</strong>。确切地说，模是一个对<span class="arithmatex">\((M,\mu)\)</span>，这里<span class="arithmatex">\(M\)</span>是交换群，而<span class="arithmatex">\(\mu\)</span>是个映射<span class="arithmatex">\(A\times M\rightarrow M\)</span>，它们满足以下公理，其中我们把<span class="arithmatex">\(\mu(a,x)(a\in A,x\in M)\)</span>写作<span class="arithmatex">\(ax\)</span>：</p>
+<p><span class="arithmatex">\(a(x+y)=ax+by\)</span>，</p>
+<p><span class="arithmatex">\((a+b)x=ax+bx\)</span>，</p>
+<p><span class="arithmatex">\((ab)=a(bx)\)</span>，</p>
+<p><span class="arithmatex">\(1x=x\)</span>。</p>
+<p>一个等价的定义是：<span class="arithmatex">\(M\)</span>是交换群且有环同态<span class="arithmatex">\(A\rightarrow \mathrm{Aut}(M)\)</span>。</p>
+<h5 id="s2-0-0-2">定义2.2</h5>
+<p>设<span class="arithmatex">\(M\)</span>和<span class="arithmatex">\(N\)</span>是两个<span class="arithmatex">\(A\)</span>-模，映射<span class="arithmatex">\(f:M\rightarrow N\)</span>叫做<span class="arithmatex">\(A\)</span>-<strong>模同态</strong>，如果对一切<span class="arithmatex">\(a\in A\)</span>和<span class="arithmatex">\(x,y\in M\)</span>：</p>
+<p><span class="arithmatex">\(f(x+y)=f(x)+f(y)\)</span>，</p>
+<p><span class="arithmatex">\(f(ax)=af(x)\)</span>，</p>
+<p><span class="arithmatex">\(A\)</span>-模同态的复合仍然是<span class="arithmatex">\(A\)</span>-模同态。</p>
+<h5 id="s2-0-0-3">定义2.3</h5>
+<p>从<span class="arithmatex">\(M\)</span>到<span class="arithmatex">\(N\)</span>中的所有<span class="arithmatex">\(A\)</span>-模同态所成的集合可以成为一个<span class="arithmatex">\(A\)</span>-模，如果按以下公式定义<span class="arithmatex">\(f+g\)</span>和<span class="arithmatex">\(af\)</span>：</p>
+<p><span class="arithmatex">\((f+g)(x)=f(x)+g(x)\)</span></p>
+<p><span class="arithmatex">\((af)(x)=af(x)\)</span></p>
+<p>对一切<span class="arithmatex">\(x\in M\)</span>。这个<span class="arithmatex">\(A\)</span>-模记作<span class="arithmatex">\(\mathrm{Hom}_A(M,N)\)</span>，在无歧义的情况下可以简记为<span class="arithmatex">\(\mathrm{Hom}(M,N)\)</span>。</p>
+<p>同态<span class="arithmatex">\(u:M^\prime \rightarrow M\)</span>和<span class="arithmatex">\(v:N\rightarrow N^\prime\)</span>导出映射：</p>
+<p><span class="arithmatex">\(\bar{u}:\mathrm{Hom}(M,N)\rightarrow \mathrm{Hom}(M',N)\)</span></p>
+<p><span class="arithmatex">\(f\mapsto f\circ u\)</span></p>
+<p><span class="arithmatex">\(\bar{v}:\mathrm{Hom}(M,N)\rightarrow \mathrm{Hom}(M,N^\prime)\)</span></p>
+<p><span class="arithmatex">\(f\mapsto v\circ f\)</span></p>
+<p>这两个映射都是<span class="arithmatex">\(A\)</span>-模同态。</p>
+<p>对任意<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>，有自然同构<span class="arithmatex">\(\mathrm{Hom}(A,M)\cong M\)</span>：每个<span class="arithmatex">\(A\)</span>-模同态<span class="arithmatex">\(f:A\rightarrow M\)</span>由元素<span class="arithmatex">\(f(1)\)</span>所唯一确定，而这个元素可以任意选取。</p>
+<p><strong>子模和商模</strong></p>
+<h5 id="s2-0-0-4">定义2.4</h5>
+<p>模<span class="arithmatex">\(M\)</span>的<strong>子模</strong><span class="arithmatex">\(M^\prime\)</span>是<span class="arithmatex">\(M\)</span>的子群，它对<span class="arithmatex">\(A\)</span>的元素乘法封闭。再在交换群<span class="arithmatex">\(M/M^\prime\)</span>上按公式</p>
+<p><span class="arithmatex">\(a(x+M^\prime)=ax+M^\prime\)</span></p>
+<p>来定义乘法，<span class="arithmatex">\(A\)</span>-模的结构就搬到商群<span class="arithmatex">\(M/M^\prime\)</span>上来。<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M/M^\prime\)</span>叫做<span class="arithmatex">\(M\)</span>对于<span class="arithmatex">\(M^\prime\)</span>的<strong>商模</strong>。从<span class="arithmatex">\(M\)</span>到<span class="arithmatex">\(M/M^\prime\)</span>的自然映射是<span class="arithmatex">\(A\)</span>-模同态。在<span class="arithmatex">\(M\)</span>的包含<span class="arithmatex">\(M^\prime\)</span>的子模所构成的集合与<span class="arithmatex">\(M/M^\prime\)</span>的子模的集合之间由保持包含关系的一一对应。</p>
+<h5 id="s2-0-0-5">定义2.5</h5>
+<p><span class="arithmatex">\(f:M\rightarrow N\)</span>是<span class="arithmatex">\(A\)</span>-模同态，<strong>核</strong>定义为集合<span class="arithmatex">\(\mathrm{Ker}(f)=\left\{ x\in M\Big| f(x)=0\right\}\)</span>，它是<span class="arithmatex">\(M\)</span>的子模。</p>
+<p><strong>象</strong>定义为集合<span class="arithmatex">\(\mathrm{Im}(f)=f(M)\)</span>，它是<span class="arithmatex">\(N\)</span>的子模。</p>
+<p><strong>余核</strong>定义为集合<span class="arithmatex">\(\mathrm{Coker}(f)=N/\mathrm{Im}(f)\)</span>，它是<span class="arithmatex">\(N\)</span>的商模。</p>
+<p>设<span class="arithmatex">\(M^\prime\)</span>是<span class="arithmatex">\(M\)</span>的子模，<span class="arithmatex">\(M^\prime \subseteq \mathrm{Ker}(f)\)</span>，那么<span class="arithmatex">\(f\)</span>诱导同态<span class="arithmatex">\(\bar{f}:M/M^\prime\rightarrow N\)</span>，<span class="arithmatex">\(x+M^\prime \mapsto f(x)\)</span>，<span class="arithmatex">\(\bar{f}\)</span>的核是<span class="arithmatex">\(\mathrm{Ker}(f)/M^\prime\)</span>。特别的，令<span class="arithmatex">\(M\prime=\mathrm{Ker}(f)\)</span>，我们有一个<span class="arithmatex">\(A\)</span>-模同构<span class="arithmatex">\(M/\mathrm{Ker}(f)\cong \mathrm{Im}(f)\)</span>。</p>
+<p><strong>子模上的运算</strong></p>
+<h5 id="s2-0-0-6">定义2.6</h5>
+<p>设<span class="arithmatex">\(M\)</span>是个<span class="arithmatex">\(A\)</span>-子模，定义<span class="arithmatex">\((M_i)_{i\in I}\)</span>的<strong>和</strong><span class="arithmatex">\(\sum M_i\)</span>为所有<span class="arithmatex">\(\sum x_i\)</span>的集合，其中<span class="arithmatex">\(x_i\in M_i,i\in I\)</span>且只有有限个非零。它是<span class="arithmatex">\(M\)</span>的包含所有<span class="arithmatex">\(M_i\)</span>的最小子模。</p>
+<p>定义它们的<strong>交</strong><span class="arithmatex">\(\bigcap M_i\)</span>也是<span class="arithmatex">\(M\)</span>的子模。</p>
+<p>定义<span class="arithmatex">\(A\)</span>的理想<span class="arithmatex">\(\mathfrak{a}\)</span>和<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>的<strong>积</strong><span class="arithmatex">\(\mathfrak{a}M\)</span>为一切可能的有限和<span class="arithmatex">\(\sum a_ix_i\)</span>的集合，其中<span class="arithmatex">\(a_i\in \mathfrak{a},x_i \in M\)</span>，它是<span class="arithmatex">\(M\)</span>的子模。</p>
+<p>定义<span class="arithmatex">\(M\)</span>两个子模<span class="arithmatex">\(N,P\)</span>的<strong>商</strong><span class="arithmatex">\((N:P)=\left\{a\Big|  aP\subseteq N,a\in A\right\}\)</span>，它是<span class="arithmatex">\(A\)</span>的理想。特别的，<span class="arithmatex">\((0:M)\)</span>叫做<span class="arithmatex">\(M\)</span>的<strong>零化子</strong>并记作<span class="arithmatex">\(\mathrm{\mathrm{Ann}}(M)\)</span>。如果理想<span class="arithmatex">\(\mathfrak{a}\subseteq \mathrm{Ann}(M)\)</span>，那么通过定义<span class="arithmatex">\(\bar{x}m=xm,x\in A,\bar{x}=x+\mathfrak{a}\)</span>，<span class="arithmatex">\(M\)</span>可以看作一个<span class="arithmatex">\(A/\mathfrak{a}\)</span>-模。</p>
+<p><span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>是<strong>忠实的</strong>，如果<span class="arithmatex">\(\mathrm{Ann}(M)=0\)</span>。因此<span class="arithmatex">\(M\)</span>看作<span class="arithmatex">\(A/\mathrm{Ann}(M)\)</span>-模是忠实的。</p>
+<h5 id="s2-0-0-7">命题2.7</h5>
+<p>i)设<span class="arithmatex">\(L\supseteq M\supseteq N\)</span>，它们都是<span class="arithmatex">\(A\)</span>-模，那么<span class="arithmatex">\((L/N)/(M/N)\cong L/M\)</span>。</p>
+<p>ii)设<span class="arithmatex">\(M_1,M_2\)</span>是<span class="arithmatex">\(M\)</span>的子模，那么<span class="arithmatex">\((M_1+M_2)/M_1\cong M_2/(M_1\cap M_2)\)</span>。</p>
+<p>iii) <span class="arithmatex">\(\mathrm{Ann}(M+N)=\mathrm{Ann}(M)\cap \mathrm{Ann}(N)\)</span>。</p>
+<p>iv)<span class="arithmatex">\((N:P)=\mathrm{Ann}((N+P)/N)\)</span>。</p>
+<p><strong>证明：</strong>i)考虑满同态<span class="arithmatex">\(\varphi :L/N\rightarrow L/M,x+N\rightarrow x+M\)</span>，它的<span class="arithmatex">\(\mathrm{Ker}=M/N\)</span>。</p>
+<p>ii)考虑同态的合成<span class="arithmatex">\(M_2\rightarrow M_1+M_2\rightarrow (M_1+M_2)/M_1\)</span>是满的，它的<span class="arithmatex">\(\mathrm{Ker}=M_1\cap M_2\)</span>。</p>
+<h5 id="s2-0-0-8">定义2.8</h5>
+<p>设<span class="arithmatex">\(x\)</span>是<span class="arithmatex">\(M\)</span>的任意一个元素，所有它的倍元<span class="arithmatex">\(ax(a\in A)\)</span>的集合是<span class="arithmatex">\(M\)</span>中的一个子模，记作<span class="arithmatex">\(Ax\)</span>或<span class="arithmatex">\((x)\)</span>。如果<span class="arithmatex">\(M=\displaystyle\sum_{i\in I}Ax_i\)</span>，那么<span class="arithmatex">\(x_i\)</span>这组元素叫做<span class="arithmatex">\(M\)</span>的<strong>一组生成元</strong>，<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>叫做<strong>有限生成的</strong>。</p>
+<p><strong>直和与直积</strong></p>
+<h5 id="s2-0-0-9">定义2.9</h5>
+<p>定义<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M,N\)</span>的直和<span class="arithmatex">\(M\oplus N=\left\{(x,y)\Big| x\in M,y\in N\right\}\)</span>，它就成为一个<span class="arithmatex">\(A\)</span>-模。</p>
+<p>更一般的，定义<span class="arithmatex">\(\displaystyle\bigoplus_{i\in I}M_i=\left\{(x_i)_{i\in I}\Big| x_i\in M_i,i\in I,\text{且仅有有限个}x_i\text{非零}\right\}\)</span>。去除有限个非零的条件就得到直积<span class="arithmatex">\(\displaystyle\prod_{i\in I}M_i\)</span>。</p>
+<p>假定环<span class="arithmatex">\(A\)</span>是个直积<span class="arithmatex">\(\displaystyle\prod_{i=1}^{n}A_i\)</span>，<span class="arithmatex">\(\mathfrak{a}_i=\left\{(0,\dots,0,a_i,0,\dots,0)\Big| a_i\in A_i\right\}\)</span>是<span class="arithmatex">\(A\)</span>的理想。环<span class="arithmatex">\(A\)</span>看成<span class="arithmatex">\(A\)</span>-模就是理想<span class="arithmatex">\(\mathfrak{a}_1,\dots,\mathfrak{a_n}\)</span>的直和。反过来，若<span class="arithmatex">\(A=\mathfrak{a}_1\oplus \dots \mathfrak{a}_n\)</span>，则<span class="arithmatex">\(A\cong \displaystyle\prod_{i\in I}A/\mathfrak{b}_i\)</span>，其中<span class="arithmatex">\(\mathfrak{b}_i=\displaystyle\bigoplus_{j\neq i}\mathfrak{a_j}\)</span></p>
+<p><strong>有限生成的模</strong></p>
+<h5 id="s2-0-0-10">定义2.10</h5>
+<p><strong>自由</strong><span class="arithmatex">\(A\)</span>-模是同构于形如<span class="arithmatex">\(\displaystyle\bigoplus_{i\in I}M_i\)</span>的<span class="arithmatex">\(A\)</span>-模的一个<span class="arithmatex">\(A\)</span>-模。这里所有<span class="arithmatex">\(M_i\)</span>都同构于<span class="arithmatex">\(A\)</span>，有时记作<span class="arithmatex">\(A^{(I)}\)</span>。因此有限生成的自由<span class="arithmatex">\(A\)</span>-模同构于<span class="arithmatex">\(A^n\)</span>。</p>
+<h5 id="s2-0-0-11">命题2.11</h5>
+<p><span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>是有限生成+的<span class="arithmatex">\(\Longleftrightarrow\)</span><span class="arithmatex">\(M\)</span>同构于模<span class="arithmatex">\(A^n\)</span>的一个商模，对某个<span class="arithmatex">\(n&gt;0\)</span>。</p>
+<h5 id="s2-0-0-12">命题2.12</h5>
+<p>设<span class="arithmatex">\(M\)</span>是有限生成的<span class="arithmatex">\(A\)</span>-模，<span class="arithmatex">\(\mathfrak{a}\)</span>是<span class="arithmatex">\(A\)</span>的一个理想，<span class="arithmatex">\(\varphi\)</span>是<span class="arithmatex">\(A\)</span>-模<span class="arithmatex">\(M\)</span>的一个自同态，使<span class="arithmatex">\(\varphi(M)\subseteq \mathfrak{a}M\)</span>，那么<span class="arithmatex">\(\varphi\)</span>满足：<span class="arithmatex">\(\varphi^n+a_1\varphi^{n-1}+\dots+a_n=0\)</span>，其中<span class="arithmatex">\(a_i\in \mathfrak{a}\)</span></p>
+<h5 id="s2-0-0-13">推论2.13</h5>
+<p>设<span class="arithmatex">\(M\)</span>是有限生成的<span class="arithmatex">\(A\)</span>-模，<span class="arithmatex">\(\mathfrak{a}\)</span>是<span class="arithmatex">\(A\)</span>的一个理想，且<span class="arithmatex">\(\mathfrak{a}M=M\)</span>，则有一个<span class="arithmatex">\(x\equiv 1(mod \text{ }\mathfrak{ a})\)</span>使得<span class="arithmatex">\(xM=0\)</span></p>
+<h5 id="s2-0-0-14">命题2.14</h5>
+<p>(Nakayama引理)设<span class="arithmatex">\(M\)</span>是有限生成的<span class="arithmatex">\(A\)</span>-模，<span class="arithmatex">\(\mathfrak{a}\)</span>是包含在<span class="arithmatex">\(A\)</span>的大根<span class="arithmatex">\(\mathfrak{R}\)</span>中的理想，如果<span class="arithmatex">\(\mathfrak{a}M=M\)</span>，则<span class="arithmatex">\(M=0\)</span></p>
+<h5 id="s2-0-0-15">推论2.15</h5>
+<p>设<span class="arithmatex">\(M\)</span>是有限生成的<span class="arithmatex">\(A\)</span>-模，<span class="arithmatex">\(N\)</span>是<span class="arithmatex">\(M\)</span>的一个子模，<span class="arithmatex">\(\mathfrak{a}\)</span>是<span class="arithmatex">\(A\)</span>的一个包含在<span class="arithmatex">\(\mathfrak{R}\)</span>中的理想，则<span class="arithmatex">\(M=\mathfrak{a}M+N\Longrightarrow M=N\)</span></p>
+<p><strong>证明：</strong>将<strong>命题2.14</strong>应用于<span class="arithmatex">\(M/N\)</span>并结合<span class="arithmatex">\(\mathfrak{a}(M/N)=(\mathfrak{a}M+N)/N\)</span>即可。</p>
+<h5 id="s2-0-0-16">命题2.16</h5>
+<p>设<span class="arithmatex">\(x_i(1\le i \le n)\)</span>是<span class="arithmatex">\(M\)</span>的一组元素，它们在<span class="arithmatex">\(M/\mathfrak{m}M\)</span>中的象组成这个向量空间的一组基，那么<span class="arithmatex">\(x_i\)</span>生成<span class="arithmatex">\(M\)</span>。</p>
+<p><strong>正合序列</strong></p>
+<h5 id="s2-0-0-17">定义2.17</h5>
+<p>一个<span class="arithmatex">\(A\)</span>-模和<span class="arithmatex">\(A\)</span>-同态的序列</p>
+<div class="arithmatex">\[
+\dots \rightarrow M_{i-1} \stackrel{f_i}{\longrightarrow}M_i\stackrel{f_{i+1}}{\longrightarrow}M_{i+1} \rightarrow \dots\tag{0}
+\]</div>
+<p>叫做<strong>在<span class="arithmatex">\(M_i\)</span>处正合</strong>，如果<span class="arithmatex">\(\mathrm{Im}(f_i)=\mathrm{Ker}(f_{i+1})\)</span>。如果它在每个<span class="arithmatex">\(M_i\)</span>处都正合，则称它为正合序列。</p>
+<p>特别的，</p>
+<div class="arithmatex">\[
+\begin{align*}
+0 \rightarrow M^{\prime} \xrightarrow{f} M \text{~正合~} \Longleftrightarrow f\text{~是单的~}\tag{1}\\
+M \xrightarrow{g} M^{\prime \prime} \rightarrow 0 \text{~正合~} \Longleftrightarrow g \text{~是满的}\tag{2}\\
+0 \rightarrow M^{\prime} \xrightarrow{f} M \xrightarrow{g} M^{\prime \prime} \rightarrow 0 \text{~正合~} \Longleftrightarrow f \text{~是单的}, g \text{~是满的}\tag{3}
+\end{align*}
+\]</div>
+<p><span class="arithmatex">\(x^n+y^n=z^n\)</span></p>
+<hr />
+<h2 id="pdf">PDF 原文</h2>
+<p><a class="md-button" href="../../../assets/commutative-algebra-notes.pdf" rel="noopener" target="_blank">打开原文件</a>
+<a class="md-button" download="commutative-algebra-notes.pdf" href="../../../assets/commutative-algebra-notes.pdf">下载 PDF</a></p>
+<p>若下方预览无法显示，可直接打开原文件或下载后阅读。</p>
+<div style="height: 800px; width: 100%;">
+    <embed src="../../../assets/commutative-algebra-notes.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../blog/#algebra">代数</a><a class="zdd-end-chip is-category" href="../../../blog/#commutative-algebra">交换代数</a>
+      <a class="zdd-end-chip" href="../../../tags/?tag=commutative-algebra">#commutative-algebra</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,512 @@
+/* Site-wide visual polish: statement typesetting, article head, headings,
+   TOC, footer, dark palette, tags and friends. Loaded last on purpose. */
+
+:root {
+    --zdd-progress: #3d8fc4;
+    --zdd-def-accent: #1f8a70;
+    --zdd-def-bg: #eef8f3;
+    --zdd-thm-accent: #3b5bdb;
+    --zdd-thm-line: rgba(59, 91, 219, 0.28);
+    --zdd-thm-bg: #f8f9ff;
+    --zdd-ex-accent: #c27c0e;
+    --zdd-ex-bg: #fdf6e9;
+    --zdd-example-accent: #6f8590;
+    --zdd-proof-ink: #55707c;
+}
+
+body[data-md-color-scheme="slate"] {
+    --zdd-progress: #6fb3e0;
+    --zdd-article-bg: #162330;
+    --zdd-def-accent: #5cc8a0;
+    --zdd-def-bg: rgba(92, 200, 160, 0.08);
+    --zdd-thm-accent: #93a6ff;
+    --zdd-thm-line: rgba(147, 166, 255, 0.3);
+    --zdd-thm-bg: rgba(147, 166, 255, 0.05);
+    --zdd-ex-accent: #e0a84a;
+    --zdd-ex-bg: rgba(224, 168, 74, 0.08);
+    --zdd-example-accent: #8fa6b2;
+    --zdd-proof-ink: #a7bcc7;
+}
+
+/* ---------- 1. Theorems, definitions, exercises and proofs ---------- */
+.md-typeset :is(.admonition, details) {
+    font-size: 0.86em;
+}
+
+.md-typeset :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma, .corollary, .property,
+    .definition, .problem, .example, .proof, .solution) {
+    font-size: 1em;
+    box-shadow: none;
+}
+
+.md-typeset :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .definition, .problem, .example)
+    > :is(.admonition-title, summary) {
+    padding-left: 0.6rem;
+    padding-bottom: 0;
+    border: 0;
+    background: transparent;
+    font-weight: 700;
+}
+
+.md-typeset :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .definition, .problem, .example,
+    .proof, .solution) > :is(.admonition-title, summary)::before {
+    display: none;
+}
+
+/* Theorem-like: thin frame, accent rule on the left. */
+.md-typeset :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma, .corollary, .property) {
+    border: 1px solid var(--zdd-thm-line);
+    border-left: 3px solid var(--zdd-thm-accent);
+    border-radius: 6px;
+    background: var(--zdd-thm-bg);
+}
+
+.md-typeset :is(.theorem, .proposition, .prop, .lemma, .corollary, .property) > :is(.admonition-title, summary) {
+    color: var(--zdd-thm-accent);
+}
+
+/* Definition: tinted block. */
+.md-typeset :is(.admonition, details).definition {
+    border: 0;
+    border-left: 3px solid var(--zdd-def-accent);
+    border-radius: 4px;
+    background: var(--zdd-def-bg);
+}
+
+.md-typeset .definition > :is(.admonition-title, summary) {
+    color: var(--zdd-def-accent);
+}
+
+/* Exercise: warm tint. */
+.md-typeset :is(.admonition, details).problem {
+    border: 0;
+    border-left: 3px solid var(--zdd-ex-accent);
+    border-radius: 4px;
+    background: var(--zdd-ex-bg);
+}
+
+.md-typeset .problem > :is(.admonition-title, summary) {
+    color: var(--zdd-ex-accent);
+}
+
+/* Example: quiet dotted rule, no fill. */
+.md-typeset :is(.admonition, details).example {
+    border: 0;
+    border-left: 3px dotted var(--zdd-example-accent);
+    border-radius: 0;
+    background: transparent;
+}
+
+.md-typeset .example > :is(.admonition-title, summary) {
+    color: var(--zdd-example-accent);
+}
+
+/* Proofs and solutions: no box, an italic lead-in and a closing tombstone. */
+.md-typeset :is(.admonition, details):is(.proof, .solution) {
+    margin: 0.2em 0 1.2em;
+    padding: 0 0 0 1rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.md-typeset :is(.admonition, details):is(.proof, .solution) > :is(.admonition-title, summary) {
+    display: inline-block;
+    margin: 0 0 0 -1rem;
+    padding: 0.05rem 0.5rem 0.05rem 1.3rem;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--zdd-proof-ink);
+    font-style: italic;
+    font-weight: 600;
+}
+
+.md-typeset details:is(.proof, .solution) > summary:hover {
+    background: var(--md-code-bg-color);
+}
+
+.md-typeset details:is(.proof, .solution) > summary::after {
+    top: 50%;
+    right: auto;
+    left: 0.2rem;
+    width: 0.85rem;
+    height: 0.85rem;
+    margin-top: -0.425rem;
+    background-color: currentColor;
+}
+
+.md-typeset :is(.admonition, details[open]):is(.proof, .solution) {
+    border-left: 2px solid var(--zdd-line);
+}
+
+.md-typeset :is(.admonition, details):is(.proof, .solution) > :last-child:not(summary):not(.admonition-title)::after {
+    content: "∎";
+    float: right;
+    margin-left: 1em;
+    color: var(--zdd-proof-ink);
+}
+
+/* ---------- 2. Article head: small series crumb above the title ---------- */
+
+body.article-layout .md-content__inner > h1:first-of-type,
+body.article-layout .md-content__inner > .zdd-course-crumb + h1 {
+    margin-top: 0.2em;
+}
+
+body.article-layout .md-content__inner {
+    padding-top: 0.4rem;
+}
+
+body.article-layout .md-content__inner::before {
+    height: 0;
+}
+
+/* ---------- 3. Headings ---------- */
+body.article-layout .md-typeset h1 {
+    font-weight: 700;
+    color: var(--zdd-display-ink);
+}
+
+body.article-layout .md-typeset :is(h2, h3) {
+    font-weight: 700;
+}
+
+body.article-layout .md-typeset h2:not(.zdd-backlinks-title):not(.zdd-comments-title) {
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid var(--zdd-line);
+}
+
+/* ---------- 4. Table of contents ---------- */
+@media screen and (min-width: 60em) {
+    .md-sidebar--secondary .md-nav--secondary .md-nav__link {
+        margin-top: 0.3em;
+        padding-left: 0.5rem;
+        border-left: 2px solid transparent;
+    }
+
+    .md-sidebar--secondary .md-nav--secondary .md-ellipsis {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .md-sidebar--secondary .md-nav--secondary .md-nav__link--active {
+        border-left-color: currentColor;
+    }
+
+    /* Only the section being read shows its subsections. */
+    .md-sidebar--secondary .md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav {
+        display: none;
+    }
+
+    .md-sidebar--secondary .md-nav--secondary > .md-nav__list > .md-nav__item:has(.md-nav__link--active) > .md-nav {
+        display: block;
+    }
+}
+
+/* ---------- 7. Footer ---------- */
+.md-footer {
+    background: transparent;
+    color: var(--zdd-surface-muted);
+    border-top: 1px solid var(--zdd-line);
+}
+
+.md-footer-meta {
+    background: transparent;
+}
+
+.md-footer-meta__inner {
+    flex-direction: column;
+    align-items: center;
+    padding: 0.8rem 0 1.2rem;
+}
+
+.md-footer .md-copyright,
+.md-footer .zdd-footer-credit {
+    font-size: 0.66rem;
+}
+
+.md-footer .md-copyright {
+    margin: 0;
+    color: var(--zdd-surface-muted);
+    text-align: center;
+}
+
+.md-footer .md-copyright__highlight {
+    color: inherit;
+}
+
+.md-footer .md-social {
+    padding: 0.2rem 0 0;
+}
+
+.md-footer .md-social__link {
+    color: var(--zdd-surface-muted);
+}
+
+/* ---------- 8. Search box uses the site font ---------- */
+.minimal-search input {
+    font-family: var(--zdd-reading-font);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+/* ---------- 9. Dark mode: dim bright figures ---------- */
+body[data-md-color-scheme="slate"].article-layout .md-content img:not(.twemoji):not(.emojione) {
+    filter: brightness(0.86) contrast(1.04);
+    transition: filter 0.2s ease;
+}
+
+body[data-md-color-scheme="slate"].article-layout .md-content img:not(.twemoji):not(.emojione):hover {
+    filter: none;
+}
+
+/* ---------- 11. Tags grouped by subject, with counts ---------- */
+.md-typeset .zdd-tag-cloud {
+    display: grid;
+    gap: 1.2rem;
+}
+
+.zdd-tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.md-typeset .zdd-tag-group h2 {
+    flex: 0 0 100%;
+    margin: 0 0 0.1rem;
+    color: var(--zdd-surface-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.zdd-tag-cloud a small {
+    margin-left: 0.35em;
+    opacity: 0.7;
+    font-size: 0.85em;
+}
+
+.zdd-tag-cloud a.is-medium {
+    font-size: 0.8rem !important;
+    color: var(--zdd-surface-ink) !important;
+}
+
+.zdd-tag-cloud a.is-large {
+    font-size: 0.9rem !important;
+    color: var(--zdd-surface-ink) !important;
+    font-weight: 700;
+}
+
+/* ---------- 12. Friends: avatars and alignment ---------- */
+.md-typeset .friend-directory ul.friend-list {
+    gap: 0 2rem;
+}
+
+.friend-directory-header {
+    padding-left: 0.95rem;
+}
+
+.md-typeset .friend-directory a.friend-link {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.9rem;
+    min-height: 0;
+    border-radius: 8px;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.md-typeset .friend-directory a.friend-link:hover {
+    transform: translateY(-2px);
+}
+
+.friend-avatar {
+    position: relative;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--friend-hover);
+}
+
+.friend-avatar::before {
+    content: attr(data-initial);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--friend-ink);
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.md-typeset .friend-avatar img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.friend-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.friend-domain {
+    margin-top: 0.35rem;
+    padding-top: 0;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .md-typeset .friend-directory a.friend-link:hover { transform: none; }
+}
+
+/* ---------- Article end (overrides/partials/article-end.html) ---------- */
+.zdd-article-end {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 3rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--zdd-line);
+    border-radius: 10px;
+    background: var(--zdd-paper-soft);
+    font-size: 0.78rem;
+}
+
+.zdd-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+}
+
+.md-typeset .zdd-pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--zdd-surface-border);
+    border-radius: 8px;
+    background: var(--md-default-bg-color);
+    color: var(--md-default-fg-color);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.md-typeset .zdd-pager-link.is-next { text-align: right; }
+.zdd-pager-link.is-empty { border: 0; background: none; }
+
+.md-typeset a.zdd-pager-link:hover {
+    border-color: var(--zdd-progress);
+    transform: translateY(-1px);
+}
+
+.zdd-pager-label {
+    color: var(--md-default-fg-color--light);
+    font-size: 0.68rem;
+}
+
+.zdd-pager-title {
+    overflow: hidden;
+    color: var(--md-typeset-a-color);
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.md-typeset .zdd-pager-catalog {
+    grid-column: 1 / -1;
+    justify-self: center;
+    color: var(--md-default-fg-color--light);
+    font-size: 0.68rem;
+}
+
+.zdd-end-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0.8rem 0 0;
+    border-top: 1px solid var(--zdd-line);
+    font-size: inherit;
+}
+
+.zdd-end-label {
+    flex: 0 0 3.2em;
+    color: var(--md-default-fg-color--light);
+    font-weight: 700;
+}
+
+.zdd-end-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.md-typeset .zdd-end-chip {
+    padding: 0.08rem 0.55rem;
+    border: 1px solid var(--zdd-line);
+    border-radius: 999px;
+    color: var(--zdd-surface-muted);
+}
+
+.md-typeset .zdd-end-chip.is-category {
+    border-color: transparent;
+    background: var(--zdd-line);
+    color: var(--md-default-fg-color);
+    font-weight: 700;
+}
+
+.md-typeset a.zdd-end-chip:hover { border-color: currentColor; }
+
+.md-typeset ul.zdd-end-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.md-typeset ul.zdd-end-links li { margin: 0; }
+
+.zdd-article-end + .md-source-file,
+.zdd-article-end ~ .zdd-comments { border-top: 0; }
+
+@media (max-width: 600px) {
+    .zdd-pager { grid-template-columns: 1fr; }
+    .md-typeset .zdd-pager-link.is-next { text-align: left; }
+    .zdd-pager-link.is-empty { display: none; }
+    .zdd-end-row { flex-direction: column; gap: 0.35rem; }
+}
+
+/* Neutralise the standalone styles these blocks had before being grouped. */
+.zdd-article-end .zdd-course-navigation,
+.zdd-article-end .zdd-article-taxonomy,
+.zdd-article-end .zdd-backlinks {
+    margin: 0;
+    font-size: inherit;
+}
+
+.zdd-article-end .zdd-course-navigation {
+    padding: 0;
+    border: 0;
+}
+
+.zdd-article-end .zdd-end-row {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--zdd-line);
+}
+
+.zdd-article-end > .zdd-end-row:first-child {
+    padding-top: 0;
+    border-top: 0;
+}

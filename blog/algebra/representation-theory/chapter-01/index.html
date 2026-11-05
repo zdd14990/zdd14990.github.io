@@ -1,0 +1,1385 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="表示论笔记第一章：代数、表示、理想、商、由生成元与关系定义的代数、一些代数的例子、箭图、李代数。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-01/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：表示 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-01/">
+  <meta property="og:title" content="第一章：表示 - zdd14990">
+  <meta property="og:description" content="表示论笔记第一章：代数、表示、理想、商、由生成元与关系定义的代数、一些代数的例子、箭图、李代数。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="representation-theory">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/algebra/representation-theory/chapter-01/">
+  <meta name="twitter:title" content="第一章：表示 - zdd14990">
+  <meta name="twitter:description" content="表示论笔记第一章：代数、表示、理想、商、由生成元与关系定义的代数、一些代数的例子、箭图、李代数。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u8868\u793a",
+    "description": "\u8868\u793a\u8bba\u7b14\u8bb0\u7b2c\u4e00\u7ae0\uff1a\u4ee3\u6570\u3001\u8868\u793a\u3001\u7406\u60f3\u3001\u5546\u3001\u7531\u751f\u6210\u5143\u4e0e\u5173\u7cfb\u5b9a\u4e49\u7684\u4ee3\u6570\u3001\u4e00\u4e9b\u4ee3\u6570\u7684\u4f8b\u5b50\u3001\u7bad\u56fe\u3001\u674e\u4ee3\u6570\u3002",
+    "url": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-01/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/algebra/representation-theory/chapter-01/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["representation-theory"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u4ee3\u6570", "algebra"], ["\u8868\u793a\u8bba", "representation-theory"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 代数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 表示
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 理想
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 商
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 由生成元与关系定义的代数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 一些代数的例子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 箭图
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 李代数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 张量积
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 张量代数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Hilber 第三问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 李代数表示的张量积与对偶
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. \(\mathfrak{sl}(2)\) 的表示
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 有关李代数的一些问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#representation-theory">表示论</a>
+    <span>Part 1 of 8</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="top"><span class="book-visually-hidden">第 1 章：</span>表示</h1>
+  </div>
+  <p class="book-standfirst">我们回忆一些代数的基本知识。<span class="arithmatex">\(k[x_1,\cdots,x_n]\)</span> 是关于 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 的多项式构成的代数，<span class="arithmatex">\(k\left&lt;x_1,\cdots,x_n\right&gt;\)</span> 是<strong>自由代数</strong>，<span class="arithmatex">\(k[G]\)</span> 是由基 <span class="arithmatex">\(\left\{a_g,g\in G\right\}\)</span> 生成的<strong>群代数</strong>。一个代数称为<strong>交换的</strong>若 <span class="arithmatex">\(ab=ba\)</span> 对任意 <span class="arithmatex">\(a,b\in A\)</span>。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>6,380 字 · 约 18 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>代数</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>一个域 <span class="arithmatex">\(k\)</span> 上的<strong>结合代数(associative algebra)</strong>是 <span class="arithmatex">\(k\)</span> 上的向量空间 <span class="arithmatex">\(A\)</span> ，伴有双线性映射 <span class="arithmatex">\(A\times A\rightarrow A,(a,b)\mapsto ab\)</span>，满足 <span class="arithmatex">\((ab)c=a(bc)\)</span>。一个<strong>单位(unit)</strong>是 <span class="arithmatex">\(A\)</span> 中一个元素 <span class="arithmatex">\(1\in A\)</span> 满足 <span class="arithmatex">\(1a=a1=a\)</span> 。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.2</span></p>
+<p>若单位存在，则唯一。</p>
+</div>
+<p>我们仅考虑含单位元 <span class="arithmatex">\(1\)</span> 的结合代数。下面是一些代数的例子：</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.3</span></p>
+<ul>
+<li><span class="arithmatex">\(A=k\)</span>；</li>
+<li><span class="arithmatex">\(A=k[x_1,\cdots,x_n]\)</span>：由 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 构成的多项式；</li>
+<li><span class="arithmatex">\(A=\mathrm{End}V\)</span>；</li>
+<li><strong>自由代数(free algebra)</strong> <span class="arithmatex">\(A=k\left&lt;x_1,\cdots,x_n\right&gt;\)</span>：由字符 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 组成的字符串。</li>
+<li><strong>群代数(group algebra)</strong> <span class="arithmatex">\(A=k[G]\)</span>：由 <span class="arithmatex">\(\left\{a_g\Big|g\in G\right\}\)</span> 生成，运算由 <span class="arithmatex">\(a_ga_h=a_{gh}\)</span> 给出。</li>
+</ul>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p>一个代数 <span class="arithmatex">\(A\)</span> 是<strong>交换的(commutative)</strong>若 <span class="arithmatex">\(ab=ba\)</span>，对任意 <span class="arithmatex">\(a,b\in A\)</span> 成立。</p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.5</span></p>
+<p>一个代数的<strong>同态(homomorphism)</strong> <span class="arithmatex">\(f:A\rightarrow B\)</span> 是一个线性映射，满足 <span class="arithmatex">\(f(xy)=f(x)f(y)\)</span>，对任意 <span class="arithmatex">\(x,y\in A\)</span> 都成立，且 <span class="arithmatex">\(f(1)=1\)</span>。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>表示</h2>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>一个结合代数 <span class="arithmatex">\(A\)</span> 的<strong>表示(representation)</strong>或<strong>左 <span class="arithmatex">\(A-\)</span>模(left <span class="arithmatex">\(A-\)</span>module)</strong> 是一个向量空间 <span class="arithmatex">\(V\)</span>，其带有同态 <span class="arithmatex">\(\rho:A\rightarrow \mathrm{End}V\)</span>。</p>
+</div>
+<p>类似的，一个<strong>右 <span class="arithmatex">\(A-\)</span>模(right <span class="arithmatex">\(A-\)</span>module)</strong> 为空间 <span class="arithmatex">\(V\)</span> 伴有反同态 <span class="arithmatex">\(\rho:A\rightarrow \mathrm{End}V\)</span>，即 <span class="arithmatex">\(\rho\)</span> 满足 <span class="arithmatex">\(\rho(ab)=\rho(b)\rho(a)\)</span> 且 <span class="arithmatex">\(\rho(1)=1\)</span>。我们举一些表示的例子</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span></p>
+<ul>
+<li><span class="arithmatex">\(V=0\)</span>；</li>
+<li><span class="arithmatex">\(V=A,\rho:a\mapsto (b\mapsto ab)\)</span> 为自然的左乘，这个表示称为 <span class="arithmatex">\(A\)</span> 的<strong>正则表示(regular representation)</strong>。</li>
+<li><span class="arithmatex">\(A=k\)</span>，<span class="arithmatex">\(A\)</span> 的一个自然的表示为 <span class="arithmatex">\(k\)</span> 上的线性空间。</li>
+<li><span class="arithmatex">\(A=k\left&lt;x_1,\cdots,x_n\right&gt;\)</span>，令 <span class="arithmatex">\(V=k\)</span>，任取线性算子 <span class="arithmatex">\(\rho(x_1),\cdots,\rho(x_n):V\rightarrow V\)</span>，这是一个表示，留给读者自行验证。</li>
+</ul>
+</div>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span></p>
+<p>一个表示 <span class="arithmatex">\(V\)</span> 的<strong>子表示(subrepresentation)</strong> 是一个 <span class="arithmatex">\(V\)</span> 的子空间 <span class="arithmatex">\(W\)</span>，其在任意 <span class="arithmatex">\(\rho(a)\)</span> 作用下不变，其中 <span class="arithmatex">\(a\in A\)</span>。</p>
+</div>
+<p>显然 <span class="arithmatex">\(0\)</span> 与 <span class="arithmatex">\(V\)</span> 都是 <span class="arithmatex">\(V\)</span> 的子表示。</p>
+<p>显然若 <span class="arithmatex">\(V_1,V_2\)</span> 是两个 <span class="arithmatex">\(A\)</span> 的表示，则 <span class="arithmatex">\(V_1\oplus V_2\)</span> 也是 <span class="arithmatex">\(A\)</span> 的表示。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.4</span></p>
+<p>一个 <span class="arithmatex">\(A\)</span> 的非零表示 <span class="arithmatex">\(V\)</span> 称为<strong>不可约的(irreducible)</strong>，若其子表示仅有 <span class="arithmatex">\(0\)</span> 与 <span class="arithmatex">\(V\)</span>。</p>
+</div>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.5</span></p>
+<p>设 <span class="arithmatex">\(V_1,V_2\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的表示，一个表示的<strong>同态(homomorphism)</strong>(或<strong>交织算子(intertwining operator)</strong>) <span class="arithmatex">\(\phi:V_1\rightarrow V_2\)</span> 是线性算子，满足 <span class="arithmatex">\(\phi(av)=a\phi(v)\)</span>，对任意 <span class="arithmatex">\(v\in V_1,a\in A\)</span> 成立。一个同态 <span class="arithmatex">\(\phi\)</span> 称为表示间的<strong>同构(isomorphism)</strong>，若 <span class="arithmatex">\(\phi\)</span> 是向量空间上的同构。</p>
+<p>所有 <span class="arithmatex">\(V_1,V_2\)</span> 间的同态记作 <span class="arithmatex">\(\mathrm{Hom}_A(V_1,V_2)\)</span>。</p>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.6</span></p>
+<p>设 <span class="arithmatex">\(V_1,V_2\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的表示，则由 <span class="arithmatex">\(a(v_1\oplus v_2)=(av_1\oplus av_2)\)</span> 给出的空间 <span class="arithmatex">\(V_1\oplus V_2\)</span> 显然也是 <span class="arithmatex">\(A\)</span> 的表示。称为 <span class="arithmatex">\(V_1,V_2\)</span> 的<strong>直和(direct sum)</strong>。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.7</span></p>
+<p>一个 <span class="arithmatex">\(A\)</span> 的非零表示 <span class="arithmatex">\(V\)</span> 称为<strong>不可分解的(indecomposable)</strong>，若其不同构于两个非零表示的直和。</p>
+</div>
+<p>不可约表示显然是不可分解的，但是反过来不一定成立。</p>
+<p>表示论的基本问题主要为以下三者：</p>
+<ul>
+<li>对给定的代数 <span class="arithmatex">\(A\)</span> 计算不可约表示。</li>
+<li>对给定的代数 <span class="arithmatex">\(A\)</span> 计算不可分解表示。</li>
+<li>把前两个问题限制在有限维表示上。</li>
+</ul>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.8</span><span class="book-name">Schur&#x27;s lemma</span></p>
+<p>在域 <span class="arithmatex">\(F\)</span> 上(即不要求代数闭)，设 <span class="arithmatex">\(V_1,V_2\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的表示，令 <span class="arithmatex">\(\phi:V_1\rightarrow V_2\)</span> 是非零的表示间的同态，则</p>
+<ul>
+<li>若 <span class="arithmatex">\(V_1\)</span> 不可约，则 <span class="arithmatex">\(\phi\)</span> 是单射。</li>
+<li>若 <span class="arithmatex">\(V_2\)</span> 不可约，则 <span class="arithmatex">\(\phi\)</span> 是满射。</li>
+</ul>
+<p>即若 <span class="arithmatex">\(V_1,V_2\)</span> 都是不可约的，则 <span class="arithmatex">\(\phi\)</span> 是同构。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>这是容易的，证明留给读者。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.9</span></p>
+<p>在代数闭域 <span class="arithmatex">\(k\)</span> 上，<span class="arithmatex">\(V\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的有限维不可约表示，同态 <span class="arithmatex">\(\phi:V\rightarrow V\)</span>。则 <span class="arithmatex">\(\phi=\lambda\cdot \mathrm{Id}\)</span>，其中 <span class="arithmatex">\(\lambda\in k\)</span> 作为标量。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(\lambda\)</span> 是 <span class="arithmatex">\(\phi\)</span> 的特征根，存在性由 <span class="arithmatex">\(k\)</span> 是代数闭域保证。则 <span class="arithmatex">\(\phi-\lambda \mathrm{Id}\)</span> 是同态且不是同构。由 Schur 引理知其为零同态。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 2.10</span></p>
+<p>设 <span class="arithmatex">\(A\)</span> 是交换代数，则任意 <span class="arithmatex">\(A\)</span> 的有限维不可约表示 <span class="arithmatex">\(V\)</span> 都是一维的。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>设 <span class="arithmatex">\(V\)</span> 是不可约表示，则我们有</p>
+<div class="arithmatex">\[
+\rho(a)\rho(b)v=\rho(ab)v=\rho(ba)v=\rho(b)\rho(a)v
+\]</div>
+<p>于是由 Schur 引理，<span class="arithmatex">\(\rho(a)\)</span> 是标量，进而任意 <span class="arithmatex">\(V\)</span> 的子空间都是子表示，结合 <span class="arithmatex">\(V\)</span> 不可约即证。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.11</span></p>
+<ul>
+<li><span class="arithmatex">\(A=k\)</span>，由于 <span class="arithmatex">\(A\)</span> 的表示为向量空间，故 <span class="arithmatex">\(V=A\)</span> 是唯一的不可约表示且是唯一的不可分解表示。</li>
+<li><span class="arithmatex">\(A=k[x]\)</span>，</li>
+<li><span class="arithmatex">\(A=k[G]\)</span>，</li>
+</ul>
+</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.12</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的非零有限维表示，则 <span class="arithmatex">\(V\)</span> 有一个不可约子表示。</p>
+<p>对无限维的情形构造反例。</p>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.13</span></p>
+<p>设 <span class="arithmatex">\(A\)</span> 是域 <span class="arithmatex">\(k\)</span> 上的代数。<span class="arithmatex">\(A\)</span> 的中心 <span class="arithmatex">\(Z(A)\)</span> 为所有 <span class="arithmatex">\(z\in A\)</span> 满足 <span class="arithmatex">\(za=az,\forall a\in A\)</span> 的元素构成的集合。例如若 <span class="arithmatex">\(A\)</span> 交换，<span class="arithmatex">\(Z(A)=A\)</span>。</p>
+<ul>
+<li>证明若 <span class="arithmatex">\(V\)</span> 为 <span class="arithmatex">\(A\)</span> 的不可约有限维表示，则任意 <span class="arithmatex">\(z\in Z(A)\)</span> 在 <span class="arithmatex">\(V\)</span> 上的作用为某个标量 <span class="arithmatex">\(\chi_V(z)\)</span>。证明 <span class="arithmatex">\(\chi_V:Z(A)\rightarrow k\)</span> 是同态，称作 <span class="arithmatex">\(V\)</span> 的<strong>中心特征(central character)</strong>。</li>
+<li>证明若 <span class="arithmatex">\(V\)</span> 为 <span class="arithmatex">\(A\)</span> 的不可分解有限维表示，则对任意 <span class="arithmatex">\(z\in Z(A)\)</span>，<span class="arithmatex">\(\rho(z)\)</span> 仅有一个特征值 <span class="arithmatex">\(\chi_V(z)\)</span>，与 <span class="arithmatex">\(z\)</span> 在某个不可约有限维表示 <span class="arithmatex">\(V\)</span> 上作用的标量一致。因此 <span class="arithmatex">\(\chi_v:Z(A)\rightarrow k\)</span> 是同态，一样称作 <span class="arithmatex">\(V\)</span> 的中心特征。</li>
+<li>前一问中 <span class="arithmatex">\(\rho(z)\)</span> 的作用一定是个标量吗？</li>
+</ul>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>理想</h2>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span></p>
+<p>代数 <span class="arithmatex">\(A\)</span> 的<strong>左理想(left ideal)</strong>是子空间 <span class="arithmatex">\(I\subseteq A\)</span> 满足 <span class="arithmatex">\(aI\subseteq I\)</span>，对任意 <span class="arithmatex">\(a\in A\)</span> 成立。类似的，<strong>右理想(right ideal)</strong>是子空间 <span class="arithmatex">\(I\subseteq A\)</span> 满足 <span class="arithmatex">\(Ia\subseteq I\)</span>，对任意 <span class="arithmatex">\(a\in A\)</span> 成立。<strong>双边理想(two-sided ideal)</strong>是子空间既是左理想又是右理想。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 3.2</span></p>
+<ul>
+<li>对任意代数 <span class="arithmatex">\(A\)</span>，<span class="arithmatex">\(0\)</span> 和 <span class="arithmatex">\(A\)</span> 是双边理想。代数 <span class="arithmatex">\(A\)</span> 称为<strong>单的(simple)</strong>若其双边理想仅有 <span class="arithmatex">\(0\)</span> 与 <span class="arithmatex">\(A\)</span>。</li>
+<li>若 <span class="arithmatex">\(\phi:A\rightarrow B\)</span> 是代数间的同态，则 <span class="arithmatex">\(\ker \phi\)</span> 是 <span class="arithmatex">\(A\)</span> 的双边理想。</li>
+<li>若 <span class="arithmatex">\(S\)</span> 是任意 <span class="arithmatex">\(A\)</span> 的子集，由 <span class="arithmatex">\(S\)</span> <strong>生成(generated)</strong> 的双边理想记作 <span class="arithmatex">\(\left&lt;S\right&gt;\)</span>，其由 <span class="arithmatex">\(asb\)</span> 构成，其中 <span class="arithmatex">\(a,b\in A,s\in S\)</span>。类似的构造 <span class="arithmatex">\(\left&lt;S\right&gt;_l=\mathrm{span} \left\{as\right\}\)</span> 与 <span class="arithmatex">\(\left&lt;S\right&gt;_r=\mathrm{span} \left\{sb\right\}\)</span>，分别称作由 <span class="arithmatex">\(S\)</span> 生成的左理想、右理想。</li>
+</ul>
+</div>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.3</span></p>
+<p>证明任意含单位的环有极大左理想、右理想、双边理想。</p>
+</div>
+<h2 id="s4"><span class="book-secnum">§ 04</span>商</h2>
+<p>设 <span class="arithmatex">\(I\)</span> 是代数 <span class="arithmatex">\(A\)</span> 的双边理想。则 <span class="arithmatex">\(A/I\)</span> 是 <span class="arithmatex">\(I\)</span> 的陪集。令 <span class="arithmatex">\(\pi:A\rightarrow A/I\)</span> 是商映射。我们可以定义乘法：<span class="arithmatex">\(\pi(a)\cdot \pi(b)=\pi(ab)\)</span>。这是良定义的，留给读者验证。</p>
+<p>同样的，对 <span class="arithmatex">\(A\)</span> 的表示 <span class="arithmatex">\(V\)</span> 与 <span class="arithmatex">\(V\)</span> 的子表示 <span class="arithmatex">\(W\)</span>，则 <span class="arithmatex">\(V/W\)</span> 也是表示。具体地说，设 <span class="arithmatex">\(\pi:V\rightarrow V/W\)</span> 是商映射，令 <span class="arithmatex">\(\rho_{V/W}(a)\pi(x)=\pi(\rho(a)x)\)</span>。</p>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 4.1</span></p>
+<p>设 <span class="arithmatex">\(A=k[x_1,\cdots,x_n]\)</span> 与其理想 <span class="arithmatex">\(I\neq A\)</span> 包含了所有次数 <span class="arithmatex">\(\ge N\)</span> 的齐次多项式。证明 <span class="arithmatex">\(A/I\)</span> 为 <span class="arithmatex">\(A\)</span> 的一个不可分解表示。</p>
+</div>
+<div id="ex-5" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 4.2</span></p>
+<p>设 <span class="arithmatex">\(V\neq 0\)</span> 是 <span class="arithmatex">\(A\)</span> 的表示。我们称 <span class="arithmatex">\(v\in V\)</span> 是<strong>循环的(cyclic)</strong> 若其生成了 <span class="arithmatex">\(V\)</span>，即 <span class="arithmatex">\(Av=V\)</span>。一个含有循环向量的表示称为<strong>循环的(cyclic)</strong>。</p>
+<ul>
+<li><span class="arithmatex">\(V\)</span> 是不可约的当且仅当 <span class="arithmatex">\(V\)</span> 中任意向量 <span class="arithmatex">\(v\)</span> 是循环的。</li>
+<li><span class="arithmatex">\(V\)</span> 是循环的当且仅当其同构于 <span class="arithmatex">\(A/I\)</span>，其中 <span class="arithmatex">\(I\)</span> 是 <span class="arithmatex">\(A\)</span> 的左理想。</li>
+<li>举一个不可分解但不循环的例子。</li>
+</ul>
+</div>
+<h2 id="s5"><span class="book-secnum">§ 05</span>由生成元与关系定义的代数</h2>
+<p>令 <span class="arithmatex">\(f_1,\cdots,f_m\)</span> 是自由代数 <span class="arithmatex">\(k\left&lt;x_1,\cdots,x_n\right&gt;\)</span> 的元素，我们称代数 <span class="arithmatex">\(A=k\left&lt;x_1,\cdots,x_n\right&gt;/\left&lt;\left\{f_1,\cdots,f_m\right\}\right&gt;\)</span> 是由 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 在关系 <span class="arithmatex">\(f_1=0,\cdots,f_m=0\)</span> 下生成的。</p>
+<h2 id="s6"><span class="book-secnum">§ 06</span>一些代数的例子</h2>
+<p>本节中我们来看看有意思的 Weyl 代数。</p>
+<ul>
+<li><strong>Weyl 代数</strong> <span class="arithmatex">\(k\left&lt;x,y\right&gt;/\left&lt;yx-xy-1\right&gt;\)</span></li>
+<li><strong><span class="arithmatex">\(q-\)</span> Weyl 代数</strong>，由 <span class="arithmatex">\(x,x^{-1},y,y^{-1}\)</span> 生成，关系 <span class="arithmatex">\(yx=qxy\)</span> 与 <span class="arithmatex">\(xx^{-1}=x^{-1}x=yy^{-1}=y^{-1}y=1\)</span>。</li>
+</ul>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 6.1</span></p>
+<ul>
+<li>Weyl 代数 <span class="arithmatex">\(A\)</span> 的基为 <span class="arithmatex">\(\left\{x^iy^j\Big| i,j\ge 0\right\}\)</span>。</li>
+<li><span class="arithmatex">\(q-\)</span>Weyl 代数 <span class="arithmatex">\(A_q\)</span> 的基为 <span class="arithmatex">\(\left\{x^iy^j\Big| i,j\in \mathbb{Z}\right\}\)</span></li>
+</ul>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\((1)\)</span>：首先注意到利用 <span class="arithmatex">\(yx=xy+1\)</span> 我们可以将任意 <span class="arithmatex">\(x,y\)</span> 的字符串中的所有 <span class="arithmatex">\(x\)</span> 转移到左侧，<span class="arithmatex">\(y\)</span> 转移到右侧，这表明 <span class="arithmatex">\(\left\{x^iy^j\Big|i,j\ge 0\right\}\)</span> 生成了 <span class="arithmatex">\(A\)</span>。</p>
+<p>下面我们用表示论来证明 <span class="arithmatex">\(x^iy^j\)</span> 线性独立。设 <span class="arithmatex">\(a\)</span> 是一个变量，令 <span class="arithmatex">\(E=t^ak[a][t,t^{-1}]\)</span>，给定作用 <span class="arithmatex">\(xf=tf\)</span> 与 <span class="arithmatex">\(yf=\frac{\mathrm{d} f}{\mathrm{d} t}\)</span> 我们有 <span class="arithmatex">\(E\)</span> 是 <span class="arithmatex">\(A\)</span> 的表示。设 <span class="arithmatex">\(\sum c_{ij}x^iy^j=0\)</span>，则其对应的作用</p>
+<div class="arithmatex">\[
+L=\sum c_{ij}t^i\left(\frac{\mathrm{d} }{\mathrm{d} t}\right)^j
+\]</div>
+<p>在 <span class="arithmatex">\(E\)</span> 上为 <span class="arithmatex">\(0\)</span>。记</p>
+<div class="arithmatex">\[
+L=\sum_{j=0}^r Q_j(t)\left(\frac{\mathrm{d} }{\mathrm{d} t}\right)^j
+\]</div>
+<p>其中 <span class="arithmatex">\(Q_r\neq 0\)</span>，则我们有</p>
+<div class="arithmatex">\[
+Lt^a=\sum_{j=0}^r Q_j(t)a(a-1)\cdots(a-j+1)t^{a-j}
+\]</div>
+<p>这是零作用，于是 <span class="arithmatex">\(\sum_{j=0}^r Q_j(t)a(a-1)\cdots(a-j+1)t^{-j}=0\in k[a][t,t^{-1}]\)</span>。考虑 <span class="arithmatex">\(a\)</span> 最高次项，得到 <span class="arithmatex">\(Q_r(t)=0\)</span>，矛盾！</p>
+<p><span class="arithmatex">\((2)\)</span>：任意 <span class="arithmatex">\(A_q\)</span> 中的字符串，可以通过乘以 <span class="arithmatex">\(q\)</span> 的幂次来将其排序。</p>
+</details>
+<p><strong>注：</strong><span class="arithmatex">\((1)\)</span> 的证明告诉我们 Weyl 代数 <span class="arithmatex">\(A\)</span> 可视作对关于 <span class="arithmatex">\(t\)</span> 的多项式上的求导算子。同样 <span class="arithmatex">\((1)\)</span> 的证明给出了如下忠实表示的定义。</p>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 6.2</span></p>
+<p>代数 <span class="arithmatex">\(A\)</span> 的表示 <span class="arithmatex">\(\rho\)</span> 是<strong>忠实的(faithful)</strong>，若 <span class="arithmatex">\(\rho\)</span> 是单射。</p>
+</div>
+<p>例如，当 <span class="arithmatex">\(\mathrm{char}k=0\)</span> 时，<span class="arithmatex">\(k[t]\)</span> 就是 Weyl 代数 <span class="arithmatex">\(A\)</span> 的忠实表示。当 <span class="arithmatex">\(\mathrm{char}k=p\neq 0\)</span> 时，<span class="arithmatex">\((\mathrm{d}/\mathrm{d} t)^pQ=0,\forall Q\in k[t]\)</span>。然而无论何种情况 <span class="arithmatex">\(E=t^ak[a][t,t^{-1}]\)</span> 总是忠实的。</p>
+<h2 id="s7"><span class="book-secnum">§ 07</span>箭图</h2>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.1</span></p>
+<p>一个<strong>箭图(quiver)</strong> <span class="arithmatex">\(Q\)</span> 是一个有向图，允许带有自环、重边。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.2</span></p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch01-fig-01.svg" /></p>
+<p>我们记 <span class="arithmatex">\(Q\)</span> 的顶点为 <span class="arithmatex">\(I\)</span>，边为 <span class="arithmatex">\(E\)</span>。对边 <span class="arithmatex">\(h\in E\)</span>，记 <span class="arithmatex">\(h',h''\)</span> 为 <span class="arithmatex">\(h\)</span> 的起点与终点，如图：</p>
+<p class="book-figure book-diagram"><img alt="交换图" loading="lazy" src="../../../../assets/representation-theory/diagrams/ch01-fig-02.svg" /></p>
+</div>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.3</span></p>
+<p>一个箭图 <span class="arithmatex">\(Q\)</span> 的表示是对每个顶点 <span class="arithmatex">\(i\in I\)</span> 指定向量空间 <span class="arithmatex">\(V_i\)</span> 并对每条边 <span class="arithmatex">\(h\in E\)</span> 指定线性映射 <span class="arithmatex">\(x_h:V_{h'}\rightarrow V_{h''}\)</span>。</p>
+</div>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.4</span></p>
+<p><span class="arithmatex">\(Q\)</span> 的<strong>路代数(path algebra)</strong> <span class="arithmatex">\(P_Q\)</span> 是一个基为所有 <span class="arithmatex">\(Q\)</span> 的路(包含平凡路 <span class="arithmatex">\(p_i,i\in I\)</span>) 的向量空间，其乘法由道路的连接给出：<span class="arithmatex">\(ab\)</span> 为先沿着 <span class="arithmatex">\(b\)</span> 后沿着 <span class="arithmatex">\(a\)</span> 得到的道路；如果两者不能连接则其值为 <span class="arithmatex">\(0\)</span>。</p>
+</div>
+<p><strong>注：</strong>容易得到对有限箭图 <span class="arithmatex">\(\sum_{i\in I} p_i=1\)</span>，故 <span class="arithmatex">\(P_Q\)</span> 是一个含幺代数。</p>
+<div id="ex-6" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 7.5</span></p>
+<p>证明 <span class="arithmatex">\(P_Q\)</span> 由 <span class="arithmatex">\(p_i,i\in I\)</span> 与 <span class="arithmatex">\(a_h,h\in E\)</span> 和如下关系生成：</p>
+<ul>
+<li><span class="arithmatex">\(p_i^2=p_i,p_ip_j=0,\forall i\neq j\)</span>；</li>
+<li><span class="arithmatex">\(a_hp_{h'}=a_h,a_hp_j=0,\forall j\neq h'\)</span>；</li>
+<li><span class="arithmatex">\(p_{h''}a_h=a_h,p_ia_h=0,\forall i\neq h''\)</span>。</li>
+</ul>
+</div>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.6</span></p>
+<p>箭图 <span class="arithmatex">\(Q\)</span> 的表示 <span class="arithmatex">\((V_i,x_h)\)</span> 的<strong>子表示</strong>为表示 <span class="arithmatex">\((W_i,x_h')\)</span> 满足 <span class="arithmatex">\(W_i\subseteq V_i,\forall i\in I\)</span> ，<span class="arithmatex">\(x_h(W_{h'})\subseteq W_{h''}\)</span> 且 <span class="arithmatex">\(x_h'=x_h\big|_{W_h'}:W_{h'}\rightarrow W_{h''},\forall h\in E\)</span>。</p>
+</div>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.7</span></p>
+<p>两个表示 <span class="arithmatex">\((V_i,x_h)\)</span>，<span class="arithmatex">\((W_i,y_h)\)</span> 的<strong>直和</strong>为表示 <span class="arithmatex">\((V_i\oplus W_i,x_h\oplus y_i)\)</span>。</p>
+</div>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 7.8</span></p>
+<p>设 <span class="arithmatex">\((V_i,x_h)\)</span>，<span class="arithmatex">\((W_i,y_h)\)</span> 为箭图 <span class="arithmatex">\(Q\)</span> 的表示，<strong>箭图表示间的同态</strong> <span class="arithmatex">\(\varphi:(V_i)\rightarrow (W_i)\)</span> 为一系列映射 <span class="arithmatex">\(\varphi_i:V_i\rightarrow W_i\)</span> 满足 <span class="arithmatex">\(y_h\circ \varphi_{h'}=\varphi_{h''}\circ x_h,\forall h\in E\)</span> 构成的集合。</p>
+</div>
+<h2 id="s8"><span class="book-secnum">§ 08</span>李代数</h2>
+<p>设 <span class="arithmatex">\(\mathfrak{g}\)</span> 是域 <span class="arithmatex">\(k\)</span> 上的线性空间，<span class="arithmatex">\([\text{ },\text{ }]:\mathfrak{g}\times \mathfrak{g}\rightarrow \mathfrak{g}\)</span> 是反对称双线性映射，即 <span class="arithmatex">\([a,b]=-[b,a]\)</span>。</p>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span></p>
+<p><span class="arithmatex">\((\mathfrak{g},[\text{ },\text{ }])\)</span> 是<strong>李代数(Lie algebra)</strong> 若 <span class="arithmatex">\([\text{ },\text{ }]\)</span> 满足 Jacobi 恒等式：</p>
+<div class="arithmatex">\[
+\big[\left[a,b\right],c\big]+\big[\left[b,c\right],a\big]+\big[\left[c,a\right],b\big]=0
+\]</div>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.2</span></p>
+<p>下面是一些李代数的例子：</p>
+<ul>
+<li>
+<p>任意 <span class="arithmatex">\(\mathfrak{g}\)</span> 取 <span class="arithmatex">\([\text{ },\text{ }]=0\)</span>。</p>
+</li>
+<li>
+<p>任意交换代数 <span class="arithmatex">\(A\)</span> 与 <span class="arithmatex">\([a,b]=ab-ba\)</span>，特别的，对自同态代数 <span class="arithmatex">\(A=\mathrm{End}V\)</span>，其中 <span class="arithmatex">\(V\)</span> 是向量空间。这时 <span class="arithmatex">\(A\)</span> 可被看作李代数，通常记作 <span class="arithmatex">\(\mathfrak{gl}(V)\)</span>(general linear Lie algebra)。</p>
+</li>
+<li>
+<p>任意交换代数 <span class="arithmatex">\(A\)</span> 的子空间 <span class="arithmatex">\(U\)</span> 满足 <span class="arithmatex">\([\text{ },\text{ }]\in U\)</span>，对任意 <span class="arithmatex">\(a,b\in U\)</span>。</p>
+</li>
+<li>
+<p>代数 <span class="arithmatex">\(A\)</span> 的<strong>导子(derivations)</strong> <span class="arithmatex">\(\mathrm{Der}A\)</span>，即线性映射 <span class="arithmatex">\(D:A\rightarrow A\)</span> 满足 Leibniz 法则：</p>
+<div class="arithmatex">\[
+D(ab)=D(a)b+aD(b)
+\]</div>
+</li>
+<li>
+<p>任意李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的子空间 <span class="arithmatex">\(\mathfrak{a}\)</span> 满足在 <span class="arithmatex">\([\text{ },\text{ }]\)</span> 运算下闭。这样的子空间称作 <span class="arithmatex">\(\mathfrak{g}\)</span> 的<strong>李子代数(Lie subalgebra)</strong>。</p>
+</li>
+</ul>
+</div>
+<p><strong>注：</strong><strong>Ado's theorem</strong> 告诉我们任意有限维的李代数是 <span class="arithmatex">\(\mathfrak{gl}(V)\)</span> 的李子空间，其中 <span class="arithmatex">\(V\)</span> 是某个有限维线性空间。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.3</span></p>
+<p>下面是一些李代数的例子：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\mathbb{R}^3\)</span> 与 <span class="arithmatex">\([u,v]=u\times v\)</span>，<span class="arithmatex">\(u,v\)</span> 的叉乘。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathfrak{sl}(n)\)</span>，<span class="arithmatex">\(n\times n\)</span> 且迹为 <span class="arithmatex">\(0\)</span> 的矩阵。比如 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 有基：</p>
+<div class="arithmatex">\[
+e=\left( \begin{matrix}
+0&amp;      1\\
+0&amp;      0\\
+\end{matrix} \right) ,f=\left( \begin{matrix}
+0&amp;      0\\
+1&amp;      0\\
+\end{matrix} \right) ,h=\left( \begin{matrix}
+1&amp;      0\\
+0&amp;      -1\\
+\end{matrix} \right)
+\]</div>
+<p>与关系：</p>
+<div class="arithmatex">\[
+[h,e]=2e,[h,f]=-2f,[e,f]=h
+\]</div>
+</li>
+<li>
+<p>Heisenberg 李代数 <span class="arithmatex">\(\mathcal{H}\)</span> 是形如 <span class="arithmatex">\(\left( \begin{matrix} 0&amp;        *&amp;      *\\ 0&amp;      0&amp;      *\\ 0&amp;      0&amp;      0\\ \end{matrix} \right)\)</span> 的所有矩阵，有基：</p>
+<div class="arithmatex">\[
+x=\left( \begin{matrix}
+0&amp;      0&amp;      0\\
+0&amp;      0&amp;      1\\
+0&amp;      0&amp;      0\\
+\end{matrix} \right) ,y\left( \begin{matrix}
+0&amp;      1&amp;      0\\
+0&amp;      0&amp;      0\\
+0&amp;      0&amp;      0\\
+\end{matrix} \right) ,c=\left( \begin{matrix}
+0&amp;      0&amp;      1\\
+0&amp;      0&amp;      0\\
+0&amp;      0&amp;      0\\
+\end{matrix} \right)
+\]</div>
+<p>与关系：</p>
+<div class="arithmatex">\[
+[y,x]=c,[y,c]=[x,c]=0
+\]</div>
+</li>
+<li>
+<p>代数 <span class="arithmatex">\(\mathrm{aff}(1)\)</span> 是形如 <span class="arithmatex">\(\left( \begin{matrix} *&amp;        *\\ 0&amp;      0\\ \end{matrix} \right)\)</span>的所有矩阵，有基：</p>
+<div class="arithmatex">\[
+X=\left( \begin{matrix}
+1&amp;      0\\
+0&amp;      0\\
+\end{matrix} \right) ,Y=\left( \begin{matrix}
+0&amp;      1\\
+0&amp;      0\\
+\end{matrix} \right)
+\]</div>
+<p>与关系</p>
+<div class="arithmatex">\[
+[X,Y]=Y
+\]</div>
+</li>
+<li>
+<p><span class="arithmatex">\(\mathfrak{so}(n)\)</span>，所有反对称的 <span class="arithmatex">\(n\times n\)</span> 矩阵，<span class="arithmatex">\([a,b]=ab-ba\)</span>。</p>
+</li>
+</ul>
+</div>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.4</span></p>
+<p>设 <span class="arithmatex">\(\mathfrak{g}_1,\mathfrak{g}_2\)</span> 为李代数，李代数间的同态 <span class="arithmatex">\(\varphi:\mathfrak{g}_1\rightarrow \mathfrak{g}_2\)</span> 是一个线性映射满足</p>
+<div class="arithmatex">\[
+\varphi([a,b])=[\varphi(a),\varphi(b)]
+\]</div>
+</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.5</span></p>
+<p>李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的<strong>表示(representation)</strong> 是一个向量空间 <span class="arithmatex">\(V\)</span>，其带有李代数间的同态 <span class="arithmatex">\(\rho:\mathfrak{g}\rightarrow \mathrm{End}V\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.6</span></p>
+<p>下面是一些李代数的表示的例子：</p>
+<ul>
+<li><span class="arithmatex">\(V=0\)</span>。</li>
+<li>任意向量空间 <span class="arithmatex">\(V\)</span> 与 <span class="arithmatex">\(\rho=0\)</span>，称作平凡表示。</li>
+<li>伴随表示 <span class="arithmatex">\(V=\mathfrak{g}\)</span> 与 <span class="arithmatex">\(\rho(a)(b)=[a,b]\)</span>。</li>
+</ul>
+</div>
+<p>事实证明李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的表示和一个确定的交换代数 <span class="arithmatex">\(\mathcal{U}(\mathfrak{g})\)</span> 的表示是同一回事(留给读者证明)。于是，通过箭图的手段，我们可以将李代数表示理论视作交换代数表示理论的一部分。</p>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.7</span></p>
+<p>设李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的基是 <span class="arithmatex">\(\left\{x_i\right\}\)</span>，<span class="arithmatex">\([x_i,x_j]=\sum_k c_{ij}^kx_k\)</span>。<strong>泛包络代数</strong> <span class="arithmatex">\(\mathcal{U}(\mathfrak{g})\)</span> 是由 <span class="arithmatex">\(x_i\)</span> 与关系 <span class="arithmatex">\(x_ix_j-x_jx_i=\sum_k c_{ij}^kx_k\)</span> 生成的交换代数。</p>
+</div>
+<h2 id="s9"><span class="book-secnum">§ 09</span>张量积</h2>
+<p>本节中我们回忆一些张量积相关的定义与记号。</p>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span></p>
+<p>向量空间 <span class="arithmatex">\(V,W\)</span> 在域 <span class="arithmatex">\(k\)</span> 上的<strong>张量积(tensor product)</strong> <span class="arithmatex">\(V\otimes W\)</span>  是</p>
+<div class="arithmatex">\[
+V \star W=\mathrm{span}\left\{v\otimes w\Big|v\in V,w\in W\right\}
+\]</div>
+<p>商掉由如下元素生成的子空间的商空间：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+&amp;(v_1+v_2)\otimes w-v_1\otimes w-v_2\otimes w,
+\\
+&amp;v\otimes (w_1+w_2)-v\otimes w_1-v\otimes w_2,
+\\
+&amp;av\otimes w-a(v\otimes w),
+\\
+&amp;v\otimes aw-a(v\otimes w)
+\end{aligned}
+\]</div>
+<p>其中 <span class="arithmatex">\(v\in V,w\in W,a\in k\)</span>。</p>
+</div>
+<h2 id="s10"><span class="book-secnum">§ 10</span>张量代数</h2>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.1</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 为向量空间，定义 <span class="arithmatex">\(V\)</span> 在域 <span class="arithmatex">\(k\)</span> 上的<strong>张量代数(tensor algebra)</strong> <span class="arithmatex">\(TV=\otimes_{n\ge 0}V^{\otimes n}\)</span>，其上乘法 <span class="arithmatex">\(a\cdot b=a\otimes b,a\in V^{\otimes n},b\in V^{\otimes m}\)</span>。</p>
+</div>
+<p>若 <span class="arithmatex">\(V\)</span> 的基为 <span class="arithmatex">\(x_1,\cdots,x_N\)</span> 则 <span class="arithmatex">\(TV\)</span> 同构于 <span class="arithmatex">\(k\left&lt;x_1,\cdots,x_N\right&gt;\)</span>。</p>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.2</span></p>
+<p><span class="arithmatex">\(V\)</span> 的<strong>对称代数(symmetric algebra)</strong> <span class="arithmatex">\(SV\)</span> 是 <span class="arithmatex">\(TV\)</span> 商掉 <span class="arithmatex">\(\mathrm{span}\left\{v\otimes w-w\otimes v\Big|v,w\in V\right\}\)</span> 的商空间。</p>
+</div>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.3</span></p>
+<p><span class="arithmatex">\(V\)</span> 的<strong>外代数(exterior algebra)</strong> <span class="arithmatex">\(\land V\)</span> 是 <span class="arithmatex">\(TV\)</span> 商掉 <span class="arithmatex">\(\mathrm{span}\left\{v\otimes v|v\in V\right\}\)</span> 的商空间。</p>
+</div>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.4</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 是李代数，<span class="arithmatex">\(V\)</span> 的<strong>泛包络代数(universal enveloping algebra)</strong> <span class="arithmatex">\(\mathcal{U}(V)\)</span> 是 <span class="arithmatex">\(TV\)</span> 商掉 <span class="arithmatex">\(\mathrm{span}\left\{v\otimes w-w\otimes v-[v,w]\Big|v,w\in V\right\}\)</span> 的商空间。</p>
+</div>
+<p>容易看到基 <span class="arithmatex">\(x_1,\cdots,x_N\)</span> 的选取就确定了以上三者的结构。进一步，容易看到我们有分解：</p>
+<div class="arithmatex">\[
+SV=\bigoplus_{n\ge 0}S^nV,\land V=\bigoplus_{n\ge 0}\land^nV
+\]</div>
+<h2 id="s11"><span class="book-secnum">§ 11</span>Hilber 第三问题</h2>
+<div id="ex-7" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 11.1</span></p>
+<p>已知若 <span class="arithmatex">\(A\)</span> 和 <span class="arithmatex">\(B\)</span> 是两个面积相同的多边形，则可以通过有限次直线切割将 <span class="arithmatex">\(A\)</span> 分割成若干多边形碎片，并重新拼合成 <span class="arithmatex">\(B\)</span>（建议尝试——很有趣！）。1900 年，大卫·希尔伯特提出：对于三维空间中的多面体，类似命题是否成立？具体而言，体积相同的立方体和正四面体是否可以通过有限次平面切割相互转换？</p>
+<p>答案是否定的。德恩(Dehn)于 1901 年证明了这一结论，其证明方法十分精妙。对于任意多面体 <span class="arithmatex">\(A\)</span>，我们定义其“Dehn 不变量”（Dehn invariant）<span class="arithmatex">\(D(A)\)</span>，取值于向量空间 <span class="arithmatex">\(V = \mathbb{R} \otimes_{\mathbb{Q}} (\mathbb{R}/\mathbb{Q})\)</span>（即有理数域上的张量积），表达式为：</p>
+<div class="arithmatex">\[
+D(A) = \sum_{a} l(a) \otimes \frac{\beta(a)}{\pi},
+\]</div>
+<p>其中求和遍历多面体 <span class="arithmatex">\(A\)</span> 的所有棱 <span class="arithmatex">\(a\)</span>，<span class="arithmatex">\(l(a)\)</span> 为棱长，<span class="arithmatex">\(\beta(a)\)</span> 为棱 <span class="arithmatex">\(a\)</span> 对应的二面角。</p>
+<ul>
+<li>
+<p>若通过平面切割将 <span class="arithmatex">\(A\)</span> 分割为两个多面体 <span class="arithmatex">\(B\)</span> 和 <span class="arithmatex">\(C\)</span>，则 Dehn 不变量满足 <span class="arithmatex">\(D(A) = D(B) + D(C)\)</span>。</p>
+</li>
+<li>
+<p>证明 <span class="arithmatex">\(\alpha = \frac{1}{\pi} \arccos\left(\frac{1}{3}\right)\)</span> 不是有理数。</p>
+<p><em>提示：</em> 假设 <span class="arithmatex">\(\alpha = \frac{2m}{n}\)</span>（其中 <span class="arithmatex">\(m, n\)</span> 为整数），推导方程 <span class="arithmatex">\(x + x^{-1} = \frac{2}{3}\)</span> 的根为 <span class="arithmatex">\(n\)</span> 次单位根。进一步证明 <span class="arithmatex">\(x^k + x^{-k}\)</span> 的分母为 <span class="arithmatex">\(3^k\)</span>，由此得出矛盾。</p>
+</li>
+<li>
+<p>结合 <span class="arithmatex">\((1)\)</span> 和 <span class="arithmatex">\((2)\)</span>，说明希尔伯特问题的答案是否定的。（具体计算正四面体和立方体的德恩不变量。）</p>
+</li>
+</ul>
+</div>
+<h2 id="s12"><span class="book-secnum">§ 12</span>李代数表示的张量积与对偶</h2>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 12.1</span></p>
+<p>两个李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的表示 <span class="arithmatex">\(V,W\)</span> 的<strong>张量积(tensor product)</strong> 是空间 <span class="arithmatex">\(V\otimes W\)</span> 与</p>
+<div class="arithmatex">\[
+\rho_{V\otimes W}(x)=\rho_V(x)\otimes \mathrm{Id}+\mathrm{Id}\otimes \rho_W(x)
+\]</div>
+</div>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 12.2</span></p>
+<p>李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的表示 <span class="arithmatex">\(V\)</span> 的<strong>对偶表示(dual representation)</strong> <span class="arithmatex">\(V^*\)</span> 是 <span class="arithmatex">\(V\)</span> 的对偶空间 <span class="arithmatex">\(V^*\)</span> 与 <span class="arithmatex">\(\rho_{V^*}(x)=-\rho_V(x)^T\)</span></p>
+</div>
+<p>容易验证两者均为表示。</p>
+<div id="ex-8" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 12.3</span></p>
+<p>设 <span class="arithmatex">\(V,W,U\)</span> 是李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的表示，证明</p>
+<div class="arithmatex">\[
+\mathrm{Hom}_\mathfrak{g}(V\otimes W,U)\cong \mathrm{Hom}_\mathfrak{g}(V,U\otimes W^*)
+\]</div>
+<p>这里 <span class="arithmatex">\(\mathrm{Hom}_\mathfrak{g}:=\mathrm{Hom}_{\mathcal{U}(\mathfrak{g})}\)</span></p>
+</div>
+<h2 id="s13"><span class="book-secnum">§ 13</span><span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的表示</h2>
+<p>本节中我们将逐步计算 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的表示。</p>
+<p>根据上述内容，<span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的一个表示即是一个向量空间 <span class="arithmatex">\(V\)</span> 连同三个算子 <span class="arithmatex">\(E, F, H\)</span>，满足 <span class="arithmatex">\(HE - EH = 2E\)</span>、<span class="arithmatex">\(HF - FH = -2F\)</span> 以及 <span class="arithmatex">\(EF - FE = H\)</span>（对应的映射 <span class="arithmatex">\(\rho\)</span> 由 <span class="arithmatex">\(\rho(e) = E\)</span>、<span class="arithmatex">\(\rho(f) = F\)</span>、<span class="arithmatex">\(\rho(h) = H\)</span> 给出）。</p>
+<p>设 <span class="arithmatex">\(V\)</span> 为 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的有限维表示（本问题的基域为 <span class="arithmatex">\(\mathbb{C}\)</span>）。</p>
+<div id="ex-9" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.1</span></p>
+<p>(a) 取 <span class="arithmatex">\(H\)</span> 的特征值，并选取其中实部最大的一个，记为 <span class="arithmatex">\(\lambda\)</span>。令 <span class="arithmatex">\(\bar{V}(\lambda)\)</span> 为对应于 <span class="arithmatex">\(\lambda\)</span> 的广义特征空间。证明 <span class="arithmatex">\(E|_{V(\lambda)} = 0\)</span>。</p>
+</div>
+<div id="ex-10" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.2</span></p>
+<p>(b) 设 <span class="arithmatex">\(W\)</span> 为 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的任一表示，<span class="arithmatex">\(w \in W\)</span> 为非零向量且满足 <span class="arithmatex">\(Ew = 0\)</span>。对任意 <span class="arithmatex">\(k &gt; 0\)</span>，求一个次数为 <span class="arithmatex">\(k\)</span> 的多项式 <span class="arithmatex">\(P_k(x)\)</span>，使得 <span class="arithmatex">\(E^k F^k w = P_k(H) w\)</span>。（先计算 <span class="arithmatex">\(EF^k w\)</span>，再对 <span class="arithmatex">\(k\)</span> 进行归纳。）</p>
+</div>
+<div id="ex-11" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.3</span></p>
+<p>(c) 设 <span class="arithmatex">\(v \in \bar{V}(\lambda)\)</span> 为 <span class="arithmatex">\(H\)</span> 的广义特征向量，对应的特征值为 <span class="arithmatex">\(\lambda\)</span>。证明存在 <span class="arithmatex">\(N &gt; 0\)</span> 使得 <span class="arithmatex">\(F^N v = 0\)</span>。</p>
+</div>
+<div id="ex-12" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.4</span></p>
+<p>(d) 证明 <span class="arithmatex">\(H\)</span> 在 <span class="arithmatex">\(\bar{V}(\lambda)\)</span> 上可对角化。（取满足 <span class="arithmatex">\(F^N = 0\)</span> 作用于 <span class="arithmatex">\(\bar{V}(\lambda)\)</span> 的 <span class="arithmatex">\(N\)</span>，并利用 (b) 计算 <span class="arithmatex">\(E^N F^N v\)</span>（<span class="arithmatex">\(v \in \bar{V}(\lambda)\)</span>）。注意 <span class="arithmatex">\(P_k(x)\)</span> 无重根。）</p>
+</div>
+<div id="ex-13" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.5</span></p>
+<p>(e) 设 <span class="arithmatex">\(N_r\)</span> 为满足 (c) 的最小 <span class="arithmatex">\(N\)</span>。证明 <span class="arithmatex">\(\lambda = N_r - 1\)</span>。</p>
+</div>
+<div id="ex-14" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.6</span></p>
+<p>(f) 证明对每个 <span class="arithmatex">\(N &gt; 0\)</span>，存在唯一（在同构意义下）的 <span class="arithmatex">\(N\)</span> 维不可约表示。选取适当的基，计算该表示中 <span class="arithmatex">\(E, F, H\)</span> 的矩阵。（对有限维不可约表示 <span class="arithmatex">\(V\)</span>，取 (a) 中的 <span class="arithmatex">\(\lambda\)</span> 及 <span class="arithmatex">\(H\)</span> 的特征向量 <span class="arithmatex">\(v \in V(\lambda)\)</span>。证明 <span class="arithmatex">\(v, Fv, \ldots, F^N v\)</span> 构成 <span class="arithmatex">\(V\)</span> 的基，并在此基下计算各算子的矩阵。）</p>
+</div>
+<p>将 (f) 中所述的 (<span class="arithmatex">\(\lambda + 1\)</span>) 维不可约表示记为 <span class="arithmatex">\(V_\lambda\)</span>。以下问题将证明任意有限维表示均为 <span class="arithmatex">\(V_\lambda\)</span> 的直和。</p>
+<div id="ex-15" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.7</span></p>
+<p>(g) 证明算子 <span class="arithmatex">\(C = EF + FE + H^2/2\)</span>（称为卡西米尔算子）与 <span class="arithmatex">\(E, F, H\)</span> 交换，且在 <span class="arithmatex">\(V_\lambda\)</span> 上等于 <span class="arithmatex">\(\frac{\lambda(\lambda + 2)}{2} \operatorname{Id}\)</span>。</p>
+</div>
+<p>易证直和分解。假设相反情况，取 <span class="arithmatex">\(V\)</span> 为最小维数的可约表示且不能分解为更小表示的直和。</p>
+<div id="ex-16" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.8</span></p>
+<p>(h) 证明 <span class="arithmatex">\(C\)</span> 在 <span class="arithmatex">\(V\)</span> 上仅有一个特征值，即对某个非负整数 <span class="arithmatex">\(\lambda\)</span>，该特征值为 <span class="arithmatex">\(\frac{\lambda(\lambda + 2)}{2}\)</span>（利用 <span class="arithmatex">\(C\)</span> 的广义特征空间分解必为表示的分解）。</p>
+</div>
+<div id="ex-17" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.9</span></p>
+<p>(i) 证明 <span class="arithmatex">\(V\)</span> 有子表示 <span class="arithmatex">\(W = V_\lambda\)</span> 使得 <span class="arithmatex">\(V/W = nV_\lambda\)</span>（利用 (h) 及 <span class="arithmatex">\(V\)</span> 为最小不可分解可约表示）。</p>
+</div>
+<div id="ex-18" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.10</span></p>
+<p>(j) 由 (i) 推导 <span class="arithmatex">\(H\)</span> 的特征空间 <span class="arithmatex">\(V(\lambda)\)</span> 为 <span class="arithmatex">\(n+1\)</span> 维。若其基为 <span class="arithmatex">\(\langle v_1, \ldots, v_{n+1} \rangle\)</span>，证明 <span class="arithmatex">\(F^j v_i\)</span>（<span class="arithmatex">\(1 \leq i \leq n+1\)</span>，<span class="arithmatex">\(0 \leq j \leq \lambda\)</span>）线性无关，从而构成 <span class="arithmatex">\(V\)</span> 的基。（验证若 <span class="arithmatex">\(Fx = 0\)</span> 且 <span class="arithmatex">\(Hx = \mu x\)</span>（<span class="arithmatex">\(x \neq 0\)</span>），则 <span class="arithmatex">\(Cx = \frac{\mu(\mu - 2)}{2}x\)</span>，故 <span class="arithmatex">\(\mu = -\lambda\)</span>。）</p>
+</div>
+<div id="ex-19" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.11</span></p>
+<p>(k) 定义 <span class="arithmatex">\(W_i = \operatorname{span}\{v_i, Fv_i, \ldots, F^\lambda v_i\}\)</span>。证明 <span class="arithmatex">\(W_i\)</span> 为 <span class="arithmatex">\(V\)</span> 的子表示，并由此导出矛盾。</p>
+</div>
+<div id="ex-20" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.12</span></p>
+<p>(l) （Jacobson-Morozov 引理）设 <span class="arithmatex">\(V\)</span> 为有限维复向量空间，<span class="arithmatex">\(A: V \to V\)</span> 为幂零算子。证明存在唯一的（在同构意义下）<span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 表示，使得 <span class="arithmatex">\(E = A\)</span>。（利用表示分类及若尔当标准形定理。）</p>
+</div>
+<div id="ex-21" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.13</span></p>
+<p>(m) （Clebsch-Gordan 分解）将表示 <span class="arithmatex">\(V_\lambda \otimes V_{\lambda'}\)</span> 分解为不可约分量。</p>
+<p>提示：对 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的有限维表示 <span class="arithmatex">\(V\)</span>，可引入特征 <span class="arithmatex">\(\chi_V(x) = \operatorname{Tr}_V(x^H)\)</span>（<span class="arithmatex">\(x \in \mathbb{C}\)</span>）。证明 <span class="arithmatex">\(\chi_{V \oplus W}(x) = \chi_V(x) + \chi_W(x)\)</span> 且 <span class="arithmatex">\(\chi_{V \otimes W}(x) = \chi_V(x)\chi_W(x)\)</span>。计算 <span class="arithmatex">\(V_\lambda\)</span> 及 <span class="arithmatex">\(V_\lambda \otimes V_{\lambda'}\)</span> 的特征，进而导出分解。此分解在量子力学中至关重要。</p>
+</div>
+<div id="ex-22" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 13.14</span></p>
+<p>(n) 设 <span class="arithmatex">\(V = \mathbb{C}^M \otimes \mathbb{C}^N\)</span>，且 <span class="arithmatex">\(A = J_{0,M} \otimes \operatorname{Id}_N + \operatorname{Id}_M \otimes J_{0,N}\)</span>，其中 <span class="arithmatex">\(J_{0,n}\)</span> 为特征值零的 <span class="arithmatex">\(n\)</span> 阶若尔当块（即 <span class="arithmatex">\(J_{0,n}e_i = e_{i-1}\)</span>（<span class="arithmatex">\(i=2,\ldots,n\)</span>），<span class="arithmatex">\(J_{0,n}e_1 = 0\)</span>）。利用 (l) 和 (m) 求 <span class="arithmatex">\(A\)</span> 的若尔当标准形。</p>
+</div>
+<h2 id="s14"><span class="book-secnum">§ 14</span>有关李代数的一些问题</h2>
+<div id="ex-23" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 14.1</span><span class="book-name">Lie 定理</span></p>
+<p>李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的<strong>换位子</strong> <span class="arithmatex">\(K(\mathfrak{g})\)</span> 是由元素 <span class="arithmatex">\([x, y]\)</span>（<span class="arithmatex">\(x, y \in \mathfrak{g}\)</span>）张成的线性空间。这是 <span class="arithmatex">\(\mathfrak{g}\)</span> 的一个理想（即其为伴随表示的子表示）。称域 <span class="arithmatex">\(k\)</span> 上的有限维李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 为<strong>可解的</strong>，若存在 <span class="arithmatex">\(n\)</span> 使得 <span class="arithmatex">\(K^n(\mathfrak{g}) = 0\)</span>。证明李定理：若 <span class="arithmatex">\(k = \mathbb{C}\)</span> 且 <span class="arithmatex">\(V\)</span> 是可解李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的有限维不可约表示，则 <span class="arithmatex">\(V\)</span> 是 1 维的。</p>
+<p>提示：通过对维数归纳证明。由归纳假设，<span class="arithmatex">\(K(\mathfrak{g})\)</span> 在 <span class="arithmatex">\(V\)</span> 中存在公共特征向量 <span class="arithmatex">\(v\)</span>，即存在线性函数 <span class="arithmatex">\(\chi: K(\mathfrak{g}) \to \mathbb{C}\)</span> 使得对任意 <span class="arithmatex">\(a \in K(\mathfrak{g})\)</span> 有 <span class="arithmatex">\(av = \chi(a)v\)</span>。证明 <span class="arithmatex">\(\mathfrak{g}\)</span> 保持 <span class="arithmatex">\(K(\mathfrak{g})\)</span> 的公共特征空间。（为此需证对 <span class="arithmatex">\(x \in \mathfrak{g}\)</span> 和 <span class="arithmatex">\(a \in K(\mathfrak{g})\)</span> 有 <span class="arithmatex">\(\chi([x, a]) = 0\)</span>。考虑包含 <span class="arithmatex">\(v\)</span> 且在 <span class="arithmatex">\(x\)</span> 作用下不变的最小子空间 <span class="arithmatex">\(U\)</span>。该子空间在 <span class="arithmatex">\(K(\mathfrak{g})\)</span> 作用下不变，且任意 <span class="arithmatex">\(a \in K(\mathfrak{g})\)</span> 在此子空间上的迹为 <span class="arithmatex">\(\dim(U)\chi(a)\)</span>。特别地，<span class="arithmatex">\(0 = \operatorname{Tr}([x, a]) = \dim(U)\chi([x, a])\)</span>。）</p>
+</div>
+<div id="ex-24" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 14.2</span></p>
+<p>分类具有基 <span class="arithmatex">\(X, Y\)</span> 且满足交换关系 <span class="arithmatex">\([X, Y] = Y\)</span> 的二维李代数的有限维不可约表示。考虑特征为零和正特征的情况。李定理在正特征时是否成立？</p>
+</div>
+<div id="ex-25" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 14.3</span><span class="book-name">困难！</span></p>
+<p>对李代数 <span class="arithmatex">\(\mathfrak{g}\)</span> 的任意元素 <span class="arithmatex">\(x\)</span>，令 <span class="arithmatex">\(\operatorname{ad}(x)\)</span> 表示算子 <span class="arithmatex">\(\mathfrak{g} \to \mathfrak{g}\)</span>，<span class="arithmatex">\(y \mapsto [x, y]\)</span>。考虑由两元素 <span class="arithmatex">\(x, y\)</span> 生成的李代数 <span class="arithmatex">\(\mathfrak{g}_n\)</span>，其定义关系为 <span class="arithmatex">\(\operatorname{ad}(x)^2(y) = \operatorname{ad}(y)^{n+1}(x) = 0\)</span>。</p>
+<p>(a) 证明李代数 <span class="arithmatex">\(\mathfrak{g}_1, \mathfrak{g}_2, \mathfrak{g}_3\)</span> 是有限维的，并求其维数。</p>
+<p>(b)（更困难！）证明李代数 <span class="arithmatex">\(\mathfrak{g}_4\)</span> 是无限维的。显式构造该代数的一组基。</p>
+</div>
+<div id="ex-26" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 14.4</span></p>
+<p>分类特征 <span class="arithmatex">\(p &gt; 2\)</span> 的代数闭域 <span class="arithmatex">\(k\)</span> 上李代数 <span class="arithmatex">\(\mathfrak{sl}(2)\)</span> 的不可约表示。</p>
+</div>
+<div id="ex-27" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 14.5</span></p>
+<p>设 <span class="arithmatex">\(k\)</span> 为特征零的代数闭域，<span class="arithmatex">\(q \in k^\times\)</span> 且 <span class="arithmatex">\(q \neq \pm 1\)</span>。量子包络代数 <span class="arithmatex">\(\mathcal{U}_q(\mathfrak{sl}(2))\)</span> 是由生成元 <span class="arithmatex">\(e, f, K, K^{-1}\)</span> 构成的代数，满足关系：</p>
+<div class="arithmatex">\[
+KeK^{-1} = q^2e, \quad KfK^{-1} = q^{-2}f, \quad [e, f] = \frac{K - K^{-1}}{q - q^{-1}}
+\]</div>
+<p>（若形式地令 <span class="arithmatex">\(K = q^h\)</span>，可看出此代数在某种意义下“退化”为 <span class="arithmatex">\(\mathcal{U}(\mathfrak{sl}(2))\)</span> 当 <span class="arithmatex">\(q \to 1\)</span>）。分类 <span class="arithmatex">\(\mathcal{U}_q(\mathfrak{sl}(2))\)</span> 的不可约表示。分别考虑 <span class="arithmatex">\(q\)</span> 为根的单位根和 <span class="arithmatex">\(q\)</span> 非根的单位根的情况。</p>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="representation-theory.pdf" href="../../../../assets/representation-theory.pdf">下载 PDF 完整版</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="表示论章节导航">
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：表示理论的一般结论</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#representation-theory">表示论 · 第 1 / 8 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#algebra">代数</a><a class="zdd-end-chip is-category" href="../../../../blog/#representation-theory">表示论</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=representation-theory">#representation-theory</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

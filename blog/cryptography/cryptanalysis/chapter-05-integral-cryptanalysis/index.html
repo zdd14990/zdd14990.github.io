@@ -1,0 +1,1091 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第五章：积分与积分特性（活跃/平衡/常数）、群上的和、积分传播规则、Mini-AES 的高阶积分与 5 轮攻击、分离特性、向量化与比特级分离特性的传播规则。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-05-integral-cryptanalysis/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第五章：积分分析 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-05-integral-cryptanalysis/">
+  <meta property="og:title" content="第五章：积分分析 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第五章：积分与积分特性（活跃/平衡/常数）、群上的和、积分传播规则、Mini-AES 的高阶积分与 5 轮攻击、分离特性、向量化与比特级分离特性的传播规则。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-05-integral-cryptanalysis/">
+  <meta name="twitter:title" content="第五章：积分分析 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第五章：积分与积分特性（活跃/平衡/常数）、群上的和、积分传播规则、Mini-AES 的高阶积分与 5 轮攻击、分离特性、向量化与比特级分离特性的传播规则。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e94\u7ae0\uff1a\u79ef\u5206\u5206\u6790",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e94\u7ae0\uff1a\u79ef\u5206\u4e0e\u79ef\u5206\u7279\u6027\uff08\u6d3b\u8dc3/\u5e73\u8861/\u5e38\u6570\uff09\u3001\u7fa4\u4e0a\u7684\u548c\u3001\u79ef\u5206\u4f20\u64ad\u89c4\u5219\u3001Mini-AES \u7684\u9ad8\u9636\u79ef\u5206\u4e0e 5 \u8f6e\u653b\u51fb\u3001\u5206\u79bb\u7279\u6027\u3001\u5411\u91cf\u5316\u4e0e\u6bd4\u7279\u7ea7\u5206\u79bb\u7279\u6027\u7684\u4f20\u64ad\u89c4\u5219\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-05-integral-cryptanalysis/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-05-integral-cryptanalysis/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 积分分析基本原理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 分离特性
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 分离特性">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 分离特性的思想
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 向量化的分离特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 比特级的分离特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 小结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 5 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">05</div>
+    <h1 id="top"><span class="book-visually-hidden">第 5 章：</span>积分分析</h1>
+  </div>
+  <p class="book-standfirst">这一章介绍对称密码中的另一种分析方法：<strong>积分分析 (integral cryptanalysis)</strong>。差分分析考虑两个明文之差的传播，积分分析关注的则是<strong>多个明文之和</strong>（即积分）在算法中的传播。从这个意义上说，积分分析与差分分析是一种耦合关系。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>4,246 字 · 约 12 分钟</span>
+  </div>
+  
+</header>
+
+<p>积分分析的雏形来自 Daemen 等对 Square 算法的安全性分析，也称 Square 攻击。随后 Knudsen 和 Wagner 对方法作了总结，首次提出积分分析的概念。2015 年 Todo 提出了<strong>分离特性 (division property)</strong>，使积分攻击的能力大大加强。分离特性定义在多重集上，但从传播特性来看，它与算法的代数正规型联系密切。2020 年胡凯等提出<strong>单项式预测 (monomial prediction)</strong>，从代数正规型中某个单项式在各组件中的传播规律来研究分离特性，得到了更直观的结果。本章先讲传统积分分析，再讲分离特性。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>积分分析基本原理</h2>
+<p>设 <span class="arithmatex">\((G,+)\)</span> 是 <span class="arithmatex">\(k\)</span> 阶有限阿贝尔群，考虑乘积群 <span class="arithmatex">\(G^n=G\times\cdots\times G\)</span>，其中元素形如 <span class="arithmatex">\(v=(v_1,\cdots,v_n)\)</span>，<span class="arithmatex">\(v_i\in G\)</span>，加法逐分量进行：<span class="arithmatex">\(u+v=w\)</span> 当且仅当对所有 <span class="arithmatex">\(i\)</span>，<span class="arithmatex">\(u_i+v_i=w_i\)</span>。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span><span class="book-name">积分</span></p>
+<p>设 <span class="arithmatex">\(S\)</span> 是元素取自 <span class="arithmatex">\(G^n\)</span> 的多重集，称</p>
+<div class="arithmatex">\[
+\int S=\sum_{v\in S}v
+\]</div>
+<p>为 <span class="arithmatex">\(S\)</span> 上的<strong>积分</strong>，加法是 <span class="arithmatex">\(G^n\)</span> 上的群运算。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>不失一般性，我们用“字节”称呼 <span class="arithmatex">\(v_i\)</span> 的单位。实际上，不同算法中 <span class="arithmatex">\(v_i\)</span> 的单位可能是字、半字节或比特。</p>
+</div>
+<p>记 <span class="arithmatex">\(n\)</span> 为明密文中的字节数，<span class="arithmatex">\(m\)</span> 为明密文数，通常 <span class="arithmatex">\(m=k\)</span>。这里 <span class="arithmatex">\(G=\mathrm{GF}(2^s)\)</span> 或 <span class="arithmatex">\(\mathbb Z/k\mathbb Z\)</span>。<span class="arithmatex">\(S\)</span> 是由 <span class="arithmatex">\(m\)</span> 个明文（或中间状态）组成的多重集。攻击者的目标是推测加密若干轮后某些字节上的非随机积分特性，进而恢复密钥。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span><span class="book-name">积分特性</span></p>
+<p>对 <span class="arithmatex">\(S\)</span> 中所有向量在第 <span class="arithmatex">\(i\)</span> 个字节上的积分特性，定义：</p>
+<ul>
+<li><strong>活跃特性 (active) <span class="arithmatex">\(\mathcal A\)</span></strong>：<span class="arithmatex">\(\{v_i:v\in S\}=G\)</span>；</li>
+<li><strong>平衡特性 (balance) <span class="arithmatex">\(\mathcal B\)</span></strong>：<span class="arithmatex">\(\sum_{v\in S}v_i=c'\)</span>；</li>
+<li><strong>常数特性 (constant) <span class="arithmatex">\(\mathcal C\)</span></strong>：<span class="arithmatex">\(v_i=c\)</span>，<span class="arithmatex">\(\forall v\in S\)</span>。</li>
+</ul>
+<p><span class="arithmatex">\(c,c'\in G\)</span> 是已知且固定的常数，<span class="arithmatex">\(c'\)</span> 往往为零。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>有些论文分别用“平衡特性”和“零和特性 (zero-sum property)”称呼这里的活跃特性和平衡特性，读文献时要注意区分。</p>
+</div>
+<p>若 <span class="arithmatex">\(S\)</span> 中所有向量在某个字节上的值相同，由拉格朗日定理，该字节上的积分为 <span class="arithmatex">\(G\)</span> 的幺元（<span class="arithmatex">\(k\)</span> 个相同元素相加）。若在某个字节上的值各不相同，即取遍 <span class="arithmatex">\(G\)</span>，积分值就是群中所有元素之和，下面两个定理给出它。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.3</span></p>
+<p>设 <span class="arithmatex">\((G,+)\)</span> 是有限阿贝尔加群，<span class="arithmatex">\(H=\{g\in G:g+g=0\}\)</span> 为 <span class="arithmatex">\(G\)</span> 中 1 阶和 2 阶元素组成的子集，<span class="arithmatex">\(s(G)=\sum_{g\in G}g\)</span>，则</p>
+<div class="arithmatex">\[
+s(G)=\sum_{h\in H}h,\qquad s(G)\in H,\ \text{即}\ s(G)+s(G)=0.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(G\setminus H\)</span> 中的元素 <span class="arithmatex">\(g\)</span> 满足 <span class="arithmatex">\(g\ne-g\)</span>，可以与其逆元两两配对，每对之和为 <span class="arithmatex">\(0\)</span>，所以 <span class="arithmatex">\(s(G)=\sum_{h\in H}h\)</span>。<span class="arithmatex">\(H\)</span> 是子群，且每个元素都是自己的逆，所以 <span class="arithmatex">\(s(G)+s(G)=\sum_{h\in H}(h+h)=0\)</span>。</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.4</span></p>
+<p><span class="arithmatex">\(G=\mathrm{GF}(2^s)\)</span>（加法为异或）时，<span class="arithmatex">\(s(G)=0\)</span>。<span class="arithmatex">\(G=\mathbb Z/k\mathbb Z\)</span> 时，若 <span class="arithmatex">\(k\)</span> 为奇数，<span class="arithmatex">\(s(\mathbb Z/k\mathbb Z)=0\)</span>；若 <span class="arithmatex">\(k\)</span> 为偶数，<span class="arithmatex">\(s(\mathbb Z/k\mathbb Z)=k/2\)</span>。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><span class="arithmatex">\(\mathrm{GF}(2^s)\)</span> 中所有元素之和的每一个比特位上都有 <span class="arithmatex">\(2^{s-1}\)</span> 个 <span class="arithmatex">\(1\)</span>，<span class="arithmatex">\(s\ge2\)</span> 时为偶数，所以和为 <span class="arithmatex">\(0\)</span>。（<span class="arithmatex">\(s=1\)</span> 时 <span class="arithmatex">\(0+1=1\)</span>，是个例外。）</p>
+<p><span class="arithmatex">\(\mathbb Z/k\mathbb Z\)</span> 中 <span class="arithmatex">\(g+g=0\)</span> 即 <span class="arithmatex">\(2g\equiv0\)</span>，<span class="arithmatex">\(k\)</span> 为奇数时只有 <span class="arithmatex">\(g=0\)</span>；<span class="arithmatex">\(k\)</span> 为偶数时 <span class="arithmatex">\(H=\{0,k/2\}\)</span>，和为 <span class="arithmatex">\(k/2\)</span>。</p>
+</details>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.5</span></p>
+<p>设 <span class="arithmatex">\((G,*)\)</span> 是有限阿贝尔乘群，<span class="arithmatex">\(H=\{g\in G:g*g=e\}\)</span>，<span class="arithmatex">\(p(G)=\prod_{g\in G}g\)</span>，则 <span class="arithmatex">\(p(G)=\prod_{h\in H}h\)</span>，且 <span class="arithmatex">\(p(G)*p(G)=e\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.6</span></p>
+<p><span class="arithmatex">\(G=(\mathbb Z/p\mathbb Z)^*\)</span>，<span class="arithmatex">\(p\)</span> 为素数时，<span class="arithmatex">\(H=\{1,-1\}\)</span>，故 <span class="arithmatex">\(p(G)=-1\)</span>，这正是 Wilson 定理 <span class="arithmatex">\((p-1)!\equiv-1\pmod p\)</span>。</p>
+</div>
+<p>设 <span class="arithmatex">\(S_1=\{v\}\)</span>，<span class="arithmatex">\(S_2=\{u\}\)</span>，<span class="arithmatex">\(S_3=\{w\}\)</span>，积分特性有以下传播规律。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">性质 1.7</span><span class="book-name">积分的传播</span></p>
+<p><strong>加法</strong>（<span class="arithmatex">\(\sum_{S_3}w_i=\sum_{S_1}v_i+\sum_{S_2}u_i\)</span>）：</p>
+<ul>
+<li>若 <span class="arithmatex">\(S_1\)</span> 和 <span class="arithmatex">\(S_2\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上都具有活跃或平衡特性，则 <span class="arithmatex">\(S_3\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上一定是平衡的，但不一定保持活跃；</li>
+<li>若 <span class="arithmatex">\(S_1\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上是常数，则 <span class="arithmatex">\(S_2\)</span> 和 <span class="arithmatex">\(S_3\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上的积分特性相同。</li>
+</ul>
+<p><strong>双射函数</strong>（<span class="arithmatex">\(u_i=f(v_i)\)</span>）：</p>
+<ul>
+<li>若 <span class="arithmatex">\(S_1\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上是活跃或常数的，则 <span class="arithmatex">\(S_2\)</span> 与 <span class="arithmatex">\(S_1\)</span> 在该字节上积分特性相同；</li>
+<li>若 <span class="arithmatex">\(S_1\)</span> 在第 <span class="arithmatex">\(i\)</span> 个字节上是平衡的，则 <span class="arithmatex">\(S_2\)</span> 在该字节上的积分特性不确定。</li>
+</ul>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.8</span><span class="book-name">Mini-AES 的 3 轮积分</span></p>
+<p>Mini-AES 的状态是 <span class="arithmatex">\(2\times2\)</span> 的半字节矩阵（见<a href="../appendix-algorithms/">算法附录</a>），<span class="arithmatex">\(G=\mathrm{GF}(2^4)\)</span>，加法为异或。取 <span class="arithmatex">\(m=2^4\)</span> 个明文，在第一个半字节上取遍 16 个值，其余三个半字节为常数，即积分 <span class="arithmatex">\((\mathcal A,\mathcal C,\mathcal C,\mathcal C)\)</span>。则</p>
+<div class="arithmatex">\[
+\begin{bmatrix}\mathcal A&amp;\mathcal C\\\mathcal C&amp;\mathcal C\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal A&amp;\mathcal C\\\mathcal A&amp;\mathcal C\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal A&amp;\mathcal A\\\mathcal A&amp;\mathcal A\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal B&amp;\mathcal B\\\mathcal B&amp;\mathcal B\end{bmatrix}\quad(\mathcal B=0).
+\]</div>
+</div>
+<details class="solution">
+<summary>说明</summary>
+<p>第 1 轮：NS 是双射，<span class="arithmatex">\(\mathcal A\)</span> 保持；SR 不动第一列；MC 把第一列的 <span class="arithmatex">\((\mathcal A,\mathcal C)\)</span> 线性组合，每个输出半字节都是“非零常数乘活跃半字节再加常数”，仍是双射，所以第一列两个半字节都活跃，第二列仍为常数。第 2 轮：SR 把第二行左右交换，两列各有一个活跃半字节，MC 后四个半字节全活跃。第 3 轮：SR 后每列两个活跃半字节，MC 的输出是它们的线性组合 <span class="arithmatex">\(a\cdot x\oplus b\cdot y\)</span>，在 16 个状态上求和为 <span class="arithmatex">\(a\sum x\oplus b\sum y=0\)</span>，即平衡，但不再保证活跃。</p>
+</details>
+<p>类似高阶差分，积分也有高阶的概念。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.9</span><span class="book-name">高阶积分</span></p>
+<p>设 <span class="arithmatex">\(S=\{v\}\)</span> 是由 <span class="arithmatex">\(m^d\)</span> 个向量组成的多重集，每个字节有 <span class="arithmatex">\(m\)</span> 种取值。若这 <span class="arithmatex">\(m^d\)</span> 个向量在 <span class="arithmatex">\(d\)</span> 个字节上的每种可能取值恰好出现一次，则称 <span class="arithmatex">\(S\)</span> 上的积分为 <strong><span class="arithmatex">\(d\)</span> 阶积分</strong>，记为 <span class="arithmatex">\(\mathcal A^d\)</span>。<span class="arithmatex">\(d=1\)</span> 时 <span class="arithmatex">\(\mathcal A^1=\mathcal A\)</span>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.10</span></p>
+<p>以比特为单位：<span class="arithmatex">\(S_1=\{0000,0001\}\)</span> 在第 4 比特上两种取值各出现一次，是 1 阶积分；<span class="arithmatex">\(S_2=\{0000,0001,0010,0011\}\)</span> 在后两个比特上的 4 种取值各出现一次，是 2 阶积分；<span class="arithmatex">\(S_3=\{0000,\cdots,0111\}\)</span> 是 3 阶积分。</p>
+</div>
+<p>用 <span class="arithmatex">\(\mathcal A_i^d\)</span> 表示具有相同角标 <span class="arithmatex">\(i\)</span> 的 <span class="arithmatex">\(d\)</span> 个字节一起构成 <span class="arithmatex">\(d\)</span> 阶积分。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.11</span><span class="book-name">Mini-AES 的 4 轮 2 阶积分</span></p>
+<p>取 <span class="arithmatex">\(m=2^8\)</span> 个明文，使第 1 和第 4 个半字节取遍所有 <span class="arithmatex">\(2^8\)</span> 种组合（这两个半字节共 8 比特上的值各出现一次，是 2 阶积分），其余两个半字节为常数，即 <span class="arithmatex">\((\mathcal A_0^2,\mathcal C,\mathcal A_0^2,\mathcal C)\)</span>。则</p>
+<div class="arithmatex">\[
+\begin{bmatrix}\mathcal A_0^2&amp;\mathcal C\\\mathcal C&amp;\mathcal A_0^2\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal A_0^2&amp;\mathcal C\\\mathcal A_0^2&amp;\mathcal C\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal A_0^2&amp;\mathcal A_0^2\\\mathcal A_1^2&amp;\mathcal A_1^2\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal A&amp;\mathcal A\\\mathcal A&amp;\mathcal A\end{bmatrix}
+\xrightarrow{1r}
+\begin{bmatrix}\mathcal B&amp;\mathcal B\\\mathcal B&amp;\mathcal B\end{bmatrix}\quad(\mathcal B=0).
+\]</div>
+<p>比 1 阶积分多走了一轮，这就是高阶积分的优势。</p>
+</div>
+<p>利用 <span class="arithmatex">\(r\)</span> 轮积分路线，可以给出 <span class="arithmatex">\(r+1\)</span> 轮积分攻击的一般过程。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.12</span><span class="book-name">算法（<span class="arithmatex">\(r+1\)</span> 轮积分攻击）</span></p>
+<ol>
+<li>找一条 <span class="arithmatex">\(r\)</span> 轮积分路线作为区分器；</li>
+<li>选择满足区分器输入特性的明文集合，加密得到密文；</li>
+<li>猜测最后一轮的密钥，部分解密，验证是否满足区分器输出端的积分特性：满足则为正确密钥的候选，否则为错误密钥。</li>
+</ol>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.13</span><span class="book-name">Mini-AES 的 5 轮积分攻击</span></p>
+<ol>
+<li>选择满足 4 轮 2 阶积分输入特性 <span class="arithmatex">\((\mathcal A_0^2,\mathcal C,\mathcal A_0^2,\mathcal C)\)</span> 的 <span class="arithmatex">\(2^8\)</span> 个明文，加密得到密文；</li>
+<li>猜测最后一轮第一个半字节密钥的所有可能取值，用密文的第一个半字节部分解密到第 4 轮输出，检查积分是否为平衡特性。若是，为正确密钥的候选；否则为错误密钥；</li>
+<li>重复第 2 步，恢复其他三个半字节的第 5 轮子密钥。</li>
+</ol>
+<p>数据复杂度为 <span class="arithmatex">\(2^8\)</span> 个选择明文（遍历 8 比特），时间复杂度为 <span class="arithmatex">\(2^8\)</span> 次 5 轮加密和 <span class="arithmatex">\(4\times2^8\)</span> 次半字节一轮部分解密，存储主要是密文，至多 <span class="arithmatex">\(2^8\times2=512\)</span> 字节。</p>
+</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.14</span></p>
+<p>上面的攻击中，一个错误的半字节密钥通过平衡检验的概率约是多少？要使四个半字节的错误候选都几乎被排除，应怎么做？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>错误密钥下部分解密得到的 <span class="arithmatex">\(2^8\)</span> 个半字节可以看作随机的，它们的异或和是 <span class="arithmatex">\(\mathrm{GF}(2^4)\)</span> 中的均匀随机值，等于 <span class="arithmatex">\(0\)</span> 的概率为 <span class="arithmatex">\(2^{-4}\)</span>。所以每个半字节的 15 个错误候选中，期望有 <span class="arithmatex">\(15/16\approx1\)</span> 个误通过。再选一个满足同样输入特性的明文集合（换一组常数）重复检验，错误候选两次都通过的概率降为 <span class="arithmatex">\(2^{-8}\)</span>，期望只剩 <span class="arithmatex">\(15\times2^{-8}\approx0.06\)</span> 个。所以通常用 2 个结构体，数据量为 <span class="arithmatex">\(2^9\)</span>。</p>
+</details>
+<p>传统积分攻击利用三种积分特性区分算法与随机函数。饱和度攻击 (saturation attack) 也利用平衡特性，但原理不同。积分攻击往往受到数据量的制约，为此王美琴等在 2016 年提出了统计积分区分攻击，降低了所需的数据。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>分离特性</h2>
+<h3 id="s2-1">2.1 分离特性的思想</h3>
+<p>分离特性是一种新的寻找积分区分器的方法，由 Todo 在 EUROCRYPT 2015 上提出，是积分分析的扩展。给定 <span class="arithmatex">\(\mathbb F_2^n\)</span> 上的多重集 <span class="arithmatex">\(\mathbb X\)</span> 和向量 <span class="arithmatex">\(\boldsymbol u\in\mathbb F_2^n\)</span>，考虑</p>
+<div class="arithmatex">\[
+\lambda=\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x),
+\]</div>
+<p>其中 <span class="arithmatex">\(\pi_{\boldsymbol u}\)</span> 是下面定义的比特乘积函数。<span class="arithmatex">\(\lambda\)</span> 与 <span class="arithmatex">\(\boldsymbol u\)</span> 有什么关系？先看 <span class="arithmatex">\(\mathbb X\)</span> 具有 <span class="arithmatex">\(\mathcal A\)</span> 和 <span class="arithmatex">\(\mathcal B\)</span> 的情形。</p>
+<ol>
+<li>
+<p><strong><span class="arithmatex">\(\mathbb X\)</span> 具有活跃特性 <span class="arithmatex">\(\mathcal A\)</span></strong>（每种可能的值出现相同的次数）。容易验证对汉明重量小于 <span class="arithmatex">\(n\)</span> 的 <span class="arithmatex">\(\boldsymbol u\)</span>，<span class="arithmatex">\(\lambda\)</span> 恒为 <span class="arithmatex">\(0\)</span>；而 <span class="arithmatex">\(\boldsymbol u\)</span> 的汉明重量为 <span class="arithmatex">\(n\)</span> 时，<span class="arithmatex">\(\lambda\)</span> 取决于每个值出现次数的奇偶：</p>
+<div class="arithmatex">\[
+\lambda=\begin{cases}0,&amp;\mathrm{wt}(\boldsymbol u)&lt;n,\\0\text{ 或 }1,&amp;\mathrm{wt}(\boldsymbol u)=n.\end{cases}
+\]</div>
+<p>只知道 <span class="arithmatex">\(\mathbb X\)</span> 具有 <span class="arithmatex">\(\mathcal A\)</span>，无法确定 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)=n\)</span> 时 <span class="arithmatex">\(\lambda\)</span> 的值，Todo 称此时 <span class="arithmatex">\(\lambda\)</span> <strong>不确定</strong>。</p>
+</li>
+<li>
+<p><strong><span class="arithmatex">\(\mathbb X\)</span> 具有平衡特性 <span class="arithmatex">\(\mathcal B\)</span></strong>。显然</p>
+<div class="arithmatex">\[
+\lambda=\begin{cases}0,&amp;\mathrm{wt}(\boldsymbol u)&lt;2,\\0\text{ 或 }1\ \text{（不确定）},&amp;\mathrm{wt}(\boldsymbol u)\ge2.\end{cases}
+\]</div>
+</li>
+</ol>
+<p>可见 <span class="arithmatex">\(\mathcal A\)</span> 和 <span class="arithmatex">\(\mathcal B\)</span> 都可以用一个数 <span class="arithmatex">\(1\le k\le n\)</span> 描述：汉明重量小于 <span class="arithmatex">\(k\)</span> 的向量，<span class="arithmatex">\(\lambda\)</span> 恒为 <span class="arithmatex">\(0\)</span>。<span class="arithmatex">\(\mathcal A\)</span> 对应 <span class="arithmatex">\(k=n\)</span>，<span class="arithmatex">\(\mathcal B\)</span> 对应 <span class="arithmatex">\(k=2\)</span>。那么 <span class="arithmatex">\(k\)</span> 介于 <span class="arithmatex">\(2\)</span> 和 <span class="arithmatex">\(n\)</span> 之间的多重集有什么特性？<strong>分离特性就是对介于 <span class="arithmatex">\(\mathcal A\)</span> 和 <span class="arithmatex">\(\mathcal B\)</span> 之间的多重集特性的总结</strong>，利用它能更精确地刻画积分特性的传播规律。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">比特乘积函数</span></p>
+<p>对 <span class="arithmatex">\(\boldsymbol u=(u_0,\cdots,u_{n-1})\)</span>，<span class="arithmatex">\(\boldsymbol x=(x_0,\cdots,x_{n-1})\in\mathbb F_2^n\)</span>，定义</p>
+<div class="arithmatex">\[
+\pi_{\boldsymbol u}(\boldsymbol x)=\prod_{i=0}^{n-1}x_i^{u_i}=x_0^{u_0}x_1^{u_1}\cdots x_{n-1}^{u_{n-1}}\qquad(0^0=1).
+\]</div>
+<p>对多重集 <span class="arithmatex">\(\mathbb X\)</span>，记 <span class="arithmatex">\(s(\boldsymbol u)=\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)\)</span>。</p>
+</div>
+<p><span class="arithmatex">\(\pi_{\boldsymbol u}(\boldsymbol x)=1\)</span> 当且仅当 <span class="arithmatex">\(\boldsymbol x\)</span> 在 <span class="arithmatex">\(\boldsymbol u\)</span> 为 <span class="arithmatex">\(1\)</span> 的位置上都是 <span class="arithmatex">\(1\)</span>，记为 <span class="arithmatex">\(\boldsymbol u\preceq\boldsymbol x\)</span>。所以 <span class="arithmatex">\(s(\boldsymbol u)\)</span> 就是 <span class="arithmatex">\(\mathbb X\)</span> 中满足 <span class="arithmatex">\(\boldsymbol x\succeq\boldsymbol u\)</span> 的元素个数的奇偶。若 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)&lt;k\)</span> 时 <span class="arithmatex">\(s(\boldsymbol u)\)</span> 始终为 <span class="arithmatex">\(0\)</span>，而 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)\ge k\)</span> 时 <span class="arithmatex">\(s(\boldsymbol u)\)</span> 不全为 <span class="arithmatex">\(0\)</span>，就说 <span class="arithmatex">\(\mathbb X\)</span> 的分离特性是 <span class="arithmatex">\(\mathcal D^n_k\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.2</span></p>
+<p>多重集 <span class="arithmatex">\(\mathbb X=\{\mathrm{0x0},\mathrm{0x3},\mathrm{0x3},\mathrm{0x3},\mathrm{0x5},\mathrm{0x6},\mathrm{0x8},\mathrm{0xB},\mathrm{0xD},\mathrm{0xE}\}\subset\mathbb F_2^4\)</span>，求它的分离特性。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>对 16 个 <span class="arithmatex">\(\boldsymbol u\)</span> 逐一数出 <span class="arithmatex">\(\mathbb X\)</span> 中满足 <span class="arithmatex">\(\boldsymbol x\succeq\boldsymbol u\)</span> 的元素个数：</p>
+<ul>
+<li><span class="arithmatex">\(\boldsymbol u=0000\)</span>：10 个，<span class="arithmatex">\(s=0\)</span>；</li>
+<li><span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)=1\)</span>：<span class="arithmatex">\(\boldsymbol u=0001\)</span> 时有 <span class="arithmatex">\(3,3,3,5,\mathrm B,\mathrm D\)</span> 共 6 个；<span class="arithmatex">\(0010\)</span> 时有 <span class="arithmatex">\(3,3,3,6,\mathrm B,\mathrm E\)</span> 共 6 个；<span class="arithmatex">\(0100\)</span> 时有 <span class="arithmatex">\(5,6,\mathrm D,\mathrm E\)</span> 共 4 个；<span class="arithmatex">\(1000\)</span> 时有 <span class="arithmatex">\(8,\mathrm B,\mathrm D,\mathrm E\)</span> 共 4 个，全为 <span class="arithmatex">\(0\)</span>；</li>
+<li><span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)=2\)</span>：例如 <span class="arithmatex">\(0011\)</span> 有 <span class="arithmatex">\(3,3,3,\mathrm B\)</span> 共 4 个，<span class="arithmatex">\(1001\)</span> 有 <span class="arithmatex">\(\mathrm B,\mathrm D\)</span> 共 2 个，逐一验证全为 <span class="arithmatex">\(0\)</span>；</li>
+<li><span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)=3\)</span>：<span class="arithmatex">\(\boldsymbol u\in\{\mathrm{0xB},\mathrm{0xD},\mathrm{0xE}\}\)</span> 时只有它本身满足，<span class="arithmatex">\(s=1\)</span>；<span class="arithmatex">\(\boldsymbol u=\mathrm{0x7}\)</span> 时没有元素满足，<span class="arithmatex">\(s=0\)</span>。</li>
+</ul>
+<p>所以 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)&lt;3\)</span> 时 <span class="arithmatex">\(s(\boldsymbol u)\)</span> 都为 <span class="arithmatex">\(0\)</span>，<span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)=3\)</span> 时不全为 <span class="arithmatex">\(0\)</span>，<span class="arithmatex">\(\mathbb X\)</span> 的分离特性是 <span class="arithmatex">\(\mathcal D^4_3\)</span>。（程序核对：<span class="arithmatex">\(s(\boldsymbol u)=1\)</span> 的恰为 <span class="arithmatex">\(\mathrm B,\mathrm D,\mathrm E\)</span>。）</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.3</span><span class="book-name">分离特性</span></p>
+<p>设多重集 <span class="arithmatex">\(\mathbb X\)</span> 的元素取自 <span class="arithmatex">\(\mathbb F_2^n\)</span>，<span class="arithmatex">\(k\)</span> 为 <span class="arithmatex">\(0\)</span> 到 <span class="arithmatex">\(n\)</span> 之间的整数。称 <span class="arithmatex">\(\mathbb X\)</span> 具有<strong>分离特性</strong> <span class="arithmatex">\(\mathcal D^n_k\)</span>，若 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)&lt;k\)</span> 时 <span class="arithmatex">\(\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)\)</span> 一定为 <span class="arithmatex">\(0\)</span>，而 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)\ge k\)</span> 时其值不确定 (unknown)。</p>
+</div>
+<p>记 <span class="arithmatex">\(\mathbb S^n_k=\{\boldsymbol u\in\mathbb F_2^n\mid\mathrm{wt}(\boldsymbol u)\ge k\}\)</span>，若 <span class="arithmatex">\(\mathbb X\)</span> 的分离特性是 <span class="arithmatex">\(\mathcal D^n_k\)</span>，则</p>
+<div class="arithmatex">\[
+\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)=\begin{cases}0,&amp;\boldsymbol u\in\mathbb F_2^n\setminus\mathbb S^n_k,\\\text{不确定},&amp;\boldsymbol u\in\mathbb S^n_k.\end{cases}\tag{1}
+\]</div>
+<p>如何利用分离特性找积分特性？加密明文集合 <span class="arithmatex">\(\mathbb P\)</span> 得到密文集合 <span class="arithmatex">\(\mathbb C\)</span>，若知道 <span class="arithmatex">\(\mathbb C\)</span> 的分离特性，就知道了密文的积分特性。实际中考察分离特性经过各组件时的传播，逐步得到密文集合的分离特性。</p>
+<p>先看一个简单的例子。设一轮加密由 <span class="arithmatex">\(n\)</span> 比特、代数次数为 <span class="arithmatex">\(d\)</span> 的 S 盒 SB 和 <span class="arithmatex">\(n\)</span> 比特的密钥加 AK 组成，明文集合 <span class="arithmatex">\(\mathbb X\)</span> 的分离特性为 <span class="arithmatex">\(\mathcal D^n_k\)</span>：</p>
+<div class="arithmatex">\[
+\mathbb X\xrightarrow{\mathrm{SB}(\cdot)}\mathbb Y\xrightarrow{\mathrm{AK}(\cdot)}\mathbb Z.
+\]</div>
+<p><span class="arithmatex">\(\mathbb Y=\{\mathrm{SB}(\boldsymbol x)\mid\boldsymbol x\in\mathbb X\}\)</span>。为求 <span class="arithmatex">\(\mathbb Y\)</span> 的分离特性，要考察 <span class="arithmatex">\(\bigoplus_{\boldsymbol y\in\mathbb Y}\pi_{\boldsymbol v}(\boldsymbol y)\)</span> 随 <span class="arithmatex">\(\boldsymbol v\)</span> 的变化，把它与 <span class="arithmatex">\(\mathbb X\)</span> 联系起来：</p>
+<div class="arithmatex">\[
+\bigoplus_{\boldsymbol y\in\mathbb Y}\pi_{\boldsymbol v}(\boldsymbol y)=\bigoplus_{\boldsymbol x\in\mathbb X}(\pi_{\boldsymbol v}\circ\mathrm{SB})(\boldsymbol x).\tag{2}
+\]</div>
+<p><span class="arithmatex">\(\pi_{\boldsymbol v}\circ\mathrm{SB}\)</span> 是 <span class="arithmatex">\(\boldsymbol x\)</span> 的布尔函数，展开为单项式 <span class="arithmatex">\(\pi_{\boldsymbol u}(\boldsymbol x)\)</span> 的和。<span class="arithmatex">\(\mathbb X\)</span> 是 <span class="arithmatex">\(\mathcal D^n_k\)</span>，所以只要每个出现的单项式都满足 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u)&lt;k\)</span>，即 <span class="arithmatex">\(\pi_{\boldsymbol v}\circ\mathrm{SB}\)</span> 的代数次数小于 <span class="arithmatex">\(k\)</span>，就能保证 (2) 为 <span class="arithmatex">\(0\)</span>。而</p>
+<div class="arithmatex">\[
+\deg(\pi_{\boldsymbol v}\circ\mathrm{SB})\le\mathrm{wt}(\boldsymbol v)\cdot d.
+\]</div>
+<p>所以只要 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol v)&lt;k/d\)</span>，(2) 就一定为 <span class="arithmatex">\(0\)</span>。<span class="arithmatex">\(\mathrm{wt}(\boldsymbol v)\)</span> 是整数，故 <span class="arithmatex">\(\mathbb Y\)</span> 的分离特性是 <span class="arithmatex">\(\mathcal D^n_{\lceil k/d\rceil}\)</span>。</p>
+<p>SB 是置换时有一个特例：置换的代数次数至多为 <span class="arithmatex">\(n-1\)</span>，且 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol v)&lt;n\)</span> 时 <span class="arithmatex">\(\pi_{\boldsymbol v}\circ\mathrm{SB}\)</span> 的次数也一定小于 <span class="arithmatex">\(n\)</span>，所以 <span class="arithmatex">\(\mathbb X\)</span> 为 <span class="arithmatex">\(\mathcal D^n_n\)</span> 时，<span class="arithmatex">\(\mathbb Y\)</span> 的分离特性是 <span class="arithmatex">\(\mathcal D^n_n\)</span> 而非 <span class="arithmatex">\(\mathcal D^n_{\lceil n/d\rceil}\)</span>。</p>
+<p>从 <span class="arithmatex">\(\mathbb Y\)</span> 到 <span class="arithmatex">\(\mathbb Z\)</span> 经过 AK，它的代数次数为 1，所以 <span class="arithmatex">\(\mathbb Z\)</span> 的分离特性仍是 <span class="arithmatex">\(\mathcal D^n_{\lceil k/d\rceil}\)</span>。逐轮迭代下去，就得到每一轮中间状态集合的分离特性，最终得到密文集合的分离特性。</p>
+<p>任意向量布尔函数都可以看作一个 S 盒（线性和仿射操作看作代数次数为 1 的 S 盒），推导方式相同：</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.4</span><span class="book-name">分离特性经过向量布尔函数的传播</span></p>
+<p>设 <span class="arithmatex">\(f:\mathbb F_2^n\to\mathbb F_2^m\)</span> 是代数次数为 <span class="arithmatex">\(d\)</span> 的 S 盒函数，输入多重集 <span class="arithmatex">\(\mathbb X\)</span> 的分离特性为 <span class="arithmatex">\(\mathcal D^n_k\)</span>，则输出多重集 <span class="arithmatex">\(\mathbb Y\)</span> 的分离特性为 <span class="arithmatex">\(\mathcal D^m_{\lceil k/d\rceil}\)</span>。若 <span class="arithmatex">\(f\)</span> 还是置换，则 <span class="arithmatex">\(\mathbb X\)</span> 为 <span class="arithmatex">\(\mathcal D^n_n\)</span> 时 <span class="arithmatex">\(\mathbb Y\)</span> 为 <span class="arithmatex">\(\mathcal D^n_n\)</span>。</p>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>由上面的命题推导分离特性经过 XOR、COPY 和线性层（如 AES 的 MC）的传播规则。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><strong>XOR</strong>：<span class="arithmatex">\((x_0,x_1)\mapsto x_0\oplus x_1\)</span>。输入 <span class="arithmatex">\(\mathcal D^{n,n}_{(k_0,k_1)}\)</span>，输出单项式 <span class="arithmatex">\(\pi_{\boldsymbol v}(x_0\oplus x_1)\)</span> 展开后是 <span class="arithmatex">\(\pi_{\boldsymbol a}(x_0)\pi_{\boldsymbol b}(x_1)\)</span> 的和，<span class="arithmatex">\(\boldsymbol a\oplus\boldsymbol b\)</span> 落在 <span class="arithmatex">\(\boldsymbol v\)</span> 之下，<span class="arithmatex">\(\mathrm{wt}(\boldsymbol a)+\mathrm{wt}(\boldsymbol b)=\mathrm{wt}(\boldsymbol v)\)</span>。所以输出为 <span class="arithmatex">\(\mathcal D^n_{k_0+k_1}\)</span>。</p>
+<p><strong>COPY</strong>：<span class="arithmatex">\(x\mapsto(x,x)\)</span>。输入 <span class="arithmatex">\(\mathcal D^n_k\)</span>，输出单项式 <span class="arithmatex">\(\pi_{\boldsymbol v_0}(x)\pi_{\boldsymbol v_1}(x)=\pi_{\boldsymbol v_0\vee\boldsymbol v_1}(x)\)</span>，次数为 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol v_0\vee\boldsymbol v_1)\)</span>，至多 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol v_0)+\mathrm{wt}(\boldsymbol v_1)\)</span>。所以输出为 <span class="arithmatex">\(\bigcup_{0\le i\le k}\mathcal D^{n,n}_{(k-i,i)}\)</span>：原来的 <span class="arithmatex">\(k\)</span> 可以任意分给两个分支。</p>
+<p><strong>线性层</strong>：代数次数为 1，由命题 <span class="arithmatex">\(\mathcal D^n_k\)</span> 传播为 <span class="arithmatex">\(\mathcal D^n_k\)</span>。按字分组时（如 MC 作用于一列的若干字节），输出各字的 <span class="arithmatex">\(k_i\)</span> 之和不超过输入各字的 <span class="arithmatex">\(k_i\)</span> 之和，具体哪些分配可行由线性层的矩阵决定，通常写程序或用 MILP 刻画。</p>
+</details>
+<h3 id="s2-2">2.2 向量化的分离特性</h3>
+<p>现代分组密码一般用小分组组件拼成长分组算法，例如 AES 的分组长 128 比特，轮函数的置换层用 16 个 8 比特 S 盒。只用上面的命题无法同时刻画 16 个 S 盒。这 16 个 S 盒作用在 128 比特的各个字节上，可以分别考虑各个字节的分离特性变化，这就是<strong>向量化的分离特性</strong>。</p>
+<p>先把乘积函数向量化。<span class="arithmatex">\(\pi_{\boldsymbol u}:(\mathbb F_2^n)^m\to\mathbb F_2\)</span>，<span class="arithmatex">\(\boldsymbol u=(\boldsymbol u_0,\cdots,\boldsymbol u_{m-1})\)</span>，<span class="arithmatex">\(\boldsymbol x\in(\mathbb F_2^n)^m\)</span>，</p>
+<div class="arithmatex">\[
+\pi_{\boldsymbol u}(\boldsymbol x)=\prod_{i=0}^{m-1}\pi_{\boldsymbol u_i}(\boldsymbol x_i)=\prod_{i=0}^{m-1}\left(\prod_{j=0}^{n-1}(x_i)_j^{(u_i)_j}\right).
+\]</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.6</span><span class="book-name">向量分离特性, Vectorial Division Property</span></p>
+<p>设多重集 <span class="arithmatex">\(\mathbb X\)</span> 的元素取自 <span class="arithmatex">\((\mathbb F_2^n)^m\)</span>，<span class="arithmatex">\(\boldsymbol k=(k_0,\cdots,k_{m-1})\)</span> 是 <span class="arithmatex">\(m\)</span> 维整数向量，<span class="arithmatex">\(0\le k_i\le n\)</span>。称 <span class="arithmatex">\(\mathbb X\)</span> 具有分离特性 <span class="arithmatex">\(\mathcal D^{n,m}_{(k_0,\cdots,k_{m-1})}\)</span>，若存在某个 <span class="arithmatex">\(i\)</span> 使 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u_i)&lt;k_i\)</span> 时，<span class="arithmatex">\(\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)\)</span> 一定为 <span class="arithmatex">\(0\)</span>；而对所有 <span class="arithmatex">\(i\)</span> 都有 <span class="arithmatex">\(\mathrm{wt}(\boldsymbol u_i)\ge k_i\)</span> 时，其值不确定。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>教材此处的“<span class="arithmatex">\(\forall i\)</span>”与“<span class="arithmatex">\(\exists i\)</span>”位置互换了。按 Todo 原文，<span class="arithmatex">\(\boldsymbol k\)</span> 刻画的是不确定的集合 <span class="arithmatex">\(\{\boldsymbol u:\mathrm{wt}(\boldsymbol u_i)\ge k_i,\ \forall i\}\)</span>，其补集上和为 <span class="arithmatex">\(0\)</span>。这里按原文写。</p>
+</div>
+<p>向量化带来一个问题：一个多重集可能同时具有多个向量分离特性。例如两部分组成的 <span class="arithmatex">\(\mathbb X=(\mathbb X_0,\mathbb X_1)\)</span>，可能是 <span class="arithmatex">\(\mathcal D^{n,n}_{(1,3)}\)</span>，也可能是 <span class="arithmatex">\(\mathcal D^{n,n}_{(2,2)}\)</span>，此时称它的分离特性为 <span class="arithmatex">\(\mathcal D^{n,n}_{(1,3)}\cup\mathcal D^{n,n}_{(2,2)}\)</span>，叫做<strong>组合分离特性</strong>。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.7</span><span class="book-name">轮 Mini-AES 的分离特性</span></p>
+<p>教材以半字节为单位（<span class="arithmatex">\(n=4\)</span>），从一个半字节活跃的明文集合出发，逐步追踪 3 轮 Mini-AES 的分离特性：</p>
+<ol>
+<li>经过第 1 轮的 MC，一列两个半字节的组合分离特性为 <span class="arithmatex">\(\mathcal{DP}_0=\mathcal D^{4,4}_{(0,4)}\cup\mathcal D^{4,4}_{(1,3)}\cup\mathcal D^{4,4}_{(2,2)}\cup\mathcal D^{4,4}_{(3,1)}\cup\mathcal D^{4,4}_{(4,0)}\)</span>；</li>
+<li>经过 NibbleSub（代数次数为 3 的 S 盒），化为 <span class="arithmatex">\(\mathcal{DP}_1=\mathcal D^{4,4}_{(0,4)}\cup\mathcal D^{4,4}_{(1,1)}\cup\mathcal D^{4,4}_{(4,0)}\)</span>（<span class="arithmatex">\(\mathcal D^{4,4}_{(1,1)}\)</span> 已经包含了 <span class="arithmatex">\((1,3)\)</span>、<span class="arithmatex">\((2,2)\)</span>、<span class="arithmatex">\((3,1)\)</span> 的情形）；</li>
+<li>第 2 轮后整体为 <span class="arithmatex">\(\mathcal{DP}_2=\mathcal D^{16}_4\cup\mathcal D^{16}_2\cup\mathcal D^{16}_4=\mathcal D^{16}_2\)</span>（<span class="arithmatex">\(\mathcal D^{16}_2\)</span> 已包含 <span class="arithmatex">\(\mathcal D^{16}_4\)</span>，冗余的只写 <span class="arithmatex">\(\mathcal D^{16}_2\)</span>）；</li>
+<li>第 3 轮中再展开为若干 <span class="arithmatex">\(\mathcal D^{4,4,4,4}_{(\cdot)}\)</span> 的并 <span class="arithmatex">\(\mathcal{DP}_3\)</span>、<span class="arithmatex">\(\mathcal{DP}_4\)</span>，最终密文为 <span class="arithmatex">\(\mathcal D^{16}_2\)</span>。</li>
+</ol>
+<p>密文多重集的分离特性是 <span class="arithmatex">\(\mathcal D^{16}_2\)</span>，所以<strong>密文的每一个比特都是零和的</strong>（汉明重量为 1 的 <span class="arithmatex">\(\boldsymbol u\)</span> 对应单个比特的和）。</p>
+</div>
+<p>求实际算法时，一般写程序追踪分离特性的传播，通常用 MILP 或 SAT 等建模工具刻画，见<a href="../chapter-09-automated-distinguisher-search/">第九章</a>。</p>
+<h3 id="s2-3">2.3 比特级的分离特性</h3>
+<p>上面的分离特性只考虑了向量布尔函数的代数次数，且总以“字”为最小单位，称为<strong>字级的分离特性</strong>。但字级分离特性有时不能准确刻画一个集合。考虑 <span class="arithmatex">\(\mathbb F_2^4\)</span> 上的多重集</p>
+<div class="arithmatex">\[
+\mathbb X=\{0,1,2,3,4,5,6,7\}.\tag{3}
+\]</div>
+<p>它的字级分离特性是 <span class="arithmatex">\(\mathcal D^4_3\)</span>。但汉明重量为 3 的四个向量中，只有一个使 <span class="arithmatex">\(\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)=1\)</span>，其他三个都恒为 <span class="arithmatex">\(0\)</span>。为了更精确地刻画，引入比特级分离特性。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>按 <span class="arithmatex">\(x_0\)</span> 为最高位，<span class="arithmatex">\(\{0,\cdots,7\}\)</span> 是最高位为 <span class="arithmatex">\(0\)</span>、低三位取遍的集合，和为 <span class="arithmatex">\(1\)</span> 的重量 3 向量是 <span class="arithmatex">\(\boldsymbol u=(0,1,1,1)\)</span>，我写程序核对过。教材写作 <span class="arithmatex">\((1,0,1,1)\)</span>，与比特序约定有关。</p>
+</div>
+<p>比特级分离特性按考虑的和值种类分为两子集和三子集。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.8</span><span class="book-name">两子集比特级分离特性</span></p>
+<p>给定 <span class="arithmatex">\(\mathbb K\subseteq\mathbb F_2^n\)</span>，称 <span class="arithmatex">\(\mathbb F_2^n\)</span> 上的多重集 <span class="arithmatex">\(\mathbb X\)</span> 具有比特级分离特性 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K}\)</span>，若</p>
+<div class="arithmatex">\[
+\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)=\begin{cases}\text{不确定},&amp;\exists\boldsymbol k\in\mathbb K\ \text{s.t.}\ \boldsymbol k\preceq\boldsymbol u,\\0,&amp;\text{其他}.\end{cases}
+\]</div>
+</div>
+<p>对 (3) 的集合，我们明确知道那个向量的和为 <span class="arithmatex">\(1\)</span> 而不是“不确定”，两子集分离特性没有考虑这个信息。为了捕捉它，引入三子集分离特性。</p>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.9</span><span class="book-name">三子集比特级分离特性</span></p>
+<p>给定 <span class="arithmatex">\(\mathbb K,\mathbb L\subseteq\mathbb F_2^n\)</span>，称 <span class="arithmatex">\(\mathbb X\)</span> 具有比特级分离特性 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K,\mathbb L}\)</span>，若</p>
+<div class="arithmatex">\[
+\bigoplus_{\boldsymbol x\in\mathbb X}\pi_{\boldsymbol u}(\boldsymbol x)=\begin{cases}\text{不确定},&amp;\exists\boldsymbol k\in\mathbb K\ \text{s.t.}\ \boldsymbol k\preceq\boldsymbol u,\\1,&amp;\exists\boldsymbol\ell\in\mathbb L\ \text{s.t.}\ \boldsymbol\ell=\boldsymbol u,\\0,&amp;\text{其他}.\end{cases}
+\]</div>
+</div>
+<p>可见比特级分离特性把同样汉明重量的向量又做了区分。与字级不同，它的每一个比特都是独立的单位，传播规则也以比特为单位。下面是三个基本函数的传播规则（三子集情形）。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.10</span><span class="book-name">传播规则（COPY）</span></p>
+<p><span class="arithmatex">\(f:(x_0,x_1,\cdots,x_{m-1})\mapsto(x_0,x_0,x_1,\cdots,x_{m-1})\)</span>。设输入 <span class="arithmatex">\(\mathbb X\)</span> 为 <span class="arithmatex">\(\mathcal D^{1^m}_{\mathbb K,\mathbb L}\)</span>，输出 <span class="arithmatex">\(\mathbb Y\)</span> 为 <span class="arithmatex">\(\mathcal D^{1^{m+1}}_{\mathbb K',\mathbb L'}\)</span>，则</p>
+<div class="arithmatex">\[
+\mathbb K'=\begin{cases}(0,0,k_1,\cdots,k_{m-1}),&amp;k_0=0,\\(0,1,k_1,\cdots,k_{m-1}),\ (1,0,k_1,\cdots,k_{m-1}),&amp;k_0=1,\end{cases}
+\]</div>
+<div class="arithmatex">\[
+\mathbb L'=\begin{cases}(0,0,\ell_1,\cdots,\ell_{m-1}),&amp;\ell_0=0,\\(1,0,\ell_1,\cdots),\ (0,1,\ell_1,\cdots),\ (1,1,\ell_1,\cdots),&amp;\ell_0=1.\end{cases}
+\]</div>
+</div>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.11</span><span class="book-name">传播规则（XOR）</span></p>
+<p><span class="arithmatex">\(f:(x_0,x_1,\cdots,x_{m-1})\mapsto(x_0\oplus x_1,x_2,\cdots,x_{m-1})\)</span>。<span class="arithmatex">\(\mathbb K'\)</span> 由 <span class="arithmatex">\(\mathbb K\)</span> 中满足 <span class="arithmatex">\((k_0,k_1)\in\{(0,0),(1,0),(0,1)\}\)</span> 的向量按 <span class="arithmatex">\(\mathbb K'\leftarrow(k_0+k_1,k_2,\cdots,k_{m-1})\)</span> 得到；<span class="arithmatex">\(\mathbb L'\)</span> 由 <span class="arithmatex">\(\mathbb L\)</span> 中满足 <span class="arithmatex">\((\ell_0,\ell_1)\in\{(0,0),(1,0),(0,1)\}\)</span> 的向量按</p>
+<div class="arithmatex">\[
+\mathbb L'\xleftarrow{x}(\ell_0+\ell_1,\ell_2,\cdots,\ell_{m-1})
+\]</div>
+<p>得到，其中 <span class="arithmatex">\(\mathbb L'\xleftarrow{x}\boldsymbol\ell\)</span> 表示：若 <span class="arithmatex">\(\mathbb L'\)</span> 中没有 <span class="arithmatex">\(\boldsymbol\ell\)</span>，则加入；若已经有，则删去（两次出现在模 2 下抵消）。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.12</span><span class="book-name">传播规则（AND）</span></p>
+<p><span class="arithmatex">\(f:(x_0,x_1,\cdots,x_{m-1})\mapsto(x_0\wedge x_1,x_2,\cdots,x_{m-1})\)</span>。<span class="arithmatex">\(\mathbb K'\)</span> 由 <span class="arithmatex">\(\mathbb K\)</span> 中满足 <span class="arithmatex">\((k_0,k_1)\in\{(0,0),(1,1)\}\)</span> 的向量按</p>
+<div class="arithmatex">\[
+\mathbb K'\leftarrow\left(\left\lceil\frac{k_0+k_1}2\right\rceil,k_2,\cdots,k_{m-1}\right)
+\]</div>
+<p>得到；<span class="arithmatex">\(\mathbb L'\)</span> 由 <span class="arithmatex">\(\mathbb L\)</span> 中满足 <span class="arithmatex">\((\ell_0,\ell_1)\in\{(0,0),(1,1)\}\)</span> 的向量按 <span class="arithmatex">\(\mathbb L'\leftarrow\left(\left\lceil\frac{\ell_0+\ell_1}2\right\rceil,\ell_2,\cdots,\ell_{m-1}\right)\)</span> 得到。</p>
+</div>
+<p>对 COPY、XOR、AND 等与密钥无关的操作，<span class="arithmatex">\(\mathbb K\)</span> 到 <span class="arithmatex">\(\mathbb K'\)</span> 与 <span class="arithmatex">\(\mathbb L\)</span> 到 <span class="arithmatex">\(\mathbb L'\)</span> 的传播是独立的。但遇到<strong>异或密钥</strong>时，<span class="arithmatex">\(\mathbb L\)</span> 中的一些向量就不再使 <span class="arithmatex">\(\bigoplus\pi_{\boldsymbol\ell}(\boldsymbol x)\)</span> 为 <span class="arithmatex">\(1\)</span> 了：我们不知道密钥，和在某些向量下变成了不确定，应把这部分向量转移到 <span class="arithmatex">\(\mathbb K\)</span> 中。</p>
+<p>设 <span class="arithmatex">\(\mathbb X\)</span>、<span class="arithmatex">\(\mathbb Y\)</span> 是异或密钥的输入与输出，<span class="arithmatex">\(\boldsymbol y=\boldsymbol x\oplus\boldsymbol k\)</span>。对 <span class="arithmatex">\(\mathbb L\)</span> 中的每个 <span class="arithmatex">\(\boldsymbol\ell\)</span>，所有 <span class="arithmatex">\(\boldsymbol v\succ\boldsymbol\ell\)</span> 都会使 <span class="arithmatex">\(\bigoplus\pi_{\boldsymbol v}(\boldsymbol x\oplus\boldsymbol k)\)</span> 变得不确定。实际算法中轮密钥可能只与部分状态异或，设第 <span class="arithmatex">\(i\)</span> 个比特上有密钥异或，则对 <span class="arithmatex">\(\mathbb L\)</span> 中满足 <span class="arithmatex">\(\ell_i=0\)</span> 的 <span class="arithmatex">\(\boldsymbol\ell\)</span>，</p>
+<div class="arithmatex">\[
+\mathbb K'\leftarrow(\ell_0,\ell_1,\cdots,\ell_i\vee1,\cdots,\ell_{m-1}).
+\]</div>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.13</span></p>
+<p>分组大小为 32 的 SIMON 算法中，设输入集合 <span class="arithmatex">\(X\)</span> 具有三子集比特级分离特性 <span class="arithmatex">\(\mathbb L=\{(0,1,1,\cdots,1)\}\)</span>，<span class="arithmatex">\(\mathbb K=\varnothing\)</span>，求经过一轮 SIMON 加密后输出集合 <span class="arithmatex">\(Y\)</span> 的分离特性。</p>
+<p><strong>提示</strong>：SIMON 一轮为 <span class="arithmatex">\((L,R)\mapsto\big(R\oplus f(L)\oplus k,\ L\big)\)</span>，其中 <span class="arithmatex">\(f(L)=\big((L\lll1)\wedge(L\lll8)\big)\oplus(L\lll2)\)</span>。把它拆成 COPY、AND、XOR 和异或密钥，依次用上面的传播规则。异或密钥后，要把 <span class="arithmatex">\(\mathbb L\)</span> 中在密钥位置为 <span class="arithmatex">\(0\)</span> 的向量补成 <span class="arithmatex">\(1\)</span> 转入 <span class="arithmatex">\(\mathbb K\)</span>。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>小结</h2>
+<ul>
+<li><strong>积分特性</strong>：活跃 <span class="arithmatex">\(\mathcal A\)</span>、平衡 <span class="arithmatex">\(\mathcal B\)</span>、常数 <span class="arithmatex">\(\mathcal C\)</span>，以及高阶积分 <span class="arithmatex">\(\mathcal A^d\)</span>。经过双射保持 <span class="arithmatex">\(\mathcal A\)</span> 与 <span class="arithmatex">\(\mathcal C\)</span>，经过加法得到 <span class="arithmatex">\(\mathcal B\)</span>，经过非线性部件后 <span class="arithmatex">\(\mathcal B\)</span> 变为不确定。</li>
+<li><strong>积分攻击</strong>：找 <span class="arithmatex">\(r\)</span> 轮积分区分器，猜测最后一轮的部分密钥，检验部分解密后是否满足平衡特性。</li>
+<li><strong>分离特性</strong>：用“汉明重量小于 <span class="arithmatex">\(k\)</span> 的单项式在集合上的和恒为 <span class="arithmatex">\(0\)</span>”刻画介于 <span class="arithmatex">\(\mathcal A\)</span> 与 <span class="arithmatex">\(\mathcal B\)</span> 之间的多重集，经过代数次数为 <span class="arithmatex">\(d\)</span> 的函数时 <span class="arithmatex">\(k\mapsto\lceil k/d\rceil\)</span>。向量化、比特级（两子集、三子集）的分离特性逐步提高了刻画的精度。</li>
+</ul>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 5 章。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04-linear-cryptanalysis/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第四章：分组密码的线性分析及相关分析方法</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06-meet-in-the-middle/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第六章：中间相遇攻击</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 5 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-01-overview/">第一章：密码分析学概述</a></li><li><a href="../chapter-08-equivalence-of-analysis-methods/">第八章：分组密码各种分析方法的等价性</a></li><li><a href="../chapter-09-automated-distinguisher-search/">第九章：区分器的自动化搜索</a></li><li><a href="../chapter-12-cube-attacks/">第十二章：序列密码的立方攻击</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,159 @@
+program kclip_sweep
+ use hho_cheb
+ use hho_tree
+ use hho_ops
+ implicit none
+ type(qtree)::t
+ type(optree)::o,dp
+ real(rk),allocatable::f(:,:),a(:,:),b(:,:),an(:,:),bn(:,:),ex(:,:),dif(:,:)
+ real(rk)::x(nq),z(nq),r2,ri,e2,ei,di,start,secs,burn,err(3),delta,warm
+ integer::precision=4,it,m,mode,k,q,rep,ncall,nround,u,nmix,nwallmix,maxjump,order(6)
+ character(512)::dest,arg
+ character(16)::treeid
+ call get_command_argument(1,arg);read(arg,*)it
+ call get_command_argument(2,arg);read(arg,*)m
+ call get_command_argument(3,dest)
+ call get_command_argument(4,arg);read(arg,*)ncall
+ call get_command_argument(5,arg);read(arg,*)nround
+ call cheb_init();call setup(it);call build_optree(t,MODE_DP,dp)
+ call sample(m,0,f);call sample(m,1,ex);call tree_norms(t,ex,r2,ri)
+ do mode=1,3
+ call apply(mode)
+ dif=an-ex;call tree_norms(t,dif,e2,ei);err(mode)=ei/ri
+ if(mode==1)a=an
+ if(mode==2)then
+ dif=an-a;call tree_norms(t,dif,e2,ei);delta=ei/ri
+ endif
+ enddo
+ print *, 'relative errors old/clip/DP=',err,' clip-old=',delta
+ if(delta>2e-10_rk)error stop 'clip-old equivalence failed'
+ ! Retain coarse high-frequency analytic discretization error, never change tree or iprec.
+ if(err(2)>max(2e-6_rk,1.01_rk*err(1)))error stop 'clip accuracy degradation'
+ burn=wall_time()
+ do
+ do mode=1,3
+ call apply(mode)
+ enddo
+ if(wall_time()-burn>=8.0_rk)exit
+ enddo
+ warm=wall_time()-burn
+ open(newunit=u,file=trim(dest),status='new')
+ write(u,'(a)') 'tree,nleaf,source,rep,position,mode,calls,seconds_per_full_call,relative_linf,clip_old_rel_inf,warmup_seconds'
+ do rep=1,nround
+ do q=1,3
+ order(q)=mod(q+rep-2,3)+1;order(7-q)=order(q)
+ enddo
+ do q=1,6
+ mode=order(q);start=wall_time()
+ do k=1,ncall
+ call apply(mode)
+ enddo
+ secs=(wall_time()-start)/ncall
+ dif=an-ex;call tree_norms(t,dif,e2,ei)
+ write(u,'(a,6(",",i0),4(",",es24.16))')trim(treeid),tree_nleaves(t),m,rep,q,mode,ncall,secs,ei/ri,delta,warm
+ enddo
+ flush(u)
+ enddo
+ close(u);call cleanup()
+ print *, 'SWEEP CONFIG COMPLETE'
+ contains
+ subroutine setup(which)
+ integer,intent(in)::which
+ real(rk)::cx,cz,w,xx,zz
+ integer::bb,dx,dz,nb,dd
+ select case(which)
+ case(1);treeid='uniform3';call tree_uniform(t,3)
+ case(2);treeid='uniform4';call tree_uniform(t,4)
+ case(3);treeid='asym3to4';call tree_build(t,20000,indicator,0.5_rk,3,4)
+ case(4);treeid='asym3to5';call tree_build(t,20000,indicator,0.5_rk,3,5)
+ case(5);treeid='uniform5';call tree_uniform(t,5)
+ case(6);treeid='asym4to6';call tree_build(t,30000,indicator,0.5_rk,4,6)
+ end select
+ call build_optree(t,MODE_MOI,o)
+ allocate(f(np,t%nbox),a(np,t%nbox),b(np,t%nbox),an(np,t%nbox),bn(np,t%nbox),ex(np,t%nbox),dif(np,t%nbox))
+ f=0;a=0;b=0;an=0;bn=0;ex=0;dif=0
+ nmix=0;nwallmix=0;maxjump=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ call box_geom(t,bb,cx,cz,w)
+ do dz=-1,1
+ do dx=-1,1
+ if(dx==0.and.dz==0)cycle
+ xx=modulo(cx+dx*0.50001_rk*w,1.0_rk);zz=cz+dz*0.50001_rk*w
+ if(zz<0)zz=-zz
+ if(zz>1)zz=2-zz
+ nb=tree_leaf_at(t,xx,zz);dd=abs(t%level(nb)-t%level(bb));maxjump=max(maxjump,dd)
+ if(dd/=0)then
+ nmix=nmix+1
+ if(cx-w/2<1e-12_rk.or.cx+w/2>1-1e-12_rk.or.cz-w/2<1e-12_rk.or.cz+w/2>1-1e-12_rk)nwallmix=nwallmix+1
+ endif
+ enddo
+ enddo
+ enddo
+ if(maxjump>1)error stop 'tree is not balanced'
+ maxjump=0
+  do bb=1,t%nbox
+  if(t%child(1,bb)/=0)cycle
+  call box_geom(t,bb,cx,cz,w)
+  do dz=-1,1
+  do dx=-1,1
+  if(dx==0.and.dz==0)cycle
+  xx=modulo(cx+dx*0.50001_rk*w,1.0_rk)
+  zz=modulo(cz+dz*0.50001_rk*w,1.0_rk)
+  nb=tree_leaf_at(t,xx,zz);maxjump=max(maxjump,abs(t%level(nb)-t%level(bb)))
+  enddo
+  enddo
+  enddo
+  print *, 'DP toroidal sampled neighbor max level jump=',maxjump
+ print *,trim(treeid),' leaves=',tree_nleaves(t),' unequal-neighbor probes=',nmix,' boundary unequal=',nwallmix
+ end subroutine
+ real(rk) function indicator(xx,zz,ll)result(v)
+ real(rk),intent(in)::xx(nq),zz(nq)
+ integer,intent(in)::ll
+ real(rk)::cx,cz,w,dist
+ cx=(minval(xx)+maxval(xx))/2;cz=(minval(zz)+maxval(zz))/2;w=2.0_rk**(-ll)
+ dist=min(abs(cx-0.035_rk),1-abs(cx-0.035_rk))**2+(cz-0.07_rk)**2
+ v=0
+ if(sqrt(dist)<0.12_rk+0.71_rk*w)v=1
+ ! Additional distinct refinement near upper wall, deliberately not reflection symmetric.
+ if((cx-0.68_rk)**2+(cz-0.96_rk)**2<(0.065_rk+0.71_rk*w)**2)v=1
+ end function
+ subroutine cleanup()
+ deallocate(f,a,b,an,bn,ex,dif)
+ end subroutine
+ subroutine sample(src,power,v)
+ integer,intent(in)::src,power
+ real(rk),intent(out)::v(:,:)
+ real(rk)::v1,v2
+ integer::bb,i,j
+ v=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ call box_nodes(t,bb,x,z)
+ do j=1,nq
+ do i=1,nq
+ select case(src)
+  case(1)
+  v1=sin(2*pi*x(i))*sin(2*pi*z(j))/(8*pi*pi)**power;v2=0
+  case(2)
+  v1=sin(6*pi*x(i))*sin(4*pi*z(j))/(52*pi*pi)**power;v2=0
+  case(3)
+  v1=sin(2*pi*x(i))*sin(2*pi*z(j))/(8*pi*pi)**power
+  v2=0.3_rk*sin(6*pi*x(i))*sin(4*pi*z(j))/(52*pi*pi)**power
+  end select
+ v(i+nq*(j-1),bb)=v1+v2
+ enddo
+ enddo
+ enddo
+ end subroutine
+ subroutine apply(md)
+ integer,intent(in)::md
+ an=0
+ clip_enabled=(md==2)
+ if(md==3)then
+ call op_K(dp,t,precision,f,an)
+ else
+ call op_K(o,t,precision,f,an)
+ endif
+ end subroutine
+end program

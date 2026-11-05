@@ -1,0 +1,1032 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="杂凑函数安全性分析：生日攻击、常见结构、原像与第二原像攻击、碰撞攻击、反弹攻击与消息修改。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-13-hash-function-analysis/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>杂凑函数的安全性分析概述 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-13-hash-function-analysis/">
+  <meta property="og:title" content="杂凑函数的安全性分析概述 - zdd14990">
+  <meta property="og:description" content="杂凑函数安全性分析：生日攻击、常见结构、原像与第二原像攻击、碰撞攻击、反弹攻击与消息修改。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-13-hash-function-analysis/">
+  <meta name="twitter:title" content="杂凑函数的安全性分析概述 - zdd14990">
+  <meta name="twitter:description" content="杂凑函数安全性分析：生日攻击、常见结构、原像与第二原像攻击、碰撞攻击、反弹攻击与消息修改。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u6742\u51d1\u51fd\u6570\u7684\u5b89\u5168\u6027\u5206\u6790\u6982\u8ff0",
+    "description": "\u6742\u51d1\u51fd\u6570\u5b89\u5168\u6027\u5206\u6790\uff1a\u751f\u65e5\u653b\u51fb\u3001\u5e38\u89c1\u7ed3\u6784\u3001\u539f\u50cf\u4e0e\u7b2c\u4e8c\u539f\u50cf\u653b\u51fb\u3001\u78b0\u649e\u653b\u51fb\u3001\u53cd\u5f39\u653b\u51fb\u4e0e\u6d88\u606f\u4fee\u6539\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-13-hash-function-analysis/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-13-hash-function-analysis/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        杂凑函数的通用攻击
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        生日攻击与广义生日攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="生日攻击与广义生日攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        生日界
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        广义生日问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        杂凑函数的常见结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="杂凑函数的常见结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merkle-damgard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merkle-Damgård 迭代
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基于分组密码的压缩函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        海绵结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原像攻击
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第二原像攻击
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        碰撞攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="碰撞攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多碰撞
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        差分碰撞
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反弹攻击与消息修改
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="反弹攻击与消息修改">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反弹攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        消息修改
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 13 of 16</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="_1">杂凑函数的安全性分析概述</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>2,534 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="_2">杂凑函数的通用攻击</h2>
+<p>设</p>
+<div class="arithmatex">\[
+H:\{0,1\}^*\to\{0,1\}^n.
+\]</div>
+<p>杂凑函数不使用秘密密钥。攻击者知道全部算法，并可自行计算任意消息的杂凑值。主要目标是：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>预先给定</th>
+<th>需要找到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原像</td>
+<td>一个目标值 <span class="arithmatex">\(y\)</span></td>
+<td><span class="arithmatex">\(M\)</span>，使 <span class="arithmatex">\(H(M)=y\)</span></td>
+</tr>
+<tr>
+<td>第二原像</td>
+<td>一条消息 <span class="arithmatex">\(M\)</span></td>
+<td><span class="arithmatex">\(M'\ne M\)</span>，使 <span class="arithmatex">\(H(M')=H(M)\)</span></td>
+</tr>
+<tr>
+<td>碰撞</td>
+<td>无固定目标消息</td>
+<td>不同的 <span class="arithmatex">\(M,M'\)</span>，使 <span class="arithmatex">\(H(M)=H(M')\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>在理想随机函数模型与经典计算模型下，原像、第二原像的通用搜索量级为 <span class="arithmatex">\(2^n\)</span>，碰撞为 <span class="arithmatex">\(2^{n/2}\)</span>。这里的通用攻击不利用具体压缩函数结构。</p>
+<p>碰撞一定存在，因为输入空间大于输出空间；抗碰撞性要求的是难以找到，而不是不存在。</p>
+<h2 id="_3">生日攻击与广义生日攻击</h2>
+<h3 id="_4">生日界</h3>
+<p>计算 <span class="arithmatex">\(q\)</span> 条不同消息的杂凑值。在独立均匀输出近似下，碰撞概率为</p>
+<div class="arithmatex">\[
+P_{\mathrm{coll}}
+=1-\prod_{i=0}^{q-1}\left(1-\frac i{2^n}\right)
+\approx1-\exp\left(-\frac{q(q-1)}{2^{n+1}}\right).
+\]</div>
+<p>取 <span class="arithmatex">\(q\approx\sqrt{2\ln2}\,2^{n/2}\)</span> 时，碰撞概率约为 <span class="arithmatex">\(1/2\)</span>。用哈希表保存已见输出，时间与存储都约为 <span class="arithmatex">\(O(2^{n/2})\)</span>。</p>
+<p>通过合适的迭代映射和循环检测，Pollard rho 型方法可将工作存储降得很低，但还需回溯恢复两个不同输入，并处理落入退化周期等情况。不能只找到“两个迭代状态相等”就直接当作两个不同消息的碰撞。</p>
+<h3 id="_5">广义生日问题</h3>
+<p>给定 <span class="arithmatex">\(k\)</span> 个随机列表 <span class="arithmatex">\(L_1,\ldots,L_k\)</span>，寻找</p>
+<div class="arithmatex">\[
+x_i\in L_i,\qquad x_1\oplus\cdots\oplus x_k=0.
+\]</div>
+<p>以 <span class="arithmatex">\(k=4\)</span>、<span class="arithmatex">\(3\mid n\)</span> 为例，每个列表取约 <span class="arithmatex">\(2^{n/3}\)</span> 个元素。</p>
+<p>1) 将 <span class="arithmatex">\(L_1,L_2\)</span> 配对，只保留异或值的低 <span class="arithmatex">\(n/3\)</span> 比特为零的组合，期望保留 <span class="arithmatex">\(2^{n/3}\)</span> 项。</p>
+<p>2) 对 <span class="arithmatex">\(L_3,L_4\)</span> 同样处理。</p>
+<p>3) 两张新表的低位都为零，再匹配剩余 <span class="arithmatex">\(2n/3\)</span> 位。两表各有 <span class="arithmatex">\(2^{n/3}\)</span> 项，期望得到常数个完整匹配。</p>
+<p>用排序或分桶实现低位匹配，避免直接枚举全部二元组合，可获得约 <span class="arithmatex">\(2^{n/3}\)</span> 量级的列表处理成本，忽略多项式因子。</p>
+<p>对 <span class="arithmatex">\(k=2^a\)</span>，适当参数下 Wagner 树方法的列表规模约为 <span class="arithmatex">\(2^{n/(a+1)}\)</span>，总成本还包含列表数因子 <span class="arithmatex">\(k\)</span>。</p>
+<p>这不意味着任意杂凑函数的普通碰撞复杂度都能降到 <span class="arithmatex">\(2^{n/3}\)</span>。必须先证明目标算法的攻击条件确实可以化为相应的多列表求和问题。</p>
+<h2 id="_6">杂凑函数的常见结构</h2>
+<h3 id="merkle-damgard">Merkle-Damgård 迭代</h3>
+<p>将填充后的消息分为 <span class="arithmatex">\(M_1,\ldots,M_\ell\)</span>，逐块计算</p>
+<div class="arithmatex">\[
+h_0=IV,\qquad h_i=F(h_{i-1},M_i),\qquad H(M)=h_\ell.
+\]</div>
+<p>通常使用包含原消息长度的无歧义填充。压缩函数的抗碰撞性质在适当条件下可以传递到完整迭代结构，但这种结构仍可能存在长度扩展等其他性质。</p>
+<p><strong>长度扩展：</strong>若摘要完整暴露最终链接状态，并且已知或可猜测消息长度，则可以从 <span class="arithmatex">\(H(M)\)</span> 继续计算</p>
+<div class="arithmatex">\[
+H(M\Vert\operatorname{pad}(M)\Vert X).
+\]</div>
+<p>这不是恢复 <span class="arithmatex">\(M\)</span>，也不是找到碰撞；它是从公开链接状态继续运行压缩函数。</p>
+<h3 id="_7">基于分组密码的压缩函数</h3>
+<p>例如 Davies-Meyer 形式</p>
+<div class="arithmatex">\[
+F(h,M)=E_M(h)\oplus h.
+\]</div>
+<p>这里消息块充当分组密码的密钥，链接状态充当明文。反馈项使压缩函数不再只是一个易逆的分组密码调用。</p>
+<p>它也有特殊的固定点结构：取 <span class="arithmatex">\(h=E_M^{-1}(0)\)</span>，就有 <span class="arithmatex">\(F(h,M)=h\)</span>。这是在可选择链接状态下的性质，不表示从规定 IV 出发已经找到了完整杂凑的原像。</p>
+<h3 id="_8">海绵结构</h3>
+<p>海绵维护宽度 <span class="arithmatex">\(b=r+c\)</span> 的状态，其中 <span class="arithmatex">\(r\)</span> 为速率、<span class="arithmatex">\(c\)</span> 为容量。吸收阶段把消息块异或到速率部分，再应用公开置换；挤出阶段输出速率部分，必要时继续置换。</p>
+<p>摘要一般不暴露完整内部状态，因此不能直接套用普通 MD 的长度扩展方法。安全性同时受输出长度、容量、查询总量与域分离规则约束，不能只看置换状态有多少比特。</p>
+<h2 id="_9">原像攻击</h2>
+<p>给定 <span class="arithmatex">\(y\)</span>，普通穷举每次命中概率为 <span class="arithmatex">\(2^{-n}\)</span>。结构化原像攻击则尝试拆分计算，利用中间相遇、可逆步骤或消息自由度减少搜索。</p>
+<p>要特别区分：</p>
+<ul>
+<li><strong>原像</strong>：固定标准 IV，寻找消息使最终摘要等于目标。</li>
+<li><strong>伪原像</strong>：允许选择初始链接状态，寻找 <span class="arithmatex">\((h,M)\)</span> 使 <span class="arithmatex">\(F(h,M)\)</span> 等于目标。</li>
+</ul>
+<p>伪原像往往更容易，但还需把选出的状态与标准 IV 连接起来，才能形成完整原像攻击。连接阶段不能从总复杂度中省略。</p>
+<p>对减步 MD4、MD5 等算法，中间相遇常需要按消息字的依赖划分两端。消息字在多个步骤中重复使用，不能将它们当作独立轮密钥随意猜测。</p>
+<h2 id="_10">第二原像攻击</h2>
+<p>普通第二原像攻击固定一条消息，不能像碰撞攻击那样同时选择两端。但对很长的 MD 消息，可以利用大量已知中间链接状态。</p>
+<p>设目标消息约有 <span class="arithmatex">\(2^k\)</span> 个分组，链接状态长为 <span class="arithmatex">\(n\)</span>。若能从某个状态搜索到目标链中的任一可用状态，随机命中概率约为 <span class="arithmatex">\(2^{k-n}\)</span>，桥接成本约为 <span class="arithmatex">\(2^{n-k}\)</span>。</p>
+<p>困难是拼接后必须保持消息总长度，以便最终长度填充也一致。<strong>可扩展消息</strong>解决这个问题：构造多种长度不同、终点状态相同的前缀，然后根据桥接位置选择合适长度。</p>
+<p>典型构造在第 <span class="arithmatex">\(i\)</span> 层准备一条短路径和一条多 <span class="arithmatex">\(2^i\)</span> 个分组的长路径，使二者到达同一状态。经过 <span class="arithmatex">\(k\)</span> 层，可组合出一段连续长度范围。其主要碰撞搜索成本约为 <span class="arithmatex">\(O(k2^{n/2})\)</span>，还要计入长路径生成、目标消息处理和桥接成本。</p>
+<p>于是常见的概略估计为</p>
+<div class="arithmatex">\[
+T=O(k2^{n/2}+2^{n-k}+2^k).
+\]</div>
+<p>最后一项提醒我们：读取和处理长目标消息也有成本。此类长消息攻击不等于普通短消息的第二原像只需生日复杂度。</p>
+<h2 id="_11">碰撞攻击</h2>
+<h3 id="_12">多碰撞</h3>
+<p>对 <span class="arithmatex">\(n\)</span> 比特链接状态的 MD 结构，在同一初态上先找一对等长单块碰撞；再从共同终点找下一对，重复 <span class="arithmatex">\(k\)</span> 次。</p>
+<p>每层任选一个消息块，共得到 <span class="arithmatex">\(2^k\)</span> 条不同消息，但终点相同。主要成本约为</p>
+<div class="arithmatex">\[
+O(k2^{n/2}),
+\]</div>
+<p>而不是分别寻找 <span class="arithmatex">\(2^k\)</span> 条消息的公共摘要。这利用了迭代结构，可用于分析级联杂凑等构造。</p>
+<h3 id="_13">差分碰撞</h3>
+<p>针对具体算法，先选择消息差分，设计内部状态差分路线，再寻找满足路线条件的消息对。</p>
+<ul>
+<li>若初始链接状态必须是标准 IV，才是相应完整杂凑的通常碰撞问题。</li>
+<li>若允许选择同一个任意初始状态，是半自由起始碰撞问题。</li>
+<li>若允许两边初始状态不同，模型更宽，应明确称为自由起始类结果。</li>
+</ul>
+<p>不同文献命名细节可能略有差异，最可靠的做法是直接写明哪些输入和状态可由攻击者控制。</p>
+<h2 id="_14">反弹攻击与消息修改</h2>
+<h3 id="_15">反弹攻击</h3>
+<p>反弹攻击把路线分成中间的 <strong>inbound</strong> 和两侧的 <strong>outbound</strong>。</p>
+<p>中间阶段利用可选择状态的自由度，主动构造满足较昂贵 S 盒差分条件的状态对；外侧阶段再向两端传播，接受剩余条件的概率损失。</p>
+<p>它与普通从头随机试整条路线不同：困难的中间部分不是纯靠碰运气，而是通过局部求解满足。Whirlpool 类大状态、AES 型结构提供了相应的操作空间。</p>
+<p>最终结果可能是区分器、近碰撞、自由起始碰撞或完整碰撞，取决于外侧能否连接规定的输入和反馈条件。必须把 inbound 的构造成本与 outbound 的成功概率一起计算。</p>
+<h3 id="_16">消息修改</h3>
+<p>在 MD4、MD5 等结构中，若某步写为</p>
+<div class="arithmatex">\[
+Q'=\operatorname{ROL}_s(Q+F(B,C,D)+M_j+T),
+\]</div>
+<p>运算按模 <span class="arithmatex">\(2^{32}\)</span> 进行，则选定希望的 <span class="arithmatex">\(Q'\)</span> 后，可反解</p>
+<div class="arithmatex">\[
+M_j=\operatorname{ROR}_s(Q')-Q-F(B,C,D)-T\pmod{2^{32}}.
+\]</div>
+<p>这使攻击者可以主动满足早期路线条件，而不是等待随机消息满足。若具体算法还有额外加法或变量重命名，需要相应调整公式。</p>
+<p>同一个 <span class="arithmatex">\(M_j\)</span> 会在后续步骤重用，因此修改它可能破坏之前或之后的条件。多步消息修改需要补偿机制；中立比特则尝试寻找不破坏已有条件的小范围修改自由度。</p>
+<p>对模加算法，还要区分异或差分与模减差分，并显式处理进位。两种差分不能在推导中随意互换。</p>
+<h2 id="_17">本章总结</h2>
+<p>原像、第二原像与碰撞的可选自由度不同；压缩函数结果、自由起始结果和完整杂凑结果也不同。生日方法提供通用基准，迭代结构与具体差分路线则可能产生更有效的攻击。</p>
+<p>MD4、MD5 已不应承担抗碰撞安全用途，但碰撞突破不等于能反推出任意消息。密码杂凑也不能代替专用的带盐、可调成本密码存储方案。</p>
+<p>参考：王美琴主编，《密码分析学》，第 13 章。结构参数见<a href="../appendix-algorithms/">算法附录</a>。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-12-cube-attacks/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第十二章：序列密码的立方攻击</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-14-message-authentication-codes/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">消息认证码的安全性分析概述</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 13 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

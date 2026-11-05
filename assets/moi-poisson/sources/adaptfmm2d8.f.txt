@@ -1,0 +1,2787 @@
+c*************************************************************
+c     subroutine adaptfmm2d8
+c     (the user interface that puts computemaps8 and 
+c      adaptfmm8 together to form a better user interface
+c      that is more naturally compatible with adaptfgt2d)
+c
+c     INPUT: 
+c     nlev - istartlev: the tree structure
+c     iperiod: periodicity, only iperiod=0,1 allowed 
+c     fright: the RHS, resolved on a 8x8 grid on the leaf nodes
+c     iprec: precision 
+c            attention: in fmmstart8, the iprec is 0-3
+c            which is iprec(fgt)-1. Address this issue here
+c
+c     OUTPUT:
+c     pot: the potential evaluated on a 8x8 grid on the leaf
+c           nodes of the tree
+c
+c*************************************************************
+c
+      subroutine adaptfmm2d8(ndeg, nlev, levelbox, iparentbox, 
+     1           ichildbox, icolbox, irowbox, nboxes, nblevel,
+     2           iboxlev, istartlev, fright, iprec, iperiod,
+     3           pot, ttotal)
+      implicit real*8 (a-h,o-z)
+c     global vars
+      integer ndeg, nlev, nboxes, iprec, iperiod
+      integer levelbox(nboxes), iparentbox(nboxes)
+      integer ichildbox(4,nboxes)
+      integer icolbox(nboxes), irowbox(nboxes)
+      integer nblevel(0:nlev), iboxlev(nboxes)
+      integer istartlev(0:nlev)
+      real*8 fright(ndeg*ndeg,nboxes)
+      real*8 pot(ndeg*ndeg,nboxes), ttotal
+c     local vars (change to allocatable eventually)
+      parameter(lenmaps=30000)
+      parameter(maxwrk=80000000)
+      parameter(iwrk=80000000)
+c      integer iwork(maxwrk)
+c      real*8 map(lenmaps), work(maxwrk)
+      integer, allocatable:: iwork(:)
+      real*8, allocatable:: map(:)
+      real*8, allocatable:: work(:)
+c
+      tstart=second()
+c
+      allocate(iwork(maxwrk))
+      allocate(map(lenmaps))
+      allocate(work(maxwrk))
+c
+      if(iperiod .gt. 1) then
+        iperiod=1
+c       allowing iperiod = 0, 1 only in this version
+      endif 
+c
+c     (consistent with fgt:)
+c     iprec = 1  3  digits
+c     iprec = 2  6  digits
+c     iprec = 3  9  digits
+c     iprec = 4  12 digits
+c
+      iprec=iprec-1
+c     set to the original convention 
+      call computemaps8(map, iprec, lenmaps)
+      
+      ndeg0=ndeg-1
+c     set to original convention
+c
+      if(iprec .eq. 0)then
+        nterms = 8
+        nnodes = 8
+      elseif(iprec .eq. 1)then
+        nterms = 16
+        nnodes = 16
+      elseif(iprec .eq. 2)then
+        nterms = 24
+        nnodes = 24
+      elseif(iprec .eq. 3)then
+        nterms = 40
+        nnodes = 40
+      endif
+
+c        first break up the integer array:
+c        (in this first case, the only workspace
+c        needed is for the colleagues)
+       lcolleag   =  9 * nboxes
+       lflag    = nboxes
+       llocalonoff   = nboxes
+
+       mcolleag    =  1
+       mlocalonoff =  mcolleag + lcolleag
+       mflageast   =  mlocalonoff + llocalonoff
+       mflagwest   =  mflageast + lflag
+       mflagnorth  =  mflagwest + lflag
+       mflagsouth  =  mflagnorth + lflag
+
+
+       itot = mflagsouth + lflag
+
+       if ( itot .ge. iwrk ) then
+          write(*,*)'the total workspace needed exceeds the'
+          write(*,*)'amount allotted.'
+          write(*,*)'you have set the length of the integer array'
+          write(*,*)'to be ',iwrk
+          write(*,*)'the workspace needed is: ',itot
+          write(*,*)'i am stopping.'
+          stop
+       endif
+
+       lmpole   = 2*(nterms+1)*nboxes
+       llocxp   = 2*(nterms+1)*nboxes
+       lexp     = 2*(nnodes+1)*nboxes
+       lcoeff   = 64*nboxes
+       lnodes   = nnodes
+       lcomp    = nnodes*(nterms+1)
+       lchoose  = 2*nterms * 2*nterms
+       lzs      = 2 * 7 * 7 * (nnodes + 1)
+       lvolmaps = 2*(nnodes + 1) * 36
+       lwint    = 2*(nterms + 1) * 8 * 8
+
+c
+c        now carve up the real workspace:
+c
+       mpole    = 1
+       locexp   = mpole   + lmpole
+       iexpn    = locexp  + llocxp
+       iexps    = iexpn   + lexp
+       iexpe    = iexps   + lexp
+       iexpw    = iexpe   + lexp
+       iexpnbig = iexpw   + lexp
+       iexpsbig = iexpnbig   + lexp
+       iexpebig = iexpsbig   + lexp
+       iexpwbig = iexpebig   + lexp
+       mcomp    = iexpwbig   + lexp
+       mchoose  = mcomp   + lcomp
+       mzs      = mchoose + lchoose
+       mzseast  = mzs + lzs
+       mzswest  = mzseast  + lzs
+       mzsnorth = mzswest  + lzs
+       mzssouth = mzsnorth + lzs
+       mtemp    = mzssouth + lzs
+       mwnodes  = mtemp   + lnodes
+       mxnodes  = mwnodes + lnodes
+       mcoeff   = mxnodes + lnodes
+
+       itot = mcoeff + lcoeff
+
+       if ( itot .ge. maxwrk ) then
+          write(*,*)'the total workspace needed exceeds the'
+          write(*,*)'amount allotted.'
+          write(*,*)'you have set the length of the real array'
+          write(*,*)'to be ',maxwrk
+          write(*,*)'the workspace needed is: ',itot
+          write(*,*)'i am stopping.'
+          stop
+       endif
+
+       mmapsouth   =  1
+       mmapnorth   =  mmapsouth   + lvolmaps
+       mmapeast    =  mmapnorth   + lvolmaps
+       mmapwest    =  mmapeast    + lvolmaps
+       mwint       =  mmapwest    + lvolmaps
+c
+c--------------------
+c
+      call adapfmm8(nlev,ndeg0,work(mxnodes),work(mwnodes),
+     1     work(mtemp),work(mzs),work(mzseast),work(mzswest),
+     1     work(mzsnorth),work(mzssouth),
+     2     work(mcomp),nterms,nnodes,pot,
+     2     work(mpole),work(locexp),
+     3     work(iexpn),work(iexps),work(iexpe),work(iexpw),
+     3     work(iexpnbig),work(iexpsbig),work(iexpebig),work(iexpwbig),
+     4     work(mchoose), work(mcoeff), 
+     5     levelbox,iparentbox,ichildbox,
+     6     icolbox,irowbox,iwork(mcolleag),nboxes,
+     7     nblevel,iboxlev,istartlev,iperiod,
+     8     fright,map(mmapnorth), map(mmapsouth), map(mmapeast),
+     9     map(mmapwest), map(mwint),iwork(mflageast),
+     1     iwork(mflagnorth),iwork(mflagwest),iwork(mflagsouth),
+     2     iwork(mlocalonoff))
+c
+c--------------------
+      iprec=iprec+1
+c     convert back
+
+      deallocate(iwork)
+      deallocate(map)
+      deallocate(work)
+c
+      ttotal=second()-tstart
+c
+
+      end subroutine
+
+
+
+
+
+
+c***********************************************************************
+c     the following subroutine carves up the workspace array before it
+c     is sent to the adapfmm6 subroutine, where the bulk of the work in
+c     the algorithm is done.
+c
+c     iperiod is set to distinguish between each of the following cases:
+c     iperiod = 0 for the free space case
+c     iperiod = 1 for the periodic case
+c     iperiod = 2 for the homogeneous dirichlet case
+c     iperiod = 3 for the homogeneous neumann case
+c     iperiod = 4 for the dirichlet left/right and periodic top/bottom
+c     iperiod = 5 for the dirichlet left/right and neumann top/bottom
+c     iperiod = 6 for the neumann left/right and periodic top/bottom
+c     iperiod = 7 for the purely dirichlet (inhomogeneous)
+c     iperiod = 8 for the purely neumann (inhomogeneous)
+c     iperiod = 9 for the dirichlet left/right and periodic top/bottom
+c     iperiod = 10 for the dirichlet left/right and neumann top/bottom
+c     iperiod = 11 for the neumann left/right and periodic top/bottom
+c
+c     icolbox, irowbox, nboxes, levelbox, iparentbox, and ichildbox
+c     define the necessary parts of the tree.
+c***********************************************************************
+      subroutine fmmstart8(work, lenw, iwork, ilen,
+     1     nlev, levelbox, iparentbox, ichildbox,
+     2     icolbox, irowbox, nboxes, nblevel, iboxlev,
+     3     istartlev, iperiod, fright, pot, iprec, map,
+     4     hl, hr, hb, ht)
+      implicit none
+c-----global variables
+      integer *4  lenw, ilen
+      integer *4  nlev, iperiod
+      integer *4  nnodes, ndeg
+      integer *4  nterms, nboxes
+      integer *4  levelbox(1), iparentbox(1)
+      integer *4  ichildbox(4,1)
+      integer *4  irowbox(1), icolbox(1)
+      integer *4  nblevel(0:1), iboxlev(1)
+      integer *4  istartlev(0:1)
+      integer *4  iwork(ilen), iprec
+      real *8  work(lenw)
+      real *8  pot(64,1)
+      real *8  map(1)
+      real *8  fright(64,1)
+      real *8  hl, hr, hb, ht
+c-----local variables
+      integer *4  nboxes1, nlev1
+      integer *4  llevelbox, mlevelbox
+      integer *4  lparentbox, mparentbox
+      integer *4  lcolbox, mcolbox
+      integer *4  lrowbox, mrowbox
+      integer *4  lchildbox, mchildbox
+      integer *4  lstartlev, mstartlev
+      integer *4  lnblevel, mnblevel
+      integer *4  lboxlev, mboxlev
+      integer *4  lmpole, lcoeff, mcoeff
+      integer *4  iexpn, iexps
+      integer *4  iexpe, iexpw, lexp
+      integer *4  iexpnbig, iexpsbig
+      integer *4  iexpebig, iexpwbig
+      integer *4  itot, llocxp
+      integer *4  lnodes, mxnodes, mwnodes, mtemp
+      integer *4  iperiodtemp
+      integer *4  mcolleag, lcolleag
+      integer *4  mcomp, lcomp
+      integer *4  mchoose, lchoose
+      integer *4  mcoeffstop, mcoeffsside
+      integer *4  mcoeffdtop, mcoeffdside
+      integer *4  mzs, lzs
+      integer *4  mzseast, mzswest
+      integer *4  mzssouth, mzsnorth
+      integer *4  mpole, locexp
+      integer *4  mftopd, mftops
+      integer *4  mfsided, mfsides
+      integer *4  lf, lcoeffside
+      integer *4  lvolmaps, lsidemaps, lwint
+      integer *4  mmapsouth, mmapnorth, mmapeast, mmapwest
+      integer *4  medbletop, medbleside, mesngletop, mesngleside
+      integer *4  mwdbletop, mwdbleside, mwsngletop, mwsngleside
+      integer *4  mndbletop, mndbleside, mnsngletop, mnsngleside
+      integer *4  msdbletop, msdbleside, mssngletop, mssngleside
+      integer *4  mwint
+      integer *4  mflageast, mflagwest, lflag
+      integer *4  mflagnorth, mflagsouth
+      integer *4  mlocalonoff, llocalonoff
+      integer *4  mdoubletoponoff, lmultonoff
+      integer *4  mdoublesideonoff
+      integer *4  msingletoponoff
+      integer *4  msinglesideonoff
+   
+      ndeg = 7
+
+      if(iprec .eq. 0)then
+        nterms = 8
+        nnodes = 8
+      elseif(iprec .eq. 1)then
+        nterms = 16
+        nnodes = 16
+      elseif(iprec .eq. 2)then
+        nterms = 24
+        nnodes = 24
+      elseif(iprec .eq. 3)then
+        nterms = 40
+        nnodes = 40
+      endif
+
+c     first divide up the workspace appropriately
+      if(iperiod .eq. 0 .or. iperiod .eq. 1)then
+
+c        first break up the integer array:
+c        (in this first case, the only workspace
+c        needed is for the colleagues)
+         lcolleag   =  9 * nboxes
+         lflag    = nboxes
+         llocalonoff   = nboxes
+
+         mcolleag    =  1
+         mlocalonoff =  mcolleag + lcolleag
+         mflageast   =  mlocalonoff + llocalonoff
+         mflagwest   =  mflageast + lflag
+         mflagnorth  =  mflagwest + lflag
+         mflagsouth  =  mflagnorth + lflag
+
+
+         itot = mflagsouth + lflag
+
+         if ( itot .ge. ilen ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the integer array'
+            write(*,*)'to be ',ilen
+            write(*,*)'the workspace needed is: ',itot
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+         lmpole   = 2*(nterms+1)*nboxes
+         llocxp   = 2*(nterms+1)*nboxes
+         lexp     = 2*(nnodes+1)*nboxes
+         lcoeff   = 64*nboxes
+         lnodes   = nnodes
+         lcomp    = nnodes*(nterms+1)
+         lchoose  = 2*nterms * 2*nterms
+         lzs      = 2 * 7 * 7 * (nnodes + 1)
+         lvolmaps = 2*(nnodes + 1) * 36
+         lwint    = 2*(nterms + 1) * 8 * 8
+
+c
+c        now carve up the real workspace:
+c
+         mpole    = 1
+         locexp   = mpole   + lmpole
+         iexpn    = locexp  + llocxp
+         iexps    = iexpn   + lexp
+         iexpe    = iexps   + lexp
+         iexpw    = iexpe   + lexp
+         iexpnbig = iexpw   + lexp
+         iexpsbig = iexpnbig   + lexp
+         iexpebig = iexpsbig   + lexp
+         iexpwbig = iexpebig   + lexp
+         mcomp    = iexpwbig   + lexp
+         mchoose  = mcomp   + lcomp
+         mzs      = mchoose + lchoose
+         mzseast  = mzs + lzs
+         mzswest  = mzseast  + lzs
+         mzsnorth = mzswest  + lzs
+         mzssouth = mzsnorth + lzs
+         mtemp    = mzssouth + lzs
+         mwnodes  = mtemp   + lnodes
+         mxnodes  = mwnodes + lnodes
+         mcoeff   = mxnodes + lnodes
+
+         itot = mcoeff + lcoeff
+
+         if ( itot .ge. lenw ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the real array'
+            write(*,*)'to be ',lenw
+            write(*,*)'the workspace needed is: ',itot
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+         mmapsouth   =  1
+         mmapnorth   =  mmapsouth   + lvolmaps
+         mmapeast    =  mmapnorth   + lvolmaps
+         mmapwest    =  mmapeast    + lvolmaps
+         mwint       =  mmapwest    + lvolmaps
+
+      elseif(iperiod .eq. 2 .or. iperiod .eq. 3 .or.
+     1       iperiod .eq. 4 .or. iperiod .eq. 5 .or.
+     2       iperiod .eq. 6)then
+
+c        first break up the integer array:
+c        (in this case, we need to copy the
+c        initial data structure over again so
+c        that there is not a problem with
+c        altering the structure on input)
+         lcolleag    =  9 * (4*nboxes  + 1)
+         llevelbox   =  4 * nboxes + 1
+         lparentbox  =  4 * nboxes + 1
+         lcolbox     =  4 * nboxes + 1
+         lrowbox     =  4 * nboxes + 1
+         lchildbox   =  4 * (4 * nboxes + 1)
+         lstartlev   =  nlev + 2
+         lnblevel    =  nlev + 2
+         lboxlev     =  4*(nboxes + 1)
+         lflag       =  4*(nboxes + 1)
+         llocalonoff =  4*(nboxes + 1)
+
+         mcolleag   =  1
+         mlevelbox  =  mcolleag + lcolleag
+         mlocalonoff=  mlevelbox + llevelbox
+         mparentbox =  mlocalonoff + llocalonoff
+         mrowbox    =  mparentbox + lparentbox
+         mcolbox    =  mrowbox + lrowbox
+         mchildbox  =  mcolbox + lcolbox
+         mstartlev  =  mchildbox + lchildbox
+         mnblevel   =  mstartlev + lstartlev
+         mboxlev    =  mnblevel + lnblevel
+         mflageast  =  mboxlev + lboxlev
+         mflagwest  =  mflageast + lflag
+         mflagnorth =  mflagwest + lflag
+         mflagsouth =  mflagnorth + lflag
+
+         itot = mflagsouth + lflag
+
+         if ( itot .ge. ilen ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the integer array'
+            write(*,*)'to be ',ilen
+            write(*,*)'the workspace needed is: ',itot 
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+c
+c        now carve up the real workspace:
+c
+         lmpole     =  2*(nterms+1)*(4*nboxes + 1)
+         llocxp     =  2*(nterms+1)*(4*nboxes + 1)
+         lexp       =  2*(nnodes+1)*(4*nboxes + 1)
+         lcoeff     =  64*(4*nboxes + 1)
+         lnodes     =  nnodes
+         lcomp      =  nnodes*(nterms+1)
+         lchoose    =  2*nterms * 2*nterms
+         lzs        =  2 * 7 * 7 * (nnodes + 1)
+         lcoeffside =  8 * (4*nboxes + 1)
+         lf         =  8 * (4*nboxes + 1)
+         lvolmaps   =  2*(nnodes + 1) * 36
+         lwint      =  2*(nterms + 1) * 8 * 8
+
+         mmapsouth   =  1
+         mmapnorth   =  mmapsouth   + lvolmaps
+         mmapeast    =  mmapnorth   + lvolmaps
+         mmapwest    =  mmapeast    + lvolmaps
+         mwint       =  mmapwest    + lvolmaps
+         mpole       =  1
+         locexp      =  mpole + lmpole
+         iexpn       =  locexp + llocxp
+         iexps       =  iexpn + lexp
+         iexpe       =  iexps + lexp
+         iexpw       =  iexpe + lexp
+         iexpnbig    =  iexpw + lexp
+         iexpsbig    =  iexpnbig   + lexp
+         iexpebig    =  iexpsbig   + lexp
+         iexpwbig    =  iexpebig   + lexp
+         mcomp       =  iexpwbig   + lexp
+         mchoose     =  mcomp + lcomp
+         mzs         =  mchoose + lchoose
+         mzseast     =  mzs + lzs
+         mzswest     =  mzseast  + lzs
+         mzsnorth    =  mzswest  + lzs
+         mzssouth    =  mzsnorth + lzs
+         mtemp       =  mzssouth + lzs
+         mwnodes     =  mtemp + lnodes
+         mxnodes     =  mwnodes + lnodes
+         mcoeff      =  mxnodes + lnodes
+         mcoeffstop  =  mcoeff + lcoeff
+         mcoeffsside =  mcoeffstop + lcoeffside
+         mcoeffdtop  =  mcoeffsside + lcoeffside
+         mcoeffdside =  mcoeffdtop + lcoeffside
+         mftops      =  mcoeffdside + lf
+         mftopd      =  mftops + lf
+         mfsided     =  mftopd + lf
+         mfsides     =  mfsided + lf
+
+         itot = mfsides + lf
+
+         if ( itot .ge. lenw ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the real array'
+            write(*,*)'to be ',lenw
+            write(*,*)'the workspace needed is: ',itot
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+
+      elseif(iperiod .eq. 7 .or. iperiod .eq. 8 .or.
+     1       iperiod .eq. 9 .or. iperiod .eq. 10 .or.
+     2       iperiod .eq. 11)then
+
+c        first break up the integer array:
+c        (in this case, we need to copy the
+c        initial data structure over again so
+c        that there is not a problem with
+c        altering the structure on input)
+         lcolleag     =  9 * (4*nboxes  + 1)
+         llevelbox    =  4 * nboxes + 1
+         lparentbox   =  4 * nboxes + 1
+         lcolbox      =  4 * nboxes + 1
+         lrowbox      =  4 * nboxes + 1
+         lchildbox    =  4 * (4 * nboxes + 1)
+         lstartlev    =  nlev + 2
+         lnblevel     =  nlev + 2
+         lboxlev      =  4*(nboxes + 1)
+         lflag        =  4*(nboxes + 1)
+         llocalonoff  =  4*(nboxes + 1)
+         lmultonoff   =  4*(nboxes + 1)
+
+         mcolleag   =  1
+         mlevelbox  =  mcolleag + lcolleag
+         mlocalonoff =  mlevelbox + llevelbox
+         mparentbox  =  mlocalonoff + llocalonoff
+         mrowbox    =  mparentbox + lparentbox
+         mcolbox    =  mrowbox + lrowbox
+         mchildbox  =  mcolbox + lcolbox
+         mstartlev  =  mchildbox + lchildbox
+         mnblevel   =  mstartlev + lstartlev
+         mboxlev    =  mnblevel + lnblevel
+         mflageast  =  mboxlev + lboxlev
+         mflagwest  =  mflageast + lflag
+         mflagnorth =  mflagwest + lflag
+         mflagsouth =  mflagnorth + lflag
+         mdoubletoponoff  =  mflagsouth + lflag
+         mdoublesideonoff =  mdoubletoponoff + lmultonoff
+         msingletoponoff  =  mdoublesideonoff + lmultonoff
+         msinglesideonoff =  msingletoponoff + lmultonoff
+
+         itot = msinglesideonoff + lmultonoff
+
+         if ( itot .ge. ilen ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the integer array'
+            write(*,*)'to be ',ilen
+            write(*,*)'the workspace needed is: ',itot 
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+c
+c        now carve up the real workspace:
+c
+         lmpole     =  2*(nterms+1)*(4*nboxes + 1)
+         llocxp     =  2*(nterms+1)*(4*nboxes + 1)
+         lexp       =  2*(nnodes+1)*(4*nboxes + 1)
+         lcoeff     =  64*(4*nboxes + 1)
+         lnodes     =  nnodes
+         lcomp      =  nnodes*(nterms+1)
+         lchoose    =  2*nterms * 2*nterms
+         lzs        =  2 * 7 * 7 * (nnodes + 1)
+         lcoeffside =  8 * (4*nboxes + 1)
+         lf         =  8 * (4*nboxes + 1)
+         lvolmaps   =  2*(nnodes + 1) * 36
+         lwint      =  2*(nterms + 1) * 8 * 8
+         lsidemaps  =  2*(nnodes + 1) * 8
+
+         mmapsouth   =  1
+         mmapnorth   =  mmapsouth   + lvolmaps
+         mmapeast    =  mmapnorth   + lvolmaps
+         mmapwest    =  mmapeast    + lvolmaps
+         mwint       =  mmapwest    + lvolmaps
+         medbletop   =  mwint       + lwint
+         medbleside  =  medbletop   + lsidemaps
+         mesngletop  =  medbleside  + lsidemaps
+         mesngleside =  mesngletop  + lsidemaps
+         mwdbletop   =  mesngleside + lsidemaps
+         mwdbleside  =  mwdbletop   + lsidemaps
+         mwsngletop  =  mwdbleside  + lsidemaps
+         mwsngleside =  mwsngletop  + lsidemaps
+         mndbletop   =  mwsngleside + lsidemaps
+         mndbleside  =  mndbletop   + lsidemaps
+         mnsngletop  =  mndbleside  + lsidemaps
+         mnsngleside =  mnsngletop  + lsidemaps
+         msdbletop   =  mnsngleside + lsidemaps
+         msdbleside  =  msdbletop   + lsidemaps
+         mssngletop  =  msdbleside  + lsidemaps
+         mssngleside =  mssngletop  + lsidemaps
+
+         mpole       =  1
+         locexp      =  mpole   + lmpole
+         iexpn       =  locexp  + llocxp
+         iexps       =  iexpn   + lexp
+         iexpe       =  iexps   + lexp
+         iexpw       =  iexpe   + lexp
+         iexpnbig    =  iexpw   + lexp
+         iexpsbig    =  iexpnbig   + lexp
+         iexpebig    =  iexpsbig   + lexp
+         iexpwbig    =  iexpebig   + lexp
+         mcomp       =  iexpwbig   + lexp
+         mchoose     =  mcomp   + lcomp
+         mzs         =  mchoose + lchoose
+         mzseast     =  mzs + lzs
+         mzswest     =  mzseast  + lzs
+         mzsnorth    =  mzswest  + lzs
+         mzssouth    =  mzsnorth + lzs
+         mtemp       =  mzssouth + lzs
+         mwnodes     =  mtemp   + lnodes
+         mxnodes     =  mwnodes + lnodes
+         mcoeff      =  mxnodes + lnodes
+         mcoeffstop  =  mcoeff  + lcoeff
+         mcoeffsside =  mcoeffstop  + lcoeffside
+         mcoeffdtop  =  mcoeffsside + lcoeffside
+         mcoeffdside =  mcoeffdtop  + lcoeffside
+         mftops      =  mcoeffdside + lcoeffside
+         mftopd      =  mftops  + lf
+         mfsided     =  mftopd  + lf
+         mfsides     =  mfsided + lf
+
+
+         itot = mfsides + lf
+
+
+         if ( itot .ge. lenw ) then
+            write(*,*)'the total workspace needed exceeds the'
+            write(*,*)'amount allotted.'
+            write(*,*)'you have set the length of the real array'
+            write(*,*)'to be ',lenw
+            write(*,*)'the workspace needed is: ',itot
+            write(*,*)'i am stopping.'
+            stop
+         endif
+
+      endif
+
+
+
+      if(iperiod .eq. 0 .or. iperiod .eq. 1)then
+
+        call adapfmm8(nlev,ndeg,work(mxnodes),work(mwnodes),
+     1     work(mtemp),work(mzs),work(mzseast),work(mzswest),
+     1     work(mzsnorth),work(mzssouth),
+     2     work(mcomp),nterms,nnodes,pot,
+     2     work(mpole),work(locexp),
+     3     work(iexpn),work(iexps),work(iexpe),work(iexpw),
+     3     work(iexpnbig),work(iexpsbig),work(iexpebig),work(iexpwbig),
+     4     work(mchoose), work(mcoeff), 
+     5     levelbox,iparentbox,ichildbox,
+     6     icolbox,irowbox,iwork(mcolleag),nboxes,
+     7     nblevel,iboxlev,istartlev,iperiod,
+     8     fright,map(mmapnorth), map(mmapsouth), map(mmapeast),
+     9     map(mmapwest), map(mwint),iwork(mflageast),
+     1     iwork(mflagnorth),iwork(mflagwest),iwork(mflagsouth),
+     2     iwork(mlocalonoff))
+
+
+
+      elseif(iperiod .eq. 2 .or. iperiod .eq. 3 .or.
+     1       iperiod .eq. 4 .or. iperiod .eq. 5 .or.
+     2       iperiod .eq. 6 .or. iperiod .eq. 7 .or.
+     3       iperiod .eq. 8 .or. iperiod .eq. 9 .or.
+     4       iperiod .eq. 10 .or. iperiod .eq. 11)then
+
+         call copy(levelbox,iwork(mlevelbox),icolbox,iwork(mcolbox),
+     1     irowbox,iwork(mrowbox),iparentbox, iwork(mparentbox),
+     2     ichildbox,iwork(mchildbox),nboxes,istartlev,iwork(mstartlev),
+     3     iboxlev, iwork(mboxlev), nblevel, iwork(mnblevel),
+     4     nlev, nlev1, nboxes1)
+
+         call foldover(iwork(mlevelbox),iwork(mcolbox),
+     1     iwork(mrowbox),iwork(mparentbox),
+     2     iwork(mchildbox),nboxes1, iperiod, nlev1, fright,
+     3     iwork(mstartlev),iwork(mboxlev),iwork(mnblevel))
+
+         call sortboxes(iwork(mlevelbox),nboxes1,
+     1     nlev1, iwork(mnblevel),iwork(mboxlev),iwork(mstartlev))
+
+         call merge(iwork(mlevelbox),nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox), iwork(mparentbox),
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev))
+
+
+c       set iperiodtemp to the appropriate
+c       call for the adapfmm6 subroutine.
+        iperiodtemp = 2
+
+        call adapfmm8(nlev1,ndeg,work(mxnodes),work(mwnodes), 
+     1     work(mtemp),work(mzs),work(mzseast),work(mzswest),
+     1     work(mzsnorth),work(mzssouth),
+     2     work(mcomp), 
+     2     nterms,nnodes,pot, work(mpole),work(locexp),
+     3     work(iexpn),work(iexps),work(iexpe),work(iexpw),
+     3     work(iexpnbig),work(iexpsbig),work(iexpebig),work(iexpwbig),
+     4     work(mchoose), work(mcoeff),
+     5     iwork(mlevelbox),iwork(mparentbox),iwork(mchildbox),
+     6     iwork(mcolbox),iwork(mrowbox),iwork(mcolleag),nboxes1,
+     7     iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     8     iperiodtemp,fright,map(mmapnorth), map(mmapsouth),
+     9     map(mmapeast),  map(mmapwest), map(mwint),
+     1     iwork(mflageast), iwork(mflagnorth),
+     2     iwork(mflagwest), iwork(mflagsouth),
+     3     iwork(mlocalonoff))
+
+
+        if(iperiod .eq. 7 .or. iperiod .eq. 8 .or.
+     1     iperiod .eq. 9 .or. iperiod .eq. 10 .or.
+     2     iperiod .eq. 11)then
+
+        if(iperiod .eq. 7)then
+         call setbcs8dir(nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox),
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     4           work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     5           iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     6           iwork(msingletoponoff), iwork(msinglesideonoff),
+     7           hl, hr, hb, ht)
+
+        elseif(iperiod .eq. 8)then
+         call setbcs8neu(nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox), 
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     4           work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     5           iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     6           iwork(msingletoponoff), iwork(msinglesideonoff),
+     7           hl, hr, hb, ht)
+
+        elseif(iperiod .eq. 9)then
+         call setbcs8dirper(nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox),
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     4           work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     5           iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     6           iwork(msingletoponoff), iwork(msinglesideonoff),
+     7           hl, hr)
+
+        elseif(iperiod .eq. 10)then
+         call setbcs8dirneu(nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox),
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     4           work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     5           iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     6           iwork(msingletoponoff), iwork(msinglesideonoff),
+     7           hl, hr, hb, ht)
+
+        elseif(iperiod .eq. 11)then
+         call setbcs8neuper(nboxes1,nlev1,
+     1           iwork(mcolbox),iwork(mrowbox),
+     2           iwork(mchildbox),
+     3           iwork(mnblevel),iwork(mboxlev),iwork(mstartlev),
+     4           work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     5           iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     6           iwork(msingletoponoff), iwork(msinglesideonoff),
+     7           hl, hr)
+        endif
+
+
+        call boundfmm8(nlev1,ndeg,work(mxnodes),work(mwnodes),
+     1     work(mtemp),work(mzs),work(mzseast),work(mzswest),
+     1     work(mzsnorth),work(mzssouth), work(mcomp),nterms,nnodes,pot,
+     2     work(mpole),work(locexp),work(iexpn),work(iexps),
+     3     work(iexpe),work(iexpw),
+     2     work(iexpnbig),work(iexpsbig),
+     3     work(iexpebig),work(iexpwbig),
+     3     work(mchoose),
+     4     iwork(mlevelbox),iwork(mparentbox),
+     5     iwork(mchildbox),iwork(mcolbox),iwork(mrowbox),
+     6     iwork(mcolleag),nboxes1,iwork(mnblevel),iwork(mboxlev),
+     7     iwork(mstartlev),work(mcoeffstop),
+     8     work(mcoeffsside),work(mcoeffdtop),work(mcoeffdside),
+     9     work(mftops),work(mfsides),work(mftopd),work(mfsided),
+     1     map(medbletop), map(medbleside),  map(mesngletop),
+     2     map(mesngleside), map(mwdbletop), map(mwdbleside),
+     3     map(mwsngletop), map(mwsngleside), map(mndbletop),
+     4     map(mndbleside), map(mnsngletop),  map(mnsngleside),
+     5     map(msdbletop), map(msdbleside), map(mssngletop),
+     6     map(mssngleside),iwork(mflageast),iwork(mflagnorth),
+     7     iwork(mflagwest),iwork(mflagsouth),iwork(mlocalonoff),
+     8     iwork(mdoubletoponoff), iwork(mdoublesideonoff),
+     9     iwork(msingletoponoff), iwork(msinglesideonoff))
+
+        endif
+
+       endif
+      return
+      end
+
+
+
+
+
+
+c********************************************************************
+c     the main subroutine of multipole algorithm. two passes are
+c     executed. in the first (upward) pass, multipole expansions for
+c     all boxes at all levels are computed. in the second (downward) 
+c     pass, interactions are computed at successively finer levels.
+c
+c     input:
+c
+c     nlev is the finest level
+c
+c     ndeg is the degree of the approximating polynomial
+c
+c     xnodes is a blank array that is set to 
+c            the nodes in the plane wave expansions
+c
+c     wnodes is a blank array that is set to 
+c            the weights in the plane wave expansions
+c
+c     temp  is a blank array that is set to 
+c            the ratio of the weights and nodes
+c
+c     zs represents the shifts for the exponential expansions
+c
+c     comp is a blank array
+c
+c     nterms is the order of the multipole expansions
+c
+c     nnodes is the order of the plane wave expansions
+c
+c     mpole is the array that the multipole expansions are stored in
+c
+c     locexp is the array that the local expansions are stored in
+c
+c     expn is the array that the north plane wave expansions are stored in
+c
+c     exps is the array that the south plane wave expansions are stored in
+c
+c     expe is the array that the east plane wave expansions are stored in
+c
+c     expw is the array that the west plane wave expansions are stored in
+c
+c     c is the array that the binomial coefficients are stored in
+c
+c     coeffs is the array that the basis function coefficients are stored in
+c
+c     levelbox is an array determining the level of each box
+c
+c     iparentbox denotes the parent of each box
+c
+c     ichildbox denotes the four children of each box
+c
+c     icolbox denotes the column of each box
+c
+c     irowbox denotes the row of each box
+c
+c     icolleagbox denotes the colleagues of a given box
+c
+c     nboxes is the total number of boxes
+c
+c     nblevel is the total number of boxes per level
+c
+c     iboxlev is the array in which the boxes are arranged
+c
+c     istartlev is the pointer to where each level begins in the
+c               iboxlev array
+c
+c     iperiod denotes which of the boundary cases we are in
+c
+c     fright is the right hand side defined on the old grid
+c
+c     mapnorth is the array containing the north btosfar map
+c
+c     mapsouth is the array containing the south btosfar map
+c
+c     mapeast is the array containing the east btosfar map
+c
+c     mapwest is the array containing the west btosfar map
+c
+c     wint is the array containing the polynomial to multipole weights
+c
+c     output:
+c  
+c     pot represents the solution (defined on the same tree as the
+c         right hand side on input)
+c
+c********************************************************************
+      subroutine adapfmm8(nlev,ndeg,xnodes,wnodes,temp, 
+     1         zs,zseast,zswest,zsnorth,zssouth,
+     2         comp,nterms,nnodes,pot,
+     3         mpole,locexp,expn,exps,expe,expw,
+     4         expnbig,expsbig,expebig,expwbig,
+     5         c,coeffs,levelbox,iparentbox,ichildbox,
+     6         icolbox,irowbox,icolleagbox,nboxes,
+     7         nblevel,iboxlev,istartlev,iperiod,
+     8         fright,mapnorth, mapsouth, mapeast,
+     9         mapwest, wint,iflageast,iflagnorth,
+     1         iflagwest,iflagsouth,localonoff)
+      implicit none
+c-----global variables
+      integer *4  nlev,nterms
+      integer *4  ndeg
+      integer *4  nnodes, nboxes
+      integer *4  icolbox(1), irowbox(1)
+      integer *4  nblevel(0:1), iboxlev(1)
+      integer *4  istartlev(0:1)
+      integer *4  levelbox(1), iparentbox(1)
+      integer *4  ichildbox(4,1), icolleagbox(9,1)
+      integer *4  iflageast(1), iflagnorth(1)
+      integer *4  iflagwest(1), iflagsouth(1)
+      integer *4  localonoff(1)
+      real *8  fright(64,1)
+      real *8  xnodes(1), wnodes(1)
+      real *8  c(2*nterms,2*nterms)
+      real *8  pot(64,1)
+      real *8  coeffs(0:ndeg,0:ndeg,1)
+      real *8  comp(nnodes,0:nterms)
+      real *8  temp(1)
+      complex *16  mpole(0:nterms,1),locexp(0:nterms,1)
+      complex *16  expn(0:nnodes,1), exps(0:nnodes,1)
+      complex *16  expe(0:nnodes,1), expw(0:nnodes,1)
+      complex *16  expnbig(0:nnodes,1), expsbig(0:nnodes,1)
+      complex *16  expebig(0:nnodes,1), expwbig(0:nnodes,1)
+      complex *16  zs(-3:3,-3:3,0:1)
+      complex *16  zseast(-3:3,-3:3,0:1)
+      complex *16  zswest(-3:3,-3:3,0:1)
+      complex *16  zsnorth(-3:3,-3:3,0:1)
+      complex *16  zssouth(-3:3,-3:3,0:1)
+      complex *16  wint(0:nterms,0:7,0:7)
+c-----local variables
+      integer *4  ifar1, ifar2, ifar3 
+      integer *4  iclose1, iclose2, iperiod
+      integer *4  i, j, ip
+      integer *4  iout, ii, jj, ier
+      integer *4  ic1,ic2,ic3,ic4
+      integer *4  inall(6),iynall(6),in12(4),iy12(4)
+      integer *4  isall(6),iysall(6),is34(4),iy34(4)
+      integer *4  nnall,nn12,nsall,ns34
+      integer *4  ieall(4),iyeall(4),ie13(2),iy13(2)
+      integer *4  ie1(1),iy1(1),ie3(1),iy3(1)
+      integer *4  iwall(4),iywall(4),iw24(2),iy24(2)
+      integer *4  iw2(1),iy2(1),iw4(1),iy4(1)
+      integer *4  neall,ne13,ne1,ne3,nwall,nw24,nw2,nw4
+      integer *4  nside, nsidemark
+      integer *4  inbig12(3), isbig34(3)
+      integer *4  iebig13(1), iwbig24(1)
+      integer *4  iebig1(1), iwbig2(1)
+      integer *4  iebig3(1), iwbig4(1)
+      integer *4  nb, istart, iend
+      real *8  xp(64),yp(64)
+      real *8  xlength
+      real *8  t(3), scale(0:100), temp1, tlog(36), tlogs(36)
+      real *8  sum, zero
+      real *8  scaletemp
+      real *8  wbtos(12,64,36)
+      real *8  wstob(12,64,36)
+      real *8  w(9,64,36), x
+      real *8  pi
+      complex *16  zshift, zpot
+      complex *16  ftarget1, ftarget2, ftarget3, imag
+      complex *16  b(0:50)
+      complex *16  mexnall(0:50)
+      complex *16  mexn12(0:50)
+      complex *16  mexsall(0:50)
+      complex *16  mexs34(0:50)
+      complex *16  mexeall(0:50)
+      complex *16  mexe13(0:50)
+      complex *16  mexe1(0:50)
+      complex *16  mexe3(0:50)
+      complex *16  mexwall(0:50)
+      complex *16  mexw24(0:50)
+      complex *16  mexw2(0:50)
+      complex *16  mexw4(0:50)
+      complex *16  spin
+      complex *16  expnall(0:60), expsall(0:60)
+      complex *16  expeall(0:60), expwall(0:60)
+      complex *16  mapnorth(0:nnodes,36), mapwest(0:nnodes,36)
+      complex *16  mapsouth(0:nnodes,36), mapeast(0:nnodes,36)
+      complex *16  tempeast(64,40), tempnorth(64,40)
+      complex *16  tempwest(64,40), tempsouth(64,40)
+      complex *16  tempshiftwest, tempshiftnorth
+      complex *16  tempshifteast, tempshiftsouth
+      data zero/0.0d0/
+      data imag/(0.0d0,1.0d0)/
+      pi = dacos(-1.0d0)
+
+      if(iperiod .eq. 0 .or. iperiod .eq. 1)then
+        scaletemp = 1.0d0
+      elseif(iperiod .eq. 2)then 
+        scaletemp = 2.0d0
+      endif
+
+c     let's initially set the potential to zero:
+      do ii = 1, nboxes
+       do jj = 1, 64
+         pot(jj,ii) = 0.0d0
+       end do
+      end do
+
+      do ii = 1, nboxes
+        iflageast(ii) = 0
+        iflagwest(ii) = 0
+        iflagnorth(ii) = 0
+        iflagsouth(ii) = 0
+        localonoff(ii) = 0
+      end do
+
+c     initialize the localonoff switch to the correct values
+      if(iperiod .eq. 0 .or. iperiod .eq. 1)then
+       do ii = 1, nboxes
+          localonoff(ii) = 1
+       end do
+      elseif(iperiod .eq. 2)then
+       nside = 1
+       do jj = 0, nlev
+         istart = istartlev(jj)
+         iend = istartlev(jj) + nblevel(jj) - 1
+         if(nside .eq. 1)then
+           nsidemark = 1
+         else
+           nsidemark = nside / 2
+         endif
+         do ii = istart, iend
+           i = iboxlev(ii)
+           if(irowbox(i) .le. nsidemark .and.
+     1        icolbox(i) .le. nsidemark)then
+             localonoff(i) = 1
+           endif
+         end do
+        nside = 2 * nside
+       end do
+      endif
+
+
+c     call a set of routines that will precompute various 
+c     things needed later in the adapfmm, mkcoeffs, and
+c     mkshifts routines.
+      call pwts4(xnodes, wnodes, nnodes)
+
+      call precompute(comp,nterms,nnodes,
+     1  xnodes,wnodes, temp,c, sum)
+
+      do i = 1, 8
+        xp((i-1)*8+1) = dcos(15d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+2) = dcos(13d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+3) = dcos(11d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+4) = dcos(9d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+5) = dcos(7d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+6) = dcos(5d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+7) = dcos(3d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+8) = dcos(1d0*pi/16.0d0) / 2.0d0
+
+        yp(i) =   dcos(15d0*pi/16.0d0) / 2.0d0
+        yp(8+i) = dcos(13d0*pi/16.0d0) / 2.0d0
+        yp(16+i) = dcos(11d0*pi/16.0d0)/ 2.0d0
+        yp(24+i) = dcos(9d0*pi/16.0d0) / 2.0d0
+        yp(32+i) = dcos(7d0*pi/16.0d0) / 2.0d0
+        yp(40+i) = dcos(5d0*pi/16.0d0) / 2.0d0
+        yp(48+i) = dcos(3d0*pi/16.0d0) / 2.0d0
+        yp(56+i) = dcos(1d0*pi/16.0d0) / 2.0d0
+      enddo
+
+      do jj = 1, 64
+        tempshiftwest = 2.0d0*(xp(jj) + imag*yp(jj))
+        tempshifteast = -tempshiftwest
+        tempshiftnorth = imag*tempshiftwest
+        tempshiftsouth = -tempshiftnorth
+        do ii = 1, nnodes
+          tempeast(jj,ii) = -cdexp(xnodes(ii) * tempshifteast)
+          tempwest(jj,ii) = -cdexp(xnodes(ii) * tempshiftwest)
+          tempnorth(jj,ii) = -cdexp(xnodes(ii) * tempshiftnorth)
+          tempsouth(jj,ii) = -cdexp(xnodes(ii) * tempshiftsouth)
+        end do
+      end do
+
+
+c     call a routine that will generate the array zs
+c     which will be needed later on when shifting the
+c     exponential expansions.
+      call mkshifts2d_ps(xnodes,nnodes,zs,
+     1    zseast,zswest,zsnorth,zssouth)
+
+
+      call mkcoeffs8(coeffs,fright,nlev,
+     1    ichildbox, nblevel, iboxlev, istartlev)
+
+      call mkcolls(icolbox,
+     1    irowbox,icolleagbox,nboxes,nlev,
+     2    iparentbox,ichildbox,nblevel,
+     3    iboxlev, istartlev,iperiod)
+
+c
+c     create scale array
+c
+      x = 1.0d0 / scaletemp
+      do i = 0,nlev
+       scale(i) = x
+       x = x*2.0d0
+      enddo
+
+c     initialize the arrays of weights for all of the local coefficients.  w is 
+c     the array for local interactions between boxes of the same size, 
+c     w36adapbtos is
+c     the array for local interactions going from the big to small case, and 
+c     w36adapstob is the array for local interactions going from the small to
+c     big case.
+      call w36adapbtos(wbtos)
+      call w36adapstob(wstob)
+      call weights36(w)
+
+c**********************************************************************
+c
+c     =============================================
+c     upward pass
+c     =============================================
+c
+c-----initialize multipole and local expansions to zero.
+c
+      do i = 1, nboxes
+       do j = 0, nterms
+         mpole(j,i) = zero 
+         locexp(j,i) = zero 
+       end do
+       do j = 0, nnodes
+         expe(j,i) = zero
+         expw(j,i) = zero
+         expn(j,i) = zero
+         exps(j,i) = zero
+         expebig(j,i) = zero
+         expwbig(j,i) = zero
+         expnbig(j,i) = zero
+         expsbig(j,i) = zero
+       end do
+      end do
+
+
+      
+      do i = nlev, 0, -1
+         xlength = 1.0d0/scale(i)
+         istart = istartlev(i)
+         iend = istart + nblevel(i) - 1
+         do ii = istart,iend
+            j = iboxlev(ii)
+            if(ichildbox(1,j) .lt. 0)then
+
+             call multipole(coeffs(0,0,j),ndeg,nterms,xlength,
+     1                                      mpole(0,j), wint)
+            elseif(ichildbox(1,j) .gt. 0)then
+
+             ic1 = ichildbox(1,j)
+             ic2 = ichildbox(2,j)
+             ic3 = ichildbox(3,j)
+             ic4 = ichildbox(4,j)
+
+             call childpar_ps(mpole(0,j),
+     1         mpole(0,ic1),mpole(0,ic2),
+     2         mpole(0,ic3),mpole(0,ic4),
+     3         nterms, c)
+            endif
+         end do
+      end do
+
+c     for the periodic case, let's call a routine that 
+c     will set the initial local expansion to the correct 
+c     value to account for the periodicity in the far field terms:
+      if (iperiod .eq. 1 .or. iperiod .eq. 2)then
+c      set iflag2 to zero to indicate that we are 
+c      working with the potential and not the 
+c      electric field.
+        istart = istartlev(0)
+        j = iboxlev(istart)
+        call psppin(ier)
+        call psppta(mpole(0,j),locexp(0,j), nterms)
+      endif
+
+
+c     =============================================
+c     downward pass
+c     =============================================
+      xlength = scaletemp
+      do i = 0,nlev
+c        first let's set up an array of scaling scale
+c        factors needed in the local interaction:
+         if(iperiod .eq. 0 .or. iperiod .eq. 1)then
+          t(1)  =  4.0d0**(i+1)
+          t(2)  =  1.0d0/2.0d0**(i+1)
+          t(3)  =  4.0d0 * t(1)
+
+          temp1 =  2.0d0 * dlog(t(2))/pi
+          tlog(1)  =  temp1 
+          tlog(2)  =  0.0d0
+          tlog(3)  =  0.0d0
+          tlog(4)  = -temp1 / 3.0d0
+          tlog(5)  =  0.0d0
+          tlog(6)  = -temp1 / 3.0d0
+          tlog(7)  =  0.0d0
+          tlog(8)  =  0.0d0
+          tlog(9)  =  0.0d0
+          tlog(10) =  0.0d0
+          tlog(11) = -temp1 /15.0d0
+          tlog(12) =  0.0d0
+          tlog(13) =  temp1 /9.0d0
+          tlog(14) =  0.0d0
+          tlog(15) = -temp1 /15.0d0
+          tlog(16) =  0.0d0
+          tlog(17) =  0.0d0
+          tlog(18) =  0.0d0
+          tlog(19) =  0.0d0
+          tlog(20) =  0.0d0
+          tlog(21) =  0.0d0
+          tlog(22) = -temp1 /35.0d0
+          tlog(23) =  0.0d0
+          tlog(24) =  temp1 /45.0d0
+          tlog(25) =  0.0d0
+          tlog(26) =  temp1 /45.0d0
+          tlog(27) =  0.0d0
+          tlog(28) = -temp1 /35.0d0
+          tlog(29) =  0.0d0
+          tlog(30) =  0.0d0
+          tlog(31) =  0.0d0
+          tlog(32) =  0.0d0
+          tlog(33) =  0.0d0
+          tlog(34) =  0.0d0
+          tlog(35) =  0.0d0
+          tlog(36) =  0.0d0
+
+          temp1 =  2.0d0 * dlog(.50d0*t(2))/pi
+          tlogs(1)  =  temp1
+          tlogs(2)  =  0.0d0
+          tlogs(3)  =  0.0d0
+          tlogs(4)  = -temp1 / 3.0d0
+          tlogs(5)  =  0.0d0
+          tlogs(6)  = -temp1 / 3.0d0
+          tlogs(7)  =  0.0d0
+          tlogs(8)  =  0.0d0
+          tlogs(9)  =  0.0d0
+          tlogs(10) =  0.0d0
+          tlogs(11) = -temp1 /15.0d0
+          tlogs(12) =  0.0d0
+          tlogs(13) =  temp1 /9.0d0
+          tlogs(14) =  0.0d0
+          tlogs(15) = -temp1 /15.0d0
+          tlogs(16) =  0.0d0
+          tlogs(17) =  0.0d0
+          tlogs(18) =  0.0d0
+          tlogs(19) =  0.0d0
+          tlogs(20) =  0.0d0
+          tlogs(21) =  0.0d0
+          tlogs(22) = -temp1 /35.0d0
+          tlogs(23) =  0.0d0
+          tlogs(24) =  temp1 /45.0d0
+          tlogs(25) =  0.0d0
+          tlogs(26) =  temp1 /45.0d0
+          tlogs(27) =  0.0d0
+          tlogs(28) = -temp1 /35.0d0
+          tlogs(29) =  0.0d0
+          tlogs(30) =  0.0d0
+          tlogs(31) =  0.0d0
+          tlogs(32) =  0.0d0
+          tlogs(33) =  0.0d0
+          tlogs(34) =  0.0d0
+          tlogs(35) =  0.0d0
+          tlogs(36) =  0.0d0
+
+         elseif(iperiod .eq. 2)then
+          t(1)  =  4.0d0**i
+          t(2)  =  1.0d0/2.0d0**i
+          t(3)  =  4.0d0 * t(1)
+
+          temp1 =  2.0d0 * dlog(t(2))/pi
+          tlog(1)  =  temp1
+          tlog(2)  =  0.0d0
+          tlog(3)  =  0.0d0
+          tlog(4)  = -temp1 / 3.0d0
+          tlog(5)  =  0.0d0
+          tlog(6)  = -temp1 / 3.0d0
+          tlog(7)  =  0.0d0
+          tlog(8)  =  0.0d0
+          tlog(9)  =  0.0d0
+          tlog(10) =  0.0d0
+          tlog(11) = -temp1 / 15.0d0
+          tlog(12) =  0.0d0
+          tlog(13) =  temp1 / 9.0d0
+          tlog(14) =  0.0d0
+          tlog(15) = -temp1 / 15.0d0
+          tlog(16) =  0.0d0
+          tlog(17) =  0.0d0
+          tlog(18) =  0.0d0
+          tlog(19) =  0.0d0
+          tlog(20) =  0.0d0
+          tlog(21) =  0.0d0
+          tlog(22) = -temp1 / 35.0d0
+          tlog(23) =  0.0d0
+          tlog(24) =  temp1 / 45.0d0
+          tlog(25) =  0.0d0
+          tlog(26) =  temp1 / 45.0d0
+          tlog(27) =  0.0d0
+          tlog(28) = -temp1 / 35.0d0
+          tlog(29) =  0.0d0
+          tlog(30) =  0.0d0
+          tlog(31) =  0.0d0
+          tlog(32) =  0.0d0
+          tlog(33) =  0.0d0
+          tlog(34) =  0.0d0
+          tlog(35) =  0.0d0
+          tlog(36) =  0.0d0
+
+          temp1 =  2.0d0 * dlog(.50d0*t(2))/pi
+          tlogs(1)  =  temp1
+          tlogs(2)  =  0.0d0
+          tlogs(3)  =  0.0d0
+          tlogs(4)  = -temp1 / 3.0d0
+          tlogs(5)  =  0.0d0
+          tlogs(6)  = -temp1 / 3.0d0
+          tlogs(7)  =  0.0d0
+          tlogs(8)  =  0.0d0
+          tlogs(9)  =  0.0d0
+          tlogs(10) =  0.0d0
+          tlogs(11) = -temp1 / 15.0d0
+          tlogs(12) =  0.0d0
+          tlogs(13) =  temp1 / 9.0d0
+          tlogs(14) =  0.0d0
+          tlogs(15) = -temp1 / 15.0d0
+          tlogs(16) =  0.0d0
+          tlogs(17) =  0.0d0
+          tlogs(18) =  0.0d0
+          tlogs(19) =  0.0d0
+          tlogs(20) =  0.0d0
+          tlogs(21) =  0.0d0
+          tlogs(22) = -temp1 / 35.0d0
+          tlogs(23) =  0.0d0
+          tlogs(24) =  temp1 / 45.0d0
+          tlogs(25) =  0.0d0
+          tlogs(26) =  temp1 / 45.0d0
+          tlogs(27) =  0.0d0
+          tlogs(28) = -temp1 / 35.0d0
+          tlogs(29) =  0.0d0
+          tlogs(30) =  0.0d0
+          tlogs(31) =  0.0d0
+          tlogs(32) =  0.0d0
+          tlogs(33) =  0.0d0
+          tlogs(34) =  0.0d0
+          tlogs(35) =  0.0d0
+          tlogs(36) =  0.0d0
+
+         endif
+
+         istart = istartlev(i)
+         iend = istart + nblevel(i) - 1
+         do ii = istart,iend
+
+           j = iboxlev(ii)
+           if(ichildbox(1,j) .gt. 0)then
+c          if the box has children, do all of the work involving local 
+c          expansions here.
+
+            ic1 = ichildbox(1,j)
+            ic2 = ichildbox(2,j)
+            ic3 = ichildbox(3,j)
+            ic4 = ichildbox(4,j)
+
+            call parentchild_ps(locexp(0,j),locexp(0,ic1),
+     1       locexp(0,ic2),locexp(0,ic3),
+     2       locexp(0,ic4),nterms,c,localonoff(j))
+
+            call mkexp2d_ps(j,nterms,mpole,
+     1       nnodes,mexnall,mexn12,mexsall,mexs34,mexeall,
+     2       mexe13,mexe1,mexe3,mexwall,mexw24,mexw2,mexw4,
+     3       zs,comp,wnodes,scale(i+1),sum,temp,
+     4       ichildbox)
+ 
+
+            call mklists_ps(j,inall,nnall,iynall,
+     1       in12,nn12,iy12,
+     2       isall,nsall,iysall,is34,ns34,iy34,
+     3       ieall,neall,iyeall,ie13,ne13,iy13,
+     4       iwall,nwall,iywall,iw24,nw24,iy24,
+     5       iw2,iy2,nw2,iw4,iy4,nw4,
+     6       ie1,iy1,ne1,ie3,iy3,ne3,
+     7       inbig12,isbig34,iebig13,iwbig24,
+     8       iebig1, iwbig2, iebig3, iwbig4,
+     9       icolleagbox,ichildbox,
+     1       icolbox, irowbox, iperiod,
+     2       iflageast, iflagwest, iflagnorth,
+     3       iflagsouth, localonoff)
+
+
+            call processno_ps(expn,inall,nnall,iynall,
+     1       in12,nn12,iy12,mexnall,mexn12,zs,nnodes,
+     2       inbig12,expnbig,zsnorth,localonoff)
+            call processso_ps(exps,isall,nsall,iysall,
+     1       is34,ns34,iy34,mexsall,mexs34,zs,nnodes,
+     2       isbig34,expsbig,zssouth, localonoff)
+            call processea_ps(expe,ieall,neall,iyeall,
+     1       ie13,ne13,iy13,ie1,ne1,iy1,ie3,ne3,iy3,
+     2       mexeall,mexe13,mexe1,mexe3,zs,nnodes,
+     3       iebig13,expebig,iebig1,iebig3,zseast,
+     4       localonoff)
+            call processwe_ps(expw,iwall,nwall,iywall,
+     1       iw24,nw24,iy24,iw2,nw2,iy2,iw4,nw4,iy4,
+     2       mexwall,mexw24,mexw2,mexw4,zs,nnodes,
+     3       iwbig24,expwbig,iwbig2,iwbig4,zswest,
+     4       localonoff)
+
+
+           elseif (ichildbox(1,j) .lt. 0)then
+c           now let's scan the colleagues
+ 
+            do 250 nb = 1, 9
+              iout = icolleagbox(nb,j)
+              if(iout .lt. 0)goto 250
+              if(ichildbox(1,iout) .lt. 0)then
+c               the colleague is childless, so just do the
+c               local interaction as in the uniform case
+c               (just outgoing).
+
+                call colloc8(pot(1,iout),coeffs(0,0,j),ndeg,
+     1                       nb,t,tlog,w,localonoff(iout))
+
+
+              elseif(ichildbox(1,iout) .gt. 0)then
+c               colleague has children (have to go to big to small and
+c               small to big stuff)
+
+                ic1 = ichildbox(2,iout)
+                ic2 = ichildbox(3,iout)
+                ic3 = ichildbox(1,iout)
+                ic4 = ichildbox(4,iout)
+
+c              form the four expansions needed in the
+c              big to small and small to big process.
+
+
+                call mkexpbtos8(coeffs(0,0,j), expnall,
+     1           expsall,expeall,expwall, mapsouth,mapnorth,
+     2           mapeast,mapwest, sum, xlength, nnodes)
+
+
+                if(nb .eq. 1)then
+c                 colleague with small boxes is in the lower left corner,
+c                 one box is not well separated and 3 are.
+ 
+                  ifar1 = ic4
+                  ifar2 = ic2
+                  ifar3 = ic3
+                  iclose1 = ic1
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                       ndeg,1,t,tlogs,wstob,localonoff(j))
+ 
+ 
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                     ndeg,1,t,tlog,wbtos,localonoff(iclose1))
+
+
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (-2.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1), 
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+
+                  ftarget2 = (-1.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+
+ 
+                  spin = 1.0d0
+                  ftarget3 = (-2.0d0,-1.0d0)
+                  call btosfar_ps(expw(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar3))
+
+ 
+
+                elseif(nb .eq. 2)then
+c                 colleague with small boxes is below this box
+c                 two boxes are not well separated and two are.
+
+                  ifar1 = ic4
+                  ifar2 = ic2
+                  iclose1 = ic3
+                  iclose2 = ic1
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                          ndeg,2,t,tlogs,wstob,localonoff(j))
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose2),
+     1                          ndeg,3,t,tlogs,wstob,localonoff(j))
+ 
+
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                        ndeg,2,t,tlog,wbtos,localonoff(iclose1))
+                  call btosloc8(pot(1,iclose2),coeffs(0,0,j),
+     1                        ndeg,3,t,tlog,wbtos,localonoff(iclose2))
+ 
+
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (0.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+
+                  ftarget2 = (1.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+ 
+                elseif(nb .eq. 3)then
+c                 colleague with small boxes is in the lower right corner,
+c                 one box is not well separated and 3 are.
+
+                  iclose1 = ic3
+                  ifar1 = ic4  
+                  ifar2 = ic2 
+                  ifar3 = ic1
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                          ndeg,4,t,tlogs,wstob,localonoff(j))
+
+
+c                 first do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                      ndeg,4,t,tlog,wbtos,localonoff(iclose1))
+
+
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (2.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1), 
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2), 
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+ 
+                  spin = -1.0d0
+                  ftarget3 = (3.0d0,-1.0d0)
+                  call btosfar_ps(expe(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar3))
+
+            
+                elseif(nb .eq. 4)then
+c                 colleague with small boxes is left of this box
+c                 two boxes are not well separated and two are.
+ 
+ 
+                  iclose1 = ic2
+                  iclose2 = ic1
+                  ifar1 = ic4 
+                  ifar2 = ic3
+ 
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                          ndeg,5,t,tlogs,wstob,localonoff(j))
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose2),
+     1                          ndeg,7,t,tlogs,wstob,localonoff(j))
+       
+
+c                 next do the local work, big to small 
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                          ndeg,5,t,tlog,wbtos,localonoff(iclose1))
+                  call btosloc8(pot(1,iclose2),coeffs(0,0,j),
+     1                          ndeg,7,t,tlog,wbtos,localonoff(iclose2))
+ 
+
+c                 finally do the far work, big to small
+                  spin = 1.0d0
+                  ftarget1 = (-2.0d0,0.0d0)
+                  call btosfar_ps(expw(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (-2.0d0,1.0d0)
+                  call btosfar_ps(expw(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 6)then
+c                 colleague with small boxes is right this box
+c                 two boxes are not well separated and two are.
+            
+                  ifar1 = ic1
+                  ifar2 = ic2
+                  iclose1 = ic3
+                  iclose2 = ic4
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                         ndeg,8,t,tlogs,wstob,localonoff(j))
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose2),
+     1                         ndeg,6,t,tlogs,wstob,localonoff(j))
+ 
+
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                         ndeg,8,t,tlog,wbtos,localonoff(iclose1))
+                  call btosloc8(pot(1,iclose2),coeffs(0,0,j),
+     1                         ndeg,6,t,tlog,wbtos,localonoff(iclose2))
+ 
+
+c                 finally do the far work, big to small
+                  spin = -1.0d0
+                  ftarget1 = (3.0d0,1.0d0)
+                  call btosfar_ps(expe(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,0.0d0)
+                  call btosfar_ps(expe(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 7)then
+c                 colleague with small boxes is in the upper left corner,
+c                 one box is not well separated and 3 are.
+ 
+                  iclose1 = ic2
+                  ifar1 = ic4
+                  ifar2 = ic3
+                  ifar3 = ic1
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                         ndeg,9,t,tlogs,wstob,localonoff(j))
+
+
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                         ndeg,9,t,tlog,wbtos,localonoff(iclose1))
+ 
+
+c                 finally do the far work, big to small
+                  spin = 1.0d0
+                  ftarget1 = (-2.0d0,2.0d0)
+                  call btosfar_ps(expw(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar1))
+
+ 
+                  spin = imag
+                  ftarget2 = (-2.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+
+ 
+                  ftarget3 = (-1.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar3))
+
+
+                elseif(nb .eq. 8)then
+c                 colleague with small boxes is above this box
+c                 two boxes are not well separated and two are.
+
+                  iclose1 = ic4
+                  iclose2 = ic2
+                  ifar1 = ic3
+                  ifar2 = ic1
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                         ndeg,10,t,tlogs,wstob,localonoff(j))
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose2),
+     1                         ndeg,11,t,tlogs,wstob,localonoff(j))
+
+
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j),
+     1                         ndeg,10,t,tlog,wbtos,localonoff(iclose1))
+                  call btosloc8(pot(1,iclose2),coeffs(0,0,j),
+     1                         ndeg,11,t,tlog,wbtos,localonoff(iclose2))
+
+
+c                 finally do the far work, big to small
+                  spin = imag
+                  ftarget1 = (0.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (1.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 9)then
+c                 colleague with small boxes is in the upper right corner,
+c                 one box is not well separated and 3 are.
+
+                  iclose1 = ic4
+                  ifar1 = ic3  
+                  ifar2 = ic1
+                  ifar3 = ic2
+
+c                 first do the local work, small to big
+                  call stobloc8(pot(1,j),coeffs(0,0,iclose1),
+     1                        ndeg,12,t,tlogs,wstob,localonoff(j))
+
+
+c                 next do the local work, big to small
+                  call btosloc8(pot(1,iclose1),coeffs(0,0,j), 
+     1                      ndeg,12,t,tlog,wbtos,localonoff(iclose1))
+ 
+
+c                 finally do the far work, big to small
+                  spin = imag
+                  ftarget1 = (2.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+ 
+                  spin = -1.0d0
+                  ftarget3 = (3.0d0,2.0d0)
+                  call btosfar_ps(expe(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar3))
+                endif
+              endif
+250         continue
+           endif
+         end do
+
+c        for boxes with children, convert the exponential expansions
+c        to one local expansion:
+         do jj = istart,iend
+          j = iboxlev(jj)
+          if(ichildbox(1,j) .gt. 0 .and. localonoff(j) .eq. 1)then
+
+              do ii = 1, 4
+                ic1 = ichildbox(ii,j)
+                  call exp4local(b,nterms,nnodes,expw(0,ic1),
+     1               exps(0,ic1), expe(0,ic1), expn(0,ic1),comp)
+                  call addexp(b,locexp(0,ic1),nterms)
+              end do
+
+          elseif((ichildbox(1,j) .lt. 0) .and. localonoff(j) .eq. 1)then
+c          evaluate the exponential expansions at the target points
+
+               call expbig4eval(pot(1,j),nnodes,expwbig(0,j),
+     1           expsbig(0,j), expebig(0,j), expnbig(0,j),
+     2           iflageast(j),iflagwest(j),
+     3           iflagnorth(j),iflagsouth(j),tempeast,
+     4           tempnorth, tempwest, tempsouth)
+          endif
+         end do
+      xlength = xlength / 2.0d0
+      enddo
+
+      do jj = 0, nlev
+       istart = istartlev(jj)
+       iend = istartlev(jj) + nblevel(jj) - 1
+        do ii = istart, iend
+          i = iboxlev(ii)
+          if(ichildbox(1,i) .lt. 0 .and. localonoff(i) .eq. 1)then
+           do ip = 1,64
+             zshift = dcmplx(xp(ip),yp(ip))
+             zpot = zero
+              do j = 1,nterms
+                zpot = zshift*zpot + locexp(nterms-j,i)
+              end do
+             pot(ip,i) = pot(ip,i) + dreal(zpot)
+           end do
+          endif
+        end do
+      end do
+      return
+      end
+
+
+
+
+
+
+c********************************************************************
+c     the main subroutine of multipole algorithm. two passes are
+c     executed. in the first (upward) pass, multipole expansions for
+c     all boxes at all levels are computed. in the second (downward) 
+c     pass, interactions are computed at successively finer levels.
+c
+c********************************************************************
+      subroutine boundfmm8(nlev,ndeg,xnodes,wnodes,temp,
+     1     zs,zseast,zswest, zsnorth,zssouth,
+     1     comp,nterms,nnodes,pot,
+     2     mpole,locexp,expn,exps,expe,expw,
+     2     expnbig,expsbig,expebig,expwbig,
+     3     c,levelbox,iparentbox,ichildbox,
+     4     icolbox,irowbox,icolleagbox,nboxes,
+     5     nblevel,iboxlev,istartlev,
+     6     coeffstop,coeffsside,coeffdtop,
+     7     coeffdside, ftop,fside,ftopd,fsided,
+     8     edbletop, edbleside,  esngletop,
+     9     esngleside,  wdbletop, wdbleside,
+     1     wsngletop,  wsngleside, ndbletop,
+     2     ndbleside, nsngletop,  nsngleside,
+     3     sdbletop, sdbleside, ssngletop,
+     4     ssngleside,iflageast,iflagnorth,
+     5     iflagwest,iflagsouth,localonoff,
+     8     doubletoponoff, doublesideonoff,
+     9     singletoponoff, singlesideonoff)
+      implicit none 
+c-----global variables 
+      integer *4  nlev,nterms 
+      integer *4  ndeg
+      integer *4  nnodes, nboxes
+      integer *4  icolbox(1), irowbox(1)
+      integer *4  nblevel(0:1), iboxlev(1)
+      integer *4  istartlev(0:1)
+      integer *4  levelbox(1), iparentbox(1)
+      integer *4  ichildbox(4,1), icolleagbox(9,1)
+      integer *4  iflageast(1), iflagnorth(1)
+      integer *4  iflagwest(1), iflagsouth(1)
+      integer *4  localonoff(1)
+      integer *4  doubletoponoff(1), doublesideonoff(1)
+      integer *4  singletoponoff(1), singlesideonoff(1)
+      real *8  xnodes(1), wnodes(1)
+      real *8  c(2*nterms,2*nterms)
+      real *8  pot(64,1)
+      real *8  comp(nnodes,0:nterms), temp(1)
+      complex *16  mpole(0:nterms,1),locexp(0:nterms,1)
+      complex *16  dummy(0:60)
+      complex *16  expn(0:nnodes,1), exps(0:nnodes,1)
+      complex *16  expe(0:nnodes,1), expw(0:nnodes,1)
+      complex *16  expnbig(0:nnodes,1), expsbig(0:nnodes,1)
+      complex *16  expebig(0:nnodes,1), expwbig(0:nnodes,1)
+      complex *16  zs(-3:3,-3:3,0:1)
+      complex *16  zseast(-3:3,-3:3,0:1)
+      complex *16  zswest(-3:3,-3:3,0:1)
+      complex *16  zsnorth(-3:3,-3:3,0:1)
+      complex *16  zssouth(-3:3,-3:3,0:1)
+      complex *16  edbletop(0:nnodes,0:7)
+      complex *16  edbleside(0:nnodes,0:7)
+      complex *16  esngletop(0:nnodes,0:7)
+      complex *16  esngleside(0:nnodes,0:7)
+      complex *16  wdbletop(0:nnodes,0:7)
+      complex *16  wdbleside(0:nnodes,0:7)
+      complex *16  wsngletop(0:nnodes,0:7)
+      complex *16  wsngleside(0:nnodes,0:7)
+      complex *16  ndbletop(0:nnodes,0:7)
+      complex *16  ndbleside(0:nnodes,0:7)
+      complex *16  nsngleside(0:nnodes,0:7)
+      complex *16  nsngletop(0:nnodes,0:7)
+      complex *16  sdbletop(0:nnodes,0:7)
+      complex *16  sdbleside(0:nnodes,0:7)
+      complex *16  ssngletop(0:nnodes,0:7)
+      complex *16  ssngleside(0:nnodes,0:7)
+c-----local variables
+      integer *4  iperiod
+      integer *4  i, j, ip
+      integer *4  ic1,ic2,ic3,ic4
+      integer *4  inall(6),iynall(6),in12(4),iy12(4)
+      integer *4  isall(6),iysall(6),is34(4),iy34(4)
+      integer *4  nnall,nn12,nsall,ns34
+      integer *4  ieall(4),iyeall(4),ie13(2),iy13(2)
+      integer *4  ie1(1),iy1(1),ie3(1),iy3(1)
+      integer *4  iwall(4),iywall(4),iw24(2),iy24(2)
+      integer *4  iw2(1),iy2(1),iw4(1),iy4(1)
+      integer *4  neall,ne13,ne1,ne3,nwall,nw24,nw2,nw4
+      integer *4  nside, nsidemark
+      integer *4  inbig12(3), isbig34(3)
+      integer *4  iebig13(1), iwbig24(1)
+      integer *4  iebig1(1), iwbig2(1)
+      integer *4  iebig3(1), iwbig4(1)
+      integer *4  nb, istart, iend
+      integer *4  iout, ii, jj
+      integer *4  ifar1, ifar2, ifar3
+      integer *4  iclose1, iclose2, ier
+      real *8  coeffdtop(0:7,1)
+      real *8  coeffdside(0:7,1)
+      real *8  coeffstop(0:7,1)
+      real *8  coeffsside(0:7,1)
+      real *8  xp(64),yp(64)
+      real *8  xlength
+      real *8  t(10), scale(0:100), temp1, temp2
+      real *8  sum, zero
+      real *8  wdside(9,64,8), wdtop(9,64,8)
+      real *8  wsside(9,64,8), wstop(9,64,8)
+      real *8  wdtopbtos(12,64,8), wdsidebtos(12,64,8)
+      real *8  wstopbtos(12,64,8), wssidebtos(12,64,8)
+      real *8  wdtopstob(12,64,8), wdsidestob(12,64,8)
+      real *8  wstopstob(12,64,8), wssidestob(12,64,8)
+      real *8  x
+      real *8  ftop(8,1), fside(8,1)
+      real *8  ftopd(8,1), fsided(8,1)
+      real *8  pi
+      complex *16  ftarget1, ftarget2, ftarget3, imag
+      complex *16  zshift, zpot
+      complex *16  b(0:50)
+      complex *16  mexnall(0:50)
+      complex *16  mexn12(0:50)
+      complex *16  mexsall(0:50)
+      complex *16  mexs34(0:50)
+      complex *16  mexeall(0:50)
+      complex *16  mexe13(0:50)
+      complex *16  mexe1(0:50)
+      complex *16  mexe3(0:50)
+      complex *16  mexwall(0:50)
+      complex *16  mexw24(0:50)
+      complex *16  mexw2(0:50)
+      complex *16  mexw4(0:50)
+      complex *16  spin
+      complex *16  expnall(0:60), expsall(0:60)
+      complex *16  expeall(0:60), expwall(0:60)
+      complex *16  tempeast(64,40), tempnorth(64,40)
+      complex *16  tempwest(64,40), tempsouth(64,40)
+      complex *16  tempshiftwest, tempshiftnorth
+      complex *16  tempshifteast, tempshiftsouth
+      data imag/(0.0d0,1.0d0)/
+      data zero/0.0d0/
+      pi = dacos(-1.0d0)
+      iperiod = 2
+
+c     let's initially set the potential to zero:
+      do i = 1, nboxes
+       do j = 0, 7
+         coeffdtop(j,i)  = zero
+         coeffstop(j,i)  = zero
+         coeffdside(j,i) = zero
+         coeffsside(j,i) = zero
+       end do
+      end do
+
+      do i = 1, nboxes
+        iflageast(i) = 0
+        iflagwest(i) = 0
+        iflagnorth(i) = 0
+        iflagsouth(i) = 0
+        localonoff(i) = 0
+      end do
+
+c     initialize the localonoff switch to the correct values
+      nside = 1
+      do jj = 0, nlev
+        istart = istartlev(jj)
+        iend = istartlev(jj) + nblevel(jj) - 1
+        if(nside .eq. 1)then
+          nsidemark = 1
+        else
+          nsidemark = nside / 2
+        endif
+        do ii = istart, iend
+          i = iboxlev(ii)
+          if(irowbox(i) .le. nsidemark .and.
+     1       icolbox(i) .le. nsidemark)then
+            localonoff(i) = 1
+          endif
+        end do
+       nside = 2 * nside
+      end do
+
+
+c
+c     create scale array
+c
+      x = 0.50d0
+      do i = 0,nlev
+       scale(i) = x
+       x = x*2.0d0
+      enddo
+
+
+c     call a set of routines that will precompute various 
+c     things needed later in the adapfmm, mkcoeffs, and
+c     mkshifts routines.
+      call pwts4(xnodes, wnodes, nnodes)
+
+      call precompute(comp,nterms,nnodes,
+     1  xnodes,wnodes, temp,c, sum)
+
+      do i = 1, 8
+        xp((i-1)*8+1) = dcos(15d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+2) = dcos(13d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+3) = dcos(11d0*pi/16.0d0) / 2.0d0
+        xp((i-1)*8+4) = dcos(9d0*pi/16.0d0)  / 2.0d0
+        xp((i-1)*8+5) = dcos(7d0*pi/16.0d0)  / 2.0d0
+        xp((i-1)*8+6) = dcos(5d0*pi/16.0d0)  / 2.0d0
+        xp((i-1)*8+7) = dcos(3d0*pi/16.0d0)  / 2.0d0
+        xp((i-1)*8+8) = dcos(1d0*pi/16.0d0)  / 2.0d0
+
+        yp(i)    = dcos(15d0*pi/16.0d0) / 2.0d0
+        yp(8+i)  = dcos(13d0*pi/16.0d0) / 2.0d0
+        yp(16+i) = dcos(11d0*pi/16.0d0) / 2.0d0
+        yp(24+i) = dcos(9d0*pi/16.0d0)  / 2.0d0
+        yp(32+i) = dcos(7d0*pi/16.0d0)  / 2.0d0
+        yp(40+i) = dcos(5d0*pi/16.0d0)  / 2.0d0
+        yp(48+i) = dcos(3d0*pi/16.0d0)  / 2.0d0
+        yp(56+i) = dcos(1d0*pi/16.0d0)  / 2.0d0
+      enddo
+
+      do jj = 1, 64
+        tempshiftwest = 2.0d0*(xp(jj) + imag*yp(jj))
+        tempshifteast = -tempshiftwest
+        tempshiftnorth = imag*tempshiftwest
+        tempshiftsouth = -tempshiftnorth
+        do ii = 1, nnodes
+          tempeast(jj,ii) = -cdexp(xnodes(ii) * tempshifteast)
+          tempwest(jj,ii) = -cdexp(xnodes(ii) * tempshiftwest)
+          tempnorth(jj,ii) = -cdexp(xnodes(ii) * tempshiftnorth)
+          tempsouth(jj,ii) = -cdexp(xnodes(ii) * tempshiftsouth)
+        end do
+      end do
+
+
+      do i = 0, nlev
+       istart = istartlev(i)
+       iend = istart + nblevel(i) - 1
+       do ii = istart,iend
+        j = iboxlev(ii)
+c       we only need to concern ourselves 
+c       with childless boxes.
+        if(ichildbox(1,j) .lt. 0)then
+
+           if(singletoponoff(j) .eq. 1)then
+             call interpolate8side(ftop(1,j),  coeffstop(0,j))
+           endif
+
+           if(doubletoponoff(j) .eq. 1)then
+             call interpolate8side(ftopd(1,j), coeffdtop(0,j))
+           endif
+
+           if(singlesideonoff(j) .eq. 1)then
+             call interpolate8side(fside(1,j), coeffsside(0,j))
+           endif
+
+           if(doublesideonoff(j) .eq. 1)then
+             call interpolate8side(fsided(1,j),coeffdside(0,j))
+           endif
+
+        endif
+       end do
+      end do
+
+
+      call dlayside(wdside)
+      call dlaytop(wdtop)
+      call slayside(wsside)
+      call slaytop(wstop)
+
+      call dlaytopbtos(wdtopbtos)
+      call dlaysidebtos(wdsidebtos)
+      call slaytopbtos(wstopbtos)
+      call slaysidebtos(wssidebtos)
+
+      call dlaytopstob(wdtopstob)
+      call dlaysidestob(wdsidestob)
+      call slaytopstob(wstopstob)
+      call slaysidestob(wssidestob)
+
+
+c     call a routine that will generate the array zs
+c     which will be needed later on when shifting the
+c     exponential expansions.
+      call mkshifts2d_ps(xnodes,nnodes,zs,
+     1    zseast,zswest,zsnorth,zssouth)
+
+      call mkcolls(icolbox,
+     1    irowbox, icolleagbox, nboxes, nlev,
+     2    iparentbox, ichildbox, nblevel,
+     3    iboxlev, istartlev, iperiod)
+
+ 
+c**********************************************************************
+c     =============================================
+c     upward pass
+c     =============================================
+c
+c-----initialize multipole and local expansions to zero.
+c
+      do i = 1, nboxes
+       do j = 0, nterms
+         mpole(j,i)  = zero 
+         locexp(j,i) = zero 
+       end do
+       do j = 0, nnodes
+         expe(j,i) = zero
+         expw(j,i) = zero
+         expn(j,i) = zero
+         exps(j,i) = zero
+         expebig(j,i) = zero
+         expwbig(j,i) = zero
+         expnbig(j,i) = zero
+         expsbig(j,i) = zero
+       end do
+      end do
+
+
+      do i = nlev, 0, -1
+         xlength = 1.0d0/scale(i)
+         istart = istartlev(i)
+         iend = istart + nblevel(i) - 1
+         do ii = istart,iend
+            j = iboxlev(ii)
+            if(ichildbox(1,j) .lt. 0)then
+
+              if(singletoponoff(j) .eq. 1)then
+                call singletoptomult8(coeffstop(0,j),
+     1                        nterms,c,xlength,dummy)
+    
+                do jj = 0, nterms
+                  mpole(jj,j) = mpole(jj,j) + dummy(jj)
+                end do
+              endif
+
+              if(singlesideonoff(j) .eq. 1)then
+                call singlesidetomult8(coeffsside(0,j),
+     1                        nterms,c,xlength, dummy)
+
+                do jj = 0, nterms
+                  mpole(jj,j) = mpole(jj,j) + dummy(jj)
+                end do
+              endif
+
+
+              if(doubletoponoff(j) .eq. 1)then
+                call doubletoptomult8(coeffdtop(0,j),
+     1                        nterms,c,dummy)
+   
+                do jj = 0, nterms
+                  mpole(jj,j) = mpole(jj,j) + dummy(jj)
+                end do
+              endif
+
+              if(doublesideonoff(j) .eq. 1)then
+                call doublesidetomult8(coeffdside(0,j),
+     1                        nterms,c,dummy)
+
+                do jj = 0, nterms
+                  mpole(jj,j) = mpole(jj,j) + dummy(jj)
+                end do
+              endif
+
+
+            elseif(ichildbox(1,j) .gt. 0)then
+
+              ic1 = ichildbox(1,j)
+              ic2 = ichildbox(2,j)
+              ic3 = ichildbox(3,j)
+              ic4 = ichildbox(4,j)
+
+            call childpar_ps(mpole(0,j),
+     1        mpole(0,ic1),mpole(0,ic2),
+     2        mpole(0,ic3),mpole(0,ic4),
+     3        nterms, c)
+            endif
+         end do
+      end do
+
+
+c     let's call a routine that will set the initial local 
+c     expansion to the correct value to account for the 
+c     periodicity in the far field terms:
+
+c      set iflag2 to zero to indicate that we are
+c      working with the potential and not the
+c      electric field.
+        istart = istartlev(0)
+        j = iboxlev(istart)
+        call psppin(ier)
+        call psppta(mpole(0,j),locexp(0,j), nterms)
+
+
+c     =============================================
+c     downward pass
+c     =============================================
+      xlength = 1.0d0
+      do i = 0,nlev
+c        first let's set up an array of scaling scale
+c        factors needed in the local interaction:
+          t(1)  =  2.0d0**i 
+          t(2)  =  2.0d0 * t(1) 
+          temp1 =  -dlog(t(1))
+          temp2 =  -dlog(t(2))
+          t(3)  =  temp1 * 2.0d0
+          t(4)  = -temp1 * 2.0d0/3.0d0
+          t(5)  = -temp1 * 2.0d0/15.0d0
+          t(6)  = -temp1 * 2.0d0/35.0d0
+          t(7)  =  temp2 * 2.0d0
+          t(8)  = -temp2 * 2.0d0/3.0d0
+          t(9)  = -temp2 * 2.0d0/15.0d0
+          t(10) = -temp2 * 2.0d0/35.0d0
+
+
+         istart = istartlev(i)
+         iend = istart + nblevel(i) - 1
+         do ii = istart,iend
+
+           j = iboxlev(ii)
+           if(ichildbox(1,j) .gt. 0)then
+c          if the box has children, do all of the work involving local 
+c          expansions here.
+
+            ic1 = ichildbox(1,j)
+            ic2 = ichildbox(2,j)
+            ic3 = ichildbox(3,j)
+            ic4 = ichildbox(4,j)
+
+            call parentchild_ps(locexp(0,j),locexp(0,ic1),
+     1       locexp(0,ic2),locexp(0,ic3),
+     2       locexp(0,ic4),nterms,c,localonoff(j))
+
+            call mkexp2d_ps(j,nterms,mpole,
+     1       nnodes,mexnall,mexn12,mexsall,mexs34,mexeall,
+     2       mexe13,mexe1,mexe3,mexwall,mexw24,mexw2,mexw4,
+     3       zs,comp,wnodes,scale(i+1),sum,temp,
+     4       ichildbox)
+ 
+
+            call mklists_ps(j,inall,nnall,iynall,
+     1       in12,nn12,iy12,
+     2       isall,nsall,iysall,is34,ns34,iy34,
+     3       ieall,neall,iyeall,ie13,ne13,iy13,
+     4       iwall,nwall,iywall,iw24,nw24,iy24,
+     5       iw2,iy2,nw2,iw4,iy4,nw4,
+     6       ie1,iy1,ne1,ie3,iy3,ne3,
+     7       inbig12,isbig34,iebig13,iwbig24,
+     8       iebig1, iwbig2, iebig3, iwbig4,
+     9       icolleagbox,ichildbox,
+     1       icolbox, irowbox, iperiod,
+     2       iflageast, iflagwest, iflagnorth,
+     3       iflagsouth, localonoff)
+
+
+            call processno_ps(expn,inall,nnall,iynall,
+     1       in12,nn12,iy12,mexnall,mexn12,zs,nnodes,
+     2       inbig12,expnbig,zsnorth,localonoff)
+            call processso_ps(exps,isall,nsall,iysall,
+     1       is34,ns34,iy34,mexsall,mexs34,zs,nnodes,
+     2       isbig34,expsbig,zssouth, localonoff)
+            call processea_ps(expe,ieall,neall,iyeall,
+     1       ie13,ne13,iy13,ie1,ne1,iy1,ie3,ne3,iy3,
+     2       mexeall,mexe13,mexe1,mexe3,zs,nnodes,
+     3       iebig13,expebig,iebig1,iebig3,zseast,
+     4       localonoff)
+            call processwe_ps(expw,iwall,nwall,iywall,
+     1       iw24,nw24,iy24,iw2,nw2,iy2,iw4,nw4,iy4,
+     2       mexwall,mexw24,mexw2,mexw4,zs,nnodes,
+     3       iwbig24,expwbig,iwbig2,iwbig4,zswest,
+     4       localonoff)
+
+
+           elseif (ichildbox(1,j) .lt. 0)then
+c           now let's scan the colleagues
+ 
+            do 250 nb = 1, 9
+              iout = icolleagbox(nb,j)
+              if(iout .lt. 0)goto 250
+              if(ichildbox(1,iout) .lt. 0)then
+
+
+           call colloclay8(pot(1,iout),coeffstop(0,j),
+     1          coeffdtop(0,j),coeffsside(0,j),coeffdside(0,j),
+     2          ndeg,nb,t,wdtop,wdside,wsside,wstop,localonoff(iout),
+     3          doublesideonoff(j),doubletoponoff(j),
+     4          singlesideonoff(j),singletoponoff(j))
+
+              elseif(ichildbox(1,iout) .gt. 0)then
+c               colleague has children (have to go to big to small and
+c               small to big stuff)
+
+
+                ic1 = ichildbox(2,iout)
+                ic2 = ichildbox(3,iout)
+                ic3 = ichildbox(1,iout)
+                ic4 = ichildbox(4,iout)
+
+c              form the four expansions needed in the
+c              big to small and small to big process.
+
+              call mkexpbtoslay8(coeffdtop(0,j),coeffstop(0,j),
+     1         coeffdside(0,j), coeffsside(0,j),xlength,
+     2         sum, expnall,expsall,expeall,expwall,
+     3         edbletop, wdbletop, ndbletop, sdbletop,
+     4         edbleside, wdbleside, ndbleside, sdbleside,
+     5         esngletop, wsngletop, ssngletop, nsngletop,
+     6         esngleside, wsngleside, ssngleside, nsngleside,nnodes,
+     7         doublesideonoff(j),doubletoponoff(j),
+     8         singlesideonoff(j),singletoponoff(j))
+
+
+                if(nb .eq. 1)then
+c                 colleague with small boxes is in the lower left corner,
+c                 one box is not well separated and 3 are.
+ 
+                  ifar1 = ic4
+                  ifar2 = ic2
+                  ifar3 = ic3
+                  iclose1 = ic1
+
+c                 first do the local work, small to big
+
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,1,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+ 
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,1,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (-2.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+                  ftarget2 = (-1.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+
+ 
+                  spin = 1.0d0
+                  ftarget3 = (-2.0d0,-1.0d0)
+                  call btosfar_ps(expw(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar3))
+
+ 
+
+                elseif(nb .eq. 2)then
+c                 colleague with small boxes is below this box
+c                 two boxes are not well separated and two are.
+
+                  ifar1 = ic4
+                  ifar2 = ic2
+                  iclose1 = ic3
+                  iclose2 = ic1
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,2,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose2),
+     1               coeffsside(0,iclose2),coeffdtop(0,iclose2),
+     2               coeffdside(0,iclose2),ndeg,3,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+ 
+
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,2,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+
+                  call btosloclay8(pot(1,iclose2),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,3,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose2))
+
+ 
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (0.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+
+                  ftarget2 = (1.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+ 
+                elseif(nb .eq. 3)then
+c                 colleague with small boxes is in the lower right corner,
+c                 one box is not well separated and 3 are.
+
+                  iclose1 = ic3
+                  ifar1 = ic4  
+                  ifar2 = ic2 
+                  ifar3 = ic1
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,4,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+
+c                 first do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,4,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+            
+
+c                 finally do the far work, big to small
+                  spin = -imag
+                  ftarget1 = (2.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar1), 
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,-2.0d0)
+                  call btosfar_ps(exps(0,ifar2), 
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expsall,spin,localonoff(ifar2))
+
+ 
+                  spin = -1.0d0
+                  ftarget3 = (3.0d0,-1.0d0)
+                  call btosfar_ps(expe(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar3))
+
+            
+                elseif(nb .eq. 4)then
+c                 colleague with small boxes is left of this box
+c                 two boxes are not well separated and two are.
+ 
+ 
+                  iclose1 = ic2
+                  iclose2 = ic1
+                  ifar1 = ic4 
+                  ifar2 = ic3
+ 
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,5,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose2),
+     1               coeffsside(0,iclose2),coeffdtop(0,iclose2),
+     2               coeffdside(0,iclose2),ndeg,7,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+       
+
+c                 next do the local work, big to small 
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,5,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+                  call btosloclay8(pot(1,iclose2),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,7,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose2))
+
+ 
+c                 finally do the far work, big to small
+                  spin = 1.0d0
+                  ftarget1 = (-2.0d0,0.0d0)
+                  call btosfar_ps(expw(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar1))
+
+                  ftarget2 = (-2.0d0,1.0d0)
+                  call btosfar_ps(expw(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 6)then
+c                 colleague with small boxes is right this box
+c                 two boxes are not well separated and two are.
+            
+                  ifar1 = ic1
+                  ifar2 = ic2
+                  iclose1 = ic3
+                  iclose2 = ic4
+
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,8,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose2),
+     1               coeffsside(0,iclose2),coeffdtop(0,iclose2),
+     2               coeffdside(0,iclose2),ndeg,6,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+ 
+
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,8,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+                  call btosloclay8(pot(1,iclose2),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,6,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose2))
+
+ 
+
+c                 finally do the far work, big to small
+                  spin = -1.0d0
+                  ftarget1 = (3.0d0,1.0d0)
+                  call btosfar_ps(expe(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,0.0d0)
+                  call btosfar_ps(expe(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 7)then
+c                 colleague with small boxes is in the upper left corner,
+c                 one box is not well separated and 3 are.
+ 
+                  iclose1 = ic2
+                  ifar1 = ic4
+                  ifar2 = ic3
+                  ifar3 = ic1
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,9,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+
+
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,9,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+ 
+
+c                 finally do the far work, big to small
+                  spin = 1.0d0
+                  ftarget1 = (-2.0d0,2.0d0)
+                  call btosfar_ps(expw(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expwall,spin,localonoff(ifar1))
+
+ 
+                  spin = imag
+                  ftarget2 = (-2.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+
+ 
+                  ftarget3 = (-1.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar3))
+
+
+                elseif(nb .eq. 8)then
+c                 colleague with small boxes is above this box
+c                 two boxes are not well separated and two are.
+
+                  iclose1 = ic4
+                  iclose2 = ic2
+                  ifar1 = ic3
+                  ifar2 = ic1
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,10,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose2),
+     1               coeffsside(0,iclose2),coeffdtop(0,iclose2),
+     2               coeffdside(0,iclose2),ndeg,11,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+
+
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,10,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+                  call btosloclay8(pot(1,iclose2),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,11,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose2))
+
+
+
+c                 finally do the far work, big to small
+                  spin = imag
+                  ftarget1 = (0.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (1.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2), 
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+
+
+                elseif(nb .eq. 9)then
+c                 colleague with small boxes is in the upper right corner,
+c                 one box is not well separated and 3 are.
+
+                  iclose1 = ic4
+                  ifar1 = ic3  
+                  ifar2 = ic1
+                  ifar3 = ic2
+
+c                 first do the local work, small to big
+                  call stobloclay8(pot(1,j),coeffstop(0,iclose1),
+     1               coeffsside(0,iclose1),coeffdtop(0,iclose1),
+     2               coeffdside(0,iclose1),ndeg,12,t,wdtopstob,
+     3               wdsidestob,wstopstob,wssidestob,localonoff(j))
+
+
+
+c                 next do the local work, big to small
+                  call btosloclay8(pot(1,iclose1),
+     1                coeffstop(0,j), coeffsside(0,j),
+     2                coeffdtop(0,j), coeffdside(0,j),
+     3                ndeg,12,t,wdtopbtos,wdsidebtos,
+     4                wstopbtos,wssidebtos,localonoff(iclose1))
+
+ 
+
+c                 finally do the far work, big to small
+                  spin = imag
+                  ftarget1 = (2.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar1),
+     1             ftarget1,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar1))
+
+ 
+                  ftarget2 = (3.0d0,3.0d0)
+                  call btosfar_ps(expn(0,ifar2),
+     1             ftarget2,nterms,
+     2             xnodes,comp,
+     3             expnall,spin,localonoff(ifar2))
+ 
+                  spin = -1.0d0
+                  ftarget3 = (3.0d0,2.0d0)
+                  call btosfar_ps(expe(0,ifar3),
+     1             ftarget3,nterms,
+     2             xnodes,comp,
+     3             expeall,spin,localonoff(ifar3))
+                endif
+              endif
+250         continue
+           endif
+         end do
+
+c        for boxes with children, convert the exponential expansions
+c        to one local expansion:
+         do jj = istart,iend
+          j = iboxlev(jj)
+          if(ichildbox(1,j) .gt. 0 .and. localonoff(j) .eq. 1)then
+              do ii = 1, 4
+                ic1 = ichildbox(ii,j)
+                  call exp4local(b,nterms,nnodes,expw(0,ic1),
+     1               exps(0,ic1), expe(0,ic1), expn(0,ic1),comp)
+                  call addexp(b,locexp(0,ic1),nterms)
+              end do
+
+
+          elseif(ichildbox(1,j) .lt. 0 .and. localonoff(j) .eq. 1)then
+c          evaluate the exponential expansions at the target points
+
+               call expbig4eval(pot(1,j),nnodes,expwbig(0,j),
+     1           expsbig(0,j), expebig(0,j), expnbig(0,j),
+     2           iflageast(j),iflagwest(j),
+     3           iflagnorth(j),iflagsouth(j),tempeast,
+     4           tempnorth, tempwest, tempsouth)
+          endif
+         end do
+      xlength = xlength / 2.0d0
+      enddo
+
+      do jj = 0, nlev
+       istart = istartlev(jj)
+       iend = istartlev(jj) + nblevel(jj) - 1
+        do ii = istart, iend
+          i = iboxlev(ii)
+          if(ichildbox(1,i) .lt. 0 .and. localonoff(i) .eq. 1)then
+           do ip = 1,64
+             zshift = dcmplx(xp(ip),yp(ip))
+             zpot = zero
+              do j = 1,nterms
+                zpot = zshift*zpot + locexp(nterms-j,i)
+              end do
+             pot(ip,i) = pot(ip,i) + dreal(zpot)
+           end do
+          endif
+        end do
+      end do
+
+      return
+      end
+
+
+

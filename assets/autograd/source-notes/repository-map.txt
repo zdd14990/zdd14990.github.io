@@ -1,0 +1,104 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# HIPS/autograd Repository Map
+
+## 问题
+
+1. 当前 clone 的仓库版本和结构是什么？
+2. 用户 API、tracing、reverse mode、forward mode、NumPy 接管和梯度规则分别位于哪里？
+3. 如果只有一天，最值得读哪 10 个 symbol？
+
+## 调查基线
+
+- 调查日期：2026-09-05
+- remote：`https://github.com/HIPS/autograd.git`
+- branch：`master`
+- commit：`f53a21734fdfae636f448744d9097d8d35a643a0`
+- package version：`1.9.1`
+- `pyproject.toml`：要求 Python `>=3.10`，依赖 `numpy<3`，`scipy` 是 optional dependency。
+
+## 顶层目录
+
+| 路径 | 当前作用 |
+| --- | --- |
+| `autograd/` | 可导入的核心 Python package。 |
+| `docs/` | 当前包含 `tutorial.md` 与 `updateguide.md`。 |
+| `examples/` | 神经网络、ODE、变分推断、可视化和 tracing 等端到端示例。 |
+| `tests/` | 核心、NumPy、SciPy、容器、复数、高阶 operator、ufunc dispatch 等测试。 |
+| `benchmarks/` | 性能基准。 |
+| `.github/` | CI 与仓库协作配置。 |
+| `pyproject.toml` | 构建、包元数据、依赖、pytest、coverage 与 lint 配置。 |
+| `README.md` | 项目能力、最小用法、文档及示例入口。 |
+
+## `autograd` package 地图
+
+| 文件或目录 | 主要职责 | 代表 symbols |
+| --- | --- | --- |
+| `autograd/__init__.py` | 重导出用户 API。 | `grad`, `jacobian`, `hessian`, `make_vjp`, `make_jvp` |
+| `autograd/differential_operators.py` | 构建在底层 VJP/JVP 之上的用户求导 operators。 | `grad`（约 24 行）, `jacobian`, `hessian`, `value_and_grad` |
+| `autograd/wrap_util.py` | 把底层一元求导 operator 适配到多参数 Python 函数。 | `unary_to_nary`, `wrap_nary_f` |
+| `autograd/tracer.py` | 动态 trace、primitive 包装、Box 与 trace stack。 | `trace`（约 14 行）, `primitive`（约 44 行）, `TraceStack`, `Box`（约 157 行） |
+| `autograd/core.py` | reverse/forward mode 的节点、传播、规则 registry 和 vector space 基础。 | `make_vjp`（约 11 行）, `backward_pass`（约 26 行）, `VJPNode`, `defvjp`, `make_jvp`, `JVPNode`, `defjvp` |
+| `autograd/util.py` | 小型通用工具；图遍历在这里。 | `toposort`（约 21 行） |
+| `autograd/extend.py` | 面向扩展作者重导出 primitive、VJP/JVP、Box、vspace API。 | `primitive`, `defvjp`, `defjvp`, `VJPNode`, `JVPNode` |
+| `autograd/builtins.py` | 对 tuple/list/dict 等 Python 容器进行可微包装。 | `SequenceBox`, `DictBox` 等 |
+| `autograd/test_util.py` | 梯度检查工具。 | `check_grads`, numerical JVP/VJP helpers |
+| `autograd/numpy/numpy_wrapper.py` | 遍历 NumPy namespace，把可调用对象包装为 primitives，并处理部分特殊函数。 | `wrap_namespace`, `array`, `stack` |
+| `autograd/numpy/numpy_boxes.py` | NumPy 数组/标量对应的 `ArrayBox` 及运算符转发。 | `ArrayBox`; `__mul__` 转到 `anp.multiply` |
+| `autograd/numpy/numpy_vjps.py` | NumPy reverse-mode 局部规则与 broadcasting 回收。 | `defvjp(...)`, `unbroadcast`, `grad_np_sum` |
+| `autograd/numpy/numpy_jvps.py` | NumPy forward-mode 局部规则。 | `defjvp(...)`, `def_linear(...)` |
+| `autograd/numpy/numpy_vspaces.py` | NumPy 值的 vector-space 行为。 | array/scalar vspace types |
+| `autograd/numpy/linalg.py`, `fft.py` | 线性代数和 FFT 的包装及求导规则。 | `solve`, `svd`, FFT rules 等 |
+| `autograd/scipy/` | SciPy linalg、signal、integrate、special、stats 集成。 | 各 SciPy primitive 的 VJP/JVP |
+| `autograd/misc/` | flatten、优化器、fixed point、辅助 tracer 等工具。 | `flatten`, optimizers 等 |
+
+## 核心能力在哪里
+
+| 问题 | 当前源码位置 |
+| --- | --- |
+| 用户 API | `autograd/__init__.py` 重导出；主体在 `differential_operators.py`。 |
+| tracing | `tracer.py :: trace`, `primitive`, `TraceStack`, `Box`, `new_box`。 |
+| reverse mode | `core.py :: make_vjp`, `VJPNode`, `backward_pass`, `defvjp`, `add_outgrads`。 |
+| forward mode | `core.py :: make_jvp`, `JVPNode`, `defjvp`。 |
+| NumPy wrapper | `numpy/numpy_wrapper.py` 与 `numpy/numpy_boxes.py :: ArrayBox`。 |
+| NumPy reverse rules | `numpy/numpy_vjps.py`。例如当前 `log` 和 `sin` 的 VJP 注册在约 166、170 行。 |
+| NumPy forward rules | `numpy/numpy_jvps.py`。例如当前 `log` 和 `sin` 的 JVP 注册在约 118、122 行。 |
+| 图的反向遍历 | `util.py :: toposort`，由 `core.py :: backward_pass` 使用。 |
+| tests | 顶层 `tests/`，不是 package 内隐藏测试。 |
+| examples | 顶层 `examples/`；`print_trace.py`、`dot_graph.py` 与 tracing 学习尤其相关。 |
+
+## 一天内最值得看的 10 个 symbol
+
+| 顺序 | Symbol | 文件 | 为什么 |
+| --- | --- | --- | --- |
+| 1 | `grad` | `differential_operators.py` | 最常用用户入口；显示 scalar output 最终如何调用 VJP。 |
+| 2 | `make_vjp` | `core.py` | reverse-mode trace 的入口，并返回 VJP closure 与 forward value。 |
+| 3 | `trace` | `tracer.py` | 把输入装箱并执行用户函数，是 define-by-run 的起点。 |
+| 4 | `primitive` | `tracer.py` | 决定普通调用与带 Box 调用的不同路径，并创建节点。 |
+| 5 | `Box` | `tracer.py` | 把运行值、trace id、node 关联起来的基础包装。 |
+| 6 | `ArrayBox` | `numpy/numpy_boxes.py` | 把 Python/NumPy 运算符转发到 Autograd 包装的 NumPy primitive。 |
+| 7 | `VJPNode` | `core.py` | 保存 parents 与当前 primitive 的局部 VJP closure。 |
+| 8 | `backward_pass` | `core.py` | 沿反向拓扑顺序传播并累加 outgrads。 |
+| 9 | `defvjp` | `core.py` | 把 primitive 的局部 reverse rule 注册到 `primitive_vjps`。 |
+| 10 | `toposort` | `util.py` | 产生从输出向根节点的合法遍历顺序。 |
+
+若还有时间，再读 `core.py :: make_jvp` / `JVPNode`，它们是理解 forward mode 的最短入口。
+
+## Mental model
+
+仓库不是先把整个 Python 程序解析成一个 symbolic AST。当前 happy path 是：求导 operator 安排一次 trace，`Box` 随真实 Python 执行流穿过被包装的 primitives，各 primitive 调用产生带 parent 引用的 node；reverse mode 随后从输出节点反向消费这些链接。这个 mental model 只用于仓库导览，具体对象状态和逐行调用链留到后续课程验证。
+
+## 容易误解的地方
+
+- `autograd/` 既是顶层仓库中的目录名，也是 Python package 名；引用时需区分 repository root 与 package root。
+- 计算图不是单独的 `Graph` 类。当前实现通过 node 的 `parents` 关系形成图。
+- `grad` 不是底层求导引擎；它是构建在 `_make_vjp` 上的 convenience operator。
+- `numpy_vjps.py` 和 `numpy_jvps.py` 是两套方向不同的局部规则，不能混为一谈。
+- 行号只对应当前 commit；长期引用优先使用“文件 + symbol”。
+
+## 学完后应该能回答的问题
+
+1. 用户调用 `grad` 后，最先值得沿哪些文件继续追踪？
+2. 为什么 NumPy wrapper、Box、node 和 VJP registry 是不同职责？
+3. reverse mode 的图遍历和局部梯度规则分别位于哪里？
+4. 为什么当前仓库地图支持“沿调用链读源码”，而不是逐目录通读？
