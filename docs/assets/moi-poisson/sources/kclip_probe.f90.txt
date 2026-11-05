@@ -1,0 +1,258 @@
+program kclip_probe
+ use hho_cheb
+ use hho_tree
+ use hho_ops
+ implicit none
+ type(qtree)::t
+ type(optree)::o,dp
+ real(rk),allocatable::f(:,:),a(:,:),b(:,:),an(:,:),bn(:,:),ex(:,:),dif(:,:)
+ real(rk)::x(nq),z(nq),r2,ri,e2,ei,di,mu,sc,wa,wb,we,sa,sb,se,wd,sd,start,tm(3),secs,err(3),burn
+ integer::precision=4,precs(4)=[4,2,3,4]
+ integer::it,lev,m,j,k,ix,iz,ib,u,ut,rep,mode,ncall,order(6),q,nmix,nwallmix,maxjump,ios
+ character(256)::dest,arg
+ character(16)::action,treeid
+ logical::passed
+ action='verify';dest='probe.csv'
+ call get_command_argument(1,action);call get_command_argument(2,dest)
+ call cheb_init()
+ open(newunit=u,file=trim(dest),status='new')
+ if(trim(action)=='verify')then
+ write(u,'(a)') 'tree,nleaf,source,power,original_rel_inf,clip_rel_inf,clip_original_rel_inf,clip_minus_original_mean_over_ref,clip_scale_fit,original_removed_constant,wall_original,wall_clip,wall_exact_interpolant,seam_original,seam_clip,seam_exact_interpolant,wall_clip_minus_original,seam_clip_minus_original'
+ passed=.true.
+ do it=1,6
+ call setup(it)
+ do m=1,4
+ call sample(m,0,f);a=f;b=f
+ do j=1,4
+ an=0;bn=0
+ clip_enabled=.false.;call op_K(o,t,4,a,an);mu=stats%last_const
+ clip_enabled=.true.;call op_K(o,t,4,b,bn)
+ call sample(m,j,ex);call tree_norms(t,ex,r2,ri)
+ dif=an-ex;call tree_norms(t,dif,e2,ei)
+ dif=bn-ex;call tree_norms(t,dif,e2,di)
+ dif=bn-an;call tree_norms(t,dif,e2,secs)
+ sc=inner(bn,ex)/inner(ex,ex)
+ call boundaries(an,wa,sa);call boundaries(bn,wb,sb);call boundaries(ex,we,se)
+ call boundaries(dif,wd,sd)
+ write(u,'(a,3(",",i0),14(",",es24.16))') trim(treeid),tree_nleaves(t),m,j,ei/ri,di/ri,secs/ri,meanval(dif)/ri,sc,mu,wa/ri,wb/ri,we/ri,sa/ri,sb/ri,se/ri,wd/ri,sd/ri
+ if(max(wd,sd)/ri>2e-10_rk)passed=.false.
+ ! Gate new error against baseline, and require refined configurations to meet analytic tolerance.
+ if(secs/ri>2e-10_rk .or. di>max(2e-6_rk*ri,1.01_rk*ei) .or. abs(sc-1)>2e-6_rk)passed=.false.
+ if(it>=5 .and. di/ri>2e-6_rk)passed=.false.
+ a=an;b=bn
+ enddo
+ enddo
+ call cleanup()
+ enddo
+ close(u)
+ if(.not.passed)error stop 'verification gate failed; inspect raw diagnostics before timing'
+ print *, 'VERIFY PASS'
+ else if(trim(action)=='state')then
+ write(u,'(a)') 'tree,iprec,mode,zero_residual,repeat_difference'
+ do it=1,3
+ call setup(2-mod(it,2));call build_optree(t,MODE_DP,dp)
+ do k=1,4
+ precision=precs(k)
+ do mode=1,3
+ call sample(3,0,f);a=f
+ call apply(mode);b=an
+ f=0;call apply(mode);call tree_norms(t,an,e2,ei)
+ f=a;call apply(mode);dif=an-b;call tree_norms(t,dif,e2,di)
+ write(u,'(a,2(",",i0),2(",",es24.16))')trim(treeid),precision,mode,ei,di
+ if(ei>1e-30_rk.or.di>1e-14_rk)error stop 'cache state regression'
+ enddo
+ enddo
+ call cleanup()
+ enddo
+ close(u);print *, 'STATE PASS'
+ else if(trim(action)=='bench')then
+ write(u,'(a)') 'tree,nleaf,rep,position,mode,calls,seconds_per_full_call,relative_linf'
+ do it=1,2
+ call setup(it);call build_optree(t,MODE_DP,dp)
+ call sample(3,0,f);call sample(3,1,ex);call tree_norms(t,ex,r2,ri)
+ ! Equal cache allocation: one shared cache, all variants warmed. No backend stage claims.
+ burn=wall_time()
+ do
+ do mode=1,3
+ call apply(mode)
+ enddo
+ if(wall_time()-burn>=8.0_rk)exit
+ enddo
+ ncall=8
+ do rep=1,9
+ ! Rotate a palindromic order: each mode occurs twice at symmetric positions.
+ do q=1,3
+ order(q)=mod(q+rep-2,3)+1
+ order(7-q)=order(q)
+ enddo
+ do q=1,6
+ mode=order(q);start=wall_time()
+ do k=1,ncall
+ call apply(mode)
+ enddo
+ secs=(wall_time()-start)/ncall
+ dif=an-ex;call tree_norms(t,dif,e2,ei)
+ write(u,'(a,5(",",i0),2(",",es24.16))')trim(treeid),tree_nleaves(t),rep,q,mode,ncall,secs,ei/ri
+ if(ei/ri>2e-6_rk)error stop 'benchmark accuracy failed'
+ enddo
+ flush(u)
+ enddo
+ call cleanup()
+ enddo
+ close(u)
+ print *, 'BENCH COMPLETE'
+ else
+ error stop 'action must be verify or bench'
+ endif
+ contains
+ subroutine setup(which)
+ integer,intent(in)::which
+ real(rk)::cx,cz,w,xx,zz
+ integer::bb,dx,dz,nb,dd
+ select case(which)
+ case(1);treeid='uniform3';call tree_uniform(t,3)
+ case(2);treeid='uniform4';call tree_uniform(t,4)
+ case(3);treeid='asym3to4';call tree_build(t,20000,indicator,0.5_rk,3,4)
+ case(4);treeid='asym3to5';call tree_build(t,20000,indicator,0.5_rk,3,5)
+ case(5);treeid='uniform5';call tree_uniform(t,5)
+ case(6);treeid='asym4to6';call tree_build(t,30000,indicator,0.5_rk,4,6)
+ end select
+ call build_optree(t,MODE_MOI,o)
+ allocate(f(np,t%nbox),a(np,t%nbox),b(np,t%nbox),an(np,t%nbox),bn(np,t%nbox),ex(np,t%nbox),dif(np,t%nbox))
+ f=0;a=0;b=0;an=0;bn=0;ex=0;dif=0
+ nmix=0;nwallmix=0;maxjump=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ call box_geom(t,bb,cx,cz,w)
+ do dz=-1,1
+ do dx=-1,1
+ if(dx==0.and.dz==0)cycle
+ xx=modulo(cx+dx*0.50001_rk*w,1.0_rk);zz=cz+dz*0.50001_rk*w
+ if(zz<0)zz=-zz
+ if(zz>1)zz=2-zz
+ nb=tree_leaf_at(t,xx,zz);dd=abs(t%level(nb)-t%level(bb));maxjump=max(maxjump,dd)
+ if(dd/=0)then
+ nmix=nmix+1
+ if(cx-w/2<1e-12_rk.or.cx+w/2>1-1e-12_rk.or.cz-w/2<1e-12_rk.or.cz+w/2>1-1e-12_rk)nwallmix=nwallmix+1
+ endif
+ enddo
+ enddo
+ enddo
+ if(maxjump>1)error stop 'tree is not balanced'
+ print *,trim(treeid),' leaves=',tree_nleaves(t),' unequal-neighbor probes=',nmix,' boundary unequal=',nwallmix
+ end subroutine
+ real(rk) function indicator(xx,zz,ll)result(v)
+ real(rk),intent(in)::xx(nq),zz(nq)
+ integer,intent(in)::ll
+ real(rk)::cx,cz,w,dist
+ cx=(minval(xx)+maxval(xx))/2;cz=(minval(zz)+maxval(zz))/2;w=2.0_rk**(-ll)
+ dist=min(abs(cx-0.035_rk),1-abs(cx-0.035_rk))**2+(cz-0.07_rk)**2
+ v=0
+ if(sqrt(dist)<0.12_rk+0.71_rk*w)v=1
+ ! Additional distinct refinement near upper wall, deliberately not reflection symmetric.
+ if((cx-0.68_rk)**2+(cz-0.96_rk)**2<(0.065_rk+0.71_rk*w)**2)v=1
+ end function
+ subroutine cleanup()
+ deallocate(f,a,b,an,bn,ex,dif)
+ end subroutine
+ subroutine sample(src,power,v)
+ integer,intent(in)::src,power
+ real(rk),intent(out)::v(:,:)
+ real(rk)::v1,v2
+ integer::bb,i,j
+ v=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ call box_nodes(t,bb,x,z)
+ do j=1,nq
+ do i=1,nq
+ select case(src)
+ case(1);v1=sin(pi*z(j))/(pi*pi)**power;v2=0
+ case(2);v1=cos(2*pi*x(i))*sin(pi*z(j))/(5*pi*pi)**power;v2=0
+ case(3)
+ v1=sin(2*pi*x(i))*sin(2*pi*z(j))/(8*pi*pi)**power
+ v2=0.3_rk*sin(6*pi*x(i))*sin(4*pi*z(j))/(52*pi*pi)**power
+ case(4);v1=polyamp(z(j),power);v2=0
+ end select
+ v(i+nq*(j-1),bb)=v1+v2
+ enddo
+ enddo
+ enddo
+ end subroutine
+ real(rk) function polyamp(zz,power)result(v)
+ real(rk),intent(in)::zz
+ integer,intent(in)::power
+ real(rk)::cc(0:8),dd(0:8)
+ integer::j,n
+ cc=0;cc(0)=1
+ do j=1,power
+ dd=0
+ do n=0,2*j-2
+ dd(n+2)=-cc(n)/real((n+1)*(n+2),rk)
+ enddo
+ dd(1)=-sum(dd);cc=dd
+ enddo
+ v=cc(8)
+ do n=7,0,-1
+ v=v*zz+cc(n)
+ enddo
+ end function
+ real(rk) function inner(v,w)result(s)
+ real(rk),intent(in)::v(:,:),w(:,:)
+ integer::bb,i,j
+ s=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ do j=1,nq
+ do i=1,nq
+ s=s+v(i+nq*(j-1),bb)*w(i+nq*(j-1),bb)*fejer(i)*fejer(j)*4.0_rk**(-t%level(bb))/4
+ enddo
+ enddo
+ enddo
+ end function
+ real(rk) function meanval(v)result(s)
+ real(rk),intent(in)::v(:,:)
+ integer::bb,i,j
+ s=0
+ do bb=1,t%nbox
+ if(t%child(1,bb)/=0)cycle
+ do j=1,nq
+ do i=1,nq
+ s=s+v(i+nq*(j-1),bb)*fejer(i)*fejer(j)*4.0_rk**(-t%level(bb))/4
+ enddo
+ enddo
+ enddo
+ end function
+ real(rk) function endpoint(v,xx,zz)result(s)
+ real(rk),intent(in)::v(:,:),xx,zz
+ real(rk)::cx,cz,w,mx(1,nq),mz(1,nq),vv(nq,nq)
+ integer::bb
+ ! Choose the interior leaf, then evaluate its degree-7 tensor interpolant at the ACTUAL wall.
+ bb=tree_leaf_at(t,min(xx,1-1e-12_rk),min(zz,1-1e-12_rk))
+ call box_geom(t,bb,cx,cz,w)
+ call interp_matrix([2*(xx-cx)/w],mx);call interp_matrix([2*(zz-cz)/w],mz)
+ vv=reshape(v(:,bb),[nq,nq]);s=dot_product(mx(1,:),matmul(vv,mz(1,:)))
+ end function
+ subroutine boundaries(v,wall,seam)
+ real(rk),intent(in)::v(:,:)
+ real(rk),intent(out)::wall,seam
+ real(rk)::s
+ integer::i
+ wall=0;seam=0
+ do i=0,128
+ s=real(i,rk)/128 ! includes corners and every dyadic boundary-leaf endpoint through level 6
+ wall=max(wall,abs(endpoint(v,s,0.0_rk)),abs(endpoint(v,s,1.0_rk)))
+ seam=max(seam,abs(endpoint(v,0.0_rk,s)-endpoint(v,1.0_rk,s)))
+ enddo
+ end subroutine
+ subroutine apply(md)
+ integer,intent(in)::md
+ an=0
+ clip_enabled=(md==2)
+ if(md==3)then
+ call op_K(dp,t,precision,f,an)
+ else
+ call op_K(o,t,precision,f,an)
+ endif
+ end subroutine
+end program
