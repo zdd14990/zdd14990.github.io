@@ -6,7 +6,7 @@ hide:
   - navigation
 categories:
   - 应用数学
-  - PDE 数值解
+  - 论文笔记
 tags:
   - heat-equation
   - exponential-integrator

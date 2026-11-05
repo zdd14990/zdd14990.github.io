@@ -7,12 +7,28 @@ hide:
   - navigation
 categories:
   - 应用数学
-  - PDE 数值解
+  - 论文笔记
 tags:
   - poisson-equation
   - method-of-images
   - fmm
   - adaptive-mesh
+resource_links:
+  ../../code/src/advisor_poisson/adaptfmm2d8.f:985: ../../../assets/moi-poisson/sources/adaptfmm2d8.f.txt
+  ../../code/src/advisor_poisson/adaptfmm2d8.f:1350: ../../../assets/moi-poisson/sources/adaptfmm2d8.f.txt
+  prototypes/kclip_20261104/hho_ops.f90:333: ../../../assets/moi-poisson/sources/hho_ops.f90.txt
+  prototypes/kclip_20261104/RESULTS.md:15: ../../../assets/moi-poisson/sources/RESULTS.md.txt
+  prototypes/kclip_20261104/hho_ops.f90:362: ../../../assets/moi-poisson/sources/hho_ops.f90.txt
+  ../../code/src/advisor_poisson/fmmrouts8_before.f:4346: ../../../assets/moi-poisson/sources/fmmrouts8_before.f.txt
+  data/kclip_verify_20261104_203933/verify.csv: ../../../assets/moi-poisson/data/kclip_verify_20261104_203933/verify.csv
+  prototypes/kclip_20261104/kclip_probe.f90:108: ../../../assets/moi-poisson/sources/kclip_probe.f90.txt
+  prototypes/kclip_sweep_20261105_004613/kclip_sweep.f90:18: ../../../assets/moi-poisson/sources/kclip_sweep.f90.txt
+  prototypes/kclip_sweep_20261105_004613/run_sweep.py:9: ../../../assets/moi-poisson/sources/run_sweep.py.txt
+  data/kclip_sweep_20261105_004613/uniform_summary.csv: ../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/uniform_summary.csv
+  data/kclip_sweep_20261105_004613/raw.csv: ../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/raw.csv
+  data/kclip_sweep_20261105_004613/paired_rounds.csv: ../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/paired_rounds.csv
+  figures/kclip_sweep_ratios.svg: ../../../assets/moi-poisson/figures/kclip_sweep_ratios.svg
+  scripts/kclip_sweep_figures.py:10: ../../../assets/moi-poisson/sources/kclip_sweep_figures.py.txt
 ---
 
 # MOI Poisson
@@ -210,7 +226,7 @@ u_h(w)=
 
 ## 4. 实现要点
 
-原型复用底层已有的目标开关：`iperiod=2` 将 `localonoff` 设为仅根盒和左下物理象限开启，远场接收、近场积累与节点求值在 FMM 内部按此开关跳过外部目标。所有源仍形成展开并上行，根部周期转换也保留。根向四个孩子的公共下行仍会执行，源侧方向展开及完整树工作空间也仍在，因此 \(\mathcal T_\Omega\to\mathcal T_D\) 描述的是所需目标依赖，实际操作量并非严格降为四分之一。见[目标开关与上行](<../../../assets/moi-poisson/sources/adaptfmm2d8.f.txt>)、[公共下行](<../../../assets/moi-poisson/sources/adaptfmm2d8.f.txt>)。
+原型复用底层已有的目标开关：`iperiod=2` 将 `localonoff` 设为仅根盒和左下物理象限开启，远场接收、近场积累与节点求值在 FMM 内部按此开关跳过外部目标。所有源仍形成展开并上行，根部周期转换也保留。根向四个孩子的公共下行仍会执行，源侧方向展开及完整树工作空间也仍在，因此 \(\mathcal T_\Omega\to\mathcal T_D\) 描述的是所需目标依赖，实际操作量并非严格降为四分之一。见[目标开关与上行](<../../code/src/advisor_poisson/adaptfmm2d8.f:985>)、[公共下行](<../../code/src/advisor_poisson/adaptfmm2d8.f:1350>)。
 
 这个入口同时改变长度尺度。按本文 \(\Delta U=F\) 的记号，旧入口将边长 2 的根盒归一化为边长 1；令 \(r'=r/2\)、\(U'(r')=U(2r')\)，则
 
@@ -218,7 +234,7 @@ u_h(w)=
 \Delta_{r'}U'(r')=4F(2r').
 \]
 
-新入口直接使用边长 2，源因子由 4 改为 1，叶盒长度翻倍。源系数与盒面积的乘积保持不变；近场权重、平移尺度和长度对数项也须一起换算。见[入口缩放](<../../../assets/moi-poisson/sources/hho_ops.f90.txt>)及[原型说明](<../../../assets/moi-poisson/sources/RESULTS.md.txt>)。
+新入口直接使用边长 2，源因子由 4 改为 1，叶盒长度翻倍。源系数与盒面积的乘积保持不变；近场权重、平移尺度和长度对数项也须一起换算。见[入口缩放](<prototypes/kclip_20261104/hho_ops.f90:333>)及[原型说明](<prototypes/kclip_20261104/RESULTS.md:15>)。
 
 裁剪后只有物理象限输出有效，不能用含未求值项的全胞数组计算均值。原型保留周期转换的常数和一次项修正，跳过原全胞输出均值校正；物理域均值由壁条件决定，也不能清零。例如 \(f=1\) 时
 
@@ -226,7 +242,7 @@ u_h(w)=
 u=\frac{z(z-1)}2,\qquad \int_Du\,dA=-\frac1{12}.
 \]
 
-若继续应用 \(\Delta^{-1}\)，须从物理输出重新作镜像延拓。见[均值处理与延拓](<../../../assets/moi-poisson/sources/hho_ops.f90.txt>)、[周期转换](<../../../assets/moi-poisson/sources/fmmrouts8_before.f.txt>)。
+若继续应用 \(\Delta^{-1}\)，须从物理输出重新作镜像延拓。见[均值处理与延拓](<prototypes/kclip_20261104/hho_ops.f90:362>)、[周期转换](<../../code/src/advisor_poisson/fmmrouts8_before.f:4346>)。
 
 ## 5. 正确性与性能实验
 
@@ -262,7 +278,7 @@ f=1&:\quad u=\frac{z(z-1)}2,\qquad \int_Du\,dA=-\frac1{12}.
 | 均匀 / 64 | \(1\) | \(4.91\times10^{-14}\) | \(4.78\times10^{-14}\) | \(2.00\times10^{-15}\) |
 | asym4to6 / 565 | \(\cos(2\pi x)\sin(\pi z)\) | \(8.41\times10^{-14}\) | \(8.34\times10^{-14}\) | \(3.42\times10^{-15}\) |
 
-验证还将叶内插值多项式求值到真实壁面：在每壁 129 个等距点上，前两例裁剪解的最大壁值除以解析解节点最大值，分别为 \(8.86\times10^{-14}\)、\(4.79\times10^{-14}\)。这些记录同时检验了势的绝对常数，而不只是新旧输出相近。数据见[正确性原始记录](<../../../assets/moi-poisson/data/kclip_verify_20261104_203933/verify.csv>)，树和边界求值见[验证驱动](<../../../assets/moi-poisson/sources/kclip_probe.f90.txt>)。
+验证还将叶内插值多项式求值到真实壁面：在每壁 129 个等距点上，前两例裁剪解的最大壁值除以解析解节点最大值，分别为 \(8.86\times10^{-14}\)、\(4.79\times10^{-14}\)。这些记录同时检验了势的绝对常数，而不只是新旧输出相近。数据见[正确性原始记录](<data/kclip_verify_20261104_203933/verify.csv>)，树和边界求值见[验证驱动](<prototypes/kclip_20261104/kclip_probe.f90:108>)。
 
 ### 5.2 公平计时的源与误差
 
@@ -286,7 +302,7 @@ $$
 
 本批取 64、256、1024 个物理叶的三棵均匀固定树，每树三个源，共 9 个配置。运行固定在一个逻辑核，正常优先级，OMP、OPENBLAS、MKL、NUMEXPR 线程数均为 1。每个配置三模式共同预热至少 8 秒，再计时 9 轮。以 1、2、3 表示原 MOI、裁剪 MOI、DP，块次序依次为 `123321`、`231132`、`312213`，循环三次；每块分别调用 16、8、3 次，对应上述三种叶数。
 
-计时覆盖完整 Poisson 调用：驱动输出清零、包装层数组分配、源延拓、缓存清零、FMM、相应的常数处理和物理输出取回。物理树与扩展树构造、源采样、预热、误差计算和文件写出均在计时之外。三模式共享缓存前端和底层 FMM 对象。见[计时驱动](<../../../assets/moi-poisson/sources/kclip_sweep.f90.txt>)、[运行及汇总程序](<../../../assets/moi-poisson/sources/run_sweep.py.txt>)。
+计时覆盖完整 Poisson 调用：驱动输出清零、包装层数组分配、源延拓、缓存清零、FMM、相应的常数处理和物理输出取回。物理树与扩展树构造、源采样、预热、误差计算和文件写出均在计时之外。三模式共享缓存前端和底层 FMM 对象。见[计时驱动](<prototypes/kclip_sweep_20261105_004613/kclip_sweep.f90:18>)、[运行及汇总程序](<prototypes/kclip_sweep_20261105_004613/run_sweep.py:9>)。
 
 设第 \(r\) 轮模式 \(m\) 的两个对称块，其每次调用平均耗时为 \(b_{m,r,1}\)、\(b_{m,r,2}\)，定义
 
@@ -318,11 +334,11 @@ S_r=1-\frac{t_{{\rm clip},r}}{t_{{\rm old},r}},\qquad
 | 256 | $7.46\times10^{-13}$ | $1.55\times10^{-9}$ | $7.18\times10^{-11}$ |
 | 1024 | $(0.8\text{–}2.3)\times10^{-14}$ | $4.68\times10^{-12}$ | $2.20\times10^{-13}$ |
 
-九个配置的新旧节点差均满足 \(E_{\rm diff}<1.9\times10^{-14}\)。当前表、图均来自同一批[均匀树汇总](<../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/uniform_summary.csv>)；对应[逐块原始数据](<../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/raw.csv>)和[逐轮配对数据](<../../../assets/moi-poisson/data/kclip_sweep_20261105_004613/paired_rounds.csv>)保留了完整记录。
+九个配置的新旧节点差均满足 \(E_{\rm diff}<1.9\times10^{-14}\)。当前表、图均来自同一批[均匀树汇总](<data/kclip_sweep_20261105_004613/uniform_summary.csv>)；对应[逐块原始数据](<data/kclip_sweep_20261105_004613/raw.csv>)和[逐轮配对数据](<data/kclip_sweep_20261105_004613/paired_rounds.csv>)保留了完整记录。
 
-![MOI/DP 耗时比](<../../../assets/moi-poisson/figures/kclip_sweep_ratios.svg>)
+![MOI/DP 耗时比](<figures/kclip_sweep_ratios.svg>)
 
-图中点为各配置的 \(\bar R\)，误差棒为 9 轮配对比值的样本标准差；这些轮次共享同一进程和缓存，误差棒表示轮间波动。图由[绘图脚本](<../../../assets/moi-poisson/sources/kclip_sweep_figures.py.txt>)读取上述均匀树汇总生成。
+图中点为各配置的 \(\bar R\)，误差棒为 9 轮配对比值的样本标准差；这些轮次共享同一进程和缓存，误差棒表示轮间波动。图由[绘图脚本](<scripts/kclip_sweep_figures.py:10>)读取上述均匀树汇总生成。
 
 九个配置的裁剪 MOI / DP 平均配对比为 1.49–1.68，相对原 MOI 的配对节省为 56.4%–59.3%。这些范围比较的是配置均值；例如 1024 叶 \(f_3\) 的单轮比值为 1.34–2.24，仍存在计时波动。
 

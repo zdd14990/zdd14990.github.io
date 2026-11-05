@@ -177,6 +177,19 @@ def _fix_bare_list_items(markdown):
 
 def on_page_markdown(markdown, page, config, files):
     source = page.file.src_path.replace("\\", "/")
+    # Resolve imported attachments at build time without rewriting the manuscript.
+    resource_links = page.meta.get("resource_links", {})
+    if not isinstance(resource_links, dict) or any(
+        not isinstance(key, str) or not isinstance(value, str)
+        for key, value in resource_links.items()
+    ):
+        raise ValueError(f"{source}: resource_links must map strings to strings")
+    if resource_links:
+        markdown = re.sub(
+            r"\]\(<([^>]+)>\)",
+            lambda match: "](<" + resource_links.get(match.group(1), match.group(1)) + ">)",
+            markdown,
+        )
     assets = _as_list(page.meta.get("zdd_assets"))
     registry = config.get("extra", {}).get("page_assets", {})
     for asset in assets:
