@@ -1,0 +1,1139 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dyadic reconstruction, almost orthogonality, Bernstein inequalities, Sobolev and Besov norms, and the critical embedding obstruction.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 5: Littlewood–Paley Theory and Function Spaces - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-05/">
+  <meta property="og:title" content="Chapter 5: Littlewood–Paley Theory and Function Spaces - zdd14990">
+  <meta property="og:description" content="Dyadic reconstruction, almost orthogonality, Bernstein inequalities, Sobolev and Besov norms, and the critical embedding obstruction.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-14">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="littlewood-paley">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-05/">
+  <meta name="twitter:title" content="Chapter 5: Littlewood–Paley Theory and Function Spaces - zdd14990">
+  <meta name="twitter:description" content="Dyadic reconstruction, almost orthogonality, Bernstein inequalities, Sobolev and Besov norms, and the critical embedding obstruction.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 5: Littlewood\u2013Paley Theory and Function Spaces",
+    "description": "Dyadic reconstruction, almost orthogonality, Bernstein inequalities, Sobolev and Besov norms, and the critical embedding obstruction.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-05/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-05/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-14",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "littlewood-paley", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-05" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why separate scales?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cutoffs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. A smooth dyadic partition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#almost-orthogonality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Almost orthogonality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Spatial kernels and one-scale differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bernstein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Bernstein's inequality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sobolev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Sobolev norms as weighted square sums
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#besov" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Besov spaces and the low-frequency block
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sobolev-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Sobolev embedding above the critical index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoint-counterexample" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. A critical Sobolev counterexample
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#besov-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. The Besov endpoint remedy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Exercise: concentration and scaling
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 5 of 9</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-05">Chapter 5: Littlewood–Paley Theory and Function Spaces</h1>
+  </div>
+  <p class="book-standfirst">The scattering criterion in <a href="../chapter-04/#scattering">Chapter 4</a> uses the norm <span class="arithmatex">\(L_t^3L_x^6\)</span> because</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-14">2026-10-14</time></span>
+    
+    <span>1,997 字 · 约 6 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="motivation"><span class="book-secnum">§ 01</span>Why separate scales?</h2>
+<div class="arithmatex">\[
+\|u^3\|_{L_t^1L_x^2}=\|u\|_{L_t^3L_x^6}^3.
+\]</div>
+<p>To estimate solutions in such spacetime norms, one often separates their frequency scales and treats each scale using its own propagation and concentration properties. High frequencies describe fine spatial variation; low frequencies describe larger-scale structure. A dyadic decomposition makes that separation systematic.</p>
+<p>All constructions in this chapter are on <span class="arithmatex">\(\mathbb R^d\)</span>, <span class="arithmatex">\(d\ge1\)</span>. We use the Fourier convention</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,dx,
+\qquad
+f(x)=\frac1{(2\pi)^d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,d\xi.
+\]</div>
+<p>Consequently, <span class="arithmatex">\(\widehat{\partial_jf}=i\xi_j\widehat f\)</span> and <span class="arithmatex">\(\|f\|_2^2=(2\pi)^{-d}\|\widehat f\|_2^2\)</span>. We write <span class="arithmatex">\(A\lesssim B\)</span> when <span class="arithmatex">\(A\le CB\)</span> for a constant independent of the dyadic index, and <span class="arithmatex">\(A\simeq B\)</span> when both inequalities hold.</p>
+<h2 id="cutoffs"><span class="book-secnum">§ 02</span>A smooth dyadic partition</h2>
+<p>Choose a radial, radially nonincreasing <span class="arithmatex">\(\varphi\in C_c^\infty(\mathbb R^d)\)</span> with</p>
+<div class="arithmatex">\[
+0\le\varphi\le1,\qquad
+\varphi(\xi)=1\text{ for }|\xi|\le1,\qquad
+\varphi(\xi)=0\text{ for }|\xi|\ge2.
+\]</div>
+<p>Define</p>
+<div class="arithmatex">\[
+\psi(\xi)=\varphi(\xi)-\varphi(2\xi),\qquad
+\psi_k(\xi)=\psi(2^{-k}\xi),\qquad
+P_kf=\mathcal F^{-1}(\psi_k\widehat f),\quad k\in\mathbb Z.
+\]</div>
+<p>Then <span class="arithmatex">\(0\le\psi_k\le1\)</span> and</p>
+<div class="arithmatex">\[
+\operatorname{supp}\psi\subset\{1/2\le|\xi|\le2\},\qquad
+\operatorname{supp}\widehat{P_kf}\subset\{2^{k-1}\le|\xi|\le2^{k+1}\}.
+\]</div>
+<p>The operators are smooth frequency cutoffs, not idempotent projections: in general <span class="arithmatex">\(P_k^2\ne P_k\)</span> because <span class="arithmatex">\(\psi_k^2\ne\psi_k\)</span>.</p>
+<p>The sum telescopes:</p>
+<div class="arithmatex">\[
+\sum_{k=-M}^N\psi_k(\xi)
+=\varphi(2^{-N}\xi)-\varphi(2^{M+1}\xi).
+\]</div>
+<p>For each <span class="arithmatex">\(\xi\ne0\)</span>, the right side tends to one as <span class="arithmatex">\(M,N\to\infty\)</span>. At <span class="arithmatex">\(\xi=0\)</span>, every annular cutoff vanishes. This exception is harmless for <span class="arithmatex">\(L^2\)</span> functions and essential for understanding homogeneous spaces of distributions.</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">Reconstruction in L²</span></p>
+<p>For every <span class="arithmatex">\(f\in L^2(\mathbb R^d)\)</span>,</p>
+<div class="arithmatex">\[
+\sum_{k=-M}^NP_kf\longrightarrow f\quad\text{in }L^2
+\qquad(M,N\to\infty).
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>By telescoping,</p>
+<div class="arithmatex">\[
+\widehat{f-\sum_{k=-M}^NP_kf}
+=\big(1-\varphi(2^{-N}\xi)+\varphi(2^{M+1}\xi)\big)\widehat f.
+\]</div>
+<p>Plancherel and the triangle inequality reduce the error to two tails. They satisfy</p>
+<div class="arithmatex">\[
+\|(1-\varphi(2^{-N}\xi))\widehat f\|_2^2
+\le\int_{|\xi|\ge2^N}|\widehat f(\xi)|^2\,d\xi,
+\]</div>
+<div class="arithmatex">\[
+\|\varphi(2^{M+1}\xi)\widehat f\|_2^2
+\le\int_{|\xi|\le2^{-M}}|\widehat f(\xi)|^2\,d\xi.
+\]</div>
+<p>The first tends to zero by integrability at infinity. The second tends to zero by absolute continuity of the integral as the ball shrinks to a measure-zero point. Hence the reconstruction converges in <span class="arithmatex">\(L^2\)</span>.</p>
+</details>
+<p>This is convergence of symmetric or two-sided truncated sums in a norm. It is not a pointwise assertion for arbitrary distributions.</p>
+<h2 id="almost-orthogonality"><span class="book-secnum">§ 03</span>Almost orthogonality</h2>
+<p>The frequency bands overlap only with their neighbors. More precisely,</p>
+<div class="arithmatex">\[
+\psi_k(\xi)\psi_j(\xi)=0\qquad\text{if }|k-j|\ge2.
+\]</div>
+<p>At the possible touching boundaries the smooth cutoffs vanish. Thus the dyadic pieces are not all mutually orthogonal, but separated pieces are.</p>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 3.1</span><span class="book-name">L² almost orthogonality</span></p>
+<p>For <span class="arithmatex">\(f\in L^2\)</span>,</p>
+<div class="arithmatex">\[
+\frac13\|f\|_2^2\le\sum_{k\in\mathbb Z}\|P_kf\|_2^2\le\|f\|_2^2.
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>For finite sums, Plancherel implies <span class="arithmatex">\(\langle P_kf,P_jf\rangle=0\)</span> when <span class="arithmatex">\(|k-j|\ge2\)</span>. Use the complex inner product <span class="arithmatex">\(\langle a,b\rangle=\int a\overline b\)</span> when needed. Therefore</p>
+<div class="arithmatex">\[
+\left\|\sum_{k=-M}^NP_kf\right\|_2^2
+\le\sum_{\substack{-M\le k,j\le N\\|k-j|&lt;2}}\|P_kf\|_2\|P_jf\|_2
+\le3\sum_{k=-M}^N\|P_kf\|_2^2.
+\]</div>
+<p>The last bound uses <span class="arithmatex">\(2ab\le a^2+b^2\)</span> and the three possible neighbors. Reconstruction gives the lower inequality in the limit.</p>
+<p>For the upper inequality, nonnegativity and the partition identity give <span class="arithmatex">\(\sum_k\psi_k(\xi)^2\le\sum_k\psi_k(\xi)=1\)</span> for <span class="arithmatex">\(\xi\ne0\)</span>. Tonelli and Plancherel yield</p>
+<div class="arithmatex">\[
+\sum_k\|P_kf\|_2^2
+=(2\pi)^{-d}\int\sum_k\psi_k(\xi)^2|\widehat f(\xi)|^2\,d\xi
+\le\|f\|_2^2.
+\]</div>
+</details>
+<p>Finite overlap gives comparison of squared norms, rather than equality of norms or pointwise magnitudes.</p>
+<h2 id="kernels"><span class="book-secnum">§ 04</span>Spatial kernels and one-scale differentiation</h2>
+<p>Let <span class="arithmatex">\(K=\mathcal F^{-1}\psi\)</span>. Fourier inversion gives</p>
+<div class="arithmatex">\[
+P_kf=K_k*f,\qquad K_k(x)=2^{kd}K(2^kx).
+\]</div>
+<p>Since <span class="arithmatex">\(\psi\)</span> is smooth and compactly supported, <span class="arithmatex">\(K\)</span> is Schwartz. Hence</p>
+<div class="arithmatex">\[
+\|K_k\|_1=\|K\|_1,\qquad
+\|K_k\|_\infty=2^{kd}\|K\|_\infty,
+\]</div>
+<p>and for every <span class="arithmatex">\(A&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+|K_k(x)|\le C_A2^{kd}(1+2^k|x|)^{-A}.
+\]</div>
+<p>The kernel has spatial scale <span class="arithmatex">\(2^{-k}\)</span> and height of order <span class="arithmatex">\(2^{kd}\)</span>. It is rapidly localized, not compactly supported in physical space. Young's inequality gives a uniform bound <span class="arithmatex">\(\|P_kf\|_p\lesssim\|f\|_p\)</span> for <span class="arithmatex">\(1\le p\le\infty\)</span>. The multiplier has uniformly bounded height; its kernel does not have uniformly bounded pointwise height.</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 4.1</span><span class="book-name">Differentiation of a dyadic piece</span></p>
+<p>Replace the heuristic <span class="arithmatex">\(|\nabla P_kf|\sim2^k|P_kf|\)</span> by a precise <span class="arithmatex">\(L^2\)</span> statement and prove it.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>On the support of <span class="arithmatex">\(\widehat{P_kf}\)</span>, <span class="arithmatex">\(2^{k-1}\le|\xi|\le2^{k+1}\)</span>. Thus</p>
+<div class="arithmatex">\[
+\|\nabla P_kf\|_2^2=(2\pi)^{-d}\int|\xi|^2|\psi_k(\xi)\widehat f(\xi)|^2\,d\xi
+\]</div>
+<p>is bounded below by <span class="arithmatex">\(2^{2k-2}\|P_kf\|_2^2\)</span> and above by <span class="arithmatex">\(2^{2k+2}\|P_kf\|_2^2\)</span>. Consequently,</p>
+<div class="arithmatex">\[
+\tfrac12\,2^k\|P_kf\|_2\le\|\nabla P_kf\|_2\le2\,2^k\|P_kf\|_2.
+\]</div>
+<p>For one coordinate derivative, only the upper bound holds without an angular restriction, since <span class="arithmatex">\(\xi_j\)</span> may be arbitrarily small on an annulus. There is no general pointwise two-sided comparison between the function and its gradient.</p>
+</details>
+<p>The same Plancherel argument with <span class="arithmatex">\(|\xi|^s\)</span> gives <span class="arithmatex">\(\||D|^sP_kf\|_2\simeq2^{ks}\|P_kf\|_2\)</span> for fixed real <span class="arithmatex">\(s\)</span>.</p>
+<h2 id="bernstein"><span class="book-secnum">§ 05</span>Bernstein's inequality</h2>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 5.1</span><span class="book-name">Bernstein at one scale</span></p>
+<p>Let <span class="arithmatex">\(1\le p\le r\le\infty\)</span>. If <span class="arithmatex">\(P_kf\in L^p\)</span>, then</p>
+<div class="arithmatex">\[
+\|P_kf\|_r\lesssim2^{kd(1/p-1/r)}\|P_kf\|_p.
+\]</div>
+<p>The constant is independent of <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(f\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof using an enlarged cutoff</summary>
+<p>Choose <span class="arithmatex">\(\widetilde\psi\in C_c^\infty\)</span> equal to one on <span class="arithmatex">\(\operatorname{supp}\psi\)</span>, and let <span class="arithmatex">\(\widetilde\psi_k(\xi)=\widetilde\psi(2^{-k}\xi)\)</span>. Then</p>
+<div class="arithmatex">\[
+P_kf=\widetilde K_k*P_kf,
+\qquad\widetilde K_k=\mathcal F^{-1}\widetilde\psi_k.
+\]</div>
+<p>Choose <span class="arithmatex">\(a\in[1,\infty]\)</span> with <span class="arithmatex">\(1+1/r=1/p+1/a\)</span>. Such an <span class="arithmatex">\(a\)</span> exists precisely because <span class="arithmatex">\(p\le r\)</span>. The kernel scaling gives</p>
+<div class="arithmatex">\[
+\|\widetilde K_k\|_a
+=2^{kd(1-1/a)}\|\widetilde K\|_a
+=2^{kd(1/p-1/r)}\|\widetilde K\|_a.
+\]</div>
+<p>Young's inequality proves the result, including the endpoints.</p>
+</details>
+<p>The enlarged cutoff is needed because <span class="arithmatex">\(P_k\)</span> is not an idempotent projection. In particular, one cannot justify the proof by writing <span class="arithmatex">\(P_kf=K_k*P_kf\)</span> with the original multiplier.</p>
+<p>The critical special case is</p>
+<div class="arithmatex">\[
+\|P_kf\|_\infty\lesssim2^{kd/2}\|P_kf\|_2
+\simeq\|P_kf\|_{\dot H^{d/2}}.
+\]</div>
+<p>At one frequency scale, the critical estimate holds. Its failure for a whole function will be a failure of summation across scales.</p>
+<h2 id="sobolev"><span class="book-secnum">§ 06</span>Sobolev norms as weighted square sums</h2>
+<p>For <span class="arithmatex">\(f\in L^2\)</span> and fixed real <span class="arithmatex">\(s\)</span>, weighted Plancherel gives, whenever the expressions are finite,</p>
+<div class="arithmatex">\[
+\|f\|_{H^s}^2\simeq
+\sum_{k\in\mathbb Z}(1+2^k)^{2s}\|P_kf\|_2^2.
+\]</div>
+<p>Indeed, on the support of <span class="arithmatex">\(\psi_k\)</span>, the weights <span class="arithmatex">\((1+|\xi|^2)^s\)</span> and <span class="arithmatex">\((1+2^k)^{2s}\)</span> are comparable uniformly in <span class="arithmatex">\(k\)</span>. At each nonzero frequency, the nonnegative partition has finite overlap and</p>
+<div class="arithmatex">\[
+\tfrac13\le\sum_k\psi_k(\xi)^2\le1.
+\]</div>
+<p>Multiplying this comparison by the Sobolev weight and integrating proves both directions. For the homogeneous expression,</p>
+<div class="arithmatex">\[
+\|f\|_{\dot H^s}^2\simeq
+\sum_{k\in\mathbb Z}2^{2ks}\|P_kf\|_2^2.
+\]</div>
+<p>For nonnegative integer <span class="arithmatex">\(s\)</span>, the Fourier Sobolev norm is equivalent to the sum of squared <span class="arithmatex">\(L^2\)</span> norms of all weak derivatives of order at most <span class="arithmatex">\(s\)</span>. The Fourier definition also handles fractional smoothness. Extensions to distributions use the appropriate low-frequency or quotient conventions.</p>
+<p>The weights quantify smoothness: <span class="arithmatex">\(s\)</span> derivatives cost <span class="arithmatex">\(2^{ks}\)</span> at scale <span class="arithmatex">\(2^k\)</span>. The inhomogeneous norm retains control of undifferentiated low frequencies, while the homogeneous weight can tend to zero there.</p>
+<h2 id="besov"><span class="book-secnum">§ 07</span>Besov spaces and the low-frequency block</h2>
+<p>The three Besov indices measure smoothness <span class="arithmatex">\(s\)</span>, spatial integrability <span class="arithmatex">\(p\)</span>, and summability across scales <span class="arithmatex">\(q\)</span>. For <span class="arithmatex">\(1\le p,q\le\infty\)</span>, the homogeneous expression is</p>
+<div class="arithmatex">\[
+\|f\|_{\dot B^s_{p,q}}=
+\left(\sum_{k\in\mathbb Z}\big(2^{ks}\|P_kf\|_p\big)^q\right)^{1/q},
+\]</div>
+<p>with a supremum over <span class="arithmatex">\(k\)</span> when <span class="arithmatex">\(q=\infty\)</span>. On distributions, this is interpreted modulo polynomials or with an explicit dyadic reconstruction convention, because annular cutoffs annihilate the Fourier distributions supported at zero corresponding to polynomials.</p>
+<p>For the inhomogeneous space, define the low-frequency block</p>
+<div class="arithmatex">\[
+P_{\le0}f=\mathcal F^{-1}(\varphi\widehat f).
+\]</div>
+<p>Telescoping gives <span class="arithmatex">\(f=P_{\le0}f+\sum_{k\ge1}P_kf\)</span>, first in <span class="arithmatex">\(L^2\)</span>. The standard norm is</p>
+<div class="arithmatex">\[
+\|f\|_{B^s_{p,q}}=
+\|P_{\le0}f\|_p+
+\left(\sum_{k\ge1}\big(2^{ks}\|P_kf\|_p\big)^q\right)^{1/q},
+\]</div>
+<p>again replacing the sum by a supremum when <span class="arithmatex">\(q=\infty\)</span>.</p>
+<p>One can also consider the all-scale weighted expression</p>
+<div class="arithmatex">\[
+\left(\sum_{k\in\mathbb Z}\big((1+2^k)^s\|P_kf\|_p\big)^q\right)^{1/q}.
+\]</div>
+<p>For <span class="arithmatex">\(p=q=2\)</span>, almost orthogonality makes it equivalent to the Sobolev norm. For general <span class="arithmatex">\(p,q\)</span>, it must not be substituted for the standard inhomogeneous norm without additional justification: the low frequencies need to be collected into a single block. In particular,</p>
+<div class="arithmatex">\[
+B^s_{2,2}=H^s
+\]</div>
+<p>with equivalent norms.</p>
+<h2 id="sobolev-embedding"><span class="book-secnum">§ 08</span>Sobolev embedding above the critical index</h2>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.1</span><span class="book-name">Sobolev embedding into L∞</span></p>
+<p>If <span class="arithmatex">\(s&gt;d/2\)</span>, then <span class="arithmatex">\(H^s(\mathbb R^d)\hookrightarrow L^\infty(\mathbb R^d)\)</span> and</p>
+<div class="arithmatex">\[
+\|f\|_\infty\lesssim\|f\|_{H^s}.
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof by summing Bernstein estimates</summary>
+<p>Bernstein gives</p>
+<div class="arithmatex">\[
+\sum_k\|P_kf\|_\infty\lesssim\sum_k2^{kd/2}\|P_kf\|_2.
+\]</div>
+<p>Insert the Sobolev weight and apply Cauchy–Schwarz in <span class="arithmatex">\(k\)</span>:</p>
+<div class="arithmatex">\[
+\sum_k2^{kd/2}\|P_kf\|_2
+\le
+\left(\sum_k(1+2^k)^{2s}\|P_kf\|_2^2\right)^{1/2}
+\left(\sum_k\frac{2^{kd}}{(1+2^k)^{2s}}\right)^{1/2}.
+\]</div>
+<p>The first factor is comparable to <span class="arithmatex">\(\|f\|_{H^s}\)</span>. For <span class="arithmatex">\(k\le0\)</span>, the second series is bounded by a constant times <span class="arithmatex">\(\sum_{k\le0}2^{kd}\)</span>. For <span class="arithmatex">\(k\ge1\)</span>, it is comparable to <span class="arithmatex">\(\sum_{k\ge1}2^{-k(2s-d)}\)</span>. Both converge when <span class="arithmatex">\(s&gt;d/2\)</span>.</p>
+<p>Thus the dyadic series converges absolutely in <span class="arithmatex">\(L^\infty\)</span>. Its limit agrees with the <span class="arithmatex">\(L^2\)</span> reconstruction: on each bounded set, <span class="arithmatex">\(L^\infty\)</span> convergence also gives <span class="arithmatex">\(L^2\)</span> convergence, so the two limits coincide almost everywhere. The displayed norm bound follows.</p>
+</details>
+<p>At <span class="arithmatex">\(s=d/2\)</span>, the high-frequency terms in the last series stay comparable to one. This explains why this proof fails at the endpoint. Failure of a proof alone is not a counterexample; the next construction establishes failure of the embedding itself.</p>
+<h2 id="endpoint-counterexample"><span class="book-secnum">§ 09</span>A critical Sobolev counterexample</h2>
+<p>Choose a nonzero real, even, nonnegative <span class="arithmatex">\(\chi\in C_c^\infty\)</span> supported in <span class="arithmatex">\(\{1&lt;|\xi|&lt;3/2\}\)</span>, and set <span class="arithmatex">\(h=\mathcal F^{-1}\chi\)</span>. Then <span class="arithmatex">\(h\)</span> is real and Schwartz, and</p>
+<div class="arithmatex">\[
+h(0)=(2\pi)^{-d}\int\chi(\xi)\,d\xi&gt;0.
+\]</div>
+<p>Let</p>
+<div class="arithmatex">\[
+f_N(x)=\sum_{j=1}^N\frac1j h(2^jx).
+\]</div>
+<p>The Fourier supports of the summands are disjoint annuli. Scaling gives</p>
+<div class="arithmatex">\[
+\|h(2^j\cdot)\|_{\dot H^{d/2}}^2=\|h\|_{\dot H^{d/2}}^2,
+\qquad
+\|h(2^j\cdot)\|_2^2=2^{-jd}\|h\|_2^2.
+\]</div>
+<p>All these supports have <span class="arithmatex">\(|\xi|&gt;2\)</span>, where the inhomogeneous and homogeneous critical weights are comparable. Orthogonality therefore yields</p>
+<div class="arithmatex">\[
+\|f_N\|_{H^{d/2}}^2\lesssim\sum_{j=1}^N\frac1{j^2}\lesssim1.
+\]</div>
+<p>But</p>
+<div class="arithmatex">\[
+f_N(0)=h(0)\sum_{j=1}^N\frac1j\to\infty.
+\]</div>
+<p>Each <span class="arithmatex">\(f_N\)</span> is continuous, so its essential supremum is at least <span class="arithmatex">\(|f_N(0)|\)</span>. There can be no uniform estimate <span class="arithmatex">\(\|f\|_\infty\le C\|f\|_{H^{d/2}}\)</span>. Hence the usual continuous Sobolev embedding fails at the critical index.</p>
+<h2 id="besov-endpoint"><span class="book-secnum">§ 10</span>The Besov endpoint remedy</h2>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 10.1</span><span class="book-name">Critical Besov control</span></p>
+<p>If</p>
+<div class="arithmatex">\[
+\sum_{k\in\mathbb Z}2^{kd/2}\|P_kf\|_2&lt;\infty,
+\]</div>
+<p>the dyadic reconstruction defines a bounded representative and satisfies</p>
+<div class="arithmatex">\[
+\left\|\sum_kP_kf\right\|_\infty
+\lesssim\|f\|_{\dot B^{d/2}_{2,1}}.
+\]</div>
+<p>For <span class="arithmatex">\(f\in L^2\)</span>, this representative equals <span class="arithmatex">\(f\)</span> almost everywhere. With the stated reconstruction convention, this is the embedding <span class="arithmatex">\(\dot B^{d/2}_{2,1}\hookrightarrow L^\infty\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Sum the one-scale Bernstein estimate:</p>
+<div class="arithmatex">\[
+\sum_k\|P_kf\|_\infty
+\lesssim\sum_k2^{kd/2}\|P_kf\|_2.
+\]</div>
+<p>The series converges absolutely in <span class="arithmatex">\(L^\infty\)</span>. If the original function is in <span class="arithmatex">\(L^2\)</span>, the same uniqueness-of-limits argument as above identifies the reconstruction with it. For a homogeneous distribution class, the assertion chooses this reconstruction as its representative; it is not an estimate for every polynomial added to that representative.</p>
+</details>
+<p>Similarly, <span class="arithmatex">\(B^{d/2}_{2,1}\hookrightarrow L^\infty\)</span>: the low block satisfies <span class="arithmatex">\(\|P_{\le0}f\|_\infty\lesssim\|P_{\le0}f\|_2\)</span> by an enlarged ball cutoff, and the high blocks are summed as above.</p>
+<table>
+<thead>
+<tr>
+<th>Space at critical smoothness</th>
+<th>Summation of band sizes</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(H^{d/2}=B^{d/2}_{2,2}\)</span></td>
+<td>Square summation</td>
+<td>Does not control the sum of amplitudes</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(B^{d/2}_{2,1}\)</span></td>
+<td>Absolute summation</td>
+<td>Controls the <span class="arithmatex">\(L^\infty\)</span> norm</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\dot B^{d/2}_{2,1}\)</span></td>
+<td>Absolute summation over all scales</td>
+<td>Controls the bounded dyadic representative</td>
+</tr>
+</tbody>
+</table>
+<h2 id="exercise"><span class="book-secnum">§ 11</span>Exercise: concentration and scaling</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 11.1</span><span class="book-name">A narrowing profile</span></p>
+<p>For <span class="arithmatex">\(g\in C_c^\infty(\mathbb R^d)\)</span> with <span class="arithmatex">\(\int g=1\)</span>, set <span class="arithmatex">\(g_\varepsilon(x)=\varepsilon^{-d}g(x/\varepsilon)\)</span>. Show distributional convergence to a delta and compute the <span class="arithmatex">\(L^p\)</span> scaling.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>For every test function <span class="arithmatex">\(a\)</span>,</p>
+<div class="arithmatex">\[
+\int g_\varepsilon(x)a(x)\,dx
+=\int g(y)a(\varepsilon y)\,dy\to a(0).
+\]</div>
+<p>A change of variables gives</p>
+<div class="arithmatex">\[
+\|g_\varepsilon\|_p=\varepsilon^{-d(1-1/p)}\|g\|_p,
+\]</div>
+<p>including <span class="arithmatex">\(p=\infty\)</span> with the usual convention. The total integral is preserved, but the <span class="arithmatex">\(L^p\)</span> norms for <span class="arithmatex">\(p&gt;1\)</span> grow. Also <span class="arithmatex">\(\widehat{g_\varepsilon}(\xi)=\widehat g(\varepsilon\xi)\)</span>, so concentration broadens the relevant frequency range.</p>
+</details>
+<p><a href="../chapter-04/">Previous: global existence and scattering</a> · <a href="../chapter-06/">Next: restriction and wave packets</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 4: Global Existence and Scattering</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">Chapter 6: Restriction, Wave Packets, and Kakeya Geometry</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 5 / 9 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=littlewood-paley">#littlewood-paley</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-04/">Chapter 4: Global Existence and Scattering</a></li><li><a href="../chapter-06/">Chapter 6: Restriction, Wave Packets, and Kakeya Geometry</a></li><li><a href="../chapter-07/">Chapter 7: Square Functions, the Heat Flow, and Paraproducts</a></li><li><a href="../chapter-08/">Chapter 8: Anisotropic Littlewood–Paley Theory and Vortex Stretching</a></li><li><a href="../chapter-09/">Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1190 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第六章：中间相遇攻击原理、全状态与部分状态匹配、二重 DES 与 5 轮 Mini-AES、拼切技术与 2K3DES、基于集合映射关系的 DS 中间相遇区分器与 7 轮 Mini-AES 密钥恢复。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-06-meet-in-the-middle/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第六章：中间相遇攻击 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-06-meet-in-the-middle/">
+  <meta property="og:title" content="第六章：中间相遇攻击 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第六章：中间相遇攻击原理、全状态与部分状态匹配、二重 DES 与 5 轮 Mini-AES、拼切技术与 2K3DES、基于集合映射关系的 DS 中间相遇区分器与 7 轮 Mini-AES 密钥恢复。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-06-meet-in-the-middle/">
+  <meta name="twitter:title" content="第六章：中间相遇攻击 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第六章：中间相遇攻击原理、全状态与部分状态匹配、二重 DES 与 5 轮 Mini-AES、拼切技术与 2K3DES、基于集合映射关系的 DS 中间相遇区分器与 7 轮 Mini-AES 密钥恢复。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u516d\u7ae0\uff1a\u4e2d\u95f4\u76f8\u9047\u653b\u51fb",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u516d\u7ae0\uff1a\u4e2d\u95f4\u76f8\u9047\u653b\u51fb\u539f\u7406\u3001\u5168\u72b6\u6001\u4e0e\u90e8\u5206\u72b6\u6001\u5339\u914d\u3001\u4e8c\u91cd DES \u4e0e 5 \u8f6e Mini-AES\u3001\u62fc\u5207\u6280\u672f\u4e0e 2K3DES\u3001\u57fa\u4e8e\u96c6\u5408\u6620\u5c04\u5173\u7cfb\u7684 DS \u4e2d\u95f4\u76f8\u9047\u533a\u5206\u5668\u4e0e 7 \u8f6e Mini-AES \u5bc6\u94a5\u6062\u590d\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-06-meet-in-the-middle/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-06-meet-in-the-middle/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 中间相遇攻击原理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 相遇函数为值的攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 相遇函数为值的攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 全状态值相遇
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 部分状态值相遇
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 拼切技术
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 相遇函数为集合映射关系的攻击
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 相遇函数为集合映射关系的攻击">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 \(\mathcal{DS}\) 中间相遇区分器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 密钥恢复攻击
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 6 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">06</div>
+    <h1 id="top"><span class="book-visually-hidden">第 6 章：</span>中间相遇攻击</h1>
+  </div>
+  <p class="book-standfirst"><strong>中间相遇攻击 (meet-in-the-middle attack)</strong> 最早由 Diffie 和 Hellman 在 1977 年提出，用于分析二重 DES 和三重 DES。通过猜测明文加密到中间状态 <span class="arithmatex">\(x\)</span> 的密钥、密文解密到 <span class="arithmatex">\(x\)</span> 的密钥，分别求得 <span class="arithmatex">\(x\)</span> 的值，若相等就是正确密钥的候选。为降低猜测的密钥量，可以只在 <span class="arithmatex">\(x\)</span> 的部分比特上相遇，即<strong>部分匹配技术 (partial matching)</strong>。现在相遇函数已经从一个固定中间状态的取值，发展为跨越多轮区分器头尾的集合映射关系等多种形式，攻击轮数进一步提高；还可以结合<strong>拼切技术 (splice-and-cut)</strong> 优化时间复杂度。中间相遇攻击在 AES 等多个对称加密算法和杂凑函数上都取得了很好的结果。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>7,370 字 · 约 21 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>中间相遇攻击原理</h2>
+<p>顾名思义，中间相遇就是在算法的“中间”相遇，所以关键问题是相遇位置的选取和“相遇”函数的定义。把分组加密算法分为三部分</p>
+<div class="arithmatex">\[
+C=E(P)=E_2(E_1(E_0(P))),
+\]</div>
+<p><span class="arithmatex">\(P\)</span> 经 <span class="arithmatex">\(E_0\)</span> 得中间状态 <span class="arithmatex">\(x\)</span>，<span class="arithmatex">\(x\)</span> 经 <span class="arithmatex">\(E_1\)</span> 得 <span class="arithmatex">\(y\)</span>，<span class="arithmatex">\(y\)</span> 经 <span class="arithmatex">\(E_2\)</span> 得密文 <span class="arithmatex">\(C\)</span>：</p>
+<div class="arithmatex">\[
+P\xrightarrow{E_0,\ \mathcal K_0}x\xrightarrow{E_1,\ \mathcal K_1}y\xrightarrow{E_2,\ \mathcal K_2}C.
+\]</div>
+<p><span class="arithmatex">\(E_1\)</span> 对应中间相遇的区分器，相遇函数是与 <span class="arithmatex">\((x,y)\)</span> 有关的信息的函数，记为 <span class="arithmatex">\(\mathbb G(\mathrm{info}(x),\mathrm{info}(y))\)</span>。（这些信息只要能确定 <span class="arithmatex">\(\mathbb G\)</span> 即可，不一定是 <span class="arithmatex">\(x\)</span> 或 <span class="arithmatex">\(y\)</span> 的全部比特。）</p>
+<ul>
+<li><span class="arithmatex">\(E_1\)</span> 可以省略，此时 <span class="arithmatex">\(E=E_2\circ E_0\)</span>，<span class="arithmatex">\(x=y\)</span>，相遇位置是中间状态 <span class="arithmatex">\(x\)</span>，相遇函数往往是 <span class="arithmatex">\(x\)</span> 的全部或部分比特的值；</li>
+<li><span class="arithmatex">\(E_1\)</span> 也可以是多轮加密，此时相遇位置分别在 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(y\)</span>，相遇函数是 <span class="arithmatex">\((\mathrm{info}(x),\mathrm{info}(y))\)</span> 之间的某种对应关系。</li>
+</ul>
+<p>一般的攻击原理是：猜测相关密钥，对明文加密得到与 <span class="arithmatex">\(x\)</span> 有关的信息 <span class="arithmatex">\(\mathrm{info}(x)\)</span>（称为<strong>向前计算</strong>），对密文解密得到与 <span class="arithmatex">\(y\)</span> 有关的信息 <span class="arithmatex">\(\mathrm{info}(y)\)</span>（称为<strong>向后计算</strong>），代入 <span class="arithmatex">\(\mathbb G\)</span> 看是否匹配。匹配则所猜密钥为正确密钥的候选，否则为错误密钥。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这里的“向前”指在加密算法图中计算的方向，与“前向安全”中的“前向”不同。</p>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>相遇函数为值的攻击</h2>
+<p>这一节讨论 <span class="arithmatex">\(E=E_0\circ E_1\)</span>（即省略了中间的区分器），相遇函数为 <span class="arithmatex">\(x\)</span> 的全部或部分比特的取值：</p>
+<div class="arithmatex">\[
+P\xrightarrow{E_0,\ \mathcal K_0}x\xleftarrow{E_1^{-1},\ \mathcal K_1}C.
+\]</div>
+<h3 id="s2-1">2.1 全状态值相遇</h3>
+<p>先讨论相遇函数为 <span class="arithmatex">\(x\)</span> 的取值，即 <span class="arithmatex">\(\mathrm{info}(x)=x\)</span>。结合密钥编排，令 <span class="arithmatex">\(K_f\)</span>、<span class="arithmatex">\(K_b\)</span> 分别为向前计算和向后计算中相互独立的密钥，<span class="arithmatex">\(K_j\)</span> 为两者共同使用的密钥。（<span class="arithmatex">\(K_f\cup K_j\)</span> 可以不包含 <span class="arithmatex">\(\mathcal K_0\)</span> 的全部比特，<span class="arithmatex">\(K_b\cup K_j\)</span> 同理。）</p>
+<p>设分组长度为 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(|K|\)</span> 为密钥 <span class="arithmatex">\(K\)</span> 的比特长度，<span class="arithmatex">\(|K_f|+|K_b|+|K_j|=k\)</span>。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">算法（相遇函数为 <span class="arithmatex">\(x\)</span> 的取值的中间相遇攻击）</span></p>
+<p><strong>输入</strong>：<span class="arithmatex">\(t\)</span> 个明密文对 <span class="arithmatex">\((P_i,C_i)\)</span>，<span class="arithmatex">\(i=0,\cdots,t-1\)</span>。<strong>输出</strong>：正确密钥。</p>
+<p><strong>初筛阶段</strong>：</p>
+<ol>
+<li>对 <span class="arithmatex">\(K_j\)</span> 的每个可能取值：<ol>
+<li>猜测 <span class="arithmatex">\(K_f\)</span> 的每个可能取值，由明文 <span class="arithmatex">\(P_0\)</span> 根据 <span class="arithmatex">\(K_f\cup K_j\)</span> 向前计算 <span class="arithmatex">\(x\)</span>，把所有 <span class="arithmatex">\(K_f\)</span> 存入以 <span class="arithmatex">\(x\)</span> 为索引的表 <span class="arithmatex">\(L\)</span>；</li>
+<li>对 <span class="arithmatex">\(K_b\)</span> 的每个可能取值，由密文 <span class="arithmatex">\(C_0\)</span> 根据 <span class="arithmatex">\(K_b\cup K_j\)</span> 向后计算 <span class="arithmatex">\(x'\)</span>，以 <span class="arithmatex">\(x'\)</span> 访问表 <span class="arithmatex">\(L\)</span>；</li>
+<li>若表 <span class="arithmatex">\(L\)</span> 中有 <span class="arithmatex">\(x=x'\)</span>，取出相应的 <span class="arithmatex">\(K_f\)</span>，把 <span class="arithmatex">\((K_f,K_b,K_j)\)</span> 作为正确密钥的候选存入表 <span class="arithmatex">\(T\)</span>。</li>
+</ol>
+</li>
+</ol>
+<p><strong>复筛阶段</strong>：</p>
+<ol start="2">
+<li>对表 <span class="arithmatex">\(T\)</span> 中所有 <span class="arithmatex">\((K_f,K_b,K_j)\)</span>，分别用 <span class="arithmatex">\((P_i,C_i)\)</span>，<span class="arithmatex">\(i=1,\cdots,t-1\)</span> 计算 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(x'\)</span>，若都相等，则输出为正确密钥。</li>
+</ol>
+</div>
+<p>任一错误密钥满足 <span class="arithmatex">\(x=x'\)</span> 的概率为 <span class="arithmatex">\(2^{-n}\)</span>，所以初筛后表 <span class="arithmatex">\(T\)</span> 中期望有 <span class="arithmatex">\(2^{|K_j|}\cdot2^{|K_f|+|K_b|}/2^n=2^{k-n}\)</span> 个候选。复筛阶段先用一个明密文对验证，约剩 <span class="arithmatex">\(2^{k-2n}\)</span> 个，再换一个继续筛……整个攻击的时间复杂度为</p>
+<div class="arithmatex">\[
+\underbrace{2^{|K_j|}\cdot\left(2^{|K_f|}+2^{|K_b|}\right)}_{\text{初筛阶段}}+\underbrace{\left(2^{k-n}+2^{k-2n}+\cdots+2^{k-tn}\right)}_{\text{复筛阶段}}.\tag{1}
+\]</div>
+<p>为保证只有正确密钥留下，数据复杂度为 <span class="arithmatex">\(t=\lceil k/n\rceil\)</span> 个已知明密文对。（具体分析时，为了平衡复杂度，也可以保留多个候选。）</p>
+<p>为降低存储，可以不存入表 <span class="arithmatex">\(T\)</span>，每得到一个候选就立即复筛。复筛的过滤概率很高，需要的明密文对很少，于是存储复杂度由表 <span class="arithmatex">\(L\)</span> 占主项，为 <span class="arithmatex">\(\min(2^{|K_f|},2^{|K_b|})\)</span>（把较小的一边存表即可）。</p>
+<p>下面以二重 DES 为例。<strong><span class="arithmatex">\(t\)</span> 重加密</strong>指同一个分组密码 <span class="arithmatex">\(E\)</span> 用多个独立选取的密钥 <span class="arithmatex">\(K_0,\cdots,K_{t-1}\)</span> 依次加密。引入这种模式是为了解决 DES 密钥过短、不能满足 20 世纪 90 年代以后安全需求的问题：把 DES 的一次加密变为多次，既节省升级成本，又期望提高安全性。但分析表明并非如此。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span><span class="book-name">二重 DES</span></p>
+<p>明文 <span class="arithmatex">\(P\in\{0,1\}^{64}\)</span>，两个相互独立的密钥 <span class="arithmatex">\(K_0,K_1\in\{0,1\}^{56}\)</span>，密文为</p>
+<div class="arithmatex">\[
+C=\mathrm{Enc}_{K_1}(\mathrm{Enc}_{K_0}(P)),
+\]</div>
+<p><span class="arithmatex">\(\mathrm{Enc}\)</span> 为 DES 的加密算法。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.3</span><span class="book-name">二重 DES 的中间相遇攻击</span></p>
+<p>此时 <span class="arithmatex">\(k=56+56=112\)</span>，<span class="arithmatex">\(n=64\)</span>，需要 <span class="arithmatex">\(\lceil112/64\rceil=2\)</span> 个已知明密文对 <span class="arithmatex">\((P_0,C_0)\)</span>、<span class="arithmatex">\((P_1,C_1)\)</span>。</p>
+<ol>
+<li>对 <span class="arithmatex">\(K_0\in\{0,1\}^{56}\)</span> 的每个可能取值，计算 <span class="arithmatex">\(x=\mathrm{Enc}_{K_0}(P_0)\)</span>，把 <span class="arithmatex">\(K_0\)</span> 存入以 <span class="arithmatex">\(x\)</span> 为索引的表 <span class="arithmatex">\(L\)</span>；</li>
+<li>对 <span class="arithmatex">\(K_1\in\{0,1\}^{56}\)</span> 的每个可能取值，计算 <span class="arithmatex">\(x'=\mathrm{Enc}^{-1}_{K_1}(C_0)\)</span>，以 <span class="arithmatex">\(x'\)</span> 访问表 <span class="arithmatex">\(L\)</span>。</li>
+</ol>
+<p>若表中存在 <span class="arithmatex">\(x=x'\)</span>，得到相应的 <span class="arithmatex">\((K_0,K_1)\)</span>，再计算 <span class="arithmatex">\(\mathrm{Enc}_{K_0}(P_1)\)</span> 与 <span class="arithmatex">\(\mathrm{Enc}^{-1}_{K_1}(C_1)\)</span>，仍相等则输出为正确密钥。</p>
+<p>时间复杂度约 <span class="arithmatex">\(2^{56}+2^{56}=2^{57}\)</span> 次 DES 加密，即 <span class="arithmatex">\(2^{56}\)</span> 次二重 DES 加密；存储复杂度 <span class="arithmatex">\(2^{56}\)</span>。</p>
+</div>
+<p>可见二重 DES 的密钥长度增加到 112 比特，安全性却仍与 DES 相当，所以没有被推广。实际中，若算法向前、向后计算的密钥（在一定条件下）存在独立性，就可以分而治之，受到中间相遇攻击的威胁。</p>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.4</span></p>
+<p>给出三个密钥的三重 DES（<span class="arithmatex">\(C=\mathrm{Enc}_{K_2}(\mathrm{Enc}_{K_1}(\mathrm{Enc}_{K_0}(P)))\)</span>）的中间相遇攻击，并分析复杂度。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>在第一次加密之后相遇：向前只用 <span class="arithmatex">\(K_0\)</span>，向后用 <span class="arithmatex">\((K_1,K_2)\)</span>。</p>
+<div class="arithmatex">\[
+P\xrightarrow{K_0}x\xleftarrow{K_1}y\xleftarrow{K_2}C.
+\]</div>
+<p><span class="arithmatex">\(k=168\)</span>，<span class="arithmatex">\(n=64\)</span>，需要 <span class="arithmatex">\(t=\lceil168/64\rceil=3\)</span> 个明密文对。</p>
+<ol>
+<li>对 <span class="arithmatex">\(2^{56}\)</span> 个 <span class="arithmatex">\(K_0\)</span> 计算 <span class="arithmatex">\(x=\mathrm{Enc}_{K_0}(P_0)\)</span> 存表；</li>
+<li>对 <span class="arithmatex">\(2^{112}\)</span> 个 <span class="arithmatex">\((K_1,K_2)\)</span> 计算 <span class="arithmatex">\(x'=\mathrm{Enc}^{-1}_{K_1}(\mathrm{Enc}^{-1}_{K_2}(C_0))\)</span> 查表；</li>
+<li>初筛约剩 <span class="arithmatex">\(2^{168-64}=2^{104}\)</span> 个候选，用 <span class="arithmatex">\((P_1,C_1)\)</span>、<span class="arithmatex">\((P_2,C_2)\)</span> 复筛。</li>
+</ol>
+<p>时间复杂度约 <span class="arithmatex">\(2^{56}+2\cdot2^{112}\approx2^{113}\)</span> 次 DES 运算，复筛 <span class="arithmatex">\(2^{104}\)</span> 量级可忽略；存储 <span class="arithmatex">\(2^{56}\)</span>。所以三重 DES 的有效安全强度约为 112 比特，而不是 168 比特。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>设 <span class="arithmatex">\(E\)</span> 为密钥长度和分组长度均为 128 比特的分组密码，考虑二重加密 <span class="arithmatex">\(\mathrm{Enc}_k(m)=E_{k_2}(E_{k_1}(m))\)</span>，<span class="arithmatex">\(k_1,k_2\)</span> 相互独立。假设对大表排序、存储、访问的时间忽略不计。在已知明文攻击下：</p>
+<ol>
+<li>给出一种存储复杂度不超过 <span class="arithmatex">\(2^{128}\)</span> 字节的密钥恢复攻击，并分析复杂度；（提示：只对 128 比特密钥的部分比特建表。）</li>
+<li>给出一种时间复杂度不超过 <span class="arithmatex">\(2^{128}\)</span> 次 <span class="arithmatex">\(E\)</span> 或 <span class="arithmatex">\(E^{-1}\)</span> 运算的密钥恢复攻击，并分析复杂度；（提示：同时利用多个明密文对，增加第一次比较时的限制条件，降低满足条件的候选密钥个数。）</li>
+<li>若借助 8000 台计算机同时工作，每台每秒约执行 <span class="arithmatex">\(2^{27}\)</span> 次 <span class="arithmatex">\(E\)</span> 或 <span class="arithmatex">\(E^{-1}\)</span>，可以访问共享存储，估计以上两种攻击所需的时间（以年为单位）。</li>
+</ol>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p><span class="arithmatex">\(k=256\)</span>，<span class="arithmatex">\(n=128\)</span>，至少需要 <span class="arithmatex">\(t=2\)</span> 个明密文对。</p>
+<ol>
+<li>完整的表 <span class="arithmatex">\(L\)</span> 有 <span class="arithmatex">\(2^{128}\)</span> 项，每项存 16 字节的 <span class="arithmatex">\(k_1\)</span>，共 <span class="arithmatex">\(2^{132}\)</span> 字节，超了。改为分批：把 <span class="arithmatex">\(k_1\)</span> 的前 <span class="arithmatex">\(4\)</span> 比特固定为 <span class="arithmatex">\(j=0,\cdots,15\)</span>，每批只对剩余 <span class="arithmatex">\(124\)</span> 比特建表，每批 <span class="arithmatex">\(2^{124}\times16=2^{128}\)</span> 字节。每批都要对所有 <span class="arithmatex">\(2^{128}\)</span> 个 <span class="arithmatex">\(k_2\)</span> 做向后计算查表。时间 <span class="arithmatex">\(16\times(2^{124}+2^{128})\approx2^{132}\)</span> 次运算，存储 <span class="arithmatex">\(2^{128}\)</span> 字节，数据 2 个明密文对。</li>
+<li>只用一个明密文对时，初筛会留下 <span class="arithmatex">\(2^{256-128}=2^{128}\)</span> 个候选，复筛又要约 <span class="arithmatex">\(2^{129}\)</span> 次运算，总时间约 <span class="arithmatex">\(2^{130}\)</span>。按提示，建表时对 <span class="arithmatex">\(k_1\)</span> 同时存 <span class="arithmatex">\(E_{k_1}(P_0)\)</span> 和 <span class="arithmatex">\(E_{k_1}(P_1)\)</span>，向后计算时只在 <span class="arithmatex">\(E^{-1}_{k_2}(C_0)\)</span> 命中后才计算 <span class="arithmatex">\(E^{-1}_{k_2}(C_1)\)</span> 并比较。<span class="arithmatex">\(2^{128}\)</span> 次命中中的绝大多数在第二个值上被淘汰，留下的错误候选约 <span class="arithmatex">\(2^{256-256}=1\)</span> 个，复筛代价可以忽略。总时间为向前 <span class="arithmatex">\(2\cdot2^{128}\)</span> 次 <span class="arithmatex">\(E\)</span> 加向后约 <span class="arithmatex">\(2^{128}+2^{128}\)</span> 次 <span class="arithmatex">\(E^{-1}\)</span>。若只要求期望时间，并在建表时按 <span class="arithmatex">\(E_{k_1}(P_0)\)</span> 的 128 比特索引，则主项是 <span class="arithmatex">\(2^{128}\)</span> 次向前计算加平均 <span class="arithmatex">\(2^{127}\)</span> 次向后计算（期望在一半处遇到正确的 <span class="arithmatex">\(k_2\)</span>），与提示要求的量级 <span class="arithmatex">\(2^{128}\)</span> 相当。代价是存储 <span class="arithmatex">\(2^{128}\times(16+16+16)\approx2^{133.6}\)</span> 字节，所以两种攻击是在时间和存储之间折中。</li>
+<li>总速率 <span class="arithmatex">\(8000\times2^{27}\approx2^{12.97}\times2^{27}=2^{39.97}\)</span> 次/秒，一年约 <span class="arithmatex">\(2^{24.9}\)</span> 秒，即每年约 <span class="arithmatex">\(2^{64.9}\)</span> 次运算。<span class="arithmatex">\(2^{128}\)</span> 次需要约 <span class="arithmatex">\(2^{63.1}\approx10^{19}\)</span> 年，<span class="arithmatex">\(2^{132}\)</span> 次约 <span class="arithmatex">\(2^{67.1}\)</span> 年。两种攻击在现实中都不可行，这也是二重加密在理论上弱于预期、但实际仍不可破的原因。</li>
+</ol>
+</details>
+<h3 id="s2-2">2.2 部分状态值相遇</h3>
+<p>由 (1) 可见，攻击复杂度与向前、向后计算涉及的密钥长度正相关。若能降低涉及的密钥长度，就有望降低复杂度。这就是<strong>部分匹配技术</strong>：相遇函数为 <span class="arithmatex">\(x\)</span> 的 <span class="arithmatex">\(l\)</span> 比特（<span class="arithmatex">\(l&lt;n\)</span>）。下面以 5 轮 Mini-AES 为例。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.6</span><span class="book-name">轮 Mini-AES 的中间相遇攻击</span></p>
+<p>Mini-AES 的算法见<a href="../appendix-algorithms/">算法附录</a>。把它的密钥编排换成交替使用两个相互独立的 16 比特轮密钥，即主密钥为 32 比特 <span class="arithmatex">\(K=K_0\Vert K_1\)</span>，<span class="arithmatex">\(K_0,K_1\in\mathbb F_2^{16}\)</span>。第 1 轮前的白化密钥为 <span class="arithmatex">\(K_0\)</span>，第 <span class="arithmatex">\(i\)</span> 轮的子密钥为 <span class="arithmatex">\(K_{i-1\bmod2}\)</span>。把 16 比特状态按半字节划分，位置编号为</p>
+<div class="arithmatex">\[
+\begin{pmatrix}0&amp;2\\1&amp;3\end{pmatrix}.
+\]</div>
+<p>为平衡复杂度，选第 3 轮输出状态的一个半字节 <span class="arithmatex">\(x[0]\)</span> 作为“中间”。按密钥编排，要计算 <span class="arithmatex">\(x[0]\)</span>：</p>
+<ul>
+<li>向前与向后共用的密钥有 3 个半字节，<span class="arithmatex">\(K_j=\{K_0[0,3],K_1[0]\}\)</span>；</li>
+<li>只在向前计算中涉及的密钥 <span class="arithmatex">\(K_f=\{K_0[1,2],K_1[3]\}\)</span>；</li>
+<li>只在向后计算中涉及的密钥 <span class="arithmatex">\(K_b=\{K_1[1]\}\)</span>。</li>
+</ul>
+<p>相遇只有 <span class="arithmatex">\(l=4\)</span> 比特，每个明密文对只能过滤掉 <span class="arithmatex">\(2^{-4}\)</span>，所以要 <span class="arithmatex">\(t=\lceil28/4\rceil=7\)</span> 个已知明密文对。由 (1)（<span class="arithmatex">\(n\)</span> 换成 <span class="arithmatex">\(l\)</span>），时间复杂度为</p>
+<div class="arithmatex">\[
+2^{3\times4}\times\left(2^{3\times4}+2^4\right)+\left(2^{7\times4-4}+2^{28-2\times4}+\cdots+2^{28-7\times4}\right)
+\]</div>
+<p>次 5 轮 Mini-AES 加密，存储复杂度为 <span class="arithmatex">\(2^{12}\)</span>（以 <span class="arithmatex">\(K_f\)</span> 建表）或 <span class="arithmatex">\(2^4\)</span>（以 <span class="arithmatex">\(K_b\)</span> 建表）。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>我按上式算出来，初筛 <span class="arithmatex">\(2^{12}\times(2^{12}+2^4)\approx2^{24.006}\)</span>，复筛 <span class="arithmatex">\(2^{24}+2^{20}+\cdots\)</span>，加起来约 <span class="arithmatex">\(2^{25}\)</span>，与教材的 <span class="arithmatex">\(2^{25}\)</span> 一致；教材写存储为 <span class="arithmatex">\(2^4\)</span>，即把向后计算的 <span class="arithmatex">\(K_b\)</span> 存表。</p>
+</div>
+<h3 id="s2-3">2.3 拼切技术</h3>
+<p>前面的分析都在已知明文环境下，相当于从中间把算法分割为两部分，由明密文分别向中间计算。若敌手可以选择明文（或密文），Merkle 和 Hellman 在 1981 年提出了一种新的分割方式，进一步利用密钥编排降低复杂度。基于类似的思路，Aoki 和 Sasaki 在 2008 年提出<strong>拼切技术 (splice-and-cut)</strong>，用于杂凑函数的原像攻击，后来也用于下一节相遇函数为集合关系的中间相遇攻击，在杂凑函数、认证加密等的分析中取得了很好的效果。</p>
+<p>以两个密钥的三重 DES（2K3DES）为例。二重 DES 不能有效提高安全性，所以 NIST 推荐至少加密三重。三重 DES 要 168 比特密钥，为便于管理，美国国家标准 ANS X9.17-1998 和国际标准 ISO 8732 采用了 2K3DES：</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.7</span><span class="book-name">两个密钥的三重 DES, 2K3DES</span></p>
+<p>明文 <span class="arithmatex">\(P\in\{0,1\}^{64}\)</span>，两个相互独立的密钥 <span class="arithmatex">\(K_0,K_1\in\{0,1\}^{56}\)</span>，</p>
+<div class="arithmatex">\[
+x=\mathrm{Enc}_{K_0}(P),\qquad y=\mathrm{Dec}_{K_1}(x),\qquad C=\mathrm{Enc}_{K_0}(y),
+\]</div>
+<p><span class="arithmatex">\(\mathrm{Enc}\)</span>、<span class="arithmatex">\(\mathrm{Dec}\)</span> 为 DES 的加密和解密算法。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>2K3DES 的好处是与 DES 兼容：<span class="arithmatex">\(K_0=K_1\)</span> 时，它就等价于 DES。</p>
+</div>
+<p>若按 <a href="#s2-1">§2.1</a> 在 <span class="arithmatex">\(x\)</span> 或 <span class="arithmatex">\(y\)</span> 处直接分割，计算取值必须同时猜测 <span class="arithmatex">\(K_0\)</span> 和 <span class="arithmatex">\(K_1\)</span>，复杂度约 <span class="arithmatex">\(2^{112}\)</span>，与强力攻击相当。要降低复杂度，必须把与 <span class="arithmatex">\(K_0\)</span> 相关的运算和与 <span class="arithmatex">\(K_1\)</span> 相关的运算独立分割开。观察关于 <span class="arithmatex">\(y\)</span> 的方程组</p>
+<div class="arithmatex">\[
+\begin{cases}y=\mathrm{Dec}_{K_1}(x),\\y=\mathrm{Dec}_{K_0}(C)=\mathrm{Dec}_{K_0}(E(P))=\mathrm{Dec}_{K_0}(E(\mathrm{Dec}_{K_0}(x))).\end{cases}\tag{2}
+\]</div>
+<p>若控制 <span class="arithmatex">\(x=0\)</span>（也可以是任意 <span class="arithmatex">\(n\)</span> 比特常数），(2) 中两个关于 <span class="arithmatex">\(y\)</span> 的等式就分别只与 <span class="arithmatex">\(K_1\)</span> 或 <span class="arithmatex">\(K_0\)</span> 有关！</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.8</span><span class="book-name">K3DES 的中间相遇攻击</span></p>
+<ol>
+<li><strong>预计算</strong>：对 <span class="arithmatex">\(K_1\in\{0,1\}^{56}\)</span> 的每个可能取值，计算 <span class="arithmatex">\(y=\mathrm{Dec}_{K_1}(0)\)</span>，把 <span class="arithmatex">\(K_1\)</span> 存入以 <span class="arithmatex">\(y\)</span> 为索引的表 <span class="arithmatex">\(L\)</span>；</li>
+<li>对 <span class="arithmatex">\(K_0\in\{0,1\}^{56}\)</span> 的每个可能取值：<ol>
+<li>计算 <span class="arithmatex">\(P=\mathrm{Dec}_{K_0}(0)\)</span>，以 <span class="arithmatex">\(P\)</span> 为选择明文，获得对应的密文 <span class="arithmatex">\(C\)</span>；</li>
+<li>计算 <span class="arithmatex">\(y'=\mathrm{Dec}_{K_0}(C)\)</span>，以 <span class="arithmatex">\(y'\)</span> 访问表 <span class="arithmatex">\(L\)</span>。</li>
+</ol>
+</li>
+</ol>
+<p>若表中存在 <span class="arithmatex">\(y=y'\)</span>，得到 <span class="arithmatex">\((K_0,K_1)\)</span>。换一对明密文 <span class="arithmatex">\((P_1,C_1)\)</span> 验证，若 <span class="arithmatex">\(E_{K_0,K_1}(P_1)=C_1\)</span>，输出为正确密钥。</p>
+<div class="arithmatex">\[
+P\xleftarrow{\mathrm{Dec},\ K_0}0\ \Big|\ 0\xrightarrow{\mathrm{Dec},\ K_1}y\ \Big|\ y\xleftarrow{\mathrm{Dec},\ K_0}C,\qquad P\xrightarrow{\text{选择明文}}C.
+\]</div>
+</div>
+<p>任一错误密钥满足 <span class="arithmatex">\(y=y'\)</span> 的概率为 <span class="arithmatex">\(2^{-64}\)</span>，所以两对明密文足以以很大的概率筛出正确密钥。时间复杂度约 <span class="arithmatex">\(2^{57}\)</span> 次加密，存储 <span class="arithmatex">\(2^{56}\)</span>。代价是需要 <span class="arithmatex">\(2^{56}\)</span> 个选择明文。</p>
+<p>攻击成功的关键在于：通过给 <span class="arithmatex">\(x\)</span> 取定值，“切断”加密中把 <span class="arithmatex">\(K_0\)</span>、<span class="arithmatex">\(K_1\)</span> 绑在一起的运算，再通过明密文之间的对应关系，“拼出”与正常加密一致的中间结果。相遇点仍在中间状态，但“向前”“向后”计算的起点不是明文或密文，而是中间状态，从而可以更灵活地利用密钥关系，降低复杂度。van Oorschot 和 Wiener 在 1990 年把这个攻击转为了已知明文攻击。</p>
+<h2 id="s3"><span class="book-secnum">§ 03</span>相遇函数为集合映射关系的攻击</h2>
+<p>这一节讨论 <span class="arithmatex">\(E=E_0\circ E_1\circ E_2\)</span> 的情况，相遇函数为 <span class="arithmatex">\(E_1\)</span> 头部状态 <span class="arithmatex">\(x\)</span> 的部分比特构成的多重集与尾部状态 <span class="arithmatex">\(y\)</span> 的部分比特构成的多重集之间的对应关系。这一思想在 Square 攻击和碰撞攻击的影响下，由 Demirci 和 Selçuk 在 FSE 2008 提出，后来经过一系列发展，给出了单密钥场景下 7 轮 AES-128、9 轮 AES-256 和 10 轮 AES-256 的最优攻击。我们把这种基于集合映射关系的中间相遇攻击称为 <strong><span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇攻击</strong>。</p>
+<p>下面以 7 轮 Mini-AES 为例。假设密钥编排为各轮密钥相互独立，即主密钥 <span class="arithmatex">\(K=K_{-1}\Vert K_0\Vert\cdots\Vert K_6\)</span>，<span class="arithmatex">\(K_{-1},K_0,\cdots,K_6\in\mathbb F_2^{16}\)</span> 相互独立。（为了与区分器的编号统一，这里从 <span class="arithmatex">\(-1\)</span> 开始编号。）</p>
+<h3 id="s3-1">3.1 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇区分器</h3>
+<p>先不考虑白化密钥，每轮由 S 盒 (NS)、行移位 (SR)、列混合 (MC) 和轮密钥加 (AK) 组成。与积分分析类似，区分器的输入是满足某种活跃特性的集合，研究对象是头部输入集与尾部输出集之间的映射关系。</p>
+<p>设初始状态为 <span class="arithmatex">\(X_0\)</span>，第 <span class="arithmatex">\(i\)</span> 轮经过 NS、SR、MC、AK 后的输出分别记为 <span class="arithmatex">\(X_{i-1}^S\)</span>、<span class="arithmatex">\(X_{i-1}^R\)</span>、<span class="arithmatex">\(X_{i-1}^M\)</span> 和 <span class="arithmatex">\(X_i\)</span>。考虑 <span class="arithmatex">\(2^4\)</span> 个 <span class="arithmatex">\(X_0\)</span> 构成的集合</p>
+<div class="arithmatex">\[
+\mathcal X=\{X_0^i\mid X_0^i[0]\ \text{取遍所有可能},\ X_0^i[1],X_0^i[2],X_0^i[3]\ \text{为常数},\ i=0,\cdots,15\}.\tag{3}
+\]</div>
+<p>逐轮分析：输入的活跃半字节构成的集合 <span class="arithmatex">\(\{X_0^0[0],\cdots,X_0^{15}[0]\}\)</span>，与 <span class="arithmatex">\(i\)</span> 轮加密后输出的一个半字节构成的集合 <span class="arithmatex">\(\{X_i^0[0],\cdots,X_i^{15}[0]\}\)</span> 之间的映射，记为 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_i[0]\)</span>。</p>
+<p><strong>映射 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_1[0]\)</span>。</strong> 设 <span class="arithmatex">\(S(X_0[0])=t_0\)</span>，则</p>
+<div class="arithmatex">\[
+X_1[0]=X_0^M[0]\oplus K_1[0]=3t_0\oplus2S(X_0[3])\oplus K_1[0].\tag{4}
+\]</div>
+<p><span class="arithmatex">\(X_0[3]\)</span> 是定值，<span class="arithmatex">\(K_1[0]\)</span> 对加密双方也是定值，所以 <span class="arithmatex">\(2S(X_0[3])\oplus K_1[0]\)</span> 可以看作 4 比特常数 <span class="arithmatex">\(c_0\)</span>，(4) 等价于</p>
+<div class="arithmatex">\[
+X_1[0]=3S(X_0[0])\oplus c_0.\tag{5}
+\]</div>
+<p>可见映射 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_1[0]\)</span> 由 4 比特的 <span class="arithmatex">\(c_0\)</span> 决定：对 <span class="arithmatex">\(c_0\)</span> 的每个可能值，把 <span class="arithmatex">\(2^4\)</span> 个 <span class="arithmatex">\(X_0[0]\)</span> 依次代入 (5)，得到 <span class="arithmatex">\(2^4\)</span> 个 <span class="arithmatex">\(X_1[0]\)</span>，记为一个对应表。所以 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_1[0]\)</span> 至多有 <span class="arithmatex">\(2^4\)</span> 个对应表：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(c_0=0\)</span></th>
+<th></th>
+<th><span class="arithmatex">\(c_0=1\)</span></th>
+<th></th>
+<th><span class="arithmatex">\(\cdots\)</span></th>
+<th><span class="arithmatex">\(c_0=15\)</span></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(X_0[0]\)</span></td>
+<td><span class="arithmatex">\(X_1[0]\)</span></td>
+<td><span class="arithmatex">\(X_0[0]\)</span></td>
+<td><span class="arithmatex">\(X_1[0]\)</span></td>
+<td></td>
+<td><span class="arithmatex">\(X_0[0]\)</span></td>
+<td><span class="arithmatex">\(X_1[0]\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(0\)</span></td>
+<td><span class="arithmatex">\(3S(0)\)</span></td>
+<td><span class="arithmatex">\(0\)</span></td>
+<td><span class="arithmatex">\(3S(0)\oplus1\)</span></td>
+<td></td>
+<td><span class="arithmatex">\(0\)</span></td>
+<td><span class="arithmatex">\(3S(0)\oplus15\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(15\)</span></td>
+<td><span class="arithmatex">\(3S(15)\)</span></td>
+<td><span class="arithmatex">\(15\)</span></td>
+<td><span class="arithmatex">\(3S(15)\oplus1\)</span></td>
+<td></td>
+<td><span class="arithmatex">\(15\)</span></td>
+<td><span class="arithmatex">\(3S(15)\oplus15\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>类似地，存在 4 比特常数 <span class="arithmatex">\(c_1\)</span> 使</p>
+<div class="arithmatex">\[
+X_1[1]=2S(X_0[0])\oplus c_1.\tag{6}
+\]</div>
+<p><strong>映射 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_2[0]\)</span>。</strong> 继续按加密写表达式：</p>
+<div class="arithmatex">\[
+X_2[0]=X_1^M[0]\oplus K_2[0]=3S(X_1[0])\oplus2S(X_1[3])\oplus K_2[0]=3S(3S(X_0[0])\oplus c_0)\oplus c_2,
+\]</div>
+<p>其中 <span class="arithmatex">\(c_2=2S(X_1[3])\oplus K_2[0]\)</span> 是 4 比特常数（<span class="arithmatex">\(X_1[3]\)</span> 在这 16 个状态中不变）。可见 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_2[0]\)</span> 由 8 比特的 <span class="arithmatex">\(c_0\Vert c_2\)</span> 决定，至多 <span class="arithmatex">\(2^8\)</span> 种可能。类似地，存在 4 比特常数 <span class="arithmatex">\(c_3,c_4,c_5\)</span> 使</p>
+<div class="arithmatex">\[
+\begin{aligned}
+X_2[1]&amp;=2S(3S(X_0[0])\oplus c_0)\oplus c_3,\\
+X_2[2]&amp;=2S(2S(X_0[0])\oplus c_1)\oplus c_4,\\
+X_2[3]&amp;=3S(2S(X_0[0])\oplus c_1)\oplus c_5.
+\end{aligned}
+\]</div>
+<p><strong>映射 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_3[0]\)</span>。</strong></p>
+<div class="arithmatex">\[
+\begin{aligned}
+X_3[0]&amp;=X_2^M[0]\oplus K_3[0]=3S(X_2[0])\oplus2S(X_2[3])\oplus K_3[0]\\
+&amp;=3S\big(3S(3S(X_0[0])\oplus c_0)\oplus c_2\big)\oplus2S\big(3S(2S(X_0[0])\oplus c_1)\oplus c_5\big)\oplus K_3[0],
+\end{aligned}
+\]</div>
+<p>由 20 比特的 <span class="arithmatex">\(c_0\Vert c_1\Vert c_2\Vert c_5\Vert K_3[0]\)</span> 决定，至多 <span class="arithmatex">\(2^{20}\)</span> 种可能。同理</p>
+<div class="arithmatex">\[
+X_3[3]=2S(X_2[2])\oplus3S(X_2[1])\oplus K_3[3]=2S\big(2S(2S(X_0[0])\oplus c_1)\oplus c_4\big)\oplus3S\big(2S(3S(X_0[0])\oplus c_0)\oplus c_3\big)\oplus K_3[3].
+\]</div>
+<p><strong>映射 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_4[0]\)</span>。</strong></p>
+<div class="arithmatex">\[
+X_4[0]=X_3^M[0]\oplus K_4[0]=3S(X_3[0])\oplus2S(X_3[3])\oplus K_4[0],\tag{7}
+\]</div>
+<p>由上面两式，(7) 的取值由</p>
+<div class="arithmatex">\[
+\mathcal V=c_0\Vert c_1\Vert c_2\Vert c_3\Vert c_4\Vert c_5\Vert K_3[0]\Vert K_3[3]\Vert K_4[0]
+\]</div>
+<p>决定，共 36 比特，即 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_4[0]\)</span> 至多有 <span class="arithmatex">\(2^{36}\)</span> 种可能。</p>
+<p>而 4 比特到 4 比特的随机映射共有 <span class="arithmatex">\(16^{16}=2^{64}\)</span> 种。<span class="arithmatex">\(2^{36}\ll2^{64}\)</span>，按 4 轮 Mini-AES 构造的映射表的个数远小于随机映射的个数。这种差异性就是相遇函数为集合映射关系的区分器：</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">算法（4 轮 Mini-AES 的 <span class="arithmatex">\(\mathcal{DS}\)</span> 区分攻击）</span></p>
+<ol>
+<li><strong>预计算</strong>：遍历 <span class="arithmatex">\(\mathcal V\)</span> 的所有可能，构造 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_4[0]\)</span> 的 <span class="arithmatex">\(2^{36}\)</span> 种可能的对应表并存储；</li>
+<li>选择满足 (3) 的 <span class="arithmatex">\(2^4\)</span> 个输入，获得相应的输出；</li>
+<li>根据输入集合和输出集合，得到一个 <span class="arithmatex">\(\mathcal X_0[0]\to\mathcal X_4[0]\)</span> 的对应表 <span class="arithmatex">\(T\)</span>；</li>
+<li>若 <span class="arithmatex">\(T\)</span> 属于预计算出的 <span class="arithmatex">\(2^{36}\)</span> 种之一，判断为 4 轮 Mini-AES，否则判断为随机置换。</li>
+</ol>
+</div>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.2</span></p>
+<p>分析上面区分攻击的复杂度。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<ul>
+<li><strong>数据</strong>：<span class="arithmatex">\(2^4\)</span> 个选择明文。</li>
+<li><strong>预计算时间</strong>：对 <span class="arithmatex">\(2^{36}\)</span> 个 <span class="arithmatex">\(\mathcal V\)</span>，各算 16 个输入的 <span class="arithmatex">\(X_4[0]\)</span>，每个约需 <span class="arithmatex">\(X_1[0],X_1[1]\)</span>（2 次 S 盒）、<span class="arithmatex">\(X_2\)</span> 的 4 个半字节（4 次）、<span class="arithmatex">\(X_3[0],X_3[3]\)</span>（4 次）、<span class="arithmatex">\(X_4[0]\)</span>（2 次）共约 12 次 S 盒，总计 <span class="arithmatex">\(2^{36}\times16\times12\approx2^{43.6}\)</span> 次查表。</li>
+<li><strong>存储</strong>：每个表存 16 个 4 比特值，共 64 比特，<span class="arithmatex">\(2^{36}\times64=2^{42}\)</span> 比特。（实际存一个排序的 64 比特指纹即可。）</li>
+<li><strong>在线时间</strong>：<span class="arithmatex">\(2^4\)</span> 次加密加一次查表，可忽略。</li>
+<li><strong>成功率</strong>：真实算法一定判对；随机置换判错（落在预计算集合里）的概率为 <span class="arithmatex">\(2^{36}/2^{64}=2^{-28}\)</span>。</li>
+</ul>
+<p>可见区分攻击的复杂度由预计算表的计算和存储占主项，而这主要由 <span class="arithmatex">\(X_4[0]\)</span> 涉及的变量个数决定。</p>
+</details>
+<p>注意到 (7) 最后是 <span class="arithmatex">\(\oplus K_4[0]\)</span>，可以通过差分消去。Demirci 和 Selçuk 提出了一种改进：考虑差分值之间的对应，而不是取值的对应。按活跃半字节的值由小到大给输入集合排序（固定任意顺序遍历即可），设 <span class="arithmatex">\(X_0^0\)</span> 为 <span class="arithmatex">\(X_0^0[0]=0\)</span> 时对应的值，构造差分形式的映射</p>
+<div class="arithmatex">\[
+X_4^i[0]\oplus X_4^0[0]=3\big(S(X_3^i[0])\oplus S(X_3^0[0])\big)\oplus2\big(S(X_3^i[3])\oplus S(X_3^0[3])\big),\qquad i=1,\cdots,15.
+\]</div>
+<p>此时变量为</p>
+<div class="arithmatex">\[
+\mathcal V'=c_0\Vert c_1\Vert c_2\Vert c_3\Vert c_4\Vert c_5\Vert K_3[0]\Vert K_3[3],
+\]</div>
+<p>从 36 比特降为 32 比特，只需存储 <span class="arithmatex">\(2^{32}\)</span> 种对应表，降低了存储：</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(X_0^i[0]\)</span></th>
+<th><span class="arithmatex">\(\Delta X_4^i[0]\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(1\)</span></td>
+<td><span class="arithmatex">\(X_4^1[0]\oplus X_4^0[0]\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(2\)</span></td>
+<td><span class="arithmatex">\(X_4^2[0]\oplus X_4^0[0]\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(15\)</span></td>
+<td><span class="arithmatex">\(X_4^{15}[0]\oplus X_4^0[0]\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>这个区分器是头部取值与尾部差分的对应表。从 36 比特降为 32 比特的本质在于：尾部固定位置半字节的表达式都含 <span class="arithmatex">\(\oplus K\)</span> 这一项，利用差分这种线性关系可以消去它，少猜 1 个半字节的密钥。推而广之，若不同位置的多个字的表达式中也有共项（例如 MC 后同一列每个字的表达式都由 MC 之前同一列的字表示），就可以考虑多个字的异或和或更广义的线性关系，减少变量个数，降低复杂度。Derbez 等就利用这一思路，把 AES 中间相遇区分器的变量个数从 24 降到 14，大大降低了预计算表的存储。此外，还可以把映射表中的有序对应转为无序对应来降低存储量，或选择满足截断差分的区分器头尾，降低中间变量个数，以数据换存储。</p>
+</div>
+<h3 id="s3-2">3.2 密钥恢复攻击</h3>
+<p>把 4 轮区分器 <span class="arithmatex">\(\mathcal X_0[0]\to\Delta\mathcal X_4[0]\)</span> 放在 <span class="arithmatex">\(E_1\)</span> 的位置，前面加 1 轮，后面加 2 轮，进行 7 轮 Mini-AES 的密钥恢复攻击：</p>
+<div class="arithmatex">\[
+P\xrightarrow{K_{-1},\ \mathrm{NS,SR,MC},\ K_0}X_0\xrightarrow{4\text{ 轮区分器}}X_4\xrightarrow{\mathrm{NS,SR},\ WK_5,\ \mathrm{MC},\ \mathrm{NS,SR},\ K_6}C.
+\]</div>
+<p>这里 <span class="arithmatex">\(WK_5\)</span> 是 <span class="arithmatex">\(K_5\)</span> 经 <span class="arithmatex">\(\mathrm{MC}^{-1}\)</span> 得到的等价密钥，把密钥加与 MC 交换顺序后，向后计算只需猜一个半字节。</p>
+<p><strong>1. 预计算。</strong> 令有序集 <span class="arithmatex">\(\mathcal X_0[0]=\{X_0^0[0],\cdots,X_0^{15}[0]\}=\{0,\cdots,15\}\)</span>，遍历 <span class="arithmatex">\(\mathcal V'\)</span> 的所有可能，构造 <span class="arithmatex">\(\mathcal X_0[0]\to\Delta\mathcal X_4[0]\)</span> 的 <span class="arithmatex">\(2^{32}\)</span> 种可能的对应表并存储。这一步需要</p>
+<div class="arithmatex">\[
+2^{32}\times15\times4\times7\approx2^{40.7}
+\]</div>
+<p>次查表运算，<span class="arithmatex">\(2^{32}\times15\times4\div8=2^{34.9}\)</span> 字节的存储。</p>
+<p><strong>2. 连接明文与区分器头部。</strong> 要保证 <span class="arithmatex">\(\mathcal X_0[0]\)</span> 活跃，考虑直接猜测密钥，算出满足要求的明文集合 <span class="arithmatex">\(\mathcal P=\{P^0,\cdots,P^{15}\}\)</span>，并找到它与有序集合 <span class="arithmatex">\(\mathcal X_0[0]\)</span> 的对应。</p>
+<ol>
+<li>记第一轮 MC 的输出为 <span class="arithmatex">\(X_{-1}^M\)</span>。选择有序集合 <span class="arithmatex">\(\mathcal X_{-1}^M[0]=\{0,1,\cdots,15\}\)</span>，<span class="arithmatex">\(X_{-1}^{iM}[1]=c_6\)</span>（任意常数）。对 <span class="arithmatex">\(i=0,\cdots,15\)</span>，由 <span class="arithmatex">\(X_{-1}^{iM}[0]\Vert X_{-1}^{iM}[1]\)</span> 沿解密方向算出 <span class="arithmatex">\(X_{-1}^i[0]\Vert X_{-1}^i[3]\)</span>；</li>
+<li>猜测 <span class="arithmatex">\(K_{-1}[0]\)</span> 和 <span class="arithmatex">\(K_{-1}[3]\)</span>，求得 <span class="arithmatex">\(P^i[0]\Vert P^i[3]\)</span>。令 <span class="arithmatex">\(P^i[1]\Vert P^i[2]\)</span> 为任意固定常数；</li>
+<li>猜测 <span class="arithmatex">\(K_0[0]\)</span>，计算 <span class="arithmatex">\(X_0^i[0]=X_{-1}^{iM}[0]\oplus K_0[0]\)</span>；</li>
+<li>为与预计算表对应，识别 <span class="arithmatex">\(X_0^0[0]\)</span>，把算出的 <span class="arithmatex">\(X_0^i[0]\)</span> 由小到大排序，相应地把明文集合排序，得到有序集合 <span class="arithmatex">\(\mathcal P\)</span>，获得密文集合 <span class="arithmatex">\(\mathcal C\)</span>。</li>
+</ol>
+<p><strong>3. 连接密文与区分器尾部。</strong> 找到密文集合 <span class="arithmatex">\(\mathcal C\)</span> 与有序集合 <span class="arithmatex">\(\{X_4^1[0]\oplus X_4^0[0],\cdots,X_4^{15}[0]\oplus X_4^0[0]\}\)</span> 之间的对应。</p>
+<ol>
+<li>猜测 <span class="arithmatex">\(K_6[0]\)</span>、<span class="arithmatex">\(K_6[3]\)</span> 和等价密钥 <span class="arithmatex">\(WK_5[0]\)</span>，计算 <span class="arithmatex">\(X_4^i[0]\)</span> 及 <span class="arithmatex">\(X_4^i[0]\oplus X_4^0[0]\)</span>，<span class="arithmatex">\(i=1,\cdots,15\)</span>；</li>
+<li>
+<p>得到一个对应表 <span class="arithmatex">\(\mathcal X_0[0]\to\Delta\mathcal X_4[0]\)</span>。若它在预计算表中，则输出此时的 24 比特</p>
+<div class="arithmatex">\[
+K_{-1}[0]\Vert K_{-1}[3]\Vert K_0[0]\Vert WK_5[0]\Vert K_6[0]\Vert K_6[3]
+\]</div>
+<p>为正确密钥；否则回到 2 中的第 2 步重新猜测。</p>
+</li>
+</ol>
+<p>这一步要选 <span class="arithmatex">\(2^4\)</span> 个明文，进行约 <span class="arithmatex">\(2^{24}\times16=2^{28}\)</span> 次查表运算。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>若轮密钥之间不独立，还可以结合密钥编排，进一步平衡复杂度。</p>
+</div>
+<p>可见密钥恢复攻击的复杂度由预计算阶段和在线阶段需要猜测的密钥量决定。一般地，设 <span class="arithmatex">\(c\)</span> 为相遇集合中每个元素的比特长度，<span class="arithmatex">\(s\)</span> 为头部集合中涉及的元素位置个数（本节只考虑 <span class="arithmatex">\(X_0[0]\)</span> 一个位置，<span class="arithmatex">\(s=1\)</span>），<span class="arithmatex">\(t\)</span> 为尾部集合中涉及的元素位置个数，<span class="arithmatex">\(d\)</span> 为预计算阶段要遍历的 <span class="arithmatex">\(c\)</span> 比特变量的个数，<span class="arithmatex">\(|K_{E_0}\cup K_{E_2}|\)</span> 为在线阶段猜测的密钥比特数，<span class="arithmatex">\(\rho_{E_i}\)</span> 为 <span class="arithmatex">\(E_i\)</span> 中的运算占一次完整加密的比重（往往只考虑 S 盒运算）。则：</p>
+<ul>
+<li><strong>预计算阶段</strong>：<span class="arithmatex">\(2^{cd}\cdot2^{cs}\cdot\rho_{E_1}\)</span> 次加密，<span class="arithmatex">\(2^{cd}\cdot(2^{cs}-1)\cdot ct\)</span> 比特的存储；</li>
+<li><strong>在线阶段</strong>：<span class="arithmatex">\(2^{cs}\)</span> 个明文，<span class="arithmatex">\(2^{|K_{E_0}\cup K_{E_2}|}\cdot2^{cs}\cdot\rho_{E_0\cup E_2}\)</span> 次加密。一次筛选后，<span class="arithmatex">\(2^{|K_{E_0}\cup K_{E_2}|}\)</span> 个密钥还剩 <span class="arithmatex">\(\lambda\cdot2^{|K_{E_0}\cup K_{E_2}|}\)</span> 个，其中 <span class="arithmatex">\(\lambda=2^{c(d-t\cdot(2^{cs}-1))}\)</span>。</li>
+</ul>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.3</span></p>
+<p>用上面的一般公式核对 7 轮 Mini-AES 攻击的数字：<span class="arithmatex">\(c=4\)</span>，<span class="arithmatex">\(s=t=1\)</span>，<span class="arithmatex">\(d=8\)</span>。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<ul>
+<li>预计算存储：<span class="arithmatex">\(2^{32}\cdot15\cdot4\)</span> 比特 <span class="arithmatex">\(=2^{32}\times60\)</span> 比特 <span class="arithmatex">\(\approx2^{37.9}\)</span> 比特 <span class="arithmatex">\(=2^{34.9}\)</span> 字节，与上面一致。</li>
+<li>在线：<span class="arithmatex">\(2^4\)</span> 个明文；猜测 <span class="arithmatex">\(24\)</span> 比特密钥，每个猜测处理 <span class="arithmatex">\(16\)</span> 个明文，<span class="arithmatex">\(2^{24}\times16=2^{28}\)</span> 次查表，与上面一致。</li>
+<li>筛选：<span class="arithmatex">\(\lambda=2^{4(8-15)}=2^{-28}\)</span>，<span class="arithmatex">\(2^{24}\)</span> 个猜测中错误候选的期望留下 <span class="arithmatex">\(2^{24-28}=2^{-4}\)</span> 个，所以一次筛选基本只剩正确密钥。</li>
+</ul>
+</details>
+<div id="ex-5" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 3.4</span></p>
+<p>若 Mini-AES 的密钥编排为交替使用两个相互独立的 16 比特轮密钥，能否进行中间相遇攻击？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>能，而且更容易。轮密钥只有 <span class="arithmatex">\(K_0,K_1\)</span> 两个，向前、向后计算猜过的半字节会重复出现在后面的轮中：在线阶段猜测的 <span class="arithmatex">\(K_{-1}[0,3]\)</span>、<span class="arithmatex">\(K_0[0]\)</span>、<span class="arithmatex">\(K_6[0,3]\)</span>、<span class="arithmatex">\(WK_5[0]\)</span> 都是 <span class="arithmatex">\(K_0\)</span> 或 <span class="arithmatex">\(K_1\)</span>（或其线性变换）的半字节，而预计算中的 <span class="arithmatex">\(K_3[0]\)</span>、<span class="arithmatex">\(K_3[3]\)</span> 也来自同一组密钥。所以 <span class="arithmatex">\(\mathcal V'\)</span> 中的部分变量可以由在线阶段的猜测直接算出，预计算表可以按这些比特分块，只与对应块比较，降低存储和匹配代价；猜出的 24 比特与区分器中的 8 比特密钥有重叠，相当于额外的校验条件。这就是上面注中所说的“结合密钥编排进一步平衡复杂度”。当然，同时也要注意 <a href="#s2-2">§2.2</a> 的分析已经表明，这种密钥编排下 5 轮版本用值相遇就能以 <span class="arithmatex">\(2^{25}\)</span> 攻破。</p>
+</details>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 6 章。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-05-integral-cryptanalysis/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第五章：积分分析</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-07-other-block-cipher-attacks/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第七章：分组密码的其他攻击方法</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 6 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-01-overview/">第一章：密码分析学概述</a></li><li><a href="../chapter-09-automated-distinguisher-search/">第九章：区分器的自动化搜索</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

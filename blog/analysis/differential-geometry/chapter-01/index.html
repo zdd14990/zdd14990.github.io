@@ -1,0 +1,830 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="微分几何笔记第一章：微分流形、切向量。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-01/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第一章：微分流形与切向量 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-01/">
+  <meta property="og:title" content="第一章：微分流形与切向量 - zdd14990">
+  <meta property="og:description" content="微分几何笔记第一章：微分流形、切向量。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-11-19">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="differential-geometry">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-01/">
+  <meta name="twitter:title" content="第一章：微分流形与切向量 - zdd14990">
+  <meta name="twitter:description" content="微分几何笔记第一章：微分流形、切向量。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e00\u7ae0\uff1a\u5fae\u5206\u6d41\u5f62\u4e0e\u5207\u5411\u91cf",
+    "description": "\u5fae\u5206\u51e0\u4f55\u7b14\u8bb0\u7b2c\u4e00\u7ae0\uff1a\u5fae\u5206\u6d41\u5f62\u3001\u5207\u5411\u91cf\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-01/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/differential-geometry/chapter-01/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-11-19",
+    "dateModified": "2026-10-15",
+    "keywords": ["differential-geometry"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u5fae\u5206\u51e0\u4f55", "differential-geometry"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 微分流形
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 切向量
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#differential-geometry">微分几何</a>
+    <span>Part 1 of 7</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">01</div>
+    <h1 id="top"><span class="book-visually-hidden">第 1 章：</span>微分流形与切向量</h1>
+  </div>
+  <p class="book-standfirst">回忆我们在分析课中所学的，<span class="arithmatex">\(\mathbb{R}^n\)</span> 上我们定义函数 <span class="arithmatex">\(f\)</span> 对 <span class="arithmatex">\(v\)</span> 的方向导数为</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-11-19">2025-11-19</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>2,172 字 · 约 6 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="s1"><span class="book-secnum">§ 01</span>微分流形</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.1</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 是一个第二可数的 Hausdorff 空间，满足对任意 <span class="arithmatex">\(p\in M\)</span>，都存在包含 <span class="arithmatex">\(p\)</span> 的开集 <span class="arithmatex">\(U\)</span>，使得 <span class="arithmatex">\(U\)</span> 与 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的开集同胚，则称 <span class="arithmatex">\(M\)</span> 是一个 <strong><span class="arithmatex">\(n\)</span> 维拓扑流形</strong>。</p>
+</div>
+<p>于是我们可以这样描述流形：局部欧氏的 Hausdroff 空间，其上任意一点 <span class="arithmatex">\(p\)</span>，都存在 <span class="arithmatex">\((U,\varphi_U)\)</span>，这称为 <span class="arithmatex">\(p\)</span> 附近的<strong>局部图(chart)</strong>，<span class="arithmatex">\(\left\{x^i=\pi^i\circ \varphi:U\rightarrow \mathbb{R}\right\}\)</span> 称为<strong>局部坐标</strong>，对所有覆盖了 <span class="arithmatex">\(M\)</span> 的局部图(<span class="arithmatex">\(\bigcup U=M\)</span>)构成的集合 <span class="arithmatex">\(\mathscr{D}=\left\{(U,\varphi_U)\right\}\)</span> 称为 <span class="arithmatex">\(M\)</span> 的一个<strong>局部图册(atlas)</strong>。对于两个局部图 <span class="arithmatex">\((U,\varphi_U),(V,\phi_V)\)</span>，我们能得到 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中两个开集的同胚：</p>
+<div class="arithmatex">\[
+\phi_V\circ \varphi_U^{-1}:\varphi_U(U\cap V)\rightarrow \phi_V(U\cap V)
+\]</div>
+<p>这称为<strong>转移函数</strong>。</p>
+<p>对于 <span class="arithmatex">\(M\)</span> 的开集 <span class="arithmatex">\(N\)</span>，我们可以自然地构造 <span class="arithmatex">\(N\)</span> 的局部图册：<span class="arithmatex">\(\left\{(U\cap N,\varphi_U|_{U\cap N}\right\}\)</span>，从而得到 <span class="arithmatex">\(N\)</span> 也是拓扑流形，称为 <span class="arithmatex">\(M\)</span> 的<strong>开子流形</strong>。</p>
+<p>对于两个流形 <span class="arithmatex">\(M_1,M_2\)</span>，我们可以用笛卡尔积构造局部图册：<span class="arithmatex">\(\left\{(U\times V,\varphi_U\times \phi_V)\right\}\)</span>，从而得到 <span class="arithmatex">\(M_1\times M_2\)</span> 也是拓扑流形，称为<strong>乘积流形</strong>。</p>
+<p>对于 <span class="arithmatex">\(M\)</span> 上的等价关系 <span class="arithmatex">\(\sim\)</span>，我们可以得到<strong>商流形</strong>。</p>
+<p>拓扑的性质不足以在流形上定义微分与积分，我们对局部图册提高一点要求：</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.2</span></p>
+<p>如果一个流形 <span class="arithmatex">\(M\)</span> 的两个局部图之间的转移函数是微分同胚，则称这两个局部图是<strong>相容的</strong>。</p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span></p>
+<p>如果 <span class="arithmatex">\(M\)</span> 的局部图册 <span class="arithmatex">\(\mathscr{D}\)</span> 任两局部图相容，且 <span class="arithmatex">\(\mathscr{D}\)</span> 是最大的，则称 <span class="arithmatex">\(\mathscr{D}\)</span> 是 <span class="arithmatex">\(M\)</span> 的一个<strong>微分结构</strong>。称装备了微分结构的拓扑流形为<strong>微分流形</strong>。</p>
+</div>
+<p>考虑微分流形之间的映射。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.4</span></p>
+<p><span class="arithmatex">\(f:M\rightarrow N\)</span> 是同胚，称 <span class="arithmatex">\(f\)</span> 为 <strong><span class="arithmatex">\(C^k\)</span> 映射</strong>，若对 <span class="arithmatex">\(M,N\)</span> 任意局部图 <span class="arithmatex">\((U,\varphi_U),(V,\phi_V)\)</span>，都有 <span class="arithmatex">\(\phi_V \circ f\circ \varphi_U ^{-1}:\varphi_U(U)\rightarrow \phi_V(V)\)</span> 是 <span class="arithmatex">\(C^k\)</span> 的。类似的有<strong>光滑映射</strong>。</p>
+</div>
+<p>当 <span class="arithmatex">\(M=\mathbb{R}\)</span> 时，我们称 <span class="arithmatex">\(f\)</span> 为<strong>光滑曲线</strong>，当 <span class="arithmatex">\(N=\mathbb{R}\)</span> 时，我们称 <span class="arithmatex">\(f\)</span> 为<strong>光滑函数</strong>。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>切向量</h2>
+<div class="arithmatex">\[
+D_{v} f(x)=\lim _{h \rightarrow 0} \frac{f(x+h v)-f(x)}{h}=\left.\frac{\mathrm{d}}{\mathrm{d} t}\right|_{t=0} f(x+t v)
+\]</div>
+<p>这给出了一个算子 <span class="arithmatex">\(D^x_v:C^\infty(\mathbb{R}^n)\rightarrow \mathbb{R},f\mapsto D_vf(x)\)</span>。若设 <span class="arithmatex">\(v=(v^1,\cdots,v^n)\)</span>，则有</p>
+<div class="arithmatex">\[
+D^a_v=\sum^n_{i=1}v^i\left.\frac{\partial}{\partial x^i}\right|_{x=a}
+\]</div>
+<p>容易证明 <span class="arithmatex">\(D^x_v\)</span> 是线性的且满足 Leibniz 法则：</p>
+<div class="arithmatex">\[
+D^x_v(fg)=f(x)D^x_vg+g(x)D^x_vf
+\]</div>
+<p>而反过来的命题依然成立，即：若线性算子 <span class="arithmatex">\(D:C^\infty(\mathbb{R}^n)\rightarrow\mathbb{R}\)</span> 满足在 <span class="arithmatex">\(x\)</span> 处的 Leibniz 法则，则存在 <span class="arithmatex">\(v\in \mathbb{R}^n\)</span>，<span class="arithmatex">\(D=D^x_v\)</span>。</p>
+<p>对于 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中任一点，任何 <span class="arithmatex">\(v\in \mathbb{R}^n\)</span> 都可视为这个点的切向量，并且对应一个唯一的算子。而在流形 <span class="arithmatex">\(M\)</span> 上，直观的向量已经并不存在，但 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中的情形启发了我们去代数地定义流形 <span class="arithmatex">\(M\)</span> 上的切向量，即上文中算子的定义：</p>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span></p>
+<p>记 <span class="arithmatex">\(C^{\infty}_p(M)\)</span> 是 <span class="arithmatex">\(p\in M\)</span> 处局部光滑的函数全体。若线性映射 <span class="arithmatex">\(v:C^{\infty}_p(M)\rightarrow \mathbb{R}\)</span> 满足 Leibniz 法则 <span class="arithmatex">\(v(fg)=f(p)v(g)+g(p)v(f)\)</span>，则称 <span class="arithmatex">\(v\)</span> 是 <span class="arithmatex">\(M\)</span> 在点 <span class="arithmatex">\(p\)</span> 的一个<strong>切向量</strong>。</p>
+</div>
+<p>容易验证在一点处切向量的全体构成线性空间，记为 <span class="arithmatex">\(T_pM\)</span>，称为 <span class="arithmatex">\(M\)</span> 在 <span class="arithmatex">\(p\)</span> 点的<strong>切空间</strong>。</p>
+<p>另一个较为直观的定义是由光滑曲线给出的。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.2</span></p>
+<p>设 <span class="arithmatex">\(\gamma:(-\epsilon,\epsilon)\rightarrow M\)</span> 是光滑流形 <span class="arithmatex">\(M\)</span> 上一条光滑曲线，<span class="arithmatex">\(\gamma(0)=p\)</span>。定义映射 <span class="arithmatex">\(v:C^{\infty}_p(M)\rightarrow \mathbb{R}\)</span> 为</p>
+<div class="arithmatex">\[
+v(f)=\left.\frac{\mathrm{d}(f\circ \gamma)(t)}{\mathrm{d} t}\right|_{t=0}
+\]</div>
+<p>容易验证这是一个切向量，称为<strong>光滑曲线 <span class="arithmatex">\(\gamma\)</span> 在 <span class="arithmatex">\(0\)</span> 处的切向量</strong>，记为 <span class="arithmatex">\(\gamma'(0)\)</span>。</p>
+</div>
+<p>我们可以证明这两种定义在某种意义上是等价的，具体而言，定义光滑曲线上的等价关系 <span class="arithmatex">\(\gamma ~ \tilde{\gamma}\)</span> 当且仅当 <span class="arithmatex">\(\gamma'(0) \sim\tilde{\gamma}'(0)\)</span>，得到的等价类与切向量是一一对应的。此时称 <span class="arithmatex">\(\gamma\)</span> 与 <span class="arithmatex">\(\tilde{\gamma}\)</span> <strong>相切</strong>。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span></p>
+<p>设 <span class="arithmatex">\(M\)</span> 为 <span class="arithmatex">\(n\)</span> 维光滑流形，<span class="arithmatex">\(p\in M\)</span>，对应的局部图为 <span class="arithmatex">\((U,\varphi)\)</span>。定义<strong>偏微分算子</strong>：</p>
+<div class="arithmatex">\[
+\frac{\partial}{\partial x^i}(f)=\frac{\partial(f\circ \varphi ^{-1})}{\partial x^i}\Big|_{\varphi(p)}
+\]</div>
+<p>则 <span class="arithmatex">\(\dim T_pM=n\)</span>，以 <span class="arithmatex">\(\left\{\dfrac{\partial}{\partial x^i}\right\}\)</span> 为一组基，也被称为切空间的<strong>自然基底</strong>。</p>
+</div>
+<p>对任意的 <span class="arithmatex">\(v=\displaystyle\sum_{i=1}^n v^i \frac{\partial}{\partial x^i}\in T_pM\)</span>，取 <span class="arithmatex">\(\gamma(t)=\varphi^{-1}(p^1+tv^1,\cdots,p^n+tv^n)\)</span>，易证 <span class="arithmatex">\(\gamma'(0)=v\)</span>。从而任意切向量都可以被表示为曲线的切向量。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.4</span></p>
+<p>称线性空间 <span class="arithmatex">\(T_pM\)</span> 的线性对偶为<strong>余切空间</strong>，记作 <span class="arithmatex">\(T_p^*M\)</span>。</p>
+</div>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.5</span></p>
+<p>设 <span class="arithmatex">\(M,N\)</span> 是光滑流形，<span class="arithmatex">\(F:M\rightarrow N\)</span> 是光滑映射，<span class="arithmatex">\(p\in M\)</span>，<span class="arithmatex">\(q=F(p)\in N\)</span>，映射 <span class="arithmatex">\(F_*:T_pM\rightarrow T_qN\)</span> 定义为：(<span class="arithmatex">\(F_*\)</span> 是 <span class="arithmatex">\(F\)</span> 的拉回)</p>
+<div class="arithmatex">\[
+(F_*v)(f)=v(F^*f)=v(f\circ F),\forall f\in C^\infty_q(N)
+\]</div>
+<p>称为 <span class="arithmatex">\(F\)</span> 在点 <span class="arithmatex">\(p\)</span> 的切映射。</p>
+</div>
+<p>容易验证 <span class="arithmatex">\(F_*\)</span> 是线性的且满足 <span class="arithmatex">\((G\circ F)_*=G_*\circ F_*\)</span>。考虑 <span class="arithmatex">\(F:\mathbb{R}^m\rightarrow \mathbb{R}^n\)</span> 即为映射的微分 <span class="arithmatex">\(\mathrm{d} f\)</span>。从中我们可以看到切映射将流形之间的映射变成线性空间之间的映射，进一步我们有：</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.6</span></p>
+<p>若 <span class="arithmatex">\(F:M\rightarrow N\)</span> 是微分同胚，则 <span class="arithmatex">\(F_*:T_pM\rightarrow T_{F(p)}N\)</span> 是线性同构。</p>
+</div>
+<p>在微积分中我们知道 <span class="arithmatex">\(\mathbb{R}^n\)</span> 中切空间的线性同构可以导出微分同胚，在流形上我们只有较弱的结论成立，即只有局部微分同胚：</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.7</span><span class="book-name">反函数定理</span></p>
+<p>设 <span class="arithmatex">\(F:M\rightarrow N\)</span> 是光滑映射，<span class="arithmatex">\(F_*:T_pM\rightarrow T_{F(p)}N\)</span> 是线性同构，则存在 <span class="arithmatex">\(p\)</span> 的邻域 <span class="arithmatex">\(U_1\)</span> 和 <span class="arithmatex">\(q=F(p)\)</span> 的邻域 <span class="arithmatex">\(V_1\)</span> 使得 <span class="arithmatex">\(\left.F\right|_{U_1}:U_1\rightarrow V_1\)</span> 是微分同胚。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.8</span></p>
+<p>设 <span class="arithmatex">\(M,N\)</span> 是 <span class="arithmatex">\(C^K\)</span> 流形，<span class="arithmatex">\(f:M\rightarrow N\)</span> 是 <span class="arithmatex">\(C^l\)</span> 的<span class="arithmatex">\((l\le k)\)</span>，<span class="arithmatex">\(p\in M\)</span>，分别取 <span class="arithmatex">\(p\)</span>，<span class="arithmatex">\(f(p)\)</span> 的局部图 <span class="arithmatex">\((U,\varphi)\)</span>，<span class="arithmatex">\((V,\phi)\)</span>，称 <span class="arithmatex">\(\phi \circ f\circ \varphi ^{-1}\)</span> 在 <span class="arithmatex">\(\varphi(p)\)</span> 处的秩为<strong>映射 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(p\)</span> 点的秩</strong>。</p>
+</div>
+<p>由于 <span class="arithmatex">\(\tilde{\phi}\circ f\circ \tilde{\varphi}=(\tilde{\phi}\circ\phi^{-1})(\phi\circ f\circ \varphi^{-1})(\varphi \circ\tilde{\varphi})\)</span>，故秩与局部图的选取无关，记为 <span class="arithmatex">\(\left.\mathrm{rank} f\right|_p\)</span>。注意到，当 <span class="arithmatex">\(\left.\mathrm{rank} f\right|_p=\dim M\)</span> 时，<span class="arithmatex">\(f_*\)</span> 是单射，这时称 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(p\)</span> 点是<strong>浸入(immersion)</strong>。当 <span class="arithmatex">\(\left.\mathrm{rank} f\right|_p=\dim N\)</span> 时，<span class="arithmatex">\(f_*\)</span> 是满射，这时称 <span class="arithmatex">\(f\)</span> 在 <span class="arithmatex">\(p\)</span> 点是<strong>淹没(submersion)</strong>。根据定义，一个微分同胚既是浸入又是淹没。</p>
+<p><strong>典范淹没</strong>：<span class="arithmatex">\(\pi: \mathbb{R}^{m} \rightarrow \mathbb{R}^{n},\left(x_{1}, \cdots, x_{m}\right) \mapsto\left(x_{1}, \cdots, x_{n}\right)\)</span>。</p>
+<p><strong>典范浸入</strong>：<span class="arithmatex">\(\iota: \mathbb{R}^{m} \rightarrow \mathbb{R}^{n},\left(x_{1}, \cdots, x_{m}\right) \mapsto\left(x_{1}, \cdots, x_{m},0,\cdots,0\right)\)</span>。</p>
+<p>下面给出一个非常重要的定理，它告诉我们流形之间的常秩映射都与典范情形没有区别。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.9</span><span class="book-name">秩定理</span></p>
+<p>设 <span class="arithmatex">\(f:M\rightarrow N\)</span> 是点 <span class="arithmatex">\(p\)</span> 附近一个秩为 <span class="arithmatex">\(r\)</span> 的常秩映射，则存在 <span class="arithmatex">\(p,f(p)\)</span> 的局部图 <span class="arithmatex">\((U,\varphi),(V,\phi)\)</span> 使得</p>
+<div class="arithmatex">\[
+\phi \circ f\circ\varphi^{-1}(x^1,\cdots,x^m)=(x^1,\cdots,x^r,0,\cdots,0)
+\]</div>
+</div>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.10</span></p>
+<p>设 <span class="arithmatex">\(N\)</span> 是流形且是闭集，<span class="arithmatex">\(N'\hookrightarrow N\)</span> 为包含映射，在 <span class="arithmatex">\(N'\)</span> 上赋予子空间拓扑。若 <span class="arithmatex">\(\exists m\le n\)</span> 使得 <span class="arithmatex">\(\forall q\in N'\)</span>，<span class="arithmatex">\(\exists N\)</span> 上含 <span class="arithmatex">\(q\)</span> 的局部图 <span class="arithmatex">\((V,\phi ,y)\)</span> 满足 <span class="arithmatex">\(\phi(q)=0\)</span> 且</p>
+<div class="arithmatex">\[
+\phi(V\cap N')=\left\{(y^1,\cdots,y^n)\in \phi(V)|y^{m+1}=\cdots=y^n=0\right\}
+\]</div>
+<p>则称 <span class="arithmatex">\(N'\)</span> 为 <span class="arithmatex">\(N\)</span> 的<strong>正则子流形</strong>。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.11</span></p>
+<p>设 <span class="arithmatex">\(f:M\rightarrow N\)</span> 为单浸入，则称 <span class="arithmatex">\(f(M)\)</span> 为<strong>单浸入子流形</strong>。</p>
+<p>设 <span class="arithmatex">\(f:M\rightarrow N\)</span> 为单浸入，且 <span class="arithmatex">\(f(M)\)</span> 由 <span class="arithmatex">\(f\)</span> 诱导的拓扑结构与由 <span class="arithmatex">\(N\)</span> 诱导的子拓扑结构同胚，则称 <span class="arithmatex">\(f(M)\)</span> 为 <span class="arithmatex">\(N\)</span> 的<strong>嵌入子流形</strong>。</p>
+</div>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.12</span></p>
+<p><span class="arithmatex">\(f(M)\)</span> 为 <span class="arithmatex">\(N\)</span> 的嵌入子流形当且仅当 <span class="arithmatex">\(f(M)\hookrightarrow N\)</span> 为正则子流形。</p>
+</div>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.13</span><span class="book-name">Whitney嵌入定理</span></p>
+<p>任何 <span class="arithmatex">\(m\)</span> 维光滑流形可以被嵌入 <span class="arithmatex">\(\mathbb{R}^{2m+1}\)</span>，和被浸入 <span class="arithmatex">\(\mathbb{R}^{2m}\)</span>。</p>
+</div>
+<hr />
+<p><a class="md-button" href="../">返回目录</a> <a class="md-button" download="differential-geometry-notes.pdf" href="../../../../assets/differential-geometry-notes.pdf">下载 PDF 完整版</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="微分几何章节导航">
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    
+    <a class="zdd-pager-link is-next" href="../chapter-02/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第二章：特殊函数构造、向量场与李群</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#differential-geometry">微分几何 · 第 1 / 7 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#differential-geometry">微分几何</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=differential-geometry">#differential-geometry</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

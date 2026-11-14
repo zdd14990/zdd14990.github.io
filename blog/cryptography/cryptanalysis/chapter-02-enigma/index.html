@@ -1,0 +1,910 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第二章：Enigma 不会把字母加密为自身、克利巴与明密文对应、环路克利巴分割出扰频器、亮灯测试、线路接线板的恢复与完整的密钥恢复算法。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-02-enigma/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第二章：恩尼格玛密码机的破解 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-02-enigma/">
+  <meta property="og:title" content="第二章：恩尼格玛密码机的破解 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第二章：Enigma 不会把字母加密为自身、克利巴与明密文对应、环路克利巴分割出扰频器、亮灯测试、线路接线板的恢复与完整的密钥恢复算法。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-02-enigma/">
+  <meta name="twitter:title" content="第二章：恩尼格玛密码机的破解 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第二章：Enigma 不会把字母加密为自身、克利巴与明密文对应、环路克利巴分割出扰频器、亮灯测试、线路接线板的恢复与完整的密钥恢复算法。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e8c\u7ae0\uff1a\u6069\u5c3c\u683c\u739b\u5bc6\u7801\u673a\u7684\u7834\u89e3",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e8c\u7ae0\uff1aEnigma \u4e0d\u4f1a\u628a\u5b57\u6bcd\u52a0\u5bc6\u4e3a\u81ea\u8eab\u3001\u514b\u5229\u5df4\u4e0e\u660e\u5bc6\u6587\u5bf9\u5e94\u3001\u73af\u8def\u514b\u5229\u5df4\u5206\u5272\u51fa\u6270\u9891\u5668\u3001\u4eae\u706f\u6d4b\u8bd5\u3001\u7ebf\u8def\u63a5\u7ebf\u677f\u7684\u6062\u590d\u4e0e\u5b8c\u6574\u7684\u5bc6\u94a5\u6062\u590d\u7b97\u6cd5\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-02-enigma/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-02-enigma/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 猜测明密文的对应
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 恢复扰频器的设置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 恢复扰频器的设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 利用环路实现分割
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 连接多台机器恢复扰频器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 恢复线路接线板的设置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 密钥恢复攻击
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 2 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">02</div>
+    <h1 id="top"><span class="book-visually-hidden">第 2 章：</span>恩尼格玛密码机的破解</h1>
+  </div>
+  <p class="book-standfirst">频率分析、重合指数等技术的出现，说明单表代换或密钥流周期较短的密码已不能满足安全通信的需求。恩尼格玛 (Enigma) 密码机由德国发明家 Scherbius 于 1918 年设计，通过线路接线板与扰频器的随机排列可以产生高达 <span class="arithmatex">\(1.59\times10^{20}\)</span> 种密钥，后来成为德军无线电秘密通信的主要手段。图灵在 Rejewski 等人工作的基础上，结合德军的语言习惯和 Enigma 的不随机特性，大大缩小了密钥搜索范围，实现了破解。</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>3,229 字 · 约 9 分钟</span>
+  </div>
+  
+</header>
+
+<p>这一章我们用 Enigma 的破解来体会<a href="../chapter-01-overview/">第一章</a>所说的“区分”和“分割”：先用不随机特性识别明密文对应关系；再借助特殊的明密文对，把扰频器与线路接线板分割开，依次测试候选密钥；同时结合提前终止技术降低复杂度。Enigma 的结构见<a href="../appendix-algorithms/">算法附录</a>。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>猜测明密文的对应</h2>
+<p>Enigma 的破解是唯密文攻击。按 Kerckhoffs 假设，攻击者能拿到 Enigma 机，反射器和各转子的置换表已知，但不知道线路接线板的设置 <span class="arithmatex">\(K_1\)</span> 和扰频器的设置 <span class="arithmatex">\(K_2\)</span>。所以第一步要先确定明密文的对应关系，才有判断密钥正确与否的依据。这一步利用的是下面的性质。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.1</span><span class="book-name">Enigma 的不随机特性</span></p>
+<p>记 Enigma 的加密算法为 <span class="arithmatex">\(E\)</span>，则对任意输入 <span class="arithmatex">\(\alpha\)</span>，<span class="arithmatex">\(E(\alpha)\ne\alpha\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>反证。设 <span class="arithmatex">\(\alpha=E(\alpha)\)</span>。记线路接线板为 <span class="arithmatex">\(S\)</span>，扰频器组合为 <span class="arithmatex">\(R\)</span>，反射器为 <span class="arithmatex">\(T\)</span>，则</p>
+<div class="arithmatex">\[
+\alpha=S^{-1}\circ R^{-1}\circ T\circ R\circ S(\alpha),
+\]</div>
+<p>移项得 <span class="arithmatex">\(R\circ S(\alpha)=T\circ R\circ S(\alpha)\)</span>。令 <span class="arithmatex">\(\gamma=R\circ S(\alpha)\)</span>，即 <span class="arithmatex">\(\gamma=T(\gamma)\)</span>，与反射器没有不动点矛盾。</p>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>同样由 <span class="arithmatex">\(T^2=\mathrm{id}\)</span> 可得 <span class="arithmatex">\(E^2=\mathrm{id}\)</span>，所以相同设置下加密和解密用同一台机器。这里的 <span class="arithmatex">\(E\)</span> 指某一次按键时的置换；机器每按一次键都会步进，所以连续两个字母用的不是同一个 <span class="arithmatex">\(E\)</span>。</p>
+</div>
+<p>德军每天早上 6 点后会发送一条加密的规范天气报告，所以 6 点零 5 分截获的密文几乎都含单词 WETTER（德语“天气”），且位置高度统一。结合上面的命题，就能猜出 WETTER 对应的密文。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.2</span></p>
+<p>截获包含 WETTER 的一段明文对应的密文为 AETJWPXER，求 WETTER 对应的可能密文。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>从前往后依次猜测起点。WETTER 对齐前 6 个字母 AETJWP 时，E 被加密成了 E，与命题矛盾，不可能。右移一位对齐 ETJWPX，没有字母加密为自身，是一个候选。再右移得 TJWPXE，也是候选。</p>
+<div class="arithmatex">\[
+\begin{array}{l|ccccccccc}
+\text{密文}&amp;A&amp;E&amp;T&amp;J&amp;W&amp;P&amp;X&amp;E&amp;R\\\hline
+\text{起点 0}&amp;W&amp;\underline{E}&amp;T&amp;T&amp;E&amp;R&amp;&amp;&amp;\\
+\text{起点 1}&amp;&amp;W&amp;E&amp;T&amp;T&amp;E&amp;R&amp;&amp;\\
+\text{起点 2}&amp;&amp;&amp;W&amp;E&amp;T&amp;T&amp;E&amp;R&amp;
+\end{array}
+\]</div>
+</details>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>对应关系并不唯一，不能保证 <span class="arithmatex">\(100\%\)</span> 的成功率。实际中还要结合通常的出现位置、消息结尾常用词等进一步排除；仍有多种时，就依次代入下一步的密钥恢复中尝试。</p>
+</div>
+<p>这样得到的明密文组合称为<strong>克利巴 (crib)</strong>。</p>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.3</span></p>
+<p>截获包含 HELLOWORLD 的一段明文对应的密文为 WELLDONEEFGHIJ，求 HELLOWORLD 对应的可能密文。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>共 5 个可能的起点。起点 0（WELLDONEEF）中 L 对 L，起点 1（ELLDONEEFG）中 L 对 L，都被排除；起点 2、3、4 对应的 LLDONEEFGH、LDONEEFGHI、DONEEFGHIJ 都没有字母加密为自身，均为候选。</p>
+</details>
+<p>接下来要确定 <span class="arithmatex">\((K_1,K_2)\)</span>，使它能把 WETTER 加密成 ETJWPX。最直接的办法是穷举每一种设置，但要试 <span class="arithmatex">\(1.59\times10^{20}\)</span> 种，远超当时的计算能力。</p>
+<h2 id="s2"><span class="book-secnum">§ 02</span>恢复扰频器的设置</h2>
+<p>为降低复杂度，我们要分割密钥空间：找到只与部分密钥有关的区分器，先恢复这部分密钥，再结合穷举或其他方式恢复整个密钥。</p>
+<h3 id="s2-1">2.1 利用环路实现分割</h3>
+<p>区分器不必只和一个明文字母与密文字母的对应有关，可以综合利用多个字母，只要能得到只与部分密钥有关的可验证条件即可。图灵发现的正是这样的现象。以 WETTER <span class="arithmatex">\(\to\)</span> ETJWPX 为例：</p>
+<div class="arithmatex">\[
+\begin{array}{c|cccccc}
+\text{位置}&amp;0&amp;1&amp;2&amp;3&amp;4&amp;5\\\hline
+\text{明文}&amp;W&amp;E&amp;T&amp;T&amp;E&amp;R\\
+\text{密文}&amp;E&amp;T&amp;J&amp;W&amp;P&amp;X
+\end{array}
+\]</div>
+<p>位置 0 有 W <span class="arithmatex">\(\to\)</span> E，位置 1 有 E <span class="arithmatex">\(\to\)</span> T，位置 3 有 T <span class="arithmatex">\(\to\)</span> W，三个字母连成一个环 W <span class="arithmatex">\(\to\)</span> E <span class="arithmatex">\(\to\)</span> T <span class="arithmatex">\(\to\)</span> W。这种特殊的明密文对应称为<strong>环路克利巴</strong>，它导致了组件的分割。（环路是否真实存在，取决于上一节猜得对不对。）</p>
+<p><span class="arithmatex">\((K_1,K_2)\)</span> 在一天内不变，且 WETTER 出现得比较早，加密 W、E、T 时很可能只有快速转子转动。设扰频器组合是从 5 个转子中选 3 个放入，加密 W 时三个转子的起点为 <span class="arithmatex">\((x,y,z)\)</span>，则</p>
+<ol>
+<li>起点为 <span class="arithmatex">\((x,y,z)\)</span> 时，把 W 加密成 E；</li>
+<li>起点为 <span class="arithmatex">\((x-1,y,z)\)</span> 时，把 E 加密成 T；</li>
+<li>起点为 <span class="arithmatex">\((x-3,y,z)\)</span> 时，把 T 加密成 W。</li>
+</ol>
+<p>（转子位置模 26 计，例如 <span class="arithmatex">\(x=1\)</span> 时 <span class="arithmatex">\(x-1\)</span> 对应 26。）确定 <span class="arithmatex">\((x,y,z)\)</span> 以及每个位置放哪个转子，就等价于恢复了 <span class="arithmatex">\(K_2\)</span>。</p>
+<p>可见环路实际上对应了三台 Enigma：<span class="arithmatex">\(K_1\)</span> 相同，选同样的 3 个转子按同样的顺序放入，起点如上，每台只负责环路中的一次加密。设 W、E、T 经过线路接线板后的输出分别为 <span class="arithmatex">\(L_0,L_1,L_2\)</span>（<span class="arithmatex">\(K_1\)</span> 未知，所以它们未知）。在第一台机器中，W 经过接线板变成 <span class="arithmatex">\(L_0\)</span>，<span class="arithmatex">\(L_0\)</span> 经过扰频器组合、反射器、逆向扰频器组合后，必然得到 <span class="arithmatex">\(L_1\)</span>，因为接线板把 <span class="arithmatex">\(L_1\)</span> 与 E 连在一起。类似地，第二、三台的逆向扰频器输出分别为 <span class="arithmatex">\(L_2\)</span> 和 <span class="arithmatex">\(L_0\)</span>。</p>
+<p>于是出现了一个新的环路</p>
+<div class="arithmatex">\[
+L_0\xrightarrow{(x,y,z)}L_1\xrightarrow{(x-1,y,z)}L_2\xrightarrow{(x-3,y,z)}L_0,
+\]</div>
+<p><strong>它只与扰频器组合有关，与线路接线板无关！</strong> 这就实现了组件的分割。</p>
+<h3 id="s2-2">2.2 连接多台机器恢复扰频器</h3>
+<p>新环路消除了接线板的影响，但也引入了新问题：<span class="arithmatex">\(L_0,L_1,L_2\)</span> 的值未知，没法直接建立关于密钥的方程，能用的只有“构成回路”这一特性。图灵的办法是：把第一台逆向扰频器输出端的 26 个字母与第二台扰频器输入端的 26 个字母用导线一一相连（A 到 A，B 到 B，…），二、三台与三、一台也同样连接，再在这 26 条回路上各装一个灯泡。</p>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 2.1</span><span class="book-name">扰频器起点的判定依据</span></p>
+<p>从 5 个转子中选 3 个，按同样的顺序放入上面连好的三台机器，起点关系如上（不妨从 <span class="arithmatex">\((x,y,z)=(1,1,1)\)</span> 开始），拨动转子遍历 <span class="arithmatex">\((x,y,z)\)</span>：</p>
+<ul>
+<li>若 <span class="arithmatex">\((x,y,z)\)</span> 猜对，26 条回路中<strong>至少有一条</strong>灯亮；</li>
+<li>若 <span class="arithmatex">\((x,y,z)\)</span> 猜错，26 条回路中以 <span class="arithmatex">\(63.2\%\)</span> 的概率至少有一条灯亮。</li>
+</ul>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.2</span></p>
+<p>解释上面的 <span class="arithmatex">\(63.2\%\)</span>。（提示：错排问题。）</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>三台机器串联起来是 26 个字母上的一个置换 <span class="arithmatex">\(\pi=\pi_3\circ\pi_2\circ\pi_1\)</span>，某条回路灯亮当且仅当对应字母是 <span class="arithmatex">\(\pi\)</span> 的不动点。猜对时 <span class="arithmatex">\(L_0\)</span> 就是不动点。猜错时可以把 <span class="arithmatex">\(\pi\)</span> 近似看作随机置换，没有不动点的概率是错排数与 <span class="arithmatex">\(26!\)</span> 之比：</p>
+<div class="arithmatex">\[
+\frac{D_{26}}{26!}=\sum_{j=0}^{26}\frac{(-1)^j}{j!}\approx e^{-1}\approx0.368,
+\]</div>
+<p>所以至少有一条灯亮的概率约为 <span class="arithmatex">\(1-e^{-1}\approx63.2\%\)</span>。</p>
+</details>
+<p>基于这一特性，只需观察是否亮灯，就能对 <span class="arithmatex">\(K_2\)</span> 的</p>
+<div class="arithmatex">\[
+\mathrm P_5^3\times26^3=60\times17576\approx2^{20}
+\]</div>
+<p>种可能做出筛选，称为<strong>亮灯测试</strong>。若至少一条回路亮灯，则此时的设置为候选；若都不亮，一定是错误密钥。单个环路筛出的候选还比较多，可以用其他环路克利巴验证，或结合下一节对接线板的恢复继续筛选。另外，从 5 个转子中有序选 3 个这一步与遍历 <span class="arithmatex">\((x,y,z)\)</span> 无关，图灵把它并行化了：同时开展 <span class="arithmatex">\(60\)</span> 组测试，每组只需测 <span class="arithmatex">\(26^3=17576\)</span> 种可能。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>猜错时有 <span class="arithmatex">\(63.2\%\)</span> 的概率误通过，一个环路只能淘汰约 <span class="arithmatex">\(37\%\)</span> 的错误设置。若有 <span class="arithmatex">\(s\)</span> 个相互独立的环路，错误设置全部通过的概率约为 <span class="arithmatex">\(0.632^s\)</span>，所以需要多个环路才能把 <span class="arithmatex">\(2^{20}\)</span> 个候选压到很少。</p>
+</div>
+<h2 id="s3"><span class="book-secnum">§ 03</span>恢复线路接线板的设置</h2>
+<p>对接线板，我们主要依据下面的特性进行筛选。</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 3.1</span><span class="book-name">线路接线板的判定依据</span></p>
+<p>接线板的连线条数已知，且一根线只能连接两个字母，即不会出现 <span class="arithmatex">\(\alpha\leftrightarrow\beta\)</span>、<span class="arithmatex">\(\beta\leftrightarrow\gamma\)</span> 且 <span class="arithmatex">\(\alpha\ne\gamma\)</span> 的情况。</p>
+</div>
+<p>设接线板有 10 条连线。在上一节猜测 <span class="arithmatex">\(K_2\)</span> 时，若某条回路灯亮，就得到 <span class="arithmatex">\(K_2\)</span> 的一个候选 <span class="arithmatex">\(k_2\)</span>，在此 <span class="arithmatex">\(k_2\)</span> 下还可以恢复接线板的部分设置：</p>
+<ol>
+<li>灯亮的回路给出 <span class="arithmatex">\(L_0,L_1,L_2\)</span> 的具体值 <span class="arithmatex">\(l_0,l_1,l_2\)</span>，于是确定接线板有 W <span class="arithmatex">\(\leftrightarrow l_0\)</span>、E <span class="arithmatex">\(\leftrightarrow l_1\)</span>、T <span class="arithmatex">\(\leftrightarrow l_2\)</span>（可能是自身到自身，即这个字母没接线）。若其中出现与命题矛盾的情况，说明 <span class="arithmatex">\(k_2\)</span> 猜错，换下一条亮灯回路重复。</li>
+<li>继续利用环路以外的明密文对 (T, J)、(E, P)、(R, X)：<ul>
+<li>由 T <span class="arithmatex">\(\leftrightarrow l_2\)</span> 与 <span class="arithmatex">\(k_2\)</span>，可求得 <span class="arithmatex">\(l_2\)</span> 经过扰频器、反射器、逆向扰频器的输出 <span class="arithmatex">\(l_3\)</span>，于是接线板上有 J <span class="arithmatex">\(\leftrightarrow l_3\)</span>；类似地确定 P <span class="arithmatex">\(\leftrightarrow l_4\)</span>。</li>
+<li>对 R 和 X，若前面没有确定与它们有关的连线，就猜测：遍历与已有设置不冲突的 <span class="arithmatex">\(l_5\)</span>（<span class="arithmatex">\(l_5\notin\{\mathrm{W,E,T,J,P},l_0,\cdots,l_4\}\)</span>），设 R 与 <span class="arithmatex">\(l_5\)</span> 相连，再确定 X <span class="arithmatex">\(\leftrightarrow l_6\)</span>。</li>
+</ul>
+</li>
+</ol>
+<p>每一步若出现与命题矛盾的情况，就返回扰频器的恢复阶段。可见基于 WETTER 这个克利巴，至多恢复 7 条连线，不足以确定全部 10 条，还要结合其他克利巴；若仍不能全部确定，就穷举剩余连线解密，看明文是否有意义。</p>
+<h2 id="s4"><span class="book-secnum">§ 04</span>密钥恢复攻击</h2>
+<p>综上，整个密钥恢复过程如下。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">算法（Enigma 的密钥恢复攻击）</span></p>
+<ol>
+<li>根据已有的克利巴，找出全部环路克利巴，设有 <span class="arithmatex">\(s\)</span> 个；</li>
+<li>从 5 个转子中有序选 3 个（60 种选法可并行）；</li>
+<li>对 <span class="arithmatex">\((x,y,z)=(1,1,1),\cdots,(26,26,26)\)</span>：<ol>
+<li>对 <span class="arithmatex">\(s\)</span> 个环路依次作亮灯测试；若通过，记录亮灯字母，得到接线板的部分连线；若与已有连线冲突，或某个环路不亮灯，就换下一个 <span class="arithmatex">\((x,y,z)\)</span>；</li>
+<li>若 <span class="arithmatex">\(s\)</span> 个全部通过，在已确定连线下，用环路以外的明密文对继续恢复接线板；若出现冲突，换下一个 <span class="arithmatex">\((x,y,z)\)</span>；</li>
+<li>若连线已达 10 条，用此设置解密密文，若明文有意义则输出 <span class="arithmatex">\((K_1,K_2)\)</span>；若不足 10 条，则依次猜测未确定的连线并解密，直到明文有意义，若全部是乱码就换下一个 <span class="arithmatex">\((x,y,z)\)</span>；</li>
+</ol>
+</li>
+<li>若所有 <span class="arithmatex">\((x,y,z)\)</span> 都不通过，换一种转子选法，回到第 3 步。</li>
+</ol>
+</div>
+<p>在当时的条件下，纯人工完成上述算法仍很难在一天内做完。图灵因此设计了能加快检测速度的机械装置，为了向波兰的破译机致敬，取名为“炸弹 (Bombe)”。每个“炸弹”由 12 组相连的 Enigma 组成，可以处理更长的环路克利巴，投入使用后大约 20 分钟就能恢复 Enigma 的密钥。</p>
+<p>回顾整个过程，已经蕴含了现代密码分析的两个关键要素：</p>
+<ul>
+<li><strong>区分</strong>：Enigma 绝不会把字母加密为自身，这被用来识别明密文对应关系，是后续攻击的前提；</li>
+<li><strong>分割</strong>：利用环路克利巴把接线板和扰频器剥离开，先单独搜索扰频器（还可以并行），再求解接线板，把计算上不可行的问题变成了实际可破解的问题。</li>
+</ul>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 2 章。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-01-overview/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第一章：密码分析学概述</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-03-differential-cryptanalysis/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第三章：分组密码的差分分析及相关分析方法</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 2 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../appendix-algorithms/">附录：算法说明</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

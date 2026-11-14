@@ -1,0 +1,1355 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从矩的正性构造 Hilbert 空间与乘法算子，通过有限维谱分解得到正交多项式、Padé 逼近和连分式。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-04/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第四章：多项式矩问题与谱理论的起源 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-04/">
+  <meta property="og:title" content="第四章：多项式矩问题与谱理论的起源 - zdd14990">
+  <meta property="og:description" content="从矩的正性构造 Hilbert 空间与乘法算子，通过有限维谱分解得到正交多项式、Padé 逼近和连分式。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="moment-problem">
+
+  <meta property="article:tag" content="spectral-theory">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-04/">
+  <meta name="twitter:title" content="第四章：多项式矩问题与谱理论的起源 - zdd14990">
+  <meta name="twitter:description" content="从矩的正性构造 Hilbert 空间与乘法算子，通过有限维谱分解得到正交多项式、Padé 逼近和连分式。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u56db\u7ae0\uff1a\u591a\u9879\u5f0f\u77e9\u95ee\u9898\u4e0e\u8c31\u7406\u8bba\u7684\u8d77\u6e90",
+    "description": "\u4ece\u77e9\u7684\u6b63\u6027\u6784\u9020 Hilbert \u7a7a\u95f4\u4e0e\u4e58\u6cd5\u7b97\u5b50\uff0c\u901a\u8fc7\u6709\u9650\u7ef4\u8c31\u5206\u89e3\u5f97\u5230\u6b63\u4ea4\u591a\u9879\u5f0f\u3001Pad\u00e9 \u903c\u8fd1\u548c\u8fde\u5206\u5f0f\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-04/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-04/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "moment-problem", "spectral-theory", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-04" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 从一串数到一个测度
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 正性为什么是核心条件
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 从正形式构造乘法算子
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 有限维谱分解怎样解矩问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 正交多项式与 Jacobi 矩阵
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Padé 逼近与连分式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 再看 Riesz 表示定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 矩问题与有限维压缩的精确表述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 矩问题与有限维压缩的精确表述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-4-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        有限维的谱分解作为起点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-4-2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        正矩阵产生测度
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 正交多项式、Jacobi 矩阵与连分数
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 正交多项式、Jacobi 矩阵与连分数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-4-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        让乘法算子只有三条对角线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-4-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        预解式、Padé 与连分式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-4-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        在稠密代数上保留正性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 5 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">04</div>
+    <h1 id="chapter-04"><span class="book-visually-hidden">第 4 章：</span>多项式矩问题与谱理论的起源</h1>
+  </div>
+  <p class="book-standfirst">给定实数 <span class="arithmatex">\(c_0,c_1,\ldots\)</span>，我们希望寻找正测度 <span class="arithmatex">\(\mu\)</span>，使</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>8,136 字 · 约 23 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>从一串数到一个测度</h2>
+<div class="arithmatex">\[
+c_n=\int_Ix^n\,\mathrm{d}\mu(x).
+\]</div>
+<p>所有矩都要求绝对可积。根据 <span class="arithmatex">\(I\)</span> 分别为 <span class="arithmatex">\(\mathbb R\)</span>、<span class="arithmatex">\([0,\infty)\)</span>、<span class="arithmatex">\([0,1]\)</span>，称 Hamburger、Stieltjes、Hausdorff 矩问题。</p>
+<p>为什么要问这样的问题？例如形式级数</p>
+<div class="arithmatex">\[
+\frac{c_0}{z}+\frac{c_1}{z^2}+\frac{c_2}{z^3}+\cdots
+\]</div>
+<p>可能发散，但若存在 <span class="arithmatex">\(\mu\)</span>，它仍可能是函数</p>
+<div class="arithmatex">\[
+F(z)=\int_I\frac{\mathrm{d}\mu(x)}{z-x}
+\]</div>
+<p>的渐近信息。我们可以用有限个矩构造有理函数，再通过极限恢复 <span class="arithmatex">\(F\)</span>。这使矩问题、逼近与谱分解联系起来。</p>
+<div class="admonition warning">
+<p class="admonition-title">形式展开不等于收敛展开</p>
+<p>若 <span class="arithmatex">\(\mu\)</span> 支撑在 <span class="arithmatex">\([-R,R]\)</span>，则 <span class="arithmatex">\(|z|&gt;R\)</span> 时可将 <span class="arithmatex">\(1/(z-x)\)</span> 展成一致收敛的几何级数，得到真正的 Laurent 展开。</p>
+<p>无界支撑情形不能保证存在这样的收敛区域。有限阶渐近展开需要估计余项，不能把“所有矩存在”理解为“矩级数收敛”。</p>
+</div>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>正性为什么是核心条件</h2>
+<p>令 <span class="arithmatex">\(\Lambda(x^n)=c_n\)</span>，在多项式上定义</p>
+<div class="arithmatex">\[
+\langle p,q\rangle=\Lambda(\overline p q).
+\]</div>
+<p>若 <span class="arithmatex">\(\Lambda\)</span> 来自正测度，那么</p>
+<div class="arithmatex">\[
+\Lambda(|p|^2)=\int|p|^2\,\mathrm{d}\mu\ge0.
+\]</div>
+<p>这给出 Hankel 矩阵</p>
+<div class="arithmatex">\[
+H=(c_{i+j})_{i,j\ge0},\qquad H_1=(c_{i+j+1})_{i,j\ge0}.
+\]</div>
+<p>无穷矩阵半正定的含义是所有有限支撑向量的二次型非负。不能只检查一个有限截断。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">三个矩问题的可解条件</span></p>
+<p>对实矩序列，存在具有全部给定矩的有限正 Borel 测度，当且仅当满足下表条件。</p>
+<table>
+<thead>
+<tr>
+<th>支撑区间</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\mathbb R\)</span></td>
+<td><span class="arithmatex">\(H\ge0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td><span class="arithmatex">\(H\ge0\)</span> 且 <span class="arithmatex">\(H_1\ge0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\([0,1]\)</span></td>
+<td><span class="arithmatex">\(H\ge0\)</span>，<span class="arithmatex">\(H_1\ge0\)</span>，<span class="arithmatex">\(H-H_1\ge0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>第一行控制 <span class="arithmatex">\(\int|p|^2\)</span>，第二行增加 <span class="arithmatex">\(\int x|p|^2\)</span>，第三行再增加 <span class="arithmatex">\(\int(1-x)|p|^2\)</span>。下面给出充分性的构造。</p>
+</div>
+<p>若 <span class="arithmatex">\(c_0=0\)</span>，Cauchy–Schwarz 给出 <span class="arithmatex">\(|c_n|^2\le c_0c_{2n}=0\)</span>，所有矩为零，对应零测度。以下设 <span class="arithmatex">\(c_0&gt;0\)</span>，必要时除以 <span class="arithmatex">\(c_0\)</span> 归一化。</p>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>从正形式构造乘法算子</h2>
+<p>令 <span class="arithmatex">\(N=\{p:\Lambda(|p|^2)=0\}\)</span>，在 <span class="arithmatex">\(V=\mathbb C[x]/N\)</span> 上使用上述内积。设 <span class="arithmatex">\(\Omega=[1]\)</span>，定义</p>
+<div class="arithmatex">\[
+T[p]=[xp].
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">为什么这个定义不依赖代表元</p>
+<p>若 <span class="arithmatex">\(p\in N\)</span>，正形式的 Cauchy–Schwarz 给出 <span class="arithmatex">\(\langle p,q\rangle=0\)</span> 对所有多项式 <span class="arithmatex">\(q\)</span> 成立。取 <span class="arithmatex">\(q=x^2p\)</span>，得</p>
+<div class="arithmatex">\[
+\|[xp]\|^2=\Lambda(x^2|p|^2)=\langle p,x^2p\rangle=0.
+\]</div>
+<p>所以乘以 <span class="arithmatex">\(x\)</span> 保持零空间，<span class="arithmatex">\(T\)</span> 良定义。并且 <span class="arithmatex">\(\langle Tp,q\rangle=\langle p,Tq\rangle\)</span>，故 <span class="arithmatex">\(T\)</span> 对称。</p>
+</div>
+<p>我们已经得到</p>
+<div class="arithmatex">\[
+c_n=\langle\Omega,T^n\Omega\rangle.
+\]</div>
+<p>这就是一个简单的 GNS 构造：正泛函产生内积空间，代数元素通过乘法作用为空间上的算子。这里 <span class="arithmatex">\(V\)</span> 暂时只含多项式类，并不假定 <span class="arithmatex">\(T\)</span> 已是一个有界或自伴算子。</p>
+<p>若 <span class="arithmatex">\(H\)</span> 不正定，存在非零多项式 <span class="arithmatex">\(p\in N\)</span>。<span class="arithmatex">\(N\)</span> 对乘以 <span class="arithmatex">\(x\)</span> 封闭，因此商空间由次数低于 <span class="arithmatex">\(\deg p\)</span> 的多项式张成，是有限维的。有限维 <span class="arithmatex">\(T\)</span> 可对角化，直接给出有限原子测度。若 <span class="arithmatex">\(H\)</span> 正定，则所有非零多项式都有正范数，继续进行有限维截断。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>有限维谱分解怎样解矩问题</h2>
+<p>令</p>
+<div class="arithmatex">\[
+V_n=\operatorname{span}\{\Omega,T\Omega,\ldots,T^n\Omega\},
+\qquad T_n=P_nT|_{V_n},
+\]</div>
+<p>其中 <span class="arithmatex">\(P_n\)</span> 是到 <span class="arithmatex">\(V_n\)</span> 的正交投影。<span class="arithmatex">\(T_n\)</span> 是有限维自伴算子。设 <span class="arithmatex">\(T_ne_{n,j}=\lambda_{n,j}e_{n,j}\)</span>，定义</p>
+<div class="arithmatex">\[
+\mu_n=\sum_j|\langle e_{n,j},\Omega\rangle|^2\delta_{\lambda_{n,j}}.
+\]</div>
+<p>于是 <span class="arithmatex">\(\mu_n(I)=c_0\)</span>。若 <span class="arithmatex">\(H_1\ge0\)</span>，<span class="arithmatex">\(T_n\ge0\)</span>，所以节点非负；若同时 <span class="arithmatex">\(H-H_1\ge0\)</span>，则 <span class="arithmatex">\(0\le T_n\le I\)</span>，所以节点位于 <span class="arithmatex">\([0,1]\)</span>。谱节点的范围由正性决定。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">前 <span class="arithmatex">\(2n+1\)</span> 阶矩精确匹配</span></p>
+<p>对 <span class="arithmatex">\(0\le k\le2n+1\)</span>，</p>
+<div class="arithmatex">\[
+\int x^k\,\mathrm{d}\mu_n
+=\langle\Omega,T_n^k\Omega\rangle=c_k.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对 <span class="arithmatex">\(j\le n\)</span>，归纳得 <span class="arithmatex">\(T_n^j\Omega=T^j\Omega\)</span>，而 <span class="arithmatex">\(T_n^{n+1}\Omega=P_nT^{n+1}\Omega\)</span>。</p>
+<p>将 <span class="arithmatex">\(k=a+b\)</span>，其中 <span class="arithmatex">\(a\le n\)</span>、<span class="arithmatex">\(b\le n+1\)</span>。利用对称性和投影关系，</p>
+<div class="arithmatex">\[
+\langle\Omega,T_n^{a+b}\Omega\rangle
+=\langle T^a\Omega,P_nT^b\Omega\rangle
+=\langle T^a\Omega,T^b\Omega\rangle=c_{a+b}.
+\]</div>
+<p>有限维谱分解给出等式中的积分表达。因此一个 <span class="arithmatex">\(n+1\)</span> 维截断能精确匹配比维数多得多的矩，这也是 Gaussian 求积高阶精度的来源。</p>
+</details>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span><span class="book-name">有限原子测度的极限给出全部矩</span></p>
+<p>在上述条件下，<span class="arithmatex">\(\mu_n\)</span> 有一个子列趋于正测度 <span class="arithmatex">\(\mu\)</span>，且 <span class="arithmatex">\(\int x^k\,\mathrm{d}\mu=c_k\)</span> 对全部 <span class="arithmatex">\(k\)</span> 成立。</p>
+</div>
+<details class="proof">
+<summary>证明：为什么不能只说弱收敛就完成了</summary>
+<p>在 <span class="arithmatex">\([0,1]\)</span> 上，Helly 选择给出弱-* 收敛子列，每个 <span class="arithmatex">\(x^k\)</span> 都是连续有界测试函数，所以矩直接通过极限。这就证明 Hausdorff 情形。</p>
+<p>在无界区间上，先用 <span class="arithmatex">\(C_0(I)^*\)</span> 的弱-* 紧性取得子列；这里 <span class="arithmatex">\(C_0(I)\)</span> 可分。对充分大的 <span class="arithmatex">\(n\)</span>，<span class="arithmatex">\(\int x^2\,\mathrm{d}\mu_n=c_2\)</span>，因此</p>
+<div class="arithmatex">\[
+\mu_n(\{|x|&gt;R\})\le c_2/R^2.
+\]</div>
+<p>此估计防止质量逃逸，保证极限总质量仍为 <span class="arithmatex">\(c_0\)</span>。对于任意 <span class="arithmatex">\(k\)</span>，选偶数 <span class="arithmatex">\(2m&gt;k\)</span>。当 <span class="arithmatex">\(n\)</span> 充分大时，<span class="arithmatex">\(2m\)</span> 阶矩已精确匹配，因此</p>
+<div class="arithmatex">\[
+\int_{|x|&gt;R}|x|^k\,\mathrm{d}\mu_n
+\le R^{k-2m}c_{2m}.
+\]</div>
+<p>对非负紧支撑截断取极限，也得到极限测度的同样高阶矩上界。先在 <span class="arithmatex">\([-R,R]\)</span> 上以连续截断函数测试，再令 <span class="arithmatex">\(R\to\infty\)</span>，便能令第 <span class="arithmatex">\(k\)</span> 阶矩通过极限。极限保持原闭支撑区间，从而证明 Hamburger 与 Stieltjes 情形。</p>
+<p>关键是高阶矩控制尾部。单独的弱-* 收敛不能测试无界函数 <span class="arithmatex">\(x^k\)</span>。</p>
+</details>
+<p>在紧区间上解唯一：多项式稠密，使所有连续函数的积分都由矩确定，再用 Riesz 表示的唯一性。无界区间上可能不唯一，第九章会讨论不定矩问题。</p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>正交多项式与 Jacobi 矩阵</h2>
+<p>设 <span class="arithmatex">\(c_0=1\)</span>，<span class="arithmatex">\(H\)</span> 正定。对 <span class="arithmatex">\(1,x,x^2,\ldots\)</span> 作 Gram–Schmidt，取首项系数为正，得到实系数正交多项式 <span class="arithmatex">\(p_n\)</span>，且 <span class="arithmatex">\(p_0=1\)</span>。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span><span class="book-name">三项递推</span></p>
+<p>存在 <span class="arithmatex">\(b_n\in\mathbb R\)</span>、<span class="arithmatex">\(a_n&gt;0\)</span>，使</p>
+<div class="arithmatex">\[
+xp_n=a_np_{n+1}+b_np_n+a_{n-1}p_{n-1},
+\qquad p_{-1}=0.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p><span class="arithmatex">\(xp_n\)</span> 次数为 <span class="arithmatex">\(n+1\)</span>，因此只需在 <span class="arithmatex">\(p_0,\ldots,p_{n+1}\)</span> 中展开。若 <span class="arithmatex">\(j\le n-2\)</span>，则</p>
+<div class="arithmatex">\[
+\langle p_j,xp_n\rangle=\langle xp_j,p_n\rangle=0,
+\]</div>
+<p>因为 <span class="arithmatex">\(xp_j\)</span> 次数至多 <span class="arithmatex">\(n-1\)</span>。对称性使上下对角系数相同，对角系数为实数；比较首项系数给出 <span class="arithmatex">\(a_n&gt;0\)</span>。</p>
+</details>
+<p>因此 <span class="arithmatex">\(T\)</span> 在 <span class="arithmatex">\(p_n\)</span> 基下成为三对角 Jacobi 矩阵</p>
+<div class="arithmatex">\[
+J=\begin{pmatrix}
+b_0&amp;a_0&amp;0&amp;\cdots\\
+a_0&amp;b_1&amp;a_1&amp;\cdots\\
+0&amp;a_1&amp;b_2&amp;\ddots\\
+\vdots&amp;\vdots&amp;\ddots&amp;\ddots
+\end{pmatrix}.
+\]</div>
+<p>这并不表示任意 Jacobi 矩阵在 <span class="arithmatex">\(\ell^2\)</span> 上都已自伴：若系数无界，首先只有有限支撑上的对称算子，定义域与自伴扩张属于第六章的问题。</p>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>Padé 逼近与连分式</h2>
+<p>定义有限维预解式的标量值</p>
+<div class="arithmatex">\[
+F_n(z)=\langle\Omega,(zI-T_n)^{-1}\Omega\rangle
+=\int\frac{\mathrm{d}\mu_n(x)}{z-x}.
+\]</div>
+<p>它是有理函数，分母可取 <span class="arithmatex">\(\det(zI-J_n)\)</span>，其中 <span class="arithmatex">\(J_n\)</span> 是前 <span class="arithmatex">\(n+1\)</span> 阶截断。递推说明此行列式是 <span class="arithmatex">\(p_{n+1}\)</span> 的首一化版本，所以零点真实且与谱节点相同。</p>
+<p>当 <span class="arithmatex">\(|z|\)</span> 大于有限矩阵的范数时，</p>
+<div class="arithmatex">\[
+F_n(z)=\sum_{k=0}^\infty\frac{\langle\Omega,T_n^k\Omega\rangle}{z^{k+1}}
+=\sum_{k=0}^{2n+1}\frac{c_k}{z^{k+1}}+O(z^{-2n-3}).
+\]</div>
+<p>故 <span class="arithmatex">\(F_n\)</span> 是在无穷远处匹配有限阶系数的 Padé 逼近。此处的 <span class="arithmatex">\(O\)</span> 是对固定 <span class="arithmatex">\(n\)</span> 讨论 <span class="arithmatex">\(z\to\infty\)</span>，不能当作对所有 <span class="arithmatex">\(n\)</span> 统一的估计。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">Jacobi 矩阵产生连分式</span></p>
+<p>对 <span class="arithmatex">\(c_0=1\)</span>，<span class="arithmatex">\(F_n\)</span> 等于截断连分式</p>
+<div class="arithmatex">\[
+F_n(z)=\cfrac1{z-b_0-\cfrac{a_0^2}{z-b_1-\cfrac{a_1^2}{\ddots-\cfrac{a_{n-1}^2}{z-b_n}}}}.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>将 <span class="arithmatex">\(zI-J_n\)</span> 按首坐标与余下坐标分块：</p>
+<div class="arithmatex">\[
+zI-J_n=\begin{pmatrix}z-b_0&amp;-a_0e_1^*\\-a_0e_1&amp;B\end{pmatrix}.
+\]</div>
+<p>解该分块方程或使用 Schur 补，逆矩阵的左上角为 <span class="arithmatex">\([z-b_0-a_0^2\langle e_1,B^{-1}e_1\rangle]^{-1}\)</span>。再对尾部矩阵重复操作，得到连分式。先在所有逆存在的区域证明，随后由有理函数恒等性扩张。</p>
+</details>
+<p>沿测度的收敛子列，<span class="arithmatex">\(F_{n_j}\to F(z)=\int(z-x)^{-1}\,\mathrm{d}\mu(x)\)</span>，在 <span class="arithmatex">\(\mathbb C\setminus I\)</span> 的紧子集上局部一致。原因是积分核及其 <span class="arithmatex">\(z\)</span> 导数都有由 <span class="arithmatex">\(\operatorname{dist}(z,I)\)</span> 控制的统一界。紧区间上矩解唯一，因此整个序列收敛；非紧区间上这里先保证子列。</p>
+<p>我们至此看到同一个对象的四种表达：有限原子测度、有限维自伴矩阵、正交多项式、有理连分式。它们之间的转换来自同一套矩数据。</p>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>再看 Riesz 表示定理</h2>
+<p>若 <span class="arithmatex">\(\Lambda\)</span> 是 <span class="arithmatex">\(C[0,1]\)</span> 上的正泛函，取 <span class="arithmatex">\(c_n=\Lambda(x^n)\)</span>。三个正矩阵条件自动成立，于是构造出 <span class="arithmatex">\(\mu\)</span>。多项式上的表示成立，再由正泛函估计</p>
+<div class="arithmatex">\[
+|\Lambda(f)|\le\Lambda(1)\|f\|_\infty
+\]</div>
+<p>和多项式一致稠密性，得到 <span class="arithmatex">\(\Lambda(f)=\int f\,\mathrm{d}\mu\)</span> 对全部连续 <span class="arithmatex">\(f\)</span> 成立。</p>
+<p>这条证明说明：Riesz 表示也可以由有限维谱分解与极限产生；它并不是谱理论之外的一块孤立工具。</p>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>矩问题与有限维压缩的精确表述</h2>
+<p>约定 <span class="arithmatex">\(I\)</span> 为 <span class="arithmatex">\(\mathbb R\)</span>、<span class="arithmatex">\([0,\infty)\)</span> 或 <span class="arithmatex">\([0,1]\)</span>，矩序列 <span class="arithmatex">\((c_n)_{n\geq0}\)</span> 为实数。<span class="arithmatex">\(\mathcal R_r(I)\)</span> 表示有界非负单调右连续函数，在 <span class="arithmatex">\(I=\mathbb R\)</span> 时另要求 <span class="arithmatex">\(\rho(-\infty)=0\)</span>；它们对应有限正 Borel 测度。</p>
+<h3 id="topic-4-1-1">有限维的谱分解作为起点</h3>
+<p>矩问题的有限逼近需要先掌握 Hermitian 矩阵如何对角化。这里用二次型极值构造特征方向，随后把它用于有限维的乘法压缩。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.1</span><span class="book-name">Stieltjes 变换</span></p>
+<p>有限正测度 <span class="arithmatex">\(\mu\)</span> 的 Stieltjes 变换为 <span class="arithmatex">\(F_\mu(z)=\int_I(z-x)^{-1}\,d\mu(x)\)</span>，定义在 <span class="arithmatex">\(\mathbb C\setminus I\)</span>。若 <span class="arithmatex">\(\mu=d\rho\)</span>，也称 <span class="arithmatex">\(\rho\)</span> 的 Stieltjes 变换。它在此区域全纯。</p>
+</div>
+<details class="proof">
+<summary>证明 4.1.1</summary>
+<p>对紧集 <span class="arithmatex">\(K\subset\mathbb C\setminus I\)</span>，令 <span class="arithmatex">\(d=\operatorname{dist}(K,I)&gt;0\)</span>。积分核的模至多为 <span class="arithmatex">\(d^{-1}\)</span>，其任意阶 <span class="arithmatex">\(z\)</span> 导数的模至多为 <span class="arithmatex">\(k!d^{-k-1}\)</span>。有限测度使这些统一控制函数可积，所以可以在积分下逐阶求导，得到全纯性。特别地 <span class="arithmatex">\(F_\mu'(z)=-\int_I(z-x)^{-2}\,d\mu(x)\)</span>。</p>
+</details>
+<h3 id="topic-4-2-2">正矩阵产生测度</h3>
+<p>给定矩先确定多项式上的泛函；平方多项式的积分非负，因此 Hankel 正性是必要条件。商去零空间得到乘法算子后，有限压缩产生原子测度，紧性与高阶矩尾部估计再恢复全部矩。</p>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.2</span><span class="book-name">可测函数的 Stieltjes 积分</span></p>
+<p>对 <span class="arithmatex">\(\rho\in\mathcal R_r(I)\)</span> 的代表测度 <span class="arithmatex">\(\mu_\rho\)</span>，定义 <span class="arithmatex">\(\int_I f\,d\rho=\int_I f\,d\mu_\rho\)</span>，适用于非负 Borel 函数或绝对可积实、复 Borel 函数。</p>
+</div>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.3</span><span class="book-name">无限矩阵的正性</span></p>
+<p>矩阵 <span class="arithmatex">\(H=(H(m,n))_{m,n\geq0}\)</span> 对应多项式上的半双线性形式 <span class="arithmatex">\(\langle x^m,x^n\rangle=H(m,n)\)</span>。形式 Hermitian、半正定或正定时，矩阵分别称 Hermitian、正或正定。截断 <span class="arithmatex">\(H_n\)</span> 为前 <span class="arithmatex">\(n+1\)</span> 行列；半正定等价于每个截断半正定。</p>
+</div>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.4</span><span class="book-name">Hankel 矩阵</span></p>
+<p>令 <span class="arithmatex">\(H(m,n)=c_{m+n}\)</span>、<span class="arithmatex">\(H'(m,n)=c_{m+n+1}\)</span>。定义 <span class="arithmatex">\(\Lambda(x^n)=c_n\)</span>，则 <span class="arithmatex">\(\langle f,g\rangle=\Lambda(\overline f g)\)</span>，而 <span class="arithmatex">\(H'\)</span> 和 <span class="arithmatex">\(H-H'\)</span> 分别对应 <span class="arithmatex">\(\langle f,xg\rangle\)</span> 和 <span class="arithmatex">\(\langle f,(1-x)g\rangle\)</span>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.5</span><span class="book-name">解的必要条件</span></p>
+<p>若 <span class="arithmatex">\(c_n=\int x^n\,d\rho\)</span> 对全部 <span class="arithmatex">\(n\)</span> 成立，则 <span class="arithmatex">\(H\geq0\)</span>。<span class="arithmatex">\(H\)</span> 正定当且仅当代表测度的支集无限，亦即累积函数的值域无限。<span class="arithmatex">\(I=[0,\infty)\)</span> 时还须 <span class="arithmatex">\(H'\geq0\)</span>；<span class="arithmatex">\(I=[0,1]\)</span> 时还须 <span class="arithmatex">\(H'\geq0\)</span> 和 <span class="arithmatex">\(H-H'\geq0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.8</summary>
+<p>对多项式 <span class="arithmatex">\(p\)</span>，<span class="arithmatex">\(\Lambda(|p|^2)=\int|p|^2\,d\mu\geq0\)</span>，所以 <span class="arithmatex">\(H\geq0\)</span>。若支集无限，非零多项式只有有限个零点，不可能在整个支集上为零；连续性及支集定义使其平方积分严格为正。若支集有限，以这些支集点为零点的非零多项式平方积分为零，故不正定。</p>
+<p>在半轴上 <span class="arithmatex">\(\int x|p|^2\,d\mu\geq0\)</span>，在 <span class="arithmatex">\([0,1]\)</span> 上还可用 <span class="arithmatex">\(\int(1-x)|p|^2\,d\mu\geq0\)</span>，分别得到 <span class="arithmatex">\(H'\)</span>、<span class="arithmatex">\(H-H'\)</span> 的必要正性。有限支集与累积函数只有有限多级等价，因此也得到值域表述。</p>
+</details>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.6</span><span class="book-name">三个矩问题的充要条件</span></p>
+<p>Hamburger 矩问题可解当且仅当 <span class="arithmatex">\(H\geq0\)</span>；Stieltjes 矩问题可解当且仅当 <span class="arithmatex">\(H,H'\geq0\)</span>；Hausdorff 矩问题可解当且仅当 <span class="arithmatex">\(H,H',H-H'\geq0\)</span>。解须使全部 <span class="arithmatex">\(|x|^n\)</span> 可积。紧区间情形解唯一；另两种情形可能不唯一。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.9</summary>
+<p>必要性由命题 4.2.8 给出。充分性按三个步骤构造：先由 <span class="arithmatex">\(H\)</span> 取正形式、除去零空间，得到带循环向量 <span class="arithmatex">\(\Omega\)</span> 的对称乘法算子；再把它压缩到 <span class="arithmatex">\(V_n\)</span>，有限维谱定理产生 <span class="arithmatex">\(\mu_n\)</span>；最后用 Helly 选择与高阶矩尾部估计取得 <span class="arithmatex">\(\mu\)</span>。这三个步骤分别在定理 4.2.10、命题 4.2.17、定理 4.2.19 中证明。</p>
+<p>半轴条件使每个压缩 <span class="arithmatex">\(T_n\geq0\)</span>，所以原子都在 <span class="arithmatex">\([0,\infty)\)</span>；紧区间条件使 <span class="arithmatex">\(0\leq T_n\leq I\)</span>，所以原子都在 <span class="arithmatex">\([0,1]\)</span>。非紧情形借助偶数高阶矩控制尾部，保证每个 <span class="arithmatex">\(|x|^m\)</span> 可积且保留给定矩。紧区间上多项式一致稠密，两个解若全部矩相同，对全部连续函数的积分相同，测度表示的唯一性使它们相同。</p>
+</details>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.7</span><span class="book-name">乘法算子的良定义性</span></p>
+<p>若 <span class="arithmatex">\(H\geq0\)</span>，令 <span class="arithmatex">\(\mathcal N=\{f:\Lambda(|f|^2)=0\}\)</span>、<span class="arithmatex">\(V=\mathbb C[x]/\mathcal N\)</span>。则 <span class="arithmatex">\(T(f+\mathcal N)=xf+\mathcal N\)</span> 唯一确定一个线性算子，且 <span class="arithmatex">\(\langle\xi,T\eta\rangle=\langle T\xi,\eta\rangle\)</span>。其关键是 <span class="arithmatex">\(\mathcal N\)</span> 对乘以 <span class="arithmatex">\(x\)</span> 封闭。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.10</summary>
+<p>若 <span class="arithmatex">\(\|f\|^2=\Lambda(|f|^2)=0\)</span>，正形式的 Cauchy–Schwarz 给出 <span class="arithmatex">\(\langle f,g\rangle=0\)</span> 对全部多项式 <span class="arithmatex">\(g\)</span> 成立。取 <span class="arithmatex">\(g=x^2f\)</span>，则</p>
+<div class="arithmatex">\[
+\|xf\|^2=\Lambda(x^2|f|^2)=\langle f,x^2f\rangle=0.
+\]</div>
+<p>因此 <span class="arithmatex">\(x\mathcal N\subset\mathcal N\)</span>，乘以 <span class="arithmatex">\(x\)</span> 与代表元选择无关。又因 <span class="arithmatex">\(x\)</span> 实值，<span class="arithmatex">\(\Lambda(\overline f\,xg)=\Lambda(\overline{xf}\,g)\)</span>，得到商空间上的对称性。商内积的非退化性已由除去零空间保证。</p>
+</details>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.8</span><span class="book-name">循环子空间与投影</span></p>
+<p>令 <span class="arithmatex">\(\Omega=1+\mathcal N\)</span>，<span class="arithmatex">\(V_n=\operatorname{span}\{\Omega,T\Omega,\ldots,T^n\Omega\}\)</span>，<span class="arithmatex">\(E_n\)</span> 为到 <span class="arithmatex">\(V_n\)</span> 的正交投影。则 <span class="arithmatex">\(\Omega\in V_0\)</span>、<span class="arithmatex">\(TV_n\subset V_{n+1}\)</span>，<span class="arithmatex">\(\langle\Omega,T^m\Omega\rangle=c_m\)</span>。</p>
+</div>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.9</span><span class="book-name">压缩矩</span></p>
+<p>定义 <span class="arithmatex">\(c_{n,m}=\langle\Omega,(E_nTE_n)^m\Omega\rangle\)</span>。<span class="arithmatex">\(T_n=E_nTE_n|_{V_n}\)</span> 自伴，且 <span class="arithmatex">\(c_{n,m}=c_m\)</span> 对 <span class="arithmatex">\(0\leq m\leq2n+1\)</span> 成立。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.15</summary>
+<p>由 <span class="arithmatex">\(T^j\Omega\in V_j\)</span>，归纳得 <span class="arithmatex">\(T_n^j\Omega=T^j\Omega\)</span> 对 <span class="arithmatex">\(j\leq n\)</span> 成立。若 <span class="arithmatex">\(m=r+s\leq2n\)</span> 且 <span class="arithmatex">\(r,s\leq n\)</span>，对称性给出</p>
+<div class="arithmatex">\[
+\langle\Omega,T_n^m\Omega\rangle
+=\langle T_n^r\Omega,T_n^s\Omega\rangle
+=\langle T^r\Omega,T^s\Omega\rangle=c_m.
+\]</div>
+<p>最后一阶 <span class="arithmatex">\(m=2n+1\)</span> 使用 <span class="arithmatex">\(\langle T_n^n\Omega,T_nT_n^n\Omega\rangle\)</span>。两侧向量都在 <span class="arithmatex">\(V_n\)</span> 中，夹在中间的 <span class="arithmatex">\(E_n\)</span> 可从内积中去掉，所得正是 <span class="arithmatex">\(\langle T^n\Omega,TT^n\Omega\rangle=c_{2n+1}\)</span>。这解释了压缩为什么匹配到 <span class="arithmatex">\(2n+1\)</span> 阶，而不只匹配到 <span class="arithmatex">\(n\)</span> 阶。</p>
+</details>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.10</span><span class="book-name">有限原子代表</span></p>
+<p>在相应矩阵正性条件下，每个 <span class="arithmatex">\(n\)</span> 有 <span class="arithmatex">\(\rho_n\in\mathcal R_r(I)\)</span>，其值域为 <span class="arithmatex">\([0,c_0]\)</span> 的有限子集，满足 <span class="arithmatex">\(c_{n,m}=\int_Ix^m\,d\rho_n\)</span> 对全部 <span class="arithmatex">\(m\)</span> 成立。它由 <span class="arithmatex">\(T_n\)</span> 的特征值和 <span class="arithmatex">\(\Omega\)</span> 在对应特征空间投影的范数平方给出。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.17</summary>
+<p>在有限维 <span class="arithmatex">\(V_n\)</span> 上写 <span class="arithmatex">\(T_n=\sum_j\lambda_jP_j\)</span>，令 <span class="arithmatex">\(\mu_n=\sum_j\|P_j\Omega\|^2\delta_{\lambda_j}\)</span>。则 <span class="arithmatex">\(\int x^m\,d\mu_n=\sum_j\lambda_j^m\|P_j\Omega\|^2=\langle\Omega,T_n^m\Omega\rangle\)</span>，总质量为 <span class="arithmatex">\(\|\Omega\|^2=c_0\)</span>。</p>
+<p>若 <span class="arithmatex">\(H'\geq0\)</span>，压缩二次型非负，所以 <span class="arithmatex">\(\lambda_j\geq0\)</span>；若再有 <span class="arithmatex">\(H-H'\geq0\)</span>，则 <span class="arithmatex">\(T_n\leq I\)</span>，所以 <span class="arithmatex">\(\lambda_j\leq1\)</span>。因此支集位于相应 <span class="arithmatex">\(I\)</span>。取累积函数 <span class="arithmatex">\(\rho_n(x)=\mu_n(I\cap(-\infty,x])\)</span>，它只有有限多个级值，右连续且满足所有所需积分式。</p>
+</details>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.11</span><span class="book-name">极限累积函数</span></p>
+<p>对上述一致有界的 <span class="arithmatex">\(\rho_n\)</span>，取 Helly 子列 <span class="arithmatex">\(\rho_{n_k}\)</span> 逐点趋于 <span class="arithmatex">\(\widetilde\rho\)</span>。在非负半轴或紧区间取其右连续正规化；在全实轴先减去 <span class="arithmatex">\(\widetilde\rho(-\infty)\)</span> 再正规化，得到 <span class="arithmatex">\(\rho\in\mathcal R_r(I)\)</span>，并有 <span class="arithmatex">\(d\rho_{n_k}\to d\rho\)</span> 对 <span class="arithmatex">\(C_c(I)\)</span> 测试弱-* 收敛。</p>
+</div>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.12</span><span class="book-name">压缩极限保留全部矩</span></p>
+<p>在各区间相应正性条件下，上述 <span class="arithmatex">\(\rho\)</span> 满足 <span class="arithmatex">\(c_m=\int_Ix^m\,d\rho\)</span> 对全部 <span class="arithmatex">\(m\)</span> 成立，且这些积分绝对可积。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.19</summary>
+<p>紧区间上 <span class="arithmatex">\(x^m\)</span> 是连续合法测试，直接由弱-* 收敛和矩匹配取得结论。非紧情形要先证明尾部不会破坏极限。选择偶数 <span class="arithmatex">\(2r&gt;m\)</span>。对充分大的 <span class="arithmatex">\(n\)</span>，矩匹配给出 <span class="arithmatex">\(\int |x|^{2r}\,d\mu_n=c_{2r}\)</span>，因此</p>
+<div class="arithmatex">\[
+\int_{|x|&gt;R}|x|^m\,d\mu_n\leq R^{m-2r}c_{2r}.
+\]</div>
+<p>对连续紧支撑截断 <span class="arithmatex">\(\beta_R\uparrow1\)</span>，弱-* 收敛给出 <span class="arithmatex">\(\int\beta_R|x|^{2r}\,d\mu\leq c_{2r}\)</span>；单调收敛使 <span class="arithmatex">\(\int|x|^{2r}\,d\mu\leq c_{2r}\)</span>，于是同一个尾界对 <span class="arithmatex">\(\mu\)</span> 也成立。</p>
+<p>现在 <span class="arithmatex">\(\beta_Rx^m\)</span> 的积分可以直接取极限，删掉截断的误差由上述两侧尾界控制。先取子列极限，再令 <span class="arithmatex">\(R\to\infty\)</span>，得到 <span class="arithmatex">\(\int x^m\,d\mu=c_m\)</span> 及绝对可积性。<span class="arithmatex">\(m=0\)</span> 的同一论证保留总质量，排除质量逃到无穷远。</p>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.13</span><span class="book-name">Padé 逼近</span></p>
+<p><span class="arithmatex">\(F_n(z)=\int(z-x)^{-1}\,d\rho_n\)</span> 为有理函数，在充分大的 <span class="arithmatex">\(|z|\)</span> 下展开为 <span class="arithmatex">\(\sum_{m=0}^{2n+1}c_mz^{-m-1}+O(z^{-2n-3})\)</span>。所选子列 <span class="arithmatex">\(F_{n_k}\)</span> 在 <span class="arithmatex">\(\mathbb C\setminus I\)</span> 上局部一致趋于 <span class="arithmatex">\(F(z)=\int(z-x)^{-1}\,d\rho\)</span>，即匹配前 <span class="arithmatex">\(2n+2\)</span> 个 Laurent 系数的 Padé 逼近。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.20</summary>
+<p><span class="arithmatex">\(\mu_n\)</span> 支集有限，所以 <span class="arithmatex">\(F_n\)</span> 是有限个 <span class="arithmatex">\((z-\lambda_j)^{-1}\)</span> 的正权和。对大于全部支集点模的 <span class="arithmatex">\(|z|\)</span> 展开几何级数，得到 <span class="arithmatex">\(F_n(z)=\sum_{m\geq0}c_{n,m}z^{-m-1}\)</span>。由矩匹配，前 <span class="arithmatex">\(2n+2\)</span> 个系数就是 <span class="arithmatex">\(c_m\)</span>，得到所述 Laurent 展开。</p>
+<p>对 <span class="arithmatex">\(z\notin I\)</span>，函数 <span class="arithmatex">\(g_z(x)=(z-x)^{-1}\)</span> 属于 <span class="arithmatex">\(C_0(I)\)</span>，且 <span class="arithmatex">\(z\mapsto g_z\)</span> 在一致范数下连续，例如邻近 <span class="arithmatex">\(z,w\)</span> 时 <span class="arithmatex">\(\|g_z-g_w\|_\infty\leq|z-w|/(\operatorname{dist}(z,I)\operatorname{dist}(w,I))\)</span>。因此紧参数集 <span class="arithmatex">\(K\)</span> 的像 <span class="arithmatex">\(\{g_z:z\in K\}\)</span> 在 <span class="arithmatex">\(C_0(I)\)</span> 中紧。测度泛函有统一范数界且逐点收敛，定理 4.2.21 把它升级为这个紧集上的一致收敛，即 <span class="arithmatex">\(F_{n_k}\to F\)</span> 局部一致。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.14</span><span class="book-name">紧集上的一致收敛</span></p>
+<p>赋范空间间的一致有界线性算子网 <span class="arithmatex">\(T_\alpha\)</span> 若逐点趋于有界 <span class="arithmatex">\(T\)</span>，则在每个相对紧子集 <span class="arithmatex">\(K\)</span> 上一致收敛：<span class="arithmatex">\(\sup_{\xi\in K}\|(T_\alpha-T)\xi\|\to0\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 4.2.21</summary>
+<p>设统一界为 <span class="arithmatex">\(C\)</span>，取 <span class="arithmatex">\(K\)</span> 的有限 <span class="arithmatex">\(\delta\)</span> 网 <span class="arithmatex">\(\xi_1,\ldots,\xi_N\)</span>。对任意 <span class="arithmatex">\(\xi\in K\)</span>，选择 <span class="arithmatex">\(\|\xi-\xi_j\|&lt;\delta\)</span>，则</p>
+<div class="arithmatex">\[
+\|(T_\alpha-T)\xi\|
+\leq(C+\|T\|)\delta+\max_j\|(T_\alpha-T)\xi_j\|.
+\]</div>
+<p>有限多个逐点极限可由同一个指标控制。先把 <span class="arithmatex">\(\delta\)</span> 选得小，再让指标充分大，就得到一致收敛。相对紧集的闭包紧，所以同一论证适用。</p>
+</details>
+<details class="proof">
+<summary>零空间、矩匹配和无穷远尾部</summary>
+<p>若 <span class="arithmatex">\(f\in\mathcal N\)</span>，正形式的 Cauchy–Schwarz 不等式给出 <span class="arithmatex">\(\langle f,x^2f\rangle=0\)</span>。由于 <span class="arithmatex">\(\|xf\|^2=\langle f,x^2f\rangle\)</span>，<span class="arithmatex">\(xf\in\mathcal N\)</span>，乘法算子因而良定义。<span class="arithmatex">\(T\)</span> 的对称性来自多项式乘法交换。</p>
+<p>对 <span class="arithmatex">\(m\leq2n\)</span>，将 <span class="arithmatex">\(m=r+s\)</span>，<span class="arithmatex">\(r,s\leq n\)</span>，利用 <span class="arithmatex">\(T_n^j\Omega=T^j\Omega\)</span>（<span class="arithmatex">\(j\leq n\)</span>），得到压缩矩相等。对 <span class="arithmatex">\(m=2n+1\)</span>，用 <span class="arithmatex">\(\langle T^n\Omega,T T^n\Omega\rangle\)</span> 和投影的作用处理。</p>
+<p>弱-* 收敛只直接控制紧支集函数；<span class="arithmatex">\(x^m\)</span> 无界时必须截断。选择偶数 <span class="arithmatex">\(2r&gt;m\)</span>，在 <span class="arithmatex">\(|x|&gt;R\)</span> 上有 <span class="arithmatex">\(|x|^m\leq R^{m-2r}|x|^{2r}\)</span>。充分大的压缩序号精确匹配 <span class="arithmatex">\(2r\)</span> 阶矩，故尾部积分一致趋于零。紧支集部分取极限后再令 <span class="arithmatex">\(R\to\infty\)</span>，得到全部矩匹配。二阶矩同时防止总质量逃到无穷远。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>正交多项式、Jacobi 矩阵与连分数</h2>
+<p>以下无限阶正交多项式讨论假设 <span class="arithmatex">\(H\)</span> 正定；Jacobi 对应和归一化递推采用 <span class="arithmatex">\(c_0=1\)</span>。若 <span class="arithmatex">\(H\)</span> 退化，则多项式商空间有限维，相应构造在有限阶终止。</p>
+<h3 id="topic-4-3-1">让乘法算子只有三条对角线</h3>
+<p>对单项式作 Gram–Schmidt 后，乘以坐标只能连接相邻次数，因而得到 Jacobi 三对角矩阵。递推关系、特征多项式与求积节点便来自同一个算子。</p>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.1</span><span class="book-name">预解式表示</span></p>
+<p>对充分大的 <span class="arithmatex">\(|z|\)</span>，<span class="arithmatex">\(F_n(z)=\langle\Omega,(zI-T_n)^{-1}\Omega\rangle\)</span>；实际上该式在 <span class="arithmatex">\(\mathbb C\setminus\sigma(T_n)\)</span> 均成立。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.1</summary>
+<p>在 <span class="arithmatex">\(T_n\)</span> 的有限谱分解中，<span class="arithmatex">\((zI-T_n)^{-1}=\sum_j(z-\lambda_j)^{-1}P_j\)</span>。用 <span class="arithmatex">\(\Omega\)</span> 配对，得到 <span class="arithmatex">\(\sum_j\|P_j\Omega\|^2/(z-\lambda_j)\)</span>，恰为 <span class="arithmatex">\(\mu_n\)</span> 的 Stieltjes 变换。这直接对全部非谱参数成立；大参数区域的级数展开只是同一等式的另一种表达。</p>
+</details>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.2</span><span class="book-name">正交多项式</span></p>
+<p>多项式族 <span class="arithmatex">\((p_n)\)</span> 满足 <span class="arithmatex">\(\deg p_n=n\)</span>，并在 Hankel 内积下两两正交时称正交多项式；各自范数为一时称标准正交多项式。固定最高次系数为正；最高次系数为一称首一多项式。</p>
+</div>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.3</span><span class="book-name">特征多项式的正交性</span></p>
+<p><span class="arithmatex">\(\widetilde p_0=1\)</span>、<span class="arithmatex">\(\widetilde p_{n+1}(z)=\det(zI-T_n)\)</span> 给出唯一的首一正交多项式族。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.5</summary>
+<p>令 <span class="arithmatex">\(D_{n+1}(z)=\det(zI-T_n)\)</span>。它首一，次数为 <span class="arithmatex">\(n+1\)</span>。对 <span class="arithmatex">\(0\leq k\leq n\)</span>，多项式 <span class="arithmatex">\(x^kD_{n+1}(x)\)</span> 次数至多为 <span class="arithmatex">\(2n+1\)</span>，矩匹配与 Cayley–Hamilton 给出</p>
+<div class="arithmatex">\[
+\Lambda(x^kD_{n+1})=
+\langle\Omega,T_n^kD_{n+1}(T_n)\Omega\rangle=0.
+\]</div>
+<p>所以它与所有次数至多 <span class="arithmatex">\(n\)</span> 的多项式正交。两个满足同样条件的首一多项式之差次数至多为 <span class="arithmatex">\(n\)</span>，又与该有限维空间正交；内积正定使差为零，故唯一。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.4</span><span class="book-name">Hankel 行列式公式</span></p>
+<p>令 <span class="arithmatex">\(\Delta_n=\det(c_{i+j})_{0\leq i,j\leq n}&gt;0\)</span>，则 <span class="arithmatex">\(\widetilde p_{n+1}(z)=\Delta_n^{-1}\det\begin{pmatrix}c_0&amp;c_1&amp;\cdots&amp;c_{n+1}\\c_1&amp;c_2&amp;\cdots&amp;c_{n+2}\\\vdots&amp;\vdots&amp;&amp;\vdots\\c_n&amp;c_{n+1}&amp;\cdots&amp;c_{2n+1}\\1&amp;z&amp;\cdots&amp;z^{n+1}\end{pmatrix}\)</span>。除以 <span class="arithmatex">\(\Delta_n\)</span> 是保证首一的必要归一化。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.6</summary>
+<p>按最后一行展开行列式，得到次数 <span class="arithmatex">\(n+1\)</span> 的多项式；最高次项系数为 <span class="arithmatex">\(\Delta_n\)</span>，所以除以它后首一。将最后一行的 <span class="arithmatex">\(1,z,\ldots,z^{n+1}\)</span> 与 <span class="arithmatex">\(x^k\)</span> 配对，就是用 <span class="arithmatex">\(c_k,c_{k+1},\ldots,c_{k+n+1}\)</span> 替换最后一行。<span class="arithmatex">\(k\leq n\)</span> 时这与前面的某一行相同，行列式为零。于是所得首一多项式与低阶空间正交，定理 4.3.5 的唯一性确定公式。</p>
+</details>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.5</span><span class="book-name">Jacobi 矩阵</span></p>
+<p>给定实数 <span class="arithmatex">\(b_n\)</span> 和正数 <span class="arithmatex">\(a_n\)</span>，定义三对角矩阵 <span class="arithmatex">\(J\)</span>：<span class="arithmatex">\(J_{n,n}=b_n\)</span>、<span class="arithmatex">\(J_{n,n+1}=J_{n+1,n}=a_n\)</span>，其余为零。移去首行首列的 <span class="arithmatex">\(J^+\)</span> 对应序列 <span class="arithmatex">\((a_{n+1})\)</span>、<span class="arithmatex">\((b_{n+1})\)</span>。</p>
+</div>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.6</span><span class="book-name">矩与 Jacobi 参数的一一对应</span></p>
+<p><span class="arithmatex">\(c_0=1\)</span> 且 Hankel 矩阵正定的实矩序列，与任意 <span class="arithmatex">\(a_n&gt;0,b_n\in\mathbb R\)</span> 的参数族一一对应。正向映射把乘法算子写成标准正交多项式基下的 Jacobi 矩阵；反向为 <span class="arithmatex">\(c_n=(J^n)_{0,0}\)</span>，每个幂的该系数只涉及有限多项。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.8</summary>
+<p>对标准正交多项式 <span class="arithmatex">\(p_n\)</span>，<span class="arithmatex">\(xp_n\)</span> 次数为 <span class="arithmatex">\(n+1\)</span>；若 <span class="arithmatex">\(j\leq n-2\)</span>，则 <span class="arithmatex">\(\langle p_j,xp_n\rangle=\langle xp_j,p_n\rangle=0\)</span>。因此展开只有 <span class="arithmatex">\(p_{n-1},p_n,p_{n+1}\)</span> 三项。对称性使两侧相邻系数相同且 <span class="arithmatex">\(b_n\)</span> 实；最高次系数均选正，使 <span class="arithmatex">\(a_n&gt;0\)</span>。这取得 Jacobi 参数，Gram–Schmidt 的唯一性使它们由矩确定。</p>
+<p>反过来，给定参数，在有限支集数列上定义对称三对角 <span class="arithmatex">\(J\)</span>，令 <span class="arithmatex">\(c_m=\langle e_0,J^me_0\rangle\)</span>。每个计算只经过有限个坐标，所以不存在无界级数的定义问题。对应 Hankel 形式为 <span class="arithmatex">\(\langle p(J)e_0,q(J)e_0\rangle\)</span>。次数为 <span class="arithmatex">\(n\)</span> 的非零 <span class="arithmatex">\(p\)</span> 在 <span class="arithmatex">\(p(J)e_0\)</span> 的第 <span class="arithmatex">\(n\)</span> 个坐标有非零值，故形式正定。递推使所构造 <span class="arithmatex">\(p_n(J)e_0=e_n\)</span>，所以反向构造恢复原参数；<span class="arithmatex">\(c_0=1\)</span> 也自动成立。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.7</span><span class="book-name">最高次系数</span></p>
+<p>标准正交多项式 <span class="arithmatex">\(p_n\)</span> 的最高次系数为 <span class="arithmatex">\((a_0\cdots a_{n-1})^{-1}\)</span>，<span class="arithmatex">\(n=0\)</span> 时空乘积为一。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.10</summary>
+<p>记 <span class="arithmatex">\(p_n\)</span> 的最高次系数为 <span class="arithmatex">\(\kappa_n&gt;0\)</span>。比较 <span class="arithmatex">\(xp_n=a_np_{n+1}+b_np_n+a_{n-1}p_{n-1}\)</span> 的最高次项，得到 <span class="arithmatex">\(\kappa_n=a_n\kappa_{n+1}\)</span>。由 <span class="arithmatex">\(\kappa_0=1\)</span> 递推得 <span class="arithmatex">\(\kappa_n=(a_0\cdots a_{n-1})^{-1}\)</span>。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.8</span><span class="book-name">递推与有限行列式</span></p>
+<p>设 <span class="arithmatex">\(p_{-1}=0,p_0=1\)</span>，<span class="arithmatex">\(xp_n=a_np_{n+1}+b_np_n+a_{n-1}p_{n-1}\)</span>（首项中 <span class="arithmatex">\(a_{-1}p_{-1}=0\)</span>）。则 <span class="arithmatex">\(a_0\cdots a_n p_{n+1}(z)=\det(zI-J_{[0,n]})\)</span>，其中截断矩阵大小为 <span class="arithmatex">\(n+1\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.11</summary>
+<p>标准正交基 <span class="arithmatex">\(p_0,\ldots,p_n\)</span> 中，<span class="arithmatex">\(T_n\)</span> 的矩阵正是 <span class="arithmatex">\(J_{[0,n]}\)</span>。定理 4.3.5 给出其特征行列式为首一正交多项式，再由最高次系数公式把 <span class="arithmatex">\(p_{n+1}\)</span> 变成首一，得到 <span class="arithmatex">\((a_0\cdots a_n)p_{n+1}=\det(zI-J_{[0,n]})\)</span>。也可按三对角行列式的末行展开验证：两侧满足同一个两步递推和相同初值。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.9</span><span class="book-name">第二类多项式与 Padé 商</span></p>
+<p>令 <span class="arithmatex">\(p_n\)</span> 满足上述递推，<span class="arithmatex">\(q_{-1}=0,q_0=1/a_0\)</span>，并满足 <span class="arithmatex">\(xq_n=a_{n+1}q_{n+1}+b_{n+1}q_n+a_nq_{n-1}\)</span>。则 <span class="arithmatex">\(F_n(z)=q_n(z)/p_{n+1}(z)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 4.3.12</summary>
+<p>Cramer 法则把 <span class="arithmatex">\((zI-J_{[0,n]})^{-1}\)</span> 的左上角写成</p>
+<div class="arithmatex">\[
+F_n(z)=\frac{\det(zI-J_{[1,n]})}{\det(zI-J_{[0,n]})}.
+\]</div>
+<p>分母由推论 4.3.11 为 <span class="arithmatex">\((a_0\cdots a_n)p_{n+1}\)</span>。对尾部 Jacobi 参数 <span class="arithmatex">\((a_{n+1}),(b_{n+1})\)</span>，多项式 <span class="arithmatex">\(a_0q_n\)</span> 满足标准正交递推及初值一，所以分子为 <span class="arithmatex">\((a_1\cdots a_n)a_0q_n\)</span>。公因子相消即得商；<span class="arithmatex">\(n=0\)</span> 时空行列式为一，同样正确。</p>
+</details>
+<h3 id="topic-4-4-1">预解式、Padé 与连分式</h3>
+<p>取 Jacobi 矩阵预解式的首个矩阵元，既得到有限原子测度的 Stieltjes 变换，也得到逐层 Schur 补的连分式。这使矩匹配转成有理函数逼近。</p>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.10</span><span class="book-name">Jacobi 连分数</span></p>
+<p><span class="arithmatex">\(F_n(z)=\cfrac{1}{z-b_0-\cfrac{a_0^2}{z-b_1-\cfrac{a_1^2}{\ddots-\cfrac{a_{n-1}^2}{z-b_n}}}}\)</span>。这些有限连分数是无限 Jacobi 连分数的逐阶逼近；<span class="arithmatex">\(n=0\)</span> 时取 <span class="arithmatex">\(1/(z-b_0)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 4.4.1</summary>
+<p>先给出分块证明。按首坐标与尾部写 <span class="arithmatex">\(zI-J_{[0,n]}\)</span>，其 Schur 补给出</p>
+<div class="arithmatex">\[
+F_n(z)=\bigl(z-b_0-a_0^2F^+_{n-1}(z)\bigr)^{-1}.
+\]</div>
+<p>尾部使用移位的 Jacobi 参数，重复此式并以最后的 <span class="arithmatex">\((z-b_n)^{-1}\)</span> 终止，便得到有限连分数。先在各逆存在的区域计算，两侧为有理函数，所以等式延伸到共同定义域。</p>
+<p>还可直接从三项递推验证。令 <span class="arithmatex">\(P_{n+1}=(a_0\cdots a_n)p_{n+1}\)</span>、<span class="arithmatex">\(Q_n=(a_0\cdots a_n)q_n\)</span>，则</p>
+<div class="arithmatex">\[
+P_{n+1}=(z-b_n)P_n-a_{n-1}^2P_{n-1},\qquad
+Q_n=(z-b_n)Q_{n-1}-a_{n-1}^2Q_{n-2}.
+\]</div>
+<p>初值为 <span class="arithmatex">\(P_0=1,P_1=z-b_0,Q_{-1}=0,Q_0=1\)</span>。有限连分数的分母、分子逐层通分后也满足这两个递推，因此其第 <span class="arithmatex">\(n\)</span> 个收敛子等于 <span class="arithmatex">\(Q_n/P_{n+1}=q_n/p_{n+1}\)</span>。</p>
+</details>
+<h3 id="topic-4-5-1">在稠密代数上保留正性</h3>
+<p>正性比单纯有界性多提供了序结构。含常数且一致稠密的函数代数上，正泛函的范数由常数值控制，因此可唯一延拓到连续函数，再得到代表测度。</p>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.11</span><span class="book-name">正泛函自动有界</span></p>
+<p>若 <span class="arithmatex">\(A\)</span> 是 <span class="arithmatex">\(\ell^\infty(X,\mathbb F)\)</span> 的含幺星子代数，<span class="arithmatex">\(\Lambda\)</span> 对点态非负函数为正，则 <span class="arithmatex">\(\|\Lambda\|\leq\Lambda(1)\)</span>；包含单位元且 <span class="arithmatex">\(\|1\|=1\)</span> 时实际取等号。</p>
+</div>
+<details class="proof">
+<summary>证明 4.5.1</summary>
+<p>实值 <span class="arithmatex">\(f\)</span> 满足 <span class="arithmatex">\(-\|f\|_\infty1\leq f\leq\|f\|_\infty1\)</span>，正性给出 <span class="arithmatex">\(|\Lambda(f)|\leq\Lambda(1)\|f\|_\infty\)</span>。复值时选择单位相位 <span class="arithmatex">\(z\)</span> 使 <span class="arithmatex">\(z\Lambda(f)=|\Lambda(f)|\)</span>，将实值结论应用于 <span class="arithmatex">\(\operatorname{Re}(zf)\)</span>；正泛函对实值元素取实值，故 <span class="arithmatex">\(\Lambda(\operatorname{Re}(zf))=|\Lambda(f)|\)</span>。于是仍有同一界。最后取 <span class="arithmatex">\(f=1\)</span> 给出反向范数界，得到等号。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.12</span><span class="book-name">正泛函的连续延拓</span></p>
+<p>令 <span class="arithmatex">\(\overline A\)</span> 为上述代数的一致闭包，并假设其中每个非负 <span class="arithmatex">\(f\)</span> 可写成 <span class="arithmatex">\(g^*g\)</span>，<span class="arithmatex">\(g\in\overline A\)</span>。限制映射给出 <span class="arithmatex">\(\overline A\)</span> 与 <span class="arithmatex">\(A\)</span> 上正线性泛函锥之间的一一对应，保持非负标量线性组合和范数。延拓由一致范数连续性唯一确定。</p>
+</div>
+<details class="proof">
+<summary>证明 4.5.2</summary>
+<p>命题 4.5.1 使 <span class="arithmatex">\(A\)</span> 上正泛函有界，所以稠密延拓定理给出唯一保范数延拓 <span class="arithmatex">\(\overline\Lambda\)</span>。要检查其正性，不能只把一个非负元素任意一致逼近。对 <span class="arithmatex">\(f\in\overline A\)</span>、<span class="arithmatex">\(f\geq0\)</span>，按假设写 <span class="arithmatex">\(f=g^*g\)</span>，取 <span class="arithmatex">\(g_n\in A\)</span> 一致趋于 <span class="arithmatex">\(g\)</span>。则 <span class="arithmatex">\(g_n^*g_n\to f\)</span> 一致，且每个 <span class="arithmatex">\(\Lambda(g_n^*g_n)\geq0\)</span>，故 <span class="arithmatex">\(\overline\Lambda(f)\geq0\)</span>。</p>
+<p>限制与延拓互逆，唯一性也使非负线性组合与延拓交换，范数由延拓定理保留。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.13</span><span class="book-name">紧区间的正泛函表示</span></p>
+<p>紧区间 <span class="arithmatex">\(I\)</span> 上的正线性泛函恰为 <span class="arithmatex">\(f\mapsto\int_I f\,d\rho\)</span>，其中 <span class="arithmatex">\(\rho:I\to[0,\infty)\)</span> 有界单调。可选右连续代表；其代表测度唯一。</p>
+</div>
+<details class="proof">
+<summary>证明 4.5.3</summary>
+<p>经仿射变换只需考虑 <span class="arithmatex">\(I=[0,1]\)</span>。令 <span class="arithmatex">\(c_n=\Lambda(x^n)\)</span>；正性使 <span class="arithmatex">\(\Lambda(|p|^2)\)</span>、<span class="arithmatex">\(\Lambda(x|p|^2)\)</span>、<span class="arithmatex">\(\Lambda((1-x)|p|^2)\)</span> 都非负。因此 Hausdorff 矩问题的三个矩阵条件成立，定理 4.2.9 产生正测度 <span class="arithmatex">\(\mu\)</span>，使多项式上的积分等于 <span class="arithmatex">\(\Lambda\)</span>。</p>
+<p>正泛函自动有界，多项式在 <span class="arithmatex">\(C([0,1])\)</span> 中一致稠密，所以等式唯一延拓到全部连续函数。测度的累积函数给出 Stieltjes 写法，右连续代表保留全部积分。反向的积分泛函显然正，唯一性来自连续测试函数确定有限正则测度。</p>
+</details>
+<details class="proof">
+<summary>三项递推、Padé 商与连分数</summary>
+<p><span class="arithmatex">\(xp_n\)</span> 与 <span class="arithmatex">\(p_0,\ldots,p_{n-2}\)</span> 正交，因为 <span class="arithmatex">\(\langle p_j,xp_n\rangle=\langle xp_j,p_n\rangle=0\)</span>。因此只能含 <span class="arithmatex">\(p_{n-1},p_n,p_{n+1}\)</span> 三项；最高次系数为正保证 <span class="arithmatex">\(a_n&gt;0\)</span>。这同时给出 Jacobi 对应和最高次系数公式。</p>
+<p>有限三对角矩阵的特征行列式按末行展开，满足相同的三项递推；其首一性确定它就是首一正交多项式。Cramer 法则将预解式的 <span class="arithmatex">\((0,0)\)</span> 元写成删去首行首列的行列式与整个行列式之比，经最高次系数归一化即得 <span class="arithmatex">\(q_n/p_{n+1}\)</span>。也可对首行首列作 Schur 补：<span class="arithmatex">\((z-b_0-a_0^2F^+_{n-1}(z))^{-1}\)</span>，逐层重复得到连分数。</p>
+<p>对正泛函，<span class="arithmatex">\(-\|f\|1\leq f\leq\|f\|1\)</span> 先给出实函数估计；复函数转动相位后对实部应用估计。连续延拓对 <span class="arithmatex">\(g^*g\)</span> 保持非负，再由平方根条件得到全部非负元素上的正性。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.1</span><span class="book-name">最初两个矩的限制</span></p>
+<p>设 <span class="arithmatex">\(c_0=1\)</span>。证明 <span class="arithmatex">\(c_2\ge c_1^2\)</span>，并说明等号成立时测度是什么。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(\begin{pmatrix}1&amp;c_1\\c_1&amp;c_2\end{pmatrix}\ge0\)</span> 给出不等式。等号时 <span class="arithmatex">\(\int(x-c_1)^2\,\mathrm{d}\mu=0\)</span>，所以测度只能支撑在 <span class="arithmatex">\(c_1\)</span>，即 <span class="arithmatex">\(\mu=\delta_{c_1}\)</span>。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.2</span><span class="book-name">一个两点谱的连分式</span></p>
+<p>对 <span class="arithmatex">\(\mu=\tfrac12\delta_{-1}+\tfrac12\delta_1\)</span>，计算 <span class="arithmatex">\(F(z)\)</span>，并找出对应的有限 Jacobi 矩阵。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(p_0=1\)</span>、<span class="arithmatex">\(p_1=x\)</span>，乘以 <span class="arithmatex">\(x\)</span> 在此二维空间的矩阵为 <span class="arithmatex">\(\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\)</span>。于是</p>
+<div class="arithmatex">\[
+F(z)=\frac12\left(\frac1{z+1}+\frac1{z-1}\right)
+=\frac z{z^2-1}=\frac1{z-1/z}.
+\]</div>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 10.3</span><span class="book-name">弱收敛不能控制无界矩</span></p>
+<p>令 <span class="arithmatex">\(\mu_n=(1-1/n)\delta_0+(1/n)\delta_n\)</span>。求其弱极限及一阶矩。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对有界连续 <span class="arithmatex">\(f\)</span>，<span class="arithmatex">\(\int f\,\mathrm{d}\mu_n\to f(0)\)</span>，故极限为 <span class="arithmatex">\(\delta_0\)</span>。但一阶矩始终为 <span class="arithmatex">\(1\)</span>，极限的一阶矩为零。尾部质量虽小，位置却远，因而无界测试函数仍能感受到它。</p>
+</details>
+<p>第五章会将每个向量对应的标量测度，组织为统一的投影值测度。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-03/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第三章：内积空间与 Hilbert 空间</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-05/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第五章：有界自伴与正规算子的谱理论</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 5 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=moment-problem">#moment-problem</a><a class="zdd-end-chip" href="../../../../tags/?tag=spectral-theory">#spectral-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

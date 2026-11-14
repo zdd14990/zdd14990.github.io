@@ -1,0 +1,955 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="用镜像延拓处理横向周期、两壁零 Dirichlet 的 Poisson 问题，说明周期势与 Chebyshev 体源 FMM 的连接，并验证目标裁剪的正确性与性能。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/numerical-pde/moi-poisson/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>MOI Poisson - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/moi-poisson/">
+  <meta property="og:title" content="MOI Poisson - zdd14990">
+  <meta property="og:description" content="用镜像延拓处理横向周期、两壁零 Dirichlet 的 Poisson 问题，说明周期势与 Chebyshev 体源 FMM 的连接，并验证目标裁剪的正确性与性能。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-11-05">
+
+
+
+
+  <meta property="article:tag" content="poisson-equation">
+
+  <meta property="article:tag" content="method-of-images">
+
+  <meta property="article:tag" content="fmm">
+
+  <meta property="article:tag" content="adaptive-mesh">
+
+  <meta property="article:tag" content="numerical-methods">
+
+  <meta property="article:tag" content="pde">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/numerical-pde/moi-poisson/">
+  <meta name="twitter:title" content="MOI Poisson - zdd14990">
+  <meta name="twitter:description" content="用镜像延拓处理横向周期、两壁零 Dirichlet 的 Poisson 问题，说明周期势与 Chebyshev 体源 FMM 的连接，并验证目标裁剪的正确性与性能。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MOI Poisson",
+    "description": "\u7528\u955c\u50cf\u5ef6\u62d3\u5904\u7406\u6a2a\u5411\u5468\u671f\u3001\u4e24\u58c1\u96f6 Dirichlet \u7684 Poisson \u95ee\u9898\uff0c\u8bf4\u660e\u5468\u671f\u52bf\u4e0e Chebyshev \u4f53\u6e90 FMM \u7684\u8fde\u63a5\uff0c\u5e76\u9a8c\u8bc1\u76ee\u6807\u88c1\u526a\u7684\u6b63\u786e\u6027\u4e0e\u6027\u80fd\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/numerical-pde/moi-poisson/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/numerical-pde/moi-poisson/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-11-05",
+    "keywords": ["poisson-equation", "method-of-images", "fmm", "adaptive-mesh", "numerical-methods", "pde"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#moi-poisson" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["\u8bba\u6587\u7b14\u8bb0", "paper-notes"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <span>应用数学</span>
+    <span>2026 · 11</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="moi-poisson">MOI Poisson</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-11-05">2026-11-05</time></span>
+    
+    <span>1,810 字 · 约 5 分钟</span>
+  </div>
+  
+</header>
+
+<p>求解横向周期、两壁零 Dirichlet 的 Poisson 问题：</p>
+<div class="arithmatex">\[
+\boxed{
+\Delta u=f\quad\text{于 }D=(0,1)\times(0,1),\qquad
+u(x+1,z)=u(x,z),\qquad
+u(x,0)=u(x,1)=0.
+}
+\]</div>
+<p>令 <span class="arithmatex">\(\Omega=[0,2)^2\)</span>。将 <span class="arithmatex">\(f\)</span> 延拓为</p>
+<div class="arithmatex">\[
+F(x,z)=
+\begin{cases}
+ f(x,z),&amp;(x,z)\in Q_0,\\
+ f(x-1,z),&amp;(x,z)\in Q_1,\\
+-f(x,2-z),&amp;(x,z)\in Q_2,\\
+-f(x-1,2-z),&amp;(x,z)\in Q_3,
+\end{cases}
+\]</div>
+<p>其中 <span class="arithmatex">\(Q_0,Q_1,Q_2,Q_3\)</span> 分别是左下、右下、左上、右上四个单位正方形。</p>
+<p>这个延拓满足</p>
+<div class="arithmatex">\[
+F(x+1,z)=F(x,z),\qquad F(x,2-z)=-F(x,z),
+\qquad \int_\Omega F=0.
+\]</div>
+<p>因此可以解零均值周期问题</p>
+<div class="arithmatex">\[
+\boxed{
+\Delta U=F\quad\text{于 }\Omega,\qquad
+U\text{ 在两个方向周期 }2,\qquad
+\int_\Omega U=0.
+}
+\]</div>
+<p>由反射对称性和零均值周期解的唯一性，</p>
+<div class="arithmatex">\[
+U(x,2-z)=-U(x,z).
+\]</div>
+<p>于是</p>
+<div class="arithmatex">\[
+U(x,1)=0,\qquad U(x,0)=-U(x,2)=-U(x,0)=0.
+\]</div>
+<p>同理，<span class="arithmatex">\(U(x+1,z)=U(x,z)\)</span>。所以</p>
+<div class="arithmatex">\[
+\boxed{u=U|_D.}
+\]</div>
+<p>定义边长 2 的周期 Green 函数：</p>
+<div class="arithmatex">\[
+\boxed{
+G_\Omega(x,z)=
+-\frac1{4\pi^2}
+\sum_{\substack{m,n\in\mathbb Z\\(m,n)\ne(0,0)}}
+\frac{e^{i\pi(mx+nz)}}{m^2+n^2}.
+}
+\]</div>
+<p>记 <span class="arithmatex">\(r=(x,z)\)</span>，<span class="arithmatex">\(\delta_{\rm per}\)</span> 为周期格点 <span class="arithmatex">\(2\mathbb Z^2\)</span> 上的 Dirac 点质量之和，则</p>
+<div class="arithmatex">\[
+\Delta G_\Omega(r)=\delta_{\rm per}(r)-\frac14,
+\qquad \int_\Omega G_\Omega=0.
+\]</div>
+<p>令 <span class="arithmatex">\(y\in\Omega\)</span> 为源点，周期解为</p>
+<div class="arithmatex">\[
+U(r)=\int_\Omega G_\Omega(r-y)F(y)\,dy.
+\]</div>
+<p>定义实际使用的源多项式和分片源为</p>
+<div class="arithmatex">\[
+F_C(y)=\sum_{j,k\ge0,\ j+k\le7}a_{jk}^C T_j(\xi_C(y))T_k(\eta_C(y)),
+\qquad
+F_h(y)=F_C(y)\quad(y\in C),
+\]</div>
+<p>我们希望计算的势就是</p>
+<div class="arithmatex">\[
+\boxed{
+U_h(r)=\int_\Omega G_\Omega(r-y)F_h(y)\,dy.
+}
+\]</div>
+<p><span class="arithmatex">\(U_h\)</span> 满足 <span class="arithmatex">\(\Delta U_h=F_h\)</span>，<span class="arithmatex">\(\int_\Omega U_h=0\)</span>。</p>
+<p>自由空间核为</p>
+<div class="arithmatex">\[
+G_0(r)=\frac{\log|r|}{2\pi},\qquad \Delta G_0=\delta_0,
+\]</div>
+<p>原先我们有的 FMM 算法是用 <span class="arithmatex">\(G_0\)</span> 这个自由空间核计算近场的 FMM，对于远场我们希望使用 <span class="arithmatex">\(G_\Omega\)</span> 这个周期核。于是我们考虑完整的周期势减去已经计算的近场部分，定义：</p>
+<div class="arithmatex">\[
+\boxed{
+V_{\rm far}^B(w)=\int_\Omega G_\Omega(w-y)F_h(y)\,dy
+-\sum_{C\in\mathcal N(B)}\int_CG_0(w-y)F_C(y)\,dy
+}
+\]</div>
+<p>即</p>
+<div class="arithmatex">\[
+\boxed{
+U_h(w)=V_{\rm far}^B(w)
++\sum_{C\in\mathcal N(B)}\int_CG_0(w-y)F_C(y)\,dy
+}
+\]</div>
+<p>记 <span class="arithmatex">\(F_h^{\rm per}\)</span> 为 <span class="arithmatex">\(F_h\)</span> 的周期延拓，<span class="arithmatex">\(\mathbf1_C\)</span> 为盒 <span class="arithmatex">\(C\)</span> 的示性函数。完整周期势 <span class="arithmatex">\(U_h\)</span> 满足：</p>
+<div class="arithmatex">\[
+\Delta U_h(w)
+=
+F_h^{\mathrm{per}}(w)
+-\frac1{|\Omega|}\int_\Omega F_h(y)\,dy.
+\]</div>
+<p>另一方面，近场势满足</p>
+<div class="arithmatex">\[
+\Delta_w
+\left[
+\sum_{C\in\mathcal N(B)}
+\int_CG_0(w-y)F_C(y)\,dy
+\right]
+=
+\sum_{C\in\mathcal N(B)}
+\mathbf1_C(w)F_C(w).
+\]</div>
+<p>两式相减：</p>
+<div class="arithmatex">\[
+\Delta V_{\mathrm{far}}^B(w)
+=
+F_h^{\mathrm{per}}(w)
+-\frac1{|\Omega|}\int_\Omega F_h\,dy
+-\sum_{C\in\mathcal N(B)}\mathbf1_C(w)F_C(w).
+\]</div>
+<p>在目标盒附近，</p>
+<div class="arithmatex">\[
+F_h^{\mathrm{per}}(w)
+=
+\sum_{C\in\mathcal N(B)}\mathbf1_C(w)F_C(w).
+\]</div>
+<p>以及</p>
+<div class="arithmatex">\[
+\int_\Omega F_h\,dy=0.
+\]</div>
+<p>于是</p>
+<div class="arithmatex">\[
+\boxed{\Delta V_{\mathrm{far}}^B=0
+\quad\text{在目标盒附近}.}
+\]</div>
+<p>在二维，将目标点写成复数 <span class="arithmatex">\(w=x+iz\)</span>，盒中心记为 <span class="arithmatex">\(c_B\)</span>，调和函数在中心附近可以表示为解析函数的实部：</p>
+<div class="arithmatex">\[
+V_{\rm far}^B(w)=\operatorname{Re}\sum_{n=0}^{\infty}L_n^B(w-c_B)^n.
+\]</div>
+<p>截断到阶数 <span class="arithmatex">\(p\)</span>，就得到</p>
+<div class="arithmatex">\[
+\boxed{
+U_h(w)\approx
+\operatorname{Re}\sum_{n=0}^{p}L_n^B(w-c_B)^n
++
+\sum_{C\in\mathcal N(B)}
+\int_CG_0(w-y)F_C(y)\,dy.
+}
+\]</div>
+<p>系数 <span class="arithmatex">\(L_n^B\)</span> 的计算正是原周期 FMM 已经具备的功能。具体而言，令物理目标叶盒集合为 <span class="arithmatex">\(\mathcal L_D\)</span>，这些叶盒及其祖先组成 <span class="arithmatex">\(\mathcal T_D\)</span>。原 FMM 对 <span class="arithmatex">\(\mathcal T_\Omega\)</span> 中的全部目标盒形成局部展开，再对 <span class="arithmatex">\(\mathcal L_\Omega\)</span> 中的全部目标叶盒计算近场积分和节点值。</p>
+<p>由于我们只需要物理域 <span class="arithmatex">\(D\)</span> 内的目标，将这两个目标计算范围改为</p>
+<div class="arithmatex">\[
+\boxed{
+\mathcal T_\Omega\longrightarrow\mathcal T_D,
+\qquad
+\mathcal L_\Omega\longrightarrow\mathcal L_D.
+}
+\]</div>
+<p>源端仍保留整个 <span class="arithmatex">\(2\times2\)</span> 扩展域：全部镜像源的展开、上行和周期作用不变。对保留的目标盒，其远场列表 <span class="arithmatex">\(\mathcal I(B)\)</span> 和近场列表 <span class="arithmatex">\(\mathcal N(B)\)</span> 仍来自完整扩展源树，包括相应的周期位移源盒。</p>
+<p>根盒的局部展开由全部源上行后的周期转换初始化。对非根盒 <span class="arithmatex">\(B\in\mathcal T_D\)</span>，仍使用原递推式（<span class="arithmatex">\(0\le n\le p\)</span>）：</p>
+<div class="arithmatex">\[
+L_n^B
+=
+L_n^{B\leftarrow\operatorname{parent}(B)}
++
+\sum_{C\in\mathcal I(B)}L_n^{B\leftarrow C}.
+\]</div>
+<p>其中第一项是父盒局部展开平移到盒中心 <span class="arithmatex">\(c_B\)</span> 后的系数，第二项是原交互划分中分配给 <span class="arithmatex">\(B\)</span> 的远场贡献。</p>
+<p>对物理目标叶盒 <span class="arithmatex">\(B\in\mathcal L_D\)</span>，在其 Chebyshev 节点集合 <span class="arithmatex">\(X_B\)</span> 上计算近似解：</p>
+<div class="arithmatex">\[
+\boxed{
+u_h(w)=
+\operatorname{Re}\sum_{n=0}^{p}L_n^B(w-c_B)^n
++
+\sum_{C\in\mathcal N(B)}
+\int_CG_0(w-y)F_C(y)\,dA_y,
+\qquad w\in X_B.
+}
+\]</div>
+<p>因此，裁剪省去外部目标不再需要的局部展开接收与下行、近场积分和节点求值。物理目标及其祖先的计算依赖全部保留，外部目标输出不参与源上行，所以保留目标的源贡献、交互划分和求值公式不变。</p>
+<p>省去的计算：</p>
+<ul>
+<li>对 <span class="arithmatex">\(B\in\mathcal T_\Omega\setminus\mathcal T_D\)</span>，跳过其不再需要的远场接收和下行计算；</li>
+<li>对 <span class="arithmatex">\(B\in\mathcal L_\Omega\setminus\mathcal L_D\)</span>，不再计算
+  [
+  \left{
+  \operatorname{Re}\sum_{n=0}^{p}L_n^B(w-c_B)^n
+  \right}<em C_in_mathcal="C\in\mathcal" N_B_="N(B)">{w\in X_B},
+  \qquad
+  \left{
+  \sum</em>
+  \int_CG_0(w-y)F_C(y)\,dA_y
+  \right}_{w\in X_B}.
+  ]</li>
+</ul>
+<hr />
+<p>数值实验。</p>
+<p>以下均使用每叶 <span class="arithmatex">\(8\times8\)</span> 个第一类 Chebyshev 根节点和 <code>iprec=4</code>。令 <span class="arithmatex">\(X_D=\bigcup_{B\in\mathcal L_D}X_B\)</span>，<span class="arithmatex">\(u\)</span> 为解析解，<span class="arithmatex">\(u_h^{(m)}\)</span> 为模式 <span class="arithmatex">\(m\)</span> 的节点解，定义</p>
+<div class="arithmatex">\[
+E_m=\frac{\max_{w\in X_D}|u_h^{(m)}(w)-u(w)|}
+{\max_{w\in X_D}|u(w)|},\qquad
+E_{\rm diff}=\frac{\max_{w\in X_D}|u_h^{(\rm clip)}(w)-u_h^{(\rm old)}(w)|}
+{\max_{w\in X_D}|u(w)|}.
+\]</div>
+<p>其中 <code>old</code>、<code>clip</code> 分别表示原 MOI、裁剪 MOI。性能比较选择三个源：</p>
+<div class="arithmatex">\[
+f_1=\sin(2\pi x)\sin(2\pi z),\qquad
+f_2=\sin(6\pi x)\sin(4\pi z),\qquad
+f_3=f_1+0.3f_2.
+\]</div>
+<p>其解析解为</p>
+<div class="arithmatex">\[
+\Delta^{-1}f_1=-\frac{f_1}{8\pi^2},\qquad
+\Delta^{-1}f_2=-\frac{f_2}{52\pi^2},\qquad
+\Delta^{-1}f_3=-\frac{f_1}{8\pi^2}-\frac{0.3f_2}{52\pi^2}.
+\]</div>
+<p>这三个解析解既满足两壁零值，又在 <span class="arithmatex">\(x,z\)</span> 方向周期 1 且均值为零。</p>
+<p>本批取 64、256、1024 个物理叶的三棵均匀固定树，每树三个源，共 9 个配置。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">物理叶数</th>
+<th style="text-align: right;">原 MOI / ms</th>
+<th style="text-align: right;">裁剪 MOI / ms</th>
+<th style="text-align: right;">DP / ms</th>
+<th style="text-align: right;">相对原 MOI 的配对节省</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">10.97</td>
+<td style="text-align: right;">4.79</td>
+<td style="text-align: right;">3.20</td>
+<td style="text-align: right;">56.4%</td>
+</tr>
+<tr>
+<td style="text-align: right;">256</td>
+<td style="text-align: right;">42.04</td>
+<td style="text-align: right;">17.26</td>
+<td style="text-align: right;">11.19</td>
+<td style="text-align: right;">58.9%</td>
+</tr>
+<tr>
+<td style="text-align: right;">1024</td>
+<td style="text-align: right;">148.98</td>
+<td style="text-align: right;">60.30</td>
+<td style="text-align: right;">36.51</td>
+<td style="text-align: right;">59.3%</td>
+</tr>
+</tbody>
+</table>
+<p>三种模式的节点误差在相同源、相同树上基本相同。汇总先对每模式的 18 个计时块取 <span class="arithmatex">\(E_m\)</span> 最大值；下表除 1024 叶 <span class="arithmatex">\(f_1\)</span> 一格保留三模式范围外，其余各格列三模式最大值：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">物理叶数</th>
+<th style="text-align: right;"><span class="arithmatex">\(f_1\)</span></th>
+<th style="text-align: right;"><span class="arithmatex">\(f_2\)</span></th>
+<th style="text-align: right;"><span class="arithmatex">\(f_3\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;"><span class="arithmatex">\(2.20\times10^{-10}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(9.03\times10^{-7}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(4.16\times10^{-8}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">256</td>
+<td style="text-align: right;"><span class="arithmatex">\(7.46\times10^{-13}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(1.55\times10^{-9}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(7.18\times10^{-11}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">1024</td>
+<td style="text-align: right;"><span class="arithmatex">\((0.8\text{–}2.3)\times10^{-14}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(4.68\times10^{-12}\)</span></td>
+<td style="text-align: right;"><span class="arithmatex">\(2.20\times10^{-13}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p class="book-figure"><img alt="MOI/DP 耗时比" src="../../../../assets/moi-poisson/figures/kclip_sweep_ratios.svg" /><span class="book-caption"><b>Fig. 1</b>MOI/DP 耗时比</span></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#paper-notes">论文笔记</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=poisson-equation">#poisson-equation</a><a class="zdd-end-chip" href="../../../../tags/?tag=method-of-images">#method-of-images</a><a class="zdd-end-chip" href="../../../../tags/?tag=fmm">#fmm</a><a class="zdd-end-chip" href="../../../../tags/?tag=adaptive-mesh">#adaptive-mesh</a><a class="zdd-end-chip" href="../../../../tags/?tag=numerical-methods">#numerical-methods</a><a class="zdd-end-chip" href="../../../../tags/?tag=pde">#pde</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

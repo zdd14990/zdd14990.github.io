@@ -1,0 +1,1441 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="数据科学专题大作业：在 SOS 证明系统中证明正向与反向超压缩不等式，并据此给出 Frankl-Rödl 图独立集上界的低阶 SOS 证明。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/applied-math/data-science/final-project/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>大作业 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/applied-math/data-science/final-project/">
+  <meta property="og:title" content="大作业 - zdd14990">
+  <meta property="og:description" content="数据科学专题大作业：在 SOS 证明系统中证明正向与反向超压缩不等式，并据此给出 Frankl-Rödl 图独立集上界的低阶 SOS 证明。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2025-12-30">
+
+<meta property="article:modified_time" content="2026-10-15">
+
+
+  <meta property="article:tag" content="machine-learning">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/applied-math/data-science/final-project/">
+  <meta name="twitter:title" content="大作业 - zdd14990">
+  <meta name="twitter:description" content="数据科学专题大作业：在 SOS 证明系统中证明正向与反向超压缩不等式，并据此给出 Frankl-Rödl 图独立集上界的低阶 SOS 证明。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u5927\u4f5c\u4e1a",
+    "description": "\u6570\u636e\u79d1\u5b66\u4e13\u9898\u5927\u4f5c\u4e1a\uff1a\u5728 SOS \u8bc1\u660e\u7cfb\u7edf\u4e2d\u8bc1\u660e\u6b63\u5411\u4e0e\u53cd\u5411\u8d85\u538b\u7f29\u4e0d\u7b49\u5f0f\uff0c\u5e76\u636e\u6b64\u7ed9\u51fa Frankl-R\u00f6dl \u56fe\u72ec\u7acb\u96c6\u4e0a\u754c\u7684\u4f4e\u9636 SOS \u8bc1\u660e\u3002",
+    "url": "https://zdd14990.github.io/blog/applied-math/data-science/final-project/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/applied-math/data-science/final-project/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2025-12-30",
+    "dateModified": "2026-10-15",
+    "keywords": ["machine-learning"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5e94\u7528\u6570\u5b66", "applied-math"], ["\u6570\u636e\u79d1\u5b66\u4e13\u9898", "data-science"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 引言
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 引言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 基本定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 超压缩不等式与反向超压缩不等式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 应用：Frankl-Rödl 图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 预备知识：SOS 证明系统
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. SOS 中的正向超压缩不等式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. SOS 中的正向超压缩不等式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 放宽的矩条件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 基础情况：\(n=1\) 的证明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 SOS 证明的构造
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SOS 中的反向超压缩不等式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. SOS 中的反向超压缩不等式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 主要定理与归纳框架
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 关键技术：计算机代数辅助证明
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. SOS 中的 Frankl-Rödl 定理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. SOS 中的 Frankl-Rödl 定理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Frankl-Rödl 定理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 定理 5.1 的证明
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 结论
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PDF 原文
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PDF 原文">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pdf-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        报告 PDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pdf-slides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        幻灯片 PDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <span>应用数学</span>
+    <span>2025 · 12</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="top">大作业</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2025-12-30">2025-12-30</time></span>
+    <span>更新于 <time datetime="2026-10-15">2026-10-15</time></span>
+    <span>2,388 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<div class="admonition abstract">
+<p class="admonition-title">摘要</p>
+<p>本文的主要结果是在 Sum-of-Squares (SOS) 证明系统中，给出了<strong>反向超压缩不等式（Reverse Hypercontractive Inequality）</strong>的形式化表述及其证明。</p>
+<p>作为该结果的一个推论，我们证明了对于任意常数 <span class="arithmatex">\(0 &lt; \gamma \le 1/4\)</span>，SOS/Lasserre 半定规划（SDP）层级在度数为 <span class="arithmatex">\(4\lceil\frac{1}{4\gamma}\rceil\)</span> 时，能够证明如下命题：</p>
+<p>Frankl-Rödl 图 <span class="arithmatex">\(FR_{\gamma}^{n}\)</span> 的最大独立集的相对大小为 <span class="arithmatex">\(o(1)\)</span>。</p>
+<p>这里 <span class="arithmatex">\(FR_{\gamma}^{n}=(V,E)\)</span> 是一个顶点集为 <span class="arithmatex">\(V=\{0,1\}^{n}\)</span> 的图，当且仅当 <span class="arithmatex">\(\Delta(x,y)=(1-\gamma)n\)</span> 且为偶数时，<span class="arithmatex">\((x,y) \in E\)</span>。</p>
+<p>特别地，我们将展示 4 阶的 SOS 算法能够证明色数下界 <span class="arithmatex">\(\chi(FR_{1/4}^{n})=\omega(1)\)</span>。这表明 SOS 层级在处理特定的积分与组合问题时，比标准的 SDP 松弛具有更强的证明能力。</p>
+</div>
+<h2 id="s1"><span class="book-secnum">§ 01</span>引言</h2>
+<p>超压缩不等式（Hypercontractivity）是布尔函数分析中的核心工具，广泛应用于理论计算机科学、社会选择理论及概率论中。近年来，随着证明复杂性（Proof Complexity）和平方和（Sum-of-Squares, SOS）算法的发展，研究这些分析不等式是否能在受限的证明系统（如 SOS）中被证明变得尤为重要。</p>
+<h3 id="s1-1">1.1 基本定义</h3>
+<p>首先，我们引入布尔函数分析中的一些基本算子和范数定义。</p>
+<div class="admonition note">
+<p class="admonition-title">注（噪声算子 <span class="arithmatex">\(T_{\rho}\)</span>）</p>
+<p>设 <span class="arithmatex">\(f:\{-1,1\}^{n} \rightarrow \mathbb{R}\)</span> 为布尔立方体上的实值函数，相关系数 <span class="arithmatex">\(-1 \le \rho \le 1\)</span>。定义噪声算子 <span class="arithmatex">\(T_{\rho}\)</span> 为：</p>
+<div class="arithmatex">\[
+T_{\rho}f(x) = \mathbb{E}[f(y) \mid x]
+\]</div>
+<p>其中 <span class="arithmatex">\(y\)</span> 是 <span class="arithmatex">\(x\)</span> 的一个 <span class="arithmatex">\(\rho\)</span>-相关副本。具体来说，对于 <span class="arithmatex">\(y\)</span> 的每一个分量 <span class="arithmatex">\(y_i\)</span>，以概率 <span class="arithmatex">\(\frac{1+\rho}{2}\)</span> 取 <span class="arithmatex">\(y_i = x_i\)</span>，以概率 <span class="arithmatex">\(\frac{1-\rho}{2}\)</span> 取 <span class="arithmatex">\(y_i = -x_i\)</span>。</p>
+<p>等价地，在傅里叶展开下，设 <span class="arithmatex">\(f(x) = \sum_{S\subseteq[n]} \hat{f}(S)\chi_{S}(x)\)</span>，则：</p>
+<div class="arithmatex">\[
+T_{\rho}f = \sum_{S\subseteq[n]}\rho^{|S|}\hat{f}(S)\chi_{S}
+\]</div>
+<p>这表明 <span class="arithmatex">\(T_{\rho}\)</span> 算子对高频傅里叶系数有指数级的衰减作用。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注（<span class="arithmatex">\(p\)</span>-范数）</p>
+<p>对于 <span class="arithmatex">\(p \in \mathbb{R}\)</span>（注意这里 <span class="arithmatex">\(p\)</span> 不一定大于等于 1），定义：</p>
+<div class="arithmatex">\[
+||f||_{p} = \mathbb{E}_{x\sim\{-1,1\}^{n}}[|f(x)|^{p}]^{1/p}
+\]</div>
+<p>其中期望是针对均匀分布取的。</p>
+</div>
+<h3 id="s1-2">1.2 超压缩不等式与反向超压缩不等式</h3>
+<p>经典的超压缩不等式描述了噪声算子如何将函数的范数“压缩”到更高阶的范数，而反向超压缩不等式则处理 <span class="arithmatex">\(p &lt; 1\)</span> 的情况，通常涉及非负函数。</p>
+<div class="admonition note">
+<p class="admonition-title">注（超压缩不等式）</p>
+<p>设 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>，且 <span class="arithmatex">\(1\le p\le q\le\infty\)</span>。若 <span class="arithmatex">\(0\le\rho\le\sqrt{\frac{p-1}{q-1}}\)</span>，那么：</p>
+<div class="arithmatex">\[
+||T_{\rho}f||_{q} \le ||f||_{p}
+\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注（反向超压缩不等式）</p>
+<p>设 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}^{\ge0}\)</span> 为非负函数，且 <span class="arithmatex">\(-\infty\le q\le p\le1\)</span>。若 <span class="arithmatex">\(0\le\rho\le\sqrt{\frac{1-p}{1-q}}\)</span>，那么：</p>
+<div class="arithmatex">\[
+||T_{\rho}f||_{q} \ge ||f||_{p}
+\]</div>
+</div>
+<p>在 SOS 系统的背景下，Barak 等人之前的工作已经建立了 (2, 4)-超压缩不等式的 SOS 证明。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.1</span></p>
+<p>设 <span class="arithmatex">\(k\in\mathbb{N}\)</span>，令 <span class="arithmatex">\(\mathcal{P}^{\le k}\)</span> 为投影算子，将 <span class="arithmatex">\(f\)</span> 映射到其度数不超过 <span class="arithmatex">\(k\)</span> 的部分。那么：</p>
+<div class="arithmatex">\[
+||\mathcal{P}^{\le k}f||_{4} \le 3^{k/2}||f||_{2}
+\]</div>
+<p>Barak 等人证明了，如果将 <span class="arithmatex">\(f(x)\)</span> 视为形式变量，那么多项式 <span class="arithmatex">\(9^{k}||f||_{2}^{4}-||\mathcal{P}^{\le k}f||_{4}^{4}\)</span> 可以写成多项式的平方和（SOS）。</p>
+</div>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.2</span></p>
+<p>对于任意 <span class="arithmatex">\(q \ge 2\)</span> 和 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>，我们有</p>
+<div class="arithmatex">\[
+||\mathcal{P}^{\le k}f||_{q}\le(q-1)^{k/2}||f||_{2}
+\]</div>
+</div>
+<p>Ryan ODonnell 和 Yuan Zhou 未能通过 SOS 证明实际获得定理 1.2，而是获得了一个较弱的版本。</p>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.3</span></p>
+<p>设 <span class="arithmatex">\(f, g:\{-1,1\}^{n}\rightarrow\mathbb{R}^{\ge0}\)</span>，设 <span class="arithmatex">\(0\le q\le1\)</span>，且 <span class="arithmatex">\(0\le\rho\le1-q\)</span>。那么当 <span class="arithmatex">\((x,y)\)</span> 是一对 <span class="arithmatex">\(\rho\)</span>-相关随机字符串时，</p>
+<div class="arithmatex">\[
+\mathbb{E}[f(x)g(y)]\ge ||f||_q ||g||_q
+\]</div>
+</div>
+<p>我们在这里将介绍的就是定理 1.3 的 SOS 证明，其中 <span class="arithmatex">\(q\)</span> 等于偶整数的倒数。作为该结果的一个应用，我们证明了仅仅使用 SOS 层级中的 4 阶算法，就能证明用于 3-染色问题的“Frankl-Rödl”SDP 整数间隙实例具有色数 <span class="arithmatex">\(\omega(1)\)</span>。</p>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.4</span></p>
+<p>设 <span class="arithmatex">\(s\in N^{+}\)</span> 并记 <span class="arithmatex">\(q=2s\)</span>。设 <span class="arithmatex">\(0\le\rho\le\frac{1}{\sqrt{q-1}}\)</span>。设 <span class="arithmatex">\(x=(x_{1},...,x_{n})\)</span> 是一系列独立的实随机变量，每个 <span class="arithmatex">\(x_{i}\)</span> 满足：</p>
+<div class="arithmatex">\[
+\mathbb{E}[x_{i}^{2j-1}]=0 , \mathbb{E}[x_{i}^{2j}]\le(2s-1)^{j}\frac{\binom{s}{j}}{\binom{2s}{2j}},1\le j\le s
+\]</div>
+<p>进一步假设每个 <span class="arithmatex">\(i\)</span> 都有 <span class="arithmatex">\(\mathbb{E}[x_{i}^{2}]=1\)</span>。那么对于函数 <span class="arithmatex">\(f_{1},...,f_{s}:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>，存在如下不等式的 SOS 证明：</p>
+<div class="arithmatex">\[
+\mathbb{E}[\prod_{i=1}^{s}(T_{\rho}f_{i}(x))^{2}]\le\prod_{i=1}^{s}\mathbb{E}[f_{i}(x)^{2}]
+\]</div>
+</div>
+<p>然而，对于更一般的 <span class="arithmatex">\(q\)</span>（定理 1.2），之前的研究未能给出完整的 SOS 证明。本文将重点关注反向超压缩不等式的 SOS 版本（定理 1.3 的变体），特别是当 <span class="arithmatex">\(q\)</span> 为偶整数的倒数时。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.5</span></p>
+<p>设 <span class="arithmatex">\(k\in N^{+}\)</span> 且 <span class="arithmatex">\(0\le\rho\le1-\frac{1}{2k}\)</span>。对于函数 <span class="arithmatex">\(f,g:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>，存在如下不等式的 SOS 证明：</p>
+<div class="arithmatex">\[
+\mathbb{E}_{(x,y)}[f(x)^{2k}g(y)^{2k}] \ge \mathbb{E}[f]^{2k}\mathbb{E}[g]^{2k}
+\]</div>
+<p>注意，这里我们将反向超压缩不等式转化为了关于 <span class="arithmatex">\(2k\)</span> 次幂的多项式形式，避免了在 SOS 系统中处理非整数次幂（如 <span class="arithmatex">\(p\)</span>-范数当 <span class="arithmatex">\(p&lt;1\)</span> 时）的困难。</p>
+</div>
+<h3 id="s1-3">1.3 应用：Frankl-Rödl 图</h3>
+<p>我们的主要应用是针对 Frankl-Rödl 图的独立集问题。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.6</span></p>
+<p>设 <span class="arithmatex">\(n \in \mathbb{N}\)</span> 且 <span class="arithmatex">\(0 \le \gamma \le 1\)</span> 使得 <span class="arithmatex">\((1-\gamma)n\)</span> 为偶整数。Frankl-Rödl 图 <span class="arithmatex">\(FR_{\gamma}^{n}\)</span> 是 <span class="arithmatex">\(N=2^n\)</span> 个顶点 <span class="arithmatex">\(\{-1,1\}^n\)</span> 上的无向图，边集为</p>
+<div class="arithmatex">\[
+\{(x,y) : \Delta(x,y) = (1-\gamma)n\}
+\]</div>
+<p>其中 <span class="arithmatex">\(\Delta(\cdot,\cdot)\)</span> 表示汉明距离。</p>
+</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.7</span><span class="book-name">Frankl-Rödl 图 <span class="arithmatex">\(FR_{\gamma}^{n}\)</span></span></p>
+<p>设 <span class="arithmatex">\((1-\gamma)n\)</span> 为偶整数。图 <span class="arithmatex">\(FR_{\gamma}^{n}\)</span> 的顶点集为 <span class="arithmatex">\(\{-1,1\}^n\)</span>，边集为 <span class="arithmatex">\(\{(x,y) : \Delta(x,y) = (1-\gamma)n\}\)</span>，其中 <span class="arithmatex">\(\Delta\)</span> 为 Hamming 距离。</p>
+</div>
+<p>已知该图是 SDP 松弛的经典反例（Integrality Gap）。然而，我们将证明 SOS 层级可以有效地约束其最大独立集的大小。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.8</span></p>
+<p>存在常数 <span class="arithmatex">\(K\)</span> 使得对于所有 <span class="arithmatex">\(\gamma \le 1/4\)</span>，成立</p>
+<div class="arithmatex">\[
+\text{Max-IS}(FR_{\gamma}^{n}) &lt; n(1-\gamma^2/K)^n
+\]</div>
+<p>特别地，当 <span class="arithmatex">\(\gamma \ge \Omega(\sqrt{\frac{\log n}{n}})\)</span> 且 <span class="arithmatex">\(n\)</span> 足够大时：</p>
+<div class="arithmatex">\[
+\text{Max-IS}(FR_{\gamma}^{n}) \le o_n(1)
+\]</div>
+<div class="arithmatex">\[
+\chi(FR_{\gamma}^{n}) = \omega_n(1)
+\]</div>
+<div class="arithmatex">\[
+\text{Min-VC}(FR_{\gamma}^{n}) \ge 1 - o_n(1)
+\]</div>
+</div>
+<h2 id="s2"><span class="book-secnum">§ 02</span>预备知识：SOS 证明系统</h2>
+<p>在深入证明之前，我们需要形式化定义 SOS 证明系统及其相关符号。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">SOS 证明</span></p>
+<p>设 <span class="arithmatex">\(X=(X_{1},...,X_{n})\)</span> 为一组不定元。给定多项式集合 <span class="arithmatex">\(A=\{q_{1}\ge0,...,q_{m}\ge0\}\cup\{r_{1}=0,...,r_{m^{\prime}}=0\}\)</span> 和多项式 <span class="arithmatex">\(p\)</span>。我们称 <span class="arithmatex">\(A\)</span> 以度数 <span class="arithmatex">\(k\)</span> SOS-证明 <span class="arithmatex">\(p\ge0\)</span>，记作 <span class="arithmatex">\(A \vdash_k p \ge 0\)</span>，当且仅当存在多项式 <span class="arithmatex">\(v_{j}\)</span> 和 SOS 多项式（即多项式的平方和） <span class="arithmatex">\(u_{i}, u_0\)</span> 使得：</p>
+<div class="arithmatex">\[
+p = u_{0} + \sum_{i=1}^{m}u_{i}q_{i} + \sum_{j=1}^{m^{\prime}}v_{j}r_{j}
+\]</div>
+<p>且上述表达式中每一项的度数都不超过 <span class="arithmatex">\(k\)</span>（即 <span class="arithmatex">\(\deg(u_0), \deg(u_i q_i), \deg(v_j r_j) \le k\)</span>）。</p>
+</div>
+<p>特别地：</p>
+<ul>
+<li><span class="arithmatex">\(A \vdash_k -1 \ge 0\)</span> 称为 <span class="arithmatex">\(k\)</span> 阶 SOS 反驳（Refutation），意味着集合 <span class="arithmatex">\(A\)</span> 定义的约束系统无解。</li>
+<li>若 <span class="arithmatex">\(A = \emptyset\)</span>，记作 <span class="arithmatex">\(\vdash_k p \ge 0\)</span>，意味着 <span class="arithmatex">\(p\)</span> 本身就是一个度数不超过 <span class="arithmatex">\(k\)</span> 的平方和多项式。</li>
+</ul>
+<p>以下引理和事实在后续证明中将频繁使用：</p>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.2</span></p>
+<p>如果 <span class="arithmatex">\(A \vdash_k p\ge0\)</span> 且 <span class="arithmatex">\(A \vdash_{k^{\prime}} p^{\prime}\ge0\)</span>，那么 <span class="arithmatex">\(A \vdash_{\max(k,k^{\prime})} p+p^{\prime}\ge0\)</span>。</p>
+</div>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.3</span><span class="book-name">事实</span></p>
+<p>单变量多项式 <span class="arithmatex">\(p(x)\)</span> 如果是非负的（即 <span class="arithmatex">\(\forall x \in \mathbb{R}, p(x) \ge 0\)</span>），则它一定是 SOS。即 <span class="arithmatex">\(\vdash_{\deg(p)} p(x) \ge 0\)</span>。</p>
+</div>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.4</span><span class="book-name">事实</span></p>
+<p>齐次双变量多项式 <span class="arithmatex">\(p(x,y)\)</span> 如果是非负的，则它一定是 SOS。这是因为可以通过去齐次化转化为单变量情形。</p>
+</div>
+<p>这两个事实是我们将复杂不等式转化为 SOS 证明的关键工具：只要能将问题规约为单变量或齐次双变量的非负性判断，就自动获得了 SOS 证明。</p>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.5</span></p>
+<p>设 <span class="arithmatex">\(c\ge0\)</span> 为常数，<span class="arithmatex">\(X\)</span> 为不定元。那么对于任何 <span class="arithmatex">\(k\in N^{+}\)</span>，<span class="arithmatex">\(X \ge c \vdash_{k} X^k \ge c^k\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>利用二项式展开：</p>
+<div class="arithmatex">\[
+X^{k}-c^{k}=(X-c+c)^{k}-c^{k}=\sum_{i=1}^{k}\binom{k}{i}c^{k-i}(X-c)^{i}
+\]</div>
+<p>当 <span class="arithmatex">\(i\)</span> 为偶数时，<span class="arithmatex">\((X-c)^i\)</span> 是完全平方（SOS）；当 <span class="arithmatex">\(i\)</span> 为奇数时，<span class="arithmatex">\((X-c)^i = (X-c)(X-c)^{i-1}\)</span>，其中 <span class="arithmatex">\((X-c)^{i-1}\)</span> 是 SOS，且 <span class="arithmatex">\((X-c)\)</span> 是给定的非负约束。因此整体可以写成 SOS 形式。</p>
+</details>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 2.6</span></p>
+<p>对于任何 <span class="arithmatex">\(k\in N^{+}\)</span>，我们有 <span class="arithmatex">\(\vdash_{2k} (\frac{X+Y}{2})^{2k}\le\frac{X^{2k}+Y^{2k}}{2}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>多项式 <span class="arithmatex">\(P(X,Y) = \frac{X^{2k}+Y^{2k}}{2} - (\frac{X+Y}{2})^{2k}\)</span> 是一个齐次双变量多项式。根据凸函数 <span class="arithmatex">\(x \mapsto x^{2k}\)</span> 的性质，该多项式在实数域上非负。根据事实 上文的事实，它是 SOS。</p>
+</details>
+<h2 id="s3"><span class="book-secnum">§ 03</span>SOS 中的正向超压缩不等式</h2>
+<p>在处理反向超压缩之前，作为热身，我们先给出针对所有偶整数 <span class="arithmatex">\(q\)</span> 的 (2, <span class="arithmatex">\(q\)</span>)-超压缩不等式 <span class="arithmatex">\(||T_{\rho}f||_{q}\le||f||_{2}\)</span> 的 SOS 证明。</p>
+<h3 id="s3-1">3.1 放宽的矩条件</h3>
+<p>我们的证明实际上适用于满足特定矩条件（Moment Conditions）的一类广泛的随机变量，而不仅仅是伯努利分布。设 <span class="arithmatex">\(s \in \mathbb{N}^+\)</span>，我们要求随机变量 <span class="arithmatex">\(x_i\)</span> 满足：</p>
+<ul>
+<li><span class="arithmatex">\(\mathbb{E}[x_{i}^{2}]=1\)</span></li>
+<li><span class="arithmatex">\(\mathbb{E}[x_{i}^{2j-1}]=0\)</span> （奇数阶矩为 0，即分布对称）</li>
+<li><span class="arithmatex">\(\mathbb{E}[x_{i}^{2j}]\le(2s-1)^{j}\frac{\binom{s}{j}}{\binom{2s}{2j}}\)</span> 对于 <span class="arithmatex">\(1\le j\le s\)</span>。</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>通过转换为阶乘并展开，可以验证：</p>
+<div class="arithmatex">\[
+(2s-1)^{j}\frac{\binom{s}{j}}{\binom{2s}{2j}}=(2j-1)!!\cdot\prod_{i=1}^{j-1}\frac{2s-1}{2s-(2i+1)}
+\]</div>
+<p>由此可见，对于每个固定的 <span class="arithmatex">\(j\in N^{+}\)</span>，该量作为 <span class="arithmatex">\(s\)</span> 的函数（对于 <span class="arithmatex">\(s\ge j\)</span>）递减趋向于极限 <span class="arithmatex">\((2j-1)!!\)</span>，即标准高斯分布的第 <span class="arithmatex">\((2j)\)</span> 阶矩。这表明标准高斯分布和均匀随机 <span class="arithmatex">\(\pm1\)</span> 比特都满足上述所有矩条件。</p>
+</div>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span></p>
+<p>设 <span class="arithmatex">\(x=(x_{1},...,x_{n})\)</span> 是一系列满足 s-矩条件的独立实随机变量。设 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>，<span class="arithmatex">\(s\in\mathbb{N}^{+}\)</span>，且 <span class="arithmatex">\(0\le\rho\le\sqrt{1/(2s-1)}\)</span>。那么</p>
+<div class="arithmatex">\[
+||T_{\rho}f(x)||_{2s}\le ||f(x)||_{2}
+\]</div>
+</div>
+<h3 id="s3-2">3.2 基础情况：<span class="arithmatex">\(n=1\)</span> 的证明</h3>
+<details class="proof">
+<summary>证明</summary>
+<p>由于算子 <span class="arithmatex">\(T_\rho\)</span> 和范数具有张量化性质，只需证明 <span class="arithmatex">\(n=1\)</span> 的情况。由齐次性，假设 <span class="arithmatex">\(\mathbb{E}[f]=1\)</span>。设 <span class="arithmatex">\(f(x_{1})=1+\epsilon x_{1}\)</span>，其中 <span class="arithmatex">\(\epsilon\in\mathbb{R}\)</span>。</p>
+<p>我们需要比较 <span class="arithmatex">\(||T_{\rho}f||_{2s}^{2s}\)</span> 和 <span class="arithmatex">\(||f||_{2}^{2s}\)</span>。</p>
+<p>首先计算左边：</p>
+<div class="arithmatex">\[
+T_{\rho}f(x_1) = 1 + \rho \epsilon x_1
+\]</div>
+<p>利用二项式定理及奇数阶矩为 0 的性质：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+||T_{\rho}f||_{2s}^{2s} &amp;= \mathbb{E}[(1 + \rho \epsilon x_1)^{2s}] \\
+&amp;= \sum_{k=0}^{2s} \binom{2s}{k} (\rho \epsilon)^k \mathbb{E}[x_1^k] \\
+&amp;= \sum_{j=0}^{s} \binom{2s}{2j} \rho^{2j} \epsilon^{2j} \mathbb{E}[x_1^{2j}] \quad (\text{仅保留偶数项})
+\end{aligned}
+\]</div>
+<p>接着计算右边：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+||f||_{2}^{2s} &amp;= (\mathbb{E}[(1+\epsilon x_1)^2])^s = (1 + 2\epsilon \mathbb{E}[x_1] + \epsilon^2 \mathbb{E}[x_1^2])^s \\
+&amp;= (1 + \epsilon^2)^s \quad (\text{因 } \mathbb{E}[x_1]=0, \mathbb{E}[x_1^2]=1) \\
+&amp;= \sum_{j=0}^{s} \binom{s}{j} \epsilon^{2j}
+\end{aligned}
+\]</div>
+<p>现在我们逐项比较 <span class="arithmatex">\(\epsilon^{2j}\)</span> 的系数。我们需要证明对于每个 <span class="arithmatex">\(j\)</span>：</p>
+<div class="arithmatex">\[
+\binom{2s}{2j} \rho^{2j} \mathbb{E}[x_1^{2j}] \le \binom{s}{j}
+\]</div>
+<p>即：</p>
+<div class="arithmatex">\[
+\mathbb{E}[x_1^{2j}] \le \frac{\binom{s}{j}}{\binom{2s}{2j}} \rho^{-2j}
+\]</div>
+<p>由于 <span class="arithmatex">\(\rho \le \frac{1}{\sqrt{2s-1}}\)</span>，即 <span class="arithmatex">\(\rho^{-2} \ge 2s-1\)</span>，上述条件等价于：</p>
+<div class="arithmatex">\[
+\mathbb{E}[x_1^{2j}] \le (2s-1)^j \frac{\binom{s}{j}}{\binom{2s}{2j}}
+\]</div>
+<p>这正是我们假设的 <span class="arithmatex">\(s\)</span>-矩条件。因此不等式成立。</p>
+</details>
+<h3 id="s3-3">3.3 SOS 证明的构造</h3>
+<p>为了将上述证明转化为 SOS 证明，我们需要处理 <span class="arithmatex">\(n&gt;1\)</span> 时的归纳步骤。在标准分析中，这通常依赖于 Minkowski 不等式，但在 SOS 中我们需要一个多项式版本的替代引理。</p>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 3.2</span></p>
+<p>设 <span class="arithmatex">\(v\)</span> 为偶正整数，<span class="arithmatex">\(G_{i}, H_{i}\)</span> 为不定元。那么：</p>
+<div class="arithmatex">\[
+\vdash_{2v} \prod_{i=1}^{v}G_{i}H_{i} \le \frac{1}{\binom{v}{v/2}}\sum_{|T|=v/2}\left(\prod_{i\in T}G_{i}^{2}\prod_{i\in[v]\backslash T}H_{i}^{2}\right)
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>首先写出恒等式：</p>
+<div class="arithmatex">\[
+\prod_{i\in[v]}G_{i}H_{i}=\frac{1}{\binom{v}{v/2}}\sum_{|T|=v/2}\underbrace{(\prod_{i\in T}G_{i}\prod_{i\in[v]\backslash T}H_{i})}_{A_T} \underbrace{(\prod_{i\in[v]\backslash T}G_{i}\prod_{i\in T}H_{i})}_{B_T}
+\]</div>
+<p>对于每一项，应用基本的 SOS 不等式 <span class="arithmatex">\(\vdash_2 XY \le \frac{1}{2}(X^2+Y^2)\)</span>：</p>
+<div class="arithmatex">\[
+A_T B_T \le \frac{1}{2} A_T^2 + \frac{1}{2} B_T^2
+\]</div>
+<p>注意到 <span class="arithmatex">\(A_T^2\)</span> 和 <span class="arithmatex">\(B_T^2\)</span> 对应的正是引理右边的项（只是集合 <span class="arithmatex">\(T\)</span> 和 <span class="arithmatex">\([v]\backslash T\)</span> 互换）。由于求和是对所有大小为 <span class="arithmatex">\(v/2\)</span> 的子集 <span class="arithmatex">\(T\)</span> 进行的，这种互换是对称的。将所有项加起来即可得证。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.3</span></p>
+<p>在满足 <span class="arithmatex">\(s\)</span>-矩条件的前提下，对于 <span class="arithmatex">\(n\)</span> 变量函数 <span class="arithmatex">\(f_i(x)\)</span>：</p>
+<div class="arithmatex">\[
+\vdash_{2s} \mathbb{E}\left[\prod_{i=1}^{s}(T_{\rho}f_{i}(x))^{2}\right] \le \prod_{i=1}^{s}\mathbb{E}[f_{i}(x)^{2}]
+\]</div>
+<p>这里 <span class="arithmatex">\(q=2s\)</span>，且 <span class="arithmatex">\(0 \le \rho \le \sqrt{1/(2s-1)}\)</span>。对每个 <span class="arithmatex">\(x=(x_1,\dots,x_n)\)</span>，我们记</p>
+<div class="arithmatex">\[
+f_i(x)=\sum_{S \subseteq [n]} \hat{f_i}(S) \prod_{j\in S}x_j,T_\rho f_i(x)=\sum_{S \subseteq [n]} \rho^{|S|} \hat{f_i}(S) \prod_{j\in S}x_j
+\]</div>
+</div>
+<details class="proof">
+<summary>证明思路</summary>
+<p>对变量数 <span class="arithmatex">\(n\)</span> 进行归纳。</p>
+<p>对于 <span class="arithmatex">\(n \ge 1\)</span>，将函数分解为 <span class="arithmatex">\(f_i(x) = x_n g_i(x') + h_i(x')\)</span>，其中 <span class="arithmatex">\(x'=(x_1,\dots,x_{n-1})\)</span>。于是 <span class="arithmatex">\(T_\rho f_i(x) = \rho x_n T_\rho g_i + T_\rho h_i\)</span>。</p>
+<p>展开左边的期望 <span class="arithmatex">\(\mathbb{E}[\prod (\rho x_n \tilde{G}_i + \tilde{H}_i)^2]\)</span>（其中 <span class="arithmatex">\(\tilde{G}=T_\rho g\)</span>）。利用 <span class="arithmatex">\(x_n\)</span> 的独立性和矩条件，将 <span class="arithmatex">\(x_n\)</span> 的高阶矩替换为常数界。</p>
+<p>这会产生混合项 <span class="arithmatex">\(\tilde{G}\)</span> 和 <span class="arithmatex">\(\tilde{H}\)</span> 的乘积。利用引理 3.3 将这些混合项解耦为 <span class="arithmatex">\(\tilde{G}^2\)</span> 和 <span class="arithmatex">\(\tilde{H}^2\)</span> 的形式。</p>
+<p>最后，利用归纳假设处理 <span class="arithmatex">\(n-1\)</span> 变量的期望。整个证明的关键在于系数的匹配，这可以通过组合恒等式来保证最终系数恰好为 1，从而使得右边整理为 <span class="arithmatex">\(\prod (\mathbb{E}[g_i^2] + \mathbb{E}[h_i^2]) = \prod \mathbb{E}[f_i^2]\)</span>。</p>
+</details>
+<h2 id="s4"><span class="book-secnum">§ 04</span>SOS 中的反向超压缩不等式</h2>
+<p>本节我们将攻克本文最核心的技术难点：在 SOS 系统中证明反向超压缩不等式。这是解决 Frankl-Rödl 图问题的关键工具。</p>
+<h3 id="s4-1">4.1 主要定理与归纳框架</h3>
+<p>我们的目标是证明以下关于 <span class="arithmatex">\(2k\)</span> 次多项式的反向不等式。</p>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span></p>
+<p>设 <span class="arithmatex">\(k, n \in \mathbb{N}^{+}\)</span>，设 <span class="arithmatex">\(0 \le \rho \le 1 - \frac{1}{2k}\)</span>。对于 <span class="arithmatex">\(\left\{-1,1\right\}^n\)</span> 上的不定元函数 <span class="arithmatex">\(f(x), g(x)\)</span>：</p>
+<div class="arithmatex">\[
+\vdash_{4k} \mathbb{E}_{(x,y) \sim \rho\text{-corr}} [f(x)^{2k} g(y)^{2k}] \ge \mathbb{E}[f]^{2k} \mathbb{E}[g]^{2k}
+\]</div>
+</div>
+<p>对于固定的 <span class="arithmatex">\(k\)</span>，我们对维数 <span class="arithmatex">\(n\)</span> 进行归纳。</p>
+<ol>
+<li>
+<p><strong>归纳步骤 (<span class="arithmatex">\(n &gt; 1\)</span>)</strong>：利用期望的线性性质，将 <span class="arithmatex">\(n\)</span> 维期望拆解为 <span class="arithmatex">\(n-1\)</span> 维期望的组合：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f(x)^{2k}g(y)^{2k}] = \sum_{x_n, y_n \in \{-1,1\}} Pr(x_n, y_n) \mathbb{E}_{x',y'}[f_{x_n}(x')^{2k} g_{y_n}(y')^{2k}]
+\]</div>
+<p>其中 <span class="arithmatex">\(f_{x_n}\)</span> 是固定第 <span class="arithmatex">\(n\)</span> 个比特后的限制函数。利用归纳假设，每一项 <span class="arithmatex">\(\mathbb{E}_{x',y'}[\dots]\)</span> 都可以被下界 <span class="arithmatex">\(\mathbb{E}[f_{x_n}]^{2k} \mathbb{E}[g_{y_n}]^{2k}\)</span> 控制。</p>
+</li>
+<li>
+<p><strong>基础情况 (<span class="arithmatex">\(n=1\)</span>)</strong>：此时问题转化为证明一个关于 4 个实变量的代数不等式。这是证明中最困难的部分。</p>
+</li>
+</ol>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span></p>
+<p>设 <span class="arithmatex">\(k \in \mathbb{N}^{+}\)</span> 且 <span class="arithmatex">\(0 \le \rho \le 1 - \frac{1}{2k}\)</span>。设 <span class="arithmatex">\(F_0, F_1, G_0, G_1\)</span> 为实不定元。那么：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\vdash_{4k} &amp;(\frac{1}{4} + \frac{1}{4}\rho)(F_0^{2k} G_0^{2k} + F_1^{2k} G_1^{2k})\\
++ &amp;(\frac{1}{4} - \frac{1}{4}\rho)(F_0^{2k} G_1^{2k} + F_1^{2k} G_0^{2k}) \\
+\end{aligned}\ge (\frac{F_0 + F_1}{2})^{2k} (\frac{G_0 + G_1}{2})^{2k}
+\]</div>
+</div>
+<p>目标不等式关于 <span class="arithmatex">\(\rho\)</span> 是线性的。因此，只需证明端点情况 <span class="arithmatex">\(\rho=0\)</span> 和 <span class="arithmatex">\(\rho^* = 1 - \frac{1}{2k}\)</span> 成立即可。<span class="arithmatex">\(\rho=0\)</span> 的情况是平凡的。因此我们只需关注 <span class="arithmatex">\(\rho = \rho^*\)</span>。通过代换 <span class="arithmatex">\(\mu = (F_0+F_1)/2, \alpha = (F_0-F_1)/2\)</span> ，<span class="arithmatex">\(\nu = (G_0+G_1)/2, \beta = (G_0-G_1)/2\)</span>，我们将定理 4.2 转化为证明以下多项式非负性：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\vdash_{4k} &amp;(\frac{1}{4} + \frac{1}{4}\rho^*)((\mu+\alpha)^{2k}(\nu+\beta)^{2k} + (\mu-\alpha)^{2k}(\nu-\beta)^{2k}) \\
++ &amp;(\frac{1}{4} - \frac{1}{4}\rho^*)((\mu+\alpha)^{2k}(\nu-\beta)^{2k} + (\mu-\alpha)^{2k}(\nu+\beta)^{2k})
+\end{aligned}\ge \mu^{2k} \nu^{2k}
+\]</div>
+<p>再通过齐次性，我们可以令 <span class="arithmatex">\(\mu=\nu=1\)</span>。我们只需要证明以下“两点不等式”在 SOS 系统中成立：</p>
+<div class="admonition note">
+<p class="admonition-title">注（两点不等式 <span class="arithmatex">\(P_k(a,b)\)</span>）</p>
+<p>设 <span class="arithmatex">\(\rho^* = 1 - \frac{1}{2k}\)</span>，那么：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\vdash_{4k}P_k(a,b) := &amp; \left(\frac{1}{4}+\frac{1}{4}\rho^*\right) \left[ (1+a)^{2k}(1+b)^{2k} + (1-a)^{2k}(1-b)^{2k} \right] \\
++ &amp; \left(\frac{1}{4}-\frac{1}{4}\rho^*\right) \left[ (1+a)^{2k}(1-b)^{2k} + (1-a)^{2k}(1+b)^{2k} \right] - 1 \ge 0
+\end{aligned}
+\]</div>
+</div>
+<h3 id="s4-2">4.2 关键技术：计算机代数辅助证明</h3>
+<p>如何证明 <span class="arithmatex">\(P_k(a,b)\)</span> 是 SOS？直接构造平方和极其困难。我们采用了一种基于变量代换和计算机代数的策略。令：</p>
+<div class="arithmatex">\[
+r = a - b, \quad s = a + b, \quad t = ab
+\]</div>
+<p>利用恒等式 <span class="arithmatex">\(\frac{1}{2}((c+d)^{2k} + (c-d)^{2k}) = \sum \binom{2k}{2i} c^{2k-2i} d^{2i}\)</span>，并将 <span class="arithmatex">\(r^2\)</span> 替换为 <span class="arithmatex">\(s^2 - 4t\)</span>，我们可以将 <span class="arithmatex">\(P_k(a,b)\)</span> 重写为关于 <span class="arithmatex">\(s^2\)</span> 的多项式：</p>
+<div class="arithmatex">\[
+P_{k}(a,b) = -1 + \sum_{i=0}^{k}\left(
+\begin{aligned}
+&amp;(\frac{1}{2}+\frac{1}{2}\rho^{*})\binom{2k}{2i}(1+t)^{2k-2i}+\\
+&amp;(\frac{1}{2}-\frac{1}{2}\rho^{*})\sum_{j=i}^k\binom{2k}{2j}(1-t)^{2k-2j}\binom{j}{i}(-4t)^{j-i}
+\end{aligned}\right)s^{2i}
+\]</div>
+<div class="arithmatex">\[
+= Q_{k,0}(t) + Q_{k,1}(t)s^2 + Q_{k,2}(t)s^4 + \dots + Q_{k,k}(t)s^{2k}
+\]</div>
+<p>其中 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 是仅依赖于 <span class="arithmatex">\(t\)</span> 的单变量多项式。</p>
+<p>如果我们能证明对于所有的 <span class="arithmatex">\(i\)</span>，系数多项式 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 在实数域上非负，那么根据事实 上文的事实，每个 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 都是 SOS。由于 <span class="arithmatex">\(s^{2i}\)</span> 显然也是 SOS，那么 <span class="arithmatex">\(P_k(a,b)\)</span> 作为 SOS 的线性组合，必然也是 SOS。</p>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.3</span></p>
+<p>对于每个 <span class="arithmatex">\(k \in \mathbb{N}^+\)</span>（且 <span class="arithmatex">\(\rho^* = 1 - \frac{1}{2k}\)</span>），多项式 <span class="arithmatex">\(Q_{k,0}(t)\)</span> 是非负的。</p>
+</div>
+<p>这是最复杂的一项。我们利用 <strong>Zeilberger 算法</strong> 来寻找 <span class="arithmatex">\(Q_{k,0}(t)\)</span> 的结构。 重写 <span class="arithmatex">\(Q_{k,0}(t)\)</span> 得到：</p>
+<div class="arithmatex">\[
+Q_{k,0}(t) = -1 + (1+t)^{2k} \left( 1 - \frac{1}{4k} + \frac{1}{4k} \sum_{j=0}^{k} \binom{2k}{2j} \frac{(1-t)^{2k-2j}}{(1+t)^{2k}} (-4t)^j \right)
+\]</div>
+<p>我们将括号中的求和部分记为 <span class="arithmatex">\(S_k(t)\)</span>，计算机算法发现 <span class="arithmatex">\(Q_{k,0}(t)\)</span> 包含的部分和满足一个二阶线性递推关系：</p>
+<div class="arithmatex">\[
+(t+1)^{2}S_{k+2}(t)-2(t^{2}-6t+1)S_{k+1}(t)+(t+1)^{2}S_{k}(t)=0
+\]</div>
+<p>解该递推关系得到闭式解：</p>
+<div class="arithmatex">\[
+Q_{k,0}(t) = -1 + (1+t)^{2k} \left( 1 - \frac{1}{4k} + \frac{1}{4k} \cos\left(4k \arctan(\sqrt{t})\right) \right)
+\]</div>
+<p>利用 <span class="arithmatex">\((1+t)^{2k} \ge 1+2kt\)</span>，我们只需证明：</p>
+<div class="arithmatex">\[
+-1 + (1+2kt) \left( 1 - \frac{1}{4k} + \frac{1}{4k} \cos(4k \arctan(\sqrt{t})) \right)\ge 0
+\]</div>
+<p>我们分情况讨论：</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(t\ge \frac{1}{2k(2k-1)}\)</span>：利用 <span class="arithmatex">\(\cos(\cdot) \ge -1\)</span> 即可证明。</p>
+</li>
+<li>
+<p><span class="arithmatex">\(t&lt; \frac{1}{2k(2k-1)}\)</span>：我们使用 Taylor 展开估计余弦函数：</p>
+<div class="arithmatex">\[
+\cos(x) \ge 1 - \frac{x^2}{2} + \frac{x^4}{24} - \frac{x^6}{720}
+\]</div>
+<p>将 <span class="arithmatex">\(x =4k\sqrt{t}\in \left( 4k \arctan(\sqrt{t}),\pi\right)\)</span> 代入并展开，我们得到一个关于 <span class="arithmatex">\(t\)</span> 的二次多项式 <span class="arithmatex">\(q(t)\)</span>。通过验证该二次多项式的判别式及端点值，我们严格证明了在该微小区间内 <span class="arithmatex">\(Q_{k,0}(t) \ge 0\)</span>。</p>
+</li>
+</ul>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 4.4</span></p>
+<p>对于所有 <span class="arithmatex">\(1 \le i \le k \in \mathbb{N}^+\)</span>，多项式 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 是非负的（其中 <span class="arithmatex">\(\rho^* = 1 - \frac{1}{2k}\)</span>）。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>事实上，我们将证明一个更强的结论：即使当 <span class="arithmatex">\(\rho^*\)</span> 设为 0 时，每个 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 也是非负的。即，我们将证明：</p>
+<div class="arithmatex">\[
+\tilde{Q}_{k,i}(t) := \frac{1}{2}\binom{2k}{2i}(1+t)^{2k-2i} + \frac{1}{2}\sum_{j=i}^{k} \binom{2k}{2j}(1-t)^{2k-2j} \binom{j}{i}(-4t)^{j-i}
+\]</div>
+<p>是非负的。之所以说这是更强的结论，是因为 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 和 <span class="arithmatex">\(\tilde{Q}_{k,i}(t)\)</span> 是相同两个主要量的凸组合 ，但 <span class="arithmatex">\(\tilde{Q}_{k,i}(t)\)</span> 在显然非负的第一项 <span class="arithmatex">\(\binom{2k}{2i}(1+t)^{2k-2i}\)</span> 上的“权重”更小（系数为 <span class="arithmatex">\(1/2\)</span>，而 <span class="arithmatex">\(Q_{k,i}(t)\)</span> 中该项系数为 <span class="arithmatex">\(\frac{1}{2}+\frac{1}{2}\rho^* &gt; 1/2\)</span>） 。</p>
+<p>手工证明这一点并不容易，但利用计算机辅助可以得到一个紧凑的证明 。可以验证以下递推关系对所有整数 <span class="arithmatex">\(0 \le i \le k\)</span> 成立：</p>
+<div class="arithmatex">\[
+(1+i)(1+k)\tilde{Q}_{k+2,i+1}(t) = (1+i)(2+k)(1+t)^2 \tilde{Q}_{k+1,i+1}(t) + (2+k)(2+2k-i)\tilde{Q}_{k+1,i}(t)
+\]</div>
+<p>这是通过猜测多项式递推的形式并通过计算机求解得到的。鉴于此，我们只需证明 <span class="arithmatex">\(k=i\)</span> 和 <span class="arithmatex">\(i=0\)</span> 两种情况下的 <span class="arithmatex">\(\tilde{Q}_{k,i}(t) \ge 0\)</span>；一般 <span class="arithmatex">\(k\)</span> 和 <span class="arithmatex">\(i\)</span> 的非负性则由归纳法得出。</p>
+<p>对于 <span class="arithmatex">\(k=i\)</span>，我们有 <span class="arithmatex">\(\tilde{Q}_{k,k}(t) = 1 \ge 0\)</span>。</p>
+<p>对于 <span class="arithmatex">\(i=0\)</span>，非负性的证明与命题 4.3 类似，但更简单 。</p>
+<p>对于 <span class="arithmatex">\(t &lt; 0\)</span>，由定义显然可知 <span class="arithmatex">\(\tilde{Q}_{k,0}(t)\)</span> 是非负的（因为各项均为正或平方项）。</p>
+<p>对于 <span class="arithmatex">\(t \ge 0\)</span>，命题 4.3 的证明过程给出了：</p>
+<div class="arithmatex">\[
+\tilde{Q}_{k,0}(t) = \frac{1}{2}(1+t)^{2k} \left( 1 + \cos(4k \arctan(\sqrt{t})) \right) \ge 0
+\]</div>
+<p>上式显然成立。</p>
+</details>
+<h2 id="s5"><span class="book-secnum">§ 05</span>SOS 中的 Frankl-Rödl 定理</h2>
+<p>本节展示我们工作在 3-染色和顶点覆盖问题上的应用。具体而言，我们给出了 Frankl-Rödl 定理的一个低阶 SOS 证明，即证明 <span class="arithmatex">\(Max-IS(FR_{\gamma}^{n}) &lt; o(1)\)</span>。</p>
+<h3 id="s5-1">5.1 Frankl-Rödl 定理</h3>
+<p>我们首先陈述关于 Frankl-Rödl 图独立集大小的主要 SOS 结论。</p>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.1</span></p>
+<p>设 <span class="arithmatex">\(n \in \mathbb{N}^{+}\)</span> 且 <span class="arithmatex">\(\frac{1}{\log n} \le \gamma \le \frac{1}{4}\)</span>，使得 <span class="arithmatex">\((1-\gamma)n\)</span> 为偶整数。给定 Frankl-Rödl 图 <span class="arithmatex">\(FR_{\gamma}^{n}=(V,E)\)</span>，对于每个 <span class="arithmatex">\(x \in V=\{-1,1\}^{n}\)</span>，设 <span class="arithmatex">\(f(x)\)</span> 为一个不定元。那么，存在一个度数为 <span class="arithmatex">\(4\lceil\frac{1}{4\gamma}\rceil\)</span> 的 SOS 反驳，针对表达“<span class="arithmatex">\(Max-IS(G) \ge O(n^{-\gamma/10})\)</span>”的系统；即系统：</p>
+<div class="arithmatex">\[
+\left\{
+\begin{aligned}
+&amp;f(x)^2 = f(x) \quad \forall x \in V, \\
+&amp;f(x)f(y) = 0 \quad \forall (x,y) \in E, \\
+&amp;\frac{1}{|V|}\sum_{x \in V}f(x) \ge C n^{-\gamma/10}
+\end{aligned}
+\right\} \vdash_{4\lceil\frac{1}{4\gamma}\rceil} -1 \ge 0
+\]</div>
+<p>其中 <span class="arithmatex">\(C\)</span> 是常数。</p>
+</div>
+<p>该定理表明，<span class="arithmatex">\(N^{O(1/\gamma)}\)</span> 时间复杂度的 SOS/Lasserre 层级算法能够证明 <span class="arithmatex">\(Max-IS(FR_{\gamma}^{n}) \le O(n^{-\gamma/10})\)</span>。特别地，对于 <span class="arithmatex">\(\gamma=1/4\)</span>，4 阶 SOS 算法即可证明 <span class="arithmatex">\(\chi(FR_{1/4}^{n}) = \omega(1)\)</span>。这比 Charikar 之前针对 SDP 的结果要强。</p>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span></p>
+<p>固定 <span class="arithmatex">\(0 &lt; \gamma &lt; 1/2\)</span> 和 <span class="arithmatex">\(0 &lt; \alpha \le 1\)</span>。在图 <span class="arithmatex">\(FR_{\gamma}^{n}\)</span> 中，如果 <span class="arithmatex">\(S \subseteq V\)</span> 满足 <span class="arithmatex">\(|S|/2^n \ge \alpha\)</span>，那么：</p>
+<div class="arithmatex">\[
+Pr_{(x,y) \sim E} [x \in S, y \in S] \ge 2(\alpha/2)^{1/\gamma} - o_n(1)
+\]</div>
+</div>
+<p>这表明任何大小为 <span class="arithmatex">\(\alpha 2^n\)</span> 的顶点集 <span class="arithmatex">\(S\)</span> 都包含至少 <span class="arithmatex">\(2(\alpha/2)^{1/\gamma} - o_n(1)\)</span> 的边比例。因此，独立集的大小至多为 <span class="arithmatex">\(O(n^{-\gamma/10})\)</span>。</p>
+<h3 id="s5-2">5.2 定义</h3>
+<p>为了将图的组合性质转化为分析性质，我们需要引入平滑算子。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.3</span></p>
+<p>对于整数 <span class="arithmatex">\(0 \le d \le n\)</span>，算子 <span class="arithmatex">\(S_d\)</span> 作用于函数 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span> 上，定义为 <span class="arithmatex">\(S_d f(x) = \mathbb{E}_y [f(y)]\)</span>，其中 <span class="arithmatex">\(y\)</span> 是在满足 <span class="arithmatex">\(\Delta(x,y)=d\)</span> 的条件下均匀随机选取的。</p>
+</div>
+<p>直观上，<span class="arithmatex">\(S_d\)</span> 算子应该表现得像噪声算子 <span class="arithmatex">\(T_{\rho}\)</span>（其中 <span class="arithmatex">\(\rho = 1 - 2d/n\)</span>）。然而，这里存在一个“奇偶性”问题：如果 <span class="arithmatex">\(d\)</span> 是奇数，则 <span class="arithmatex">\(S_d\)</span> 映射到的 <span class="arithmatex">\(y\)</span> 与 <span class="arithmatex">\(x\)</span> 奇偶性相反；如果 <span class="arithmatex">\(d\)</span> 是偶数，则相同。而噪声算子 <span class="arithmatex">\(T_{\rho}\)</span> 是混合的，不区分奇偶。为了解决这个问题，我们需要定义一个混合算子：</p>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.4</span></p>
+<p>对于整数 <span class="arithmatex">\(0 \le d &lt; n\)</span>，定义算子 <span class="arithmatex">\(S'_d = \frac{1}{2}S_d + \frac{1}{2}S_{d+1}\)</span>。</p>
+</div>
+<p>下面的定理展示了 <span class="arithmatex">\(S'_d\)</span> 与 <span class="arithmatex">\(T_{\rho}\)</span> 的近似关系，这是连接图论属性与超压缩不等式的桥梁：</p>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.5</span></p>
+<p>设 <span class="arithmatex">\(f:\{-1,1\}^{n}\rightarrow\mathbb{R}\)</span>。设 <span class="arithmatex">\(d = n - c\)</span> 对于某个整数 <span class="arithmatex">\(c^2\sqrt{n} \le c \le n/2\)</span>。令 <span class="arithmatex">\(\rho = 1 - 2d/n\)</span>。那么：</p>
+<div class="arithmatex">\[
+\langle f, S'_d f \rangle - \langle f, T_\rho f \rangle = \sum_{U \subseteq [n]} \hat{f}(U)^2 \cdot \delta(U)
+\]</div>
+<p>其中误差项 <span class="arithmatex">\(\delta(U)\)</span> 满足 <span class="arithmatex">\(\|\delta(U)\|_\infty \le O(\max\{n^{-1/5}, \frac{n}{c^2} \log^2(\frac{c^2}{n})\})\)</span>。</p>
+</div>
+<h3 id="s5-3">5.3 定理 5.1 的证明</h3>
+<details class="proof">
+<summary>证明</summary>
+<p>记 <span class="arithmatex">\(d = (1-\gamma)n\)</span>，并记 <span class="arithmatex">\(\rho' = 1 - 2d/n = -(1-2\gamma)\)</span>。我们将函数 <span class="arithmatex">\(f\)</span> 根据汉明权重的奇偶性分解为 <span class="arithmatex">\(f_0\)</span> 和 <span class="arithmatex">\(f_1\)</span>：</p>
+<div class="arithmatex">\[
+f_i(x) = \begin{cases} f(x) &amp; \text{若 } x \text{ 的汉明权重模 2 等于 } i \\ 0 &amp; \text{否则} \end{cases}
+\]</div>
+<p>由于我们假设 <span class="arithmatex">\(d=(1-\gamma)n\)</span> 为偶数，如果 <span class="arithmatex">\(x\)</span> 和 <span class="arithmatex">\(y\)</span> 的汉明权重奇偶性相同，则它们的距离只能是 <span class="arithmatex">\(d\)</span>（偶数）而不能是 <span class="arithmatex">\(d+1\)</span>（奇数）。</p>
+<p>由图的独立集约束 <span class="arithmatex">\(\{f(x)f(y)=0, \forall \Delta(x,y)=d\}\)</span>，我们有：</p>
+<div class="arithmatex">\[
+\vdash_2 \langle f_0, S'_d f_0 \rangle + \langle f_1, S'_d f_1 \rangle = 0
+\]</div>
+<p>这是因为 <span class="arithmatex">\(S'_d\)</span> 包含 <span class="arithmatex">\(S_d\)</span> 和 <span class="arithmatex">\(S_{d+1}\)</span> 两部分。对于 <span class="arithmatex">\(\langle f_i, S_d f_i \rangle\)</span>，由于 <span class="arithmatex">\(f(x)f(y)=0\)</span> (当距离为 <span class="arithmatex">\(d\)</span>)，该项为 0。对于 <span class="arithmatex">\(\langle f_i, S_{d+1} f_i \rangle\)</span>，由于 <span class="arithmatex">\(S_{d+1}\)</span> 连接不同奇偶性的点，而 <span class="arithmatex">\(f_i\)</span> 仅在特定奇偶性上非零，该内积本身恒为 0。</p>
+<p>接下来利用定理 5.5，我们可以将 <span class="arithmatex">\(S'_d\)</span> 替换为噪声算子 <span class="arithmatex">\(T_{\rho'}\)</span>：</p>
+<div class="arithmatex">\[
+\vdash_2 \langle f_0, T_{\rho'} f_0 \rangle + \langle f_1, T_{\rho'} f_1 \rangle \le \delta \sum_U \hat{f}_0(U)^2 + \delta \sum_U \hat{f}_1(U)^2 = \delta \mathbb{E}[f^2]
+\]</div>
+<p>其中误差项 <span class="arithmatex">\(\delta\)</span> 是 <span class="arithmatex">\(n\)</span> 的负次幂，趋近于 0。</p>
+<p>为了使用反向超压缩不等式，我们需要正相关的噪声算子。定义 <span class="arithmatex">\(g_i(x) = f_i(-x)\)</span>，并令 <span class="arithmatex">\(\rho = -\rho' = 1 - 2\gamma\)</span>。此时有 <span class="arithmatex">\(\langle f_i, T_{\rho'} f_i \rangle = \langle f_i, T_\rho g_i \rangle = \mathbb{E}_{(x,y) \sim \rho\text{-corr}}[f_i(x)g_i(y)]\)</span>。于是我们得到：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f_0(x)g_0(y)] + \mathbb{E}[f_1(x)g_1(y)] \le \delta \mathbb{E}[f^2] \quad
+\]</div>
+<p>现在我们将度数提升到 <span class="arithmatex">\(2k\)</span>，其中 <span class="arithmatex">\(k = \lceil \frac{1}{4\gamma} \rceil \ge 1\)</span>。利用布尔约束 <span class="arithmatex">\(f(x)^2=f(x)\)</span>，我们有 <span class="arithmatex">\(\vdash_{2k} f(x)^{2k} = f(x)\)</span>。因此上述不等式可以写为：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f_0(x)^{2k}g_0(y)^{2k}] + \mathbb{E}[f_1(x)^{2k}g_1(y)^{2k}] \le \delta \mathbb{E}[f] \quad
+\]</div>
+<p>注意到 <span class="arithmatex">\(\rho = 1 - 2\gamma \le 1 - \frac{1}{2k}\)</span>，这满足了反向超压缩定理 4.1 的条件。应用定理 4.1，我们得到：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f_0]^{2k}\mathbb{E}[g_0]^{2k} + \mathbb{E}[f_1]^{2k}\mathbb{E}[g_1]^{2k} \le \mathbb{E}[f_0(x)^{2k}g_0(y)^{2k}] + \mathbb{E}[f_1(x)^{2k}g_1(y)^{2k}] \le \delta \mathbb{E}[f] \quad
+\]</div>
+<p>对于 <span class="arithmatex">\(i=0,1\)</span>，形式上有 <span class="arithmatex">\(\mathbb{E}[f_i] = \mathbb{E}[g_i]\)</span>。利用引理 2.6 的凸性：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f_0]^{4k} + \mathbb{E}[f_1]^{4k} \ge 2 \left( \frac{\mathbb{E}[f_0] + \mathbb{E}[f_1]}{2} \right)^{4k} = 2 (\mathbb{E}[f]/2)^{4k} \quad
+\]</div>
+<p>因此推导出：</p>
+<div class="arithmatex">\[
+2^{4k-1}\delta \ge \mathbb{E}[f]^{4k} \quad
+\]</div>
+<p>最后，结合假设 <span class="arithmatex">\(\frac{1}{|V|}\sum f(x) \ge C n^{-\gamma/10}\)</span>。利用引理 2.5：</p>
+<div class="arithmatex">\[
+\mathbb{E}[f] \ge C n^{-\gamma/10} \vdash_{4k} \mathbb{E}[f]^{4k} \ge C^{4k} n^{-4k\gamma/10} \ge C^{4k} n^{-1/5} \quad
+\]</div>
+<p>只要常数 <span class="arithmatex">\(C\)</span> 足够大，使得 <span class="arithmatex">\(C^{4k} n^{-1/5} &gt; 2^{4k-1} \delta\)</span>，我们就得到了矛盾。</p>
+</details>
+<h2 id="s6"><span class="book-secnum">§ 06</span>结论</h2>
+<ul>
+<li>关于反向超压缩性：我们可能还没有给出 SOS 两点不等式的Book proof。是否有一种计算机代数技术，能够符号化地、自动地证明所有 <span class="arithmatex">\(k\)</span> 的 SOS 性质。</li>
+<li>关于 Frankl-Rödl 定理：Benabbas-Hatami-Magen 的证明是否可以改进以适用于更小的 <span class="arithmatex">\(\gamma\)</span>，例如 <span class="arithmatex">\(\sqrt{\frac{\log n}{n}}\)</span>？</li>
+<li>一个有趣的问题：超立方体的顶点等周不等式意味着：如果 <span class="arithmatex">\(A, B \subseteq \{-1,1\}^n\)</span> 且 <span class="arithmatex">\(dist(A,B) \ge \sqrt{n \log n}\)</span>，那么 <span class="arithmatex">\(|A||B|/4^n\)</span> 必须非常小。这个事实是否有 <span class="arithmatex">\(O(1)\)</span> 度数的 SOS 证明？</li>
+</ul>
+<hr />
+<h2 id="pdf">PDF 原文</h2>
+<h3 id="pdf-report">报告 PDF</h3>
+<p><a class="md-button" href="../../../../assets/sos-hypercon-tex.pdf" rel="noopener" target="_blank">打开原文件</a>
+<a class="md-button" download="sos-hypercon-tex.pdf" href="../../../../assets/sos-hypercon-tex.pdf">下载 PDF</a></p>
+<p>若下方预览无法显示，可直接打开原文件或下载后阅读。</p>
+<div style="height: 800px; width: 100%;">
+    <embed src="../../../../assets/sos-hypercon-tex.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<h3 id="pdf-slides">幻灯片 PDF</h3>
+<p><a class="md-button" href="../../../../assets/sos-hypercon.pdf" rel="noopener" target="_blank">打开原文件</a>
+<a class="md-button" download="sos-hypercon.pdf" href="../../../../assets/sos-hypercon.pdf">下载 PDF</a></p>
+<p>若下方预览无法显示，可直接打开原文件或下载后阅读。</p>
+<div style="height: 800px; width: 100%;">
+    <embed src="../../../../assets/sos-hypercon.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#applied-math">应用数学</a><a class="zdd-end-chip is-category" href="../../../../blog/#data-science">数据科学专题</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=machine-learning">#machine-learning</a>
+    </div>
+  </div>
+  
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

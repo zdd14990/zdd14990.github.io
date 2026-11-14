@@ -1,0 +1,1898 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从有限维截断建立连续函数演算，用循环子空间证明谱定理，并理解投影值测度、Borel 演算与平均遍历定理。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-05/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第五章：有界自伴与正规算子的谱理论 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-05/">
+  <meta property="og:title" content="第五章：有界自伴与正规算子的谱理论 - zdd14990">
+  <meta property="og:description" content="从有限维截断建立连续函数演算，用循环子空间证明谱定理，并理解投影值测度、Borel 演算与平均遍历定理。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-04">
+
+
+
+
+  <meta property="article:tag" content="functional-analysis">
+
+  <meta property="article:tag" content="spectral-theory">
+
+  <meta property="article:tag" content="operator-theory">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-05/">
+  <meta name="twitter:title" content="第五章：有界自伴与正规算子的谱理论 - zdd14990">
+  <meta name="twitter:description" content="从有限维截断建立连续函数演算，用循环子空间证明谱定理，并理解投影值测度、Borel 演算与平均遍历定理。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e94\u7ae0\uff1a\u6709\u754c\u81ea\u4f34\u4e0e\u6b63\u89c4\u7b97\u5b50\u7684\u8c31\u7406\u8bba",
+    "description": "\u4ece\u6709\u9650\u7ef4\u622a\u65ad\u5efa\u7acb\u8fde\u7eed\u51fd\u6570\u6f14\u7b97\uff0c\u7528\u5faa\u73af\u5b50\u7a7a\u95f4\u8bc1\u660e\u8c31\u5b9a\u7406\uff0c\u5e76\u7406\u89e3\u6295\u5f71\u503c\u6d4b\u5ea6\u3001Borel \u6f14\u7b97\u4e0e\u5e73\u5747\u904d\u5386\u5b9a\u7406\u3002",
+    "url": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-05/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/functional-analysis/chapter-05/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-04",
+    "keywords": ["functional-analysis", "spectral-theory", "operator-theory", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-05" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["\u6cdb\u51fd\u5206\u6790", "functional-analysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 为什么对角化要变成积分
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 谱与预解式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 从多项式到连续函数演算
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 用循环子空间证明谱定理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 用循环子空间证明谱定理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 每个向量先得到一个标量测度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 循环模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-4-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 全空间上的谱定理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 从连续演算到 Borel 演算
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 从连续演算到 Borel 演算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 谱投影如何出现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 单调扩张的意义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-5-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Riesz 的谱族版本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 谱支撑、函数演算与应用
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 谱支撑、函数演算与应用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#section-6-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 谱支撑等于谱
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-6-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 正规算子与联合谱
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 平均遍历定理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 投影、正常表示与函数演算
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 投影、正常表示与函数演算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        先获得标量谱信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用投影表示子空间
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-3-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        从连续测试扩到 Borel 测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-4-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        谱族把区间变成投影
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-5-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        证明演算确实保持乘法
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 联合谱及函数演算的性质
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 联合谱及函数演算的性质">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-7-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多个算子的共同坐标
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-8-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        用支集理解谱
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-9-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        平均消去非固定方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 直和、循环表示与单生成元
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 直和、循环表示与单生成元">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-10-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        由循环向量得到乘法模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#topic-5-11-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        把可数信息编码进一个算子
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 练习
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#functional-analysis">泛函分析学习笔记</a>
+    <span>Part 6 of 12</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">05</div>
+    <h1 id="chapter-05"><span class="book-visually-hidden">第 5 章：</span>有界自伴与正规算子的谱理论</h1>
+  </div>
+  <p class="book-standfirst">有限维自伴矩阵有 <span class="arithmatex">\(T=\sum_j\lambda_jP_j\)</span>。但在 <span class="arithmatex">\(L^2[0,1]\)</span> 上，乘法算子</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-04">2026-10-04</time></span>
+    
+    <span>10,153 字 · 约 29 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="section-1"><span class="book-secnum">§ 01</span>为什么对角化要变成积分</h2>
+<div class="arithmatex">\[
+(Tf)(x)=xf(x)
+\]</div>
+<p>没有非零特征向量：<span class="arithmatex">\(Tf=\lambda f\)</span> 要求 <span class="arithmatex">\(f\)</span> 只支撑在单点 <span class="arithmatex">\(\{\lambda\}\)</span>，而该集合的 Lebesgue 测度为零。</p>
+<p>因此，谱理论不能只寻找特征向量。更合适的问题是：能否把算子化为“乘以一个函数”？这个模型允许连续谱，并把对角求和自然推广为谱积分。</p>
+<h2 id="section-2"><span class="book-secnum">§ 02</span>谱与预解式</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 2.1</span><span class="book-name">谱</span></p>
+<p>对 <span class="arithmatex">\(T\in\mathcal B(H)\)</span>，预解集与谱分别是</p>
+<div class="arithmatex">\[
+\rho(T)=\{z\in\mathbb C:zI-T\text{ 有有界双侧逆}\},
+\qquad\sigma(T)=\mathbb C\setminus\rho(T).
+\]</div>
+<p>写 <span class="arithmatex">\(R(z,T)=(zI-T)^{-1}\)</span>。全篇预解式采用 <span class="arithmatex">\(zI-T\)</span> 的符号，因此预解恒等式为</p>
+<div class="arithmatex">\[
+R(z,T)-R(w,T)=(w-z)R(z,T)R(w,T).
+\]</div>
+</div>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.2</span><span class="book-name">Neumann 级数与自伴算子的实谱</span></p>
+<p>若 <span class="arithmatex">\(|z|&gt;\|T\|\)</span>，则</p>
+<div class="arithmatex">\[
+R(z,T)=\sum_{n=0}^\infty z^{-n-1}T^n.
+\]</div>
+<p>若 <span class="arithmatex">\(T=T^*\)</span>，则 <span class="arithmatex">\(\sigma(T)\subset[-\|T\|,\|T\|]\)</span>，并且对非实 <span class="arithmatex">\(z\)</span>，<span class="arithmatex">\(\|R(z,T)\|\le1/|\operatorname{Im}z|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>当 <span class="arithmatex">\(\|T/z\|&lt;1\)</span> 时，几何级数在算子范数下收敛，乘以 <span class="arithmatex">\(I-T/z\)</span> 后望远镜相消，得到双侧逆。这同时证明预解集是开集。</p>
+<p>对自伴 <span class="arithmatex">\(T\)</span>，<span class="arithmatex">\(\langle x,Tx\rangle\)</span> 为实数，故</p>
+<div class="arithmatex">\[
+\|(T-zI)x\|\|x\|
+\ge|\operatorname{Im}\langle x,(T-zI)x\rangle|
+=|\operatorname{Im}z|\|x\|^2.
+\]</div>
+<p>这给出单射、像闭和逆的估计。像的正交补是 <span class="arithmatex">\(\ker(T-\overline zI)=0\)</span>，所以像又稠密，因而等于 <span class="arithmatex">\(H\)</span>。非实 <span class="arithmatex">\(z\)</span> 都属于预解集。</p>
+</details>
+<p>实谱中的点仍可能不是特征值。对自伴算子有一个有用刻画：<span class="arithmatex">\(\lambda\in\sigma(T)\)</span> 当且仅当存在单位向量 <span class="arithmatex">\(x_n\)</span> 使 <span class="arithmatex">\(\|(T-\lambda I)x_n\|\to0\)</span>。若没有这种近似特征向量，算子有严格下界，像闭且核为零；自伴性又使像稠密，于是可逆。</p>
+<h2 id="section-3"><span class="book-secnum">§ 03</span>从多项式到连续函数演算</h2>
+<p>设 <span class="arithmatex">\(T=T^*\)</span>，<span class="arithmatex">\(r\ge\|T\|\)</span>，<span class="arithmatex">\(K=[-r,r]\)</span>。多项式演算已经有意义：<span class="arithmatex">\(p(T)=\sum_ka_kT^k\)</span>。关键是得到一个由函数值控制的估计。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">多项式的一致估计</span></p>
+<div class="arithmatex">\[
+\|p(T)\|\le\max_{t\in K}|p(t)|.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明：有限维截断与强收敛</summary>
+<p>取 Hilbert 正交基，令 <span class="arithmatex">\(P_F\)</span> 投影到有限个基向量张成的空间，并令 <span class="arithmatex">\(T_F=P_FTP_F\)</span>，视为全空间上的算子。<span class="arithmatex">\(T_F\to T\)</span> 强收敛，且 <span class="arithmatex">\(\|T_F\|\le r\)</span>。</p>
+<p><span class="arithmatex">\(T_F\)</span> 在 <span class="arithmatex">\(P_FH\)</span> 上是有限维自伴矩阵，在正交补上为零。有限维谱定理给出 <span class="arithmatex">\(\|p(T_F)\|\le\max_K|p|\)</span>，正交补上则取值 <span class="arithmatex">\(p(0)\)</span>，也满足同一界。</p>
+<p>第三章的乘积估计保证 <span class="arithmatex">\(p(T_F)x\to p(T)x\)</span>。对每个 <span class="arithmatex">\(x\)</span> 取极限，即得 <span class="arithmatex">\(\|p(T)x\|\le\max_K|p|\|x\|\)</span>。</p>
+</details>
+<p>由多项式一致稠密性，对于 <span class="arithmatex">\(f\in C(K)\)</span>，任取 <span class="arithmatex">\(p_n\to f\)</span> 一致，定义</p>
+<div class="arithmatex">\[
+f(T)=\lim_np_n(T).
+\]</div>
+<p>估计保证极限存在且与选择无关。得到含幺的 <span class="arithmatex">\(*\)</span>-同态</p>
+<div class="arithmatex">\[
+\pi:C(K)\to\mathcal B(H),\qquad
+(fg)(T)=f(T)g(T),\quad\overline f(T)=f(T)^*.
+\]</div>
+<p>若 <span class="arithmatex">\(f\ge0\)</span>，对连续函数 <span class="arithmatex">\(\sqrt f\)</span> 演算，便有 <span class="arithmatex">\(f(T)=\sqrt f(T)^*\sqrt f(T)\ge0\)</span>。注意正性来自平方根，而不是从“把变量代成算子”的形式记号自动得到。</p>
+<h2 id="section-4"><span class="book-secnum">§ 04</span>用循环子空间证明谱定理</h2>
+<h3 id="section-4-1">4.1 每个向量先得到一个标量测度</h3>
+<p>对 <span class="arithmatex">\(v\in H\)</span>，定义正泛函</p>
+<div class="arithmatex">\[
+\Lambda_v(f)=\langle v,f(T)v\rangle.
+\]</div>
+<p>Riesz–Markov 定理给出唯一正测度 <span class="arithmatex">\(\mu_v\)</span>，使</p>
+<div class="arithmatex">\[
+\langle v,f(T)v\rangle=\int_Kf(t)\,\mathrm{d}\mu_v(t),
+\qquad\mu_v(K)=\|v\|^2.
+\]</div>
+<p>若取 <span class="arithmatex">\(f(t)=(z-t)^{-1}\)</span>，便得到</p>
+<div class="arithmatex">\[
+\langle v,R(z,T)v\rangle
+=\int_K\frac{\mathrm{d}\mu_v(t)}{z-t}.
+\]</div>
+<p>这是 Hilbert 谱定理的标量预解式形态。第四章由有限谱逼近产生这种测度；这里由连续函数演算产生它。不完备内积空间上的有界 Hermitian 形式也有相应版本：先将形式连续扩张到 Hilbert 完备化，再建立标量表示。</p>
+<h3 id="section-4-2">4.2 循环模型</h3>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 4.1</span><span class="book-name">循环子空间与约化子空间</span></p>
+<p><span class="arithmatex">\(H_v=\overline{\{p(T)v:p\text{ 是多项式}\}}\)</span> 称由 <span class="arithmatex">\(v\)</span> 生成的循环子空间。它在 <span class="arithmatex">\(T\)</span> 下不变，自伴性又使 <span class="arithmatex">\(H_v^\perp\)</span> 不变，因此称约化子空间。</p>
+</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.2</span><span class="book-name">循环谱模型</span></p>
+<p>存在酉映射 <span class="arithmatex">\(W_v:L^2(K,\mu_v)\to H_v\)</span>，使</p>
+<div class="arithmatex">\[
+W_vf=f(T)v\quad(f\in C(K)),
+\qquad W_vM_t=TW_v,
+\]</div>
+<p>其中 <span class="arithmatex">\(M_t\)</span> 表示乘以坐标函数 <span class="arithmatex">\(t\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>对连续 <span class="arithmatex">\(f\)</span>，</p>
+<div class="arithmatex">\[
+\|f(T)v\|^2
+=\langle v,|f|^2(T)v\rangle
+=\int|f|^2\,\mathrm{d}\mu_v.
+\]</div>
+<p>因此该映射在 <span class="arithmatex">\(L^2\)</span> 等价类上良定义且等距。连续函数在有限 Radon 测度的 <span class="arithmatex">\(L^2\)</span> 中稠密，所以它唯一扩张到整个 <span class="arithmatex">\(L^2\)</span>。像包含多项式循环向量，且等距像闭，故像等于 <span class="arithmatex">\(H_v\)</span>。</p>
+<p>对连续 <span class="arithmatex">\(f\)</span>，<span class="arithmatex">\(T f(T)v=(tf)(T)v\)</span>。有界性与稠密性将该关系扩张到全部 <span class="arithmatex">\(L^2\)</span>。</p>
+</details>
+<h3 id="section-4-3">4.3 全空间上的谱定理</h3>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.3</span><span class="book-name">有界自伴算子的乘法模型</span></p>
+<p>每个有界自伴算子都酉等价于一族 <span class="arithmatex">\(L^2\)</span> 空间的 Hilbert 直和上逐块乘以实坐标的算子：</p>
+<div class="arithmatex">\[
+H\simeq\bigoplus_{\alpha}L^2(K,\mu_\alpha),
+\qquad T\simeq\bigoplus_\alpha M_t.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明</summary>
+<p>选取极大的两两正交循环约化子空间族 <span class="arithmatex">\((H_\alpha)\)</span>。其正交和的补空间仍在 <span class="arithmatex">\(T\)</span> 下约化。若补空间非零，其中任意非零向量又生成一个非零循环约化子空间，违反极大性。</p>
+<p>因此它们的正交和就是 <span class="arithmatex">\(H\)</span>。逐块使用上一条定理即可。一般情形的极大家族用 Zorn 引理构造；可分空间可以逐次取一列稠密向量尚未覆盖的分量。</p>
+</details>
+<p>这里“每块乘以 <span class="arithmatex">\(t\)</span>”并不意味着谱没有重数：不同块可能具有相同的谱区间。循环模型的分块并非唯一，抽象函数演算与谱测度却是唯一的。</p>
+<h2 id="section-5"><span class="book-secnum">§ 05</span>从连续演算到 Borel 演算</h2>
+<h3 id="section-5-1">5.1 谱投影如何出现</h3>
+<p>在乘法模型中，对 Borel 集 <span class="arithmatex">\(B\subset K\)</span>，乘以 <span class="arithmatex">\(\mathbf1_B\)</span> 是正交投影。搬回 <span class="arithmatex">\(H\)</span>，记作 <span class="arithmatex">\(E(B)\)</span>。</p>
+<div id="def-3" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 5.1</span><span class="book-name">投影值测度，PVM</span></p>
+<p><span class="arithmatex">\(E\)</span> 满足 <span class="arithmatex">\(E(\varnothing)=0\)</span>、<span class="arithmatex">\(E(K)=I\)</span>、<span class="arithmatex">\(E(B)^*=E(B)=E(B)^2\)</span>，并且</p>
+<div class="arithmatex">\[
+E(B)E(C)=E(B\cap C).
+\]</div>
+<p>对两两不交的 <span class="arithmatex">\(B_n\)</span>，有</p>
+<div class="arithmatex">\[
+E\left(\bigcup_nB_n\right)x=\sum_nE(B_n)x
+\]</div>
+<p>在向量范数下收敛，即强算子意义的可数可加性。一般并非算子范数可加。</p>
+</div>
+<p>对任意有界 Borel 函数，定义 <span class="arithmatex">\(f(T)\)</span> 为各块的 <span class="arithmatex">\(M_f\)</span>，或写成</p>
+<div class="arithmatex">\[
+f(T)=\int_Kf(t)\,\mathrm{d}E(t).
+\]</div>
+<p>它保留乘积、共轭和单位元。简单函数的积分是 <span class="arithmatex">\(\sum_jc_jE(B_j)\)</span>，一般有界 Borel 函数可用简单函数一致逼近。并且</p>
+<div class="arithmatex">\[
+\|f(T)x\|^2=\int_K|f|^2\,\mathrm{d}\mu_x,
+\qquad\mu_x(B)=\langle x,E(B)x\rangle.
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">为什么演算与分块无关</p>
+<p>对每个 <span class="arithmatex">\(x\)</span>，连续函数上的 <span class="arithmatex">\(\Lambda_x\)</span> 已唯一决定 <span class="arithmatex">\(\mu_x\)</span>，因此所有 <span class="arithmatex">\(\langle x,E(B)x\rangle\)</span> 唯一。极化公式恢复全部 <span class="arithmatex">\(\langle y,E(B)x\rangle\)</span>，所以 <span class="arithmatex">\(E(B)\)</span> 唯一。简单函数逼近再保证全部有界 Borel 演算唯一。</p>
+</div>
+<h3 id="section-5-2">5.2 单调扩张的意义</h3>
+<p>若 <span class="arithmatex">\(f_n\to f\)</span> 逐点且有共同的有界上界，则控制收敛给出</p>
+<div class="arithmatex">\[
+\|(f_n(T)-f(T))x\|^2
+=\int|f_n-f|^2\,\mathrm{d}\mu_x\to0.
+\]</div>
+<p>特别地，有界递增函数列产生强算子收敛。这种保持单调极限的表示称为正常表示。它使连续演算能够延伸到示性函数，再延伸到 Borel 函数。可测函数是经过这种扩张得到的，不能假定都能由连续函数一致逼近。</p>
+<div class="admonition warning">
+<p class="admonition-title">Borel 函数的范数是谱测度意义的本质上界</p>
+<p>总有 <span class="arithmatex">\(\|f(T)\|\le\sup|f|\)</span>，准确等式是 <span class="arithmatex">\(\|f(T)\|=\operatorname*{ess\,sup}_{E}|f|\)</span>。这里忽略的集合满足 <span class="arithmatex">\(E(B)=0\)</span>。</p>
+<p>对 <span class="arithmatex">\(L^2[0,1]\)</span> 上的 <span class="arithmatex">\(M_t\)</span>，<span class="arithmatex">\(f=\mathbf1_{\mathbb Q\cap[0,1]}\)</span> 逐点上确界为 <span class="arithmatex">\(1\)</span>，却有 <span class="arithmatex">\(f(T)=0\)</span>。连续函数在谱支撑上则有普通最大值的范数等式。</p>
+</div>
+<h3 id="section-5-3">5.3 Riesz 的谱族版本</h3>
+<p>令 <span class="arithmatex">\(E_\lambda=E(( -\infty,\lambda])\)</span>，则它递增且右连续于 SOT。右连续性来自测度对递减集合的连续性：</p>
+<div class="arithmatex">\[
+\|(E_{\lambda_n}-E_\lambda)x\|^2
+=\mu_x((\lambda,\lambda_n])\to0
+\quad(\lambda_n\downarrow\lambda).
+\]</div>
+<p>连续 <span class="arithmatex">\(f\)</span> 的谱积分可由分割求和 <span class="arithmatex">\(\sum_jf(\xi_j)E(I_j)\)</span> 得到，误差至多为 <span class="arithmatex">\(f\)</span> 的连续模。区间必须构成完整的不交分割，包括最左端点的原子。最后得到 <span class="arithmatex">\(T=\int\lambda\,\mathrm{d}E_\lambda\)</span>。</p>
+<p>谱定理的四种表述由此联系起来：标量预解式、投影谱族、Borel 函数演算、乘法模型。</p>
+<h2 id="section-6"><span class="book-secnum">§ 06</span>谱支撑、函数演算与应用</h2>
+<h3 id="section-6-1">6.1 谱支撑等于谱</h3>
+<p>定义谱测度的支撑为所有 <span class="arithmatex">\(\lambda\)</span>，使每个含 <span class="arithmatex">\(\lambda\)</span> 的开区间 <span class="arithmatex">\(U\)</span> 都有 <span class="arithmatex">\(E(U)\ne0\)</span>。</p>
+<p>若 <span class="arithmatex">\(\lambda\)</span> 不在支撑上，可以在实际支撑上对 <span class="arithmatex">\(t-\lambda\)</span> 取有界倒数，得到 <span class="arithmatex">\(T-\lambda I\)</span> 的逆。若 <span class="arithmatex">\(\lambda\)</span> 在支撑上，从 <span class="arithmatex">\(E((\lambda-\varepsilon,\lambda+\varepsilon))H\)</span> 取单位向量 <span class="arithmatex">\(x_\varepsilon\)</span>，便有</p>
+<div class="arithmatex">\[
+\|(T-\lambda I)x_\varepsilon\|\le\varepsilon.
+\]</div>
+<p>所以它不可能有有界逆。由此谱支撑正是 <span class="arithmatex">\(\sigma(T)\)</span>。</p>
+<p>对连续 <span class="arithmatex">\(f\)</span>，</p>
+<div class="arithmatex">\[
+\|f(T)\|=\max_{\sigma(T)}|f|,
+\qquad\sigma(f(T))=f(\sigma(T)).
+\]</div>
+<p>范数下界通过 <span class="arithmatex">\(|f|\)</span> 接近最大值的谱投影取得；谱映射则通过倒数演算与近似特征向量证明。对一般 Borel 函数，不能不加修改地使用右边的逐点像集。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.1</span><span class="book-name">平方根与方程的稳定性</span></p>
+<p>若 <span class="arithmatex">\(T\ge0\)</span>，则 <span class="arithmatex">\(T^{1/2}=\int\sqrt\lambda\,\mathrm{d}E\)</span> 是唯一的正平方根。若 <span class="arithmatex">\(T\ge\alpha I\)</span>、<span class="arithmatex">\(\alpha&gt;0\)</span>，则 <span class="arithmatex">\(T^{-1}\)</span> 有界且 <span class="arithmatex">\(\|T^{-1}\|\le1/\alpha\)</span>。</p>
+<p>因而 <span class="arithmatex">\(Tu=f\)</span> 的解满足 <span class="arithmatex">\(\|u\|\le\|f\|/\alpha\)</span>。这就是谱的下界怎样产生稳定估计。</p>
+</div>
+<h3 id="section-6-2">6.2 正规算子与联合谱</h3>
+<p>若 <span class="arithmatex">\(T\)</span> 正规，令 <span class="arithmatex">\(A=(T+T^*)/2\)</span>、<span class="arithmatex">\(B=(T-T^*)/(2i)\)</span>，则 <span class="arithmatex">\(A,B\)</span> 自伴且可交换。有限族彼此及彼此伴随均可交换的有界正规算子，具有联合投影值测度；在乘法模型下，它们同时变为乘以各坐标。</p>
+<div id="thm-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.2</span><span class="book-name">有界正规算子的谱定理</span></p>
+<p>正规 <span class="arithmatex">\(T\)</span> 存在定义在 <span class="arithmatex">\(\sigma(T)\subset\mathbb C\)</span> 上的唯一谱测度 <span class="arithmatex">\(E\)</span>，使</p>
+<div class="arithmatex">\[
+T=\int z\,\mathrm{d}E(z),\qquad T^*=\int\overline z\,\mathrm{d}E(z).
+\]</div>
+</div>
+<details class="proof">
+<summary>从可交换自伴算子到联合测度</summary>
+<p>若有界算子 <span class="arithmatex">\(S\)</span> 同时与自伴 <span class="arithmatex">\(A\)</span> 可交换，则先与 <span class="arithmatex">\(p(A)\)</span>、<span class="arithmatex">\(f(A)\)</span> 可交换。用有界连续函数逼近半直线示性函数，再取 SOT 极限，得到 <span class="arithmatex">\(S\)</span> 与 <span class="arithmatex">\(A\)</span> 的谱投影可交换；其余 Borel 集由单调类扩张。</p>
+<p>因而 <span class="arithmatex">\(A,B\)</span> 的谱投影彼此可交换。在矩形上定义 <span class="arithmatex">\(E(I\times J)=E_A(I)E_B(J)\)</span>，这是正交投影。对每个向量取二次型得到矩形上的正可加函数，经测度扩张成为二维 Borel 测度；极化恢复算子值，正交性保证强可数可加。这给出联合 PVM。</p>
+<p>坐标演算恢复 <span class="arithmatex">\(A,B\)</span>，把 <span class="arithmatex">\((a,b)\)</span> 映到 <span class="arithmatex">\(a+ib\)</span> 就得到 <span class="arithmatex">\(T\)</span> 的谱测度。谱支撑与谱相等的证明与自伴情形相同，使用小圆盘上的近似特征向量。</p>
+<p>同样的矩形构造可逐次用于有限个可交换自伴算子；复数情况下对实部、虚部联合处理。这里要求“与伴随也可交换”，以保证各个实部与虚部能进行联合演算。</p>
+</details>
+<p>联合谱是使每个邻域投影非零的点集。对连续函数的联合演算与单算子类似。酉算子的谱位于单位圆：在乘法模型中 <span class="arithmatex">\(U^*U=UU^*=I\)</span> 等价于坐标的模为 <span class="arithmatex">\(1\)</span> 几乎处处。</p>
+<h2 id="section-7"><span class="book-secnum">§ 07</span>平均遍历定理</h2>
+<p>反复作用酉算子可能永不收敛，例如旋转。但平均可能消掉非固定方向。</p>
+<div id="thm-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 7.1</span><span class="book-name">von Neumann 平均遍历定理：等距算子版本</span></p>
+<p>若 <span class="arithmatex">\(U^*U=I\)</span>，<span class="arithmatex">\(P\)</span> 是到 <span class="arithmatex">\(\ker(I-U)\)</span> 的正交投影，则</p>
+<div class="arithmatex">\[
+A_N=\frac1N\sum_{k=0}^{N-1}U^k\longrightarrow P
+\quad\text{于 SOT}.
+\]</div>
+</div>
+<details class="proof">
+<summary>证明：固定方向与望远镜相消</summary>
+<p>对 <span class="arithmatex">\(Ux=x\)</span>，显然 <span class="arithmatex">\(A_Nx=x\)</span>。若 <span class="arithmatex">\(x=(I-U)y\)</span>，则</p>
+<div class="arithmatex">\[
+A_Nx=\frac{y-U^Ny}{N}\to0.
+\]</div>
+<p>而 <span class="arithmatex">\(\|A_N\|\le1\)</span>，所以此收敛扩张到 <span class="arithmatex">\(\overline{\operatorname{Ran}(I-U)}\)</span>。</p>
+<p>这个像空间的正交补为 <span class="arithmatex">\(\ker(I-U^*)\)</span>。对等距 <span class="arithmatex">\(U\)</span>，若 <span class="arithmatex">\(U^*x=x\)</span>，则 <span class="arithmatex">\(\|Ux-x\|^2=2\|x\|^2-2\operatorname{Re}\langle x,Ux\rangle=0\)</span>；反向也成立。因此两固定空间相同，正交分解完成证明。</p>
+<p>若 <span class="arithmatex">\(U\)</span> 酉，也可在谱模型中用 <span class="arithmatex">\(N^{-1}\sum_{k=0}^{N-1}z^k\to\mathbf1_{\{1\}}(z)\)</span>，再用有界控制收敛。此时 <span class="arithmatex">\(P=E(\{1\})\)</span>。</p>
+</details>
+<h2 id="section-8"><span class="book-secnum">§ 08</span>投影、正常表示与函数演算</h2>
+<p>记 <span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 为有界 Borel 函数的含幺星代数，星运算为逐点复共轭。正常性在这里指保持递增序列的极限；一般不可数网需要另加条件。</p>
+<h3 id="topic-5-1-1">先获得标量谱信息</h3>
+<p>对固定向量，算子的矩阵元可以先写成一个标量测度的积分。把所有向量的标量信息组合成一致的算子表示，需要接下来的投影和极化构造。</p>
+<div id="thm-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.1</span><span class="book-name">有界 Hermitian 形式的谱表示</span></p>
+<p>设 <span class="arithmatex">\(V\)</span> 可分内积空间，<span class="arithmatex">\(\omega\)</span> 为有界 Hermitian 形式，<span class="arithmatex">\(\|\omega\|\leq r\)</span>。对每个 <span class="arithmatex">\(\xi\in V\)</span>，存在 <span class="arithmatex">\([-r,r]\)</span> 上非负单调函数 <span class="arithmatex">\(\rho_\xi\)</span>，使 <span class="arithmatex">\(|z|&gt;r\)</span> 时 <span class="arithmatex">\((z-\omega)^{-1}(\xi,\xi)=\int_{[-r,r]}(z-\lambda)^{-1}\,d\rho_\xi(\lambda)\)</span>。形式的预解式定义为延拓到 Hilbert 完备化后对应算子的预解式形式再限制到 <span class="arithmatex">\(V\)</span>；总质量为 <span class="arithmatex">\(\|\xi\|^2\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.1.1</summary>
+<p>把 <span class="arithmatex">\(V\)</span> 完备化为 <span class="arithmatex">\(H\)</span>，有界形式唯一延拓为 <span class="arithmatex">\(\langle\xi,T\eta\rangle\)</span>，其中 <span class="arithmatex">\(T=T^*\)</span>、<span class="arithmatex">\(\|T\|\leq r\)</span>。先看循环子空间：向量 <span class="arithmatex">\(\xi\)</span> 产生矩 <span class="arithmatex">\(s_n=\langle\xi,T^n\xi\rangle\)</span>，正性来自 <span class="arithmatex">\(\langle\xi,|p|^2(T)\xi\rangle=\|p(T)\xi\|^2\geq0\)</span>；第四章的矩定理给出 <span class="arithmatex">\([-r,r]\)</span> 上测度 <span class="arithmatex">\(\mu_\xi\)</span>。令 <span class="arithmatex">\(\rho_\xi(\lambda)=\mu_\xi([-r,\lambda])\)</span>，质量为 <span class="arithmatex">\(s_0=\|\xi\|^2\)</span>。当 <span class="arithmatex">\(|z|&gt;r\)</span>，Neumann 级数及一致收敛给出</p>
+<div class="arithmatex">\[
+\langle\xi,(z-T)^{-1}\xi\rangle
+=\sum_{n=0}^{\infty}\frac{s_n}{z^{n+1}}
+=\int\frac{d\mu_\xi(\lambda)}{z-\lambda}.
+\]</div>
+<p>这里使用第四章的矩构造即可，无须先假设本章的谱定理。</p>
+</details>
+<h3 id="topic-5-2-1">用投影表示子空间</h3>
+<p>投影把“属于某个闭子空间”写成算子等式。其序、正交和单调极限正好对应子空间的包含、正交和闭张成，因而适合表示越来越细的谱区间。</p>
+<div id="def-4" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.2</span><span class="book-name">正交投影的代数定义</span></p>
+<p>内积空间上的有界 <span class="arithmatex">\(P\)</span> 称正交投影，若 <span class="arithmatex">\(P^2=P\)</span> 且 <span class="arithmatex">\(\langle\xi,P\eta\rangle=\langle P\xi,\eta\rangle\)</span>。<span class="arithmatex">\(P^\perp=1-P\)</span> 也是投影；Hilbert 空间中条件等价于 <span class="arithmatex">\(P=P^*\)</span>。</p>
+</div>
+<div id="thm-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.3</span><span class="book-name">投影与闭子空间</span></p>
+<p>Hilbert 空间的投影与闭线性子空间一一对应，映射为 <span class="arithmatex">\(P\mapsto\operatorname{ran}P\)</span>，逆映射为正交投影。每个 <span class="arithmatex">\(\xi-P\xi\)</span> 都与像空间正交。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.3</summary>
+<p><span class="arithmatex">\(P^2=P\)</span> 使 <span class="arithmatex">\(\operatorname{ran}P=\ker(1-P)\)</span> 闭。若 <span class="arithmatex">\(\eta=P\zeta\)</span>，则 <span class="arithmatex">\(\langle\eta,\xi-P\xi\rangle=\langle\zeta,P(1-P)\xi\rangle=0\)</span>，所以 <span class="arithmatex">\(P\)</span> 正是像空间的正交投影。反之，闭子空间 <span class="arithmatex">\(M\)</span> 的正交分解 <span class="arithmatex">\(H=M\oplus M^\perp\)</span> 给出 <span class="arithmatex">\(P(m+n)=m\)</span>，直接满足 <span class="arithmatex">\(P^2=P=P^*\)</span>。分解唯一，故对应也唯一。</p>
+</details>
+<div id="thm-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.4</span><span class="book-name">投影的序</span></p>
+<p>投影 <span class="arithmatex">\(P,Q\)</span> 的以下条件等价：<span class="arithmatex">\(\operatorname{ran}P\subset\operatorname{ran}Q\)</span>；<span class="arithmatex">\(QP=P\)</span>；<span class="arithmatex">\(PQ=P\)</span>；<span class="arithmatex">\(P\leq Q\)</span>；对全部 <span class="arithmatex">\(\xi\)</span>，<span class="arithmatex">\(\|P\xi\|\leq\|Q\xi\|\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.4</summary>
+<p>像包含等价于 <span class="arithmatex">\(QP=P\)</span>；取伴随得到 <span class="arithmatex">\(PQ=P\)</span>。此时 <span class="arithmatex">\(Q\xi=P\xi+(Q-P)\xi\)</span> 是正交和，故 <span class="arithmatex">\(\|Q\xi\|^2-\|P\xi\|^2\geq0\)</span>；这也等于 <span class="arithmatex">\(\langle\xi,(Q-P)\xi\rangle\)</span>。反之，若范数不等式成立，对 <span class="arithmatex">\(\xi\in\ker Q\)</span> 有 <span class="arithmatex">\(P\xi=0\)</span>，于是 <span class="arithmatex">\(\ker Q\subset\ker P\)</span>，取正交补即得像包含。上述等式说明正算子序和范数比较等价。</p>
+</details>
+<div id="cor-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.5</span><span class="book-name">正交投影的正交性</span></p>
+<p><span class="arithmatex">\(\operatorname{ran}P\perp\operatorname{ran}Q\)</span>、<span class="arithmatex">\(QP=0\)</span>、<span class="arithmatex">\(PQ=0\)</span>、<span class="arithmatex">\(P+Q\leq1\)</span> 等价；此时 <span class="arithmatex">\(P+Q\)</span> 投影到两像空间的正交直和。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.5</summary>
+<p>像空间正交等价于 <span class="arithmatex">\(QP=0\)</span>，取伴随等价于 <span class="arithmatex">\(PQ=0\)</span>。这时 <span class="arithmatex">\((P+Q)^2=P+Q\)</span>，且 <span class="arithmatex">\(P+Q\leq1\)</span>。反之 <span class="arithmatex">\(P+Q\leq1\)</span> 意味 <span class="arithmatex">\(P\leq1-Q\)</span>，由 5.2.4 得 <span class="arithmatex">\(\operatorname{ran}P\subset\ker Q\)</span>。其像恰是两个像空间的正交直和。</p>
+</details>
+<div id="cor-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.6</span><span class="book-name">投影的差</span></p>
+<p>若 <span class="arithmatex">\(P\leq Q\)</span>，则 <span class="arithmatex">\(Q-P\)</span> 是投影，像为 <span class="arithmatex">\(\operatorname{ran}Q\cap(\operatorname{ran}P)^\perp\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.6</summary>
+<p>由 <span class="arithmatex">\(PQ=QP=P\)</span> 算出 <span class="arithmatex">\((Q-P)^2=Q-P\)</span>，且它自伴。其像中的向量被 <span class="arithmatex">\(Q\)</span> 固定、被 <span class="arithmatex">\(P\)</span> 消去；反之同时满足这两个条件的向量被 <span class="arithmatex">\(Q-P\)</span> 固定。这就识别了像空间。</p>
+</details>
+<div id="thm-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.7</span><span class="book-name">递增投影网</span></p>
+<p>递增投影网 <span class="arithmatex">\(E_\alpha\)</span> 强算子收敛到 <span class="arithmatex">\(E\)</span>，其中 <span class="arithmatex">\(\operatorname{ran}E=\overline{\bigcup_\alpha\operatorname{ran}E_\alpha}\)</span>，并有 <span class="arithmatex">\(E_\alpha\leq E\)</span>。若已知它 WOT 收敛到 <span class="arithmatex">\(F\)</span>，也必有 <span class="arithmatex">\(F=E\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.7</summary>
+<p>令 <span class="arithmatex">\(M=\overline{\bigcup_\alpha\operatorname{ran}E_\alpha}\)</span>，<span class="arithmatex">\(E\)</span> 为到 <span class="arithmatex">\(M\)</span> 的投影。若 <span class="arithmatex">\(\xi\in\operatorname{ran}E_{\alpha_0}\)</span>，则 <span class="arithmatex">\(\alpha\geq\alpha_0\)</span> 时 <span class="arithmatex">\(E_\alpha\xi=\xi\)</span>；若 <span class="arithmatex">\(\xi\in M^\perp\)</span>，则始终 <span class="arithmatex">\(E_\alpha\xi=0\)</span>。对一般 <span class="arithmatex">\(m\in M\)</span>，取并集中的 <span class="arithmatex">\(m_0\)</span> 逼近，由 <span class="arithmatex">\(\|E_\alpha\|\leq1\)</span> 得</p>
+<div class="arithmatex">\[
+\|E_\alpha m-m\|\leq2\|m-m_0\|\quad(\alpha\geq\alpha_0).
+\]</div>
+<p>故整个网 SOT 趋于 <span class="arithmatex">\(E\)</span>。像包含给出 <span class="arithmatex">\(E_\alpha\leq E\)</span>，而 WOT 极限的唯一性给出 <span class="arithmatex">\(F=E\)</span>。</p>
+</details>
+<div id="cor-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.8</span><span class="book-name">递减投影网</span></p>
+<p>递减投影网 <span class="arithmatex">\(E_\alpha\)</span> 强算子收敛到交空间 <span class="arithmatex">\(\bigcap_\alpha\operatorname{ran}E_\alpha\)</span> 的投影，并有 <span class="arithmatex">\(E\leq E_\alpha\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.2.8</summary>
+<p><span class="arithmatex">\(1-E_\alpha\)</span> 是递增投影网。应用 5.2.7 得到极限 <span class="arithmatex">\(F\)</span>，于是 <span class="arithmatex">\(E_\alpha\to1-F\)</span>。由正交补的关系</p>
+<div class="arithmatex">\[
+\operatorname{ran}(1-F)
+=\left(\overline{\bigcup_\alpha\ker E_\alpha}\right)^\perp
+=\bigcap_\alpha\operatorname{ran}E_\alpha.
+\]</div>
+</details>
+<h3 id="topic-5-3-1">从连续测试扩到 Borel 测试</h3>
+<p>连续函数足以确定测度，但区间指标通常不连续。正常性要求保持非负递增序列的极限，使测度积分能够延拓到这些指标及全部有界 Borel 函数。</p>
+<div id="def-5" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.9</span><span class="book-name">正常正泛函</span></p>
+<p>正泛函 <span class="arithmatex">\(\Lambda:\operatorname{Bor}_b(X)\to\mathbb F\)</span> 正常，指对 <span class="arithmatex">\(0\leq f_n\uparrow f\)</span> 且 <span class="arithmatex">\(f\)</span> 有界，<span class="arithmatex">\(\Lambda(f_n)\uparrow\Lambda(f)\)</span>。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.10</span><span class="book-name">正常泛函与测度</span></p>
+<p>有限正 Borel 测度与正常正泛函一一对应：<span class="arithmatex">\(\Lambda_\mu(f)=\int f\,d\mu\)</span>，逆为 <span class="arithmatex">\(\mu(E)=\Lambda(\mathbf1_E)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.3.2</summary>
+<p>由测度得到的泛函正且线性，单调收敛定理保证正常性。反过来令 <span class="arithmatex">\(\mu(E)=\Lambda(\mathbf1_E)\)</span>。互不相交 <span class="arithmatex">\(E_n\)</span> 的有限并指标递增到并集指标，故</p>
+<div class="arithmatex">\[
+\mu\left(\bigcup_nE_n\right)=\lim_N\sum_{n\leq N}\mu(E_n)=\sum_n\mu(E_n).
+\]</div>
+<p>并且 <span class="arithmatex">\(\mu(X)=\Lambda(1)&lt;\infty\)</span>。简单函数的积分等于 <span class="arithmatex">\(\Lambda\)</span>，非负有界函数由简单函数递增逼近，再拆分实部、虚部，得到全部有界 Borel 函数的表示。</p>
+</details>
+<div id="thm-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.11</span><span class="book-name">连续泛函的正常延拓</span></p>
+<p>第二可数紧 Hausdorff 空间中，限制映射将 <span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 上正常正泛函与 <span class="arithmatex">\(C(X)\)</span> 上正泛函一一对应，保持非负标量线性组合。</p>
+</div>
+<details class="proof">
+<summary>证明 5.3.4</summary>
+<p><span class="arithmatex">\(C(X)\)</span> 上的正泛函由 Riesz–Markov 定理对应唯一有限正 Radon 测度 <span class="arithmatex">\(\mu\)</span>；以 <span class="arithmatex">\(\int f\,d\mu\)</span> 延拓即得正常泛函。第二可数紧空间上的有限 Borel 测度自动 Radon，故任一正常延拓都由 5.3.2 给出同类测度，连续测试函数的唯一性迫使测度相同。限制和积分都保持非负标量线性组合。</p>
+</details>
+<div id="cor-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 8.12</span><span class="book-name">抽象 Hausdorff 矩定理</span></p>
+<p>若再有含幺星子代数 <span class="arithmatex">\(A\subset C(X)\)</span> 分离点，则限制到 <span class="arithmatex">\(A\)</span> 也给出上述正常正泛函与 <span class="arithmatex">\(A\)</span> 上正泛函的一一对应。</p>
+</div>
+<details class="proof">
+<summary>证明 5.3.5</summary>
+<p>Stone–Weierstrass 保证 <span class="arithmatex">\(A\)</span> 一致稠密于 <span class="arithmatex">\(C(X)\)</span>。第四章的正泛函延拓定理给出 <span class="arithmatex">\(\|\Lambda\|=\Lambda(1)\)</span>，故它唯一连续延拓到 <span class="arithmatex">\(C(X)\)</span>；非负函数的保正逼近使延拓仍正。再用 5.3.4 延拓到有界 Borel 函数。每一步均唯一，因此复合仍一一对应。</p>
+</details>
+<h3 id="topic-5-4-3">谱族把区间变成投影</h3>
+<p>右连续累积函数记录标量测度，右连续谱族则记录子空间投影。连续函数的谱积分由区间增量构造，左端原子也必须按闭区间积分约定保留。</p>
+<div id="def-6" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.13</span><span class="book-name">右连续谱族</span></p>
+<p>区间上的投影族 <span class="arithmatex">\(E(\lambda)\)</span> 递增，指 <span class="arithmatex">\(\lambda\leq\mu\)</span> 时 <span class="arithmatex">\(E(\lambda)\leq E(\mu)\)</span>。右连续指 <span class="arithmatex">\(\mu\downarrow\lambda\)</span> 时 <span class="arithmatex">\(E(\mu)\to E(\lambda)\)</span> 强算子收敛；等价于弱算子右连续或 <span class="arithmatex">\(\operatorname{ran}E(\lambda)=\bigcap_{\mu&gt;\lambda}\operatorname{ran}E(\mu)\)</span>。</p>
+</div>
+<div id="thm-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.14</span><span class="book-name">Riesz 谱定理</span></p>
+<p>自伴 <span class="arithmatex">\(T\in\mathcal L(H)\)</span>、<span class="arithmatex">\(\|T\|\leq r\)</span> 对应唯一的右连续递增投影族 <span class="arithmatex">\(E\)</span>，满足 <span class="arithmatex">\(E(r)=1\)</span>，且全部 <span class="arithmatex">\(f\in C([-r,r])\)</span> 满足 <span class="arithmatex">\(f(T)=\int_{[-r,r]}f(\lambda)\,dE(\lambda)\)</span>。这里 <span class="arithmatex">\(E(\lambda)=\mathbf1_{[-r,\lambda]}(T)\)</span>，左端原子通过闭区间积分约定保留。</p>
+</div>
+<details class="proof">
+<summary>证明 5.4.4</summary>
+<p>先由多项式估计 <span class="arithmatex">\(\|p(T)\|\leq\|p\|_{C([-r,r])}\)</span> 建立连续演算，再用 5.5.17 的延拓构造定义 <span class="arithmatex">\(E(\lambda)=\mathbf1_{[-r,\lambda]}(T)\)</span>。指标函数的乘法说明它们是递增投影。若 <span class="arithmatex">\(\lambda_n\downarrow\lambda\)</span>，单调收敛作用于每个向量测度，结合 5.2.8 得到右连续。阶梯和在算子范数下逼近 <span class="arithmatex">\(f(T)\)</span>，于是得到积分公式。</p>
+<p>唯一性不能只看 <span class="arithmatex">\(f(x)=x\)</span> 的积分。对两个候选谱族，积分对连续 <span class="arithmatex">\(f\)</span> 定义含幺星表示并将坐标送到 <span class="arithmatex">\(T\)</span>，多项式及一致稠密性保证连续演算一致。各向量的标量 Stieltjes 测度由连续测试唯一确定，右连续累积分布遂一致；极化后投影一致。闭区间积分中的 <span class="arithmatex">\(f(-r)E(-r)\)</span> 保留左端原子。</p>
+</details>
+<h3 id="topic-5-5-1">证明演算确实保持乘法</h3>
+<p>谱演算要同时保持加法、乘法和复共轭。标量 Riesz 表示先恢复矩阵元，普遍 <span class="arithmatex">\(L^2\)</span> 逼近再恢复算子；乘法通过固定一个因子、分两次取极限来验证。</p>
+<div id="def-7" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.15</span><span class="book-name">投影值 Stieltjes 积分</span></p>
+<p>对递增投影族 <span class="arithmatex">\(E\)</span> 与连续 <span class="arithmatex">\(f\)</span>，定义带标记和 <span class="arithmatex">\(\sum_jf(\xi_j)(E(a_j)-E(a_{j-1}))\)</span> 的加细极限为 <span class="arithmatex">\(\int_{(a,b]}f\,dE\)</span>，并令 <span class="arithmatex">\(\int_{[a,b]}f\,dE=f(a)E(a)+\int_{(a,b]}f\,dE\)</span>。</p>
+</div>
+<div id="prop-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.16</span><span class="book-name">算子范数收敛与标量积分</span></p>
+<p>上述极限在算子范数下存在，且 <span class="arithmatex">\(\langle\xi,(\int f\,dE)\xi\rangle=\int f\,d\langle\xi,E(\cdot)\xi\rangle\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.2</summary>
+<p>区间增量 <span class="arithmatex">\(P_j=E(a_j)-E(a_{j-1})\)</span> 是相互正交投影，故</p>
+<div class="arithmatex">\[
+\left\|\sum_jc_jP_j\right\|\leq\max_j|c_j|.
+\]</div>
+<p>将两份标记和放到共同加细分割上，系数之差至多为 <span class="arithmatex">\(f\)</span> 在各小区间的振荡。连续函数的一致连续性使和成为算子范数 Cauchy 网，有界算子空间完备给出极限。对角矩阵元的和恰为标量 Stieltjes 和，连续取极限即得公式；左端项同样逐项对应。</p>
+</details>
+<div id="def-8" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.17</span><span class="book-name">预酉表示与酉表示</span></p>
+<p>含幺星代数的预酉表示为内积空间 <span class="arithmatex">\(V\)</span> 上的线性映射 <span class="arithmatex">\(\pi:A\to\operatorname{Lin}(V)\)</span>，满足 <span class="arithmatex">\(\pi(ab)=\pi(a)\pi(b)\)</span>、<span class="arithmatex">\(\langle\eta,\pi(a)\xi\rangle=\langle\pi(a^*)\eta,\xi\rangle\)</span>、<span class="arithmatex">\(\pi(1)=1\)</span>。若 <span class="arithmatex">\(V\)</span> 完备且全部像算子有界，称酉表示。非含幺代数不要求单位条件。</p>
+</div>
+<div id="def-9" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.18</span><span class="book-name">正表示</span></p>
+<p>对 <span class="arithmatex">\(A\subset\ell^\infty(X)\)</span>，预酉表示正，指每个点态非负 <span class="arithmatex">\(f\in A\)</span> 都满足 <span class="arithmatex">\(\langle\xi,\pi(f)\xi\rangle\geq0\)</span>。</p>
+</div>
+<div id="prop-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.19</span><span class="book-name">平方根保证正性</span></p>
+<p>若 <span class="arithmatex">\(A\)</span> 中每个非负元素均可写成 <span class="arithmatex">\(g^*g\)</span>，<span class="arithmatex">\(g\in A\)</span>，则每个预酉表示正。<span class="arithmatex">\(C(X)\)</span>（<span class="arithmatex">\(X\)</span> 紧）与 <span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 均满足此条件。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.6</summary>
+<p>若 <span class="arithmatex">\(f=g^*g\)</span>，则 <span class="arithmatex">\(\langle\xi,\pi(f)\xi\rangle=\langle\pi(g)\xi,\pi(g)\xi\rangle\geq0\)</span>。连续或 Borel 非负函数的点态平方根仍属相应代数，故两类代数均满足假设。</p>
+</details>
+<div id="def-10" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.20</span><span class="book-name">Radon 表示</span></p>
+<p>局部紧 Hausdorff 空间上，<span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 的预酉表示为 Radon 表示，指每个正泛函 <span class="arithmatex">\(f\mapsto\langle\xi,\pi(f)\xi\rangle\)</span> 都由有限正 Radon 测度表示。</p>
+</div>
+<div id="def-11" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.21</span><span class="book-name">正常表示</span></p>
+<p>若每个上述向量泛函正常，则称表示正常。第二可数局部紧空间中，正常表示与 Radon 表示等价。</p>
+</div>
+<div id="def-12" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 8.22</span><span class="book-name">普遍 <span class="arithmatex">\(L^2\)</span> 拓扑</span></p>
+<p><span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 上由所有半范数 <span class="arithmatex">\(f\mapsto(\int|f|^2\,d\mu)^{1/2}\)</span> 诱导的拓扑，其中 <span class="arithmatex">\(\mu\)</span> 遍历有限 Radon 测度，称普遍 <span class="arithmatex">\(L^2\)</span> 拓扑。收敛要求在每一个这样的 <span class="arithmatex">\(L^2(\mu)\)</span> 中收敛。</p>
+</div>
+<div id="lem-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.23</span><span class="book-name">有范数控制的普遍逼近</span></p>
+<p>若星子代数 <span class="arithmatex">\(A\subset C_0(X,\mathbb F)\)</span> 分离点且无共同零点，则其一致范数闭单位球在 <span class="arithmatex">\(\operatorname{Bor}_b(X,\mathbb F)\)</span> 闭单位球中普遍 <span class="arithmatex">\(L^2\)</span> 稠密。任意 <span class="arithmatex">\(f\)</span> 可由 <span class="arithmatex">\(\|f_\alpha\|_\infty\leq\|f\|_\infty\)</span> 的 <span class="arithmatex">\(A\)</span> 中网逼近。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.12</summary>
+<p>先固定有限个有限 Radon 测度，令 <span class="arithmatex">\(\nu\)</span> 为其和。Lusin 定理在损失 <span class="arithmatex">\(\nu\)</span> 质量小于 <span class="arithmatex">\(\varepsilon\)</span> 的紧集上把 <span class="arithmatex">\(|f|\leq1\)</span> 化为连续函数，Tietze 延拓并作径向截断，得到 <span class="arithmatex">\(h\in C_c(X)\)</span>、<span class="arithmatex">\(|h|\leq1\)</span>，且 <span class="arithmatex">\(\int|h-f|^2\,d\nu\leq4\varepsilon\)</span>。再由 Stone–Weierstrass 用 <span class="arithmatex">\(a\in A\)</span> 一致逼近 <span class="arithmatex">\(h\)</span>，将 <span class="arithmatex">\(a\)</span> 除以 <span class="arithmatex">\(\max(1,\|a\|_\infty)\)</span> 以保持单位球，误差仍趋零。</p>
+<p>把有限测度集合按包含排序、误差按递减排序，以上构造形成同时对所有测度收敛的网。一般 <span class="arithmatex">\(f\)</span> 通过乘上 <span class="arithmatex">\(\|f\|_\infty\)</span> 得到，<span class="arithmatex">\(f=0\)</span> 时取零网。</p>
+</details>
+<div id="thm-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.24</span><span class="book-name">算子值矩定理</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 紧 Hausdorff，<span class="arithmatex">\(A\subset C(X)\)</span> 含幺、星封闭并分离点，则 <span class="arithmatex">\(A\)</span> 的每个正酉表示唯一延拓为 <span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 的 Radon 酉表示；限制映射给出一一对应。第二可数时可将 Radon 换成正常。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.13</summary>
+<p>对每个 <span class="arithmatex">\(\xi\)</span>，正泛函 <span class="arithmatex">\(\Lambda_\xi(a)=\langle\xi,\pi(a)\xi\rangle\)</span> 唯一延拓为由 Radon 测度表示的 <span class="arithmatex">\(\Lambda_\xi(f)\)</span>。定义</p>
+<div class="arithmatex">\[
+\Phi(\eta,f,\xi)=\frac14\sum_{k=0}^3i^k\Lambda_{i^k\eta+\xi}(f).
+\]</div>
+<p>在 <span class="arithmatex">\(A\)</span> 上这就是 <span class="arithmatex">\(\langle\eta,\pi(f)\xi\rangle\)</span>。由 5.5.12 取普遍 <span class="arithmatex">\(L^2\)</span> 逼近，再在有限个极化所需测度下取极限，得 <span class="arithmatex">\(\Phi\)</span> 对第一变量反线性、其余变量线性，且 <span class="arithmatex">\(\Phi(\xi,f,\xi)=\Lambda_\xi(f)\)</span>。估计 <span class="arithmatex">\(|\Lambda_\xi(f)|\leq\|f\|_\infty\|\xi\|^2\)</span> 及有界形式表示定理给出唯一算子 <span class="arithmatex">\(\widetilde\pi(f)\)</span>。</p>
+<p>单位及星运算由矩阵元立即继承。乘法需分两次取极限：取 <span class="arithmatex">\(a_\alpha,b_\beta\in A\)</span> 分别普遍 <span class="arithmatex">\(L^2\)</span> 趋于 <span class="arithmatex">\(f,g\)</span>。固定有界函数 <span class="arithmatex">\(h\)</span> 时，<span class="arithmatex">\(a_\alpha h\to fh\)</span>；矩阵元连续性和 5.5.14 遂给出</p>
+<div class="arithmatex">\[
+\widetilde\pi(fb_\beta)
+=\lim_\alpha\pi(a_\alpha b_\beta)
+=\widetilde\pi(f)\pi(b_\beta).
+\]</div>
+<p>再令 <span class="arithmatex">\(\beta\)</span> 趋于极限得到 <span class="arithmatex">\(\widetilde\pi(fg)=\widetilde\pi(f)\widetilde\pi(g)\)</span>。这一做法只使用固定因子的 WOT 连续性。对角元等于 <span class="arithmatex">\(\Lambda_\xi(f)\)</span> 保证 Radon 性；这些标量延拓的唯一性经极化给出整个表示的唯一性。</p>
+</details>
+<div id="lem-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 8.25</span><span class="book-name">固定因子的 WOT 连续性</span></p>
+<p>若 <span class="arithmatex">\(T_\alpha:H\to K\)</span> WOT 趋于 <span class="arithmatex">\(T\)</span>，<span class="arithmatex">\(A\in\mathcal L(H)\)</span>、<span class="arithmatex">\(B\in\mathcal L(K)\)</span> 固定，则 <span class="arithmatex">\(T_\alpha A\to TA\)</span>、<span class="arithmatex">\(BT_\alpha\to BT\)</span> 仍 WOT 收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.14</summary>
+<p>测试向量 <span class="arithmatex">\(\eta,\xi\)</span> 有 <span class="arithmatex">\(\langle\eta,T_\alpha A\xi\rangle\to\langle\eta,TA\xi\rangle\)</span>，以及 <span class="arithmatex">\(\langle\eta,BT_\alpha\xi\rangle=\langle B^*\eta,T_\alpha\xi\rangle\to\langle B^*\eta,T\xi\rangle\)</span>。这正是两条 WOT 收敛的定义。</p>
+</details>
+<div id="prop-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.26</span><span class="book-name">普遍 <span class="arithmatex">\(L^2\)</span> 极限与 SOT</span></p>
+<p>Radon 预酉表示中，<span class="arithmatex">\(f_\alpha\to f\)</span> 普遍 <span class="arithmatex">\(L^2\)</span> 收敛蕴含 <span class="arithmatex">\(\pi(f_\alpha)\to\pi(f)\)</span> 强算子收敛，因为对每个 <span class="arithmatex">\(\xi\)</span>，误差平方等于相应向量测度下的 <span class="arithmatex">\(L^2\)</span> 误差平方。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.15</summary>
+<p>记 <span class="arithmatex">\(\mu_\xi\)</span> 为向量测度。星同态性质给出</p>
+<div class="arithmatex">\[
+\|(\pi(f_\alpha)-\pi(f))\xi\|^2
+=\langle\xi,\pi(|f_\alpha-f|^2)\xi\rangle
+=\int|f_\alpha-f|^2\,d\mu_\xi\longrightarrow0.
+\]</div>
+<p>逐向量成立即为 SOT 收敛。</p>
+</details>
+<div id="prop-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 8.27</span><span class="book-name">正表示的范数</span></p>
+<p>非零内积空间上的含幺正预酉表示自动取值于有界算子，且 <span class="arithmatex">\(\|\pi(f)\|\leq\|f\|_\infty\)</span>、<span class="arithmatex">\(\|\pi\|=1\)</span>。零空间上的表示范数为零。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.16</summary>
+<p>点态不等式 <span class="arithmatex">\(0\leq f^*f\leq\|f\|_\infty^2\,1\)</span> 经正表示得到</p>
+<div class="arithmatex">\[
+\|\pi(f)\xi\|^2\leq\|f\|_\infty^2\|\xi\|^2.
+\]</div>
+<p>因此每个像算子自动有界且表示范数至多 <span class="arithmatex">\(1\)</span>。非零空间中 <span class="arithmatex">\(\pi(1)=I\)</span> 的范数为 <span class="arithmatex">\(1\)</span>，给出反向不等式。零空间情形直接计算。</p>
+</details>
+<div id="thm-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 8.28</span><span class="book-name">自伴算子的 Borel 演算</span></p>
+<p>若 <span class="arithmatex">\(T=T^*\)</span>、<span class="arithmatex">\(\|T\|\leq r\)</span>，则有唯一正常酉表示 <span class="arithmatex">\(\pi_T:\operatorname{Bor}_b([-r,r])\to\mathcal L(H)\)</span>，将坐标函数送到 <span class="arithmatex">\(T\)</span>。记 <span class="arithmatex">\(f(T)=\pi_T(f)\)</span>；限制到连续函数即连续函数演算。</p>
+</div>
+<details class="proof">
+<summary>证明 5.5.17</summary>
+<p>多项式演算含幺且保持星运算。第四章的区间矩正性或本章前面的多项式一致估计保证它正，故 5.5.13 在紧区间上给出唯一 Radon 延拓。区间第二可数，Radon 与正常等价。任何另一正常表示在多项式上都由 <span class="arithmatex">\(\pi(x)=T\)</span> 决定，延拓唯一性使之相同。</p>
+</details>
+<details class="proof">
+<summary>表示延拓为何保持乘法</summary>
+<p>对每个向量的二次型先用测度表示延拓，再由极化恢复所有矩阵元。Riesz 表示把这些有界形式恢复成有界算子。普遍 <span class="arithmatex">\(L^2\)</span> 逼近允许所有向量测度同时控制误差，故连续函数的算子像强收敛到 Borel 函数的像。选取一致有界的逼近后，复合算子的联合极限保持乘法；星运算由矩阵元的共轭关系保持。向量测度的唯一性保证延拓唯一。</p>
+<p>递增投影的极限证明也体现了这一机制：在像空间并集中的向量最终被投影固定，在其闭包上用投影统一范数界延拓，在正交补上始终为零。投影值积分的不同区间增量互相正交，所以和的范数由系数的最大值控制，连续函数的振荡直接给出算子范数误差。</p>
+</details>
+<h2 id="section-9"><span class="book-secnum">§ 09</span>联合谱及函数演算的性质</h2>
+<h3 id="topic-5-7-1">多个算子的共同坐标</h3>
+<p>交换性使各算子的谱投影能够共同细分。联合演算先对实坐标构造，再把正规算子的实、虚部合成复坐标，支集由所有向量测度共同确定。</p>
+<div id="def-13" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.1</span><span class="book-name">正规算子</span></p>
+<p><span class="arithmatex">\(T\)</span> 正规，指 <span class="arithmatex">\(T^*T=TT^*\)</span>；等价于自伴算子 <span class="arithmatex">\(\operatorname{Re}T=(T+T^*)/2\)</span> 与 <span class="arithmatex">\(\operatorname{Im}T=(T-T^*)/(2i)\)</span> 交换。</p>
+</div>
+<div id="lem-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 9.2</span><span class="book-name">交换的函数演算</span></p>
+<p>若自伴 <span class="arithmatex">\(A,B\)</span> 交换，则任意有界 Borel <span class="arithmatex">\(f(A)\)</span> 与 <span class="arithmatex">\(g(B)\)</span> 交换。仅有二者自伴并不足以保证此结论。</p>
+</div>
+<details class="proof">
+<summary>证明 5.7.3</summary>
+<p>先有多项式 <span class="arithmatex">\(p(A)\)</span> 与 <span class="arithmatex">\(B\)</span> 交换，一致逼近给出所有连续 <span class="arithmatex">\(f(A)\)</span>。有界 Borel <span class="arithmatex">\(f\)</span> 由一致有界的连续函数网普遍 <span class="arithmatex">\(L^2\)</span> 逼近，故 SOT 极限及固定因子乘法保持 <span class="arithmatex">\([f(A),B]=0\)</span>。同样先对 <span class="arithmatex">\(B\)</span> 的多项式、连续函数，再对 Borel 函数逼近，得到 <span class="arithmatex">\([f(A),g(B)]=0\)</span>。</p>
+</details>
+<div id="thm-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.3</span><span class="book-name">联合自伴演算</span></p>
+<p>对两两交换的有限个有界自伴算子 <span class="arithmatex">\(T_1,\ldots,T_N\)</span>，取 <span class="arithmatex">\(R\geq\max_i\|T_i\|\)</span>。存在唯一正常酉表示 <span class="arithmatex">\(\operatorname{Bor}_b([-R,R]^N)\to\mathcal L(H)\)</span>，将每个坐标 <span class="arithmatex">\(x_i\)</span> 送到 <span class="arithmatex">\(T_i\)</span>，记 <span class="arithmatex">\(f(T_1,\ldots,T_N)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.7.4</summary>
+<p>交换性使多元多项式代换成为星同态。为验证正性，分别用值在 <span class="arithmatex">\([-R,R]\)</span> 的简单函数一致逼近各坐标：<span class="arithmatex">\(T_i^{(n)}=\sum_jc_{ij}E_{ij}\)</span>。由 5.7.3，全部投影交换，乘积 <span class="arithmatex">\(P_{j_1,\ldots,j_N}=\prod_iE_{ij_i}\)</span> 构成正交单位分解。因此当 <span class="arithmatex">\(p\geq0\)</span> 于立方体时，</p>
+<div class="arithmatex">\[
+p(T_1^{(n)},\ldots,T_N^{(n)})
+=\sum_{j_1,\ldots,j_N}p(c_{1j_1},\ldots,c_{Nj_N})P_{j_1,\ldots,j_N}\geq0.
+\]</div>
+<p>算子范数取极限得 <span class="arithmatex">\(p(T_\bullet)\geq0\)</span>。多元多项式分离点，5.5.13 给出正常 Borel 延拓；坐标确定多项式，故也确定唯一延拓。</p>
+</details>
+<div id="def-14" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.4</span><span class="book-name">伴随交换</span></p>
+<p><span class="arithmatex">\(A,B\)</span> 伴随交换，指 <span class="arithmatex">\([A,B]=[A^*,B]=0\)</span>；取伴随后也有 <span class="arithmatex">\([A,B^*]=[A^*,B^*]=0\)</span>。</p>
+</div>
+<div id="def-15" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.5</span><span class="book-name">表示的支集</span></p>
+<p><span class="arithmatex">\(\operatorname{supp}\pi=\{x:\pi(\mathbf1_U)\ne0\text{ 对每个开邻域 }U\ni x\}\)</span>，它是闭集，等于全部向量测度支集并集的闭包。该集紧时称表示具有紧支集。</p>
+</div>
+<div id="prop-6" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.6</span><span class="book-name">限制到支集</span></p>
+<p>若 <span class="arithmatex">\(X\)</span> 第二可数、<span class="arithmatex">\(\pi\)</span> 正常，Borel 集 <span class="arithmatex">\(K\)</span> 包含 <span class="arithmatex">\(\operatorname{supp}\pi\)</span>，则唯一的正常表示 <span class="arithmatex">\(\pi|_K\)</span> 满足 <span class="arithmatex">\(\pi|_K(f|_K)=\pi(f)\)</span>。因此支集外的函数值不影响演算。</p>
+</div>
+<details class="proof">
+<summary>证明 5.7.12</summary>
+<p>支集外每个点都有投影为零的开邻域。第二可数性把这些邻域化为可数覆盖，所以每个向量测度在支集外为零，<span class="arithmatex">\(\pi(\mathbf1_{X\setminus K})=0\)</span>。对 <span class="arithmatex">\(f\)</span> 于 <span class="arithmatex">\(K\)</span>，零延拓为 <span class="arithmatex">\(\widetilde f\)</span> 并定义 <span class="arithmatex">\(\pi|_K(f)=\pi(\widetilde f)\)</span>；因 <span class="arithmatex">\(\pi(\mathbf1_K)=I\)</span>，它含幺且保持乘法、星运算和正常性。两种延拓之差支撑在 <span class="arithmatex">\(X\setminus K\)</span>，其像为零，从而定义与唯一性均成立。</p>
+</details>
+<div id="thm-16" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.7</span><span class="book-name">联合正规演算</span></p>
+<p>有限个伴随交换的有界正规算子 <span class="arithmatex">\(T_1,\ldots,T_N\)</span> 对应唯一具有紧支集的正常酉表示 <span class="arithmatex">\(\operatorname{Bor}_b(\mathbb C^N)\to\mathcal L(H)\)</span>，在支集上受限的各坐标送到 <span class="arithmatex">\(T_i\)</span>。坐标在全空间无界，但紧支集使此说法有意义。</p>
+</div>
+<details class="proof">
+<summary>证明 5.7.13</summary>
+<p>把每个 <span class="arithmatex">\(T_i\)</span> 拆成 <span class="arithmatex">\(A_i+iB_i\)</span>，其中 <span class="arithmatex">\(A_i,B_i\)</span> 自伴。正规性和伴随交换保证这 <span class="arithmatex">\(2N\)</span> 个算子全部交换。用 5.7.4 构造实坐标立方体上的表示，再经映射 <span class="arithmatex">\((a_i,b_i)\mapsto(a_i+ib_i)\)</span> 推前，得到复坐标演算；支集包含于有界立方体的紧像。反过来任何候选表示的实、虚坐标必须给出这些 <span class="arithmatex">\(A_i,B_i\)</span>，由联合自伴演算的唯一性得到唯一。</p>
+</details>
+<h3 id="topic-5-8-1">用支集理解谱</h3>
+<p>谱中的点未必对应特征向量，但它的每个邻域都有非零谱投影。这直接产生近似特征向量，并把正性、自伴性和酉性转成谱所在区域的条件。</p>
+<div id="def-16" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.8</span><span class="book-name">联合谱</span></p>
+<p>上述表示的支集称联合谱 <span class="arithmatex">\(\sigma(T_1,\ldots,T_N)\)</span>。点 <span class="arithmatex">\(\lambda\)</span> 属于联合谱当且仅当它的每个邻域 <span class="arithmatex">\(U\)</span> 均有 <span class="arithmatex">\(\mathbf1_U(T_1,\ldots,T_N)\ne0\)</span>。</p>
+</div>
+<div id="prop-7" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.9</span><span class="book-name">一致范数估计</span></p>
+<p><span class="arithmatex">\(\|f(T_1,\ldots,T_N)\|\leq\sup_{\sigma(T_1,\ldots,T_N)}|f|\)</span>。因而谱上的一致函数收敛蕴含算子范数收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.4</summary>
+<p>由 5.7.12 可将表示限制到联合谱 <span class="arithmatex">\(K\)</span>；5.5.16 于是给出 <span class="arithmatex">\(\|\pi(f)\|\leq\|f|_K\|_\infty\)</span>。应用于差 <span class="arithmatex">\(f_\alpha-f\)</span> 即得一致收敛的推论。</p>
+</details>
+<div id="prop-8" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.10</span><span class="book-name">普遍 <span class="arithmatex">\(L^2\)</span> 与联合演算</span></p>
+<p>若 <span class="arithmatex">\(f_\alpha\)</span> 在联合谱上对每个有限 Radon 测度均 <span class="arithmatex">\(L^2\)</span> 趋于 <span class="arithmatex">\(f\)</span>，则 <span class="arithmatex">\(f_\alpha(T_1,\ldots,T_N)\to f(T_1,\ldots,T_N)\)</span> 强算子收敛。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.5</summary>
+<p>对每个 <span class="arithmatex">\(\xi\)</span>，向量测度 <span class="arithmatex">\(\mu_\xi\)</span> 支撑于联合谱，且</p>
+<div class="arithmatex">\[
+\|(f_\alpha(T_\bullet)-f(T_\bullet))\xi\|^2
+=\int_K|f_\alpha-f|^2\,d\mu_\xi\to0.
+\]</div>
+<p>这就是 SOT 收敛。</p>
+</details>
+<div id="thm-17" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.11</span><span class="book-name">复合规则</span></p>
+<p>对有界 Borel 函数 <span class="arithmatex">\(g_1,\ldots,g_L\)</span> 及 <span class="arithmatex">\(f\in\operatorname{Bor}_b(\mathbb C^L)\)</span>，算子 <span class="arithmatex">\(g_j(T_\bullet)\)</span> 正规且伴随交换，并有 <span class="arithmatex">\(f(g_1(T_\bullet),\ldots,g_L(T_\bullet))=(f\circ(g_1,\ldots,g_L))(T_\bullet)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.6</summary>
+<p>令 <span class="arithmatex">\(G=(g_1,\ldots,g_L)\)</span>。映射 <span class="arithmatex">\(h\mapsto(h\circ G)(T_\bullet)\)</span> 是含幺星表示，其正常性由非负函数的逐点单调极限得到。其坐标像是 <span class="arithmatex">\(g_j(T_\bullet)\)</span>，这些算子因来自交换星代数而正规、伴随交换；<span class="arithmatex">\(G\)</span> 有界，表示有紧支集。5.7.13 的唯一性识别它与这些坐标像的联合演算。</p>
+</details>
+<div id="cor-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">推论 9.12</span><span class="book-name">忽略无关变量</span></p>
+<p>若 <span class="arithmatex">\(f\)</span> 只依赖前 <span class="arithmatex">\(L\)</span> 个坐标，则 <span class="arithmatex">\(f(T_1,\ldots,T_L)=f(T_1,\ldots,T_N)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.7</summary>
+<p>在 5.8.6 中取 <span class="arithmatex">\(g_j(z)=z_j\)</span> 于联合谱，并在谱外作有界延拓。复合函数正是只依赖前 <span class="arithmatex">\(L\)</span> 个变量的 <span class="arithmatex">\(f\)</span>，故得到等式。</p>
+</details>
+<div id="prop-9" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.13</span><span class="book-name">单点谱投影</span></p>
+<p>对正规 <span class="arithmatex">\(T\)</span>，<span class="arithmatex">\(\mathbf1_{\{\lambda\}}(T)\)</span> 是到 <span class="arithmatex">\(\ker(T-\lambda I)\)</span> 的投影。因此特征值就是具有非零单点谱投影的点。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.8</summary>
+<p>令 <span class="arithmatex">\(E=\mathbf1_{\{\lambda\}}(T)\)</span>，则 <span class="arithmatex">\((T-\lambda)E=0\)</span>，所以 <span class="arithmatex">\(\operatorname{ran}E\subset\ker(T-\lambda)\)</span>。若 <span class="arithmatex">\((T-\lambda)\xi=0\)</span>，则</p>
+<div class="arithmatex">\[
+0=\|(T-\lambda)\xi\|^2=\int|z-\lambda|^2\,d\mu_\xi.
+\]</div>
+<p>非负被积函数迫使 <span class="arithmatex">\(\mu_\xi\)</span> 集中于 <span class="arithmatex">\(\{\lambda\}\)</span>，于是 <span class="arithmatex">\(\|(1-E)\xi\|^2=0\)</span>。这给出反向包含。</p>
+</details>
+<div id="prop-10" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.14</span><span class="book-name">联合谱的包含关系</span></p>
+<p><span class="arithmatex">\(\sigma(T_1,\ldots,T_N)\subset\sigma(T_1,\ldots,T_L)\times\sigma(T_{L+1},\ldots,T_N)\)</span>，从而包含于各单算子谱的乘积；一般不等于该乘积。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.9</summary>
+<p>若前 <span class="arithmatex">\(L\)</span> 个坐标不在其联合谱，取该坐标组的开邻域 <span class="arithmatex">\(U\)</span> 使 <span class="arithmatex">\(\mathbf1_U(T_1,\ldots,T_L)=0\)</span>。5.8.7 得 <span class="arithmatex">\(\mathbf1_{U\times\mathbb C^{N-L}}(T_\bullet)=0\)</span>，故原点也不在全联合谱。对后一坐标组同理，得到所述乘积包含。例 <span class="arithmatex">\(T_1=T_2\)</span> 的联合谱位于对角线上，显示一般严格包含。</p>
+</details>
+<div id="def-17" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 9.15</span><span class="book-name">近似特征值</span></p>
+<p>赋范空间上 <span class="arithmatex">\(\lambda\)</span> 为 <span class="arithmatex">\(T\)</span> 的近似特征值，指每个 <span class="arithmatex">\(\varepsilon&gt;0\)</span> 都存在非零 <span class="arithmatex">\(\xi\)</span> 满足 <span class="arithmatex">\(\|(T-\lambda)\xi\|\leq\varepsilon\|\xi\|\)</span>；等价于存在单位向量序列 <span class="arithmatex">\(\xi_n\)</span> 使 <span class="arithmatex">\((T-\lambda)\xi_n\to0\)</span>。</p>
+</div>
+<div id="thm-18" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.16</span><span class="book-name">正规谱与近似特征值</span></p>
+<p>有界正规算子的谱恰为近似特征值集合，也等于通常通过有界可逆性定义的谱。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.11</summary>
+<p>若 <span class="arithmatex">\(\lambda\)</span> 在谱支集内，每个球 <span class="arithmatex">\(U_\varepsilon\)</span> 的谱投影非零，取其像中的单位向量 <span class="arithmatex">\(\xi_\varepsilon\)</span>，有</p>
+<div class="arithmatex">\[
+\|(T-\lambda)\xi_\varepsilon\|^2
+=\int_{U_\varepsilon}|z-\lambda|^2\,d\mu_{\xi_\varepsilon}\leq\varepsilon^2.
+\]</div>
+<p>若 <span class="arithmatex">\(\lambda\)</span> 不在紧谱内，距离谱为正，积分公式给出 <span class="arithmatex">\(\|(T-\lambda)\xi\|\geq d\|\xi\|\)</span>，不能是近似特征值。此时谱上 <span class="arithmatex">\(1/(z-\lambda)\)</span> 有界，其演算给出 <span class="arithmatex">\(T-\lambda\)</span> 的双侧有界逆。反过来若它有有界逆，就有相同类型的正下界，排除近似特征值，故两种谱定义相同。</p>
+</details>
+<div id="prop-11" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.17</span><span class="book-name">正性与谱</span></p>
+<p>正规 <span class="arithmatex">\(T\)</span> 正当且仅当 <span class="arithmatex">\(\sigma(T)\subset[0,\infty)\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.14</summary>
+<p>若 <span class="arithmatex">\(T\geq0\)</span>，对谱中任一近似特征值的单位向量 <span class="arithmatex">\(\xi_n\)</span>，<span class="arithmatex">\(\lambda=\lim_n\langle\xi_n,T\xi_n\rangle\geq0\)</span>。反之谱包含于非负实轴时，<span class="arithmatex">\(\langle\xi,T\xi\rangle=\int z\,d\mu_\xi(z)\geq0\)</span>，故 <span class="arithmatex">\(T\)</span> 正。</p>
+</details>
+<div id="prop-12" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.18</span><span class="book-name">自伴性与谱</span></p>
+<p>正规 <span class="arithmatex">\(T\)</span> 自伴当且仅当 <span class="arithmatex">\(\sigma(T)\subset\mathbb R\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.15</summary>
+<p><span class="arithmatex">\(T-T^*\)</span> 的平方范数满足 <span class="arithmatex">\(\|(T-T^*)\xi\|^2=\int|z-\bar z|^2\,d\mu_\xi\)</span>。因此 <span class="arithmatex">\(T=T^*\)</span> 当且仅当所有向量测度在 <span class="arithmatex">\(\mathbb C\setminus\mathbb R\)</span> 上为零。当谱有非实点，其小邻域有非零投影，取投影像中的向量便与该消失条件矛盾。故恰等价于谱为实。</p>
+</details>
+<div id="prop-13" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 9.19</span><span class="book-name">酉性与谱</span></p>
+<p>正规 <span class="arithmatex">\(U\)</span> 酉当且仅当 <span class="arithmatex">\(\sigma(U)\subset\{z:|z|=1\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.8.16</summary>
+<p>酉性给出 <span class="arithmatex">\(\|(U-\lambda)\xi\|\geq|1-|\lambda||\,\|\xi\|\)</span>，所以模不为 <span class="arithmatex">\(1\)</span> 的点都不是近似特征值。反之谱在单位圆时，演算给出 <span class="arithmatex">\(U^*U=(|z|^2)(U)=I\)</span>；正规性又给 <span class="arithmatex">\(UU^*=I\)</span>，所以 <span class="arithmatex">\(U\)</span> 酉。</p>
+</details>
+<h3 id="topic-5-9-1">平均消去非固定方向</h3>
+<p>单位圆上的几何级数平均在 <span class="arithmatex">\(1\)</span> 处保持为一，在其余点趋零。谱演算把这一标量极限转成算子强极限，一般等距算子可通过酉扩张进入同一论证。</p>
+<div id="thm-19" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 9.20</span><span class="book-name">von Neumann 平均遍历定理</span></p>
+<p>若 <span class="arithmatex">\(U\)</span> 为等距算子，即 <span class="arithmatex">\(U^*U=1\)</span>，则 <span class="arithmatex">\(n^{-1}\sum_{k=0}^{n-1}U^k\)</span> 强算子趋于 <span class="arithmatex">\(\ker(1-U)\)</span> 的正交投影。</p>
+</div>
+<details class="proof">
+<summary>证明 5.9.1</summary>
+<p>先看酉算子 <span class="arithmatex">\(W\)</span>。单位圆上 <span class="arithmatex">\(f_n(z)=n^{-1}\sum_{k=0}^{n-1}z^k\)</span> 满足 <span class="arithmatex">\(|f_n|\leq1\)</span>，且逐点趋于 <span class="arithmatex">\(\mathbf1_{\{1\}}\)</span>；支配收敛及 5.8.5 给出 <span class="arithmatex">\(f_n(W)\to\mathbf1_{\{1\}}(W)\)</span> 强收敛。</p>
+<p>一般等距 <span class="arithmatex">\(U\)</span> 可扩成更大空间上的酉算子：取足够大的 Hilbert 空间 <span class="arithmatex">\(K\)</span>，使 <span class="arithmatex">\(K\cong(\operatorname{ran}U)^\perp\oplus K\)</span>，用酉映射 <span class="arithmatex">\(V\)</span> 实现此对应，令 <span class="arithmatex">\(W(h+k)=Uh+Vk\)</span>。正交像覆盖 <span class="arithmatex">\(H\oplus K\)</span>，故 <span class="arithmatex">\(W\)</span> 酉，且 <span class="arithmatex">\(W^nh=U^nh\)</span>。因此平均在 <span class="arithmatex">\(H\)</span> 中收敛。若 <span class="arithmatex">\(W(h+k)=h+k\)</span>，投影回 <span class="arithmatex">\(H\)</span> 得 <span class="arithmatex">\(h=Uh+P_HVk\)</span>，其中两项正交；因 <span class="arithmatex">\(\|Uh\|=\|h\|\)</span>，必有 <span class="arithmatex">\(P_HVk=0\)</span>，于是 <span class="arithmatex">\(Uh=h\)</span>。这说明大空间固定向量的 <span class="arithmatex">\(H\)</span> 分量都是 <span class="arithmatex">\(U\)</span> 的固定向量，故极限限制正是到 <span class="arithmatex">\(\ker(1-U)\)</span> 的投影。</p>
+</details>
+<h2 id="section-10"><span class="book-secnum">§ 10</span>直和、循环表示与单生成元</h2>
+<h3 id="topic-5-10-1">由循环向量得到乘法模型</h3>
+<p>一个循环向量的测度决定其整个循环子空间：泛函值变成积分，算子作用变成乘法。一般表示通过正交循环分解拼成这些模型的直和。</p>
+<div id="def-18" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.1</span><span class="book-name">向量空间的乘积</span></p>
+<p><span class="arithmatex">\(\prod_\alpha V_\alpha\)</span> 的加法和标量乘法逐分量定义，不要求范数可和。</p>
+</div>
+<div id="def-19" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.2</span><span class="book-name">Hilbert 直和</span></p>
+<p><span class="arithmatex">\(\bigoplus_\alpha H_\alpha=\{(\xi_\alpha):\sum_\alpha\|\xi_\alpha\|^2&lt;\infty\}\)</span>，内积为 <span class="arithmatex">\(\sum_\alpha\langle\eta_\alpha,\xi_\alpha\rangle\)</span>。此和绝对收敛，空间完备，每个向量只有至多可数个非零分量。</p>
+</div>
+<div id="def-20" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.3</span><span class="book-name">有界算子的直和</span></p>
+<p>若 <span class="arithmatex">\(\sup_\alpha\|T_\alpha\|&lt;\infty\)</span>，定义 <span class="arithmatex">\((\bigoplus_\alpha T_\alpha)(\bigoplus_\alpha\xi_\alpha)=\bigoplus_\alpha T_\alpha\xi_\alpha\)</span>。范数为各分量范数上确界，伴随为 <span class="arithmatex">\(\bigoplus_\alpha T_\alpha^*\)</span>。</p>
+</div>
+<div id="def-21" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.4</span><span class="book-name">不变子空间</span></p>
+<p><span class="arithmatex">\(V\)</span> 对算子族 <span class="arithmatex">\(S\)</span> 不变，指每个 <span class="arithmatex">\(T\in S\)</span> 满足 <span class="arithmatex">\(TV\subset V\)</span>；对表示 <span class="arithmatex">\(\pi\)</span>，<span class="arithmatex">\(A\)</span>-不变指对全部 <span class="arithmatex">\(\pi(a)\)</span> 不变。</p>
+</div>
+<div id="def-22" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.5</span><span class="book-name">表示的同态与酉等价</span></p>
+<p>有界 <span class="arithmatex">\(\Phi:V_1\to V_2\)</span> 若满足 <span class="arithmatex">\(\Phi\pi_1(a)=\pi_2(a)\Phi\)</span> 则称同态。酉的同态称酉等价；其存在时两表示酉等价。</p>
+</div>
+<div id="def-23" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.6</span><span class="book-name">子表示</span></p>
+<p>闭 <span class="arithmatex">\(A\)</span>-不变子空间 <span class="arithmatex">\(K\subset H\)</span> 上的限制 <span class="arithmatex">\((\pi|_K,K)\)</span> 称酉子表示。星封闭性还保证 <span class="arithmatex">\(K^\perp\)</span> 不变。</p>
+</div>
+<div id="def-24" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.7</span><span class="book-name">直和表示</span></p>
+<p>若每个 <span class="arithmatex">\(a\in A\)</span> 均有 <span class="arithmatex">\(\sup_\alpha\|\pi_\alpha(a)\|&lt;\infty\)</span>，则 <span class="arithmatex">\(a\mapsto\bigoplus_\alpha\pi_\alpha(a)\)</span> 在 Hilbert 直和上给出酉表示，称直和表示。</p>
+</div>
+<div id="def-25" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.8</span><span class="book-name">循环向量</span></p>
+<p>若 <span class="arithmatex">\(\pi(A)\xi\)</span> 的线性张成稠密，则 <span class="arithmatex">\(\xi\)</span> 称循环向量。有循环向量的表示称循环表示；对应不变闭子空间上的循环表示称循环子表示。</p>
+</div>
+<div id="prop-14" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.9</span><span class="book-name">循环分解</span></p>
+<p>任意酉表示均为相互正交循环子表示的直和；不要求 Hilbert 空间可分。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.16</summary>
+<p>取互相正交的非零循环子表示族，用 Zorn 引理得到极大族。各子空间及其正交补均不变：对 <span class="arithmatex">\(\eta\perp K\)</span>、<span class="arithmatex">\(\xi\in K\)</span>，<span class="arithmatex">\(\langle\xi,\pi(a)\eta\rangle=\langle\pi(a^*)\xi,\eta\rangle=0\)</span>。因此该族张成的闭空间的正交补也不变。若正交补非零，取其中非零 <span class="arithmatex">\(\eta\)</span>，<span class="arithmatex">\(\overline{\pi(A)\eta}\)</span> 就是可加入的新循环子空间，矛盾。故直和穷尽全空间。</p>
+</details>
+<div id="prop-15" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 10.10</span><span class="book-name">循环表示的乘法模型</span></p>
+<p><span class="arithmatex">\(\operatorname{Bor}_b(X)\)</span> 的正常酉表示中，<span class="arithmatex">\(\psi\)</span> 循环当且仅当存在有限正 Borel 测度 <span class="arithmatex">\(\mu\)</span> 和酉同态 <span class="arithmatex">\(\Phi:H\to L^2(X,\mu)\)</span>，使 <span class="arithmatex">\(\Phi\psi=1\)</span> 且 <span class="arithmatex">\(\Phi\pi(f)\Phi^{-1}=M_f\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.19</summary>
+<p>若 <span class="arithmatex">\(\psi\)</span> 循环，取 <span class="arithmatex">\(\mu(E)=\langle\psi,\pi(\mathbf1_E)\psi\rangle\)</span>。定义 <span class="arithmatex">\(\Phi(\pi(f)\psi)=f\)</span>，因</p>
+<div class="arithmatex">\[
+\langle\pi(f)\psi,\pi(g)\psi\rangle=\int\bar f g\,d\mu,
+\]</div>
+<p>它良定义并等距。循环性使定义域稠密，简单函数使像在 <span class="arithmatex">\(L^2(\mu)\)</span> 稠密，故延拓为酉映射。等式 <span class="arithmatex">\(\Phi\pi(a)\pi(f)\psi=af=M_a\Phi\pi(f)\psi\)</span> 在稠密子空间成立，再连续延拓到全空间。反向中 <span class="arithmatex">\(\pi(f)\psi\)</span> 对应 <span class="arithmatex">\(f\)</span>，有界简单函数稠密保证 <span class="arithmatex">\(\psi\)</span> 循环。</p>
+</details>
+<div id="lem-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.11</span><span class="book-name">保持 Gram 矩阵的等距映射</span></p>
+<p>若 <span class="arithmatex">\((\xi_\alpha)\)</span> 线性稠密于内积空间 <span class="arithmatex">\(V\)</span>，<span class="arithmatex">\((\eta_\alpha)\)</span> 位于 Hilbert 空间 <span class="arithmatex">\(K\)</span>，且两族全部内积相同，则唯一存在等距线性 <span class="arithmatex">\(\Phi:V\to K\)</span> 将各 <span class="arithmatex">\(\xi_\alpha\)</span> 送到 <span class="arithmatex">\(\eta_\alpha\)</span>。若 <span class="arithmatex">\(V\)</span> 完备且后者线性稠密，则 <span class="arithmatex">\(\Phi\)</span> 酉。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.20</summary>
+<p>有限和的 Gram 矩阵相同意味着</p>
+<div class="arithmatex">\[
+\left\|\sum c_\alpha\xi_\alpha\right\|^2
+=\left\|\sum c_\alpha\eta_\alpha\right\|^2.
+\]</div>
+<p>所以把左侧有限和送到右侧的映射不依赖表达式，且等距。目标完备，故从稠密线性张成唯一延拓到 <span class="arithmatex">\(V\)</span>。若 <span class="arithmatex">\(V\)</span> 完备，等距像也完备从而闭；再由像的稠密性得到满射。</p>
+</details>
+<div id="lem-5" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">引理 10.12</span><span class="book-name">下界保证闭像</span></p>
+<p>若 <span class="arithmatex">\(V\)</span> 完备、<span class="arithmatex">\(T:V\to W\)</span> 有界且 <span class="arithmatex">\(\|T\xi\|\geq C\|\xi\|\)</span>，<span class="arithmatex">\(C&gt;0\)</span>，则 <span class="arithmatex">\(\operatorname{ran}T\)</span> 闭。像中的 Cauchy 序列由此对应定义域中的 Cauchy 序列。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.21</summary>
+<p>若 <span class="arithmatex">\(T\xi_n\to\eta\)</span>，下界给出 <span class="arithmatex">\(\|\xi_n-\xi_m\|\leq C^{-1}\|T\xi_n-T\xi_m\|\)</span>。定义域完备保证 <span class="arithmatex">\(\xi_n\to\xi\)</span>，连续性于是给 <span class="arithmatex">\(\eta=T\xi\)</span>，所以像闭。</p>
+<p>也可以从逆映射看：<span class="arithmatex">\(T\)</span> 单射，<span class="arithmatex">\(T^{-1}\)</span> 在像上有界，因目标 <span class="arithmatex">\(V\)</span> 完备可延拓到像的闭包。由 <span class="arithmatex">\(TT^{-1}=I\)</span> 在稠密子集成立，连续性使它在闭包上仍成立，闭包遂已包含于像。</p>
+</details>
+<div id="thm-20" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.13</span><span class="book-name">乘法算子版本的谱定理</span></p>
+<p>有限个伴随交换的有界正规算子可同时酉化为 <span class="arithmatex">\(\bigoplus_\alpha L^2(X,\mu_\alpha)\)</span> 上的坐标乘法 <span class="arithmatex">\(\bigoplus_\alpha M_{z_i}\)</span>，其中 <span class="arithmatex">\(X\subset\mathbb C^N\)</span> 紧、各 <span class="arithmatex">\(\mu_\alpha\)</span> 为有限正 Borel 测度。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.22</summary>
+<p>取 <span class="arithmatex">\(X=\sigma(T_\bullet)\)</span> 上的联合 Borel 表示。5.10.16 将其分解成正交循环子表示；正常性在子空间上保留。5.10.19 将每个分量酉化为 <span class="arithmatex">\(L^2(X,\mu_\alpha)\)</span> 的乘法表示。直和酉映射把每个坐标像 <span class="arithmatex">\(T_i\)</span> 送到 <span class="arithmatex">\(\bigoplus_\alpha M_{z_i}\)</span>，得到所需模型。</p>
+</details>
+<div id="thm-21" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.14</span><span class="book-name">乘法模型的演算</span></p>
+<p>对可测空间上的有界可测 <span class="arithmatex">\(f_1,\ldots,f_N\)</span> 及任意测度族，<span class="arithmatex">\(T_i=\bigoplus_\alpha M_{f_i}\)</span> 正规且伴随交换，并满足 <span class="arithmatex">\(g(T_1,\ldots,T_N)=\bigoplus_\alpha M_{g\circ(f_1,\ldots,f_N)}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.10.23</summary>
+<p>乘法算子的伴随是 <span class="arithmatex">\(M_{\bar f}\)</span>，故这些算子正规且伴随交换。定义 <span class="arithmatex">\(\pi(g)=\bigoplus_\alpha M_{g\circ f_\bullet}\)</span>，它含幺、保持乘法和星运算，支撑在包含 <span class="arithmatex">\(f_\bullet\)</span> 像的紧集。若 <span class="arithmatex">\(0\leq g_n\uparrow g\)</span>，对 <span class="arithmatex">\(\xi=(\xi_\alpha)\)</span> 有</p>
+<div class="arithmatex">\[
+\langle\xi,\pi(g_n)\xi\rangle
+=\sum_\alpha\int(g_n\circ f_\bullet)|\xi_\alpha|^2\,d\mu_\alpha
+\uparrow\langle\xi,\pi(g)\xi\rangle.
+\]</div>
+<p>单调收敛可用于积分和计数求和，故表示正常。其坐标像是 <span class="arithmatex">\(T_i\)</span>，唯一性给出公式。</p>
+</details>
+<h3 id="topic-5-11-1">把可数信息编码进一个算子</h3>
+<p>有理端点谱投影给出可数个二值信息，用快速递减权重相加可逐位恢复它们。闭代数中的截断逼近还需保证乘法封闭；可分性则用于把强极限恢复为单个 Borel 函数。</p>
+<div id="def-26" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.15</span><span class="book-name">强-*算子拓扑</span></p>
+<p><span class="arithmatex">\(T_\alpha\to T\)</span> 在 SOT* 下收敛，指 <span class="arithmatex">\(T_\alpha\to T\)</span> 且 <span class="arithmatex">\(T_\alpha^*\to T^*\)</span> 均为 SOT 收敛。</p>
+</div>
+<div id="def-27" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.16</span><span class="book-name">测度的 Fourier 系数</span></p>
+<p>有限正 Borel 测度 <span class="arithmatex">\(\mu\)</span> 在 <span class="arithmatex">\(\mathbb T^N\)</span> 上的 Fourier 系数为 <span class="arithmatex">\(\widehat\mu(n)=\int z^{-n}\,d\mu(z)\)</span>，<span class="arithmatex">\(n\in\mathbb Z^N\)</span>。其绝对值至多为总质量；三角多项式一致稠密性保证这些系数唯一确定测度。</p>
+</div>
+<div id="thm-22" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.17</span><span class="book-name">可分空间中的单算子编码</span></p>
+<p>可分 Hilbert 空间上，有限或可数个相互交换的有界自伴算子 <span class="arithmatex">\(T_i\)</span> 可写成 <span class="arithmatex">\(T_i=f_i(S)\)</span>，其中 <span class="arithmatex">\(S\)</span> 为一个有界自伴算子，<span class="arithmatex">\(f_i\)</span> 为有界实 Borel 函数。</p>
+</div>
+<details class="proof">
+<summary>证明 5.11.5</summary>
+<p>由 5.11.12 取正算子 <span class="arithmatex">\(S\)</span> 使可数自伴族与 <span class="arithmatex">\(S\)</span> 生成同一闭代数。可分性及 5.11.11 保证每个 <span class="arithmatex">\(T_i\)</span> 均为 <span class="arithmatex">\(f_i(S)\)</span>。自伴性给出 <span class="arithmatex">\(T_i=(\operatorname{Re}f_i)(S)\)</span>，所以可把 <span class="arithmatex">\(f_i\)</span> 取为有界实 Borel 函数。这两个后续结果的独立证明分别如下，不以本定理作前提。</p>
+</details>
+<div id="def-28" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 10.18</span><span class="book-name">生成的交换算子代数</span></p>
+<p>对伴随交换的有界正规算子族 <span class="arithmatex">\(S\)</span>，令 <span class="arithmatex">\(\mathbb C[S\cup S^*]\)</span> 为含幺星多项式代数，<span class="arithmatex">\(W^*(S)\)</span> 为其 SOT* 闭包。</p>
+</div>
+<div id="thm-23" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.19</span><span class="book-name">闭包仍为星代数</span></p>
+<p><span class="arithmatex">\(W^*(S)\)</span> 是 SOT* 闭的含幺交换星子代数；其全部元素正规且相互伴随交换。</p>
+</div>
+<details class="proof">
+<summary>证明 5.11.9</summary>
+<p>固定因子的 SOT 连续性及取伴随的 SOT* 连续性使闭包元素仍两两伴随交换；与自己的伴随交换便是正规性。线性运算及单位也在闭包中。乘法需要处理逼近网可能没有统一范数界：对自伴目标 <span class="arithmatex">\(S\)</span>，将实多项式逼近 <span class="arithmatex">\(p_\alpha\)</span> 经截断 <span class="arithmatex">\(\phi_R(t)=\max(-R,\min(t,R))\)</span>，其中 <span class="arithmatex">\(R\geq\|S\|\)</span>。联合演算中的点态不等式</p>
+<div class="arithmatex">\[
+|\phi_R(s)-t|\leq|s-t|\quad(|t|\leq R)
+\]</div>
+<p>保证 <span class="arithmatex">\(\phi_R(p_\alpha)\to S\)</span> 强收敛；每个截断仍在闭包中，因为单个有界自伴多项式的连续演算由多项式一致逼近得到。故有一致有界的自伴逼近。对 <span class="arithmatex">\(S,T\)</span> 各取这种网，则</p>
+<div class="arithmatex">\[
+\|S_\alpha T_\beta\xi-ST\xi\|
+\leq R\|(T_\beta-T)\xi\|+\|(S_\alpha-S)T\xi\|\to0.
+\]</div>
+<p>伴随同理。上述 <span class="arithmatex">\(S_\alpha,T_\beta\)</span> 是原代数元素的连续截断，各自可用多项式一致逼近；因此它们的乘积先由两个原代数多项式的乘积逼近，也在闭包中。这一步保证用于取极限的乘积确实属于闭包。将一般算子拆成实、虚部，得乘法封闭。因此闭包是含幺交换星代数。</p>
+</details>
+<div id="thm-24" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.20</span><span class="book-name">有限生成代数的 Borel 描述</span></p>
+<p>若 <span class="arithmatex">\(H\)</span> 可分，<span class="arithmatex">\(S=\{T_1,\ldots,T_N\}\)</span>，则 <span class="arithmatex">\(W^*(S)=\{f(T_1,\ldots,T_N):f\in\operatorname{Bor}_b(\mathbb C^N)\}\)</span>。</p>
+</div>
+<details class="proof">
+<summary>证明 5.11.11</summary>
+<p>Borel 演算的像在闭包中，由普遍 <span class="arithmatex">\(L^2\)</span> 逼近及星运算可得。反向只需证明自伴 <span class="arithmatex">\(S\)</span>。取实星多项式逼近它，用 5.11.9 的截断步骤得到 <span class="arithmatex">\(f_\alpha(T_\bullet)\to S\)</span> 且 <span class="arithmatex">\(|f_\alpha|\leq R\)</span>。可分性允许取线性稠密的 <span class="arithmatex">\(\psi_n\)</span>，满足 <span class="arithmatex">\(\sum_n\|\psi_n\|^2&lt;\infty\)</span>，令 <span class="arithmatex">\(\mu=\sum_n\mu_{\psi_n}\)</span>。于是</p>
+<div class="arithmatex">\[
+\|f_\alpha-f_\beta\|_{L^2(\mu)}^2
+=\sum_n\|(f_\alpha(T_\bullet)-f_\beta(T_\bullet))\psi_n\|^2\to0.
+\]</div>
+<p>有限部分由强收敛控制，尾部由 <span class="arithmatex">\(4R^2\sum_{n&gt;N}\|\psi_n\|^2\)</span> 控制。完备性给出 <span class="arithmatex">\(L^2\)</span> 极限 <span class="arithmatex">\(f\)</span>，取几乎处处收敛子序列可选 <span class="arithmatex">\(|f|\leq R\)</span> 的 Borel 代表。对每个 <span class="arithmatex">\(\psi_n\)</span>，<span class="arithmatex">\(\|(f_\alpha(T_\bullet)-f(T_\bullet))\psi_n\|^2\leq\|f_\alpha-f\|_{L^2(\mu)}^2\to0\)</span>。故 <span class="arithmatex">\(S=f(T_\bullet)\)</span> 于稠密张成及全空间。一般元素拆成实、虚部即可。</p>
+</details>
+<div id="thm-25" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 10.21</span><span class="book-name">可数族的正单生成元</span></p>
+<p>若上述算子族 <span class="arithmatex">\(S\)</span> 可数，则存在有界正算子 <span class="arithmatex">\(A\)</span>，使 <span class="arithmatex">\(W^*(S)=W^*(\{A\})\)</span>。此代数生成结论不要求 <span class="arithmatex">\(H\)</span> 可分；将代数元素全部写成单个 Borel 函数时使用可分条件。</p>
+</div>
+<details class="proof">
+<summary>证明 5.11.12</summary>
+<p>把每个正规算子拆成实、虚部，再取各自有理端点谱投影，得到可数交换投影族 <span class="arithmatex">\(E_0,E_1,\ldots\)</span>。阶梯逼近和 Borel 演算的强逼近说明原算子族与这些投影生成同一闭代数。令</p>
+<div class="arithmatex">\[
+A_n=\sum_{k\geq n}3^{-k}E_k,\qquad A=A_0.
+\]</div>
+<p>级数在算子范数下收敛且为正。尾和满足 <span class="arithmatex">\(0\leq3^nA_{n+1}\leq\frac12 I\)</span>，并与 <span class="arithmatex">\(E_n\)</span> 交换，所以联合演算给出</p>
+<div class="arithmatex">\[
+E_n=\mathbf1_{[1,\infty)}(3^nA_n).
+\]</div>
+<p>先由 <span class="arithmatex">\(A_0\)</span> 恢复 <span class="arithmatex">\(E_0\)</span>，再用 <span class="arithmatex">\(A_1=A_0-E_0\)</span>，递归恢复全部 <span class="arithmatex">\(E_n\)</span>。这些谱投影在 <span class="arithmatex">\(W^*(A)\)</span> 中，因为 Borel 演算由连续及多项式的强逼近得到。反向 <span class="arithmatex">\(A\)</span> 是原投影的范数极限，故两闭代数相同。此构造不使用可分性。</p>
+</details>
+<details class="proof">
+<summary>循环模型与可数谱投影的编码</summary>
+<p>对循环向量 <span class="arithmatex">\(\psi\)</span>，取 <span class="arithmatex">\(\mu(E)=\langle\psi,\pi(\mathbf1_E)\psi\rangle\)</span>。映射 <span class="arithmatex">\(\pi(f)\psi\mapsto f\)</span> 保持内积，因为其两边内积均为 <span class="arithmatex">\(\int\overline f g\,d\mu\)</span>。有界简单函数在 <span class="arithmatex">\(L^2\)</span> 中稠密，循环性保证两边的稠密像，从而延拓为酉映射。对一般空间取极大互相正交的循环子空间族，正交补若非零还可加入一个循环子空间，故它们张成全空间。</p>
+<p>对可数自伴族，取各算子的有理端点谱投影，得到可数个交换投影 <span class="arithmatex">\(E_0,E_1,\ldots\)</span>。令 <span class="arithmatex">\(A=\sum_{n\geq0}3^{-n}E_n\)</span>，算子范数收敛。第 <span class="arithmatex">\(n\)</span> 位投影可通过对剩余尾和作阈值函数恢复，因为后续尾和至多为该位权重的一半；依次恢复全部 <span class="arithmatex">\(E_n\)</span>，故它们与 <span class="arithmatex">\(A\)</span> 生成同一闭代数。</p>
+<p>对自伴闭包元素 <span class="arithmatex">\(S\)</span>，先用实星多项式 <span class="arithmatex">\(p_\alpha(T_\bullet)\)</span> 强逼近，再以截断函数 <span class="arithmatex">\(\phi(t)=\max(-\|S\|,\min(t,\|S\|))\)</span> 代换。由于全部算子交换，联合谱上的标量不等式 <span class="arithmatex">\(|\phi(s)-t|\leq|s-t|\)</span>（<span class="arithmatex">\(|t|\leq\|S\|\)</span>）保证截断仍强逼近 <span class="arithmatex">\(S\)</span>，同时取得统一范数界。一般元素分别处理实部和虚部。</p>
+<p>可分空间中取线性稠密的 <span class="arithmatex">\(\psi_n\)</span> 且 <span class="arithmatex">\(\sum_n\|\psi_n\|^2&lt;\infty\)</span>，用控制测度 <span class="arithmatex">\(\mu=\sum_n\mu_{\psi_n}\)</span> 将有界 SOT* 逼近变成 <span class="arithmatex">\(L^2(\mu)\)</span> 的 Cauchy 逼近。完备性和几乎处处子列给出有界 Borel 代表，稠密测试再恢复算子。这证明有限生成时所有闭包元素均来自 Borel 演算，并完成单算子编码。</p>
+</details>
+<h2 id="section-11"><span class="book-secnum">§ 11</span>练习</h2>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 11.1</span><span class="book-name">乘法算子的谱</span></p>
+<p>在 <span class="arithmatex">\(L^2[0,1]\)</span> 上令 <span class="arithmatex">\(Tf(t)=tf(t)\)</span>。证明 <span class="arithmatex">\(\sigma(T)=[0,1]\)</span>，并写出谱投影。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对 <span class="arithmatex">\(z\notin[0,1]\)</span>，逆算子为乘以 <span class="arithmatex">\((z-t)^{-1}\)</span>，它有界。对 <span class="arithmatex">\(\lambda\in[0,1]\)</span>，取支撑在 <span class="arithmatex">\(\lambda\)</span> 附近小区间、归一化的示性函数，得到近似特征向量，故 <span class="arithmatex">\(\lambda\in\sigma(T)\)</span>。<span class="arithmatex">\(E(B)\)</span> 是乘以 <span class="arithmatex">\(\mathbf1_B\)</span>。</p>
+</details>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 11.2</span><span class="book-name">谱族不是范数连续的</span></p>
+<p>对上题证明 <span class="arithmatex">\(E_{\lambda+h}\to E_\lambda\)</span> 强收敛，但当 <span class="arithmatex">\(0&lt;\lambda&lt;1\)</span>、<span class="arithmatex">\(h&gt;0\)</span> 充分小时，二者的算子范数距离为 <span class="arithmatex">\(1\)</span>。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p>对固定 <span class="arithmatex">\(f\)</span>，<span class="arithmatex">\(\int_\lambda^{\lambda+h}|f|^2\to0\)</span>，故强收敛。差是到区间 <span class="arithmatex">\((\lambda,\lambda+h]\)</span> 上的非零正交投影，其范数为 <span class="arithmatex">\(1\)</span>。</p>
+</details>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 11.3</span><span class="book-name">一个纯点谱模型</span></p>
+<p>在 <span class="arithmatex">\(\ell^2\)</span> 上令 <span class="arithmatex">\(Te_n=e_n/n\)</span>。求谱、谱投影，并判断 <span class="arithmatex">\(0\)</span> 是否为特征值。</p>
+</div>
+<details class="proof">
+<summary>解</summary>
+<p><span class="arithmatex">\(\sigma(T)=\{1/n:n\ge1\}\cup\{0\}\)</span>。<span class="arithmatex">\(E(B)\)</span> 保留那些 <span class="arithmatex">\(1/n\in B\)</span> 的坐标。零不对应任何非零特征向量，但 <span class="arithmatex">\(Te_n\to0\)</span>，所以它是谱中的极限点。<span class="arithmatex">\(E(\{0\})=0\)</span>，再次说明谱点不一定带有原子质量。</p>
+</details>
+<p>下一章保留乘法模型，但不再要求乘法函数有界，定义域因此成为谱理论的一部分。</p>
+<p><a class="md-button" href="../">返回目录</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="泛函分析学习笔记章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-04/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第四章：多项式矩问题与谱理论的起源</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-06/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第六章：无界算子、定义域与自伴扩张</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#functional-analysis">泛函分析学习笔记 · 第 6 / 12 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#functional-analysis">泛函分析</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=functional-analysis">#functional-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=spectral-theory">#spectral-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=operator-theory">#operator-theory</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../appendix-a/">附录 A：选择公理与存在性方法</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

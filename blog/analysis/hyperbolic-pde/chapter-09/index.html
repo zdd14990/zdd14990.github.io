@@ -1,0 +1,1258 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Refined frequency boxes, spatial packets, multilinear Kakeya, a Fourier overlap estimate for vortex stretching, and its comparison with viscous dissipation.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-09/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-09/">
+  <meta property="og:title" content="Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates - zdd14990">
+  <meta property="og:description" content="Refined frequency boxes, spatial packets, multilinear Kakeya, a Fourier overlap estimate for vortex stretching, and its comparison with viscous dissipation.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-27">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="course">
+
+  <meta property="article:tag" content="navier-stokes">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-09/">
+  <meta name="twitter:title" content="Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates - zdd14990">
+  <meta name="twitter:description" content="Refined frequency boxes, spatial packets, multilinear Kakeya, a Fourier overlap estimate for vortex stretching, and its comparison with viscous dissipation.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates",
+    "description": "Refined frequency boxes, spatial packets, multilinear Kakeya, a Fourier overlap estimate for vortex stretching, and its comparison with viscous dissipation.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-09/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-09/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-27",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "course", "navier-stokes"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-09" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vorticity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The vorticity equation and the enstrophy identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frequency-boxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Angular localization and refined frequency boxes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. From a multiplier kernel to spatial packets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multilinear-kakeya" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The interaction sum and multilinear Kakeya
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fourier-overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. A direct Fourier overlap estimate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stretching-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The fixed-frequency stretching example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dissipation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Comparing stretching with viscous dissipation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#energy-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Comparison with the ordinary energy estimate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. What has been proved, and what the evolution still requires
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Exercise: scaling and the smallness condition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 9 of 9</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-09">Chapter 9: Vortex Stretching, Analytic Tubes, and Overlap Estimates</h1>
+  </div>
+  <p class="book-standfirst">This chapter studies the vortex-stretching term in the enstrophy identity for three-dimensional Navier–Stokes: resolve a frequency shell into angular sectors and thinner boxes, identify the dual spatial tubes, estimate how differently oriented pieces interact, and compare with viscous dissipation. Elementary estimates are proved; the endpoint multilinear Kakeya theorem is cited, and its weighted and decaying versions are derived. A single-interaction estimate is never treated as a bound for the whole evolution without stating the extra assumptions.</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-27">2026-10-27</time></span>
+    
+    <span>4,389 字 · 约 13 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="vorticity"><span class="book-secnum">§ 01</span>The vorticity equation and the enstrophy identity</h2>
+<p>The setting is that of <a href="../chapter-08/">Chapter 8</a>, to which we refer for the derivations; we record only what is used. We work on <span class="arithmatex">\(\mathbb R^3\)</span> with smooth fields having enough decay to justify integration by parts, <span class="arithmatex">\(\Delta=\sum_i\partial_i^2\)</span>, and viscosity <span class="arithmatex">\(\nu&gt;0\)</span>. The system</p>
+<div class="arithmatex">\[
+\partial_tu+u\cdot\nabla u=-\nabla p+\nu\Delta u,\qquad\nabla\cdot u=0,\qquad u(0)=u_0,
+\]</div>
+<p>implies, for <span class="arithmatex">\(\omega=\nabla\times u\)</span>, that <span class="arithmatex">\(\nabla\cdot\omega=0\)</span> and</p>
+<div class="arithmatex">\[
+\partial_t\omega+u\cdot\nabla\omega=\omega\cdot\nabla u+\nu\Delta\omega.
+\]</div>
+<p>In this chapter we use the Fourier convention</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^3}e^{-2\pi ix\cdot\xi}f(x)\,dx,
+\]</div>
+<p>which differs from that of <a href="../chapter-05/">Chapter 5</a> by the <span class="arithmatex">\(2\pi\)</span> in the exponent. Then <span class="arithmatex">\(\|\widehat f\|_{L^2}=\|f\|_{L^2}\)</span>, <span class="arithmatex">\(\widehat{fg}=\widehat f*\widehat g\)</span>, and <span class="arithmatex">\(\widehat{\partial_jf}=2\pi i\xi_j\widehat f\)</span>, with no further normalization constants.</p>
+<p>Since <span class="arithmatex">\(\nabla\times\omega=\nabla(\nabla\cdot u)-\Delta u=-\Delta u\)</span>,</p>
+<div class="arithmatex">\[
+u=(-\Delta)^{-1}(\nabla\times\omega),\qquad
+\nabla u=\nabla(-\Delta)^{-1}(\nabla\times\omega)=:\mathcal R\omega,
+\]</div>
+<p>with <span class="arithmatex">\((\nabla u)_{ij}=\partial_ju_i\)</span>. The entries of <span class="arithmatex">\(\mathcal R\)</span> are sums of second-order Riesz transforms; the matrix symbol is smooth away from the origin and homogeneous of degree zero. Calderón–Zygmund theory gives</p>
+<div class="arithmatex">\[
+\|\mathcal R\omega\|_{L^p}\le C_p\|\omega\|_{L^p},\qquad1&lt;p&lt;\infty,
+\]</div>
+<p>with a constant depending on <span class="arithmatex">\(p\)</span>. In <span class="arithmatex">\(L^2\)</span> there is an exact identity: <span class="arithmatex">\(\xi\cdot\widehat u=0\)</span> and the Lagrange identity (applied to the real and imaginary parts of <span class="arithmatex">\(\widehat u\)</span>) give <span class="arithmatex">\(|\xi\times\widehat u|^2=|\xi|^2|\widehat u|^2\)</span>, hence</p>
+<div class="arithmatex">\[
+\|\nabla u\|_{L^2}=\|\omega\|_{L^2},\qquad\|D^2u\|_{L^2}=\|\nabla\omega\|_{L^2}.
+\tag{1.1}
+\]</div>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Sign convention</p>
+<p>With the dissipative Laplacian <span class="arithmatex">\(\Delta=\sum_i\partial_i^2\)</span>, velocity recovery reads <span class="arithmatex">\(u=(-\Delta)^{-1}\operatorname{curl}\omega\)</span>; writing <span class="arithmatex">\(\Delta^{-1}\operatorname{curl}\omega\)</span> drops a sign. Absolute-value bounds are unaffected.</p>
+</div>
+<p>Taking the <span class="arithmatex">\(L^2\)</span> pairing with <span class="arithmatex">\(\omega\)</span>, the transport term vanishes because <span class="arithmatex">\(\int(u\cdot\nabla\omega)\cdot\omega=\frac12\int u\cdot\nabla|\omega|^2=0\)</span>, and diffusion contributes <span class="arithmatex">\(-\nu\|\nabla\omega\|_{L^2}^2\)</span>. This yields the exact enstrophy identity</p>
+<div class="arithmatex">\[
+\frac12\frac{d}{dt}\|\omega\|_{L^2}^2+\nu\|\nabla\omega\|_{L^2}^2
+=\int_{\mathbb R^3}\sum_{i,j=1}^3\omega_i\omega_j\partial_ju_i\,dx
+=T(\omega,\omega,\mathcal R\omega),
+\tag{1.2}
+\]</div>
+<p>where for vector fields <span class="arithmatex">\(f,g\)</span> and a matrix field <span class="arithmatex">\(A\)</span>,</p>
+<div class="arithmatex">\[
+T(f,g,A)=\int_{\mathbb R^3}\sum_{i,j=1}^3f_ig_jA_{ij}\,dx,\qquad
+|T(f,g,A)|\le\int|f|\,|g|\,|A|\,dx\le\big\||f|\,|g|\big\|_{L^2}\|A\|_{L^2},
+\]</div>
+<p>with <span class="arithmatex">\(|A|\)</span> the Frobenius norm. The factor <span class="arithmatex">\(\frac12\)</span> in (1.2) matters in an identity, though fixed constants are harmless in estimates. Transport redistributes enstrophy without producing it; stretching can create it; viscosity removes it at rate <span class="arithmatex">\(\nu\|\nabla\omega\|_{L^2}^2\)</span>. The purpose of the geometric estimates below is to control the production term by this removal term.</p>
+<h2 id="frequency-boxes"><span class="book-secnum">§ 02</span>Angular localization and refined frequency boxes</h2>
+<p><strong>Angular sectors.</strong> Fix a dyadic shell <span class="arithmatex">\(|\xi|\simeq2^j\)</span> and <span class="arithmatex">\(0&lt;\delta\le\delta_0\)</span>, with <span class="arithmatex">\(\delta_0\)</span> a small absolute constant. Let <span class="arithmatex">\(e\in\mathbb S^2\)</span> label the centers of a smooth angular partition of unity <span class="arithmatex">\(\sum_e\varphi_e(n)=1\)</span> on <span class="arithmatex">\(\mathbb S^2\)</span>, with bounded overlap and</p>
+<div class="arithmatex">\[
+\operatorname{supp}\varphi_e\Big(\frac{\xi}{|\xi|}\Big)\subset\Big\{\Big|\frac{\xi}{|\xi|}-e\Big|\lesssim\delta\Big\}.
+\]</div>
+<p>There are <span class="arithmatex">\(O(\delta^{-2})\)</span> caps, since the sphere has area of order one and each cap has area of order <span class="arithmatex">\(\delta^2\)</span>. Let <span class="arithmatex">\(\psi\)</span> be a smooth radial dyadic cutoff with <span class="arithmatex">\(\sum_{j\in\mathbb Z}\psi(2^{-j}|\xi|)=1\)</span> for <span class="arithmatex">\(\xi\ne0\)</span>, supported where <span class="arithmatex">\(1/2\le2^{-j}|\xi|\le2\)</span>. On the support of the coarse sector multiplier <span class="arithmatex">\(\psi(2^{-j}|\xi|)\varphi_e(\xi/|\xi|)\)</span>, write <span class="arithmatex">\(\xi_\parallel=\xi\cdot e\)</span> and <span class="arithmatex">\(\xi_\perp=\xi-(\xi\cdot e)e\)</span>. Then <span class="arithmatex">\(|\xi_\parallel|\lesssim2^j\)</span> and <span class="arithmatex">\(|\xi_\perp|\lesssim2^j\delta\)</span>, so the coarse sector fits in a box of dimensions <span class="arithmatex">\(2^j\times2^j\delta\times2^j\delta\)</span>: a plate, longer radially than in the two transverse directions.</p>
+<p><strong>Radial refinement.</strong> Subdivide the radial direction into intervals of width <span class="arithmatex">\(2^j\delta^2\)</span>. Set</p>
+<div class="arithmatex">\[
+h=2^j\delta^2,\qquad a=2^j\delta,\qquad0&lt;h\le a,
+\]</div>
+<p>so <span class="arithmatex">\(h\)</span> is the short frequency dimension. Let <span class="arithmatex">\(\phi\in C_c^\infty(\mathbb R)\)</span> be nonnegative with <span class="arithmatex">\(\sum_{m\in\mathbb Z}\phi(s-m)=1\)</span>, and define</p>
+<div class="arithmatex">\[
+\chi_{j,e,m}(\xi)=\psi(2^{-j}|\xi|)\,\varphi_e\Big(\frac{\xi}{|\xi|}\Big)\,\phi\Big(\frac{\xi\cdot e}{2^j\delta^2}-m\Big),
+\qquad\widehat{P_qf}=\chi_q\widehat f,\quad q=(j,e,m).
+\]</div>
+<p>Each piece lives in a box of dimensions</p>
+<div class="arithmatex">\[
+2^j\delta^2\times2^j\delta\times2^j\delta=h\times a\times a,
+\qquad\text{volume } ha^2=2^{3j}\delta^4.
+\tag{2.1}
+\]</div>
+<p>There are <span class="arithmatex">\(O(\delta^{-2})\)</span> radial indices per sector, hence <span class="arithmatex">\(O(\delta^{-4})\)</span> boxes per shell, with bounded overlap. This growth matters when sums are taken: <span class="arithmatex">\(\delta\)</span> is a decomposition parameter, not a free improvement for the whole field. Resolving the radial uncertainty down to <span class="arithmatex">\(2^j\delta^2\)</span> makes the dual spatial piece long in direction <span class="arithmatex">\(e\)</span>: a tube rather than a flat plate.</p>
+<p><strong>Two transverse polarizations.</strong> Complete <span class="arithmatex">\(e\)</span> to an orthonormal frame <span class="arithmatex">\((e,a_e,b_e)\)</span> and write <span class="arithmatex">\(n=\xi/|\xi|\)</span>. Since <span class="arithmatex">\(a_e\cdot e=0\)</span>, on the cap <span class="arithmatex">\(|a_e\cdot n|=|a_e\cdot(n-e)|\lesssim\delta\)</span>, so the denominator below stays away from zero:</p>
+<div class="arithmatex">\[
+p_{e_1}(n)=\frac{a_e-(a_e\cdot n)n}{\sqrt{1-(a_e\cdot n)^2}},\qquad p_{e_2}(n)=n\times p_{e_1}(n).
+\]</div>
+<p>Direct calculation gives <span class="arithmatex">\(|p_{e_1}|^2=\big(1-2(a_e\cdot n)^2+(a_e\cdot n)^2\big)/(1-(a_e\cdot n)^2)=1\)</span> and <span class="arithmatex">\(n\cdot p_{e_1}=0\)</span>; then <span class="arithmatex">\(p_{e_2}\)</span> is a unit vector orthogonal to both. So <span class="arithmatex">\((n,p_{e_1},p_{e_2})\)</span> is an orthonormal frame. The Fourier form of <span class="arithmatex">\(\nabla\cdot\omega=0\)</span> is <span class="arithmatex">\(\xi\cdot\widehat\omega(\xi)=0\)</span>, so on the cap</p>
+<div class="arithmatex">\[
+\widehat\omega=(\widehat\omega\cdot p_{e_1})p_{e_1}+(\widehat\omega\cdot p_{e_2})p_{e_2},
+\qquad|\widehat\omega|^2=|\widehat\omega\cdot p_{e_1}|^2+|\widehat\omega\cdot p_{e_2}|^2.
+\]</div>
+<p>The coefficients may be complex; the frame is real. The construction is performed cap by cap, with no global smooth frame on the sphere. The index <span class="arithmatex">\(I\in\{1,2\}\)</span> labels the polarizations <span class="arithmatex">\(p_{e_I}\)</span>, which span the plane <span class="arithmatex">\(\xi^\perp\)</span> forced by incompressibility; <span class="arithmatex">\(e\)</span> instead gives the direction of the spatial tube.</p>
+<h2 id="packets"><span class="book-secnum">§ 03</span>From a multiplier kernel to spatial packets</h2>
+<p>The statement "the pieces decay rapidly away from tubes" has two steps behind it: a kernel estimate, and a decomposition into translated packets. They should not be conflated.</p>
+<p><strong>The anisotropic kernel.</strong> For one box <span class="arithmatex">\(q\)</span> with center <span class="arithmatex">\(\xi_q\)</span>, define the linear map</p>
+<div class="arithmatex">\[
+B_q(\eta_1,\eta_2,\eta_3)=h\eta_1e+a\eta_2a_e+a\eta_3b_e,\qquad|\det B_q|=ha^2.
+\]</div>
+<p>The rescaled multiplier <span class="arithmatex">\(b_q(\eta)=\chi_q(\xi_q+B_q\eta)\)</span> is supported in a fixed box and has derivatives of every fixed order bounded uniformly in <span class="arithmatex">\(j,e,m,\delta\)</span> (fixed changes in box dimensions are absorbed in constants). Indeed, differentiating the radial slicing factor in direction <span class="arithmatex">\(e\)</span> costs <span class="arithmatex">\(h^{-1}\)</span>, and differentiating the angular cap in a transverse direction costs <span class="arithmatex">\(a^{-1}\)</span>; the shell cutoff costs <span class="arithmatex">\(2^{-j}\le a^{-1}\)</span>, and an <span class="arithmatex">\(e\)</span>-derivative of the cap costs <span class="arithmatex">\(a^{-1}\le h^{-1}\)</span>. After multiplying by the factors <span class="arithmatex">\(h\)</span> or <span class="arithmatex">\(a\)</span> from the chain rule, all bounds are uniform. The polarization factors <span class="arithmatex">\(p_{e_I}\)</span> behave the same way, since their denominator stays away from zero.</p>
+<p>Let <span class="arithmatex">\(K_q=\mathcal F^{-1}\chi_q\)</span>. The substitution <span class="arithmatex">\(\xi=\xi_q+B_q\eta\)</span> gives</p>
+<div class="arithmatex">\[
+K_q(x)=ha^2e^{2\pi ix\cdot\xi_q}\int e^{2\pi i(B_q^Tx)\cdot\eta}b_q(\eta)\,d\eta.
+\]</div>
+<p>Since <span class="arithmatex">\((1-\Delta_\eta)^Le^{2\pi iy\cdot\eta}=(1+4\pi^2|y|^2)^Le^{2\pi iy\cdot\eta}\)</span>, integration by parts gives</p>
+<div class="arithmatex">\[
+(1+4\pi^2|B_q^Tx|^2)^L\left|\int e^{2\pi i(B_q^Tx)\cdot\eta}b_q(\eta)\,d\eta\right|\le\|(1-\Delta_\eta)^Lb_q\|_{L^1},
+\]</div>
+<p>and the right side is uniformly bounded. Writing <span class="arithmatex">\(x_\parallel=x\cdot e\)</span> and <span class="arithmatex">\(x_\perp=x-(x\cdot e)e\)</span>, we have <span class="arithmatex">\(|B_q^Tx|\simeq h|x_\parallel|+a|x_\perp|\)</span>. Taking <span class="arithmatex">\(2L\ge M\)</span> proves, for every <span class="arithmatex">\(M\ge0\)</span>,</p>
+<div class="arithmatex">\[
+|K_q(x)|\le C_M2^{3j}\delta^4\big(1+2^j\delta^2|x_\parallel|+2^j\delta|x_\perp|\big)^{-M}.
+\tag{3.1}
+\]</div>
+<p>Changing variables <span class="arithmatex">\(y=B_q^Tx\)</span> also gives <span class="arithmatex">\(\|K_q\|_{L^1}\le C\)</span>. The significant spatial region has dimensions</p>
+<div class="arithmatex">\[
+h^{-1}\times a^{-1}\times a^{-1}=2^{-j}\delta^{-2}\times2^{-j}\delta^{-1}\times2^{-j}\delta^{-1},
+\tag{3.2}
+\]</div>
+<p>with length-to-width ratio <span class="arithmatex">\(\delta^{-1}\)</span>: the thin radial direction in frequency becomes the long direction in physical space.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Cutoff versus packet</p>
+<p>Multiplication by a frequency cutoff produces <span class="arithmatex">\(K_q*f\)</span>, which is not supported near one fixed spatial tube; translating <span class="arithmatex">\(f\)</span> translates <span class="arithmatex">\(K_q*f\)</span>. The kernel estimate is correct, but translated packets must be introduced before one spatial tube can be attached to each piece. The Fourier cutoff <span class="arithmatex">\(P_q\)</span> and an individual packet operator are different operators.</p>
+</div>
+<p><strong>A complete packet construction in one box.</strong> Let <span class="arithmatex">\(f_q\in L^2\)</span> have Fourier support in <span class="arithmatex">\(\xi_q+B_q[-1,1]^3\)</span>, and put</p>
+<div class="arithmatex">\[
+F_q(\eta)=|\det B_q|^{1/2}\widehat f_q(\xi_q+B_q\eta),\qquad Q=[-\pi,\pi]^3,
+\]</div>
+<p>extended by zero inside <span class="arithmatex">\(Q\)</span>. Changing variables, <span class="arithmatex">\(\|F_q\|_{L^2(Q)}^2=\|f_q\|_{L^2(\mathbb R^3)}^2\)</span>. The functions <span class="arithmatex">\((2\pi)^{-3/2}e^{-ik\cdot\eta}\)</span>, <span class="arithmatex">\(k\in\mathbb Z^3\)</span>, form an orthonormal basis of <span class="arithmatex">\(L^2(Q)\)</span>, so</p>
+<div class="arithmatex">\[
+F_q(\eta)=\sum_{k\in\mathbb Z^3}c_{q,k}(2\pi)^{-3/2}e^{-ik\cdot\eta},\qquad
+\sum_k|c_{q,k}|^2=\|f_q\|_{L^2}^2.
+\tag{3.3}
+\]</div>
+<p>No periodicity of the original function is required: this expands its rescaled Fourier transform on a bounded cube, and boundary values do not matter in <span class="arithmatex">\(L^2\)</span>. Choose <span class="arithmatex">\(\rho\in C_c^\infty((-\pi,\pi)^3)\)</span> equal to one on <span class="arithmatex">\([-1,1]^3\)</span>. Since <span class="arithmatex">\(\rho F_q=F_q\)</span>, multiplying (3.3) by <span class="arithmatex">\(\rho\)</span> (a bounded operation on <span class="arithmatex">\(L^2(Q)\)</span>) and transforming back gives</p>
+<div class="arithmatex">\[
+f_q=\sum_{k\in\mathbb Z^3}c_{q,k}\phi_{q,k}\quad\text{in }L^2,\qquad
+\widehat{\phi_{q,k}}(\xi)=\frac{\rho(B_q^{-1}(\xi-\xi_q))}{(2\pi)^{3/2}|\det B_q|^{1/2}}e^{-ik\cdot B_q^{-1}(\xi-\xi_q)}.
+\tag{3.4}
+\]</div>
+<p>All packets have Fourier support in a fixed enlargement of the box; choosing the initial box with a fixed margin keeps this enlargement in the same shell and cap up to constants. With <span class="arithmatex">\(x_{q,k}=\frac1{2\pi}B_q^{-T}k\)</span>, substituting <span class="arithmatex">\(\xi=\xi_q+B_q\eta\)</span> in the inversion integral and using <span class="arithmatex">\(B_q\eta\cdot x=\eta\cdot B_q^Tx\)</span> gives</p>
+<div class="arithmatex">\[
+\phi_{q,k}(x)=(2\pi)^{-3/2}|\det B_q|^{1/2}e^{2\pi i\xi_q\cdot x}\,\check\rho\big(B_q^T(x-x_{q,k})\big),
+\]</div>
+<p>and the rapid decay of <span class="arithmatex">\(\check\rho\)</span> yields</p>
+<div class="arithmatex">\[
+|\phi_{q,k}(x)|\le C_M(ha^2)^{1/2}\big(1+h|(x-x_{q,k})_\parallel|+a|(x-x_{q,k})_\perp|\big)^{-M}.
+\tag{3.5}
+\]</div>
+<p>Each <span class="arithmatex">\(\phi_{q,k}\)</span> has <span class="arithmatex">\(\|\phi_{q,k}\|_{L^2}=(2\pi)^{-3/2}\|\rho\|_{L^2}\)</span>, a fixed constant. Its significant region is a translated tube <span class="arithmatex">\(T_{q,k}\)</span> centered at <span class="arithmatex">\(x_{q,k}\)</span> with dimensions (3.2); the amplitude <span class="arithmatex">\((ha^2)^{1/2}\)</span> is the inverse square root of the tube volume, as <span class="arithmatex">\(L^2\)</span> normalization requires.</p>
+<p><strong>Reconstruction and divergence-free packets.</strong> Apply the construction to <span class="arithmatex">\(\widehat f_q=\chi_q\widehat f\)</span>. By bounded overlap and Plancherel,</p>
+<div class="arithmatex">\[
+\sum_{q,k}|c_{q,k}|^2=\sum_q\|f_q\|_{L^2}^2\le C\|f\|_{L^2}^2,
+\tag{3.6}
+\]</div>
+<p>and <span class="arithmatex">\(f=\sum_qf_q\)</span> in <span class="arithmatex">\(L^2\)</span> by the partition of unity, interpreted through finite partial sums and limits. For <span class="arithmatex">\(\omega\)</span>, first split the two polarizations: expand the scalar coefficient <span class="arithmatex">\(\chi_q(\widehat\omega\cdot p_{e_I})\)</span> and multiply the packet transform in (3.4) by <span class="arithmatex">\(p_{e_I}(\xi/|\xi|)\)</span>. Then <span class="arithmatex">\(\xi\cdot\widehat{\phi_{q,k,I}}=0\)</span> exactly, and smoothness of the polarization multiplier preserves (3.5) and (3.6). This gives a literal meaning to the shorthand</p>
+<div class="arithmatex">\[
+\omega_I=\sum_{T\in\Pi}P_T\omega_I,\qquad P_T\omega_I=c_T\phi_T,
+\]</div>
+<p>where <span class="arithmatex">\(T\)</span> includes the box, polarization and translation indices. <span class="arithmatex">\(P_T\)</span> is a coefficient-and-synthesis operator; it need not be an orthogonal projection or a Fourier multiplier. In particular one should not assume <span class="arithmatex">\(P_T\mathcal R=\mathcal RP_T\)</span>. One may decompose <span class="arithmatex">\(\mathcal R\omega\)</span> directly or apply <span class="arithmatex">\(\mathcal R\)</span> to each vorticity packet; both are legitimate and different constructions. A localized degree-zero multiplier has the same rescaled symbol bounds and preserves the packet envelope up to constants.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Schwartz, not compactly supported</p>
+<p>It is tempting to say <span class="arithmatex">\(P_T\omega\in C_c^\infty(\mathbb R^3)\)</span>. A nonzero function cannot have compact support in both space and frequency: the inverse Fourier transform of a compactly supported function extends to an entire function on <span class="arithmatex">\(\mathbb C^3\)</span>, so vanishing on an open set forces it to vanish identically. The correct class is <span class="arithmatex">\(\mathcal S(\mathbb R^3)\subset C^\infty\)</span>, and the localization is the rapid decay (3.5).</p>
+</div>
+<p>A packet is an oscillatory function with a smooth envelope, not the indicator of a tube; its tail is small rather than zero. Hence amplitudes and weights must appear when a geometric tube theorem is used in a PDE estimate.</p>
+<h2 id="multilinear-kakeya"><span class="book-secnum">§ 04</span>The interaction sum and multilinear Kakeya</h2>
+<p><strong>The interaction sum.</strong> At the coarse level, a partition <span class="arithmatex">\(\omega=\sum_{P\in\mathcal P}P_P\omega\)</span> gives <span class="arithmatex">\(T(\omega,\omega,\mathcal R\omega)=\sum_{P_i,P_j,P_k}T(P_{P_i}\omega,P_{P_j}\omega,P_{P_k}(\mathcal R\omega))\)</span>. After the tube decomposition,</p>
+<div class="arithmatex">\[
+T(\omega,\omega,\mathcal R\omega)=\sum_{T_i\in\Pi_1,\ T_j\in\Pi_2,\ T_k\in\Pi_3}\int_{\mathbb R^3}\sum_{a,b=1}^3(P_{T_i}\omega)_a(P_{T_j}\omega)_b(P_{T_k}(\mathcal R\omega))_{ab}\,dx.
+\tag{4.1}
+\]</div>
+<p>Initially one uses finite decompositions. For a smooth field, frequency truncations converge in the Sobolev norms needed to pass to the trilinear form; inside finitely many frequency boxes, <span class="arithmatex">\(L^2\)</span> convergence of packet sums gives convergence in higher norms by Bernstein, so the integrals converge. An absolutely convergent estimate for the unrestricted sum must be established separately; it is not supplied by the identity.</p>
+<p>How transverse are the different tubes? For three unit directions the relevant quantity is</p>
+<div class="arithmatex">\[
+|\det(e_1,e_2,e_3)|=|e_1\cdot(e_2\times e_3)|,
+\]</div>
+<p>the volume of the parallelepiped they span. It vanishes when they lie in one plane; pairwise nonparallel directions are not enough.</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">Guth&#x27;s endpoint multilinear Kakeya inequality (cited)</span></p>
+<p>Let <span class="arithmatex">\(\Pi_1,\Pi_2,\Pi_3\)</span> be finite families of straight, doubly infinite tubes of radius <span class="arithmatex">\(r&gt;0\)</span> in <span class="arithmatex">\(\mathbb R^3\)</span>. Suppose every choice <span class="arithmatex">\(T_i\in\Pi_i\)</span> has unit directions satisfying</p>
+<div class="arithmatex">\[
+|\det(e(T_1),e(T_2),e(T_3))|\ge\kappa&gt;0.
+\]</div>
+<p>Then</p>
+<div class="arithmatex">\[
+\int_{\mathbb R^3}\prod_{i=1}^3\Big(\sum_{T\in\Pi_i}\mathbf 1_T(x)\Big)^{1/2}dx\le C\kappa^{-1/2}r^3\prod_{i=1}^3(\#\Pi_i)^{1/2}.
+\tag{4.2}
+\]</div>
+</div>
+<p>This is Theorem 1.3 of Guth <a href="#references">[1]</a>, specialized to dimension three and rescaled from radius one; the factor <span class="arithmatex">\(r^3\)</span> follows from the substitution <span class="arithmatex">\(x=ry\)</span>. Bennett, Carbery and Tao established the preceding non-endpoint multilinear theory <a href="#references">[2]</a>. We use the endpoint theorem as an external result and do not prove it. Finite tubes satisfy the same inequality, because extending each to an infinite tube only increases the integrand. The hypothesis concerns <em>every</em> triple of tube directions, not merely three nominal center directions; if all directions in family <span class="arithmatex">\(i\)</span> are close to a fixed <span class="arithmatex">\(e_i\)</span>, the condition follows from a positive lower bound for <span class="arithmatex">\(|\det(e_1,e_2,e_3)|\)</span> and sufficiently small angular deviations, by multilinearity of the determinant.</p>
+<p><strong>Why square roots: the coordinate-axis case.</strong> If the families are exactly parallel to the coordinate axes, their multiplicity functions have the form <span class="arithmatex">\(F_1(x_2,x_3)\)</span>, <span class="arithmatex">\(F_2(x_1,x_3)\)</span>, <span class="arithmatex">\(F_3(x_1,x_2)\)</span>. For nonnegative integrable functions of these variables,</p>
+<div class="arithmatex">\[
+\int_{\mathbb R^3}(F_1F_2F_3)^{1/2}dx\le\Big(\int F_1\Big)^{1/2}\Big(\int F_2\Big)^{1/2}\Big(\int F_3\Big)^{1/2},
+\tag{4.3}
+\]</div>
+<p>with two-dimensional integrals on the right. Indeed, Cauchy–Schwarz in <span class="arithmatex">\(x_1\)</span> gives</p>
+<div class="arithmatex">\[
+\int\sqrt{F_2(x_1,x_3)F_3(x_1,x_2)}\,dx_1\le A(x_3)^{1/2}B(x_2)^{1/2},\qquad A=\int F_2\,dx_1,\ B=\int F_3\,dx_1.
+\]</div>
+<p>Cauchy–Schwarz in <span class="arithmatex">\((x_2,x_3)\)</span> applied to <span class="arithmatex">\(F_1^{1/2}(AB)^{1/2}\)</span> then gives <span class="arithmatex">\(\big(\int F_1\big)^{1/2}\big(\int AB\big)^{1/2}\)</span>, and <span class="arithmatex">\(\int A(x_3)B(x_2)\,dx_2\,dx_3=\int A\int B\)</span>. For tubes, <span class="arithmatex">\(\int F_i=\pi r^2\#\Pi_i\)</span>, which produces <span class="arithmatex">\(r^3\)</span> and <span class="arithmatex">\((\#\Pi_i)^{1/2}\)</span>. Guth's theorem controls the geometric difficulty when directions vary.</p>
+<p><strong>Weights.</strong> For nonnegative weights <span class="arithmatex">\(w_T\)</span>, the theorem gives</p>
+<div class="arithmatex">\[
+\int\prod_{i=1}^3\Big(\sum_{T\in\Pi_i}w_T\mathbf 1_T\Big)^{1/2}\le C\kappa^{-1/2}r^3\prod_{i=1}^3\Big(\sum_{T\in\Pi_i}w_T\Big)^{1/2}.
+\tag{4.4}
+\]</div>
+<p>For integer weights, repeat each tube <span class="arithmatex">\(w_T\)</span> times. For rational weights, multiply all weights in all three families by a common denominator <span class="arithmatex">\(N\)</span>, apply the integer case, and cancel the factor <span class="arithmatex">\(N^{3/2}\)</span> appearing on both sides. Approximate real weights from below by rationals and pass to the limit by monotone convergence; monotone convergence also extends (4.4) to countable families with summable weights.</p>
+<p><strong>Decaying tails.</strong> Let <span class="arithmatex">\(L_T\)</span> be the axis line of <span class="arithmatex">\(T\)</span> and</p>
+<div class="arithmatex">\[
+W_T(x)=\Big(1+\frac{\operatorname{dist}(x,L_T)}r\Big)^{-M},\qquad M&gt;2.
+\]</div>
+<p>If <span class="arithmatex">\(2^{\ell-1}r&lt;\operatorname{dist}(x,L_T)\le2^\ell r\)</span> with <span class="arithmatex">\(\ell\ge1\)</span>, then <span class="arithmatex">\(W_T(x)\le(1+2^{\ell-1})^{-M}\le2^M2^{-M\ell}\)</span>, so</p>
+<div class="arithmatex">\[
+W_T(x)\le C_M\sum_{\ell\ge0}2^{-M\ell}\mathbf 1_{\{\operatorname{dist}(x,L_T)\le2^\ell r\}}.
+\]</div>
+<p>Cover the tube of radius <span class="arithmatex">\(2^\ell r\)</span> about <span class="arithmatex">\(L_T\)</span> by at most <span class="arithmatex">\(C2^{2\ell}\)</span> parallel tubes of radius <span class="arithmatex">\(r\)</span> (cover a disk of radius <span class="arithmatex">\(2^\ell r\)</span> by disks of radius <span class="arithmatex">\(r\)</span>). These have the same directions, so the determinant hypothesis persists. Insert the bound into each factor and use <span class="arithmatex">\(\sqrt{\sum_\ell a_\ell}\le\sum_\ell\sqrt{a_\ell}\)</span>; expanding the three sums, the term with indices <span class="arithmatex">\(\ell_1,\ell_2,\ell_3\)</span> is controlled by (4.4) applied to the enlarged families, whose total weights are at most <span class="arithmatex">\(C2^{2\ell_i}\sum_Tw_T\)</span>. After square roots this contributes <span class="arithmatex">\(C2^{\ell_1+\ell_2+\ell_3}\)</span>, against the decay <span class="arithmatex">\(2^{-M(\ell_1+\ell_2+\ell_3)/2}\)</span>. The resulting factor</p>
+<div class="arithmatex">\[
+\prod_{i=1}^3\sum_{\ell_i\ge0}2^{-(M/2-1)\ell_i}
+\]</div>
+<p>converges since <span class="arithmatex">\(M&gt;2\)</span>. Thus (4.4) holds with <span class="arithmatex">\(W_T\)</span> in place of <span class="arithmatex">\(\mathbf 1_T\)</span>, with no change in the powers of <span class="arithmatex">\(r\)</span> or <span class="arithmatex">\(\kappa\)</span>.</p>
+<p><strong>Application to packets.</strong> For packets at a common scale <span class="arithmatex">\(j,\delta\)</span> obeying (3.5), take <span class="arithmatex">\(r=a^{-1}\)</span> and <span class="arithmatex">\(w_T=|c_T|^2\)</span>; dropping the longitudinal decay only enlarges the envelope, and gives <span class="arithmatex">\(|c_T\phi_T|\le C(ha^2)^{1/2}|c_T|W_T\)</span> with <span class="arithmatex">\(\operatorname{dist}(x,L_T)=|(x-x_T)_\perp|\)</span>. The theorem therefore controls the nonnegative quantities</p>
+<div class="arithmatex">\[
+G_i(x)=\Big(\sum_{T\in\Pi_i}|c_T|^2W_T(x)\Big)^{1/2},\qquad
+\int G_1G_2G_3\lesssim\kappa^{-1/2}a^{-3}\prod_{i=1}^3\Big(\sum_{T\in\Pi_i}|c_T|^2\Big)^{1/2}.
+\]</div>
+<p>Multiplying by the three normalization factors <span class="arithmatex">\((ha^2)^{1/2}\)</span> gives the scale</p>
+<div class="arithmatex">\[
+\kappa^{-1/2}(ha^2)^{3/2}a^{-3}=\kappa^{-1/2}h^{3/2}.
+\tag{4.5}
+\]</div>
+<div class="admonition warning">
+<p class="admonition-title">What this does and does not bound</p>
+<p>This is a bound for products of square-sum envelopes. A deterministic packet sum <span class="arithmatex">\(|\sum_Tc_T\phi_T|\)</span> is not in general bounded by its square-sum envelope with a universal constant: overlapping packets can add coherently. To use the estimate for (4.1), an orthogonality, multiplicity, or other summation argument must also be proved. The distinction between <span class="arithmatex">\(P_T\omega\)</span> and <span class="arithmatex">\(\mathbf 1_T\)</span> is essential here.</p>
+</div>
+<h2 id="fourier-overlap"><span class="book-secnum">§ 05</span>A direct Fourier overlap estimate</h2>
+<p>The next estimate is elementary and bilinear: it uses two Fourier supports and Cauchy–Schwarz. It is distinct from the three-family spatial Kakeya theorem.</p>
+<div class="admonition lemma">
+<p class="admonition-title"><span class="book-label">引理 5.1</span><span class="book-name">Overlap controls a product</span></p>
+<p>Let <span class="arithmatex">\(f_1,f_2\in L^2(\mathbb R^3)\)</span> have Fourier supports in bounded measurable sets <span class="arithmatex">\(\Omega_1,\Omega_2\)</span>. If</p>
+<div class="arithmatex">\[
+\sup_{\eta\in\mathbb R^3}|\Omega_1\cap(\eta-\Omega_2)|\le V,
+\]</div>
+<p>then</p>
+<div class="arithmatex">\[
+\|f_1f_2\|_{L^2}\le V^{1/2}\|f_1\|_{L^2}\|f_2\|_{L^2}.
+\tag{5.1}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>For a fixed output frequency <span class="arithmatex">\(\eta\)</span>, both factors of <span class="arithmatex">\(\widehat f_1(\xi)\widehat f_2(\eta-\xi)\)</span> can be nonzero only when <span class="arithmatex">\(\xi\in\Omega_1\)</span> and <span class="arithmatex">\(\eta-\xi\in\Omega_2\)</span>, that is, <span class="arithmatex">\(\xi\in\Omega_1\cap(\eta-\Omega_2)\)</span>. Cauchy–Schwarz on this set gives</p>
+<div class="arithmatex">\[
+|(\widehat f_1*\widehat f_2)(\eta)|^2=\left|\int_{\Omega_1\cap(\eta-\Omega_2)}\widehat f_1(\xi)\widehat f_2(\eta-\xi)\,d\xi\right|^2
+\le|\Omega_1\cap(\eta-\Omega_2)|\int_{\mathbb R^3}|\widehat f_1(\xi)|^2|\widehat f_2(\eta-\xi)|^2\,d\xi.
+\]</div>
+<p>Integrate in <span class="arithmatex">\(\eta\)</span> and use Tonelli's theorem for the nonnegative integrand:</p>
+<div class="arithmatex">\[
+\|\widehat f_1*\widehat f_2\|_{L^2}^2\le V\int_{\mathbb R^3}|\widehat f_1(\xi)|^2\Big(\int_{\mathbb R^3}|\widehat f_2(\eta-\xi)|^2\,d\eta\Big)d\xi=V\|\widehat f_1\|_{L^2}^2\|\widehat f_2\|_{L^2}^2.
+\]</div>
+<p>The substitution <span class="arithmatex">\(\zeta=\eta-\xi\)</span> makes the inner integral independent of <span class="arithmatex">\(\xi\)</span>. Plancherel and <span class="arithmatex">\(\widehat{f_1f_2}=\widehat f_1*\widehat f_2\)</span> finish the proof. Since <span class="arithmatex">\(\widehat f_i\in L^2\)</span> has bounded support, it lies in <span class="arithmatex">\(L^1\)</span>, so <span class="arithmatex">\(f_i\)</span> is bounded and continuous and all products and convolutions are legitimate.</p>
+</details>
+<p>For a fixed output frequency, the intersection measures how many input frequencies can pair to produce it; transverse supports allow fewer pairs, and the square root is the Cauchy–Schwarz factor from the volume of admissible pairs.</p>
+<p><strong>The intersection volume and the angle factor.</strong> Assume <span class="arithmatex">\(0&lt;h\le a\)</span>, let <span class="arithmatex">\(\Omega_1,\Omega_2\)</span> be translates of rectangular boxes of dimensions <span class="arithmatex">\(h\times a\times a\)</span>, and let <span class="arithmatex">\(v_i\)</span> be the unit direction of the side of length <span class="arithmatex">\(h\)</span> of <span class="arithmatex">\(\Omega_i\)</span>, equivalently the normal to its broad face. Assume</p>
+<div class="arithmatex">\[
+|v_1\times v_2|\ge\theta&gt;0.
+\]</div>
+<p>Since <span class="arithmatex">\(\eta-\Omega_2\)</span> is again a box congruent to <span class="arithmatex">\(\Omega_2\)</span>, regardless of translation</p>
+<div class="arithmatex">\[
+|\Omega_1\cap(\eta-\Omega_2)|\le|\Omega_1|\lesssim ha^2.
+\tag{5.2}
+\]</div>
+<p>For the transverse bound, set <span class="arithmatex">\(w=(v_1\times v_2)/|v_1\times v_2|\)</span> and use the coordinates <span class="arithmatex">\(\xi\mapsto(s_1,s_2,s_3)=(\xi\cdot v_1,\xi\cdot v_2,\xi\cdot w)\)</span>, whose Jacobian determinant has absolute value <span class="arithmatex">\(|\det(v_1,v_2,w)|=|v_1\times v_2|\)</span>. On the intersection, <span class="arithmatex">\(s_1\)</span> ranges over an interval of length <span class="arithmatex">\(h\)</span> (thickness of <span class="arithmatex">\(\Omega_1\)</span>) and <span class="arithmatex">\(s_2\)</span> over one of length <span class="arithmatex">\(h\)</span> (thickness of <span class="arithmatex">\(\eta-\Omega_2\)</span>). Since <span class="arithmatex">\(w\perp v_1\)</span>, the projection of <span class="arithmatex">\(\Omega_1\)</span> onto <span class="arithmatex">\(w\)</span> has length at most <span class="arithmatex">\(\sqrt2a\)</span>, so <span class="arithmatex">\(s_3\)</span> ranges over an interval of length <span class="arithmatex">\(O(a)\)</span>. The change-of-variables formula gives</p>
+<div class="arithmatex">\[
+|\Omega_1\cap(\eta-\Omega_2)|\lesssim\frac{h\cdot h\cdot a}{|v_1\times v_2|}\le\frac{h^2a}\theta.
+\tag{5.3}
+\]</div>
+<p>The inverse cross-product factor is the inverse Jacobian, not an additional Fourier estimate. In a two-dimensional section the same calculation says that strips of width <span class="arithmatex">\(h\)</span> meeting at angle <span class="arithmatex">\(\alpha\)</span> intersect in a parallelogram of area <span class="arithmatex">\(h^2/\sin\alpha\)</span>. As the normals become parallel the overlap grows, and the independent bound (5.2) prevents the angular estimate from exceeding the volume of one box.</p>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 5.2</span><span class="book-name">Box estimate</span></p>
+<p>Under the preceding hypotheses, if <span class="arithmatex">\(\operatorname{supp}\widehat f_i\subset\Omega_i\)</span>, then</p>
+<div class="arithmatex">\[
+\|f_1f_2\|_{L^2}\lesssim\min\Big(ha^2,\frac{h^2a}\theta\Big)^{1/2}\|f_1\|_{L^2}\|f_2\|_{L^2}.
+\tag{5.4}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Combine (5.2) and (5.3), uniformly in <span class="arithmatex">\(\eta\)</span>, and apply Lemma 9.2.</p>
+</details>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Which axis is <span class="arithmatex">\(h\)</span></p>
+<p>In the application <span class="arithmatex">\(h=2^j\delta^2&lt;a=2^j\delta\)</span>, so <span class="arithmatex">\(h\)</span> is the <em>short</em> frequency axis, which becomes the <em>long</em> axis of the dual spatial tube; <span class="arithmatex">\(v_i\)</span> is the frequency normal, equal to the tube direction. Estimate (5.4) is stated with this meaning. If instead <span class="arithmatex">\(h\ge a\)</span> were the long frequency axis, the sharper transverse overlap would be <span class="arithmatex">\(a^3/\theta\)</span>: fixing the two transverse coordinates inside the first box, the second box restricts the coordinate along <span class="arithmatex">\(v_1\)</span> to an interval of length <span class="arithmatex">\(Ca/|v_1\times v_2|\)</span>, and multiplying by the cross-sectional area <span class="arithmatex">\(Ca^2\)</span> gives <span class="arithmatex">\(Ca^3/\theta\)</span>. In that regime (5.4) remains a valid but weaker bound whose minimum reduces to <span class="arithmatex">\(ha^2\)</span>, with no angular improvement.</p>
+</div>
+<h2 id="stretching-example"><span class="book-secnum">§ 06</span>The fixed-frequency stretching example</h2>
+<p>Fix <span class="arithmatex">\(|\xi|\simeq2^j\)</span> and consider one term</p>
+<div class="arithmatex">\[
+T_{123}:=T\big(P_{T_1}\omega,P_{T_2}\omega,P_{T_3}(\mathcal R\omega)\big),
+\tag{6.1}
+\]</div>
+<p>where the subscript only distinguishes this term from the full sum. Assume the Fourier supports of the first two factors lie in boxes of dimensions (2.1) with short-axis directions <span class="arithmatex">\(e_1,e_2\)</span> satisfying <span class="arithmatex">\(|e_1\times e_2|\ge\theta\)</span>, and the third factor is in <span class="arithmatex">\(L^2\)</span>. Applying the bound for <span class="arithmatex">\(T\)</span> from Section 1, then Proposition 9.3 to each product of components <span class="arithmatex">\((P_{T_1}\omega)_a(P_{T_2}\omega)_b\)</span> (each component has the same Fourier support as the vector), gives</p>
+<div class="arithmatex">\[
+|T_{123}|\le\big\||P_{T_1}\omega|\,|P_{T_2}\omega|\big\|_{L^2}\|P_{T_3}(\mathcal R\omega)\|_{L^2}
+\lesssim\min\Big(ha^2,\frac{h^2a}\theta\Big)^{1/2}\|P_{T_1}\omega\|_{L^2}\|P_{T_2}\omega\|_{L^2}\|P_{T_3}(\mathcal R\omega)\|_{L^2}.
+\]</div>
+<p>For smooth bounded Fourier cutoffs the operators are uniformly bounded on <span class="arithmatex">\(L^2\)</span>; for the individual packet operators of Section 3 the same follows from Cauchy–Schwarz on coefficients and the bounded <span class="arithmatex">\(L^2\)</span> norm of each atom. Hence, by Calderón–Zygmund (or (1.1)), <span class="arithmatex">\(\|P_{T_3}(\mathcal R\omega)\|_{L^2}\lesssim\|\mathcal R\omega\|_{L^2}\lesssim\|\omega\|_{L^2}\)</span>, and similarly for the first two factors. Substituting <span class="arithmatex">\(h=2^j\delta^2\)</span>, <span class="arithmatex">\(a=2^j\delta\)</span>,</p>
+<div class="arithmatex">\[
+ha^2=2^{3j}\delta^4,\qquad\frac{h^2a}\theta=\frac{(2^j\delta^2)^2(2^j\delta)}\theta=\frac{2^{3j}\delta^5}\theta,
+\]</div>
+<p>so</p>
+<div class="arithmatex">\[
+|T_{123}|\lesssim\min\Big(2^{3j}\delta^4,\frac{2^{3j}\delta^5}\theta\Big)^{1/2}\|\omega\|_{L^2}^3.
+\tag{6.2}
+\]</div>
+<p>Equivalently, the coefficient is</p>
+<div class="arithmatex">\[
+2^{3j/2}\min\big(\delta^2,\delta^{5/2}\theta^{-1/2}\big)=2^{3j/2}\delta^2\min\Big(1,\sqrt{\delta/\theta}\Big).
+\tag{6.3}
+\]</div>
+<p>There is a genuine angular gain when <span class="arithmatex">\(\theta&gt;\delta\)</span>; when <span class="arithmatex">\(\theta\le\delta\)</span> the volume bound is better, and the minimum handles the nearly parallel case automatically. At fixed <span class="arithmatex">\(L^2\)</span> size, a smaller Fourier box limits the amplitude of one localized piece, and a transverse second box further limits the frequency pairs contributing to the product. The improvement concerns this interaction; estimating the whole field also requires counting the pieces and controlling how they combine.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Three distinctions</p>
+<ol>
+<li>The <span class="arithmatex">\(T_i\)</span> in (6.1) label spatial packets, but the proof of (6.2) concerns their <em>Fourier support boxes</em>. Spatial dimensions are reciprocal to frequency dimensions, and a "cross product of tubes" means the cross product of their unit axis directions.</li>
+<li>Estimate (6.2) uses only two transverse directions and an <span class="arithmatex">\(L^2\)</span> bound for the third factor. It does not need the determinant condition of Theorem 9.1 and does not invoke it. The two arguments complement each other but are not interchangeable.</li>
+<li>The integral of three packets vanishes unless <span class="arithmatex">\(0\in\operatorname{supp}\widehat{P_{T_1}\omega}+\operatorname{supp}\widehat{P_{T_2}\omega}+\operatorname{supp}\widehat{P_{T_3}(\mathcal R\omega)}\)</span>, since <span class="arithmatex">\(\int fgA\,dx\)</span> is the value at zero frequency of <span class="arithmatex">\(\widehat f*\widehat g*\widehat A\)</span>. Contributing frequencies satisfy <span class="arithmatex">\(\xi_1+\xi_2+\xi_3=0\)</span> and so lie in a plane, giving <span class="arithmatex">\(\det(\xi_1/|\xi_1|,\xi_2/|\xi_2|,\xi_3/|\xi_3|)=0\)</span>. If each cap direction <span class="arithmatex">\(e_i\)</span> differs from <span class="arithmatex">\(\xi_i/|\xi_i|\)</span> by <span class="arithmatex">\(O(\delta)\)</span>, multilinearity of the determinant gives <span class="arithmatex">\(|\det(e_1,e_2,e_3)|\lesssim\delta\)</span>. So a uniform three-family transversality assumption cannot simply be imposed on every resonant triple at an arbitrarily small angular scale. This does not affect the pairwise estimate; it identifies a necessary check before applying the spatial Kakeya theorem to this trilinear form.</li>
+</ol>
+</div>
+<h2 id="dissipation"><span class="book-secnum">§ 07</span>Comparing stretching with viscous dissipation</h2>
+<p><strong>The algebra.</strong> For a field whose Fourier support stays in a fixed annulus <span class="arithmatex">\(c_02^j\le|\xi|\le C_02^j\)</span>, Plancherel gives</p>
+<div class="arithmatex">\[
+\|\nabla\omega\|_{L^2}^2=4\pi^2\int|\xi|^2|\widehat\omega(\xi)|^2\,d\xi\ge c\,2^{2j}\|\omega\|_{L^2}^2,
+\qquad c=4\pi^2c_0^2.
+\tag{7.1}
+\]</div>
+<p>The frequency width <span class="arithmatex">\(2^j\delta^2\)</span> is not the frequency magnitude: the box sits at distance of order <span class="arithmatex">\(2^j\)</span> from the origin, which is why diffusion supplies <span class="arithmatex">\(2^{2j}\)</span> with no small factor of <span class="arithmatex">\(\delta\)</span>.</p>
+<p>Suppose in addition that the <em>full</em> stretching term on a time interval obeys the same bound as the single term (6.2), with a fixed constant <span class="arithmatex">\(C\)</span>. Then (1.2) yields</p>
+<div class="arithmatex">\[
+\frac12\frac{d}{dt}\|\omega\|_{L^2}^2+c\nu2^{2j}\|\omega\|_{L^2}^2\le C2^{3j/2}\min\big(\delta^2,\delta^{5/2}\theta^{-1/2}\big)\|\omega\|_{L^2}^3.
+\tag{7.2}
+\]</div>
+<p>Moving the right side to the left,</p>
+<div class="arithmatex">\[
+\frac12\frac{d}{dt}\|\omega\|_{L^2}^2+\Big[c\nu2^{2j}-C2^{3j/2}\min\big(\delta^2,\delta^{5/2}\theta^{-1/2}\big)\|\omega\|_{L^2}\Big]\|\omega\|_{L^2}^2\le0.
+\tag{7.3}
+\]</div>
+<p>The bracket is at least <span class="arithmatex">\(\frac12c\nu2^{2j}\)</span>, so that half the dissipation is left over, provided</p>
+<div class="arithmatex">\[
+\|\omega\|_{L^2}\le\frac{c\nu}{2C}\,\frac{2^{j/2}}{\min\big(\delta^2,\delta^{5/2}\theta^{-1/2}\big)}.
+\tag{7.4}
+\]</div>
+<p>This is the absorption threshold with its exact powers of <span class="arithmatex">\(2^j\)</span>, <span class="arithmatex">\(\delta\)</span> and <span class="arithmatex">\(\theta\)</span>; the fixed small constant <span class="arithmatex">\(c/2C\)</span> is necessary and should not be suppressed.</p>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 7.1</span><span class="book-name">Absorption under persistent hypotheses</span></p>
+<p>Suppose a smooth finite-energy Navier–Stokes solution on <span class="arithmatex">\([0,T)\)</span> satisfies both the annular support assumption of (7.1) and the full stretching bound used in (7.2), with <span class="arithmatex">\(j,\delta,\theta,c,C\)</span> fixed throughout that interval. If (7.4) holds at <span class="arithmatex">\(t=0\)</span>, then</p>
+<div class="arithmatex">\[
+\|\omega(t)\|_{L^2}^2\le e^{-c\nu2^{2j}t}\|\omega(0)\|_{L^2}^2\le\|\omega(0)\|_{L^2}^2,\qquad0\le t&lt;T.
+\tag{7.5}
+\]</div>
+<p>If the same hypotheses hold throughout the maximal interval of a smooth solution, its maximal time is infinite.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>As long as (7.4) holds, (7.3) implies</p>
+<div class="arithmatex">\[
+\frac{d}{dt}\|\omega\|_{L^2}^2+c\nu2^{2j}\|\omega\|_{L^2}^2\le0,
+\]</div>
+<p>and integration (Grönwall) gives (7.5) on that interval. Continuity prevents the norm from crossing the threshold: on any interval before a proposed first upward crossing, the norm is already nonincreasing and hence stays at or below its initial value, which is below the threshold. So the bound holds on all of <span class="arithmatex">\([0,T)\)</span>.</p>
+<p>The kinetic energy identity gives <span class="arithmatex">\(\|u(t)\|_{L^2}\le\|u_0\|_{L^2}\)</span>, while (1.1) gives <span class="arithmatex">\(\|\nabla u(t)\|_{L^2}=\|\omega(t)\|_{L^2}\le\|\omega(0)\|_{L^2}\)</span>. Thus <span class="arithmatex">\(\|u(t)\|_{H^1}\)</span> stays bounded. The standard local strong-solution theorem in <span class="arithmatex">\(H^1(\mathbb R^3)\)</span> has a lifespan bounded below in terms of this norm and <span class="arithmatex">\(\nu\)</span>, so a finite maximal time could be extended, a contradiction. This local existence and continuation theorem is standard Navier–Stokes input to the final step, not a consequence of tube geometry.</p>
+</details>
+<div class="admonition warning">
+<p class="admonition-title">The hypotheses are not automatic</p>
+<p>A bound for one summand of (4.1) does not by itself imply (7.2) for the full solution. Nor does a fixed Fourier box or shell remain invariant under the evolution. The Fourier transform of a quadratic product is a convolution, so input supports <span class="arithmatex">\(\Omega_1,\Omega_2\)</span> produce output in <span class="arithmatex">\(\Omega_1+\Omega_2\)</span>. For a real field, opposite-frequency boxes are both present and their sums can approach frequency zero; other pairs move outward to larger frequencies. Viscous evolution alone preserves each Fourier support; the quadratic term does not.</p>
+<p>A projected block equation also has commutator terms. For a fixed Fourier projection <span class="arithmatex">\(P\)</span>,</p>
+<div class="arithmatex">\[
+P(u\cdot\nabla\omega)=u\cdot\nabla(P\omega)+[P,u\cdot\nabla]\omega.
+\]</div>
+<p>Only the first term cancels against <span class="arithmatex">\(P\omega\)</span> in its <span class="arithmatex">\(L^2\)</span> energy; the commutator remains. One therefore cannot silently replace <span class="arithmatex">\(\omega\)</span> by a single block in the full enstrophy identity and keep only one stretching integral.</p>
+</div>
+<p>The calculation correctly compares the diffusion rate <span class="arithmatex">\(\nu2^{2j}\)</span> with the amplitude and angular size of one interaction; a global argument must keep that comparison valid while the equation creates frequencies, moves packets, and turns them.</p>
+<h2 id="energy-comparison"><span class="book-secnum">§ 08</span>Comparison with the ordinary energy estimate</h2>
+<p>Without any geometric decomposition, Hölder and Calderón–Zygmund (or (1.1)) give</p>
+<div class="arithmatex">\[
+|T(\omega,\omega,\mathcal R\omega)|\le\|\omega\|_{L^4}^2\|\nabla u\|_{L^2}\le C\|\omega\|_{L^4}^2\|\omega\|_{L^2}.
+\tag{8.1}
+\]</div>
+<p><strong>Interpolation exponents in three dimensions.</strong> Since <span class="arithmatex">\(\frac14=\frac14\cdot\frac12+\frac34\cdot\frac16\)</span>, Hölder gives <span class="arithmatex">\(\|\omega\|_{L^4}\le\|\omega\|_{L^2}^{1/4}\|\omega\|_{L^6}^{3/4}\)</span>, and the Sobolev inequality <span class="arithmatex">\(\|\omega\|_{L^6}\le C\|\nabla\omega\|_{L^2}\)</span> gives</p>
+<div class="arithmatex">\[
+\|\omega\|_{L^4}^2\le C\|\omega\|_{L^2}^{1/2}\|\nabla\omega\|_{L^2}^{3/2}.
+\]</div>
+<p>Substitution into (8.1) yields</p>
+<div class="arithmatex">\[
+|T(\omega,\omega,\mathcal R\omega)|\le C\|\omega\|_{L^2}^{3/2}\|\nabla\omega\|_{L^2}^{3/2}.
+\tag{8.2}
+\]</div>
+<p>Young's inequality with conjugate exponents <span class="arithmatex">\(4/3\)</span> and <span class="arithmatex">\(4\)</span> gives</p>
+<div class="arithmatex">\[
+C\|\omega\|_{L^2}^{3/2}\|\nabla\omega\|_{L^2}^{3/2}\le\frac\nu2\|\nabla\omega\|_{L^2}^2+C\nu^{-3}\|\omega\|_{L^2}^6.
+\]</div>
+<p>Hence, writing <span class="arithmatex">\(Y(t)=\|\omega(t)\|_{L^2}^2\)</span> for this scalar calculation only,</p>
+<div class="arithmatex">\[
+\frac12Y'(t)+\frac\nu2\|\nabla\omega\|_{L^2}^2\le C\nu^{-3}Y(t)^3.
+\tag{8.3}
+\]</div>
+<p>This is a local a priori bound, not a dissipation-absorption estimate based solely on a fixed small <span class="arithmatex">\(\|\omega\|_{L^2}\)</span>.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Smallness of vorticity alone</p>
+<p>One might hope to replace the stretching term by <span class="arithmatex">\(\|\nabla\omega\|_{L^2}^2\)</span> times a power of <span class="arithmatex">\(\|\omega\|_{L^2}\)</span> and conclude that <span class="arithmatex">\(\|\omega_0\|_{L^2}\lesssim1\)</span> suffices for global existence. In <span class="arithmatex">\(\mathbb R^3\)</span> the Gagliardo–Nirenberg exponents are those of (8.2), and there is no scale-independent inequality <span class="arithmatex">\(\|\omega\|_{L^4}^2\lesssim\|\nabla\omega\|_{L^2}^2\)</span> on all of <span class="arithmatex">\(\mathbb R^3\)</span> (see the <a href="#exercise">exercise</a>). Such a universal small-<span class="arithmatex">\(\|\omega\|_{L^2}\)</span> conclusion needs additional large-scale or low-frequency control, and is recorded here as a claim being qualified, not as a theorem.</p>
+</div>
+<p>The scaling check is immediate. Under Navier–Stokes scaling <span class="arithmatex">\(u_\lambda(t,x)=\lambda u(\lambda^2t,\lambda x)\)</span>, <span class="arithmatex">\(\omega_\lambda(t,x)=\lambda^2\omega(\lambda^2t,\lambda x)\)</span>,</p>
+<div class="arithmatex">\[
+\|u_{0,\lambda}\|_{L^2}=\lambda^{-1/2}\|u_0\|_{L^2},\qquad\|\omega_{0,\lambda}\|_{L^2}=\lambda^{1/2}\|\omega_0\|_{L^2}.
+\tag{8.4}
+\]</div>
+<p>Every smooth finite-energy datum can thus be made arbitrarily small in vorticity <span class="arithmatex">\(L^2\)</span> by dilation (<span class="arithmatex">\(\lambda\to0\)</span>), while its velocity <span class="arithmatex">\(L^2\)</span> norm grows. A universal smallness theorem using only the vorticity norm would not be an ordinary small-data result.</p>
+<p><strong>A precise small-data statement.</strong> The absorption idea can be completed using the kinetic energy. Put <span class="arithmatex">\(U_0=\|u_0\|_{L^2}\)</span>. Integration by parts and (1.1) give</p>
+<div class="arithmatex">\[
+\|\omega\|_{L^2}^2=\|\nabla u\|_{L^2}^2=-\int u\cdot\Delta u\,dx\le\|u\|_{L^2}\|\Delta u\|_{L^2}=\|u\|_{L^2}\|\nabla\omega\|_{L^2},
+\]</div>
+<p>where <span class="arithmatex">\(\|\Delta u\|_{L^2}=\|\nabla\omega\|_{L^2}\)</span> because <span class="arithmatex">\(\Delta u=-\nabla\times\omega\)</span> and <span class="arithmatex">\(\nabla\cdot\omega=0\)</span>. The energy identity yields <span class="arithmatex">\(\|u\|_{L^2}\le U_0\)</span>, so <span class="arithmatex">\(\|\omega\|_{L^2}\le(U_0\|\nabla\omega\|_{L^2})^{1/2}\)</span>. Inserting this into one factor <span class="arithmatex">\(\|\omega\|_{L^2}\)</span> in (8.2),</p>
+<div class="arithmatex">\[
+|T(\omega,\omega,\mathcal R\omega)|\le C\|\omega\|_{L^2}^{1/2}\cdot(U_0\|\nabla\omega\|_{L^2})^{1/2}\cdot\|\nabla\omega\|_{L^2}^{3/2}
+=C\big(U_0\|\omega\|_{L^2}\big)^{1/2}\|\nabla\omega\|_{L^2}^2.
+\tag{8.5}
+\]</div>
+<p>(If <span class="arithmatex">\(\nabla\omega=0\)</span>, the finite-energy field vanishes and the inequality is trivial.) Consequently</p>
+<div class="arithmatex">\[
+\|u_0\|_{L^2}\|\omega_0\|_{L^2}\le c\nu^2,\qquad C\sqrt c\le\frac12,
+\tag{8.6}
+\]</div>
+<p>is a genuine sufficient smallness condition. Indeed, whenever <span class="arithmatex">\(\|\omega\|_{L^2}\le\|\omega_0\|_{L^2}\)</span>, (8.5) gives <span class="arithmatex">\(|T|\le C\sqrt c\,\nu\|\nabla\omega\|_{L^2}^2\le\frac\nu2\|\nabla\omega\|_{L^2}^2\)</span>, and (1.2) yields</p>
+<div class="arithmatex">\[
+\frac12\frac{d}{dt}\|\omega\|_{L^2}^2+\frac\nu2\|\nabla\omega\|_{L^2}^2\le0.
+\]</div>
+<p>The continuity argument of Proposition 9.4 maintains <span class="arithmatex">\(\|\omega(t)\|_{L^2}\le\|\omega_0\|_{L^2}\)</span>, the velocity <span class="arithmatex">\(H^1\)</span> norm stays bounded, and the standard continuation theorem gives a global strong solution, smooth for smooth data. Condition (8.6) is invariant under (8.4); with <span class="arithmatex">\(U_0\)</span> fixed and <span class="arithmatex">\(\nu=1\)</span> it reduces to a suitably normalized small-vorticity statement.</p>
+<p>Vorticity measures one derivative of velocity; its size alone does not tell whether a flow has very large spatial extent, and the kinetic energy supplies the missing large-scale information. In the space of admissible divergence-free data, (8.6) describes a proven small-data region around zero. The tube calculations aim to enlarge it by exploiting further structure of the interactions, but this proposed extension is a research direction: nothing here establishes that the larger region consists of global solutions.</p>
+<h2 id="status"><span class="book-secnum">§ 09</span>What has been proved, and what the evolution still requires</h2>
+<p>The kernel estimate (3.1), the packet construction (3.4)–(3.6), the Fourier overlap inequality (5.4), and the single-interaction estimate (6.2) are rigorous statements under the displayed hypotheses. The cited endpoint Kakeya theorem controls transverse families of spatial tubes, including weights and rapidly decaying envelopes as derived in Section 4. The small-data criterion (8.6) is a complete statement given the standard local theory.</p>
+<p>The threshold (7.4) is the correct algebraic comparison at one fixed frequency scale. To obtain it for an actual Navier–Stokes solution one still needs a bound for the entire trilinear sum, including interactions outside any chosen transverse class, and a proof that the required bounds persist in time. Contributions from different dyadic scales, coherent packet sums, and low-frequency outputs cannot be discarded. The proof of the overlap estimate does not establish these further assertions.</p>
+<p>A geometric gain in a nonlinear estimate is useful precisely when it survives reconstruction and time evolution. The calculations above identify the gain and the dissipation scale against which it must be compared.</p>
+<h2 id="exercise"><span class="book-secnum">§ 10</span>Exercise: scaling and the smallness condition</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 10.1</span><span class="book-name">Why vorticity smallness alone is not enough</span></p>
+<p>(a) Show that there is no constant <span class="arithmatex">\(C\)</span> with <span class="arithmatex">\(\|f\|_{L^4(\mathbb R^3)}^2\le C\|\nabla f\|_{L^2(\mathbb R^3)}^2\)</span> for all nonzero <span class="arithmatex">\(f\in C_c^\infty(\mathbb R^3)\)</span>.</p>
+<p>(b) Verify that <span class="arithmatex">\(\|u_0\|_{L^2}\|\omega_0\|_{L^2}\)</span> is invariant under the scaling (8.4), and explain why a smallness condition on <span class="arithmatex">\(\|\omega_0\|_{L^2}\)</span> alone is satisfied by a rescaling of every nonzero finite-energy datum.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>(a) Both sides are homogeneous of degree two under <span class="arithmatex">\(f\mapsto Af\)</span>, so only dilations matter. For <span class="arithmatex">\(f_\lambda(x)=f(\lambda x)\)</span>,</p>
+<div class="arithmatex">\[
+\|f_\lambda\|_{L^4}^2=\Big(\lambda^{-3}\int|f|^4\Big)^{1/2}=\lambda^{-3/2}\|f\|_{L^4}^2,\qquad
+\|\nabla f_\lambda\|_{L^2}^2=\lambda^2\cdot\lambda^{-3}\|\nabla f\|_{L^2}^2=\lambda^{-1}\|\nabla f\|_{L^2}^2.
+\]</div>
+<p>The ratio of the left side to the right side is <span class="arithmatex">\(\lambda^{-1/2}\|f\|_{L^4}^2/\|\nabla f\|_{L^2}^2\)</span>, which tends to infinity as <span class="arithmatex">\(\lambda\to0\)</span>. Hence no such <span class="arithmatex">\(C\)</span> exists. By contrast, the interpolation inequality <span class="arithmatex">\(\|f\|_{L^4}^2\le C\|f\|_{L^2}^{1/2}\|\nabla f\|_{L^2}^{3/2}\)</span> behind (8.2) is consistent with scaling: since <span class="arithmatex">\(\|f_\lambda\|_{L^2}=\lambda^{-3/2}\|f\|_{L^2}\)</span>, its right side scales like <span class="arithmatex">\(\lambda^{-3/4}\cdot\lambda^{-3/4}=\lambda^{-3/2}\)</span>, exactly as the left side.</p>
+<p>(b) By (8.4), <span class="arithmatex">\(\|u_{0,\lambda}\|_{L^2}\|\omega_{0,\lambda}\|_{L^2}=\lambda^{-1/2}\lambda^{1/2}\|u_0\|_{L^2}\|\omega_0\|_{L^2}\)</span>, so the product is invariant and (8.6) holds for all <span class="arithmatex">\(u_{0,\lambda}\)</span> or for none. By contrast, <span class="arithmatex">\(\|\omega_{0,\lambda}\|_{L^2}=\lambda^{1/2}\|\omega_0\|_{L^2}\)</span> can be made smaller than any fixed threshold by taking <span class="arithmatex">\(\lambda\)</span> small, while <span class="arithmatex">\(\|u_{0,\lambda}\|_{L^2}=\lambda^{-1/2}\|u_0\|_{L^2}\to\infty\)</span>. Since <span class="arithmatex">\(u_\lambda\)</span> solves the Navier–Stokes system with the same <span class="arithmatex">\(\nu\)</span>, every datum has a rescaling with <span class="arithmatex">\(\|\omega_{0,\lambda}\|_{L^2}\le\varepsilon\)</span>; a global theorem under that condition alone would therefore cover all smooth finite-energy data. It becomes a meaningful small-data condition only once <span class="arithmatex">\(\|u_0\|_{L^2}\)</span> is fixed: with <span class="arithmatex">\(U_0\)</span> given, (8.6) reads <span class="arithmatex">\(\|\omega_0\|_{L^2}\le c\nu^2/U_0\)</span>.</p>
+</details>
+<h2 id="references">References</h2>
+<ol>
+<li>L. Guth, <em>The endpoint case of the Bennett–Carbery–Tao multilinear Kakeya conjecture</em>, Acta Mathematica <strong>205</strong> (2010), 263–286, Theorem 1.3. <a href="https://arxiv.org/abs/0811.2251">arXiv:0811.2251</a>.</li>
+<li>J. Bennett, A. Carbery, and T. Tao, <em>On the multilinear restriction and Kakeya conjectures</em>, Acta Mathematica <strong>196</strong> (2006), 261–302. <a href="https://arxiv.org/abs/math/0509262">arXiv:math/0509262</a>.</li>
+</ol>
+<p><a href="../chapter-08/">Previous: anisotropic Littlewood–Paley theory</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-08/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 8: Anisotropic Littlewood–Paley Theory and Vortex Stretching</span>
+    </a>
+    
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 9 / 9 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a><a class="zdd-end-chip" href="../../../../tags/?tag=navier-stokes">#navier-stokes</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-08/">Chapter 8: Anisotropic Littlewood–Paley Theory and Vortex Stretching</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

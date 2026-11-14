@@ -1,0 +1,436 @@
+! Independent experimental copy, isolated module build; original src untouched.
+! Operator layer: builds the periodic computational tree from the physical tree
+! and applies  K = (-Delta_D)^{-1}  (advisor adaptive FMM, adaptfmm2d8, iperiod=1)
+! and  H = exp(h*Delta_D)  (advisor box FGT, boxfgt, iperiod=1) on the SAME tree.
+!
+! mode = MODE_MOI : zero Dirichlet walls z=0,1, x-periodic.  Method of images:
+!     physical [0,1]^2 -> 2x2 supercell [0,2]^2 (copy in x, odd reflection in z).
+! mode = MODE_DP  : doubly periodic control on [0,1]^2 (no images).
+module hho_ops
+    use hho_cheb
+    use hho_tree
+    use hho_clipcache, only: fmm_cached => clip_cached
+    implicit none
+    private
+
+    integer, parameter, public :: MODE_MOI = 1, MODE_DP = 2, MODE_GHOST = 3
+
+    type, public :: optree
+        integer :: mode = MODE_MOI
+        integer :: nb = 0, nlev = 0, nleaf_ext = 0
+        real(rk) :: side = 2.0_rk, origin = 0.0_rk
+        integer, allocatable :: level(:), icol(:), irow(:), parent(:), child(:,:)
+        integer, allocatable :: src(:), quad(:)      ! physical box and quadrant (0..3)
+        integer, allocatable :: e_of_p(:)            ! ext index of physical box (quadrant 0)
+        ! advisor FMM arrays
+        integer, allocatable :: fm_child(:,:), fm_parent(:), nblevel(:), iboxlev(:), istartlev(:)
+        ! advisor boxfgt arrays
+        integer, allocatable :: itree(:)
+        integer :: iptr(8) = 0, ltree = 0
+        real(rk), allocatable :: centers(:,:), boxsize(:)
+    end type optree
+
+    type, public :: opstats
+        integer :: n_fmm = 0, n_fgt = 0
+        real(rk) :: t_fmm = 0, t_fgt = 0, t_ext = 0, t_fmm_internal = 0
+        real(rk) :: t_fgt_backend=0, fgt_stages(12)=0
+        real(rk) :: last_const = 0     ! constant removed from periodic FMM output
+    end type opstats
+
+    type(opstats), public, save :: stats
+    ! 1: advisor interface adaptfmm2d8 (allocates 2x8e7 words + recomputes maps each call)
+    ! 2: hho_fmmcache (same advisor kernels, maps/workspace cached)
+    integer, public, save :: fmm_backend = 2
+    logical, public, save :: clip_enabled = .false.
+
+    public :: build_optree, op_K, op_H, wall_time, op_K_ext, prec_eps, reset_stats
+    public :: phys_to_ext, ext_to_phys, fgt_ext
+
+    interface
+        subroutine adaptfmm2d8(ndeg, nlev, levelbox, iparentbox, ichildbox, icolbox, irowbox, &
+                nboxes, nblevel, iboxlev, istartlev, fright, iprec, iperiod, pot, ttotal)
+            import rk
+            integer :: ndeg, nlev, nboxes, iprec, iperiod
+            integer :: levelbox(nboxes), iparentbox(nboxes), ichildbox(4,nboxes)
+            integer :: icolbox(nboxes), irowbox(nboxes), nblevel(0:nlev), iboxlev(nboxes), istartlev(0:nlev)
+            real(rk) :: fright(64,nboxes), pot(64,nboxes), ttotal
+        end subroutine adaptfmm2d8
+        subroutine boxfgt(nd, d, delta, eps, ipoly, iperiod, k, npb, nb, nlev, ltree, itree, iptr, centers, &
+                boxsize, fvals, ifpgh, pot, grad, hess, ifnewtree, nt, targs, ifpghtarg, pote, grade, hesse, timeinfo)
+            import rk
+            integer :: nd, d, ipoly, iperiod, k, npb, nb, nlev, ltree, itree(ltree), iptr(8), ifpgh, ifnewtree, nt, ifpghtarg
+            real(rk) :: delta, eps, centers(d,nb), boxsize(0:nlev), fvals(nd,npb,nb), pot(nd,npb,nb)
+            real(rk) :: grad(nd,d,npb,*), hess(nd,d*(d+1)/2,npb,*), targs(d,nt), pote(nd,nt)
+            real(rk) :: grade(nd,d,*), hesse(nd,d*(d+1)/2,*), timeinfo(*)
+        end subroutine boxfgt
+    end interface
+
+contains
+
+    real(rk) function wall_time()
+        integer(ik8) :: c, r
+        call system_clock(c, r)
+        wall_time = real(c, rk)/real(r, rk)
+    end function wall_time
+
+    real(rk) function prec_eps(iprec)
+        integer, intent(in) :: iprec
+        prec_eps = 10.0_rk**(-3*iprec)
+    end function prec_eps
+
+    subroutine reset_stats()
+        stats = opstats()
+    end subroutine reset_stats
+
+    subroutine build_optree(t, mode, o)
+        type(qtree), intent(in) :: t
+        integer, intent(in) :: mode
+        type(optree), intent(out) :: o
+        integer, allocatable :: bylev(:), lstart(:), lcount(:)
+        integer :: nlp, b, L, q, nb, i, e, c, cp, qx, qz, lev, j
+        real(rk) :: w, t0
+        t0 = wall_time()
+        o%mode = mode
+        nlp = tree_max_level(t)
+        ! physical boxes sorted by level
+        allocate(lcount(0:nlp), lstart(0:nlp+1), bylev(t%nbox))
+        lcount = 0
+        do b = 1, t%nbox
+            lcount(t%level(b)) = lcount(t%level(b)) + 1
+        end do
+        lstart(0) = 1
+        do L = 0, nlp
+            lstart(L+1) = lstart(L) + lcount(L)
+        end do
+        lcount = 0
+        do b = 1, t%nbox
+            L = t%level(b)
+            bylev(lstart(L)+lcount(L)) = b
+            lcount(L) = lcount(L) + 1
+        end do
+
+        if (mode == MODE_MOI) then
+            o%nb = 1 + 4*t%nbox
+            o%nlev = nlp + 1
+            o%side = 2.0_rk
+        else
+            o%nb = t%nbox
+            o%nlev = nlp
+            o%side = 1.0_rk
+            if (mode == MODE_GHOST) then
+                o%side = 4.0_rk; o%origin = -1.0_rk
+            end if
+        end if
+        nb = o%nb
+        allocate(o%level(nb), o%icol(nb), o%irow(nb), o%parent(nb), o%child(4,nb))
+        allocate(o%src(nb), o%quad(nb), o%e_of_p(t%nbox))
+        o%child = 0
+        o%parent = 0
+        o%src = 0
+        o%quad = 0
+
+        if (mode == MODE_MOI) then
+            o%level(1) = 0; o%icol(1) = 1; o%irow(1) = 1
+            e = 1
+            ! ext index of (q, physical box b) = 1 + (level offset) ...  build explicit map
+            block
+                integer, allocatable :: emap(:,:)
+                allocate(emap(0:3, t%nbox))
+                do L = 0, nlp
+                    do q = 0, 3
+                        do i = lstart(L), lstart(L+1)-1
+                            b = bylev(i)
+                            e = e + 1
+                            emap(q, b) = e
+                            qx = mod(q, 2); qz = q/2
+                            o%level(e) = L + 1
+                            o%icol(e) = t%icol(b) + qx*2**L
+                            if (qz == 0) then
+                                o%irow(e) = t%irow(b)
+                            else
+                                o%irow(e) = 2**(L+1) + 1 - t%irow(b)
+                            end if
+                            o%src(e) = b
+                            o%quad(e) = q
+                        end do
+                    end do
+                end do
+                do e = 2, nb
+                    b = o%src(e); q = o%quad(e); qz = q/2
+                    if (t%parent(b) == 0) then
+                        o%parent(e) = 1
+                        o%child(1 + mod(q,2) + 2*qz, 1) = e
+                    else
+                        o%parent(e) = emap(q, t%parent(b))
+                    end if
+                    if (t%child(1,b) /= 0) then
+                        do c = 1, 4
+                            cp = c
+                            if (qz == 1) cp = ieor(c-1, 2) + 1
+                            o%child(c, e) = emap(q, t%child(cp, b))
+                        end do
+                    end if
+                end do
+                o%e_of_p = emap(0, :)
+            end block
+        else
+            e = 0
+            block
+                integer, allocatable :: emap(:)
+                allocate(emap(t%nbox))
+                do L = 0, nlp
+                    do i = lstart(L), lstart(L+1)-1
+                        b = bylev(i)
+                        e = e + 1
+                        emap(b) = e
+                        o%level(e) = L; o%icol(e) = t%icol(b); o%irow(e) = t%irow(b)
+                        o%src(e) = b
+                    end do
+                end do
+                do e = 1, nb
+                    b = o%src(e)
+                    if (t%parent(b) /= 0) o%parent(e) = emap(t%parent(b))
+                    if (t%child(1,b) /= 0) then
+                        do c = 1, 4
+                            o%child(c,e) = emap(t%child(c,b))
+                        end do
+                    end if
+                end do
+                o%e_of_p = emap
+            end block
+        end if
+        o%nleaf_ext = count(o%child(1,:) == 0)
+
+        ! ---- advisor FMM arrays (children: UL, UR, LR, LL; leaf -1; root parent -1)
+        allocate(o%fm_child(4,nb), o%fm_parent(nb), o%nblevel(0:o%nlev), o%iboxlev(nb), o%istartlev(0:o%nlev))
+        do e = 1, nb
+            if (o%child(1,e) == 0) then
+                o%fm_child(:,e) = -1
+            else
+                o%fm_child(1,e) = o%child(3,e)
+                o%fm_child(2,e) = o%child(4,e)
+                o%fm_child(3,e) = o%child(2,e)
+                o%fm_child(4,e) = o%child(1,e)
+            end if
+            o%fm_parent(e) = o%parent(e)
+            if (e == 1) o%fm_parent(e) = -1
+            o%iboxlev(e) = e
+        end do
+        o%nblevel = 0
+        do e = 1, nb
+            o%nblevel(o%level(e)) = o%nblevel(o%level(e)) + 1
+        end do
+        o%istartlev(0) = 1
+        do lev = 1, o%nlev
+            o%istartlev(lev) = o%istartlev(lev-1) + o%nblevel(lev-1)
+        end do
+        ! sanity: boxes are sorted by level
+        do e = 2, nb
+            if (o%level(e) < o%level(e-1)) error stop "optree not level sorted"
+        end do
+
+        ! ---- advisor boxfgt arrays
+        o%iptr(1) = 1
+        o%iptr(2) = o%iptr(1) + 2*(o%nlev+1)
+        o%iptr(3) = o%iptr(2) + nb
+        o%iptr(4) = o%iptr(3) + nb
+        o%iptr(5) = o%iptr(4) + nb
+        o%iptr(6) = o%iptr(5) + 4*nb
+        o%iptr(7) = o%iptr(6) + nb
+        o%iptr(8) = o%iptr(7) + 9*nb
+        o%ltree = o%iptr(8)
+        allocate(o%itree(o%ltree), o%centers(2,nb), o%boxsize(0:o%nlev))
+        o%itree = -1
+        o%itree(o%iptr(6):o%iptr(6)+nb-1) = 0
+        do lev = 0, o%nlev
+            o%itree(o%iptr(1)+2*lev) = o%istartlev(lev)
+            o%itree(o%iptr(1)+2*lev+1) = o%istartlev(lev) + o%nblevel(lev) - 1
+            o%boxsize(lev) = o%side/2.0_rk**lev
+        end do
+        do e = 1, nb
+            w = o%boxsize(o%level(e))
+            o%centers(1,e) = o%origin + (o%icol(e)-0.5_rk)*w
+            o%centers(2,e) = o%origin + (o%irow(e)-0.5_rk)*w
+            o%itree(o%iptr(2)+e-1) = o%level(e)
+            if (e > 1) o%itree(o%iptr(3)+e-1) = o%parent(e)
+            if (o%child(1,e) == 0) then
+                o%itree(o%iptr(4)+e-1) = 0
+            else
+                o%itree(o%iptr(4)+e-1) = 4
+                do j = 1, 4
+                    o%itree(o%iptr(5)+4*(e-1)+j-1) = o%child(j,e)
+                end do
+            end if
+        end do
+        stats%t_ext = stats%t_ext + wall_time() - t0
+    end subroutine build_optree
+
+    ! physical leaf values -> ext leaf values (images: copy in x, odd reflection in z)
+    subroutine phys_to_ext(o, vin, vext)
+        type(optree), intent(in) :: o
+        real(rk), intent(in) :: vin(np, *)
+        real(rk), intent(out) :: vext(np, o%nb)
+        integer :: e, b, iz
+        vext = 0.0_rk
+        do e = 1, o%nb
+            if (o%child(1,e) /= 0) cycle
+            b = o%src(e)
+            if (o%quad(e) >= 2) then
+                do iz = 1, nq
+                    vext((iz-1)*nq+1:iz*nq, e) = -vin((nq-iz)*nq+1:(nq-iz+1)*nq, b)
+                end do
+            else
+                vext(:,e) = vin(:,b)
+            end if
+        end do
+    end subroutine phys_to_ext
+
+    subroutine ext_to_phys(o, t, vext, vout)
+        type(optree), intent(in) :: o
+        type(qtree), intent(in) :: t
+        real(rk), intent(in) :: vext(np, o%nb)
+        real(rk), intent(inout) :: vout(np, *)
+        integer :: b
+        do b = 1, t%nbox
+            if (t%child(1,b) /= 0) cycle
+            vout(:,b) = vext(:, o%e_of_p(b))
+        end do
+    end subroutine ext_to_phys
+
+    ! Weighted mean over the computational cell of ext leaf values.
+    real(rk) function ext_mean(o, vext)
+        type(optree), intent(in) :: o
+        real(rk), intent(in) :: vext(np, o%nb)
+        integer :: e, i, j
+        real(rk) :: s, w
+        s = 0.0_rk
+        do e = 1, o%nb
+            if (o%child(1,e) /= 0) cycle
+            w = o%boxsize(o%level(e))
+            do j = 1, nq
+                do i = 1, nq
+                    s = s + fejer(i)*fejer(j)*vext(i+nq*(j-1),e)*w*w/4.0_rk
+                end do
+            end do
+        end do
+        ext_mean = s/o%side**2
+    end function ext_mean
+
+    ! Original path returns full ext potential with cell mean removed.
+    ! CLIP CONTRACT: only physical quadrant targets are valid; no mean correction.
+    ! Never feed clipped pext directly into another ext operator: re-extend physical data.
+    subroutine op_K_ext(o, iprec, fext, pext)
+        type(optree), intent(in) :: o
+        integer, intent(in) :: iprec
+        real(rk), intent(in) :: fext(np, o%nb)
+        real(rk), intent(out) :: pext(np, o%nb)
+        real(rk), allocatable :: fr(:,:)
+        integer :: lev(o%nb), icol(o%nb), irow(o%nb), par(o%nb), ch(4,o%nb)
+        integer :: nbl(0:o%nlev), ibl(o%nb), isl(0:o%nlev)
+        integer :: ndeg, nlev, nb, ip, iper
+        real(rk) :: ttot, t0, scale, fm
+        t0 = wall_time()
+        ! Delta_{x'} = side^2 Delta_x with x' = x/side - 1/2 ;  -Delta_x p = f  =>  Delta_{x'} p = -side^2 f
+        scale = -(o%side**2)
+        if (clip_enabled .and. o%mode == MODE_MOI) then
+            if (o%side /= 2.0_rk .or. o%origin /= 0.0_rk) error stop "clip requires original side-2 MOI tree"
+            if (iprec < 1 .or. iprec > 4) error stop "clip precision out of range"
+            scale = -1.0_rk
+        end if
+        allocate(fr(np, o%nb))
+        fr = scale*fext
+        if (o%mode == MODE_DP) then
+            ! periodic solvability: remove mean of the source
+            fm = ext_mean(o, fext)
+            where (spread(o%child(1,:) == 0, 1, np)) fr = fr - scale*fm
+        end if
+        lev = o%level; icol = o%icol; irow = o%irow; par = o%fm_parent; ch = o%fm_child
+        nbl = o%nblevel; ibl = o%iboxlev; isl = o%istartlev
+        ndeg = 8; nlev = o%nlev; nb = o%nb; ip = iprec; iper = 1
+        if (clip_enabled .and. o%mode == MODE_MOI) then
+            if (fmm_backend /= 2) error stop "clip requires direct cached backend"
+            iper = 2
+        end if
+        pext = 0.0_rk
+        if (fmm_backend == 1) then
+            call adaptfmm2d8(ndeg, nlev, lev, par, ch, icol, irow, nb, nbl, ibl, isl, fr, ip, iper, pext, ttot)
+        else
+            ttot = wall_time()
+            call fmm_cached(nlev, lev, par, ch, icol, irow, nb, nbl, ibl, isl, fr, ip, iper, pext)
+            ttot = wall_time() - ttot
+        end if
+        if (clip_enabled .and. o%mode == MODE_MOI) then
+            ! Exterior targets were not evaluated. Never remove their mean.
+            stats%last_const = 0.0_rk
+        else
+            stats%last_const = ext_mean(o, pext)
+            where (spread(o%child(1,:) == 0, 1, np)) pext = pext - stats%last_const
+        end if
+        stats%n_fmm = stats%n_fmm + 1
+        stats%t_fmm = stats%t_fmm + wall_time() - t0
+        stats%t_fmm_internal = stats%t_fmm_internal + ttot
+    end subroutine op_K_ext
+
+    subroutine op_K(o, t, iprec, vin, vout)
+        type(optree), intent(in) :: o
+        type(qtree), intent(in) :: t
+        integer, intent(in) :: iprec
+        real(rk), intent(in) :: vin(np, *)
+        real(rk), intent(inout) :: vout(np, *)
+        real(rk), allocatable :: fe(:,:), pe(:,:)
+        allocate(fe(np, o%nb), pe(np, o%nb))
+        call phys_to_ext(o, vin, fe)
+        call op_K_ext(o, iprec, fe, pe)
+        call ext_to_phys(o, t, pe, vout)
+    end subroutine op_K
+
+    ! H = heat semigroup over time h (D=1) on the periodic computational cell.
+    subroutine op_H(o, t, eps, h, vin, vout)
+        type(optree), intent(in) :: o
+        type(qtree), intent(in) :: t
+        real(rk), intent(in) :: eps, h
+        real(rk), intent(in) :: vin(np, *)
+        real(rk), intent(inout) :: vout(np, *)
+        real(rk), allocatable :: fe(:,:), pe(:,:)
+        real(rk) :: t0
+        t0 = wall_time()
+        allocate(fe(np,o%nb), pe(np,o%nb))
+        call phys_to_ext(o, vin, fe)
+        call fgt_ext(o, eps, h, fe, pe)
+        call ext_to_phys(o, t, pe, vout)
+        stats%n_fgt = stats%n_fgt + 1
+        stats%t_fgt = stats%t_fgt + wall_time() - t0
+    end subroutine op_H
+
+    ! heat semigroup on the computational tree o (ext leaf arrays); free space if MODE_GHOST
+    subroutine fgt_ext(o, eps, h, fext, pext)
+        type(optree), intent(in) :: o
+        real(rk), intent(in) :: eps, h
+        real(rk), intent(in) :: fext(np, o%nb)
+        real(rk), intent(out) :: pext(np, o%nb)
+        real(rk), allocatable :: fe(:,:,:), pe(:,:,:), grad(:,:,:,:), hess(:,:,:,:)
+        integer, allocatable :: itree(:)
+        real(rk), allocatable :: centers(:,:), bsz(:)
+        real(rk) :: backend_start, delta, ee, targ(2,1), pt(1,1), gt(1,2,1), ht(1,3,1), times(100)
+        integer :: iptr(8), nb, nlev, ltree
+        integer :: knd, kdim, kpoly, kper, kord, knp, kpgh, knew, knt, kpght
+        ! boxfgt touches grad/hess of every box even for ifpgh=1
+        allocate(fe(1,np,o%nb), pe(1,np,o%nb), grad(1,2,np,o%nb), hess(1,3,np,o%nb))
+        fe(1,:,:) = fext
+        itree = o%itree; centers = o%centers; bsz = o%boxsize
+        iptr = o%iptr; nb = o%nb; nlev = o%nlev; ltree = o%ltree
+        delta = 4.0_rk*h
+        ee = eps
+        pe = 0; targ = 0; pt = 0; gt = 0; ht = 0; times = 0
+        ! pass variables only: the F77 routine may write to its scalar arguments
+        knd = 1; kdim = 2; kpoly = 1; kper = 1; kord = nq; knp = np; kpgh = 1; knew = 0; knt = 0; kpght = 0
+        if (o%mode == MODE_GHOST) kper = 0
+        backend_start=wall_time()
+        call boxfgt(knd, kdim, delta, ee, kpoly, kper, kord, knp, nb, nlev, ltree, itree, iptr, centers, bsz, &
+            fe, kpgh, pe, grad, hess, knew, knt, targ, kpght, pt, gt, ht, times)
+        stats%t_fgt_backend=stats%t_fgt_backend+wall_time()-backend_start
+        stats%fgt_stages=stats%fgt_stages+times(1:12)
+        pext = pe(1,:,:)/(pi*delta)
+    end subroutine fgt_ext
+
+end module hho_ops

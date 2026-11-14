@@ -1,0 +1,1339 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="密码分析学笔记第九章：MILP 建模（异或/分支/S 盒的凸包 H 表示与贪心筛选、活跃 S 盒目标函数、线性掩码、不可能差分与零相关、分离特性），SAT/STP 建模（差分、线性、不可能差分、分离特性的子句刻画），以及 DS 中间相遇区分器与密钥恢复的自动化搜索。">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-09-automated-distinguisher-search/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>第九章：区分器的自动化搜索 - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-09-automated-distinguisher-search/">
+  <meta property="og:title" content="第九章：区分器的自动化搜索 - zdd14990">
+  <meta property="og:description" content="密码分析学笔记第九章：MILP 建模（异或/分支/S 盒的凸包 H 表示与贪心筛选、活跃 S 盒目标函数、线性掩码、不可能差分与零相关、分离特性），SAT/STP 建模（差分、线性、不可能差分、分离特性的子句刻画），以及 DS 中间相遇区分器与密钥恢复的自动化搜索。">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-07-24">
+
+
+
+
+  <meta property="article:tag" content="cryptanalysis">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-09-automated-distinguisher-search/">
+  <meta name="twitter:title" content="第九章：区分器的自动化搜索 - zdd14990">
+  <meta name="twitter:description" content="密码分析学笔记第九章：MILP 建模（异或/分支/S 盒的凸包 H 表示与贪心筛选、活跃 S 盒目标函数、线性掩码、不可能差分与零相关、分离特性），SAT/STP 建模（差分、线性、不可能差分、分离特性的子句刻画），以及 DS 中间相遇区分器与密钥恢复的自动化搜索。">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "\u7b2c\u4e5d\u7ae0\uff1a\u533a\u5206\u5668\u7684\u81ea\u52a8\u5316\u641c\u7d22",
+    "description": "\u5bc6\u7801\u5206\u6790\u5b66\u7b14\u8bb0\u7b2c\u4e5d\u7ae0\uff1aMILP \u5efa\u6a21\uff08\u5f02\u6216/\u5206\u652f/S \u76d2\u7684\u51f8\u5305 H \u8868\u793a\u4e0e\u8d2a\u5fc3\u7b5b\u9009\u3001\u6d3b\u8dc3 S \u76d2\u76ee\u6807\u51fd\u6570\u3001\u7ebf\u6027\u63a9\u7801\u3001\u4e0d\u53ef\u80fd\u5dee\u5206\u4e0e\u96f6\u76f8\u5173\u3001\u5206\u79bb\u7279\u6027\uff09\uff0cSAT/STP \u5efa\u6a21\uff08\u5dee\u5206\u3001\u7ebf\u6027\u3001\u4e0d\u53ef\u80fd\u5dee\u5206\u3001\u5206\u79bb\u7279\u6027\u7684\u5b50\u53e5\u523b\u753b\uff09\uff0c\u4ee5\u53ca DS \u4e2d\u95f4\u76f8\u9047\u533a\u5206\u5668\u4e0e\u5bc6\u94a5\u6062\u590d\u7684\u81ea\u52a8\u5316\u641c\u7d22\u3002",
+    "url": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-09-automated-distinguisher-search/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/cryptography/cryptanalysis/chapter-09-automated-distinguisher-search/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-07-24",
+    "keywords": ["cryptanalysis"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#top" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5bc6\u7801\u5b66", "cryptography"], ["\u5bc6\u7801\u5206\u6790\u5b66", "cryptanalysis"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. MILP 自动化求解工具
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. MILP 自动化求解工具">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 MILP 简介
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 差分区分器的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 线性区分器的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 不可能差分/零相关线性路线的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 分离特性的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SAT 自动化求解工具
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SAT 自动化求解工具">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s2-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 差分区分器的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 线性区分器的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 不可能差分/零相关线性路线的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 分离特性的搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 \(\mathcal{DS}\) 中间相遇攻击的搜索
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 \(\mathcal{DS}\) 中间相遇攻击的搜索">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        区分器搜索模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        密钥恢复模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#cryptanalysis">密码分析学</a>
+    <span>Part 9 of 16</span>
+    
+  </div>
+  <div class="book-title-row has-numeral">
+    <div class="book-numeral" aria-hidden="true">09</div>
+    <h1 id="top"><span class="book-visually-hidden">第 9 章：</span>区分器的自动化搜索</h1>
+  </div>
+  
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-07-24">2026-07-24</time></span>
+    
+    <span>7,000 字 · 约 20 分钟</span>
+  </div>
+  
+</header>
+
+<p>前几章的区分器都是手工构造的：差分路线一轮一轮地推，积分特性一个组件一个组件地传。对 AES 这样的小规模例子还行，但真实算法一轮就可以拆成成百上千个基本操作，手工搜索既慢又容易漏。近年来大量工作把区分器搜索转化为求解器问题，常见的有：</p>
+<ul>
+<li><strong>混合整数线性规划 (Mixed Integer Linear Programming, MILP)</strong>；</li>
+<li><strong>可满足性模理论 (Satisfiability Modulo Theories, SMT)</strong> 与 <strong>布尔可满足性 (SAT)</strong>；</li>
+<li><strong>约束规划 (Constraint Programming, CP)</strong>。</li>
+</ul>
+<p>不同的技术各有特点，但都要做同一件事：<strong>对非线性组件和线性组件的传播性质进行刻画</strong>。刻画的精确程度决定了区分器搜索模型的精确程度。本章先讲 MILP，再讲 SAT。</p>
+<h2 id="s1"><span class="book-secnum">§ 01</span>MILP 自动化求解工具</h2>
+<h3 id="s1-1">1.1 MILP 简介</h3>
+<p>MILP 顾名思义：目标函数是线性的，所有约束也是线性的，决策变量可以取整数。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.1</span></p>
+<p>两个整数 <span class="arithmatex">\(x,y\)</span> 满足 <span class="arithmatex">\(x+2y&gt;5\)</span> 和 <span class="arithmatex">\(x-y&gt;1\)</span>，求 <span class="arithmatex">\(x+y\)</span> 的最小值。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>把它输入 MILP 求解器：设两个整数变量 <span class="arithmatex">\(x,y\)</span>，加两个约束 <span class="arithmatex">\(x+2y\ge6\)</span>、<span class="arithmatex">\(x-y\ge2\)</span>（整数严格不等式改成非严格），目标 <span class="arithmatex">\(\min(x+y)\)</span>。手算：由 <span class="arithmatex">\(x\ge y+2\)</span> 和 <span class="arithmatex">\(x\ge6-2y\)</span>，<span class="arithmatex">\(x+y\ge\max(2y+2,\ 6-y)\)</span>。<span class="arithmatex">\(y=1\)</span> 时下界为 <span class="arithmatex">\(\max(4,5)=5\)</span>，<span class="arithmatex">\(y=2\)</span> 时为 <span class="arithmatex">\(\max(6,4)=6\)</span>，<span class="arithmatex">\(y=0\)</span> 时为 <span class="arithmatex">\(6\)</span>。所以最小值为 <span class="arithmatex">\(5\)</span>，在 <span class="arithmatex">\((x,y)=(4,1)\)</span> 处取到。</p>
+</details>
+<p>密码分析中的变量大多是布尔量，只取 <span class="arithmatex">\(0,1\)</span>。MILP 里用整数变量表示它们，再用一组线性不等式把可行的取值组合“围”出来——<strong>能且仅能</strong>让满足传播规则的取值满足不等式。下面所有建模都是在做这件事。</p>
+<h3 id="s1-2">1.2 差分区分器的搜索</h3>
+<p>Mouha 等与 Wu、Wang 率先把计算最小差分活跃 S 盒个数转化为 MILP 问题：对目标算法构建差分模型，用开源或商业求解器求解，得到最少差分活跃 S 盒数。这一方法后来被用来搜索特定模式的差分特征和线性逼近，加入特定的表示方法后又被用来计算比特级分组密码的最小活跃 S 盒数。</p>
+<p>孙思维等精准刻画了 S 盒的差分传播特性，首次给出精确的 S 盒差分传播 MILP 模型（同样适用于线性分析），主要适用于包含比特级异或、S 盒（小于 8 比特）和比特级线性置换的算法。之后对 MILP 模型的改进都基于此，下面着重介绍这个模型。</p>
+<p><strong>分支 (COPY)。</strong> 差分满足 <span class="arithmatex">\(a=b=c\)</span>，<span class="arithmatex">\(a\)</span> 为输入差分，<span class="arithmatex">\(b,c\)</span> 为两个输出差分。</p>
+<p><strong>异或 (XOR)。</strong> 对比特级异或 <span class="arithmatex">\(a\oplus b=c\)</span>（<span class="arithmatex">\(a,b\)</span> 为输入差分，<span class="arithmatex">\(c\)</span> 为输出差分），引入辅助布尔变量 <span class="arithmatex">\(d_\oplus\)</span>，</p>
+<div class="arithmatex">\[
+\begin{cases}
+d_\oplus\ge a,\quad d_\oplus\ge b,\quad d_\oplus\ge c,\\
+a+b+c\ge2d_\oplus,\\
+a+b+c\le2.
+\end{cases}\tag{1}
+\]</div>
+<div id="ex-1" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.2</span></p>
+<p>证明不等式组 (1) 恰好刻画了异或的差分传播。</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>单比特异或所有可能的差分传播为 <span class="arithmatex">\((a,b,c)\in\{(0,0,0),(0,1,1),(1,0,1),(1,1,0)\}\)</span>。</p>
+<ul>
+<li><span class="arithmatex">\(a+b+c\le2\)</span> 排除了 <span class="arithmatex">\((1,1,1)\)</span>；</li>
+<li>若 <span class="arithmatex">\(a,b,c\)</span> 中恰有一个为 <span class="arithmatex">\(1\)</span>：前三式迫使 <span class="arithmatex">\(d_\oplus=1\)</span>，第四式要求 <span class="arithmatex">\(1\ge2\)</span>，矛盾，所以 <span class="arithmatex">\((1,0,0)\)</span>、<span class="arithmatex">\((0,1,0)\)</span>、<span class="arithmatex">\((0,0,1)\)</span> 都被排除；</li>
+<li><span class="arithmatex">\((0,0,0)\)</span> 取 <span class="arithmatex">\(d_\oplus=0\)</span> 可行；恰有两个为 <span class="arithmatex">\(1\)</span> 时取 <span class="arithmatex">\(d_\oplus=1\)</span>，<span class="arithmatex">\(2\ge2\)</span> 可行。</li>
+</ul>
+<p>（我用程序枚举 <span class="arithmatex">\((a,b,c,d_\oplus)\)</span> 核对过，可行的 <span class="arithmatex">\((a,b,c)\)</span> 恰为上述四组。）<span class="arithmatex">\(d_\oplus\)</span> 的意义是“这个异或是否活跃”。</p>
+</details>
+<p><strong>S 盒。</strong> 关键工具是凸包。</p>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 1.3</span><span class="book-name">凸包</span></p>
+<p>有限点集 <span class="arithmatex">\(P\subseteq\mathbb R^n\)</span> 的<strong>凸包</strong> <span class="arithmatex">\(\mathrm{conv}(P)\)</span> 是 <span class="arithmatex">\(\mathbb R^n\)</span> 中包含 <span class="arithmatex">\(P\)</span> 的最小凸集。</p>
+</div>
+<div id="prop-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">命题 1.4</span><span class="book-name">凸包的 <span class="arithmatex">\(H\)</span> 表示</span></p>
+<p>对任意有限点集 <span class="arithmatex">\(P\subseteq\mathbb R^n\)</span>，存在一组线性不等式 <span class="arithmatex">\(H_{\mathrm{conv}}(P)\)</span>，</p>
+<div class="arithmatex">\[
+\lambda_{i,0}p_0+\cdots+\lambda_{i,n-1}p_{n-1}+\lambda_{i,n}\ge0,\qquad i=0,1,\cdots,
+\]</div>
+<p>其解空间恰为 <span class="arithmatex">\(\mathrm{conv}(P)\)</span>，<span class="arithmatex">\(\lambda_{i,j}\)</span> 为固定实数。称为凸包的 <strong><span class="arithmatex">\(H\)</span> 表示 (H-representation)</strong>。</p>
+</div>
+<p>对一个 <span class="arithmatex">\(w\times v\)</span> 的 S 盒，输入差分为 <span class="arithmatex">\((x_0,\cdots,x_{w-1})\)</span>，输出差分为 <span class="arithmatex">\((y_0,\cdots,y_{v-1})\)</span>，把 <span class="arithmatex">\((x_0,\cdots,x_{w-1},y_0,\cdots,y_{v-1})\)</span> 看作 <span class="arithmatex">\(\{0,1\}^{w+v}\subseteq\mathbb R^{w+v}\)</span> 中的点。所有可能的差分传播模式构成一个点集 <span class="arithmatex">\(P\)</span>。<span class="arithmatex">\(\{0,1\}^{w+v}\)</span> 的点都是 <span class="arithmatex">\([0,1]^{w+v}\)</span> 的顶点，所以 <span class="arithmatex">\(\mathrm{conv}(P)\)</span> 中的 <span class="arithmatex">\(0/1\)</span> 点恰好就是 <span class="arithmatex">\(P\)</span> 本身。求出 <span class="arithmatex">\(P\)</span> 的 <span class="arithmatex">\(H\)</span> 表示，就得到了精确刻画 S 盒差分传播的不等式组。</p>
+<p>但这样得到的不等式往往数量庞大，全部加入模型会让求解变得很慢。孙思维等提出用贪心算法筛选：其实不需要整个凸包，只需要一组不等式能把所有<strong>不可能</strong>的传播模式排除即可。</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.5</span><span class="book-name">算法（贪心筛选不等式）</span></p>
+<p><strong>输入</strong>：S 盒凸包的 <span class="arithmatex">\(H\)</span> 表示 <span class="arithmatex">\(\mathcal H\)</span>，S 盒不可能差分传播模式的集合 <span class="arithmatex">\(\mathcal X\)</span>。<strong>输出</strong>：筛选出的不等式集合 <span class="arithmatex">\(O\)</span>。</p>
+<ol>
+<li><span class="arithmatex">\(\mathcal X^*\leftarrow\mathcal X\)</span>，<span class="arithmatex">\(\mathcal H^*\leftarrow\mathcal H\)</span>，<span class="arithmatex">\(O\leftarrow\varnothing\)</span>；</li>
+<li>循环：<ol>
+<li><span class="arithmatex">\(\mathcal L\leftarrow\mathcal H^*\)</span> 中能删掉 <span class="arithmatex">\(\mathcal X^*\)</span> 中最多不可能模式的那个不等式；</li>
+<li><span class="arithmatex">\(\mathcal X^*\leftarrow\)</span> 经 <span class="arithmatex">\(\mathcal L\)</span> 筛选后 <span class="arithmatex">\(\mathcal X^*\)</span> 中剩下的模式；</li>
+<li><span class="arithmatex">\(\mathcal H^*\leftarrow\mathcal H^*\setminus\{\mathcal L\}\)</span>，<span class="arithmatex">\(O\leftarrow O\cup\{\mathcal L\}\)</span>；</li>
+<li>若 <span class="arithmatex">\(\mathcal X^*=\varnothing\)</span>，返回 <span class="arithmatex">\(O\)</span>。</li>
+</ol>
+</li>
+</ol>
+</div>
+<p><strong>目标函数。</strong> 搜索一定轮数的差分路线时，希望路线包含的活跃 S 盒尽量少，所以目标函数与活跃 S 盒（或概率）相关。对双射 S 盒，非零输入差分必然导致非零输出差分。引入标志变量 <span class="arithmatex">\(A_t\)</span> 表示 S 盒是否活跃，要保证 <span class="arithmatex">\(A_t=1\)</span> 当且仅当 <span class="arithmatex">\((x_0,\cdots,x_{w-1})\)</span> 非零：</p>
+<div class="arithmatex">\[
+\begin{cases}
+A_t-x_k\ge0,&amp;k\in\{0,\cdots,w-1\},\\
+-A_t+\sum_{j=0}^{w-1}x_j\ge0.
+\end{cases}\tag{2}
+\]</div>
+<p>为保证非零输入差分必然产生非零输出差分（以及反过来），还要</p>
+<div class="arithmatex">\[
+\begin{cases}
+w\cdot(y_0+\cdots+y_{v-1})-(x_0+\cdots+x_{w-1})\ge0,\\
+v\cdot(x_0+\cdots+x_{w-1})-(y_0+\cdots+y_{v-1})\ge0.
+\end{cases}\tag{3}
+\]</div>
+<p>最后把目标函数设为 <span class="arithmatex">\(\min\sum A_t\)</span>，就能搜索 MILP 模型中最小活跃 S 盒数对应的差分路线。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 1.6</span><span class="book-name">LBlock 的 S 盒 <span class="arithmatex">\(S_0\)</span></span></p>
+<p>LBlock 的一个 S 盒为</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(S_0(x)\)</span></td>
+<td>14</td>
+<td>9</td>
+<td>15</td>
+<td>0</td>
+<td>13</td>
+<td>4</td>
+<td>10</td>
+<td>11</td>
+<td>1</td>
+<td>2</td>
+<td>8</td>
+<td>3</td>
+<td>7</td>
+<td>6</td>
+<td>12</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>先作出差分分布表，得到所有可能和不可能的差分传播模式，用 SageMath 计算可能模式对应凸包的 <span class="arithmatex">\(H\)</span> 表示，共 205 个线性不等式；再用贪心算法筛选，得到 28 个不等式，例如</p>
+<div class="arithmatex">\[
+(2,1,1,1,-3,0,1,2)\cdot x+0\ge0,\qquad(-1,2,-2,-1,0,0,-2,-1)\cdot x+5\ge0,\qquad\cdots
+\]</div>
+<p>（<span class="arithmatex">\(x\)</span> 在这里指 8 维向量 <span class="arithmatex">\((x_0,\cdots,x_3,y_0,\cdots,y_3)\)</span>。）</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>我用程序算了 <span class="arithmatex">\(S_0\)</span> 的差分分布表：非零输入差分的行里，非零项只有 <span class="arithmatex">\(2\)</span> 和 <span class="arithmatex">\(4\)</span> 两种取值（分别 72 个和 24 个），可能的差分模式共 <span class="arithmatex">\(97\)</span> 个（含 <span class="arithmatex">\(0\to0\)</span>），不可能的 <span class="arithmatex">\(159\)</span> 个。贪心算法要排除的就是这 159 个点。205 和 28 这两个数依赖于凸包软件与贪心的具体实现，我没有复算。</p>
+</div>
+<div id="ex-2" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.7</span></p>
+<p>上面的模型只区分了“可能”与“不可能”。但差分分布表中不同的传播概率不同，如何把这种不均匀性刻画进 MILP 模型，得到更准确的区分器？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>给每个 S 盒引入记录概率指数的变量。以 LBlock 的 <span class="arithmatex">\(S_0\)</span> 为例，差分分布表中非零项只有 <span class="arithmatex">\(N_s(\delta_{\mathrm{in}},\delta_{\mathrm{out}})\in\{2,4\}\)</span>（再加上 <span class="arithmatex">\(0\to0\)</span> 的 <span class="arithmatex">\(16\)</span>），对应概率的负对数 <span class="arithmatex">\(-\log_2\frac{N_s}{2^4}\in\{0,2,3\}\)</span>。用两个布尔变量 <span class="arithmatex">\(dp_0,dp_1\)</span> 编码这个指数，例如 <span class="arithmatex">\(3dp_0+2dp_1\)</span>：<span class="arithmatex">\((0,0)\mapsto0\)</span>，<span class="arithmatex">\((0,1)\mapsto2\)</span>，<span class="arithmatex">\((1,0)\mapsto3\)</span>。</p>
+<p>把 S 盒的点改为 <span class="arithmatex">\((w+v+u)\)</span> 维向量 <span class="arithmatex">\((x_0,\cdots,x_{w-1},y_0,\cdots,y_{v-1},dp_0,\cdots,dp_{u-1})\in\{0,1\}^{w+v+u}\)</span>，所有“可能传播 + 对应概率指数”的组合构成点集，计算它的凸包 <span class="arithmatex">\(H\)</span> 表示并用贪心筛选，就得到同时刻画传播与概率的不等式组。目标函数从 <span class="arithmatex">\(\sum A_t\)</span> 改为 <span class="arithmatex">\(\sum\mathrm{DP}_t\)</span>，<span class="arithmatex">\(\mathrm{DP}_t=3dp_{t,0}+2dp_{t,1}\)</span> 是第 <span class="arithmatex">\(t\)</span> 个 S 盒的概率指数。这样求得的是概率最高的差分特征，而不仅是活跃 S 盒最少的。</p>
+</details>
+<h3 id="s1-3">1.3 线性区分器的搜索</h3>
+<p>线性分析和差分分析是最基础的密码分析方法，第一步也是最重要的一步就是找高概率的差分特征或线性逼近。孙思维等的精确 S 盒模型同样适用于线性分析，只需按掩码传播的特点修改组件模型。</p>
+<p><strong>异或。</strong> 掩码满足 <span class="arithmatex">\(a=b=c\)</span>，<span class="arithmatex">\(a,b\)</span> 为两个输入掩码，<span class="arithmatex">\(c\)</span> 为输出掩码。</p>
+<p><strong>分支。</strong> 输入掩码 <span class="arithmatex">\(a\)</span>，输出掩码 <span class="arithmatex">\(b,c\)</span>，引入辅助变量 <span class="arithmatex">\(d_\Gamma\)</span>，</p>
+<div class="arithmatex">\[
+\begin{cases}
+d_\Gamma\ge a,\quad d_\Gamma\ge b,\quad d_\Gamma\ge c,\\
+a+b+c\ge2d_\Gamma,\\
+a+b+c\le2.
+\end{cases}\tag{4}
+\]</div>
+<p><strong>S 盒。</strong> 与差分相同，用 <span class="arithmatex">\(A_t\)</span> 记录活跃状态，输入掩码为 <span class="arithmatex">\((x_0,\cdots,x_{w-1})\)</span>，约束同 (2)。</p>
+<p>可见<strong>掩码传播与差分传播呈现对偶的性质</strong>：差分的分支模型类比于掩码的异或模型，差分的异或模型类比于掩码的分支模型。这种对偶正是<a href="../chapter-08-equivalence-of-analysis-methods/">第八章</a>中不可能差分与零相关线性壳等价的根源。</p>
+<p><strong>最优相关度模型。</strong> 类比差分，用 <span class="arithmatex">\(c_0,\cdots,c_{u-1}\)</span> 表示掩码传播相关度的指数，S 盒凸包的点改为 <span class="arithmatex">\((x_0,\cdots,x_{w-1},y_0,\cdots,y_{v-1},c_0,\cdots,c_{u-1})\in\{0,1\}^{w+v+u}\)</span>，目标函数从 <span class="arithmatex">\(\sum A_t\)</span> 改为 <span class="arithmatex">\(\sum\mathrm{Cor}_t\)</span>。</p>
+<h3 id="s1-4">1.4 不可能差分/零相关线性路线的搜索</h3>
+<p>不可能差分/零相关线性路线是一条不可能存在的差分/线性路线，所以搜索的思路是：<strong>判断 MILP 模型是否存在矛盾</strong>。固定输入输出差分，把模型交给求解器：若无可行解，就找到了一条不可能差分路线。</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 1.8</span><span class="book-name">算法（通用不可能差分搜索算法）</span></p>
+<p><strong>输入</strong>：所选定的输入差分集合 <span class="arithmatex">\(\Delta_{\mathrm{in}}\)</span>，输出差分集合 <span class="arithmatex">\(\Delta_{\mathrm{out}}\)</span>。<strong>输出</strong>：不可能差分路线集合 <span class="arithmatex">\(O\)</span>。</p>
+<ol>
+<li><span class="arithmatex">\(O\leftarrow\varnothing\)</span>；</li>
+<li>对每个 <span class="arithmatex">\(\alpha\in\Delta_{\mathrm{in}}\)</span>，<span class="arithmatex">\(\beta\in\Delta_{\mathrm{out}}\)</span>：<ol>
+<li><span class="arithmatex">\(\mathcal M\leftarrow\)</span> 根据 <span class="arithmatex">\((\alpha,\beta)\)</span> 生成的算法差分 MILP 模型；</li>
+<li>若 <span class="arithmatex">\(\mathcal M\)</span> 无解，<span class="arithmatex">\(O\leftarrow O\cup\{(\alpha,\beta)\}\)</span>。</li>
+</ol>
+</li>
+</ol>
+</div>
+<p>零相关线性路线类似，把差分模型换成线性模型。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p><span class="arithmatex">\(\Delta_{\mathrm{in}}\)</span>、<span class="arithmatex">\(\Delta_{\mathrm{out}}\)</span> 可以根据算法的特点选取或遍历。通常选择输入差分只有一个块活跃、其他块不活跃，输出差分也只有一个块活跃，这样最容易拉长不可能差分区分器的轮数。以 AES-128 为例，遍历输入输出单块活跃的所有情况，需要 <span class="arithmatex">\(16\times16=256\)</span> 个不同输入输出差分的 MILP 模型。</p>
+<p>要注意：这里的 S 盒如果只用“可能/不可能”模式刻画，搜到的是具体 S 盒下的不可能差分；如果只刻画活跃性（非零进、非零出），搜到的就是<a href="../chapter-08-equivalence-of-analysis-methods/">第八章</a>意义下“结构”的不可能差分。</p>
+</div>
+<div id="ex-3" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.9</span></p>
+<p>搜索 CipherFour 最长轮数的不可能差分/零相关线性路线，给出输入输出差分/掩码，并手动验证路线的矛盾。</p>
+</div>
+<details class="solution">
+<summary>思路</summary>
+<p>CipherFour（见<a href="../appendix-algorithms/#cipherfour">算法附录</a>）是 16 比特 SPN，线性层是对合的比特置换。</p>
+<ol>
+<li><strong>建模</strong>：每轮 4 个 S 盒，每个 S 盒用其差分分布表可能模式的凸包不等式刻画，比特置换只是变量重命名，不需要约束；</li>
+<li><strong>遍历</strong>：输入差分取“一个半字节非零、其余为零”的 <span class="arithmatex">\(4\times15=60\)</span> 种，输出差分同样 60 种，共 3600 个模型，对 <span class="arithmatex">\(r=1,2,3,\cdots\)</span> 逐轮增加，直到所有模型都有解为止；</li>
+<li><strong>手动验证</strong>：对找到的最长 <span class="arithmatex">\((\alpha,\beta)\)</span>，从 <span class="arithmatex">\(\alpha\)</span> 向前传播、从 <span class="arithmatex">\(\beta\)</span> 向后传播，各用概率 1 的规则（零差分 S 盒输出为零，比特置换确定），在中间某一轮看到某个比特/半字节一边必为零、另一边必非零，就是矛盾。</li>
+</ol>
+<p>由<a href="../chapter-08-equivalence-of-analysis-methods/">第八章</a>的结论，CipherFour 的线性层满足 <span class="arithmatex">\(P^{\mathrm T}P=I\)</span>，零相关线性路线的搜索结果在结构意义下与不可能差分相同。这道题我没有实际跑出结果，最长轮数留待自己用求解器验证。</p>
+</details>
+<h3 id="s1-5">1.5 分离特性的搜索</h3>
+<p><a href="../chapter-05-integral-cryptanalysis/#s2-3">第五章</a>介绍了比特级分离特性的传播规则，以及它经过 COPY、XOR、AND 的规律。但实际算法的轮函数可以拆成成百上千个基本操作，一轮的分离特性传播路线就可能多达上万条，多轮更是计算不过来。这时就要借助求解器：用线性不等式刻画传播规律，输入 MILP 求解器自动搜索分离特性的传播路线（称为<strong>分离路线 (division trail)</strong>），从而判断是否存在积分区分器。</p>
+<p><strong>起始约束。</strong> 以两子集比特级分离特性为例，若输入多重集 <span class="arithmatex">\(X\)</span> 具有 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K=\{(0,1,1,\cdots,1)\}\)</span>，在 MILP 中用 <span class="arithmatex">\(n\)</span> 个二进制变量 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 表示，加约束 <span class="arithmatex">\(x_1=0\)</span>，<span class="arithmatex">\(x_2=\cdots=x_n=1\)</span>。</p>
+<p><strong>COPY。</strong> 输入 <span class="arithmatex">\((m)\in\mathbb F_2\)</span>，输出 <span class="arithmatex">\((m,m)\in\mathbb F_2^2\)</span>。可能的分离路线有 <span class="arithmatex">\((0)\to(0,0)\)</span>，<span class="arithmatex">\((1)\to(0,1)\)</span>，<span class="arithmatex">\((1)\to(1,0)\)</span>，刻画为 <span class="arithmatex">\(x=y_1+y_2\)</span>（<span class="arithmatex">\(x,y_1,y_2\)</span> 为二进制变量）。</p>
+<p><strong>XOR。</strong> 输入 <span class="arithmatex">\((m_1,m_2)\)</span>，输出 <span class="arithmatex">\(m_1\oplus m_2\)</span>。可能的路线有 <span class="arithmatex">\((0,0)\to(0)\)</span>，<span class="arithmatex">\((0,1)\to(1)\)</span>，<span class="arithmatex">\((1,0)\to(1)\)</span>，刻画为 <span class="arithmatex">\(x_1+x_2=y\)</span>。</p>
+<p><strong>AND。</strong> 输入 <span class="arithmatex">\((m_1,m_2)\)</span>，输出 <span class="arithmatex">\(m_1\wedge m_2\)</span>。可能的路线有 <span class="arithmatex">\((0,0)\to(0)\)</span>，<span class="arithmatex">\((1,1)\to(1)\)</span>，刻画为</p>
+<div class="arithmatex">\[
+y-x_1\ge0,\qquad y-x_2\ge0,\qquad y-x_1-x_2\le0.
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>我枚举了一下，这组 AND 不等式允许的 <span class="arithmatex">\((x_1,x_2,y)\)</span> 是 <span class="arithmatex">\((0,0,0)\)</span>、<span class="arithmatex">\((0,1,1)\)</span>、<span class="arithmatex">\((1,0,1)\)</span>、<span class="arithmatex">\((1,1,1)\)</span>，比文字中说的两种多了 <span class="arithmatex">\((0,1)\to(1)\)</span> 和 <span class="arithmatex">\((1,0)\to(1)\)</span>。这不是错误：这两条路线也是合法的（只是冗余），这正是 Xiang 等最初给出的 AND 模型。后面 SAT 部分的 AND 子句只允许 <span class="arithmatex">\((0,0,0)\)</span> 与 <span class="arithmatex">\((1,1,1)\)</span>，两者搜到的结论相同。</p>
+</div>
+<p><strong>结束约束。</strong> 设输出多重集具有 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K'}\)</span>，用 <span class="arithmatex">\(n\)</span> 个二进制变量 <span class="arithmatex">\(z_1,\cdots,z_n\)</span> 表示 <span class="arithmatex">\(\mathbb K'\)</span> 中向量的取值。要判断 <span class="arithmatex">\(\mathbb K'\)</span> 是否包含所有单位向量：设目标函数 <span class="arithmatex">\(\min\{z_1+z_2+\cdots+z_n\}\)</span>。若某个单位向量不能作为可行解（例如固定 <span class="arithmatex">\(z_1=1\)</span>、其余为 <span class="arithmatex">\(0\)</span> 时模型无解），就搜到了对应比特的零和积分区分器。</p>
+<div id="ex-4" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 1.10</span></p>
+<p>用 MILP 求解器建模并搜索：当输入多重集 <span class="arithmatex">\(\mathbb X\)</span> 具有 <span class="arithmatex">\(\mathcal D^{1^{32}}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K=\{(0,1,1,\cdots,1)\}\)</span> 时，SIMON32 第 12 轮输出的第一比特是否存在积分区分器？</p>
+</div>
+<details class="solution">
+<summary>思路</summary>
+<p>SIMON32 一轮的轮函数为 <span class="arithmatex">\((L,R)\mapsto(R\oplus f(L)\oplus k,\ L)\)</span>，<span class="arithmatex">\(f(L)=\big((L\lll1)\wedge(L\lll8)\big)\oplus(L\lll2)\)</span>。拆成基本操作：<span class="arithmatex">\(L\)</span> 的每个比特要被使用 4 次（输出到右半、<span class="arithmatex">\(\lll1\)</span>、<span class="arithmatex">\(\lll8\)</span>、<span class="arithmatex">\(\lll2\)</span>），所以每个比特是一个 3 次 COPY；AND 对 16 比特逐位作用；再与 <span class="arithmatex">\(\lll2\)</span> 和 <span class="arithmatex">\(R\)</span> 作两次 XOR；密钥异或对两子集分离特性没有影响。按上面的不等式逐轮建模 12 轮，在输出端固定只有左半第一比特为 <span class="arithmatex">\(1\)</span> 的单位向量，看模型是否无解。Todo–Morii 用比特级分离特性证明了 SIMON32 存在 14 轮积分区分器（输入 31 个活跃比特），所以 12 轮第一比特的结论应该是“存在”。具体答案见向泽军等 ASIACRYPT 2016 的论文。</p>
+</details>
+<h2 id="s2"><span class="book-secnum">§ 02</span>SAT 自动化求解工具</h2>
+<p>SAT 是一个 NP 完全问题：判断一个由布尔变量和运算符构成的布尔表达式是否可满足。设置合适的限制，就能把搜索限制在较小的空间里，更容易求得解。用自动化工具 <strong>STP</strong> 可以把密码算法的约束转为可满足性问题去求解。</p>
+<h3 id="s2-1">2.1 差分区分器的搜索</h3>
+<p>STP 的输入语言（CVC）可以直接对比特向量 (BITVECTOR) 建模，下面是刻画差分经过各种组件时的模型。</p>
+<p><strong>复制。</strong> 记 <span class="arithmatex">\((\alpha)\xrightarrow{\mathrm{COPY}}(\beta_0,\beta_1)\)</span>，<span class="arithmatex">\(\alpha,\beta_0,\beta_1\)</span> 都是 <span class="arithmatex">\(n\)</span> 比特：</p>
+<div class="arithmatex">\[
+\beta_0=\alpha,\qquad\beta_1=\alpha,\qquad\alpha,\beta_0,\beta_1:\mathrm{BITVECTOR}(n).
+\]</div>
+<p><strong>异或。</strong> 记 <span class="arithmatex">\((\alpha_0,\alpha_1)\xrightarrow{\mathrm{XOR}}(\beta)\)</span>：</p>
+<div class="arithmatex">\[
+\beta=\mathrm{BVXOR}(\alpha_0,\alpha_1),\qquad\alpha_0,\alpha_1,\beta:\mathrm{BITVECTOR}(n).
+\]</div>
+<p><strong>与。</strong> 比特级与运算可以看作一组 S 盒的级联，用 S 盒的规则刻画。</p>
+<p><strong>S 盒。</strong> 先刻画 S 盒的差分分布表：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>DDT : ARRAY BITVECTOR(2n) OF BITVECTOR(n);
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>ASSERT(DDT[α@β] = p);    % 对差分分布表的每个输入输出差分
+</code></pre></div>
+<p>刻画完整的差分分布表后，就可以刻画过 S 盒的所有可能传播：</p>
+<div class="arithmatex">\[
+p=\mathrm{DDT}[\alpha\Vert\beta],\qquad\alpha,\beta,p:\mathrm{BITVECTOR}(n).
+\]</div>
+<p><span class="arithmatex">\(\alpha=0\)</span> 时必有 <span class="arithmatex">\(\beta=0\)</span>，且 <span class="arithmatex">\(p=\mathrm{DDT}[\alpha\Vert\beta]=1\)</span>。</p>
+<p><strong>矩阵乘。</strong> 先刻画矩阵 <span class="arithmatex">\(A\)</span>，再用 <span class="arithmatex">\(\beta=A\cdot\alpha\)</span> 计算差分：</p>
+<div class="arithmatex">\[
+\mathrm{ASSERT}(\beta=\mathrm{BVXOR}(A_1\cdot\alpha,\cdots,A_n\cdot\alpha)),
+\]</div>
+<p><span class="arithmatex">\(A_i\)</span> 表示 <span class="arithmatex">\(A\)</span> 的第 <span class="arithmatex">\(i\)</span> 列。</p>
+<p><strong>循环移位与移位。</strong> 用比特串的截取和拼接 <code>@</code>：</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\alpha\lll k:&amp;\quad\beta=\alpha[n-k-1:0]\ @\ \alpha[n-1:n-k],\\
+\alpha\ggg k:&amp;\quad\beta=\alpha[k-1:0]\ @\ \alpha[n-1:k],\\
+\alpha\ll k:&amp;\quad\beta=\alpha\ll k,\qquad\alpha\gg k:\quad\beta=\alpha\gg k.
+\end{aligned}
+\]</div>
+<div id="ex-5" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.1</span></p>
+<p>如何借助 STP 刻画 CipherFour 的 S 盒（见<a href="../appendix-algorithms/#cipherfour">算法附录</a>）的差分分布表和概率传播？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>CipherFour 的 S 盒是 <span class="arithmatex">\(4\times4\)</span> 的，差分分布表有 <span class="arithmatex">\(16\times16\)</span> 项。用一个以 8 比特 <span class="arithmatex">\(\alpha\Vert\beta\)</span> 为下标、值为 <span class="arithmatex">\(-\log_2\)</span> 概率（取整的权重）的数组刻画：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DDT : ARRAY BITVECTOR(8) OF BITVECTOR(4);
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>ASSERT(DDT[0bin00000000] = 0bin0000);   % 0 -&gt; 0 概率 1，权重 0
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>...                                      % 对 256 项逐一 ASSERT
+</code></pre></div>
+<p>不可能的传播（DDT 值为 0）赋一个特殊值，例如 <code>0bin1111</code>，再对每个 S 盒加约束 <code>ASSERT(NOT(p = 0bin1111))</code> 排除它们。可能的传播按 DDT 值 <span class="arithmatex">\(N\)</span> 记权重 <span class="arithmatex">\(4-\log_2N\)</span>：<span class="arithmatex">\(N=16\)</span> 记 <span class="arithmatex">\(0\)</span>，<span class="arithmatex">\(N=4\)</span> 记 <span class="arithmatex">\(2\)</span>，<span class="arithmatex">\(N=2\)</span> 记 <span class="arithmatex">\(3\)</span>。CipherFour 的 S 盒差分分布表中非零输入差分的最大项为 <span class="arithmatex">\(10\)</span>（我用程序核对过），不是 2 的幂，这时可以把权重扩大若干倍再取整，或者改用 <span class="arithmatex">\(-\log_2\)</span> 的定点表示。最后把所有 S 盒的权重加起来，用 <code>ASSERT(BVLE(sum, w))</code> 限定总权重，从小到大增加 <span class="arithmatex">\(w\)</span>，第一次可满足时就得到最优差分特征的概率 <span class="arithmatex">\(2^{-w}\)</span>。</p>
+</details>
+<h3 id="s2-2">2.2 线性区分器的搜索</h3>
+<p>与差分类似，只是各组件刻画的是掩码传播。对偶性在这里体现得很清楚：</p>
+<ul>
+<li><strong>复制</strong>：<span class="arithmatex">\(\alpha=\mathrm{BVXOR}(\beta_0,\beta_1)\)</span>；</li>
+<li><strong>异或</strong>：<span class="arithmatex">\(\beta=\alpha_0\)</span>，<span class="arithmatex">\(\alpha_0=\alpha_1\)</span>；</li>
+<li><strong>与</strong>：看作 S 盒处理；</li>
+<li><strong>S 盒</strong>：用线性近似表 (LAT) 代替差分分布表，<code>LAT : ARRAY BITVECTOR(2n) OF BITVECTOR(n)</code>，<span class="arithmatex">\(p=\mathrm{LAT}[\alpha\Vert\beta]\)</span>。<span class="arithmatex">\(\alpha=0\)</span> 时必有 <span class="arithmatex">\(\beta=0\)</span>，且 <span class="arithmatex">\(p=1\)</span>；</li>
+<li>
+<p><strong>矩阵乘</strong>：掩码按转置传播，<span class="arithmatex">\(\alpha=A^{\mathrm T}\cdot\beta\)</span>：</p>
+<div class="arithmatex">\[
+\mathrm{ASSERT}(\alpha=\mathrm{BVXOR}(A_1^{\mathrm T}\cdot\beta,\cdots,A_n^{\mathrm T}\cdot\beta)),
+\]</div>
+<p><span class="arithmatex">\(A_i^{\mathrm T}\)</span> 表示 <span class="arithmatex">\(A^{\mathrm T}\)</span> 的第 <span class="arithmatex">\(i\)</span> 行；
+- <strong>循环移位、移位</strong>：与差分相同。</p>
+</li>
+</ul>
+<div id="ex-6" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.2</span></p>
+<p>如何借助 STP 刻画 CipherFour 的 S 盒的线性近似表和相关性的传播？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>与上一题相同的思路，把数组的值换成相关度的权重。CipherFour 的 S 盒 LAT（以“满足个数 <span class="arithmatex">\(-8\)</span>”计）非平凡项的绝对值为 <span class="arithmatex">\(2\)</span>、<span class="arithmatex">\(4\)</span>、<span class="arithmatex">\(6\)</span>（我用程序核对过），对应相关度 <span class="arithmatex">\(\pm\frac14\)</span>、<span class="arithmatex">\(\pm\frac12\)</span>、<span class="arithmatex">\(\pm\frac34\)</span>，权重 <span class="arithmatex">\(-\log_2|c|\)</span> 为 <span class="arithmatex">\(2\)</span>、<span class="arithmatex">\(1\)</span>、<span class="arithmatex">\(0.415\)</span>，非整数的同样要放大取整；<span class="arithmatex">\(0\to0\)</span> 权重为 <span class="arithmatex">\(0\)</span>；LAT 值为 <span class="arithmatex">\(0\)</span> 的组合（相关度为 <span class="arithmatex">\(0\)</span>）赋特殊值并排除。因为线性路线的相关度按堆积引理相乘，总权重仍是各 S 盒权重之和，同样逐步放宽上界找最优线性特征。注意符号不进入权重，单条路线的相关度绝对值才是我们关心的。</p>
+</details>
+<h3 id="s2-3">2.3 不可能差分/零相关线性路线的搜索</h3>
+<p>概率为 <span class="arithmatex">\(0\)</span> 的差分路径即不可能差分路径。模型基于搜索差分路径的 SAT 模型，其中 S 盒模型要求转移概率 <span class="arithmatex">\(p&gt;0\)</span>。以 ARX 类算法为例，建模时以比特为单位，对模加和其他线性部件分别建立比特级可满足性模型，对路线首尾低汉明重量的输入和输出作部分遍历，寻找 <span class="arithmatex">\(R\)</span> 轮不可能差分路线：在相应条件下求解器发现模型无解，就找到了一条不可能差分路线；有解说明该条件下有一条差分路线，继续遍历下一个条件。搜索算法与 <a href="#s1-4">§1.4</a> 的算法完全相同，只是把 MILP 模型换成 SAT 模型。</p>
+<p>零相关线性路线类似：寻找与密钥取值无关、相关度为 <span class="arithmatex">\(0\)</span> 的线性壳 <span class="arithmatex">\(\alpha\to\beta\)</span>，S 盒模型要求 <span class="arithmatex">\(p&gt;0\)</span>，若模型无解就找到了一条零相关线性路线。</p>
+<div id="ex-7" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.3</span></p>
+<p>用 SAT 工具搜索 CipherFour 最长轮数的不可能差分路线，给出输入输出差分/掩码，并手动验证路线的矛盾。</p>
+</div>
+<details class="solution">
+<summary>提示</summary>
+<p>与 <a href="#s1-4">§1.4</a> 的习题相同，只是工具换成 STP：每个 S 盒加 <code>ASSERT(NOT(DDT[α@β] = 0bin0000))</code>（即要求 <span class="arithmatex">\(p&gt;0\)</span>），比特置换用比特截取和拼接实现。STP 返回 <code>Valid.</code> 表示原问题（加了 <code>QUERY(FALSE)</code>）无解，即找到了不可能差分。</p>
+</details>
+<h3 id="s2-4">2.4 分离特性的搜索</h3>
+<p>用 SAT 求解器搜索分离特性的传播路线，从而判断是否存在积分区分器。</p>
+<p><strong>起始约束。</strong> 以两子集比特级分离特性为例，输入 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K=\{(0,1,1,\cdots,1)\}\)</span>，用 <span class="arithmatex">\(n\)</span> 个命题变量 <span class="arithmatex">\(x_1,\cdots,x_n\)</span> 表示，写成 <span class="arithmatex">\(n\)</span> 个布尔子句 <span class="arithmatex">\(\neg x_1\)</span>，<span class="arithmatex">\(x_2\)</span>，……，<span class="arithmatex">\(x_n\)</span>。</p>
+<p>各操作的刻画（每个子句是若干文字的析取，所有子句合取）：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>允许的路线</th>
+<th>SAT 子句</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>COPY <span class="arithmatex">\((x)\to(y_1,y_2)\)</span></td>
+<td><span class="arithmatex">\((0)\to(0,0)\)</span>，<span class="arithmatex">\((1)\to(0,1)\)</span>，<span class="arithmatex">\((1)\to(1,0)\)</span></td>
+<td><span class="arithmatex">\(x\vee\neg y_1\)</span>，<span class="arithmatex">\(x\vee\neg y_2\)</span>，<span class="arithmatex">\(\neg x\vee y_1\vee y_2\)</span>，<span class="arithmatex">\(\neg x\vee\neg y_1\vee\neg y_2\)</span></td>
+</tr>
+<tr>
+<td>XOR <span class="arithmatex">\((x_1,x_2)\to(y)\)</span></td>
+<td><span class="arithmatex">\((0,0)\to(0)\)</span>，<span class="arithmatex">\((0,1)\to(1)\)</span>，<span class="arithmatex">\((1,0)\to(1)\)</span></td>
+<td><span class="arithmatex">\(y\vee\neg x_1\)</span>，<span class="arithmatex">\(y\vee\neg x_2\)</span>，<span class="arithmatex">\(\neg y\vee x_1\vee x_2\)</span>，<span class="arithmatex">\(\neg y\vee\neg x_1\vee\neg x_2\)</span></td>
+</tr>
+<tr>
+<td>AND <span class="arithmatex">\((x_1,x_2)\to(y)\)</span></td>
+<td><span class="arithmatex">\((0,0)\to(0)\)</span>，<span class="arithmatex">\((1,1)\to(1)\)</span></td>
+<td><span class="arithmatex">\(y\vee\neg x_1\)</span>，<span class="arithmatex">\(y\vee\neg x_2\)</span>，<span class="arithmatex">\(\neg y\vee x_1\)</span>，<span class="arithmatex">\(\neg y\vee x_2\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>我枚举核对过：三组子句的可满足赋值恰好就是表中“允许的路线”。</p>
+</div>
+<p>密码算法的轮函数可以拆成若干个分支、异或、与操作的组合。对每个操作的输入输出设置命题变量，用布尔子句刻画它们的关系，就把输入多重集与输出多重集的分离特性在 SAT 求解器中联系起来：</p>
+<div class="arithmatex">\[
+\mathbb K_0\xrightarrow{f_r}\mathbb K_1\xrightarrow{f_r}\mathbb K_2\xrightarrow{f_r}\cdots\xrightarrow{f_r}\mathbb K_n.
+\]</div>
+<p><strong>结束约束。</strong> 若多重集具有分离特性 <span class="arithmatex">\(\mathcal D^{1^n}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K\)</span> 不包括所有单位向量，就得到一个积分区分器；若包括所有单位向量，就没有找到积分区分器。</p>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 2.4</span></p>
+<p>设输出多重集 <span class="arithmatex">\(\mathbb Y\)</span> 具有 <span class="arithmatex">\(\mathcal D^{1^4}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K=\{(0,0,0,1),(0,0,1,0),(0,1,0,0),(1,0,0,0)\}\)</span>，则对任意 <span class="arithmatex">\(\boldsymbol u\succeq\boldsymbol k_i\)</span>，<span class="arithmatex">\(\boldsymbol k_i\in\mathbb K\)</span>，<span class="arithmatex">\(\sum_{\boldsymbol x\in\mathbb Y}\pi_{\boldsymbol u}(\boldsymbol x)\)</span> 都是不确定的，无法得到零和区分器。但若 <span class="arithmatex">\(\mathbb K'=\{(0,0,1,0),(0,1,0,0),(1,0,0,0)\}\)</span> 中缺了 <span class="arithmatex">\((0,0,0,1)\)</span>，则 <span class="arithmatex">\(\sum_{\boldsymbol x}\pi_{(0,0,0,1)}(\boldsymbol x)=0\)</span>，就得到一个零和区分器。</p>
+</div>
+<p>所以在 SAT 求解器中，对第 <span class="arithmatex">\(r\)</span> 轮输出的命题变量 <span class="arithmatex">\(z_1,\cdots,z_n\)</span> 加约束：要判断输出第一比特上是否有零和区分器，就加一条子句 <span class="arithmatex">\(z_1\)</span> 和若干条 <span class="arithmatex">\(\neg z_2,\cdots,\neg z_n\)</span>（即要求 <span class="arithmatex">\(\mathbb K'\)</span> 中含单位向量 <span class="arithmatex">\((1,0,\cdots,0)\)</span>）。若 SAT 求解器输出无解，就证明了 <span class="arithmatex">\((1,0,\cdots,0)\notin\mathbb K'\)</span>，即 <span class="arithmatex">\(\sum_{\boldsymbol x\in\mathbb X}\pi_{(1,0,\cdots,0)}(\boldsymbol x)=0\)</span>。</p>
+<div class="admonition note">
+<p class="admonition-title">注</p>
+<p>教材此处把这条约束写成一条子句 <span class="arithmatex">\(z_1\cup\neg z_2\cup\neg z_3\cup\cdots\cup\neg z_n\)</span>。按析取的含义，这条子句只要求“<span class="arithmatex">\(z_1\)</span> 为真或某个 <span class="arithmatex">\(z_j\)</span>（<span class="arithmatex">\(j\ge2\)</span>）为假”，并不能把输出钉在单位向量 <span class="arithmatex">\((1,0,\cdots,0)\)</span> 上。要达到文中的目的，应该写成 <span class="arithmatex">\(n\)</span> 条单文字子句 <span class="arithmatex">\(z_1\)</span>，<span class="arithmatex">\(\neg z_2\)</span>，……，<span class="arithmatex">\(\neg z_n\)</span> 的合取。上面按这个意思写。</p>
+</div>
+<div id="ex-8" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.5</span></p>
+<p>用 SAT 求解器建模并搜索：输入多重集 <span class="arithmatex">\(\mathbb X\)</span> 具有 <span class="arithmatex">\(\mathcal D^{1^{32}}_{\mathbb K}\)</span>，<span class="arithmatex">\(\mathbb K=\{(0,1,1,\cdots,1)\}\)</span> 时，SIMON32 的第 12 轮输出的第一比特是否存在积分区分器？</p>
+</div>
+<details class="solution">
+<summary>提示</summary>
+<p>与 <a href="#s1-5">§1.5</a> 的习题相同，把不等式换成上表的子句。用 CryptoMiniSat 或 STP 都可以；SAT 模型通常比 MILP 模型求解更快，这也是近年分离特性搜索多用 SAT 的原因。</p>
+</details>
+<h3 id="s2-5">2.5 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇攻击的搜索</h3>
+<p>对称密码算法通过轮函数的迭代保证安全性，轮函数由若干组件函数有序组合而成。所以对 <a href="../chapter-06-meet-in-the-middle/#s3">第六章</a>的 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇攻击，只需刻画出每个组件函数中需要施加的约束，就能构造整个算法的模型。具体地说：</p>
+<ul>
+<li>对 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇<strong>区分器</strong>，要刻画组件函数<strong>前向差分</strong>与<strong>后向确定性关系</strong>的传播；</li>
+<li>对 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇<strong>密钥恢复</strong>，还要在此基础上刻画组件函数的后向差分与前向确定性关系。</li>
+</ul>
+<p><strong>符号。</strong> 用 <span class="arithmatex">\(T\)</span> 表示不同类型的模板变量，可以换成下文的 <span class="arithmatex">\(X,Y,Z\)</span> 等。<span class="arithmatex">\(\mathrm{Vars}^{(i)}(T)=\{T_i[j]\mid0\le j&lt;n_c\}\)</span> 表示 <span class="arithmatex">\(\mathrm{state}_i\)</span> 引入的一组 <span class="arithmatex">\(T\)</span> 变量（<span class="arithmatex">\(n_c\)</span> 为状态中字的个数）；<span class="arithmatex">\(\mathrm{Vars}_{(r)}(T)\)</span> 表示第 <span class="arithmatex">\(r\)</span> 轮的一组 <span class="arithmatex">\(T\)</span> 变量，若每轮有 <span class="arithmatex">\(k\)</span> 个 state，则 <span class="arithmatex">\(\mathrm{Vars}_{(r)}(T)=\{\mathrm{Vars}^{(kr)}(T),\cdots,\mathrm{Vars}^{(kr+k-1)}(T)\}\)</span>。</p>
+<h4 id="_1">区分器搜索模型</h4>
+<p>区分器中每个 <span class="arithmatex">\(\mathrm{state}_i\)</span> 引入三类变量：</p>
+<ul>
+<li><strong><span class="arithmatex">\(X\)</span> 型</strong>：刻画前向差分（<span class="arithmatex">\(X_i[j]=1\)</span> 表示这个字的差分可能非零）；</li>
+<li><strong><span class="arithmatex">\(Y\)</span> 型</strong>：刻画后向确定性关系（<span class="arithmatex">\(Y_i[j]=1\)</span> 表示这个字的值要由尾部决定）；</li>
+<li><strong><span class="arithmatex">\(Z\)</span> 型</strong>：刻画前向差分与后向确定性关系的交，<span class="arithmatex">\(Z_i[j]=1\)</span> 表示这个字既活跃又被需要，它就是预计算中要遍历的变量。</li>
+</ul>
+<p><strong>前向差分的传播规则</strong>（与截断差分相同）：</p>
+<ol>
+<li><strong>S 盒</strong>：<span class="arithmatex">\(X_{i+1}[j]=X_i[j]\)</span>；</li>
+<li><strong>字级置换 <span class="arithmatex">\(P\)</span></strong>：<span class="arithmatex">\(X_{i+1}[j]=X_i[P[j]]\)</span>；</li>
+<li><strong>列混合 MC</strong>：设 <span class="arithmatex">\(\{X_i[s_0],\cdots,X_i[s_{l-1}]\}\)</span> 和 <span class="arithmatex">\(\{X_{i+1}[s_0],\cdots,X_{i+1}[s_{l-1}]\}\)</span> 为 MC 一列的输入输出，<span class="arithmatex">\(X_{i+1}[s_a]=1\)</span> 当且仅当 <span class="arithmatex">\(Q=\{X_i[s_j]\mid\mathrm{MC}[a][j]\ne0\}\)</span> 中的元素不全为 <span class="arithmatex">\(0\)</span>：<code>ASSERT(orTerm(Q) = X_{i+1}[s_a])</code>，<span class="arithmatex">\(\mathrm{orTerm}(Q)\)</span> 为 <span class="arithmatex">\(Q\)</span> 中所有变量的或；</li>
+<li><strong>分支</strong>：<span class="arithmatex">\(X_{i+1}[m]=X_i[j]\)</span>，<span class="arithmatex">\(X_{i+1}[l]=X_i[j]\)</span>；</li>
+<li><strong>异或</strong>：<span class="arithmatex">\(X_{i+1}[j]=X_i[m]\mid X_i[l]\)</span>。</li>
+</ol>
+<p><strong>后向确定性关系的传播规则</strong>（从尾部往回推“需要知道哪些字”）：</p>
+<ol start="6">
+<li><strong>S 盒</strong>：<span class="arithmatex">\(Y_i[j]=Y_{i+1}[j]\)</span>；</li>
+<li><strong>字级置换</strong>：<span class="arithmatex">\(Y_i[P[j]]=Y_{i+1}[j]\)</span>；</li>
+<li><strong>MC</strong>：<span class="arithmatex">\(Y_i[s_a]=1\)</span> 当且仅当 <span class="arithmatex">\(Q=\{Y_{i+1}[s_j]\mid\mathrm{MC}^{\mathrm T}[a][j]\ne0\}\)</span> 不全为 <span class="arithmatex">\(0\)</span>，<code>ASSERT(orTerm(Q) = Y_i[s_a])</code>；</li>
+<li><strong>分支</strong>：<span class="arithmatex">\(Y_i[j]=Y_{i+1}[m]\mid Y_{i+1}[l]\)</span>；</li>
+<li><strong>异或</strong>：<span class="arithmatex">\(Y_i[m]=Y_{i+1}[j]\)</span>，<span class="arithmatex">\(Y_i[l]=Y_{i+1}[j]\)</span>。</li>
+</ol>
+<p>注意分支与异或在两个方向上又一次呈现对偶。</p>
+<p><strong>其他约束</strong>：</p>
+<ol start="11">
+<li><strong>交</strong>：<span class="arithmatex">\(Z_i[j]=X_i[j]\ \&amp;\ Y_i[j]\)</span>；</li>
+<li>
+<p><strong>必要约束</strong>：为得到非平凡解，头部的 <span class="arithmatex">\(X\)</span> 型变量 <span class="arithmatex">\(\{X_0[0],\cdots,X_0[n_c-1]\}\)</span> 不全为 <span class="arithmatex">\(0\)</span>，尾部的 <span class="arithmatex">\(Y\)</span> 型变量不全为 <span class="arithmatex">\(0\)</span>；为保证区分器有效，S 盒输入位置的 <span class="arithmatex">\(Z\)</span> 型变量的非零个数（即<strong>度数</strong> <span class="arithmatex">\(d\)</span>）要小于密钥字数 KW：</p>
+<div class="arithmatex">\[
+\mathrm{ASSERT}(\mathrm{plusTerm}(\mathrm{ZVars})=\mathrm{degree}),\qquad\mathrm{ASSERT}(\mathrm{BVLT}(\mathrm{degree},\mathrm{KW}));
+\]</div>
+</li>
+<li>
+<p><strong>额外约束</strong>：结合算法特性给出合适的约束，减少度数。</p>
+</li>
+</ol>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.6</span><span class="book-name">算法（<span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇区分器搜索模型）</span></p>
+<p><strong>输入</strong>：密码算法 <span class="arithmatex">\(E\)</span>，轮数 <span class="arithmatex">\(R\)</span>，密钥字数 KW。<strong>输出</strong>：区分器的度数 <span class="arithmatex">\(d\)</span>。</p>
+<ol>
+<li>循环：<ol>
+<li>对 <span class="arithmatex">\(i=0,\cdots,R-1\)</span>，声明 <span class="arithmatex">\(\mathrm{Vars}_{(i)}(X),\mathrm{Vars}_{(i)}(Y),\mathrm{Vars}_{(i)}(Z)\)</span>，用规则 1–5 加前向差分约束，规则 6–10 加后向确定性约束，规则 11 加交的约束，规则 12、13 加必要和额外约束，全部写入 CVC 文件；</li>
+<li>用 STP 运行 CVC 文件；</li>
+<li>若无解，跳出循环；若有解，读出 degree 的值，令 <span class="arithmatex">\(\mathrm{KW}\leftarrow\)</span> degree；</li>
+</ol>
+</li>
+<li>返回 <span class="arithmatex">\(d\leftarrow\mathrm{KW}\)</span>。</li>
+</ol>
+</div>
+<p>每次有解就把上界收紧为当前解的度数，直到无解，得到度数最小的 <span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇区分器，再根据 <span class="arithmatex">\(Z\)</span> 型变量的取值把区分器提取出来。</p>
+<h4 id="_2">密钥恢复模型</h4>
+<p>把加密分为 <span class="arithmatex">\(E=E_2\circ E_1\circ E_0\)</span>，轮数分别为 <span class="arithmatex">\(r_0,r_1,r_2\)</span>。</p>
+<p><strong>刻画区分器尾部 <span class="arithmatex">\(E_2\)</span>。</strong> 每个 state 引入 <span class="arithmatex">\(W\)</span> 型变量，刻画尾部的前向确定性关系：</p>
+<ol start="14">
+<li>S 盒与字级置换的前向确定性关系与后向确定性关系的刻画相同；</li>
+<li>分支的前向确定性关系与异或的后向确定性关系的刻画相同；</li>
+<li>异或的前向确定性关系与分支的后向确定性关系的刻画相同；</li>
+<li>MC 的前向确定性关系与 MC 的前向差分刻画相同，只需把 MC 矩阵换成 <span class="arithmatex">\((\mathrm{MC}^{-1})^{\mathrm T}\)</span>。</li>
+</ol>
+<p>由此得到 <span class="arithmatex">\(E_2\)</span> 中需要猜测值的位置，即 S 盒的 <span class="arithmatex">\(W\)</span> 型输入变量中非零的位置。</p>
+<p><strong>刻画区分器头部 <span class="arithmatex">\(E_0\)</span>。</strong> 每个 state 引入 <span class="arithmatex">\(M\)</span> 型变量，刻画头部的后向差分：</p>
+<ol start="18">
+<li>S 盒与字级置换的后向差分与前向差分的刻画相同；</li>
+<li>分支的后向差分与异或的前向差分刻画相同；</li>
+<li>异或的后向差分与分支的前向差分刻画相同；</li>
+<li>MC 的后向差分与前向差分的刻画相同，只需把 MC 换成 <span class="arithmatex">\(\mathrm{MC}^{-1}\)</span>；</li>
+<li><strong><span class="arithmatex">\(Z\)</span> 型变量线性层后向确定性关系</strong>：在 <span class="arithmatex">\(E_0\)</span> 的 S 盒输入位置引入 <span class="arithmatex">\(Z\)</span> 型变量，令其等于同位置的 <span class="arithmatex">\(M\)</span> 型变量，再对每一轮按分支操作的后向确定性关系刻画。</li>
+</ol>
+<p>由此得到 <span class="arithmatex">\(E_0\)</span> 中需要猜测值的位置，即 S 盒的 <span class="arithmatex">\(Z\)</span> 型输入变量中非零的位置。</p>
+<p><strong>提取需要猜测的密钥。</strong></p>
+<ol start="23">
+<li>
+<p>引入 SK 型变量 <span class="arithmatex">\(\mathrm{Vars(SK)}\)</span>：在 <span class="arithmatex">\(E_0\)</span> 处，SK 型变量等于异或密钥后的 <span class="arithmatex">\(Z\)</span> 型变量；在 <span class="arithmatex">\(E_2\)</span> 处，等于异或密钥前的 <span class="arithmatex">\(W\)</span> 型变量。加约束</p>
+<div class="arithmatex">\[
+\mathrm{ASSERT}(\mathrm{BVLT}(\mathrm{plusTerm}(\mathrm{Vars(SK)}),\mathrm{UpBound})),
+\]</div>
+<p>UpBound 是预先给定的、比密钥字数大的值。</p>
+</li>
+</ol>
+<div id="thm-4" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.7</span><span class="book-name">算法（<span class="arithmatex">\(\mathcal{DS}\)</span> 中间相遇攻击的自动化密钥恢复模型）</span></p>
+<p><strong>输入</strong>：<span class="arithmatex">\(E=E_2\circ E_1\circ E_0\)</span>，轮数 <span class="arithmatex">\(r_0,r_1,r_2\)</span>，区分器度数 <span class="arithmatex">\(d\)</span>，密钥字数上界 UpBound。<strong>输出</strong>：需要猜测的密钥字数 Guess_Key。</p>
+<ol>
+<li>对 <span class="arithmatex">\(E_0\)</span> 的每一轮（<span class="arithmatex">\(i=0,\cdots,r_0-1\)</span>）：声明 <span class="arithmatex">\(M\)</span>、<span class="arithmatex">\(Z\)</span> 型变量，用规则 18–20 加后向差分约束，规则 22 加后向确定性约束；</li>
+<li>对 <span class="arithmatex">\(E_1\)</span> 的每一轮（<span class="arithmatex">\(j=r_0,\cdots,r_0+r_1-1\)</span>）：声明 <span class="arithmatex">\(X,Y,Z\)</span> 型变量，用规则 1–13 刻画区分器，令 KW 的值为 <span class="arithmatex">\(d\)</span>；</li>
+<li>对 <span class="arithmatex">\(E_2\)</span> 的每一轮（<span class="arithmatex">\(l=r_0+r_1,\cdots,r_0+r_1+r_2-1\)</span>）：声明 <span class="arithmatex">\(W\)</span> 型变量，用规则 14–17 加前向确定性约束；</li>
+<li>声明 SK 型变量，用规则 23 加约束，设上界 UpBound；</li>
+<li>用 STP 运行，根据结果中的 SK 型变量得到需要猜测的密钥；</li>
+<li>用<strong>密钥桥接 (key bridging)</strong> 技术缩减猜测量，输出 Guess_Key。</li>
+</ol>
+</div>
+<p>如果缩减后需要猜测的密钥字数小于算法的密钥字数，就认为这个密钥恢复是有效的。</p>
+<div id="ex-9" class="admonition problem">
+<p class="admonition-title"><span class="book-label">习题 2.8</span></p>
+<p>用本节的模型重新审视<a href="../chapter-06-meet-in-the-middle/#s3">第六章</a>的 4 轮 Mini-AES 区分器 <span class="arithmatex">\(\mathcal X_0[0]\to\Delta\mathcal X_4[0]\)</span>：哪些位置的 <span class="arithmatex">\(Z\)</span> 型变量为 <span class="arithmatex">\(1\)</span>？度数 <span class="arithmatex">\(d\)</span> 是多少？</p>
+</div>
+<details class="solution">
+<summary>解</summary>
+<p>前向差分（<span class="arithmatex">\(X\)</span> 型）：从 <span class="arithmatex">\(X_0[0]\)</span> 一个活跃半字节出发，第 1 轮后第一列活跃，第 2 轮后全部活跃，之后一直全部活跃。后向确定性（<span class="arithmatex">\(Y\)</span> 型）：从 <span class="arithmatex">\(X_4[0]\)</span> 往回推，它依赖第 4 轮 MC 前同一列的 <span class="arithmatex">\(X_3^S\)</span> 的两个半字节，即 <span class="arithmatex">\(X_3[0]\)</span>、<span class="arithmatex">\(X_3[3]\)</span>；再往回，<span class="arithmatex">\(X_3[0]\)</span> 与 <span class="arithmatex">\(X_3[3]\)</span> 合起来依赖 <span class="arithmatex">\(X_2\)</span> 的全部 4 个半字节；<span class="arithmatex">\(X_2\)</span> 的 4 个依赖 <span class="arithmatex">\(X_1\)</span> 的全部。</p>
+<p><span class="arithmatex">\(Z=X\wedge Y\)</span>，S 盒输入位置上为 <span class="arithmatex">\(1\)</span> 的有：<span class="arithmatex">\(X_1\)</span> 中前向活跃且后向需要的 <span class="arithmatex">\(X_1[0]\)</span>、<span class="arithmatex">\(X_1[1]\)</span>（2 个），<span class="arithmatex">\(X_2\)</span> 的 4 个，<span class="arithmatex">\(X_3[0]\)</span>、<span class="arithmatex">\(X_3[3]\)</span>（2 个），共 8 个半字节，即 <span class="arithmatex">\(d=8\)</span>。这正对应第六章中的 <span class="arithmatex">\(\mathcal V'=c_0\Vert c_1\Vert c_2\Vert c_3\Vert c_4\Vert c_5\Vert K_3[0]\Vert K_3[3]\)</span>：<span class="arithmatex">\(c_0,c_1\)</span> 是 <span class="arithmatex">\(X_1[0],X_1[1]\)</span> 的“偏移”，<span class="arithmatex">\(c_2,\cdots,c_5\)</span> 是 <span class="arithmatex">\(X_2\)</span> 的 4 个，<span class="arithmatex">\(K_3[0],K_3[3]\)</span> 是 <span class="arithmatex">\(X_3\)</span> 的 2 个，共 <span class="arithmatex">\(8\times4=32\)</span> 比特，与第六章的 <span class="arithmatex">\(2^{32}\)</span> 一致。</p>
+</details>
+<p>参考：王美琴主编，《密码分析学》，科学出版社，2024，第 9 章。</p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="密码分析学章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-08-equivalence-of-analysis-methods/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">第八章：分组密码各种分析方法的等价性</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-10-block-cipher-modes/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">第十章：分组密码工作模式的攻击概述</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#cryptanalysis">密码分析学 · 第 9 / 16 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#cryptography">密码学</a><a class="zdd-end-chip is-category" href="../../../../blog/#cryptanalysis">密码分析学</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=cryptanalysis">#cryptanalysis</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-05-integral-cryptanalysis/">第五章：积分分析</a></li><li><a href="../chapter-08-equivalence-of-analysis-methods/">第八章：分组密码各种分析方法的等价性</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

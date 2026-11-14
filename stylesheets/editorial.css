@@ -1,0 +1,1048 @@
+/* Editorial theme: paper, one ink, one accent, hairline rules, serif text and
+   monospaced labels. Loaded last; overrides the earlier blue card theme.
+   Article structure (opener, § numbers, statement labels, figure captions)
+   is produced by zdd_build/book_layout.py and overrides/partials/book-opener.html. */
+
+/* ---------- Tokens ---------- */
+body {
+    --ed-paper: #f4f1ea;
+    --ed-paper-deep: #ebe6db;
+    --ed-ink: #1c1b19;
+    --ed-ink-soft: #3a3833;
+    --ed-muted: #6b665e; /* 4.9:1 on paper (was #77726a, 4.2:1) */
+    --ed-rule: rgba(28, 27, 25, 0.16);
+    --ed-rule-strong: #1c1b19;
+    --ed-accent: #a8361f;
+    --ed-serif: "Noto Serif SC", "Source Han Serif SC", "Source Han Serif", "Songti SC", "STSong", "SimSun", serif;
+    --ed-mono: "JetBrains Mono", "Cascadia Mono", "SF Mono", Menlo, Consolas, var(--ed-serif);
+    --ed-margin: 280px;
+}
+
+body[data-md-color-scheme="slate"] {
+    --ed-paper: #151412;
+    --ed-paper-deep: #1d1c19;
+    --ed-ink: #e9e4d8;
+    --ed-ink-soft: #cfc9bc;
+    --ed-muted: #8f897d;
+    --ed-rule: rgba(233, 228, 216, 0.14);
+    --ed-rule-strong: #e9e4d8;
+    --ed-accent: #e0805f;
+}
+
+body,
+body[data-md-color-scheme="slate"] {
+    --zdd-reading-font: var(--ed-serif);
+    --zdd-canvas: var(--ed-paper);
+    --zdd-article-bg: var(--ed-paper);
+    --zdd-nav-bg: var(--ed-paper);
+    --zdd-nav-ink: var(--ed-ink);
+    --zdd-paper: var(--ed-paper);
+    --zdd-paper-soft: var(--ed-paper-deep);
+    --zdd-ink: var(--ed-ink);
+    --zdd-muted: var(--ed-muted);
+    --zdd-line: var(--ed-rule);
+    --zdd-progress: var(--ed-accent);
+    --zdd-surface: var(--ed-paper);
+    --zdd-surface-hover: var(--ed-paper-deep);
+    --zdd-surface-border: var(--ed-rule);
+    --zdd-surface-shadow: none;
+    --zdd-surface-ink: var(--ed-ink);
+    --zdd-surface-muted: var(--ed-muted);
+    --zdd-card-bg: var(--ed-paper);
+    --zdd-card-bg-hover: var(--ed-paper-deep);
+    --zdd-card-border: var(--ed-rule);
+    --zdd-card-shadow: none;
+    --zdd-card-ink: var(--ed-ink);
+    --zdd-card-muted: var(--ed-muted);
+    --zdd-display-ink: var(--ed-ink);
+    --zdd-scroll-thumb: var(--ed-muted);
+    --zdd-scroll-track: transparent;
+    --zdd-reading-link: var(--ed-accent);
+    --md-default-bg-color: var(--ed-paper);
+    --md-default-fg-color: var(--ed-ink);
+    --md-default-fg-color--light: var(--ed-muted);
+    --md-default-fg-color--lighter: var(--ed-rule);
+    --md-typeset-color: var(--ed-ink);
+    --md-typeset-a-color: var(--ed-ink);
+    --md-accent-fg-color: var(--ed-accent);
+    --md-primary-fg-color: var(--ed-ink);
+    --md-code-bg-color: var(--ed-paper-deep);
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+}
+
+/* Material's palette attributes ([data-md-color-accent=indigo] ...) outrank a bare
+   `body`, which left hover and focus states blue. Restate the tokens above them,
+   together with the older component sheets' own colour tokens. */
+html body[data-md-color-scheme][data-md-color-primary][data-md-color-accent] {
+    --md-primary-fg-color: var(--ed-ink);
+    --md-primary-fg-color--light: var(--ed-ink-soft);
+    --md-primary-fg-color--dark: var(--ed-ink);
+    --md-primary-bg-color: var(--ed-paper);
+    --md-primary-bg-color--light: var(--ed-paper-deep);
+    --md-accent-fg-color: var(--ed-accent);
+    --md-accent-fg-color--transparent: color-mix(in srgb, var(--ed-accent) 10%, transparent);
+    --md-accent-bg-color: var(--ed-paper);
+    --md-accent-bg-color--light: var(--ed-paper-deep);
+    --md-typeset-a-color: var(--ed-ink);
+    --zdd-playground-line: var(--ed-rule);
+    --zdd-playground-ink: var(--ed-ink);
+    --zdd-playground-muted: var(--ed-muted);
+    --zdd-playground-panel: var(--ed-paper);
+    --zdd-playground-accent: var(--ed-accent);
+    --os-ink: var(--ed-ink);
+    --os-muted: var(--ed-muted);
+    --os-line: var(--ed-rule);
+    --os-panel: var(--ed-paper);
+    --os-panel-strong: var(--ed-paper-deep);
+    --os-accent: var(--ed-accent);
+    --os-accent-soft: var(--ed-paper-deep);
+    --os-shadow: none;
+    --os-canvas: transparent;
+    --zdd-proof-ink: var(--ed-ink);
+    --zdd-thm-accent: var(--ed-accent);
+    --zdd-thm-line: var(--ed-rule);
+    --zdd-thm-bg: transparent;
+    --zdd-def-accent: var(--ed-ink);
+    --zdd-def-bg: var(--ed-paper-deep);
+    --zdd-ex-accent: var(--ed-muted);
+    --zdd-ex-bg: transparent;
+    --zdd-example-accent: var(--ed-muted);
+}
+
+/* The page under everything: <html> itself, and what shows through while a
+   view transition cross-fades (the old blue canvas tokens live on :root). */
+:root {
+    --zdd-canvas: #f4f1ea;
+    --md-default-bg-color: #f4f1ea;
+    --md-primary-fg-color: #1c1b19;
+    --md-accent-fg-color: #a8361f;
+    --zdd-scroll-thumb: #b9b2a5;
+    --zdd-scroll-thumb-hover: #1c1b19;
+    --zdd-scroll-track: transparent;
+    background: #f4f1ea;
+}
+:root:has(> body[data-md-color-scheme="slate"]) {
+    --zdd-canvas: #151412;
+    --md-default-bg-color: #151412;
+    --md-primary-fg-color: #e9e4d8;
+    --md-accent-fg-color: #e0805f;
+    --zdd-scroll-thumb: #57524a;
+    --zdd-scroll-thumb-hover: #e9e4d8;
+    background: #151412;
+}
+::view-transition { background: transparent; }
+
+html body.zdd-minimal-layout :is(.md-header, .md-tabs),
+html body :is(.md-header, .md-tabs) { box-shadow: none !important; }
+html body[data-md-color-scheme] .zdd-tag-heading { color: var(--ed-ink) !important; }
+
+/* Material's coloured admonition icons, where a title still shows one. */
+html body .md-typeset :is(.admonition, details:not(.zdd-catalog-folder)) > :is(.admonition-title, summary)::before { background-color: var(--ed-accent); }
+html body .md-typeset details:not(.zdd-catalog-folder) > summary::after { background-color: var(--ed-muted); }
+
+/* The search field's clear button: Chrome draws a blue cross. */
+html body input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.9em;
+    height: 0.9em;
+    background: var(--ed-muted);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 3l10 10M13 3L3 13' stroke='black' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 3l10 10M13 3L3 13' stroke='black' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") center / contain no-repeat;
+    cursor: pointer;
+}
+html body input[type="search"]::-webkit-search-cancel-button:hover { background: var(--ed-accent); }
+html body input { accent-color: var(--ed-accent); caret-color: var(--ed-accent); }
+
+/* Scrollbars, the page's own included (it belongs to <html>, outside body). */
+::-webkit-scrollbar-thumb { border-radius: 0 !important; }
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active { background: var(--zdd-scroll-thumb-hover) !important; }
+@supports not selector(::-webkit-scrollbar) { :root { scrollbar-color: var(--zdd-scroll-thumb) transparent; } }
+html body :is(.minimal-search input:focus, .md-typeset a.zdd-search-result:hover, .zdd-search-result:hover,
+    .zdd-post-card:hover) { border-color: var(--ed-rule-strong) !important; }
+
+/* ---------- Chrome ---------- */
+body .md-header {
+    background: var(--ed-paper) !important;
+    color: var(--ed-ink) !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--ed-rule-strong);
+}
+
+body .md-header a,
+body .md-header .md-header__button,
+body .md-header .md-ellipsis { color: var(--ed-ink) !important; }
+
+body .md-header .md-ellipsis,
+body .zdd-header-search,
+body .zdd-header-nav a {
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-mono) !important;
+    font-size: 0.62rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+body .zdd-header-nav a:hover,
+body .zdd-header-search:hover { color: var(--ed-accent) !important; }
+body .zdd-header-nav a[aria-current] {
+    text-decoration: underline;
+    text-decoration-color: var(--ed-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.5em;
+}
+
+body .md-content,
+body.article-layout .md-content {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+}
+
+body .md-footer,
+body .md-footer-meta { background: var(--ed-paper) !important; color: var(--ed-muted); }
+body .md-footer { border-top: 1px solid var(--ed-rule-strong); }
+
+body .md-footer .md-copyright,
+body .md-footer .md-copyright * {
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+}
+
+body .md-footer .md-social__link { color: var(--ed-ink); }
+
+body .md-top {
+    border: 1px solid var(--ed-rule-strong);
+    border-radius: 0;
+    background: var(--ed-paper);
+    box-shadow: none;
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+}
+
+/* ---------- Text (all pages) ---------- */
+body .md-typeset {
+    color: var(--ed-ink);
+    font-family: var(--ed-serif);
+    text-autospace: normal;
+    text-spacing-trim: trim-start;
+    hanging-punctuation: allow-end;
+}
+
+body .md-typeset a {
+    color: var(--ed-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--ed-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+}
+
+body .md-typeset a:hover { color: var(--ed-accent); }
+
+body .md-typeset :is(h1, h2, h3, h4) { color: var(--ed-ink); font-family: var(--ed-serif); }
+
+body .md-typeset h1 {
+    font-size: 2.1em;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+}
+
+body .md-typeset h2 {
+    margin: 3em 0 1em;
+    padding: 0.7em 0 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--ed-rule-strong) !important;
+    font-size: 1.4em;
+    font-weight: 900;
+    line-height: 1.35;
+}
+
+body .md-typeset h3 { font-size: 1.05em; font-weight: 700; }
+body .md-typeset .headerlink { color: var(--ed-muted); text-decoration: none; }
+
+body .md-typeset :is(code, pre > code) { background: var(--ed-paper-deep); border-radius: 0; }
+
+body .md-typeset table:not([class]) {
+    border: 0;
+    border-top: 1px solid var(--ed-rule-strong);
+    border-bottom: 1px solid var(--ed-rule-strong);
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+body .md-typeset table:not([class]) th {
+    background: transparent;
+    border-bottom: 1px solid var(--ed-rule-strong);
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 0.85em;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+}
+
+body .md-typeset table:not([class]) td { border-top: 1px solid var(--ed-rule); }
+body .md-typeset table:not([class]) tr:hover { background: var(--ed-paper-deep); box-shadow: none; }
+
+/* ---------- Article body ---------- */
+body.article-layout .md-typeset {
+    font-size: 0.84rem;
+    line-height: 1.95;
+}
+
+body.article-layout .md-typeset strong { font-weight: 700; }
+
+body.article-layout .md-typeset h2 { margin-top: 3.6em; font-size: 1.45em; }
+
+body .book-secnum {
+    display: block;
+    margin-bottom: 0.55em;
+    color: var(--ed-accent);
+    font-family: var(--ed-mono);
+    font-size: 0.42em;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+}
+
+body.article-layout .md-typeset h3 { margin: 2.4em 0 0.7em; }
+
+.book-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------- Chapter opener ---------- */
+.book-opener { margin: 0.6rem 0 3.4rem; }
+
+.book-runhead {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--ed-rule-strong);
+    font-family: var(--ed-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.md-typeset .book-runhead a,
+.book-runhead span { color: var(--ed-ink) !important; text-decoration: none !important; }
+.md-typeset .book-runhead a:hover { color: var(--ed-accent) !important; }
+
+.book-title-row { margin: 2.6rem 0 0; }
+
+.book-title-row.has-numeral {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: end;
+    gap: 0 1.6rem;
+}
+
+.book-numeral {
+    color: var(--ed-accent);
+    font-family: var(--ed-serif);
+    font-size: 6.2rem;
+    font-weight: 300;
+    line-height: 0.78;
+    letter-spacing: -0.04em;
+}
+
+.md-typeset .book-opener h1 {
+    margin: 0;
+    font-size: 2.35em;
+    font-weight: 900;
+    line-height: 1.22;
+}
+
+.md-typeset .book-standfirst {
+    margin: 2rem 0 0;
+    color: var(--ed-ink-soft);
+    font-size: 1.16em;
+    line-height: 1.85;
+}
+
+.book-meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    border-top: 1px solid var(--ed-rule-strong);
+    border-bottom: 1px solid var(--ed-rule);
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+}
+
+.book-meta span {
+    margin-right: 1.1rem;
+    padding: 0.5rem 1.1rem 0.5rem 0;
+    border-right: 1px solid var(--ed-rule);
+}
+
+.book-meta span:last-child { border-right: 0; }
+
+/* Older article heads (series catalogs) */
+body.article-layout .zdd-reading-dates { font-family: var(--ed-mono); font-size: 0.58rem; letter-spacing: 0.08em; color: var(--ed-muted); }
+body .zdd-course-crumb, body .zdd-course-crumb a { font-family: var(--ed-mono); letter-spacing: 0.12em; color: var(--ed-ink); }
+
+/* ---------- Statements ---------- */
+body .md-typeset :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma, .corollary, .property,
+    .definition, .problem, .example) {
+    margin: 2em 0 1.6em;
+    padding: 0.75rem 0 0.2rem;
+    border: 0;
+    border-top: 1px solid var(--ed-rule);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: 1em;
+}
+
+/* Theorem-like statements carry a short accent tick on their rule. */
+body .md-typeset :is(.admonition, details):is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .problem) {
+    background: linear-gradient(var(--ed-accent), var(--ed-accent)) 0 -1px / 2.2rem 2px no-repeat;
+}
+
+body .md-typeset :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .definition, .problem, .example)
+    > :is(.admonition-title, summary) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.9em;
+    margin: 0 0 0.35em;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ed-ink);
+    font-weight: 400;
+}
+
+body .md-typeset :is(.theorem, .proposition, .prop, .lemma, .corollary, .property, .definition, .problem, .example)
+    > :is(.admonition-title, summary)::before { display: none; }
+
+body .md-typeset .book-label {
+    flex: none;
+    color: var(--ed-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+body .md-typeset .book-name { color: var(--ed-ink); font-weight: 700; }
+
+body .md-typeset :is(.admonition, details).definition {
+    padding: 0.8rem 1.1rem 0.4rem;
+    border-top: 0;
+    background: var(--ed-paper-deep);
+}
+
+body .md-typeset :is(.admonition, details).problem { border-top-style: dotted; }
+body .md-typeset .example .book-label { color: var(--ed-muted); }
+
+/* Proofs */
+body .md-typeset :is(.admonition, details):is(.proof, .solution) {
+    margin-top: -0.6em;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+body .md-typeset :is(.admonition, details):is(.proof, .solution) > :is(.admonition-title, summary) {
+    background: transparent;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.7em;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+}
+
+body .md-typeset :is(.admonition, details[open]):is(.proof, .solution) { border-left: 0; }
+body .md-typeset :is(.proof, .solution) > :last-child:not(summary):not(.admonition-title)::after { color: var(--ed-ink); }
+
+/* Other admonitions: quiet ruled notes */
+body .md-typeset .admonition:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote),
+body .md-typeset details:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) {
+    border: 0;
+    border-top: 1px solid var(--ed-rule);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0.5rem 0 0;
+    font-size: 0.9em;
+}
+
+body .md-typeset .admonition:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) > .admonition-title,
+body .md-typeset details:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) > summary {
+    padding: 0;
+    background: transparent;
+    color: var(--ed-accent);
+    font-family: var(--ed-mono);
+    font-size: 0.86em;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+}
+
+body .md-typeset .admonition:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) > .admonition-title::before { display: none; }
+
+/* ---------- Figures ---------- */
+body .md-typeset p.book-figure {
+    position: relative;
+    margin: 2.6em 0;
+    text-align: center;
+}
+
+body .md-typeset p.book-figure img {
+    border-radius: 0;
+    box-shadow: none !important;
+    outline: 1px solid var(--ed-rule);
+    background: #fff;
+}
+
+/* Commutative diagrams (tikz-cd SVGs): displayed maths, ink straight on the paper. */
+html body .md-typeset p.book-diagram { margin: 1.6em 0; }
+html body .md-typeset p.book-diagram img {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    outline: 0;
+    background: transparent;
+}
+html body[data-md-color-scheme="slate"] .md-typeset p.book-diagram img { filter: invert(0.9) hue-rotate(180deg) !important; }
+html body .md-typeset p.book-diagram .zdd-media-expand { display: none; }
+
+body .md-typeset p.book-figure.is-wide img { display: block; width: 100%; height: auto; max-width: 100% !important; margin: 0 !important; }
+
+body .book-caption {
+    display: flex;
+    gap: 0.9em;
+    margin-top: 0.7rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--ed-rule);
+    color: var(--ed-ink-soft);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    text-align: left;
+}
+
+body .book-caption b {
+    flex: none;
+    color: var(--ed-accent);
+    font-family: var(--ed-mono);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body .md-typeset p.book-figure .zdd-media-expand {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+body .md-typeset p.book-figure:hover .zdd-media-expand,
+body .md-typeset p.book-figure .zdd-media-expand:focus-visible { opacity: 1; }
+
+/* ---------- Table of contents ---------- */
+body .md-sidebar--secondary .md-nav--secondary {
+    padding: 0.55rem 0 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--ed-rule-strong) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body .md-sidebar--secondary .md-nav--secondary .md-nav__title {
+    padding: 0 0 0.6rem;
+    background: transparent;
+    box-shadow: none;
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 0.56rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+}
+
+body .md-sidebar--secondary .md-nav--secondary .md-nav__link {
+    padding-left: 0;
+    border-left: 0 !important;
+    color: var(--ed-muted);
+    font-family: var(--ed-serif);
+    font-size: 0.64rem;
+}
+
+body .md-sidebar--secondary .md-nav--secondary .md-nav__link:hover { color: var(--ed-ink); }
+
+body .md-sidebar--secondary .md-nav--secondary .md-nav__link--active {
+    margin-left: -0.6rem;
+    padding-left: 0.5rem;
+    box-shadow: inset 2px 0 0 var(--ed-accent);
+    color: var(--ed-ink);
+    font-weight: 700;
+}
+
+/* ---------- Article end ---------- */
+body .zdd-article-end {
+    margin-top: 4.5rem;
+    padding: 0.8rem 0 0;
+    border: 0;
+    border-top: 1px solid var(--ed-rule-strong);
+    border-radius: 0;
+    background: transparent;
+}
+
+body .md-typeset .zdd-pager-link {
+    padding: 0.2rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+body .md-typeset a.zdd-pager-link:hover { transform: none; }
+body .md-typeset a.zdd-pager-link:hover .zdd-pager-title { color: var(--ed-accent); }
+
+body .zdd-pager-label,
+body .zdd-end-label,
+body .md-typeset .zdd-pager-catalog,
+body .zdd-comments-title {
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+}
+
+body .md-typeset .zdd-pager-title { color: var(--ed-ink); font-size: 1.05em; }
+body .md-typeset .zdd-end-chip { border-radius: 0; font-family: var(--ed-mono); font-size: 0.9em; }
+body .md-typeset .zdd-end-chip.is-category { background: var(--ed-ink); color: var(--ed-paper); }
+body .md-typeset :is(a.zdd-pager-link, a.zdd-end-chip, .zdd-end-links a, .zdd-pager-catalog) { text-decoration: none; }
+
+/* ---------- Home ---------- */
+body.home-layout .md-typeset h1,
+body.home-layout .md-content__inner > h1 {
+    font-family: var(--ed-serif) !important;
+    font-weight: 900 !important;
+    color: var(--ed-ink) !important;
+}
+
+body .minimal-search input {
+    border: 0 !important;
+    border-bottom: 1px solid var(--ed-rule-strong) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif) !important;
+}
+
+body .minimal-search input:focus { border-bottom-color: var(--ed-accent) !important; }
+body .minimal-search input::placeholder { color: var(--ed-muted) !important; }
+
+body .minimal-search-results {
+    border: 1px solid var(--ed-rule-strong) !important;
+    border-radius: 0 !important;
+    background: var(--ed-paper) !important;
+    box-shadow: none !important;
+}
+
+/* ---------- Cards and lists (blog, tags, friends, lab) ---------- */
+body :is(.zdd-post-card, .zdd-catalog-folder, .friend-card, .zdd-lab-card, .zdd-statement-card, .zdd-tag-group) {
+    border: 0 !important;
+    border-top: 1px solid var(--ed-rule-strong) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--ed-ink) !important;
+}
+
+body :is(.zdd-post-card, .friend-card):hover {
+    transform: none !important;
+    background: var(--ed-paper-deep) !important;
+}
+
+body .md-typeset :is(.zdd-tag-cloud a, .zdd-tag-chip, .zdd-category-chip) {
+    border-radius: 0 !important;
+    font-family: var(--ed-mono);
+    text-decoration: none;
+}
+
+body .md-typeset .zdd-tag-cloud a { border-color: var(--ed-rule) !important; color: var(--ed-ink) !important; background: transparent !important; }
+body .md-typeset .zdd-tag-cloud a:hover { border-color: var(--ed-accent) !important; color: var(--ed-accent) !important; }
+body .md-typeset .zdd-tag-cloud small { color: var(--ed-muted) !important; }
+
+body .md-typeset .zdd-tag-group h2 {
+    border-top: 0 !important;
+    padding-top: 0 !important;
+    font-family: var(--ed-mono);
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+body .friend-avatar { border-radius: 0 !important; }
+
+/* ---------- Wide layout: contents | text | margin ---------- */
+@media screen and (min-width: 76.25em) {
+    body.article-layout .md-main__inner.md-grid { max-width: 1240px; }
+
+    body.article-layout .md-sidebar--secondary {
+        order: -1;
+        width: 190px;
+        margin-right: 56px;
+    }
+
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap { margin-top: 2.2rem; }
+
+    body.article-layout .md-content {
+        flex: 0 1 980px;
+        max-width: 980px;
+    }
+
+    body.article-layout .md-content__inner {
+        margin: 0 var(--ed-margin) 3rem 0 !important;
+        padding-top: 1.6rem !important;
+    }
+
+    body.article-layout .book-opener { margin-right: calc(-1 * var(--ed-margin)); }
+    body.article-layout .md-typeset .book-standfirst { max-width: 700px; }
+
+    /* Top-level remarks sit in the margin. */
+    body.article-layout .md-typeset .md-content__inner > .admonition:is(.note, .remark, .info, .tip),
+    body.article-layout .md-content__inner.md-typeset > .admonition:is(.note, .remark, .info, .tip) {
+        float: right;
+        clear: right;
+        width: 220px;
+        margin: 0.3em calc(-1 * var(--ed-margin)) 1em 0;
+        color: var(--ed-ink-soft);
+        font-size: 0.74em;
+        line-height: 1.8;
+    }
+
+    body.article-layout .md-content__inner > .admonition:is(.note, .remark, .info, .tip) mjx-container[display="true"] {
+        overflow-x: auto;
+        max-width: 100%;
+        font-size: 90% !important;
+    }
+
+    body.article-layout .md-typeset p.book-figure.is-wide { margin-right: calc(-1 * var(--ed-margin)); }
+    body.article-layout .zdd-article-end,
+    body.article-layout .zdd-comments { margin-right: calc(-1 * var(--ed-margin) + 60px); }
+}
+
+@media screen and (max-width: 44.9375em) {
+    .book-title-row.has-numeral { grid-template-columns: 1fr; gap: 0.8rem; margin-top: 1.8rem; }
+    .book-numeral { font-size: 4.2rem; }
+    .md-typeset .book-opener h1 { font-size: 1.8em; }
+    .md-typeset .book-standfirst { font-size: 1.04em; }
+}
+
+/* ---------- Component clean-up: square corners, ink and accent only ---------- */
+body .friend-directory,
+body[data-md-color-scheme="slate"] .friend-directory,
+body {
+    --friend-ink: var(--ed-ink);
+    --friend-muted: var(--ed-muted);
+    --friend-line: var(--ed-rule);
+    --friend-hover: var(--ed-paper-deep);
+    --zdd-statement-definition: var(--ed-paper-deep);
+    --zdd-statement-problem: var(--ed-paper-deep);
+}
+
+html body .md-top.md-icon, html body [dir] .md-top.md-icon { border-radius: 0 !important; }
+body .minimal-search-results:empty { display: none; }
+
+body .md-typeset .zdd-catalog-folder,
+body .md-typeset .zdd-catalog-folder > summary,
+body .md-typeset a.zdd-post-card.catalog {
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body .md-typeset .zdd-catalog-folder > summary { font-family: var(--ed-serif); }
+body .md-typeset .zdd-catalog-folder > summary:hover,
+body .md-typeset a.zdd-post-card.catalog:hover { background: var(--ed-paper-deep) !important; }
+
+body .zdd-tag-heading {
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-weight: 900;
+}
+
+body .md-typeset h1,
+body .md-typeset .friend-directory-header :is(h1, h2) { color: var(--ed-ink); }
+body .md-typeset .friend-directory a.friend-link { border-radius: 0; }
+body .md-typeset .friend-directory a.friend-link:hover { transform: none; }
+body .friend-avatar { border-radius: 0; background: var(--ed-paper-deep); }
+body .md-typeset .friend-directory :is(.friend-desc, .friend-domain, p) { color: var(--ed-muted); }
+
+body .zdd-lab-list,
+body .zdd-lab-list > * { border-color: var(--ed-rule) !important; }
+body .md-typeset :is(.zdd-lab-status, .zdd-lab-tag) {
+    border-color: var(--ed-rule) !important;
+    border-radius: 0 !important;
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+}
+body .md-typeset .zdd-lab-status { color: var(--ed-accent) !important; border-color: var(--ed-accent) !important; }
+
+body .md-typeset :is(input[type="search"], input[type="text"], .zdd-statement-more, .zdd-statement-kind-filter) { border-radius: 0 !important; }
+body .md-typeset .zdd-statement-kind-filter.is-active { background: var(--ed-ink) !important; color: var(--ed-paper) !important; }
+body .md-typeset .zdd-statement-kind {
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--ed-accent) !important;
+    font-family: var(--ed-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+}
+
+body .md-typeset .md-button { border-radius: 0; border-color: var(--ed-ink); color: var(--ed-ink); background: transparent; }
+body .md-typeset .md-button--primary,
+body .md-typeset .md-button:hover { background: var(--ed-ink); border-color: var(--ed-ink); color: var(--ed-paper); }
+
+body.article-layout .md-sidebar--secondary .md-nav--secondary,
+body .md-sidebar--secondary .md-nav--secondary { border-radius: 0 !important; padding: 0.55rem 0 0 !important; }
+body .md-sidebar--secondary .md-nav--secondary .md-nav__title { padding-left: 0 !important; }
+
+body .md-typeset .zdd-end-label { color: var(--ed-muted) !important; white-space: nowrap; }
+body .md-typeset .md-button { text-decoration: none; font-family: var(--ed-mono); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.12em; border-width: 1px; }
+body .md-typeset .zdd-end-links a { color: var(--ed-ink); }
+body .md-typeset .zdd-end-links a:hover { color: var(--ed-accent); }
+body .md-typeset .zdd-catalog-folder > summary .zdd-folder-meta { font-family: var(--ed-mono); font-weight: 400; font-size: 0.58rem; letter-spacing: 0.06em; }
+body .md-typeset .zdd-catalog-folder > summary { padding-top: 0.9rem !important; padding-bottom: 0.9rem !important; min-height: 0 !important; align-items: baseline; }
+body .md-typeset .zdd-catalog-folder > summary .zdd-folder-name { font-weight: 900; }
+body .md-typeset .zdd-catalog-folder[data-level="1"] { border-top-color: var(--ed-rule) !important; }
+body .md-typeset .zdd-catalog-folder { padding: 0 !important; margin: 0 !important; }
+body .md-typeset .zdd-catalog-folder:not([open]) > .zdd-folder-content { display: none; }
+body .md-typeset .admonition:is(.note, .remark, .info, .tip, .warning, .abstract, .question, .quote) > .admonition-title { margin: 0 0 0.2em !important; }
+
+/* ---------- Blog catalog: rows sit evenly between their rules ---------- */
+body .md-typeset .zdd-blog-catalog,
+body .md-typeset .zdd-catalog-posts { gap: 0 !important; row-gap: 0 !important; }
+body .md-typeset .zdd-catalog-folder > summary { align-items: center; margin: 0 !important; }
+body .md-typeset .zdd-catalog-folder[open] > .zdd-folder-content { padding-bottom: 0.8rem; }
+
+/* ---------- Code ---------- */
+body .md-typeset .highlight,
+body .md-typeset pre > code { border-radius: 0 !important; }
+body .md-typeset pre > code { font-size: 0.68rem; line-height: 1.7; }
+
+/* Annotated listings have line numbers, so long lines can wrap with a
+   hanging indent instead of hiding behind a horizontal scrollbar. */
+body .md-typeset code[data-zdd-code] { white-space: pre-wrap; }
+body .md-typeset code[data-zdd-code] .zdd-code-line {
+    width: 100%;
+    padding-left: 4ch;
+    text-indent: -4ch;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+body .md-typeset code[data-zdd-code] .zdd-code-line::before { text-indent: 0; }
+
+html body.article-layout .zdd-code-note {
+    border: 1px solid var(--ed-rule-strong);
+    border-radius: 0;
+    background: var(--ed-paper);
+    box-shadow: none;
+    font-family: var(--ed-serif);
+}
+html body.article-layout .zdd-code-note-header { border-bottom-color: var(--ed-rule); }
+body.article-layout .zdd-code-note-header > #zdd-code-note-title { font-weight: 700; }
+
+/* Plain listings use the margin column on wide screens. */
+@media screen and (min-width: 76.25em) {
+    body.article-layout .md-content__inner > .highlight:not(:has(code[data-zdd-code])) {
+        margin-right: calc(-1 * var(--ed-margin));
+    }
+}
+
+/* ---------- QA 2026-10: leftovers of the blue card theme ---------- */
+/* Text selection: accent wash instead of the browser's blue. */
+::selection { background: color-mix(in srgb, var(--ed-accent) 24%, transparent); color: inherit; }
+
+/* One visible focus ring everywhere (Material's ring is near-black on dark paper). */
+html body :is(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--ed-accent) !important;
+    outline-offset: 2px;
+}
+html body .md-header__option:has(input:focus-visible) label:not([hidden]) {
+    outline: 2px solid var(--ed-accent);
+    outline-offset: 2px;
+}
+
+/* Search results (home search, / modal, /thm, /latest, /pdf): rows between rules. */
+html body .minimal-search-results { gap: 0 !important; }
+html body :is(.md-typeset a.zdd-search-result, .zdd-search-result) {
+    border: 0 !important;
+    border-bottom: 1px solid var(--ed-rule) !important;
+    border-left: 2px solid transparent !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+html body :is(.md-typeset a.zdd-search-result, .zdd-search-result):is(:hover, .is-active) {
+    background: var(--ed-paper-deep) !important;
+    border-left-color: var(--ed-accent) !important;
+    outline: 0;
+}
+html body :is(.zdd-search-hit, .zdd-search-landing-hit) {
+    border-radius: 0;
+    background: color-mix(in srgb, var(--ed-accent) 18%, transparent) !important;
+    color: inherit;
+}
+html body .minimal-search input::placeholder { color: var(--ed-muted) !important; }
+
+/* Mobile contents button and dialog. */
+@media screen and (max-width: 59.984375em) {
+    html body .zdd-toc-toggle {
+        border-radius: 0;
+        border: 1px solid var(--ed-rule-strong);
+        background: var(--ed-paper);
+        color: var(--ed-ink);
+        box-shadow: none;
+    }
+    /* Keep the last lines of an article clear of the floating buttons. */
+    body.article-layout .md-content__inner { padding-bottom: 4.5rem !important; }
+}
+html body .zdd-toc-dialog,
+html body .zdd-toc-header { border-radius: 0; background: var(--ed-paper); color: var(--ed-ink); border-color: var(--ed-rule-strong); }
+html body .zdd-toc-header { border-color: var(--ed-rule); }
+html body .zdd-toc-list a { color: var(--ed-ink); }
+html body .zdd-toc-list a:hover { background: var(--ed-paper-deep); }
+html body .zdd-toc-list a[aria-current] { color: var(--ed-accent); }
+
+/* Theorem index: a fixed label column, so wide formulas cannot squeeze it. */
+body .md-typeset .zdd-statement-item { grid-template-columns: 4.6rem minmax(0, 1fr); }
+body .md-typeset .zdd-statement-item > * { min-width: 0; }
+body .md-typeset .zdd-statement-kind { text-align: left; white-space: nowrap; min-width: 0; padding-left: 0; }
+body .md-typeset .zdd-statement-text mjx-container[display] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+@media screen and (max-width: 30em) {
+    body .md-typeset .zdd-statement-item { grid-template-columns: minmax(0, 1fr); }
+    body .md-typeset .zdd-statement-kind { grid-row: auto; }
+}
+
+/* Lab widgets: square corners like the rest of the site. */
+body .md-typeset :is(.zdd-lab-button, .zdd-lab-example, .zdd-lab-output, .zdd-plot-stage, .zdd-life-stage,
+    .zdd-diagram-stage, .zdd-diagram-code, .zdd-diagram-node, .zdd-diagram-cell-add, .zdd-interactive-reset,
+    .zdd-interactive-visualization, textarea, select) { border-radius: 0 !important; }
+
+/* Autograd figures (class lost in the CSS prune). */
+body .md-typeset .zdd-computation-graph { display: block; width: 100%; max-width: 520px; height: auto; margin: 1.25rem auto; }
+
+/* Formulas wait for MathJax instead of flashing their TeX source. */
+body.article-layout:not(.zdd-math-ready) .md-content__inner .arithmatex:not(:has(mjx-container)) { visibility: hidden; }
+
+/* ---------- 404 (docs/404.md and overrides/404.html) ---------- */
+body:has(.zdd-404-only) :is(.md-footer, .md-sidebar, .md-content__inner > h1, .md-source-file, .md-content__button) { display: none !important; }
+body .md-typeset .zdd-404-only {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 12rem);
+    gap: 1.2rem;
+    text-align: center;
+}
+body .md-typeset .zdd-404-only .zdd-404-code {
+    font-family: var(--ed-serif);
+    font-size: clamp(5rem, 18vw, 10rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--ed-accent);
+}
+body .md-typeset .zdd-404-only .zdd-404-text {
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ed-rule-strong);
+    color: var(--ed-ink);
+    font-size: 1rem;
+}
+body .md-typeset .zdd-404-only .zdd-404-links { margin: 0; font-family: var(--ed-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; }
+body .md-typeset .zdd-404-only .zdd-404-links a { color: var(--ed-ink); margin: 0 0.6rem; }
+body .md-typeset .zdd-404-only .zdd-404-links a:hover { color: var(--ed-accent); }
+
+/* ---------- Art: wordmark, colophon, drop cap, 404 shelf, lamplight ---------- */
+/* The wordmark is the logo and the link home. */
+body .md-header .zdd-wordmark { text-decoration: none !important; }
+body .md-header .zdd-wordmark:hover { color: var(--ed-accent) !important; }
+
+/* End of an article: a rule and 完. */
+body .md-typeset .zdd-colophon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    margin: 3.2rem 0 0;
+    color: var(--ed-muted);
+    font-family: var(--ed-serif);
+    font-size: 0.86em;
+    letter-spacing: 0.3em;
+}
+body .md-typeset .zdd-colophon::before { content: ""; flex: 0 0 3rem; height: 1px; background: var(--ed-rule-strong); }
+
+/* First paragraph after a chapter opener: a two-line drop initial. */
+body.article-layout .md-typeset .book-opener + p::first-letter {
+    float: left;
+    margin: 0.12em 0.14em 0 0;
+    color: var(--ed-accent);
+    font-family: var(--ed-serif);
+    font-size: 3.3em;
+    font-weight: 900;
+    line-height: 0.9;
+}
+
+/* 404: a shelf with one book missing (two masks: ink and accent). */
+body .md-typeset .zdd-404-only .zdd-404-art { position: relative; width: min(320px, 80vw); aspect-ratio: 260 / 150; margin-bottom: -1.4rem; }
+body .md-typeset .zdd-404-only .zdd-404-art span { position: absolute; inset: 0; -webkit-mask: var(--art) center / contain no-repeat; mask: var(--art) center / contain no-repeat; }
+body .md-typeset .zdd-404-only .zdd-404-art .is-ink { --art: url("../assets/art/shelf-gap-ink.svg"); background: var(--ed-ink); }
+body .md-typeset .zdd-404-only .zdd-404-art .is-accent { --art: url("../assets/art/shelf-gap-accent.svg"); background: var(--ed-accent); animation: zdd-404-leaf 6s ease-in-out infinite; }
+@keyframes zdd-404-leaf { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@media (prefers-reduced-motion: reduce) { body .md-typeset .zdd-404-only .zdd-404-art .is-accent { animation: none; } }
+
+/* Paper grain on both themes; in dark mode a warm lamplight falloff
+   instead of a flat dark fill. A fixed overlay (the body's own background
+   would hide anything behind it) that is faint enough to read through and
+   never takes the pointer. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .11 0 0 0 0 .1 0 0 0 0 .09 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.07;
+}
+body[data-md-color-scheme="slate"]::before {
+    background-image:
+        radial-gradient(ellipse 80% 70% at 50% 30%, rgba(224, 160, 95, 0.035), transparent 70%),
+        radial-gradient(ellipse 120% 100% at 50% 40%, transparent 60%, rgba(0, 0, 0, 0.22)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .9 0 0 0 0 .82 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 1;
+}
+@media print { body::before { display: none; } }

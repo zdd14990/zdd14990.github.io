@@ -1,0 +1,1376 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The Littlewood–Paley square function theorem via Khintchine and Calderón–Zygmund, heat decay at each scale, and the paraproduct decomposition of products.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-07/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 7: Square Functions, the Heat Flow, and Paraproducts - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-07/">
+  <meta property="og:title" content="Chapter 7: Square Functions, the Heat Flow, and Paraproducts - zdd14990">
+  <meta property="og:description" content="The Littlewood–Paley square function theorem via Khintchine and Calderón–Zygmund, heat decay at each scale, and the paraproduct decomposition of products.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-10-15">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="littlewood-paley">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-07/">
+  <meta name="twitter:title" content="Chapter 7: Square Functions, the Heat Flow, and Paraproducts - zdd14990">
+  <meta name="twitter:description" content="The Littlewood–Paley square function theorem via Khintchine and Calderón–Zygmund, heat decay at each scale, and the paraproduct decomposition of products.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 7: Square Functions, the Heat Flow, and Paraproducts",
+    "description": "The Littlewood\u2013Paley square function theorem via Khintchine and Calder\u00f3n\u2013Zygmund, heat decay at each scale, and the paraproduct decomposition of products.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-07/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-07/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-10-15",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "littlewood-paley", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-07" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Setting and what we keep from Chapter 5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nonlinear-motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Why a nonlinear equation requires frequency analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#square-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Littlewood–Paley square function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The endpoints p = 1 and p = ∞
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#khintchine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Khintchine's inequality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calderon-zygmund" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The Calderón–Zygmund theorem used here
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upper-estimate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Randomized operators and the upper estimate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reverse-estimate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. The reverse estimate by duality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. The heat equation, scale by scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localized-nonlinear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Nonlinear equations after frequency localization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paraproducts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Products, Fourier support, and paraproducts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Exercise: Khintchine's inequality
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 7 of 9</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-07">Chapter 7: Square Functions, the Heat Flow, and Paraproducts</h1>
+  </div>
+  <p class="book-standfirst">This chapter has two aims: to recover an <span class="arithmatex">\(L^p\)</span> norm from its frequency pieces, and to organize the interactions of these pieces in a nonlinear equation. The first is the square function theorem, proved from Khintchine's inequality, the Calderón–Zygmund theorem, and duality. The heat equation then illustrates the linear theory, and products lead to the paraproduct decomposition.</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-10-15">2026-10-15</time></span>
+    
+    <span>2,503 字 · 约 7 分钟</span>
+  </div>
+  
+</header>
+
+<h2 id="setting"><span class="book-secnum">§ 01</span>Setting and what we keep from Chapter 5</h2>
+<p>We work on <span class="arithmatex">\(\mathbb R^d\)</span>, <span class="arithmatex">\(d\ge1\)</span>, with the Fourier convention of <a href="../chapter-05/#motivation">Chapter 5</a>:</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,dx,
+\qquad
+f(x)=\frac1{(2\pi)^d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,d\xi.
+\]</div>
+<p>The dyadic cutoffs are those of <a href="../chapter-05/#cutoffs">Chapter 5</a>: <span class="arithmatex">\(\varphi\)</span> is a radial, radially nonincreasing bump with <span class="arithmatex">\(\varphi=1\)</span> on <span class="arithmatex">\(\{|\xi|\le1\}\)</span> and <span class="arithmatex">\(\varphi=0\)</span> on <span class="arithmatex">\(\{|\xi|\ge2\}\)</span>, and</p>
+<div class="arithmatex">\[
+\psi(\xi)=\varphi(\xi)-\varphi(2\xi),\qquad
+\widehat{P_kf}(\xi)=\psi(2^{-k}\xi)\widehat f(\xi),\qquad
+\widehat{P_{\le j}f}(\xi)=\varphi(2^{-j}\xi)\widehat f(\xi).
+\]</div>
+<p>Thus <span class="arithmatex">\(\psi\ge0\)</span>, <span class="arithmatex">\(\operatorname{supp}\psi\subset\{1/2\le|\xi|\le2\}\)</span>, <span class="arithmatex">\(\sum_{k\in\mathbb Z}\psi(2^{-k}\xi)=1\)</span> for <span class="arithmatex">\(\xi\ne0\)</span>, and <span class="arithmatex">\(\sum_{k\le j}\psi(2^{-k}\xi)=\varphi(2^{-j}\xi)\)</span> for <span class="arithmatex">\(\xi\ne0\)</span>. In this chapter we write the kernel as</p>
+<div class="arithmatex">\[
+\Phi=\mathcal F^{-1}\psi,\qquad
+P_kf=\Phi_k*f,\qquad
+\Phi_k(x)=2^{kd}\Phi(2^kx).
+\]</div>
+<p>(Chapter 5 called this kernel <span class="arithmatex">\(K\)</span>; we reserve <span class="arithmatex">\(K\)</span> for Calderón–Zygmund kernels.) <span class="arithmatex">\(\Phi\)</span> is Schwartz and <span class="arithmatex">\(\int\Phi=\psi(0)=0\)</span>: each <span class="arithmatex">\(P_k\)</span> measures variation at scale <span class="arithmatex">\(2^{-k}\)</span> and removes a constant background. <span class="arithmatex">\(P_kf\)</span> is localized in frequency, not in space; its kernel is concentrated at distances of order <span class="arithmatex">\(2^{-k}\)</span> with rapidly decaying tails.</p>
+<p>We use from Chapter 5, without repeating the proofs: <span class="arithmatex">\(L^2\)</span> reconstruction and almost orthogonality <span class="arithmatex">\(\|f\|_2^2\simeq\sum_k\|P_kf\|_2^2\)</span> (<a href="../chapter-05/#almost-orthogonality">§3</a>); Bernstein's inequality <span class="arithmatex">\(\|P_kf\|_r\lesssim2^{kd(1/p-1/r)}\|P_kf\|_p\)</span> for <span class="arithmatex">\(p\le r\)</span> (<a href="../chapter-05/#bernstein">§5</a>); the dyadic descriptions of <span class="arithmatex">\(H^s\)</span>, <span class="arithmatex">\(\dot H^s\)</span> and the Besov norms (<a href="../chapter-05/#sobolev">§6–7</a>); and the critical embedding and its failure (<a href="../chapter-05/#sobolev-embedding">§8–10</a>). Constants in <span class="arithmatex">\(\lesssim\)</span> may depend on <span class="arithmatex">\(d\)</span>, the exponents, and the fixed cutoff, but not on the function or the dyadic index.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Homogeneous reconstruction and the general critical embedding</p>
+<p>Annular cutoffs annihilate polynomials, so a homogeneous Besov seminorm cannot distinguish <span class="arithmatex">\(f\)</span> from <span class="arithmatex">\(f\)</span> plus a polynomial. Whenever an actual function is reconstructed, we choose the representative with vanishing low-frequency remainder:</p>
+<div class="arithmatex">\[
+P_{\le j}f\longrightarrow0\quad\text{in }\mathcal S'\qquad(j\to-\infty).
+\]</div>
+<p>Schwartz functions satisfy this convention. With it, the argument of <a href="../chapter-05/#besov-endpoint">Proposition 5.6</a> extends from <span class="arithmatex">\(p=2\)</span> to every <span class="arithmatex">\(1\le p\le\infty\)</span>: Bernstein with <span class="arithmatex">\(r=\infty\)</span> gives</p>
+<div class="arithmatex">\[
+\|f\|_\infty\le\sum_k\|P_kf\|_\infty\lesssim\sum_k2^{kd/p}\|P_kf\|_p=\|f\|_{\dot B^{d/p}_{p,1}},
+\]</div>
+<p>and the finite right side makes the reconstruction converge uniformly. So <span class="arithmatex">\(\dot B^{d/p}_{p,1}\hookrightarrow L^\infty\)</span>, and likewise <span class="arithmatex">\(B^{d/p}_{p,1}\hookrightarrow L^\infty\)</span>, using <span class="arithmatex">\(\|P_{\le0}f\|_\infty\lesssim\|P_{\le0}f\|_p\)</span> for the low block. The failure of <span class="arithmatex">\(H^{d/2}\hookrightarrow L^\infty\)</span> can also be seen with equal weights: for a real Schwartz <span class="arithmatex">\(h\)</span> with Fourier support in <span class="arithmatex">\(\{1&lt;|\xi|&lt;2\}\)</span> and <span class="arithmatex">\(h(0)&gt;0\)</span>, the functions <span class="arithmatex">\(f_N=N^{-1/2}\sum_{j=1}^Nh(2^{3j}x)\)</span> have disjoint Fourier supports above unit frequency, so <span class="arithmatex">\(\|f_N\|_{H^{d/2}}\lesssim1\)</span>, while <span class="arithmatex">\(f_N(0)=\sqrt N\,h(0)\)</span>. Quadratic summability lets the bands pile up at one point; the <span class="arithmatex">\(\ell^1\)</span> sum in <span class="arithmatex">\(\dot B^{d/2}_{2,1}\)</span> controls precisely this accumulation.</p>
+</div>
+<h2 id="nonlinear-motivation"><span class="book-secnum">§ 02</span>Why a nonlinear equation requires frequency analysis</h2>
+<p>Consider the wave or Klein–Gordon equation</p>
+<div class="arithmatex">\[
+\partial_t^2u-\Delta u+m^2u=N(u),\qquad u(0)=u_0,\quad\partial_tu(0)=u_1,
+\]</div>
+<p>with <span class="arithmatex">\(m\ge0\)</span>. The motivating nonlinearity is <span class="arithmatex">\(N(u)=\lambda u^3\)</span>; the sign of <span class="arithmatex">\(\lambda\)</span> does not matter for the norm calculation below. On a time interval <span class="arithmatex">\(I\)</span>,</p>
+<div class="arithmatex">\[
+\|u^3\|_{L_t^1L_x^2(I\times\mathbb R^d)}
+=\int_I\Big(\int|u(t,x)|^6\,dx\Big)^{1/2}dt
+=\int_I\|u(t)\|_{L_x^6}^3\,dt
+=\|u\|_{L_t^3L_x^6(I\times\mathbb R^d)}^3.
+\]</div>
+<p>This explains the norm <span class="arithmatex">\(L_t^3L_x^6\)</span>: it makes the cubic forcing integrable in time in the energy estimate. As in <a href="../chapter-04/#scattering">Chapter 4</a>, for a global energy solution, finiteness of this norm on <span class="arithmatex">\([0,\infty)\)</span> is a sufficient scattering criterion.</p>
+<p>Here scattering means approaching a solution of the <em>linear</em> equation in the energy norm</p>
+<div class="arithmatex">\[
+\|(v,w)\|_{\mathcal E_m}^2=\|\nabla v\|_2^2+m^2\|v\|_2^2+\|w\|_2^2.
+\]</div>
+<p>For <span class="arithmatex">\(m&gt;0\)</span> this is equivalent to the <span class="arithmatex">\(H^1\times L^2\)</span> norm; for <span class="arithmatex">\(m=0\)</span> it is the homogeneous energy norm. Let <span class="arithmatex">\(U_m(t)\)</span> be the linear energy evolution, an isometry group on <span class="arithmatex">\(\mathcal E_m\)</span>, and <span class="arithmatex">\(X(t)=(u(t),\partial_tu(t))\)</span>. Duhamel's formula <span class="arithmatex">\(X(t)=U_m(t)X(0)+\int_0^tU_m(t-s)(0,N(u(s)))\,ds\)</span> can be rewritten as</p>
+<div class="arithmatex">\[
+U_m(-t)X(t)=X(0)+\int_0^tU_m(-s)\big(0,N(u(s))\big)\,ds.
+\]</div>
+<p>Since <span class="arithmatex">\(\|U_m(-s)(0,F)\|_{\mathcal E_m}=\|F\|_2\)</span>, the integral converges absolutely in <span class="arithmatex">\(\mathcal E_m\)</span> as <span class="arithmatex">\(t\to\infty\)</span> when <span class="arithmatex">\(N(u)\in L_t^1L_x^2([0,\infty)\times\mathbb R^d)\)</span>. Its limit defines <span class="arithmatex">\(X_+=X(0)+\int_0^\infty U_m(-s)(0,N(u(s)))\,ds\)</span>, and applying the isometry <span class="arithmatex">\(U_m(t)\)</span>,</p>
+<div class="arithmatex">\[
+\|X(t)-U_m(t)X_+\|_{\mathcal E_m}
+=\left\|\int_t^\infty U_m(-s)\big(0,N(u(s))\big)\,ds\right\|_{\mathcal E_m}
+\le\int_t^\infty\|N(u(s))\|_2\,ds\longrightarrow0.
+\]</div>
+<p>This is a criterion for a solution already known to exist globally. It is neither a proof of global existence nor a claim that every scattering solution satisfies this particular spacetime bound.</p>
+<p><strong>Concentration and transfer to fine scales.</strong> The density <span class="arithmatex">\(|u(t,x)|^6\)</span> might concentrate near a point. A precise model is</p>
+<div class="arithmatex">\[
+u_k(x)=2^{kd/6}w\big(2^k(x-x_0)\big),\qquad\int_{\mathbb R^d}|w|^6\,dx=1,
+\]</div>
+<p>with <span class="arithmatex">\(w\)</span> Schwartz. A change of variables gives <span class="arithmatex">\(\|u_k\|_6=1\)</span>, and for every bounded continuous <span class="arithmatex">\(a\)</span>, <span class="arithmatex">\(\int a(x)|u_k(x)|^6\,dx=\int a(x_0+2^{-k}y)|w(y)|^6\,dy\to a(x_0)\)</span>; that is,</p>
+<div class="arithmatex">\[
+|u_k(x)|^6\,dx\rightharpoonup\delta_{x_0},\qquad\|u_k\|_{L^6}=1.
+\]</div>
+<p>The spatial width is <span class="arithmatex">\(2^{-k}\)</span> and the Fourier profile is dilated by <span class="arithmatex">\(2^k\)</span>: if <span class="arithmatex">\(\widehat w\)</span> lives in a unit annulus, <span class="arithmatex">\(u_k\)</span> is localized at <span class="arithmatex">\(|\xi|\sim2^k\)</span>. (A one-dimensional picture is the family <span class="arithmatex">\(2^ke^{-2^{2k}(x-x_0)^2}\)</span>, <span class="arithmatex">\(k=0,1,2,\dots\)</span>, all with integral <span class="arithmatex">\(\sqrt\pi\)</span>.) Concentration of the density alone does not force its integral, or the <span class="arithmatex">\(L^6\)</span> norm, to diverge. What matters for the <span class="arithmatex">\(L_t^3L_x^6\)</span> norm is how long the concentration persists in time.</p>
+<p>Applying <span class="arithmatex">\(P_k\)</span> to the equation leaves the linear terms diagonal in frequency, but the cubic term becomes</p>
+<div class="arithmatex">\[
+P_k(u^3)=P_k\left(\sum_{k',k'',k'''}(P_{k'}u)(P_{k''}u)(P_{k'''}u)\right).
+\]</div>
+<p>It is not <span class="arithmatex">\((P_ku)^3\)</span>: a nonlinear term couples different scales. One may picture a transfer to successively finer scales during the evolution,</p>
+<div class="arithmatex">\[
+k\longrightarrow k+10\longrightarrow k+100\longrightarrow k+1000.
+\]</div>
+<div class="admonition remark">
+<p class="admonition-title">Remark. The arrows are schematic</p>
+<p>Establishing such a transfer requires analysis of the solution; it is a possible mechanism, not a proved evolution law. One interaction cannot jump far: if <span class="arithmatex">\(\widehat u\)</span> is supported in <span class="arithmatex">\(\{|\xi|\le R\}\)</span>, then <span class="arithmatex">\(\widehat{u^3}\)</span> is supported in <span class="arithmatex">\(\{|\xi|\le3R\}\)</span> (see <a href="#paraproducts">§11</a>). An arbitrarily large jump requires further evolution and repeated interactions.</p>
+</div>
+<p>Two tools are therefore needed: the square function, to reconstruct an <span class="arithmatex">\(L^p\)</span> norm from the bands, and paraproducts, to organize the nonlinear interactions.</p>
+<h2 id="square-function"><span class="book-secnum">§ 03</span>The Littlewood–Paley square function</h2>
+<div id="def-1" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 3.1</span><span class="book-name">Square function</span></p>
+<p>The Littlewood–Paley square function of <span class="arithmatex">\(f\)</span> is</p>
+<div class="arithmatex">\[
+Sf(x)=\left(\sum_{k\in\mathbb Z}|P_kf(x)|^2\right)^{1/2}.
+\]</div>
+</div>
+<p>For <span class="arithmatex">\(f\in L^2\)</span>, Tonelli and almost orthogonality give <span class="arithmatex">\(\int(Sf)^2=\sum_k\|P_kf\|_2^2\le\|f\|_2^2&lt;\infty\)</span>, so <span class="arithmatex">\(Sf\)</span> is finite almost everywhere.</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.2</span><span class="book-name">Square function theorem</span></p>
+<p>For <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> there are constants <span class="arithmatex">\(0&lt;c_p\le C_p&lt;\infty\)</span> such that</p>
+<div class="arithmatex">\[
+c_p\|f\|_p\le\|Sf\|_p\le C_p\|f\|_p.
+\]</div>
+<p>The estimate holds first for Schwartz functions, hence for <span class="arithmatex">\(C_c^\infty\)</span>, and extends to every <span class="arithmatex">\(f\in L^p\)</span> by density.</p>
+</div>
+<p>The proof occupies <a href="#khintchine">§5–8</a>. For the density step: the upper bound for Schwartz functions shows that <span class="arithmatex">\(f\mapsto(P_kf)_k\)</span> extends to a bounded map <span class="arithmatex">\(L^p\to L^p(\ell^2)\)</span>, and the lower bound then passes to limits.</p>
+<p>At a point <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(Sf(x)\)</span> records the quadratic size of the oscillations seen at every scale. Adding the bands to reconstruct <span class="arithmatex">\(f(x)\)</span> retains their relative signs and phases; the square function discards cancellation between different bands. The theorem says that after spatial integration in <span class="arithmatex">\(L^p\)</span> these two measurements are comparable. It does not assert a pointwise comparison.</p>
+<p>For <span class="arithmatex">\(p=2\)</span>, Tonelli and Plancherel give</p>
+<div class="arithmatex">\[
+\|Sf\|_2^2=\sum_k\|P_kf\|_2^2\simeq\|f\|_2^2.
+\]</div>
+<p>For <span class="arithmatex">\(p\ne2\)</span>, the square sum must remain <em>inside</em> the spatial <span class="arithmatex">\(L^p\)</span> norm; it cannot simply be replaced by <span class="arithmatex">\(\big(\sum_k\|P_kf\|_p^2\big)^{1/2}\)</span>.</p>
+<p><strong>The cancellation example.</strong> On <span class="arithmatex">\(\mathbb R\)</span> take</p>
+<div class="arithmatex">\[
+f(x)=\cos x-\cos2x.
+\]</div>
+<p>For our cutoff, <span class="arithmatex">\(\psi(1)=\varphi(1)-\varphi(2)=1\)</span>, while <span class="arithmatex">\(\psi(1/2)=\varphi(1/2)-\varphi(1)=0\)</span> and <span class="arithmatex">\(\psi(2)=\varphi(2)-\varphi(4)=0\)</span>. Since <span class="arithmatex">\(\widehat f\)</span> is supported at <span class="arithmatex">\(\pm1,\pm2\)</span> and <span class="arithmatex">\(\psi\)</span> is even,</p>
+<div class="arithmatex">\[
+P_0f=\cos x,\qquad P_1f=-\cos2x,\qquad P_kf=0\quad(k\ne0,1).
+\]</div>
+<p>Consequently <span class="arithmatex">\(f(0)=0\)</span> while <span class="arithmatex">\(Sf(0)=\sqrt2\)</span>. This correctly demonstrates the loss of pointwise cancellation.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. What the example does and does not show</p>
+<p>By itself the example does not disprove an <span class="arithmatex">\(L^\infty\)</span> norm estimate, which compares suprema over all <span class="arithmatex">\(x\)</span>. The trigonometric example may be read periodically, or as a bounded tempered distribution on <span class="arithmatex">\(\mathbb R\)</span> (with <span class="arithmatex">\(P_k\)</span> acting by the multiplier on its Fourier measure); it is not in <span class="arithmatex">\(L^p(\mathbb R)\)</span> for finite <span class="arithmatex">\(p\)</span>. The norm equivalence really does fail at <span class="arithmatex">\(p=1\)</span> and <span class="arithmatex">\(p=\infty\)</span>, but this requires separate examples, given next.</p>
+</div>
+<h2 id="endpoints"><span class="book-secnum">§ 04</span>The endpoints p = 1 and p = ∞</h2>
+<p><strong>Failure at <span class="arithmatex">\(p=1\)</span>.</strong> Take <span class="arithmatex">\(f\in C_c^\infty\)</span>, <span class="arithmatex">\(f\ge0\)</span>, with <span class="arithmatex">\(\int f=1\)</span>. Since <span class="arithmatex">\(\psi\ge0\)</span> is not identically zero,</p>
+<div class="arithmatex">\[
+\Phi(0)=(2\pi)^{-d}\int\psi(\xi)\,d\xi&gt;0.
+\]</div>
+<p>By continuity choose <span class="arithmatex">\(a,c&gt;0\)</span> with <span class="arithmatex">\(\Phi(z)\ge c\)</span> for <span class="arithmatex">\(|z|\le3a\)</span> (in particular <span class="arithmatex">\(\Phi\)</span> is real there; in fact <span class="arithmatex">\(\Phi\)</span> is real and even since <span class="arithmatex">\(\psi\)</span> is). Suppose <span class="arithmatex">\(\operatorname{supp}f\subset\{|y|\le\rho\}\)</span>. For <span class="arithmatex">\(|x|\)</span> large, choose <span class="arithmatex">\(k=k(x)\in\mathbb Z\)</span> with</p>
+<div class="arithmatex">\[
+a\le2^k|x|&lt;2a.
+\]</div>
+<p>If <span class="arithmatex">\(y\in\operatorname{supp}f\)</span>, then <span class="arithmatex">\(|2^k(x-y)|\le2^k|x|+2^k\rho&lt;2a+2a\rho/|x|\le3a\)</span> once <span class="arithmatex">\(|x|\ge2\rho\)</span>. Hence</p>
+<div class="arithmatex">\[
+P_kf(x)=2^{kd}\int\Phi\big(2^k(x-y)\big)f(y)\,dy\ge c\,2^{kd}\ge c\,a^d|x|^{-d}.
+\]</div>
+<p>Thus <span class="arithmatex">\(Sf(x)\ge|P_{k(x)}f(x)|\gtrsim|x|^{-d}\)</span> for large <span class="arithmatex">\(|x|\)</span>, so <span class="arithmatex">\(Sf\notin L^1\)</span>, although <span class="arithmatex">\(f\in L^1\)</span>. The upper estimate fails at <span class="arithmatex">\(p=1\)</span>.</p>
+<p><strong>Failure at <span class="arithmatex">\(p=\infty\)</span>.</strong> Choose a real Schwartz function <span class="arithmatex">\(h\)</span> with <span class="arithmatex">\(\operatorname{supp}\widehat h\subset\{|\xi|&lt;1/10\}\)</span> and <span class="arithmatex">\(h(0)&gt;0\)</span>, and let</p>
+<div class="arithmatex">\[
+f_N(x)=h(x)\sum_{j=1}^N\cos\big(2^{4j}x_1\big).
+\]</div>
+<p>Then <span class="arithmatex">\(\|f_N\|_\infty\ge f_N(0)=N\,h(0)\)</span>. The <span class="arithmatex">\(j\)</span>th term has Fourier support within distance <span class="arithmatex">\(1/10\)</span> of <span class="arithmatex">\(\pm2^{4j}e_1\)</span>, so its frequencies satisfy <span class="arithmatex">\(2^{4j}-1/10&lt;|\xi|&lt;2^{4j}+1/10\)</span>. The annulus <span class="arithmatex">\(\{2^{k-1}\le|\xi|\le2^{k+1}\}\)</span> meets this set only for <span class="arithmatex">\(k\in\{4j-1,4j,4j+1\}\)</span>; these groups are disjoint for different <span class="arithmatex">\(j\)</span>. Therefore, at each point, at most <span class="arithmatex">\(3N\)</span> bands are nonzero, each band <span class="arithmatex">\(P_kf_N=P_k\big(h\cos(2^{4j}x_1)\big)\)</span> comes from a single term, and</p>
+<div class="arithmatex">\[
+|P_kf_N(x)|\le\|\Phi\|_1\|h\|_\infty
+\]</div>
+<p>since <span class="arithmatex">\(\|P_k\|_{L^\infty\to L^\infty}\le\|\Phi_k\|_1=\|\Phi\|_1\)</span>. It follows that</p>
+<div class="arithmatex">\[
+\|Sf_N\|_\infty\le\sqrt{3N}\,\|\Phi\|_1\|h\|_\infty\lesssim\sqrt N.
+\]</div>
+<p>No constant can make <span class="arithmatex">\(\|f\|_\infty\lesssim\|Sf\|_\infty\)</span> hold for all such <span class="arithmatex">\(f\)</span>, since the ratio is at least a multiple of <span class="arithmatex">\(\sqrt N\)</span>. This suffices to rule out the endpoint norm equivalence. The point is that <span class="arithmatex">\(\ell^2\)</span> summation of <span class="arithmatex">\(N\)</span> unit amplitudes gives <span class="arithmatex">\(\sqrt N\)</span>, while coherent addition gives <span class="arithmatex">\(N\)</span>.</p>
+<h2 id="khintchine"><span class="book-secnum">§ 05</span>Khintchine's inequality</h2>
+<p>The proof of Theorem 7.2 has three ingredients: Khintchine's inequality, the Calderón–Zygmund theorem, and duality. The first converts a family of linear operators into the square function.</p>
+<p>Let <span class="arithmatex">\(\varepsilon_k\)</span> be independent random signs, each equal to <span class="arithmatex">\(1\)</span> or <span class="arithmatex">\(-1\)</span> with probability <span class="arithmatex">\(1/2\)</span>, and write <span class="arithmatex">\(\mathbb E_\varepsilon\)</span> for the expectation.</p>
+<div class="admonition lemma">
+<p class="admonition-title"><span class="book-label">引理 5.1</span><span class="book-name">Khintchine&#x27;s inequality</span></p>
+<p>For <span class="arithmatex">\(0&lt;p&lt;\infty\)</span> there are constants <span class="arithmatex">\(0&lt;A_p\le B_p&lt;\infty\)</span> such that, for every finite complex sequence <span class="arithmatex">\((z_k)\)</span>,</p>
+<div class="arithmatex">\[
+A_p\left(\sum_k|z_k|^2\right)^{1/2}
+\le\left(\mathbb E_\varepsilon\left|\sum_k\varepsilon_kz_k\right|^p\right)^{1/p}
+\le B_p\left(\sum_k|z_k|^2\right)^{1/2}.
+\]</div>
+<p>The constants do not depend on the number of terms.</p>
+</div>
+<p>Equivalently, the expectation without its <span class="arithmatex">\(p\)</span>th root is comparable to <span class="arithmatex">\(\big(\sum_k|z_k|^2\big)^{p/2}\)</span>. For <span class="arithmatex">\(p=2\)</span> this is an identity: since <span class="arithmatex">\(\mathbb E\varepsilon_k\varepsilon_j=\delta_{kj}\)</span> by independence, the cross terms vanish and</p>
+<div class="arithmatex">\[
+\mathbb E_\varepsilon\left|\sum_k\varepsilon_kz_k\right|^2
+=\sum_{k,j}\mathbb E(\varepsilon_k\varepsilon_j)\,z_k\overline{z_j}
+=\sum_k|z_k|^2.
+\]</div>
+<p>Random signs remove systematic alignment between different bands; the typical size of a randomly signed sum is governed by the quadratic size of its coefficients. Only <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> is needed below. A proof is the <a href="#exercise">exercise</a> at the end of the chapter.</p>
+<h2 id="calderon-zygmund"><span class="book-secnum">§ 06</span>The Calderón–Zygmund theorem used here</h2>
+<p>We use the following convolution form of the theorem, quoted without proof.</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">Calderón–Zygmund, convolution form</span></p>
+<p>Let <span class="arithmatex">\(T\)</span> be a linear operator bounded on <span class="arithmatex">\(L^2(\mathbb R^d)\)</span> with <span class="arithmatex">\(\|T\|_{L^2\to L^2}\le B\)</span>. Suppose that for compactly supported smooth <span class="arithmatex">\(f\)</span> and <span class="arithmatex">\(x\notin\operatorname{supp}f\)</span>,</p>
+<div class="arithmatex">\[
+Tf(x)=\int_{\mathbb R^d}K(x-y)f(y)\,dy,
+\]</div>
+<p>where <span class="arithmatex">\(K\)</span> is <span class="arithmatex">\(C^1\)</span> away from the origin and</p>
+<div class="arithmatex">\[
+|K(z)|\le A|z|^{-d},\qquad|\nabla K(z)|\le A|z|^{-d-1}\qquad(z\ne0).
+\]</div>
+<p>Then, for <span class="arithmatex">\(1&lt;p&lt;\infty\)</span>,</p>
+<div class="arithmatex">\[
+\|Tf\|_p\le C_{p,d}(A+B)\|f\|_p.
+\]</div>
+</div>
+<p>The representation is required only away from the support because a singular kernel need not define an absolutely convergent integral on the diagonal. The operator is already defined on <span class="arithmatex">\(L^2\)</span>; its <span class="arithmatex">\(L^2\)</span> boundedness is an essential hypothesis, not a consequence of the size bound alone.</p>
+<p>The first kernel estimate gives the strength of the interaction across a separation <span class="arithmatex">\(|z|\)</span>. The derivative estimate says that moving the observation point by a small fraction of that separation changes the kernel only by a controlled amount. These scale-consistent estimates let cancellation, first available in <span class="arithmatex">\(L^2\)</span>, control the other <span class="arithmatex">\(L^p\)</span> norms. What matters for us is that the conclusion depends only on <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span>.</p>
+<h2 id="upper-estimate"><span class="book-secnum">§ 07</span>Randomized operators and the upper estimate</h2>
+<p>Work first with a finite set <span class="arithmatex">\(F\subset\mathbb Z\)</span> and a fixed choice of signs <span class="arithmatex">\(\varepsilon=(\varepsilon_k)\)</span>. Define</p>
+<div class="arithmatex">\[
+T_{\varepsilon,F}f=\sum_{k\in F}\varepsilon_kP_kf=K_{\varepsilon,F}*f,
+\qquad
+K_{\varepsilon,F}(x)=\sum_{k\in F}\varepsilon_k2^{kd}\Phi(2^kx).
+\]</div>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 7.1</span><span class="book-name">Uniform bounds for randomized operators</span></p>
+<p>For <span class="arithmatex">\(1&lt;p&lt;\infty\)</span>,</p>
+<div class="arithmatex">\[
+\|T_{\varepsilon,F}f\|_p\le C_p\|f\|_p,
+\]</div>
+<p>with <span class="arithmatex">\(C_p\)</span> independent of both the signs and <span class="arithmatex">\(F\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Since <span class="arithmatex">\(F\)</span> is finite, <span class="arithmatex">\(K_{\varepsilon,F}\)</span> is a Schwartz function and the integral representation of Theorem 7.4 holds trivially. The whole point is to verify the hypotheses with constants <span class="arithmatex">\(A,B\)</span> independent of <span class="arithmatex">\(\varepsilon\)</span> and <span class="arithmatex">\(F\)</span>.</p>
+<p><strong>The <span class="arithmatex">\(L^2\)</span> bound.</strong> The multiplier is</p>
+<div class="arithmatex">\[
+m_{\varepsilon,F}(\xi)=\sum_{k\in F}\varepsilon_k\psi(2^{-k}\xi).
+\]</div>
+<p>Because <span class="arithmatex">\(\psi\ge0\)</span> and the full sum is one for <span class="arithmatex">\(\xi\ne0\)</span>,</p>
+<div class="arithmatex">\[
+|m_{\varepsilon,F}(\xi)|\le\sum_{k\in F}\psi(2^{-k}\xi)\le1.
+\]</div>
+<p>Plancherel gives <span class="arithmatex">\(\|T_{\varepsilon,F}\|_{L^2\to L^2}\le1\)</span>, so <span class="arithmatex">\(B=1\)</span>.</p>
+<p><strong>Kernel size and smoothness.</strong> The change of variables <span class="arithmatex">\(\eta=2^k\xi\)</span> gives</p>
+<div class="arithmatex">\[
+\Phi(2^kx)=(2\pi)^{-d}\int e^{i2^kx\cdot\xi}\psi(\xi)\,d\xi
+=2^{-kd}(2\pi)^{-d}\int e^{ix\cdot\eta}\psi(2^{-k}\eta)\,d\eta.
+\]</div>
+<p>The last integrand is supported in <span class="arithmatex">\(2^{k-1}\le|\eta|\le2^{k+1}\)</span>, a set of volume <span class="arithmatex">\(\simeq2^{kd}\)</span>. Taking absolute values shows only that <span class="arithmatex">\(|\Phi(2^kx)|\lesssim1\)</span>, i.e. <span class="arithmatex">\(|2^{kd}\Phi(2^kx)|\lesssim2^{kd}\)</span>, which cannot be summed over all <span class="arithmatex">\(k\)</span>. To sum the kernels we also need their rapid decay. Since <span class="arithmatex">\(\psi\in C_c^\infty\)</span>, repeated integration by parts gives, for <span class="arithmatex">\(a=0,1\)</span> and every <span class="arithmatex">\(N\)</span>,</p>
+<div class="arithmatex">\[
+|\nabla^a\Phi(z)|\le C_{N,a}(1+|z|)^{-N}.
+\]</div>
+<p>Since <span class="arithmatex">\(\nabla^a[2^{kd}\Phi(2^kx)]=2^{k(d+a)}(\nabla^a\Phi)(2^kx)\)</span> and <span class="arithmatex">\(|\varepsilon_k|=1\)</span>, enlarging <span class="arithmatex">\(F\)</span> to <span class="arithmatex">\(\mathbb Z\)</span> gives</p>
+<div class="arithmatex">\[
+|\nabla^aK_{\varepsilon,F}(x)|\lesssim\sum_{k\in\mathbb Z}2^{k(d+a)}(1+2^k|x|)^{-N}.
+\]</div>
+<p>Fix <span class="arithmatex">\(x\ne0\)</span>, write <span class="arithmatex">\(r=|x|\)</span>, and choose <span class="arithmatex">\(j\in\mathbb Z\)</span> with</p>
+<div class="arithmatex">\[
+2^jr\le1&lt;2^{j+1}r.
+\]</div>
+<p>For the low indices, bound <span class="arithmatex">\((1+2^kr)^{-N}\le1\)</span> and sum the geometric series:</p>
+<div class="arithmatex">\[
+\sum_{k\le j}2^{k(d+a)}(1+2^kr)^{-N}\le\sum_{k\le j}2^{k(d+a)}\lesssim2^{j(d+a)}\le r^{-d-a}.
+\]</div>
+<p>For the high indices, bound <span class="arithmatex">\((1+2^kr)^{-N}\le(2^kr)^{-N}\)</span> and take <span class="arithmatex">\(N&gt;d+a\)</span>:</p>
+<div class="arithmatex">\[
+\sum_{k&gt;j}2^{k(d+a)}(1+2^kr)^{-N}\le r^{-N}\sum_{k&gt;j}2^{k(d+a-N)}
+\lesssim r^{-N}2^{(j+1)(d+a-N)}
+=r^{-d-a}(2^{j+1}r)^{d+a-N}\le r^{-d-a},
+\]</div>
+<p>since <span class="arithmatex">\(2^{j+1}r&gt;1\)</span> and <span class="arithmatex">\(d+a-N&lt;0\)</span>. Thus</p>
+<div class="arithmatex">\[
+|K_{\varepsilon,F}(x)|\lesssim|x|^{-d},\qquad|\nabla K_{\varepsilon,F}(x)|\lesssim|x|^{-d-1},
+\]</div>
+<p>uniformly in <span class="arithmatex">\(\varepsilon\)</span> and <span class="arithmatex">\(F\)</span>. The case <span class="arithmatex">\(a=1\)</span> is the derivative bound. Theorem 7.4 with these uniform <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B=1\)</span> proves the proposition.</p>
+</details>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Why the sum must be split</p>
+<p>The scale with <span class="arithmatex">\(2^k\sim|x|^{-1}\)</span> determines the size of the sum. Larger spatial kernels (smaller <span class="arithmatex">\(k\)</span>) contribute a convergent geometric series through their amplitude; smaller spatial kernels (larger <span class="arithmatex">\(k\)</span>) contribute through their rapid decay. Bounding each summand separately by <span class="arithmatex">\(|x|^{-d}\)</span> and then summing over infinitely many <span class="arithmatex">\(k\)</span> would miss this mechanism and would not prove the estimate.</p>
+</div>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 7.2</span><span class="book-name">The upper square-function estimate</span></p>
+<p>For <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> and <span class="arithmatex">\(f\in\mathcal S(\mathbb R^d)\)</span>, <span class="arithmatex">\(\|Sf\|_p\le C_p\|f\|_p\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Apply Khintchine pointwise with <span class="arithmatex">\(z_k=P_kf(x)\)</span>, <span class="arithmatex">\(k\in F\)</span>. Since <span class="arithmatex">\(\mathbb E_\varepsilon\)</span> is a finite average over the <span class="arithmatex">\(2^{|F|}\)</span> sign choices, it commutes with the integral (Tonelli), and Proposition 7.5 applies to each choice:</p>
+<div class="arithmatex">\[
+\left\|\Big(\sum_{k\in F}|P_kf|^2\Big)^{1/2}\right\|_p^p
+\lesssim_p\int_{\mathbb R^d}\mathbb E_\varepsilon\left|\sum_{k\in F}\varepsilon_kP_kf(x)\right|^p dx
+=\mathbb E_\varepsilon\|T_{\varepsilon,F}f\|_p^p
+\lesssim_p\|f\|_p^p.
+\]</div>
+<p>Let <span class="arithmatex">\(F=\{-M,\dots,M\}\)</span> and send <span class="arithmatex">\(M\to\infty\)</span>. The left side increases to <span class="arithmatex">\(\|Sf\|_p^p\)</span> by monotone convergence, and the right side does not depend on <span class="arithmatex">\(M\)</span>.</p>
+</details>
+<p>Working with finite sums makes the probabilistic calculation and the limiting step unambiguous.</p>
+<h2 id="reverse-estimate"><span class="book-secnum">§ 08</span>The reverse estimate by duality</h2>
+<p>Let <span class="arithmatex">\(p'=p/(p-1)\)</span> and take <span class="arithmatex">\(f,g\in\mathcal S(\mathbb R^d)\)</span>. With the complex pairing <span class="arithmatex">\(\langle f,g\rangle=\int f\overline g\)</span>,</p>
+<div class="arithmatex">\[
+\langle f,g\rangle=\sum_{k,j}\langle P_kf,P_jg\rangle
+=\sum_{|k-j|\le1}\int_{\mathbb R^d}P_kf(x)\,\overline{P_jg(x)}\,dx.
+\]</div>
+<p>Indeed, <span class="arithmatex">\(\langle f,g\rangle=\lim_M\big\langle\sum_{|k|\le M}P_kf,\sum_{|j|\le M}P_jg\big\rangle\)</span> by <span class="arithmatex">\(L^2\)</span> reconstruction, and by Plancherel <span class="arithmatex">\(\langle P_kf,P_jg\rangle=(2\pi)^{-d}\int\psi_k\psi_j\widehat f\,\overline{\widehat g}=0\)</span> when <span class="arithmatex">\(|k-j|\ge2\)</span>, because separated annuli have disjoint supports. Absolute convergence of the remaining sum is justified by the bound below.</p>
+<p>For each shift <span class="arithmatex">\(\ell\in\{-1,0,1\}\)</span>, Cauchy–Schwarz in <span class="arithmatex">\(k\)</span> gives the pointwise bound</p>
+<div class="arithmatex">\[
+\sum_k|P_kf(x)|\,|P_{k+\ell}g(x)|
+\le\Big(\sum_k|P_kf(x)|^2\Big)^{1/2}\Big(\sum_k|P_{k+\ell}g(x)|^2\Big)^{1/2}
+=Sf(x)\,Sg(x).
+\]</div>
+<p>Summing over the three shifts, then applying Hölder and the upper estimate at the exponent <span class="arithmatex">\(p'\in(1,\infty)\)</span>,</p>
+<div class="arithmatex">\[
+|\langle f,g\rangle|\le3\int_{\mathbb R^d}Sf\,Sg\,dx
+\le3\|Sf\|_p\|Sg\|_{p'}
+\le3C_{p'}\|Sf\|_p\|g\|_{p'}.
+\]</div>
+<p>Taking the supremum over Schwartz <span class="arithmatex">\(g\)</span> with <span class="arithmatex">\(\|g\|_{p'}\le1\)</span> (which are dense in the unit ball of <span class="arithmatex">\(L^{p'}\)</span>, as <span class="arithmatex">\(p'&lt;\infty\)</span>) gives</p>
+<div class="arithmatex">\[
+\|f\|_p\le3C_{p'}\|Sf\|_p,
+\]</div>
+<p>which completes the proof of Theorem 7.2 with <span class="arithmatex">\(c_p=(3C_{p'})^{-1}\)</span>.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Two or three neighbors</p>
+<p>The lecture notes sum over <span class="arithmatex">\(|k-j|\le2\)</span>, i.e. five shifts, obtaining the constant <span class="arithmatex">\(5\)</span>. This is harmless but slightly wasteful: for the cutoffs of <a href="../chapter-05/#almost-orthogonality">Chapter 5</a>, <span class="arithmatex">\(\psi_k\psi_j=0\)</span> already when <span class="arithmatex">\(|k-j|\ge2\)</span>, so three shifts suffice. With a different cutoff whose bands overlap more, one simply includes more shifts.</p>
+</div>
+<p>In this argument, only neighboring frequency bands can detect one another in a pairing. Duality turns this restricted overlap into control of the whole function by its quadratic band sizes.</p>
+<h2 id="heat"><span class="book-secnum">§ 09</span>The heat equation, scale by scale</h2>
+<p>Consider</p>
+<div class="arithmatex">\[
+\partial_tu=\Delta u,\qquad u(0)=u_0,\qquad t\ge0,
+\]</div>
+<p>with <span class="arithmatex">\(u_0\in\mathcal S(\mathbb R^d)\)</span> to begin with. Since <span class="arithmatex">\(P_k\)</span> commutes with <span class="arithmatex">\(\Delta\)</span>,</p>
+<div class="arithmatex">\[
+\partial_tP_ku=\Delta P_ku,
+\]</div>
+<p>and the exact Fourier evolution is</p>
+<div class="arithmatex">\[
+\widehat{P_ku}(t,\xi)=e^{-t|\xi|^2}\psi(2^{-k}\xi)\widehat{u_0}(\xi).
+\]</div>
+<div class="admonition remark">
+<p class="admonition-title">Remark. A band is not an eigenfunction</p>
+<p>The mnemonic <span class="arithmatex">\(\partial_tP_ku\approx-2^{2k}P_ku\)</span> correctly identifies the decay scale, but it is not an equality: a dyadic annulus contains many values of <span class="arithmatex">\(|\xi|^2\)</span>, from <span class="arithmatex">\(2^{2k-2}\)</span> to <span class="arithmatex">\(2^{2k+2}\)</span>. In particular, one cannot write <span class="arithmatex">\(P_ku(t,x)=e^{-t2^{2k}}P_ku_0(x)\)</span> pointwise. Exponential decay of a band is a norm estimate.</p>
+</div>
+<p><strong>Exponential decay of a band.</strong> For <span class="arithmatex">\(p=2\)</span>, the exact formula and <span class="arithmatex">\(|\xi|\ge2^{k-1}\)</span> on the support give directly</p>
+<div class="arithmatex">\[
+\|P_ku(t)\|_2\le e^{-t2^{2k-2}}\|P_ku_0\|_2.
+\]</div>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 9.1</span><span class="book-name">Band decay in Lᵖ</span></p>
+<p>There are constants <span class="arithmatex">\(C,c&gt;0\)</span>, independent of <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(t\ge0\)</span>, such that for <span class="arithmatex">\(1\le p\le\infty\)</span></p>
+<div class="arithmatex">\[
+\|P_ku(t)\|_p\le Ce^{-ct2^{2k}}\|P_ku_0\|_p.
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Choose an annular cutoff <span class="arithmatex">\(\widetilde\psi\in C_c^\infty(\{1/4&lt;|\eta|&lt;4\})\)</span> equal to one on <span class="arithmatex">\(\operatorname{supp}\psi\)</span>. Since <span class="arithmatex">\(\widetilde\psi\psi=\psi\)</span>, the operator taking <span class="arithmatex">\(P_ku_0\)</span> to <span class="arithmatex">\(P_ku(t)\)</span> may be taken to have multiplier</p>
+<div class="arithmatex">\[
+e^{-t|\xi|^2}\widetilde\psi(2^{-k}\xi).
+\]</div>
+<p>After the scaling <span class="arithmatex">\(\xi=2^k\eta\)</span>, its kernel is <span class="arithmatex">\(2^{kd}\kappa_\tau(2^kx)\)</span>, where</p>
+<div class="arithmatex">\[
+\kappa_\tau=\mathcal F^{-1}\big[m_\tau\big],\qquad m_\tau(\eta)=e^{-\tau|\eta|^2}\widetilde\psi(\eta),\qquad\tau=t2^{2k},
+\]</div>
+<p>and it has the same <span class="arithmatex">\(L^1\)</span> norm as <span class="arithmatex">\(\kappa_\tau\)</span>. On the fixed annular support, <span class="arithmatex">\(|\eta|^2\ge1/16\)</span>, and every derivative of <span class="arithmatex">\(m_\tau\)</span> of fixed order is bounded by a polynomial in <span class="arithmatex">\(\tau\)</span> times <span class="arithmatex">\(e^{-\tau/16}\)</span>. Integration by parts gives <span class="arithmatex">\(x^\alpha\kappa_\tau=\mathcal F^{-1}\big[(i\partial_\eta)^\alpha m_\tau\big]\)</span>, so for <span class="arithmatex">\(|\alpha|\le d+1\)</span></p>
+<div class="arithmatex">\[
+|x^\alpha\kappa_\tau(x)|\le(2\pi)^{-d}\|\partial^\alpha m_\tau\|_1\lesssim(1+\tau)^{d+1}e^{-\tau/16},
+\]</div>
+<p>hence <span class="arithmatex">\(|\kappa_\tau(x)|\lesssim(1+|x|)^{-d-1}(1+\tau)^{d+1}e^{-\tau/16}\)</span> and</p>
+<div class="arithmatex">\[
+\|\kappa_\tau\|_1\lesssim(1+\tau)^{d+1}e^{-\tau/16}\le Ce^{-c\tau}
+\]</div>
+<p>for any fixed <span class="arithmatex">\(c&lt;1/16\)</span>. Young's inequality gives the claim.</p>
+</details>
+<p>Thus a structure of size <span class="arithmatex">\(\ell=2^{-k}\)</span> diffuses on the time scale <span class="arithmatex">\(t\sim\ell^2=2^{-2k}\)</span>: fine structures are erased first. The linear heat equation damps each frequency without transferring it to another frequency.</p>
+<p><strong>Recovering the <span class="arithmatex">\(L^p\)</span> estimate with the square function.</strong> For <span class="arithmatex">\(t&gt;0\)</span> write</p>
+<div class="arithmatex">\[
+u(t)=G_t*u_0,\qquad G_t(x)=(4\pi t)^{-d/2}e^{-|x|^2/(4t)},\qquad G_t\ge0,\quad\|G_t\|_1=1.
+\]</div>
+<p>Because convolutions commute, <span class="arithmatex">\(P_ku(t)=G_t*P_ku_0\)</span>. Minkowski's integral inequality in <span class="arithmatex">\(\ell^2\)</span> (the <span class="arithmatex">\(\ell^2\)</span> norm of an integral is at most the integral of the <span class="arithmatex">\(\ell^2\)</span> norms, using <span class="arithmatex">\(G_t\ge0\)</span>) yields the pointwise comparison</p>
+<div class="arithmatex">\[
+\begin{aligned}
+Su(t,x)
+&amp;=\left(\sum_k\left|\int G_t(y)P_ku_0(x-y)\,dy\right|^2\right)^{1/2}\\
+&amp;\le\int G_t(y)\left(\sum_k|P_ku_0(x-y)|^2\right)^{1/2}dy
+=(G_t*Su_0)(x).
+\end{aligned}
+\]</div>
+<p>For <span class="arithmatex">\(1&lt;p&lt;\infty\)</span>, the square function theorem and Young's inequality now give</p>
+<div class="arithmatex">\[
+\|u(t)\|_p\lesssim\|Su(t)\|_p\le\|G_t*Su_0\|_p\le\|Su_0\|_p\lesssim\|u_0\|_p.
+\]</div>
+<p>The pointwise bound is by a spatial average of <span class="arithmatex">\(Su_0\)</span>, not by <span class="arithmatex">\(Su_0(x)\)</span> itself: heat can arrive at a point from its neighbors.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. The endpoints belong to the square function, not to the heat flow</p>
+<p>The restriction <span class="arithmatex">\(1&lt;p&lt;\infty\)</span> in the last chain comes from the square function theorem. The heat estimate itself is stronger and includes both endpoints:</p>
+<div class="arithmatex">\[
+\|u(t)\|_p\le\|u_0\|_p,\qquad1\le p\le\infty,
+\]</div>
+<p>directly from <span class="arithmatex">\(u(t)=G_t*u_0\)</span> and <span class="arithmatex">\(\|G_t\|_1=1\)</span>. The failure at <span class="arithmatex">\(p=1,\infty\)</span> in <a href="#endpoints">§4</a> concerns the square-function norm equivalence, not heat-flow contraction. The square-function route is instructive because it generalizes to evolutions without a positive kernel.</p>
+</div>
+<h2 id="localized-nonlinear"><span class="book-secnum">§ 10</span>Nonlinear equations after frequency localization</h2>
+<p>The linear <span class="arithmatex">\(L^p\)</span> reconstruction is now available. What remains is to estimate the products generated by the equation. Two examples illustrate this: the cubic Klein–Gordon equation and the incompressible Navier–Stokes equations.</p>
+<p>Writing the cubic term on the left, consider</p>
+<div class="arithmatex">\[
+\begin{cases}
+\partial_t^2u-\Delta u+m^2u+\lambda u^3=0,\\
+u(0)=u_0,\qquad\partial_tu(0)=u_1.
+\end{cases}
+\]</div>
+<p>This is <a href="#nonlinear-motivation">§2</a> with <span class="arithmatex">\(N(u)=-\lambda u^3\)</span>; moving the term across the equality changes its sign. Applying <span class="arithmatex">\(P_k\)</span> gives the exact equation</p>
+<div class="arithmatex">\[
+\partial_t^2P_ku-\Delta P_ku+m^2P_ku+\lambda P_k(u^3)=0,
+\]</div>
+<p>with data <span class="arithmatex">\(P_ku_0\)</span> and <span class="arithmatex">\(P_ku_1\)</span>. Only the last term couples frequency bands.</p>
+<p>For incompressible Navier–Stokes with viscosity normalized to one,</p>
+<div class="arithmatex">\[
+\begin{cases}
+\partial_tv+v\cdot\nabla v=-\nabla p+\Delta v,\\
+\nabla\cdot v=0,\qquad v(0)=v_0,
+\end{cases}
+\]</div>
+<p>the localized system is</p>
+<div class="arithmatex">\[
+\begin{cases}
+\partial_tP_kv+P_k(v\cdot\nabla v)=-\nabla P_kp+\Delta P_kv,\\
+\nabla\cdot(P_kv)=0,\qquad P_kv(0)=P_kv_0.
+\end{cases}
+\]</div>
+<p>Here <span class="arithmatex">\(p\)</span> denotes the pressure, not an exponent. The spatial multipliers commute with <span class="arithmatex">\(\partial_t\)</span>, <span class="arithmatex">\(\nabla\)</span>, and <span class="arithmatex">\(\Delta\)</span>; they do not commute with multiplication by <span class="arithmatex">\(v\)</span>.</p>
+<p>The velocity at a large scale can transport a much finer feature, while two fine-scale oscillations can interact to produce a slowly varying component. The viscous term damps each band on its own, exactly as in <a href="#heat">§9</a>; the transport term couples the bands. These different roles are visible in the localized system before any nonlinear estimate is attempted.</p>
+<h2 id="paraproducts"><span class="book-secnum">§ 11</span>Products, Fourier support, and paraproducts</h2>
+<p><strong>Multiplication adds frequency vectors.</strong> Recall <span class="arithmatex">\((f*g)(x)=\int_{\mathbb R^d}f(x-y)g(y)\,dy\)</span>. With our Fourier convention,</p>
+<div class="arithmatex">\[
+\widehat{fg}(\xi)=(2\pi)^{-d}(\widehat f*\widehat g)(\xi)
+=(2\pi)^{-d}\int\widehat f(\eta)\,\widehat g(\xi-\eta)\,d\eta.
+\]</div>
+<p>If <span class="arithmatex">\(\operatorname{supp}\widehat f\subset D_1\)</span> and <span class="arithmatex">\(\operatorname{supp}\widehat g\subset D_2\)</span> with <span class="arithmatex">\(D_1,D_2\)</span> compact, then</p>
+<div class="arithmatex">\[
+\operatorname{supp}\widehat{fg}\subset D_1+D_2,\qquad
+D_1+D_2=\{\xi_1+\xi_2:\xi_1\in D_1,\ \xi_2\in D_2\}.
+\]</div>
+<p>Indeed, the integrand vanishes unless <span class="arithmatex">\(\eta\in D_1\)</span> and <span class="arithmatex">\(\xi-\eta\in D_2\)</span>, which forces <span class="arithmatex">\(\xi\in D_1+D_2\)</span>, a compact hence closed set. This is a containment; cancellation can make the support smaller. More generally <span class="arithmatex">\(\operatorname{supp}(f*g)\subset\operatorname{supp}f+\operatorname{supp}g\)</span> when the supports are compact; when the convolution exists and the supports are not compact, the containment uses the closure of the sum. Applied twice, it gives the claim of <a href="#nonlinear-motivation">§2</a> that <span class="arithmatex">\(\widehat{u^3}\)</span> is supported in <span class="arithmatex">\(\{|\xi|\le3R\}\)</span> if <span class="arithmatex">\(\widehat u\)</span> is supported in <span class="arithmatex">\(\{|\xi|\le R\}\)</span>.</p>
+<p>For plane waves the rule is exact:</p>
+<div class="arithmatex">\[
+e^{ix\cdot\xi_1}e^{ix\cdot\xi_2}=e^{ix\cdot(\xi_1+\xi_2)}.
+\]</div>
+<p>Frequency is a vector. Two large vectors can nearly cancel, leaving a small output frequency; their magnitudes alone do not determine the output. On the other hand, adding a small frequency set <span class="arithmatex">\(D_{\rm low}\)</span> to a distant one <span class="arithmatex">\(D_{\rm high}\)</span> only broadens <span class="arithmatex">\(D_{\rm high}\)</span> slightly without moving it toward zero: high plus low stays near the high frequency.</p>
+<p><strong>An exact partition of the interactions.</strong> For <span class="arithmatex">\(f,g\in\mathcal S(\mathbb R^d)\)</span>,</p>
+<div class="arithmatex">\[
+P_k(fg)=P_k\left[\Big(\sum_{k'}P_{k'}f\Big)\Big(\sum_{k''}P_{k''}g\Big)\right].
+\]</div>
+<p>The double series converges absolutely in <span class="arithmatex">\(L^2\)</span>: for Schwartz <span class="arithmatex">\(f\)</span>, <span class="arithmatex">\(\|P_{k'}f\|_\infty\le(2\pi)^{-d}\|\psi_{k'}\widehat f\|_1\)</span> is <span class="arithmatex">\(O(2^{k'd})\)</span> as <span class="arithmatex">\(k'\to-\infty\)</span> and rapidly decreasing as <span class="arithmatex">\(k'\to\infty\)</span>, so <span class="arithmatex">\(\sum_{k',k''}\|P_{k'}f\|_\infty\|P_{k''}g\|_2&lt;\infty\)</span>. Hence the terms may be regrouped freely. Fix the separation of ten dyadic indices and define the low-frequency cutoff relative to <span class="arithmatex">\(k'\)</span> by</p>
+<div class="arithmatex">\[
+\widetilde P_{k'}g:=\sum_{k''\le k'-10}P_{k''}g=P_{\le k'-10}\,g,
+\]</div>
+<p>the second equality because <span class="arithmatex">\(\sum_{k''\le j}\psi(2^{-k''}\xi)=\varphi(2^{-j}\xi)\)</span> for <span class="arithmatex">\(\xi\ne0\)</span>. Every pair <span class="arithmatex">\((k',k'')\)</span> lies in exactly one of the three disjoint regions</p>
+<div class="arithmatex">\[
+k''\le k'-10,\qquad k'\le k''-10,\qquad|k'-k''|&lt;10.
+\]</div>
+<p>Thus</p>
+<div class="arithmatex">\[
+fg=\underbrace{\sum_{k'}(P_{k'}f)(\widetilde P_{k'}g)}_{\text{high–low}}
++\underbrace{\sum_{k''}(\widetilde P_{k''}f)(P_{k''}g)}_{\text{low–high}}
++\underbrace{\sum_{|k'-k''|&lt;10}(P_{k'}f)(P_{k''}g)}_{\text{high–high}}.
+\]</div>
+<div id="def-2" class="admonition definition">
+<p class="admonition-title"><span class="book-label">定义 11.1</span><span class="book-name">Paraproduct pieces</span></p>
+<p>For <span class="arithmatex">\(f,g\in\mathcal S(\mathbb R^d)\)</span> and <span class="arithmatex">\(k\in\mathbb Z\)</span>, set</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Pi^{(k)}_{H\text{–}L}(f,g)&amp;:=P_k\sum_{k'}(P_{k'}f)(\widetilde P_{k'}g),\\
+\Pi^{(k)}_{L\text{–}H}(f,g)&amp;:=P_k\sum_{k''}(\widetilde P_{k''}f)(P_{k''}g),\\
+\Pi^{(k)}_{H\text{–}H}(f,g)&amp;:=P_k\sum_{|k'-k''|&lt;10}(P_{k'}f)(P_{k''}g).
+\end{aligned}
+\]</div>
+</div>
+<p>Since <span class="arithmatex">\(P_k\)</span> is bounded on <span class="arithmatex">\(L^2\)</span> and may be applied termwise,</p>
+<div class="arithmatex">\[
+P_k(fg)=\Pi^{(k)}_{H\text{–}L}(f,g)+\Pi^{(k)}_{L\text{–}H}(f,g)+\Pi^{(k)}_{H\text{–}H}(f,g).
+\]</div>
+<p>The low–high term is obtained from the high–low term by interchanging <span class="arithmatex">\(f\)</span> and <span class="arithmatex">\(g\)</span>: <span class="arithmatex">\(\Pi^{(k)}_{L\text{–}H}(f,g)=\Pi^{(k)}_{H\text{–}L}(g,f)\)</span>. The number ten is only a separation buffer. The strict inequality in the high–high range prevents pairs with <span class="arithmatex">\(|k'-k''|=10\)</span> from being counted twice.</p>
+<p><strong>Where can the output frequency lie?</strong> In a high–low interaction, write <span class="arithmatex">\(j=k'\)</span>. The multiplier of <span class="arithmatex">\(\widetilde P_j=P_{\le j-10}\)</span> is <span class="arithmatex">\(\varphi(2^{-(j-10)}\xi)\)</span>, supported in <span class="arithmatex">\(|\xi|\le2^{j-9}\)</span>. The supports therefore satisfy</p>
+<div class="arithmatex">\[
+2^{j-1}\le|\xi_1|\le2^{j+1},\qquad|\xi_2|\le2^{j-9},
+\]</div>
+<p>and hence</p>
+<div class="arithmatex">\[
+\big(\tfrac12-2^{-9}\big)2^j\le|\xi_1+\xi_2|\le\big(2+2^{-9}\big)2^j.
+\]</div>
+<p>The output remains comparable to <span class="arithmatex">\(2^j\)</span>. The support of <span class="arithmatex">\(\psi_k\)</span> is <span class="arithmatex">\(\{2^{k-1}\le|\xi|\le2^{k+1}\}\)</span>; it misses this shell if <span class="arithmatex">\(2^{k+1}&lt;(\frac12-2^{-9})2^j\)</span>, i.e. if <span class="arithmatex">\(k\le j-3\)</span>, and if <span class="arithmatex">\(2^{k-1}&gt;(2+2^{-9})2^j\)</span>, i.e. if <span class="arithmatex">\(k\ge j+3\)</span>. So applying <span class="arithmatex">\(P_k\)</span> to the <span class="arithmatex">\(j\)</span>th high–low term gives zero unless <span class="arithmatex">\(|k-j|\le2\)</span>, and</p>
+<div class="arithmatex">\[
+\Pi^{(k)}_{H\text{–}L}(f,g)=P_k\sum_{|k'-k|\le2}(P_{k'}f)(P_{\le k'-10}\,g).
+\]</div>
+<p>The same statement holds with the roles reversed in a low–high interaction.</p>
+<p>For high–high interactions, let <span class="arithmatex">\(J=\max(k',k'')\)</span>. Then <span class="arithmatex">\(|\xi_1|,|\xi_2|\le2^{J+1}\)</span> and</p>
+<div class="arithmatex">\[
+|\xi_1+\xi_2|\le2^{J+2},
+\]</div>
+<p>but there is no positive lower bound. An output band must satisfy <span class="arithmatex">\(2^{k-1}\le2^{J+2}\)</span>, i.e. <span class="arithmatex">\(k\le J+3\)</span>; it may lie arbitrarily far below <span class="arithmatex">\(J\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Interaction</th>
+<th>Output</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High–low</td>
+<td>Near the high input band, <span class="arithmatex">\(\lvert k-k'\rvert\le2\)</span></td>
+<td>A slowly varying factor modulates a fine oscillation</td>
+</tr>
+<tr>
+<td>Low–high</td>
+<td>Near the high input band, <span class="arithmatex">\(\lvert k-k''\rvert\le2\)</span></td>
+<td>The same mechanism with the factors reversed</td>
+</tr>
+<tr>
+<td>High–high</td>
+<td>Comparable or much lower frequencies, <span class="arithmatex">\(k\le J+3\)</span></td>
+<td>Fine oscillations can reinforce or produce a slowly varying beat</td>
+</tr>
+</tbody>
+</table>
+<p>For example, in one dimension,</p>
+<div class="arithmatex">\[
+e^{iNx}e^{-i(N-\eta)x}=e^{i\eta x},\qquad|\eta|\ll N,
+\]</div>
+<p>is a high–high interaction with low output. The real-valued identity</p>
+<div class="arithmatex">\[
+\cos^2(Nx)=\tfrac12+\tfrac12\cos(2Nx)
+\]</div>
+<p>produces both a constant component and a higher harmonic. These examples explain why high–high interactions cannot be treated as though their output were always high.</p>
+<p>The product estimates that motivate the decomposition concern quantities such as</p>
+<div class="arithmatex">\[
+\|fg\|_{\dot B^s_{p,q}},\qquad\|fgh\|_{\dot B^s_{p,q}},\qquad\|P_k(u^3)\|_p.
+\]</div>
+<p>The decomposition separates the three interaction patterns before estimating them. Cubic terms can be handled by applying the bilinear decomposition twice, or by sorting the three input frequencies in the expansion of <span class="arithmatex">\(P_k(u^3)\)</span> from <a href="#nonlinear-motivation">§2</a>.</p>
+<div class="admonition remark">
+<p class="admonition-title">Remark. Scope of the formulas</p>
+<p>The required estimates depend on the regularities and integrabilities of the factors; no unrestricted product of arbitrary distributions is asserted here. For Schwartz functions the formulas are justified directly, as above. In rough function spaces, convergence of the series must be established by the corresponding estimates.</p>
+</div>
+<h2 id="exercise"><span class="book-secnum">§ 12</span>Exercise: Khintchine's inequality</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 12.1</span><span class="book-name">Prove Lemma 7.3</span></p>
+<p>Prove Khintchine's inequality for <span class="arithmatex">\(0&lt;p&lt;\infty\)</span>, and explain why the constants are independent of the number of terms. Hint: first take <span class="arithmatex">\(z_k=a_k\)</span> real with <span class="arithmatex">\(\sum_ka_k^2=1\)</span> and bound <span class="arithmatex">\(\mathbb E_\varepsilon e^{\lambda X}\)</span>, where <span class="arithmatex">\(X=\sum_k\varepsilon_ka_k\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p><strong>Real coefficients, upper bound.</strong> By homogeneity assume <span class="arithmatex">\(\sum_ka_k^2=1\)</span>. Comparing Taylor series, <span class="arithmatex">\((2n)!\ge2^nn!\)</span> gives <span class="arithmatex">\(\cosh y\le e^{y^2/2}\)</span>. By independence, for <span class="arithmatex">\(\lambda&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\mathbb E e^{\lambda X}=\prod_k\mathbb E e^{\lambda\varepsilon_ka_k}=\prod_k\cosh(\lambda a_k)
+\le\prod_ke^{\lambda^2a_k^2/2}=e^{\lambda^2/2}.
+\]</div>
+<p>Chebyshev's inequality gives <span class="arithmatex">\(\mathbb P(X&gt;t)\le e^{-\lambda t}\mathbb Ee^{\lambda X}\le e^{\lambda^2/2-\lambda t}\)</span>; choose <span class="arithmatex">\(\lambda=t\)</span>. Since <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(-X\)</span> have the same law,</p>
+<div class="arithmatex">\[
+\mathbb P(|X|&gt;t)\le2e^{-t^2/2}.
+\]</div>
+<p>The layer-cake formula then gives</p>
+<div class="arithmatex">\[
+\mathbb E|X|^p=\int_0^\infty pt^{p-1}\mathbb P(|X|&gt;t)\,dt
+\le2p\int_0^\infty t^{p-1}e^{-t^2/2}\,dt=:B_p^p&lt;\infty.
+\]</div>
+<p><strong>Real coefficients, lower bound.</strong> The case <span class="arithmatex">\(p=2\)</span> is the identity <span class="arithmatex">\(\mathbb EX^2=1\)</span>. If <span class="arithmatex">\(p\ge2\)</span>, Hölder on the probability space gives <span class="arithmatex">\((\mathbb E|X|^p)^{1/p}\ge(\mathbb EX^2)^{1/2}=1\)</span>. If <span class="arithmatex">\(0&lt;p&lt;2\)</span>, write <span class="arithmatex">\(2=\theta p+4(1-\theta)\)</span> with <span class="arithmatex">\(\theta=2/(4-p)\in(0,1)\)</span>. Hölder with exponents <span class="arithmatex">\(1/\theta\)</span> and <span class="arithmatex">\(1/(1-\theta)\)</span> gives</p>
+<div class="arithmatex">\[
+1=\mathbb E\big(|X|^{\theta p}|X|^{4(1-\theta)}\big)
+\le(\mathbb E|X|^p)^\theta(\mathbb E|X|^4)^{1-\theta}
+\le(\mathbb E|X|^p)^\theta B_4^{4(1-\theta)},
+\]</div>
+<p>so <span class="arithmatex">\(\mathbb E|X|^p\ge B_4^{-4(1-\theta)/\theta}&gt;0\)</span>.</p>
+<p><strong>Complex coefficients.</strong> Write <span class="arithmatex">\(z_k=a_k+ib_k\)</span> and <span class="arithmatex">\(X=X_1+iX_2\)</span> with <span class="arithmatex">\(X_1=\sum\varepsilon_ka_k\)</span>, <span class="arithmatex">\(X_2=\sum\varepsilon_kb_k\)</span>. Since <span class="arithmatex">\(\max(|X_1|,|X_2|)\le|X|\le|X_1|+|X_2|\)</span> and <span class="arithmatex">\(\sum|z_k|^2=\sum a_k^2+\sum b_k^2\)</span>, the real case applied to <span class="arithmatex">\(X_1\)</span> and <span class="arithmatex">\(X_2\)</span> gives both inequalities, with constants changed by factors depending only on <span class="arithmatex">\(p\)</span> (for instance <span class="arithmatex">\(2^{-1/2}A_p\)</span> below, from <span class="arithmatex">\(\mathbb E|X|^p\ge\max(\mathbb E|X_1|^p,\mathbb E|X_2|^p)\)</span>; and above <span class="arithmatex">\(\sqrt2B_p\)</span> by Minkowski if <span class="arithmatex">\(p\ge1\)</span>, or <span class="arithmatex">\(2^{1/p}B_p\)</span> from <span class="arithmatex">\(|X|^p\le|X_1|^p+|X_2|^p\)</span> if <span class="arithmatex">\(p&lt;1\)</span>).</p>
+<p><strong>Independence of the number of terms.</strong> The only property of <span class="arithmatex">\((a_k)\)</span> used was <span class="arithmatex">\(\sum_ka_k^2=1\)</span>: the moment generating bound <span class="arithmatex">\(e^{\lambda^2/2}\)</span>, hence the Gaussian tail and every moment bound, involve neither the length of the sequence nor the individual coefficients. This is what allows the inequality to be applied pointwise to <span class="arithmatex">\(z_k=P_kf(x)\)</span> with <span class="arithmatex">\(F\)</span> arbitrary in <a href="#upper-estimate">§7</a>.</p>
+</details>
+<p><a href="../chapter-06/">Previous: restriction and wave packets</a> · <a href="../chapter-08/">Next: anisotropic Littlewood–Paley theory</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-06/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 6: Restriction, Wave Packets, and Kakeya Geometry</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-08/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">Chapter 8: Anisotropic Littlewood–Paley Theory and Vortex Stretching</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 7 / 9 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=littlewood-paley">#littlewood-paley</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-06/">Chapter 6: Restriction, Wave Packets, and Kakeya Geometry</a></li><li><a href="../chapter-08/">Chapter 8: Anisotropic Littlewood–Paley Theory and Vortex Stretching</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,77 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# Autograd 实现设计问题复盘
+
+以下结论针对 HIPS/autograd `f53a217...`，源码事实与跨框架概念比较分开表述。
+
+## 1. 为什么使用 operator overloading / tracing，而不是 symbolic tree？
+
+`trace` 直接运行 Python 函数，ArrayBox 运算符与 wrapped primitives 只记录实际发生的连续变换。因此普通 `if`、循环、递归、closure 由 Python 决定，不需要先翻译成 symbolic mini-language。代价是图对应某次具体执行，且难做完整静态优化。
+
+## 2. graph 显式还是隐式？
+
+没有中央 `Graph` 类。reverse graph 由每个 `VJPNode.parents` 的引用隐式形成；从 end node 即可遍历全部相关 ancestors。
+
+## 3. intermediate value 存在哪里？
+
+trace 进行时当前值位于 `Box._value`。VJP maker 在 node construction 阶段收到 `value/args/kwargs`，生成的 closure 只捕获规则实际引用的 forward state。不是所有 intermediate 都被一个统一 tape 数组保存。
+
+## 4. backward rule 存在哪里？
+
+全局 `primitive_vjps` 将 primitive 映射到 maker；每个 `VJPNode` 在构造时调用 maker，得到本节点的 `vjp` closure。
+
+## 5. 为什么 closure 表示 VJP 很自然？
+
+forward 阶段已知 `x,y,ans,shape`，backward 阶段稍后才知道 upstream `g`。外层 maker 捕获必要 forward state，内层 callable 接收 `g`，恰好分离两个时刻。
+
+## 6. closure 如何利用 `x` 与 `ans`？
+
+`exp` 规则使用 `ans*g`，`multiply` 规则使用另一个 operand，custom logsumexp 示例同时展示 shape/answer。Python lexical closure 只保留表达式真正引用的对象。
+
+## 7. 为什么不显式构造 Jacobian？
+
+训练和多数 operator 只需要 `Jv` 或 `w^T J`。局部 product 可以沿图组合，避免大矩阵 materialization。完整 `jacobian` API 需要时才遍历 basis 并 stack products。
+
+## 8. multiple parent gradients 如何累加？
+
+`backward_pass` 对 `zip(node.parents,ingrads)` 的每项调用 `add_outgrads`。相同 parent key 会命中之前的 outgrad 并累加；`x*x` 实测为 `3+3=6`。
+
+## 9. broadcasting 如何处理？
+
+NumPy binary VJP rules用 `unbroadcast_f` 捕获目标 metadata，backward 用 `unbroadcast` 沿多余维度和 target size-1 轴求和。通用 reverse engine 不负责 NumPy shape 语义。
+
+## 10. nested differentiation 为什么可行？
+
+VJP/JVP rule 使用可被 Autograd 再次包装的操作；TraceStack 分配递增 ids，primitive 选择 highest-trace boxes。高阶实验实际看到三层 ArrayBox。
+
+## 11. mutable operations 为什么困难？
+
+reverse closure 可能保留 forward 对象引用；若用户之后原地修改它，backward 看到的 state 会变化。官方 tutorial 明确提醒复制所有值成本太高，数组赋值也不是受支持的常规可微写法。
+
+## 12. `VJP not defined` 通常意味着什么？
+
+forward primitive 可执行，但 `VJPNode.__init__` 在 `primitive_vjps` 找不到被追踪 argument positions 的 rule。custom primitive 实验已复现该异常。
+
+## 13. 为什么要 `import autograd.numpy as np`？
+
+该 namespace 把 NumPy callables 包为 primitives、注册 ArrayBox 运算与 JVP/VJP rules。原生 NumPy 函数通常不了解 Autograd Box 与 registry，可能断 trace 或拒绝输入。
+
+## 14. 与 PyTorch/JAX 的概念比较
+
+这是概念层比较，不是对它们当前源码的审计。PyTorch eager autograd 同样通过运行时 operation graph、local backward rules 和 accumulation 支持常见 reverse mode；JAX 更强调把可追踪 Python 数值程序变换为中间表示并组合 JVP/VJP、JIT/vmap 等 transformations。HIPS/autograd 更轻量，直接围绕 Python/NumPy wrappers 与 Box tracing，没有现代框架的大规模 device/compiler/runtime 层。
+
+## 15. 延续到现代 AD 系统的思想
+
+仍然核心的思想包括：primitive derivative registry、JVP/VJP 而非显式 Jacobian、reverse topo traversal、cotangent accumulation、forward state capture、nested transformations、shape-aware rules，以及用 numerical checks 验证局部 derivatives。
+
+## 最终 mental model
+
+```text
+user program executes normally
+  -> differentiable inputs carry trace identity
+  -> primitive calls create local AD state
+  -> parents form the execution graph
+  -> a product query seeds output tangent/cotangent
+  -> local rules compose by chain rule
+  -> shared paths accumulate
+```
