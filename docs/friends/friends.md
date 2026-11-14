@@ -86,12 +86,12 @@ hide:
       </a>
     </li>
     <li>
-      <a href="https://vegetablefj.github.io/" target="_blank" rel="noopener noreferrer" class="friend-link">
+      <a href="https://vegetablefj.github.io/blog/" target="_blank" rel="noopener noreferrer" class="friend-link">
         <span class="friend-avatar" aria-hidden="true" data-initial="v"><img src="https://vegetablefj.github.io/blog/avatar/avatar.jpg" alt="" width="48" height="48" loading="lazy" onerror="this.remove()"></span>
         <span class="friend-text">
         <span class="friend-name">vegetable_fj</span>
         <span class="friend-desc">挥洒竟成真</span>
-        <span class="friend-domain">vegetablefj.github.io</span></span>
+        <span class="friend-domain">vegetablefj.github.io/blog</span></span>
       </a>
     </li>
   </ul>
