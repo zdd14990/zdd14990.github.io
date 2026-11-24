@@ -131,9 +131,7 @@ $$
 
     For fixed $\delta\in(0,1/16]$ and $1<p<\infty$, $\ C_{p,\delta}^{-1}\|f\|_p\le\|S_\delta f\|_p\le C_{p,\delta}\|f\|_p$.
 
-!!! note "Clarification: which constants are controlled"
-
-    For $p=2$ the constants are independent of $\delta$. The argument below gives no such uniformity for other $p$, so the theorem cannot be used without further work when $\delta$ shrinks with $j$.
+For $p=2$ the constants are independent of $\delta$ by Proposition 8.2, whereas the Calderón–Zygmund argument below gives no such uniformity for $p\ne2$; consequently Theorem 8.3 cannot be applied without further work when $\delta$ shrinks with $j$.
 
 ??? proof "Proof via Calderón–Zygmund theory"
 
@@ -222,11 +220,7 @@ $$
 \delta\simeq2^{-3j/2}
 $$
 
-(say $\delta=c2^{-3j/2}$, $c\le1/16$). Then $2^{3j}\delta^2\simeq1$ and $\|P_{j,e}f\|_p\lesssim\|P_{j,e}f\|_q$ with no growing power of $2^j$: this is *geometric depletion* for a single piece.
-
-!!! note "Clarification: two different apertures"
-
-    The aperture $\delta=O(2^{-j})$ does not produce this. At $\delta\simeq2^{-j}$, $2^{3j}\delta^2\simeq2^j$ and a factor $2^{j(1/q-1/p)}$ remains; the sufficient threshold is $\delta\lesssim2^{-3j/2}$. The two scalings are distinct.
+(say $\delta=c2^{-3j/2}$, $c\le1/16$). Then $2^{3j}\delta^2\simeq1$ and $\|P_{j,e}f\|_p\lesssim\|P_{j,e}f\|_q$ with no growing power of $2^j$: this is *geometric depletion* for a single piece. Notice that the wider aperture $\delta=O(2^{-j})$ does *not* produce full depletion: at $\delta\simeq2^{-j}$, $2^{3j}\delta^2\simeq2^j$ and a factor $2^{j(1/q-1/p)}$ remains, so the two scalings $\delta\simeq2^{-j}$ and $\delta\lesssim2^{-3j/2}$ are distinct.
 
 A narrow *filter* is not a function *concentrated* in few directions. Refining the partition increases the number of pieces, and summing the $L^2\to L^\infty$ bound with Cauchy–Schwarz and Proposition 8.2,
 
@@ -247,11 +241,7 @@ $$
 |\xi\cdot a|+|\xi\cdot b|\lesssim2^j\delta,\qquad\xi\cdot e\simeq2^j .
 $$
 
-Indeed $\xi\cdot a=|\xi|(\xi/|\xi|-e)\cdot a$ since $e\cdot a=0$, so $|\xi\cdot a|\le2^{j+1}\cdot4\delta$, and similarly for $b$; and $|\sigma-e|^2=2-2\sigma\cdot e\le16\delta^2$ gives $\xi\cdot e\ge\frac{31}{32}|\xi|$.
-
-!!! note "Clarification: normalized versus actual frequency"
-
-    "Transverse components of order $\delta$, parallel of order $1$" refers to the frequency normalized by $2^j$. For $\xi$ itself the factors $2^j$ must be kept.
+Indeed $\xi\cdot a=|\xi|(\xi/|\xi|-e)\cdot a$ since $e\cdot a=0$, so $|\xi\cdot a|\le2^{j+1}\cdot4\delta$, and similarly for $b$; and $|\sigma-e|^2=2-2\sigma\cdot e\le16\delta^2$ gives $\xi\cdot e\ge\frac{31}{32}|\xi|$. Saying that the transverse components have order $\delta$ and the parallel component has order $1$ refers to the frequency normalized by $2^j$; for $\xi$ itself the factors $2^j$ must be kept.
 
 !!! proposition "Proposition 8.5. Plate decay"
 
@@ -285,9 +275,7 @@ So the kernel decays rapidly outside $|x_\parallel|\lesssim2^{-j}$, $|x_\perp|\l
     \|K_{j,e}\|_1\le C_42^{3j}\delta^2\int\big(1+2^j\delta|x_\perp|+2^j|x_\parallel|\big)^{-4}dx\le C_4\int_{\mathbb R^3}(1+|y|)^{-4}dy\lesssim1 .
     $$
 
-!!! note "Clarification: “supported on a plate”"
-
-    For smooth cutoffs this means rapid decay outside the plate, not vanishing. Also $P_{j,e}f=K_{j,e}*f$ superposes translated plates weighted by $f$; it need not concentrate near one plate at the origin. The radial width here is the full $2^j$; no thinner radial localization or wave-packet decomposition is made.
+For smooth cutoffs, saying that the kernel is "supported on a plate" means rapid decay outside the plate rather than compact vanishing. Likewise, $P_{j,e}f=K_{j,e}*f$ superposes translated plates weighted by $f$ and need not concentrate near a single plate at the origin; here the radial frequency width is still the full $2^j$, before any thinner radial slicing or wave-packet decomposition.
 
 ## 8. Kinetic energy for Navier–Stokes { #kinetic-energy }
 
@@ -338,11 +326,7 @@ u=(-\Delta)^{-1}(\nabla\times\omega),\qquad\nabla u=\nabla(-\Delta)^{-1}(\nabla\
 \widehat u(\xi)=\frac{i\xi\times\widehat\omega(\xi)}{|\xi|^2}.
 $$
 
-!!! note "Clarification: the sign of the inverse Laplacian"
-
-    With $\Delta=\sum_k\partial_k^2$, the inverse is $(-\Delta)^{-1}$, i.e. $u=-\Delta^{-1}\nabla\times\omega$. The sign is irrelevant for norms but matters in the identity.
-
-The entries of $\widehat{\nabla u}$ are combinations of the degree-zero multipliers $\xi_k\xi_l/|\xi|^2$ applied to $\widehat\omega$, so they are Calderón–Zygmund operators and
+With $\Delta=\sum_k\partial_k^2$, the inverse is $(-\Delta)^{-1}$, i.e. $u=-\Delta^{-1}\nabla\times\omega$; the sign is irrelevant for norms but matters in the identity. The entries of $\widehat{\nabla u}$ are combinations of the degree-zero multipliers $\xi_k\xi_l/|\xi|^2$ applied to $\widehat\omega$, so they are Calderón–Zygmund operators and
 
 $$
 \|\nabla u\|_p\le C_p\|\omega\|_p,\qquad1<p<\infty
@@ -362,17 +346,9 @@ $$
 \frac12\frac d{dt}\|\omega\|_2^2+\|\nabla\omega\|_2^2=\sum_{i,j=1}^3\int_{\mathbb R^3}\omega_i\omega_jR_{ij}(\omega)\,dx .
 $$
 
-Viscosity removes enstrophy $\frac12\|\omega\|_2^2$; stretching can create it. Only the symmetric part of $\nabla u$ contributes, since $\omega_i\omega_j$ is symmetric, so the orientation of $\omega$ relative to the strain matters.
+Viscosity removes enstrophy $\frac12\|\omega\|_2^2$; stretching can create it. Only the symmetric part of $\nabla u$ contributes, since $\omega_i\omega_j$ is symmetric, so the orientation of $\omega$ relative to the strain matters. Since $\nabla u=R(\omega)$, the right side is cubic in $\omega$ and the stretching term in the vorticity equation is quadratic, suggesting the Riccati heuristic $\dot x\sim x^2$—finite-time blowup competing with dissipation—though this is only a heuristic, not a closed ODE, and the precise statements are the two displays above.
 
-!!! note "Clarification: the ODE heuristic"
-
-    Since $\nabla u=R(\omega)$, the right side is cubic in $\omega$ and the stretching term is quadratic, suggesting $\dot x\sim x^2$, which blows up in finite time, competing with dissipation. This is a heuristic, not a closed ODE; the precise statements are the two displays above.
-
-!!! note "Clarification: a continuation criterion"
-
-    "Control of $\|\omega(t)\|_{L^2}$ gives global well-posedness" means: if a strong solution with smooth data exists on $[0,T)$, $T<\infty$, and $\sup_{0\le t<T}\|\omega(t)\|_2<\infty$, then it continues past $T$. Finiteness at each $t<T$ is not enough, and no such bound is proved here for arbitrary data.
-
-Indeed, for divergence-free decaying $u$, $|\xi|^2|\widehat u|^2=|\xi\times\widehat u|^2+|\xi\cdot\widehat u|^2$ gives $\|\nabla u\|_2=\|\omega\|_2$. With the energy bound this is a uniform $H^1$ bound, and local strong theory restarts from a bounded $H^1$ set with a common existence time. The real issue is the a priori bound: stretching production against viscous dissipation.
+Similarly, saying that "control of $\|\omega(t)\|_{L^2}$ gives global well-posedness" is a continuation criterion: if a strong solution with smooth data exists on $[0,T)$ with $T<\infty$ and $\sup_{0\le t<T}\|\omega(t)\|_2<\infty$, then it continues past $T$ (finiteness at each $t<T$ alone is not enough, and no unconditional bound is proved here for arbitrary data). Indeed, for divergence-free decaying $u$, $|\xi|^2|\widehat u|^2=|\xi\times\widehat u|^2+|\xi\cdot\widehat u|^2$ gives $\|\nabla u\|_2=\|\omega\|_2$. With the energy bound this is a uniform $H^1$ bound, and local strong theory restarts from a bounded $H^1$ set with a common existence time. The real issue is the a priori bound: stretching production against viscous dissipation.
 
 ## 10. Plate decomposition of the stretching term { #plate-stretching }
 
@@ -404,11 +380,7 @@ $$
 0\notin T_{\mathfrak p_1}+T_{\mathfrak p_2}+T_{\mathfrak p_3}.
 $$
 
-This is a *sum* condition, unlike the intersection condition for convolution in [Section 1](#directions). A nonzero term needs compatible frequencies and overlapping plates in physical space; the decomposition exposes these constraints, but does not by itself make stretching small.
-
-!!! note "Clarification: frequency direction is not vorticity direction"
-
-    The label $e$ is a Fourier direction. Since $\operatorname{div}\omega=0$ gives $\xi\cdot\widehat\omega(\xi)=0$, on $P_{k,e}\omega$ the vorticity vector is nearly perpendicular to $e$. Physical vorticity alignment must be justified separately.
+This is a *sum* condition, unlike the intersection condition for convolution in [Section 1](#directions). A nonzero term needs compatible frequencies and overlapping plates in physical space; the decomposition exposes these constraints, but does not by itself make stretching small. Keep in mind also that the label $e$ is a *Fourier* direction rather than the vorticity direction: since $\operatorname{div}\omega=0$ gives $\xi\cdot\widehat\omega(\xi)=0$, on $P_{k,e}\omega$ the vorticity vector is nearly perpendicular to $e$, so physical vorticity alignment must be justified separately.
 
 The lecture stops at this reduction. The next task is an estimate for the trilinear sum that keeps the geometric gains and closes the enstrophy balance, via the overlap and incidence geometry of plates and Guth's multilinear Kakeya methods; no Kakeya estimate or regularity theorem has been proved here. [Chapter 9](chapter-09.md) continues with analytic tubes, multilinear Kakeya and overlap estimates.
 

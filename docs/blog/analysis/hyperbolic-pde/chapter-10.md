@@ -106,9 +106,7 @@ $$
 
 with no dependence on tube length or ambient cube size.
 
-!!! remark "Remark. Polynomial zero sets versus multiscale induction"
-
-    For the endpoint three-dimensional theorem cited as [Theorem 9.1](chapter-09.md#multilinear-kakeya), allowing directions to vary within transverse caps breaks the product structure of (1.3). Guth's 2010 endpoint proof [[3]](#references) replaces coordinate projections by algebraic hypersurfaces (see also Carbery–Valdimarsson [[2]](#references) via the Borsuk–Ulam theorem). In the simplest equal-cardinality overlap model—$M$ unit tubes in each of three near-axis families meeting $K$ unit cubes—the polynomial ham-sandwich theorem finds a nonzero polynomial of degree $D\lesssim K^{1/3}$ whose zero locus bisects all $K$ cubes. Each bisected cube contributes $\gtrsim1$ of surface area; transversality ensures that at least one of the three families projects with bounded Jacobian onto a large part of that area, while a line not contained in the surface meets it at most $D$ times. Counting tube-surface intersections gives $K\lesssim MD\lesssim MK^{1/3}$, hence $K\lesssim M^{3/2}$. Controlling full multiplicities without losing powers of the scale requires directional visibility rather than area alone. When a small scale loss $S^\varepsilon$ is acceptable—as in the multilinear restriction iteration below—a much shorter multiscale covering argument suffices [[4]](#references).
+**Polynomial zero sets versus multiscale induction.** For the endpoint three-dimensional theorem cited as [Theorem 9.1](chapter-09.md#multilinear-kakeya), allowing directions to vary within transverse caps breaks the product structure of (1.3). Guth's 2010 endpoint proof [[3]](#references) replaces coordinate projections by algebraic hypersurfaces (see also Carbery–Valdimarsson [[2]](#references) via the Borsuk–Ulam theorem). In the simplest equal-cardinality overlap model—$M$ unit tubes in each of three near-axis families meeting $K$ unit cubes—the polynomial ham-sandwich theorem finds a nonzero polynomial of degree $D\lesssim K^{1/3}$ whose zero locus bisects all $K$ cubes. Each bisected cube contributes $\gtrsim1$ of surface area; transversality ensures that at least one of the three families projects with bounded Jacobian onto a large part of that area, while a line not contained in the surface meets it at most $D$ times. Counting tube-surface intersections gives $K\lesssim MD\lesssim MK^{1/3}$, hence $K\lesssim M^{3/2}$. Controlling full multiplicities without losing powers of the scale requires directional visibility rather than area alone. When a small scale loss $S^\varepsilon$ is acceptable—as in the multilinear restriction iteration below—a much shorter multiscale covering argument suffices [[4]](#references).
 
 ## 2. Guth's multiscale proof of non-endpoint multilinear Kakeya { #multiscale-kakeya }
 
@@ -314,9 +312,7 @@ Note that on bounded slopes $|\xi|\le\sqrt{n-1}$, a Euclidean $c_nR^{-1}$-neighb
 
 Since $|E_{Q_k}f_k(x)|\le\|f_k\|_{L^1(Q_k)}\le|Q_k|^{1/2}\|f_k\|_{L^2(Q_k)}\lesssim_n\|f_k\|_{L^2(Q_k)}$, we trivially have $\operatorname{EMR}(\infty,R)\lesssim_n1$. Hölder interpolation between $q=\frac{2n}{n-1}$ and $q=\infty$ reduces Theorem 10.8 to the critical exponent $p=\frac{2n}{n-1}$.
 
-!!! remark "Remark. Keeping track of ω versus elliptic rescaling"
-
-    One sometimes reduces $\omega$ to a constant of order one by subdividing into caps of diameter $c_n\omega$ and applying a linear transformation aligning the normals. A general linear transformation in $\xi$, however, sends $|\xi|^2$ to a positive-definite quadratic form $\langle A\xi,\xi\rangle$, so that reduction properly takes place on the wider class of uniformly elliptic $C^2$ graphs (as in [[1]](#references), [[2]](#references)). Retaining $\omega$ directly in Corollary 10.6 avoids leaving the paraboloid: the normal direction on a cap of diameter $R^{-1/2}$ varies by $O(R^{-1/2})$, so once $R\ge C_n\omega^{-2}$ every cap tuple inherits transversality at least $\omega/2$, while smaller $R\le C_n\omega^{-2}$ are covered trivially by $|B(0,R)|^{1/p}\lesssim_n\omega^{-n/p}$.
+**Keeping track of $\omega$ versus elliptic rescaling.** One sometimes reduces $\omega$ to a constant of order one by subdividing into caps of diameter $c_n\omega$ and applying a linear transformation aligning the normals. A general linear transformation in $\xi$, however, sends $|\xi|^2$ to a positive-definite quadratic form $\langle A\xi,\xi\rangle$, so that reduction properly takes place on the wider class of uniformly elliptic $C^2$ graphs (as in [[1]](#references), [[2]](#references)). Retaining $\omega$ directly in Corollary 10.6 avoids leaving the paraboloid: the normal direction on a cap of diameter $R^{-1/2}$ varies by $O(R^{-1/2})$, so once $R\ge C_n\omega^{-2}$ every cap tuple inherits transversality at least $\omega/2$, while smaller $R\le C_n\omega^{-2}$ are covered trivially by $|B(0,R)|^{1/p}\lesssim_n\omega^{-n/p}$.
 
 We now link the four constants at $p=\frac{2n}{n-1}$.
 
@@ -363,9 +359,7 @@ We now link the four constants at $p=\frac{2n}{n-1}$.
 
     The numerical series converges by the ratio test, proving the bound.
 
-!!! remark "Remark. Why vertical slicing requires expanding the vertical phase"
-
-    One cannot pull the $\eta_k$-integrals directly through the $1/n$-powers by writing $\big\|\prod_{k=1}^n|\int_{-R^{-1}}^{R^{-1}}H_k(\eta_k)\,d\eta_k|^{1/n}\big\|_{L^p}\lesssim\int_{[-R^{-1},R^{-1}]^n}\big\|\prod_{k=1}^n|H_k(\eta_k)|^{1/n}\big\|_{L^p}d\eta$: testing constant functions $H_k\equiv1$ gives $R^{-1}$ on the left and $R^{-n}$ on the right whenever $n\ge2$. Expanding $e^{2\pi i\eta_kx_n}$ on $|x_n|\le R$ keeps the $\eta_k$-integration linear inside $E_{Q_k}$ before fractional powers are taken.
+Notice why vertical slicing requires expanding the vertical phase: one cannot pull the $\eta_k$-integrals directly through the $1/n$-powers by writing $\big\|\prod_{k=1}^n|\int_{-R^{-1}}^{R^{-1}}H_k(\eta_k)\,d\eta_k|^{1/n}\big\|_{L^p}\lesssim\int_{[-R^{-1},R^{-1}]^n}\big\|\prod_{k=1}^n|H_k(\eta_k)|^{1/n}\big\|_{L^p}d\eta$, since testing constant functions $H_k\equiv1$ gives $R^{-1}$ on the left and $R^{-n}$ on the right whenever $n\ge2$. Expanding $e^{2\pi i\eta_kx_n}$ on $|x_n|\le R$ keeps the $\eta_k$-integration linear inside $E_{Q_k}$ before fractional powers are taken.
 
 !!! proposition "Proposition 10.10. Discrete restriction from thickened support"
 
@@ -476,9 +470,7 @@ Before any geometric tube estimate is invoked, translation invariance eliminates
 - **All-low class ($L\text{–}L\text{–}L$).** Every factor lies strictly below $2^{j-9}$, so this piece belongs to lower shells and is handled by summing or inducting across scales.
 - **All-high class ($H\text{–}H\text{–}H$).** Three comparable high frequencies can close into a resonant triangle $\xi_1+\xi_2+\xi_3=0$; this is the regime addressed by packet geometry in [Chapter 11](chapter-11.md).
 
-!!! remark "Remark. Spectral behavior near zero: massless operators versus a mass gap"
-
-    Low-frequency issues in massless evolution equations reflect the absence of a spectral gap at zero. On $\mathbb R^3$, the nonnegative self-adjoint Laplacian $-\Delta:H^2(\mathbb R^3)\to L^2(\mathbb R^3)$ has symbol $4\pi^2|\xi|^2$ and continuous spectrum $\operatorname{Spec}(-\Delta)=[0,\infty)$ reaching zero, just as free $U(1)$ Maxwell waves allow arbitrarily small excitation energy at long wavelengths. By contrast, for four-dimensional pure $SU(3)$ quantum Yang–Mills theory on a physical Hilbert space $\mathcal H$ with unbounded Hamiltonian $\mathcal P:D(\mathcal P)\subset\mathcal H\to\mathcal H$, the Clay mass-gap problem asks to construct the theory and prove $\operatorname{Spec}(\mathcal P)\subset\{0\}\cup[\Delta,\infty)$ for some $\Delta>0$ above the vacuum state $0$. In our classical PDE lectures this appears purely as a contrasting spectral picture at low energy, not as an assertion accessible to Euclidean tube estimates.
+**Spectral behavior near zero: massless operators versus a mass gap.** Low-frequency issues in massless evolution equations reflect the absence of a spectral gap at zero. On $\mathbb R^3$, the nonnegative self-adjoint Laplacian $-\Delta:H^2(\mathbb R^3)\to L^2(\mathbb R^3)$ has symbol $4\pi^2|\xi|^2$ and continuous spectrum $\operatorname{Spec}(-\Delta)=[0,\infty)$ reaching zero, just as free $U(1)$ Maxwell waves allow arbitrarily small excitation energy at long wavelengths. By contrast, for four-dimensional pure $SU(3)$ quantum Yang–Mills theory on a physical Hilbert space $\mathcal H$ with unbounded Hamiltonian $\mathcal P:D(\mathcal P)\subset\mathcal H\to\mathcal H$, the Clay mass-gap problem asks to construct the theory and prove $\operatorname{Spec}(\mathcal P)\subset\{0\}\cup[\Delta,\infty)$ for some $\Delta>0$ above the vacuum state $0$. In our classical PDE lectures this appears purely as a contrasting spectral picture at low energy, not as an assertion accessible to Euclidean tube estimates.
 
 ## 5. Directional transport and space-time Loomis–Whitney { #transport-null-structure }
 
@@ -642,15 +634,13 @@ Whether $\|w(t)\|_{L^2}$ grows like $t$ or $t^{1/2}$ depends on whether $c_1$ eq
 - If $c_1=c_3$ (for instance $v^1=v^3=0$, or $(\partial_t-v^1\partial_{x_1})w=(q^1)^2$), then $S_3(t-s)\big((q^1(s))^2\big)=f_1(x+tv^1e_1)^2$ is independent of $s$, so $w(t,x)=t\,f_1(x+tv^1e_1)^2$ and $\|w(t)\|_{L^2}=|t|\,\|f_1\|_{L^4}^2$ grows *exact* linearly.
 - If $b_1=v^1e_1-v^3e_3\ne0$, the source drifts across the $e_3$-characteristics along the single line $\mathbb Rb_1$, which gives $\|w(t)\|_{L^2}\simeq c_{f_1}|t|^{1/2}$ as $|t|\to\infty$ whenever $\int_{\mathbb R}f_1(y+\tau b_1)^2\,d\tau$ is not identically zero (Exercise 1).
 
-!!! remark "Remark. Two distinct meanings of null structure"
+**Two distinct meanings of null structure.** In (5.3), the scalar product $q^1q^2$ stays bounded in $L^2$ only because $q^1$ and $q^2$ are assumed to obey *different* transport equations with linearly independent relative velocities $b_1,b_2$. That is a kinematic separation hypothesis on the inputs, not an algebraic property of scalar multiplication. By contrast, for vector-valued fields $q_1,q_2:\mathbb R^{1+3}\to\mathbb R^m$, the antisymmetric tensor
 
-    In (5.3), the scalar product $q^1q^2$ stays bounded in $L^2$ only because $q^1$ and $q^2$ are assumed to obey *different* transport equations with linearly independent relative velocities $b_1,b_2$. That is a kinematic separation hypothesis on the inputs, not an algebraic property of scalar multiplication. By contrast, for vector-valued fields $q_1,q_2:\mathbb R^{1+3}\to\mathbb R^m$, the antisymmetric tensor
+$$
+q_1\otimes q_2-q_2\otimes q_1
+$$
 
-    $$
-    q_1\otimes q_2-q_2\otimes q_1
-    $$
-
-    vanishes pointwise whenever $q_1=q_2$ or $q_1\parallel q_2$. In wave equations ([Chapter 12](chapter-12.md#energy-and-null-forms)), classical null forms combine both ideas: parallel waves can travel together for long times without geometric separation, and an antisymmetric derivative symbol cancels precisely those parallel self-interactions before absolute values are taken.
+vanishes pointwise whenever $q_1=q_2$ or $q_1\parallel q_2$. In wave equations ([Chapter 12](chapter-12.md#energy-and-null-forms)), classical null forms combine both ideas: parallel waves can travel together for long times without geometric separation, and an antisymmetric derivative symbol cancels precisely those parallel self-interactions before absolute values are taken.
 
 ## 7. Exercises { #exercises }
 

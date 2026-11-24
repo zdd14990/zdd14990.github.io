@@ -65,17 +65,15 @@ $$
 
 Notice that taking $(\widetilde a,\widetilde b)=(a,b)$ satisfies (1.2) precisely when $s=\frac12$; in $d=3$, $(a,b)=(4,4)$ gives $s=\frac32-\frac14-\frac34=\frac12$ and dual forcing norm $L_{t,x}^{4/3}$.
 
-!!! remark "Remark. Variable-coefficient wave operators and manifold trapping"
+**Variable-coefficient wave operators and manifold trapping.** On a time-independent Riemannian manifold $(M,g)$, the geometric wave operator is $\Box_g=\partial_t^2-\Delta_g$, where in local coordinates $\Delta_gu=g^{ij}\nabla_i\nabla_ju=g^{ij}\partial_i\partial_ju+b^j\partial_ju$. A Euclidean chart cutoff $P_N$ with convolution kernel $k_N(x-y)$ commutes with $\partial_i$ but *not* with variable metric coefficients:
 
-    On a time-independent Riemannian manifold $(M,g)$, the geometric wave operator is $\Box_g=\partial_t^2-\Delta_g$, where in local coordinates $\Delta_gu=g^{ij}\nabla_i\nabla_ju=g^{ij}\partial_i\partial_ju+b^j\partial_ju$. A Euclidean chart cutoff $P_N$ with convolution kernel $k_N(x-y)$ commutes with $\partial_i$ but *not* with variable metric coefficients:
+$$
+[P_N,\Box_g]u=-[P_N,g^{ij}]\partial_i\partial_ju-[P_N,b^j]\partial_ju,
+\qquad
+([P_N,c]v)(x)=\int k_N(x-y)\big(c(y)-c(x)\big)v(y)\,dy.
+$$
 
-    $$
-    [P_N,\Box_g]u=-[P_N,g^{ij}]\partial_i\partial_ju-[P_N,b^j]\partial_ju,
-    \qquad
-    ([P_N,c]v)(x)=\int k_N(x-y)\big(c(y)-c(x)\big)v(y)\,dy.
-    $$
-
-    Metric variation across the $N^{-1}$ packet scale enters directly as a commutator error. Replacing $P_N$ by a *spectral* cutoff $\psi(\sqrt{-\Delta_g}/N)$ restores exact commutation $[\psi(\sqrt{-\Delta_g}/N),\Box_g]=0$ via functional calculus, yet commutation alone does not produce dispersion: on a compact manifold without boundary (such as $\mathbb S^d$), standing eigenmodes $\Delta_g\phi_\lambda=-\lambda^2\phi_\lambda$ oscillate periodically as $\cos(\lambda t)\phi_\lambda(x)$, refocusing infinitely often and ruling out global-in-time $L_t^aL_x^b(\mathbb R\times M)$ bounds.
+Metric variation across the $N^{-1}$ packet scale enters directly as a commutator error. Replacing $P_N$ by a *spectral* cutoff $\psi(\sqrt{-\Delta_g}/N)$ restores exact commutation $[\psi(\sqrt{-\Delta_g}/N),\Box_g]=0$ via functional calculus, yet commutation alone does not produce dispersion: on a compact manifold without boundary (such as $\mathbb S^d$), standing eigenmodes $\Delta_g\phi_\lambda=-\lambda^2\phi_\lambda$ oscillate periodically as $\cos(\lambda t)\phi_\lambda(x)$, refocusing infinitely often and ruling out global-in-time $L_t^aL_x^b(\mathbb R\times M)$ bounds.
 
 ## 2. Critical small-data theory and weak solutions for the cubic wave { #critical-cubic-wave }
 

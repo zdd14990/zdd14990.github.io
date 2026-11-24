@@ -48,21 +48,19 @@ $$
 
 We use from Chapter 5, without repeating the proofs: $L^2$ reconstruction and almost orthogonality $\|f\|_2^2\simeq\sum_k\|P_kf\|_2^2$ ([§3](chapter-05.md#almost-orthogonality)); Bernstein's inequality $\|P_kf\|_r\lesssim2^{kd(1/p-1/r)}\|P_kf\|_p$ for $p\le r$ ([§5](chapter-05.md#bernstein)); the dyadic descriptions of $H^s$, $\dot H^s$ and the Besov norms ([§6–7](chapter-05.md#sobolev)); and the critical embedding and its failure ([§8–10](chapter-05.md#sobolev-embedding)). Constants in $\lesssim$ may depend on $d$, the exponents, and the fixed cutoff, but not on the function or the dyadic index.
 
-!!! remark "Remark. Homogeneous reconstruction and the general critical embedding"
+**Homogeneous reconstruction and the general critical embedding.** Annular cutoffs annihilate polynomials, so a homogeneous Besov seminorm cannot distinguish $f$ from $f$ plus a polynomial. Whenever an actual function is reconstructed, we choose the representative with vanishing low-frequency remainder:
 
-    Annular cutoffs annihilate polynomials, so a homogeneous Besov seminorm cannot distinguish $f$ from $f$ plus a polynomial. Whenever an actual function is reconstructed, we choose the representative with vanishing low-frequency remainder:
+$$
+P_{\le j}f\longrightarrow0\quad\text{in }\mathcal S'\qquad(j\to-\infty).
+$$
 
-    $$
-    P_{\le j}f\longrightarrow0\quad\text{in }\mathcal S'\qquad(j\to-\infty).
-    $$
+Schwartz functions satisfy this convention. With it, the argument of [Proposition 5.6](chapter-05.md#besov-endpoint) extends from $p=2$ to every $1\le p\le\infty$: Bernstein with $r=\infty$ gives
 
-    Schwartz functions satisfy this convention. With it, the argument of [Proposition 5.6](chapter-05.md#besov-endpoint) extends from $p=2$ to every $1\le p\le\infty$: Bernstein with $r=\infty$ gives
+$$
+\|f\|_\infty\le\sum_k\|P_kf\|_\infty\lesssim\sum_k2^{kd/p}\|P_kf\|_p=\|f\|_{\dot B^{d/p}_{p,1}},
+$$
 
-    $$
-    \|f\|_\infty\le\sum_k\|P_kf\|_\infty\lesssim\sum_k2^{kd/p}\|P_kf\|_p=\|f\|_{\dot B^{d/p}_{p,1}},
-    $$
-
-    and the finite right side makes the reconstruction converge uniformly. So $\dot B^{d/p}_{p,1}\hookrightarrow L^\infty$, and likewise $B^{d/p}_{p,1}\hookrightarrow L^\infty$, using $\|P_{\le0}f\|_\infty\lesssim\|P_{\le0}f\|_p$ for the low block. The failure of $H^{d/2}\hookrightarrow L^\infty$ can also be seen with equal weights: for a real Schwartz $h$ with Fourier support in $\{1<|\xi|<2\}$ and $h(0)>0$, the functions $f_N=N^{-1/2}\sum_{j=1}^Nh(2^{3j}x)$ have disjoint Fourier supports above unit frequency, so $\|f_N\|_{H^{d/2}}\lesssim1$, while $f_N(0)=\sqrt N\,h(0)$. Quadratic summability lets the bands pile up at one point; the $\ell^1$ sum in $\dot B^{d/2}_{2,1}$ controls precisely this accumulation.
+and the finite right side makes the reconstruction converge uniformly. So $\dot B^{d/p}_{p,1}\hookrightarrow L^\infty$, and likewise $B^{d/p}_{p,1}\hookrightarrow L^\infty$, using $\|P_{\le0}f\|_\infty\lesssim\|P_{\le0}f\|_p$ for the low block. The failure of $H^{d/2}\hookrightarrow L^\infty$ can also be seen with equal weights: for a real Schwartz $h$ with Fourier support in $\{1<|\xi|<2\}$ and $h(0)>0$, the functions $f_N=N^{-1/2}\sum_{j=1}^Nh(2^{3j}x)$ have disjoint Fourier supports above unit frequency, so $\|f_N\|_{H^{d/2}}\lesssim1$, while $f_N(0)=\sqrt N\,h(0)$. Quadratic summability lets the bands pile up at one point; the $\ell^1$ sum in $\dot B^{d/2}_{2,1}$ controls precisely this accumulation.
 
 ## 2. Why a nonlinear equation requires frequency analysis { #nonlinear-motivation }
 
@@ -131,11 +129,7 @@ $$
 k\longrightarrow k+10\longrightarrow k+100\longrightarrow k+1000.
 $$
 
-!!! remark "Remark. The arrows are schematic"
-
-    Establishing such a transfer requires analysis of the solution; it is a possible mechanism, not a proved evolution law. One interaction cannot jump far: if $\widehat u$ is supported in $\{|\xi|\le R\}$, then $\widehat{u^3}$ is supported in $\{|\xi|\le3R\}$ (see [§11](#paraproducts)). An arbitrarily large jump requires further evolution and repeated interactions.
-
-Two tools are therefore needed: the square function, to reconstruct an $L^p$ norm from the bands, and paraproducts, to organize the nonlinear interactions.
+These arrows are schematic: establishing such a cascade requires analyzing the solution and is a possible mechanism rather than a proved evolution law. One cubic interaction cannot jump far—if $\widehat u$ is supported in $\{|\xi|\le R\}$, then $\widehat{u^3}$ is supported in $\{|\xi|\le3R\}$ ([§11](#paraproducts))—so an arbitrarily large jump requires further evolution and repeated interactions. Two tools are therefore needed: the square function, to reconstruct an $L^p$ norm from the bands, and paraproducts, to organize the nonlinear interactions.
 
 ## 3. The Littlewood–Paley square function { #square-function }
 
@@ -183,11 +177,7 @@ $$
 P_0f=\cos x,\qquad P_1f=-\cos2x,\qquad P_kf=0\quad(k\ne0,1).
 $$
 
-Consequently $f(0)=0$ while $Sf(0)=\sqrt2$. This correctly demonstrates the loss of pointwise cancellation.
-
-!!! remark "Remark. What the example does and does not show"
-
-    By itself the example does not disprove an $L^\infty$ norm estimate, which compares suprema over all $x$. The trigonometric example may be read periodically, or as a bounded tempered distribution on $\mathbb R$ (with $P_k$ acting by the multiplier on its Fourier measure); it is not in $L^p(\mathbb R)$ for finite $p$. The norm equivalence really does fail at $p=1$ and $p=\infty$, but this requires separate examples, given next.
+Consequently $f(0)=0$ while $Sf(0)=\sqrt2$. This demonstrates the loss of pointwise cancellation, though by itself it does not disprove an $L^\infty$ norm estimate (which compares suprema over all $x$). Note also that this trigonometric profile may be read periodically or as a bounded tempered distribution on $\mathbb R$ (with $P_k$ acting on its Fourier measure), since it does not belong to $L^p(\mathbb R)$ for finite $p$. The norm equivalence really does fail at $p=1$ and $p=\infty$, as the next two examples show.
 
 ## 4. The endpoints p = 1 and p = ∞ { #endpoints }
 
@@ -372,9 +362,7 @@ $$
 
     uniformly in $\varepsilon$ and $F$. The case $a=1$ is the derivative bound. Theorem 7.4 with these uniform $A$ and $B=1$ proves the proposition.
 
-!!! remark "Remark. Why the sum must be split"
-
-    The scale with $2^k\sim|x|^{-1}$ determines the size of the sum. Larger spatial kernels (smaller $k$) contribute a convergent geometric series through their amplitude; smaller spatial kernels (larger $k$) contribute through their rapid decay. Bounding each summand separately by $|x|^{-d}$ and then summing over infinitely many $k$ would miss this mechanism and would not prove the estimate.
+Notice why the sum over $k$ had to be split at $2^k\sim|x|^{-1}$: larger spatial kernels (smaller $k$) contribute a convergent geometric series through their amplitude, whereas smaller spatial kernels (larger $k$) contribute through their rapid decay. Bounding each summand separately by $|x|^{-d}$ and summing over infinitely many $k$ would miss this mechanism and diverge.
 
 !!! proposition "Proposition 7.6. The upper square-function estimate"
 
@@ -428,13 +416,7 @@ $$
 \|f\|_p\le3C_{p'}\|Sf\|_p,
 $$
 
-which completes the proof of Theorem 7.2 with $c_p=(3C_{p'})^{-1}$.
-
-!!! remark "Remark. Two or three neighbors"
-
-    The lecture notes sum over $|k-j|\le2$, i.e. five shifts, obtaining the constant $5$. This is harmless but slightly wasteful: for the cutoffs of [Chapter 5](chapter-05.md#almost-orthogonality), $\psi_k\psi_j=0$ already when $|k-j|\ge2$, so three shifts suffice. With a different cutoff whose bands overlap more, one simply includes more shifts.
-
-In this argument, only neighboring frequency bands can detect one another in a pairing. Duality turns this restricted overlap into control of the whole function by its quadratic band sizes.
+which completes the proof of Theorem 7.2 with $c_p=(3C_{p'})^{-1}$. (The lecture notes sum over $|k-j|\le2$, i.e. five shifts, obtaining the constant $5$; for the cutoffs of [Chapter 5](chapter-05.md#almost-orthogonality), $\psi_k\psi_j=0$ already when $|k-j|\ge2$, so three shifts suffice, while a cutoff with wider band overlap simply uses more shifts.) In this argument, only neighboring frequency bands can detect one another in a pairing, and duality turns that restricted overlap into control of the whole function by its quadratic band sizes.
 
 ## 9. The heat equation, scale by scale { #heat }
 
@@ -456,9 +438,7 @@ $$
 \widehat{P_ku}(t,\xi)=e^{-t|\xi|^2}\psi(2^{-k}\xi)\widehat{u_0}(\xi).
 $$
 
-!!! remark "Remark. A band is not an eigenfunction"
-
-    The mnemonic $\partial_tP_ku\approx-2^{2k}P_ku$ correctly identifies the decay scale, but it is not an equality: a dyadic annulus contains many values of $|\xi|^2$, from $2^{2k-2}$ to $2^{2k+2}$. In particular, one cannot write $P_ku(t,x)=e^{-t2^{2k}}P_ku_0(x)$ pointwise. Exponential decay of a band is a norm estimate.
+The mnemonic $\partial_tP_ku\approx-2^{2k}P_ku$ identifies the right decay scale, though it is not an equality: a dyadic annulus contains all values of $|\xi|^2$ between $2^{2k-2}$ and $2^{2k+2}$, so one cannot write $P_ku(t,x)=e^{-t2^{2k}}P_ku_0(x)$ pointwise—exponential decay of a band is a norm estimate.
 
 **Exponential decay of a band.** For $p=2$, the exact formula and $|\xi|\ge2^{k-1}$ on the support give directly
 
@@ -527,17 +507,13 @@ $$
 \|u(t)\|_p\lesssim\|Su(t)\|_p\le\|G_t*Su_0\|_p\le\|Su_0\|_p\lesssim\|u_0\|_p.
 $$
 
-The pointwise bound is by a spatial average of $Su_0$, not by $Su_0(x)$ itself: heat can arrive at a point from its neighbors.
+The pointwise bound is by a spatial average of $Su_0$, not by $Su_0(x)$ itself: heat can arrive at a point from its neighbors. Notice also that the restriction $1<p<\infty$ in the last chain comes from the square function theorem rather than the heat flow itself, which satisfies the stronger contraction
 
-!!! remark "Remark. The endpoints belong to the square function, not to the heat flow"
+$$
+\|u(t)\|_p\le\|u_0\|_p,\qquad1\le p\le\infty,
+$$
 
-    The restriction $1<p<\infty$ in the last chain comes from the square function theorem. The heat estimate itself is stronger and includes both endpoints:
-
-    $$
-    \|u(t)\|_p\le\|u_0\|_p,\qquad1\le p\le\infty,
-    $$
-
-    directly from $u(t)=G_t*u_0$ and $\|G_t\|_1=1$. The failure at $p=1,\infty$ in [§4](#endpoints) concerns the square-function norm equivalence, not heat-flow contraction. The square-function route is instructive because it generalizes to evolutions without a positive kernel.
+directly from $u(t)=G_t*u_0$ and $\|G_t\|_1=1$. The failure at $p=1,\infty$ in [§4](#endpoints) concerns the square-function norm equivalence, not heat-flow contraction; the square-function route is nonetheless instructive because it generalizes to dispersive evolutions without a positive kernel.
 
 ## 10. Nonlinear equations after frequency localization { #localized-nonlinear }
 
@@ -708,11 +684,7 @@ $$
 \|fg\|_{\dot B^s_{p,q}},\qquad\|fgh\|_{\dot B^s_{p,q}},\qquad\|P_k(u^3)\|_p.
 $$
 
-The decomposition separates the three interaction patterns before estimating them. Cubic terms can be handled by applying the bilinear decomposition twice, or by sorting the three input frequencies in the expansion of $P_k(u^3)$ from [§2](#nonlinear-motivation).
-
-!!! remark "Remark. Scope of the formulas"
-
-    The required estimates depend on the regularities and integrabilities of the factors; no unrestricted product of arbitrary distributions is asserted here. For Schwartz functions the formulas are justified directly, as above. In rough function spaces, convergence of the series must be established by the corresponding estimates.
+The decomposition separates the three interaction patterns before estimating them. Cubic terms can be handled by applying the bilinear decomposition twice, or by sorting the three input frequencies in the expansion of $P_k(u^3)$ from [§2](#nonlinear-motivation). Of course, the resulting bounds depend on the regularities and integrabilities of the factors—no unrestricted product of arbitrary distributions is asserted here; for Schwartz functions the identities hold directly as above, while in rough function spaces convergence of the series is established by the corresponding estimates.
 
 ## 12. Exercise: Khintchine's inequality { #exercise }
 

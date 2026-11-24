@@ -60,9 +60,7 @@ $$
 \tag{1.1}
 $$
 
-!!! remark "Remark. Sign convention"
-
-    With the dissipative Laplacian $\Delta=\sum_i\partial_i^2$, velocity recovery reads $u=(-\Delta)^{-1}\operatorname{curl}\omega$; writing $\Delta^{-1}\operatorname{curl}\omega$ drops a sign. Absolute-value bounds are unaffected.
+With the dissipative Laplacian $\Delta=\sum_i\partial_i^2$, velocity recovery reads $u=(-\Delta)^{-1}\operatorname{curl}\omega$; writing $\Delta^{-1}\operatorname{curl}\omega$ drops a sign, although absolute-value bounds are unaffected.
 
 Taking the $L^2$ pairing with $\omega$, the transport term vanishes because $\int(u\cdot\nabla\omega)\cdot\omega=\frac12\int u\cdot\nabla|\omega|^2=0$, and diffusion contributes $-\nu\|\nabla\omega\|_{L^2}^2$. This yields the exact enstrophy identity
 
@@ -168,11 +166,7 @@ h^{-1}\times a^{-1}\times a^{-1}=2^{-j}\delta^{-2}\times2^{-j}\delta^{-1}\times2
 \tag{3.2}
 $$
 
-with length-to-width ratio $\delta^{-1}$: the thin radial direction in frequency becomes the long direction in physical space.
-
-!!! remark "Remark. Cutoff versus packet"
-
-    Multiplication by a frequency cutoff produces $K_q*f$, which is not supported near one fixed spatial tube; translating $f$ translates $K_q*f$. The kernel estimate is correct, but translated packets must be introduced before one spatial tube can be attached to each piece. The Fourier cutoff $P_q$ and an individual packet operator are different operators.
+with length-to-width ratio $\delta^{-1}$: the thin radial direction in frequency becomes the long direction in physical space. Note the distinction between a cutoff and a packet: multiplication by a frequency cutoff produces $K_q*f$, which is not supported near one fixed spatial tube (translating $f$ translates $K_q*f$). The kernel estimate is correct, but translated packets must be introduced before one spatial tube can be attached to each piece; the Fourier cutoff $P_q$ and an individual packet operator are different operators.
 
 **A complete packet construction in one box.** Let $f_q\in L^2$ have Fourier support in $\xi_q+B_q[-1,1]^3$, and put
 
@@ -226,11 +220,7 @@ $$
 
 where $T$ includes the box, polarization and translation indices. $P_T$ is a coefficient-and-synthesis operator; it need not be an orthogonal projection or a Fourier multiplier. In particular one should not assume $P_T\mathcal R=\mathcal RP_T$. One may decompose $\mathcal R\omega$ directly or apply $\mathcal R$ to each vorticity packet; both are legitimate and different constructions. A localized degree-zero multiplier has the same rescaled symbol bounds and preserves the packet envelope up to constants.
 
-!!! remark "Remark. Schwartz, not compactly supported"
-
-    It is tempting to say $P_T\omega\in C_c^\infty(\mathbb R^3)$. A nonzero function cannot have compact support in both space and frequency: the inverse Fourier transform of a compactly supported function extends to an entire function on $\mathbb C^3$, so vanishing on an open set forces it to vanish identically. The correct class is $\mathcal S(\mathbb R^3)\subset C^\infty$, and the localization is the rapid decay (3.5).
-
-A packet is an oscillatory function with a smooth envelope, not the indicator of a tube; its tail is small rather than zero. Hence amplitudes and weights must appear when a geometric tube theorem is used in a PDE estimate.
+**Schwartz, not compactly supported.** It is tempting to say $P_T\omega\in C_c^\infty(\mathbb R^3)$, but a nonzero function cannot have compact support in both space and frequency: the inverse Fourier transform of a compactly supported function extends to an entire function on $\mathbb C^3$, so vanishing on an open set forces it to vanish identically. The correct class is $\mathcal S(\mathbb R^3)\subset C^\infty$, and the localization is the rapid decay (3.5). A packet is an oscillatory function with a smooth envelope, not the indicator of a tube; its tail is small rather than zero. Hence amplitudes and weights must appear when a geometric tube theorem is used in a PDE estimate.
 
 ## 4. The interaction sum and multilinear Kakeya { #multilinear-kakeya }
 
@@ -326,9 +316,7 @@ $$
 \tag{4.5}
 $$
 
-!!! warning "What this does and does not bound"
-
-    This is a bound for products of square-sum envelopes. A deterministic packet sum $|\sum_Tc_T\phi_T|$ is not in general bounded by its square-sum envelope with a universal constant: overlapping packets can add coherently. To use the estimate for (4.1), an orthogonality, multiplicity, or other summation argument must also be proved. The distinction between $P_T\omega$ and $\mathbf 1_T$ is essential here.
+**What this does and does not bound.** Estimate (4.5) bounds products of square-sum envelopes. A deterministic packet sum $|\sum_Tc_T\phi_T|$ is not in general bounded by its square-sum envelope with a universal constant: overlapping packets can add coherently. To use the estimate for (4.1), an orthogonality, multiplicity, or other summation argument must also be proved. The distinction between $P_T\omega$ and $\mathbf 1_T$ is essential here.
 
 ## 5. A direct Fourier overlap estimate { #fourier-overlap }
 
@@ -403,9 +391,7 @@ The inverse cross-product factor is the inverse Jacobian, not an additional Four
 
     Combine (5.2) and (5.3), uniformly in $\eta$, and apply Lemma 9.2.
 
-!!! remark "Remark. Which axis is $h$"
-
-    In the application $h=2^j\delta^2<a=2^j\delta$, so $h$ is the *short* frequency axis, which becomes the *long* axis of the dual spatial tube; $v_i$ is the frequency normal, equal to the tube direction. Estimate (5.4) is stated with this meaning. If instead $h\ge a$ were the long frequency axis, the sharper transverse overlap would be $a^3/\theta$: fixing the two transverse coordinates inside the first box, the second box restricts the coordinate along $v_1$ to an interval of length $Ca/|v_1\times v_2|$, and multiplying by the cross-sectional area $Ca^2$ gives $Ca^3/\theta$. In that regime (5.4) remains a valid but weaker bound whose minimum reduces to $ha^2$, with no angular improvement.
+In our application $h=2^j\delta^2<a=2^j\delta$, so $h$ is the *short* frequency axis, which becomes the *long* axis of the dual spatial tube; $v_i$ is the frequency normal, equal to the tube direction, and (5.4) is stated with this meaning. If instead $h\ge a$ were the long frequency axis, the sharper transverse overlap would be $a^3/\theta$: fixing the two transverse coordinates inside the first box, the second box restricts the coordinate along $v_1$ to an interval of length $Ca/|v_1\times v_2|$, and multiplying by the cross-sectional area $Ca^2$ gives $Ca^3/\theta$. In that regime (5.4) remains a valid but weaker bound whose minimum reduces to $ha^2$, with no angular improvement.
 
 ## 6. The fixed-frequency stretching example { #stretching-example }
 
@@ -445,11 +431,11 @@ $$
 
 There is a genuine angular gain when $\theta>\delta$; when $\theta\le\delta$ the volume bound is better, and the minimum handles the nearly parallel case automatically. At fixed $L^2$ size, a smaller Fourier box limits the amplitude of one localized piece, and a transverse second box further limits the frequency pairs contributing to the product. The improvement concerns this interaction; estimating the whole field also requires counting the pieces and controlling how they combine.
 
-!!! remark "Remark. Three distinctions"
+**Three distinctions.**
 
-    1. The $T_i$ in (6.1) label spatial packets, but the proof of (6.2) concerns their *Fourier support boxes*. Spatial dimensions are reciprocal to frequency dimensions, and a "cross product of tubes" means the cross product of their unit axis directions.
-    2. Estimate (6.2) uses only two transverse directions and an $L^2$ bound for the third factor. It does not need the determinant condition of Theorem 9.1 and does not invoke it. The two arguments complement each other but are not interchangeable.
-    3. The integral of three packets vanishes unless $0\in\operatorname{supp}\widehat{P_{T_1}\omega}+\operatorname{supp}\widehat{P_{T_2}\omega}+\operatorname{supp}\widehat{P_{T_3}(\mathcal R\omega)}$, since $\int fgA\,dx$ is the value at zero frequency of $\widehat f*\widehat g*\widehat A$. Contributing frequencies satisfy $\xi_1+\xi_2+\xi_3=0$ and so lie in a plane, giving $\det(\xi_1/|\xi_1|,\xi_2/|\xi_2|,\xi_3/|\xi_3|)=0$. If each cap direction $e_i$ differs from $\xi_i/|\xi_i|$ by $O(\delta)$, multilinearity of the determinant gives $|\det(e_1,e_2,e_3)|\lesssim\delta$. So a uniform three-family transversality assumption cannot simply be imposed on every resonant triple at an arbitrarily small angular scale. This does not affect the pairwise estimate; it identifies a necessary check before applying the spatial Kakeya theorem to this trilinear form.
+1. The $T_i$ in (6.1) label spatial packets, but the proof of (6.2) concerns their *Fourier support boxes*. Spatial dimensions are reciprocal to frequency dimensions, and a "cross product of tubes" means the cross product of their unit axis directions.
+2. Estimate (6.2) uses only two transverse directions and an $L^2$ bound for the third factor. It does not need the determinant condition of Theorem 9.1 and does not invoke it. The two arguments complement each other but are not interchangeable.
+3. The integral of three packets vanishes unless $0\in\operatorname{supp}\widehat{P_{T_1}\omega}+\operatorname{supp}\widehat{P_{T_2}\omega}+\operatorname{supp}\widehat{P_{T_3}(\mathcal R\omega)}$, since $\int fgA\,dx$ is the value at zero frequency of $\widehat f*\widehat g*\widehat A$. Contributing frequencies satisfy $\xi_1+\xi_2+\xi_3=0$ and so lie in a plane, giving $\det(\xi_1/|\xi_1|,\xi_2/|\xi_2|,\xi_3/|\xi_3|)=0$. If each cap direction $e_i$ differs from $\xi_i/|\xi_i|$ by $O(\delta)$, multilinearity of the determinant gives $|\det(e_1,e_2,e_3)|\lesssim\delta$. So a uniform three-family transversality assumption cannot simply be imposed on every resonant triple at an arbitrarily small angular scale. This does not affect the pairwise estimate; it identifies a necessary check before applying the spatial Kakeya theorem to this trilinear form.
 
 ## 7. Comparing stretching with viscous dissipation { #dissipation }
 
@@ -509,17 +495,13 @@ This is the absorption threshold with its exact powers of $2^j$, $\delta$ and $\
 
     The kinetic energy identity gives $\|u(t)\|_{L^2}\le\|u_0\|_{L^2}$, while (1.1) gives $\|\nabla u(t)\|_{L^2}=\|\omega(t)\|_{L^2}\le\|\omega(0)\|_{L^2}$. Thus $\|u(t)\|_{H^1}$ stays bounded. The standard local strong-solution theorem in $H^1(\mathbb R^3)$ has a lifespan bounded below in terms of this norm and $\nu$, so a finite maximal time could be extended, a contradiction. This local existence and continuation theorem is standard Navier–Stokes input to the final step, not a consequence of tube geometry.
 
-!!! warning "The hypotheses are not automatic"
+**Why the hypotheses are not automatic.** A bound for one summand of (4.1) does not by itself imply (7.2) for the full solution, nor does a fixed Fourier box or shell remain invariant under the evolution. The Fourier transform of a quadratic product is a convolution, so input supports $\Omega_1,\Omega_2$ produce output in $\Omega_1+\Omega_2$. For a real field, opposite-frequency boxes are both present and their sums can approach frequency zero; other pairs move outward to larger frequencies. Viscous evolution alone preserves each Fourier support; the quadratic term does not. A projected block equation also has commutator terms: for a fixed Fourier projection $P$,
 
-    A bound for one summand of (4.1) does not by itself imply (7.2) for the full solution. Nor does a fixed Fourier box or shell remain invariant under the evolution. The Fourier transform of a quadratic product is a convolution, so input supports $\Omega_1,\Omega_2$ produce output in $\Omega_1+\Omega_2$. For a real field, opposite-frequency boxes are both present and their sums can approach frequency zero; other pairs move outward to larger frequencies. Viscous evolution alone preserves each Fourier support; the quadratic term does not.
+$$
+P(u\cdot\nabla\omega)=u\cdot\nabla(P\omega)+[P,u\cdot\nabla]\omega.
+$$
 
-    A projected block equation also has commutator terms. For a fixed Fourier projection $P$,
-
-    $$
-    P(u\cdot\nabla\omega)=u\cdot\nabla(P\omega)+[P,u\cdot\nabla]\omega.
-    $$
-
-    Only the first term cancels against $P\omega$ in its $L^2$ energy; the commutator remains. One therefore cannot silently replace $\omega$ by a single block in the full enstrophy identity and keep only one stretching integral.
+Only the first term cancels against $P\omega$ in its $L^2$ energy; the commutator remains. One therefore cannot silently replace $\omega$ by a single block in the full enstrophy identity and keep only one stretching integral.
 
 The calculation correctly compares the diffusion rate $\nu2^{2j}$ with the amplitude and angular size of one interaction; a global argument must keep that comparison valid while the equation creates frequencies, moves packets, and turns them.
 
@@ -558,11 +540,7 @@ $$
 \tag{8.3}
 $$
 
-This is a local a priori bound, not a dissipation-absorption estimate based solely on a fixed small $\|\omega\|_{L^2}$.
-
-!!! remark "Remark. Smallness of vorticity alone"
-
-    One might hope to replace the stretching term by $\|\nabla\omega\|_{L^2}^2$ times a power of $\|\omega\|_{L^2}$ and conclude that $\|\omega_0\|_{L^2}\lesssim1$ suffices for global existence. In $\mathbb R^3$ the Gagliardo–Nirenberg exponents are those of (8.2), and there is no scale-independent inequality $\|\omega\|_{L^4}^2\lesssim\|\nabla\omega\|_{L^2}^2$ on all of $\mathbb R^3$ (see the [exercise](#exercise)). Such a universal small-$\|\omega\|_{L^2}$ conclusion needs additional large-scale or low-frequency control, and is recorded here as a claim being qualified, not as a theorem.
+This is a local a priori bound, not a dissipation-absorption estimate based solely on a fixed small $\|\omega\|_{L^2}$. One might hope to replace the stretching term by $\|\nabla\omega\|_{L^2}^2$ times a power of $\|\omega\|_{L^2}$ and conclude that $\|\omega_0\|_{L^2}\lesssim1$ suffices for global existence, but in $\mathbb R^3$ the Gagliardo–Nirenberg exponents are those of (8.2), and there is no scale-independent inequality $\|\omega\|_{L^4}^2\lesssim\|\nabla\omega\|_{L^2}^2$ on all of $\mathbb R^3$ (see the [exercise](#exercise)); such a universal small-$\|\omega\|_{L^2}$ conclusion needs additional large-scale or low-frequency control.
 
 The scaling check is immediate. Under Navier–Stokes scaling $u_\lambda(t,x)=\lambda u(\lambda^2t,\lambda x)$, $\omega_\lambda(t,x)=\lambda^2\omega(\lambda^2t,\lambda x)$,
 

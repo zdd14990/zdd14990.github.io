@@ -172,9 +172,7 @@ Fix $N=2^k\gg1$ and a small angular parameter $0<\delta\ll1$. To avoid conflatin
 
     Since $3m_*\le3(m_1+m_2+m_3)$ and $A>10>\frac92$, the numerical factor $\sum_{m_1,m_2,m_3\ge0}2^{-(A-9/2)(m_1+m_2+m_3)}$ converges. Applying the Bessel bound 2 and computing $V^{-3/2}\rho^3=(N^{-3}\delta^{-4})^{-3/2}(N\delta)^{-3}=N^{3/2}\delta^3$ gives (2.2).
 
-!!! note "Clarification: role of single-cap confinement"
-
-    Hypothesis 3 ($|v(T)-\nu_i|\lesssim\delta$) is essential in bounding $\sum_T\mathbf 1_{T^{(m)}}(x)\lesssim2^{3m}M$. Without angular alignment inside each family, tubes of length $\ell$ meeting $B(x,2^m\ell)$ could sweep out a ball of volume $\simeq(2^m\ell)^3\simeq\delta^{-2}2^{3m}V$, costing an extra factor $\delta^{-1}$ per family.
+Notice that Hypothesis 3 ($|v(T)-\nu_i|\lesssim\delta$) is essential in bounding $\sum_T\mathbf 1_{T^{(m)}}(x)\lesssim2^{3m}M$: without angular alignment inside each family, tubes of length $\ell$ meeting $B(x,2^m\ell)$ could sweep out a ball of volume $\simeq(2^m\ell)^3\simeq\delta^{-2}2^{3m}V$, costing an extra factor $\delta^{-1}$ per family.
 
 Compared with the isotropic estimate (1.4), Proposition 11.1 multiplies $N^{3/2}$ by the dimensionless factor
 
@@ -401,17 +399,15 @@ $$
 
 improving the single-plate Bernstein bound $N^{3/2}\delta^2$ by an unconditional factor $\delta^{1/3}$ across all orientations.
 
-!!! warning "Single-triple bounds versus summed dyadic shells"
+**Single-triple bounds versus summed dyadic shells.** In lecture shorthand one often records the conditional packet-summed counterparts
 
-    In lecture shorthand one often records the conditional packet-summed counterparts
+$$
+|S_k^{\mathrm{sep}}|\lesssim M^{3/2}N^{3/2}\delta^{5/2}\theta^{-1/2}\|\omega_k\|_{L^2}^3,
+\qquad
+|S_k^{\mathrm{near}}|\lesssim M^{3/2}N^{3/2}\delta^2(\theta+\delta)\|\omega_k\|_{L^2}^3,
+$$
 
-    $$
-    |S_k^{\mathrm{sep}}|\lesssim M^{3/2}N^{3/2}\delta^{5/2}\theta^{-1/2}\|\omega_k\|_{L^2}^3,
-    \qquad
-    |S_k^{\mathrm{near}}|\lesssim M^{3/2}N^{3/2}\delta^2(\theta+\delta)\|\omega_k\|_{L^2}^3,
-    $$
-
-    balanced at $\theta=\delta^{1/3}$ to $M^{3/2}N^{3/2}\delta^{7/3}\|\omega_k\|_{L^2}^3$. Unlike Proposition 11.1—where Guth's theorem integrated the product of three square-sum envelopes directly—Propositions 11.3 and 11.5 are proved here for *individual* plate triples, not for arbitrary sums over all $O(\delta^{-4})$ boxes on the annulus. Moreover, Proposition 11.4 uses the signed cancellation $\xi\cdot\widehat f(\xi)=0$, which must be preserved before absolute values of packet envelopes are taken. Applying the $\delta^{7/3}$ bound to a full shell therefore requires either Initial Data / Evolution hypotheses restricting the active frequency boxes to boundedly many channels, or an explicit almost-orthogonality summation proof compatible with divergence-free cancellation.
+balanced at $\theta=\delta^{1/3}$ to $M^{3/2}N^{3/2}\delta^{7/3}\|\omega_k\|_{L^2}^3$. Unlike Proposition 11.1—where Guth's theorem integrated the product of three square-sum envelopes directly—Propositions 11.3 and 11.5 are proved here for *individual* plate triples, not for arbitrary sums over all $O(\delta^{-4})$ boxes on the annulus. Moreover, Proposition 11.4 uses the signed cancellation $\xi\cdot\widehat f(\xi)=0$, which must be preserved before absolute values of packet envelopes are taken. Applying the $\delta^{7/3}$ bound to a full shell therefore requires either Initial Data / Evolution hypotheses restricting the active frequency boxes to boundedly many channels, or an explicit almost-orthogonality summation proof compatible with divergence-free cancellation.
 
 ## 7. Projected vorticity commutators and directionally organized data { #commutators-and-data }
 

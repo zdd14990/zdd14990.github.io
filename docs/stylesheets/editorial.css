@@ -15,7 +15,7 @@ body {
     --ed-accent: #a8361f;
     --ed-serif: "Noto Serif SC", "Source Han Serif SC", "Source Han Serif", "Songti SC", "STSong", "SimSun", serif;
     --ed-mono: "JetBrains Mono", "Cascadia Mono", "SF Mono", Menlo, Consolas, var(--ed-serif);
-    --ed-margin: 280px;
+    --ed-margin: 32px;
 }
 
 body[data-md-color-scheme="slate"] {
@@ -702,9 +702,9 @@ body .md-typeset .zdd-tag-group h2 {
 
 body .friend-avatar { border-radius: 0 !important; }
 
-/* ---------- Wide layout: contents | text | margin ---------- */
+/* ---------- Wide layout: contents | text ---------- */
 @media screen and (min-width: 76.25em) {
-    body.article-layout .md-main__inner.md-grid { max-width: 1240px; }
+    body.article-layout .md-main__inner.md-grid { max-width: 1320px; }
 
     body.article-layout .md-sidebar--secondary {
         order: -1;
@@ -715,8 +715,8 @@ body .friend-avatar { border-radius: 0 !important; }
     body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap { margin-top: 2.2rem; }
 
     body.article-layout .md-content {
-        flex: 0 1 980px;
-        max-width: 980px;
+        flex: 0 1 1100px;
+        max-width: 1100px;
     }
 
     body.article-layout .md-content__inner {
@@ -724,30 +724,10 @@ body .friend-avatar { border-radius: 0 !important; }
         padding-top: 1.6rem !important;
     }
 
-    body.article-layout .book-opener { margin-right: calc(-1 * var(--ed-margin)); }
-    body.article-layout .md-typeset .book-standfirst { max-width: 700px; }
-
-    /* Top-level remarks sit in the margin. */
-    body.article-layout .md-typeset .md-content__inner > .admonition:is(.note, .remark, .info, .tip),
-    body.article-layout .md-content__inner.md-typeset > .admonition:is(.note, .remark, .info, .tip) {
-        float: right;
-        clear: right;
-        width: 220px;
-        margin: 0.3em calc(-1 * var(--ed-margin)) 1em 0;
-        color: var(--ed-ink-soft);
-        font-size: 0.74em;
-        line-height: 1.8;
-    }
-
-    body.article-layout .md-content__inner > .admonition:is(.note, .remark, .info, .tip) mjx-container[display="true"] {
-        overflow-x: auto;
-        max-width: 100%;
-        font-size: 90% !important;
-    }
-
-    body.article-layout .md-typeset p.book-figure.is-wide { margin-right: calc(-1 * var(--ed-margin)); }
+    body.article-layout .book-opener,
+    body.article-layout .md-typeset p.book-figure.is-wide,
     body.article-layout .zdd-article-end,
-    body.article-layout .zdd-comments { margin-right: calc(-1 * var(--ed-margin) + 60px); }
+    body.article-layout .zdd-comments { margin-right: 0; }
 }
 
 @media screen and (max-width: 44.9375em) {
@@ -872,13 +852,6 @@ html body.article-layout .zdd-code-note {
 }
 html body.article-layout .zdd-code-note-header { border-bottom-color: var(--ed-rule); }
 body.article-layout .zdd-code-note-header > #zdd-code-note-title { font-weight: 700; }
-
-/* Plain listings use the margin column on wide screens. */
-@media screen and (min-width: 76.25em) {
-    body.article-layout .md-content__inner > .highlight:not(:has(code[data-zdd-code])) {
-        margin-right: calc(-1 * var(--ed-margin));
-    }
-}
 
 /* ---------- QA 2026-10: leftovers of the blue card theme ---------- */
 /* Text selection: accent wash instead of the browser's blue. */

@@ -251,20 +251,43 @@ code, kbd, pre {
 }
 
 /* ==========================================
-   移动端数学公式横向滚动
+   数学公式横向滚动（仅外层容器单层滚动，避免双滚动条）
    ========================================== */
-.md-typeset .MathJax {
-    overflow-x: auto;      /* 超出范围允许滚动 */
-    overflow-y: hidden;    /* 隐藏垂直滚动条 */
-    max-width: 100%;       /* 限制最大宽度 */
-    padding-bottom: 4px;   /* 预留滚动条位置 */
+.md-typeset div.arithmatex {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--zdd-scroll-thumb) transparent;
 }
 
-/* 针对块级公式 (Display Math) */
-mjx-container[display="true"] {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    max-width: 100% !important;
+.md-typeset div.arithmatex > mjx-container,
+.md-typeset div.arithmatex > .MathJax {
+    overflow: visible !important;
+    max-width: none !important;
+    padding-bottom: 0;
+}
+
+.md-typeset div.arithmatex > mjx-container[display="true"]:not([width="full"]) {
+    width: max-content;
+    min-width: 100%;
+}
+
+.md-typeset div.arithmatex > mjx-container[display="true"][width="full"] {
+    width: auto;
+}
+
+.md-typeset :not(div.arithmatex) > mjx-container[display="true"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--zdd-scroll-thumb) transparent;
+}
+
+.md-typeset span.arithmatex > mjx-container:not([display="true"]) {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 /* ==========================================
