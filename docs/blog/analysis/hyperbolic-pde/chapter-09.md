@@ -638,4 +638,4 @@ A geometric gain in a nonlinear estimate is useful precisely when it survives re
 1. L. Guth, *The endpoint case of the Bennett–Carbery–Tao multilinear Kakeya conjecture*, Acta Mathematica **205** (2010), 263–286, Theorem 1.3. [arXiv:0811.2251](https://arxiv.org/abs/0811.2251).
 2. J. Bennett, A. Carbery, and T. Tao, *On the multilinear restriction and Kakeya conjectures*, Acta Mathematica **196** (2006), 261–302. [arXiv:math/0509262](https://arxiv.org/abs/math/0509262).
 
-[Previous: anisotropic Littlewood–Paley theory](chapter-08.md)
+[Previous: anisotropic Littlewood–Paley theory](chapter-08.md) · [Next: multilinear restriction and transport null structure](chapter-10.md)
