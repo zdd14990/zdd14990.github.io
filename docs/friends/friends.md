@@ -1,6 +1,6 @@
 ---
-title: 友链
-description: zdd14990 的个人简介与友情链接。
+title: Friends
+description: zdd14990 的友情链接。
 hide:
   - navigation
   - toc
@@ -8,17 +8,17 @@ hide:
 
 <section class="friend-directory" aria-labelledby="friends-title">
   <header class="zdd-band">
-    <div class="zdd-band-row"><h1 id="friends-title" class="zdd-band-title">友链</h1></div>
-    <p class="zdd-band-line">关于我与朋友们的地方</p>
+    <div class="zdd-band-row"><h1 id="friends-title" class="zdd-band-title">Friends</h1></div>
+    <p class="zdd-band-line">友链</p>
   </header>
 
   <section class="about-me" aria-labelledby="about-title">
     <span class="about-avatar-wrap" aria-hidden="true" data-initial="z"><img class="about-avatar" src="../../assets/avatar.jpg" alt="" width="96" height="96" loading="lazy" onerror="this.remove()"></span>
     <div class="about-text">
-      <h2 id="about-title">关于我</h2>
-      <p>我是 zdd，2023 年起就读于清华大学求真书院，即将攻读求真书院应用数学方向博士学位，主要研究兴趣为快速算法。</p>
-      <p>这里整理和分享我的课程学习笔记与研究进展。</p>
-      <p>可以在 <a href="https://space.bilibili.com/545753285" target="_blank" rel="noopener noreferrer">Bilibili</a> 找到我，或通过 QQ 联系：1499014252。</p>
+      <h2 id="about-title">About Me</h2>
+      <p>Hi, I'm zdd, an undergraduate at Qiuzhen College, Tsinghua University, where I've been studying since 2023. Next year I'll begin my PhD in Applied Mathematics at Qiuzhen College. My main research interest lies in fast algorithms.</p>
+      <p>This blog is where I share my study notes and research progress.</p>
+      <p>You can find me on <a href="https://space.bilibili.com/545753285" target="_blank" rel="noopener noreferrer">Bilibili</a>, or reach me via QQ: 1499014252.</p>
     </div>
   </section>
 
@@ -97,8 +97,8 @@ hide:
   </ul>
 
   <section class="friend-data" aria-labelledby="friend-data-title">
-    <h2 id="friend-data-title">添加友链</h2>
-    <p>如需交换友链，可复制以下信息：</p>
+    <h2 id="friend-data-title">Add me as a friend</h2>
+    <p>Copy the following to add me to your friend list:</p>
     <pre><code class="language-javascript">{
   title: "zdd14990",
   description: "家里蹲是绝对正义",

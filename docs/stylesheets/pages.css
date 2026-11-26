@@ -24,33 +24,33 @@ body.home-layout .minimal-home {
     position: relative;
     box-sizing: border-box;
     min-height: calc(100svh - 3rem - 1px);
-    padding: 0 1rem 3.6rem;
+    padding: clamp(7rem, 29vh, 14.5rem) 1rem 3.6rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 body.home-layout .minimal-home-hero {
     width: 100%;
-    transform: translateY(-1.2rem);
+    transform: none;
 }
 
 .zdd-home-recent {
-    width: min(720px, calc(100vw - 2rem));
-    margin: 2.4rem auto 0;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--ed-rule, var(--zdd-line));
-    text-align: left;
+    width: min(31rem, calc(100vw - 2.4rem));
+    margin: 2.1rem auto 0;
+    text-align: center;
 }
 .md-typeset .zdd-home-recent-title {
-    margin: 0 0 0.5rem !important;
+    margin: 0 0 0.65rem !important;
     padding: 0 !important;
     border: 0 !important;
     color: var(--ed-muted, var(--zdd-muted)) !important;
-    font-family: var(--ed-serif, inherit);
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.18em;
+    font-family: var(--ed-serif, serif);
+    font-size: 0.66rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.04em;
+    text-align: center;
 }
 .md-typeset .zdd-home-recent-list {
     list-style: none;
@@ -63,33 +63,34 @@ body.home-layout .minimal-home-hero {
 }
 .md-typeset .zdd-home-recent-list a {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 0;
-    color: var(--ed-ink, var(--zdd-ink)) !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.16rem;
+    padding: 0.62rem 0.4rem;
+    color: var(--ed-ink-soft, var(--zdd-ink)) !important;
     text-decoration: none !important;
     background: none !important;
 }
-.md-typeset .zdd-home-recent-list a:hover .zdd-home-recent-name { color: var(--ed-accent, var(--zdd-ink)); }
+.md-typeset .zdd-home-recent-list a:hover .zdd-home-recent-name {
+    color: var(--ed-accent, var(--zdd-ink));
+}
+.zdd-home-recent-date {
+    color: var(--ed-muted, var(--zdd-muted));
+    font-family: var(--ed-serif, serif);
+    font-size: 0.58rem;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+}
 .zdd-home-recent-name {
-    min-width: 0;
-    font-size: 0.78rem;
+    max-width: 100%;
+    color: var(--ed-ink-soft, var(--zdd-ink));
+    font-family: var(--ed-serif, serif);
+    font-size: 0.72rem;
     line-height: 1.5;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-.zdd-home-recent-meta {
-    flex: none;
-    color: var(--ed-muted, var(--zdd-muted));
-    font-family: var(--ed-mono, monospace);
-    font-size: 0.62rem;
-    letter-spacing: 0.04em;
-}
-@media (max-width: 600px) {
-    .md-typeset .zdd-home-recent-list a { flex-direction: column; gap: 0.1rem; }
-    .zdd-home-recent-name { white-space: normal; }
+    transition: color 0.15s ease;
 }
 
 .zdd-home-footer {
@@ -97,23 +98,13 @@ body.home-layout .minimal-home-hero {
     left: 0;
     right: 0;
     bottom: 1.05rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.55rem;
     text-align: center;
-    font-size: 0.64rem;
+    font-size: 0.62rem;
     line-height: 1.4;
     color: var(--zdd-surface-muted);
-    opacity: 0.8;
+    opacity: 0.72;
     user-select: none;
 }
-.md-typeset .zdd-home-footer a {
-    color: inherit !important;
-    text-decoration: none !important;
-    background: none !important;
-}
-.md-typeset .zdd-home-footer a:hover { color: var(--ed-accent, var(--zdd-ink)) !important; }
 
 body.home-layout .minimal-home:has(.minimal-search-results:not(:empty):not([hidden])) :is(.zdd-home-footer, .zdd-home-recent),
 body.home-layout.home-search-active .zdd-home-recent {

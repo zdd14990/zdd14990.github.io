@@ -1237,9 +1237,9 @@
     overlay.className = "zdd-global-search";
     overlay.hidden = true;
     overlay.innerHTML = '<div class="zdd-global-search-backdrop" data-zdd-close-search></div>'
-      + '<div class="zdd-global-search-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">'
+      + '<div class="zdd-global-search-dialog" role="dialog" aria-modal="true" aria-label="Search">'
       + '<form class="minimal-search" id="zdd-global-search-form">'
-      + '<input id="zdd-global-search-input" type="search" placeholder="搜索笔记，或输入 /help 查看命令" autocomplete="off" aria-label="搜索文章或输入命令">'
+      + '<input id="zdd-global-search-input" type="search" placeholder="Search or type /help" autocomplete="off" aria-label="Search articles or commands">'
       + '</form>'
       + '<div class="minimal-search-ghost" id="zdd-global-search-ghost" aria-hidden="true"></div>'
       + '<div class="minimal-search-results" id="zdd-global-search-results"></div>'

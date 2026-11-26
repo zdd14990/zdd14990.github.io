@@ -330,7 +330,7 @@
     var books = shelves.reduce(function (n, s) { return n + s.entries.length; }, 0);
     var band = el("header", "zdd-band zdd-band--overview");
     var row = el("div", "zdd-band-row");
-    row.appendChild(el("h1", "zdd-band-title", "笔记"));
+    row.appendChild(el("h1", "zdd-band-title", "Blog"));
     band.appendChild(row);
     band.appendChild(el("p", "zdd-band-line", shelves.length + " 个书架 \u00b7 " + books + " 本书 \u00b7 " + posts + " 篇"));
     library.appendChild(band);

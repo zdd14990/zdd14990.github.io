@@ -6,10 +6,10 @@
   <div class="book-runhead">
     {% if course %}
     <a href="{{ course.catalog_url }}">{{ course.title }}</a>
-    <span>第 {{ course.position }} / {{ course.total }} 章</span>
+    <span>Part {{ course.position }} of {{ course.total }}</span>
     {% else %}
-    <span>{{ taxonomy.categories[0] if taxonomy and taxonomy.categories else "笔记" }}</span>
-    <span>{{ (page.meta.reading_date | string)[:7] | replace("-", " · ") if page.meta.reading_date else "笔记" }}</span>
+    <span>{{ taxonomy.categories[0] if taxonomy and taxonomy.categories else "Notes" }}</span>
+    <span>{{ (page.meta.reading_date | string)[:7] | replace("-", " · ") if page.meta.reading_date else "Notes" }}</span>
     {% endif %}
   </div>
   <div class="book-title-row{% if opener.number is not none %} has-numeral{% endif %}">

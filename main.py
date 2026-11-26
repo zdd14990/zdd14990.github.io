@@ -17,7 +17,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from zdd_build.blog_content import content_store, parse_document
-from zdd_build.blog_taxonomy import tag_display_name, tag_initial
 from zdd_build.blog_text import (
     article_description, plain_markdown as _plain_markdown,
     chunk_passage_text as _chunk_passage_text, display_chunks as _display_chunks,
@@ -193,9 +192,8 @@ def _lab_catalog():
             for tag in item.get("tags", [])
         )
         status = item.get("status", "")
-        status_names = {"stable": "稳定", "experimental": "实验", "beta": "测试"}
         status_label = (
-            f'<span class="zdd-lab-status" data-status="{html.escape(status)}">{html.escape(status_names.get(status, status))}</span>'
+            f'<span class="zdd-lab-status" data-status="{html.escape(status)}">{html.escape(status)}</span>'
             if status
             else ""
         )
@@ -340,7 +338,7 @@ def _public_search_index(compact=False):
             "contentType": "interactive",
             "visibility": "public",
             "title": item["title"],
-            "subtitle": "实验室",
+            "subtitle": "Lab",
             "url": url,
             "prev_url": "",
             "next_url": "",
@@ -348,7 +346,7 @@ def _public_search_index(compact=False):
             "date": item.get("date", ""),
             "published": bool(_date_obj(item.get("date", ""))),
             "words": len(item["description"].split()),
-            "categories": ["实验室"],
+            "categories": ["Lab"],
             "tags": item.get("tags", []),
             "content": item["description"],
             "source": item["description"],
@@ -405,11 +403,11 @@ def _tag_counts(articles):
 
 
 def _tag_index(counts):
-    """All tags in one index, grouped under the pinyin initial of their Chinese name."""
+    """All tags in one alphabetical index, grouped under their initial letter."""
     letters = {}
-    for tag in sorted(counts, key=lambda slug: (tag_initial(slug), tag_display_name(slug).casefold(), slug)):
-        letters.setdefault(tag_initial(tag), []).append(tag)
-    letters = {letter: letters[letter] for letter in sorted(letters, key=lambda value: (value == "#", value))}
+    for tag in sorted(counts, key=str.casefold):
+        initial = tag[:1].upper()
+        letters.setdefault(initial if "A" <= initial <= "Z" else "#", []).append(tag)
     anchor = {letter: "tag-" + ("other" if letter == "#" else letter.lower()) for letter in letters}
     blocks = "".join(
         f'<div class="zdd-tag-letter" id="{anchor[letter]}"><h2>{html.escape(letter)}</h2>'
@@ -422,48 +420,39 @@ def _tag_index(counts):
         for letter in [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ", *(["#"] if "#" in letters else [])]
     )
     return (f'<section class="zdd-tag-index" aria-label="标签索引">'
-            f'<header class="zdd-tag-index-head"><span>索引</span><span>{len(counts)} 个标签</span></header>'
+            f'<header class="zdd-tag-index-head"><span>Index</span><span>{len(counts)} 个标签</span></header>'
             f'<nav class="zdd-tag-thumbs" aria-label="按首字母跳转">{thumbs}</nav>'
             f'{blocks}</section>')
 
 
 def _tag_option(tag, count):
     size = "is-large" if count >= 8 else "is-medium" if count >= 3 else ""
-    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}" data-tag="{html.escape(tag)}">'
-            f'<span>{html.escape(tag_display_name(tag))}</span>'
+    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}"><span>{html.escape(tag)}</span>'
             f'<small>{count}</small></a>')
-
-
-def _script_json(value):
-    """JSON safe to inline in a <script> element."""
-    return json.dumps(value, ensure_ascii=False).replace("</", "<\\/")
 
 
 def _tag_explorer():
     articles = _article_data()
     counts = _tag_counts(articles)
     options = _tag_index(counts)
-    names = _script_json({tag: tag_display_name(tag) for tag in sorted(counts)})
     cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
     return f"""
 <div class="zdd-tag-page">
   <header class="zdd-band">
-    <div class="zdd-band-row"><h1 id="zdd-tag-heading" class="zdd-band-title">标签</h1></div>
-    <p class="zdd-band-line">{len(counts)} 个标签 · {len(articles)} 篇笔记</p>
+    <div class="zdd-band-row"><h1 id="zdd-tag-heading" class="zdd-band-title">All Tags</h1></div>
   </header>
   <div class="zdd-post-list zdd-tag-results">{cards}</div>
   <div class="zdd-tag-cloud">{options}</div>
 </div>
 <script>
 (function() {{
-  var names = {names};
   var params = new URLSearchParams(window.location.search);
   var tag = params.get("tag");
   var heading = document.getElementById("zdd-tag-heading");
   var list = document.querySelector(".zdd-tag-results");
   var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
   if (tag) {{
-    heading.textContent = "# " + (Object.prototype.hasOwnProperty.call(names, tag) ? names[tag] : tag);
+    heading.textContent = "#" + tag;
     cards.forEach(function(card) {{
       var tags = (card.getAttribute("data-tags") || "").split(/\\s+/);
       card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
@@ -677,21 +666,26 @@ def on_post_build(env=None, config=None, **kwargs):
 
 
 def _recent_updates(articles, max_items=3):
-    """Compact list of the most recently updated published articles for the home page."""
+    """Compact centered list of the most recently updated published articles for the home page."""
     posts = sorted(
         (a for a in articles if a["published"]),
         key=lambda a: (a.get("modified") or a["date"], a["sort_key"]),
         reverse=True,
     )[:max_items]
-    items = "".join(
-        f'<li><a href="{html.escape(post["url"])}">'
-        f'<span class="zdd-home-recent-name">{html.escape(post["title"])}</span>'
-        f'<span class="zdd-home-recent-meta">{html.escape(post["categories"][-1] if post["categories"] else "未分类")}'
-        f' · {html.escape(post.get("modified") or post["date"])}</span></a></li>'
-        for post in posts
-    )
-    return ('<section class="zdd-home-recent" aria-label="最近更新"><h2 class="zdd-home-recent-title">最近更新</h2>'
-            f'<ol class="zdd-home-recent-list">{items}</ol></section>')
+    items = []
+    for post in posts:
+        raw_date = post.get("modified") or post["date"]
+        date_label = raw_date.replace("-", ".")
+        book = post["categories"][-1] if post["categories"] else ""
+        line = f"{book} — {post['title']}" if book and book != post["title"] else post["title"]
+        items.append(
+            f'<li><a href="{html.escape(post["url"])}">'
+            f'<time class="zdd-home-recent-date" datetime="{html.escape(raw_date)}">{html.escape(date_label)}</time>'
+            f'<span class="zdd-home-recent-name">{html.escape(line)}</span>'
+            f'</a></li>'
+        )
+    return ('<section class="zdd-home-recent" aria-label="最近更新"><h2 class="zdd-home-recent-title">What\'s New?</h2>'
+            f'<ol class="zdd-home-recent-list">{"".join(items)}</ol></section>')
 
 
 def define_env(env):

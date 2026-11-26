@@ -58,16 +58,15 @@ class BlogShelfTests(unittest.TestCase):
     def test_book_sources_exist(self):
         load_site_catalog(docs_dir=ROOT / 'docs')
 
-    def test_tag_index_groups_chinese_names_under_pinyin_initials(self):
+    def test_tag_index_groups_under_initial_letters(self):
         rendered = _tag_index({'pde': 12, 'banach': 1, 'adaptive-mesh': 1, 'python': 15})
-        self.assertEqual(re.findall(r'<h2>(.)</h2>', rendered), ['B', 'P', 'Z'])
-        # banach has no Chinese name yet, so it falls back to its slug
+        self.assertEqual(re.findall(r'<h2>(.)</h2>', rendered), ['A', 'B', 'P'])
         self.assertEqual(re.findall(r'<span>([^<]+)</span><small>', rendered),
-                         ['banach', 'Python', '偏微分方程', '自适应网格'])
+                         ['adaptive-mesh', 'banach', 'pde', 'python'])
         self.assertIn('href="/tags/?tag=adaptive-mesh"', rendered)
-        self.assertIn('href="#tag-z"', rendered)
-        self.assertIn('<span>A</span>', rendered)
-        self.assertIn('<span>索引</span>', rendered)
+        self.assertIn('href="#tag-p"', rendered)
+        self.assertIn('<span>Z</span>', rendered)
+        self.assertIn('<span>Index</span>', rendered)
         self.assertIn('4 \u4e2a\u6807\u7b7e', rendered)
 
 

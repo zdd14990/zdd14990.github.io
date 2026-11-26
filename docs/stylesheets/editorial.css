@@ -187,14 +187,6 @@ body .zdd-header-nav a {
     text-transform: uppercase;
 }
 
-/* Chinese menu labels: serif, slightly larger, spaced like a running head. */
-body .zdd-header-search,
-body .zdd-header-nav a {
-    font-family: var(--ed-serif) !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.2em;
-}
-
 body .zdd-header-nav a:hover,
 body .zdd-header-search:hover { color: var(--ed-accent) !important; }
 body .zdd-header-nav a[aria-current] {
@@ -225,21 +217,6 @@ body .md-footer .md-copyright * {
     font-size: 0.62rem;
     letter-spacing: 0.08em;
 }
-body .md-footer .zdd-footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.35rem 1.2rem;
-    margin-bottom: 0.35rem;
-}
-body .md-footer .zdd-footer-links a {
-    color: var(--ed-ink) !important;
-    font-family: var(--ed-serif);
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-}
-body .md-footer .zdd-footer-links a:hover { color: var(--ed-accent) !important; }
 
 body .md-footer .md-social__link { color: var(--ed-ink); }
 
@@ -677,7 +654,7 @@ body .md-typeset :is(a.zdd-pager-link, a.zdd-end-chip, .zdd-end-links a, .zdd-pa
 body.home-layout .md-typeset h1,
 body.home-layout .md-content__inner > h1 {
     font-family: var(--ed-serif) !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color: var(--ed-ink) !important;
 }
 
@@ -693,6 +670,38 @@ body .minimal-search input {
 
 body .minimal-search input:focus { border-bottom-color: var(--ed-accent) !important; }
 body .minimal-search input::placeholder { color: var(--ed-muted) !important; }
+
+/* Home search box: a calm, centred hairline field with a subtle search glyph. */
+body.home-layout .minimal-home .minimal-search {
+    position: relative;
+}
+body.home-layout .minimal-home .minimal-search::before {
+    content: "";
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    width: 0.72rem;
+    height: 0.72rem;
+    transform: translateY(-50%);
+    background: var(--ed-muted);
+    opacity: 0.75;
+    pointer-events: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.8' cy='6.8' r='5' stroke='black' stroke-width='1.5' fill='none'/%3E%3Cpath d='M10.5 10.5L14.2 14.2' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.8' cy='6.8' r='5' stroke='black' stroke-width='1.5' fill='none'/%3E%3Cpath d='M10.5 10.5L14.2 14.2' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html body.home-layout .minimal-home .minimal-search input {
+    padding: 0 0.9rem 0 2.05rem !important;
+    border: 1px solid var(--ed-rule) !important;
+    border-radius: 5px !important;
+    background: color-mix(in srgb, var(--ed-paper) 72%, #fff) !important;
+}
+html body[data-md-color-scheme="slate"].home-layout .minimal-home .minimal-search input {
+    background: color-mix(in srgb, var(--ed-paper-deep) 65%, var(--ed-paper)) !important;
+}
+html body.home-layout .minimal-home .minimal-search input:focus {
+    border-color: var(--ed-ink-soft) !important;
+    outline: none !important;
+}
 
 body .minimal-search-results {
     border: 1px solid var(--ed-rule-strong) !important;
