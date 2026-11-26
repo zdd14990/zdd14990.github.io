@@ -1,0 +1,274 @@
+/* Command console (search box commands such as /help, /random, /log) and the
+   other elements that scripts create at runtime: search overlay, link preview,
+   quiz card, copy toast, diagram inspector. Editorial palette: paper, ink,
+   hairline rules, monospaced labels. */
+
+/* ---------- Search box ghost completion ---------- */
+html body .minimal-search-ghost {
+    color: var(--ed-muted) !important;
+    font-family: var(--ed-mono) !important;
+    font-size: 0.66rem !important;
+    letter-spacing: 0.02em;
+    opacity: 1;
+}
+
+/* ---------- Panel ---------- */
+html body .minimal-search-results:has(> .zdd-command-panel) { padding: 0 !important; }
+html body .zdd-command-panel {
+    margin: 0;
+    padding: 0.35rem 0 0.2rem;
+    border: 0;
+    border-radius: 0;
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+    box-shadow: none;
+    text-align: left;
+    font-family: var(--ed-serif);
+}
+
+html body .zdd-command-prompt,
+html body .zdd-command-hint,
+html body .zdd-command-group-title {
+    padding: 0.45rem 1rem;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+html body .zdd-command-prompt { color: var(--ed-accent); letter-spacing: 0.04em; text-transform: none; }
+html body .zdd-command-hint {
+    margin-top: 0.4rem;
+    border-top: 1px solid var(--ed-rule);
+    letter-spacing: 0.06em;
+    text-transform: none;
+}
+html body .zdd-command-group + .zdd-command-group { margin-top: 0.3rem; border-top: 1px solid var(--ed-rule); }
+
+/* ---------- Rows: name | description over syntax ---------- */
+html body .zdd-command-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 1.2rem;
+    margin: 0;
+    padding: 0.5rem 1rem 0.5rem calc(1rem - 2px);
+    border: 0;
+    border-left: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--ed-ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+html body .zdd-command-row:hover { background: var(--ed-paper-deep); }
+html body .zdd-command-row.is-active { background: var(--ed-paper-deep); border-left-color: var(--ed-accent); }
+html body .zdd-command-main,
+html body .zdd-command-side { display: contents; }
+html body .zdd-command-name {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+html body .zdd-command-row.is-active .zdd-command-name { color: var(--ed-accent); }
+html body .zdd-command-desc {
+    grid-column: 2;
+    color: var(--ed-ink-soft);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+html body .zdd-command-syntax {
+    grid-column: 2;
+    margin-top: 0.12rem;
+    color: var(--ed-muted);
+    font-family: var(--ed-mono);
+    font-size: 0.62rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+html body .zdd-command-kind { display: none; }
+
+/* ---------- Command output ---------- */
+html body .zdd-command-output-title {
+    padding: 0.1rem 1rem 0.6rem;
+    color: var(--ed-ink);
+    font-family: var(--ed-serif);
+    font-size: 1rem;
+    font-weight: 900;
+}
+html body .zdd-command-output-body { padding: 0 1rem; }
+html body .zdd-command-empty {
+    padding: 0.7rem 1rem;
+    color: var(--ed-muted);
+    font-size: 0.76rem;
+    line-height: 1.5;
+}
+html body .zdd-command-output-body .zdd-command-empty { padding: 0.2rem 0; }
+html body .zdd-command-empty code { font-family: var(--ed-mono); font-size: 0.9em; color: var(--ed-accent); background: none; }
+
+html body .zdd-command-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--ed-rule-strong);
+}
+html body .zdd-command-stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.2rem;
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--ed-rule);
+    border-radius: 0;
+    background: none;
+}
+html body .zdd-command-stat b { color: var(--ed-ink); font-family: var(--ed-serif); font-size: 1.15rem; font-weight: 900; }
+html body .zdd-command-stat small { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+html body .zdd-command-posts { display: grid; gap: 0; }
+
+html body .zdd-log-list { display: grid; border-top: 1px solid var(--ed-rule-strong); }
+html body .zdd-log-row {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.15rem 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--ed-rule);
+    color: var(--ed-ink) !important;
+    text-decoration: none !important;
+}
+html body .zdd-log-row span { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.62rem; line-height: 1.9; }
+html body .zdd-log-row b { color: var(--ed-ink); font-size: 0.8rem; }
+html body .zdd-log-row small { grid-column: 2; color: var(--ed-muted); font-size: 0.7rem; line-height: 1.5; }
+
+html body .zdd-ip-value {
+    padding: 0.4rem 0 0.2rem;
+    color: var(--ed-ink);
+    font-family: var(--ed-mono);
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+}
+
+html body .zdd-command-chips { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; }
+html body .zdd-command-chip { padding: 0; border: 0; border-radius: 0; background: none; color: var(--ed-ink) !important; font-family: var(--ed-mono); font-size: 0.66rem; }
+html body .zdd-command-chip:hover { color: var(--ed-accent) !important; }
+
+/* /kill */
+.zdd-kill-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: grid;
+    place-items: center;
+    background: #151412;
+    color: #e9e4d8;
+    font-family: var(--ed-mono);
+    font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+    cursor: pointer;
+}
+.zdd-kill-box { width: min(680px, calc(100vw - 2rem)); padding: 1.2rem 0; border-top: 1px solid #e9e4d8; border-bottom: 1px solid rgba(233, 228, 216, 0.3); line-height: 1.9; }
+.zdd-kill-box > :first-child { color: #e0805f; }
+body.zdd-kill-active { overflow: hidden !important; }
+
+@media screen and (max-width: 44.9375em) {
+    html body .zdd-command-row { grid-template-columns: minmax(0, 1fr); }
+    html body .zdd-command-name { grid-row: auto; }
+    html body .zdd-command-desc, html body .zdd-command-syntax { grid-column: 1; }
+}
+
+/* ---------- Global search overlay (press /) ---------- */
+.zdd-global-search[hidden] { display: none !important; }
+.zdd-global-search {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: grid;
+    align-items: start;
+    justify-items: center;
+    padding: clamp(5rem, 18vh, 8rem) 1rem 2rem;
+}
+.zdd-global-search-backdrop { position: absolute; inset: 0; background: color-mix(in srgb, var(--ed-paper) 82%, transparent); backdrop-filter: blur(2px); }
+.zdd-global-search-dialog { position: relative; width: min(900px, calc(100vw - 2rem)); max-height: calc(100vh - 10rem); overflow: auto; }
+.zdd-global-search :is(.minimal-search, .minimal-search-results, .minimal-search-ghost) { width: 100% !important; }
+html body .zdd-global-search .minimal-search input { background: var(--ed-paper) !important; }
+body.zdd-search-open { overflow: hidden; }
+
+.zdd-search-empty { padding: 0.9rem 1rem; color: var(--ed-muted); font-size: 0.78rem; text-align: left; }
+.zdd-search-retry { margin: 0 1rem 0.8rem; padding: 0.3rem 0.9rem; border: 1px solid var(--ed-rule-strong); border-radius: 0; background: transparent; color: var(--ed-ink); font: inherit; font-size: 0.74rem; cursor: pointer; }
+.zdd-search-retry:hover { color: var(--ed-accent); border-color: var(--ed-accent); }
+.zdd-search-target { scroll-margin-top: 5.5rem; outline: 1px solid var(--ed-accent); outline-offset: 0.35rem; transition: outline-color 0.35s ease; }
+
+/* ---------- Link preview card (knowledge-preview.js) ---------- */
+.zdd-knowledge-preview[hidden] { display: none; }
+.zdd-knowledge-preview {
+    position: fixed;
+    z-index: 25;
+    width: min(21rem, calc(100vw - 1.5rem));
+    box-sizing: border-box;
+    padding: 0.85rem 1rem;
+    border: 0;
+    border-top: 2px solid var(--ed-ink);
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+    box-shadow: 0 10px 28px rgba(28, 27, 25, 0.14);
+    font-family: var(--ed-serif);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+}
+body[data-md-color-scheme="slate"] .zdd-knowledge-preview { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45); }
+.zdd-knowledge-preview.is-visible { opacity: 1; transform: none; }
+.zdd-knowledge-preview-title { display: block; margin-bottom: 0.35rem; color: var(--ed-ink); font-size: 0.86rem; font-weight: 900; line-height: 1.35; }
+.zdd-knowledge-preview-description { display: -webkit-box; overflow: hidden; margin: 0; color: var(--ed-ink-soft); font-size: 0.74rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
+.zdd-knowledge-preview-meta { display: flex; flex-wrap: wrap; gap: 0.35rem 0.7rem; margin-top: 0.6rem; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.6rem; }
+.zdd-knowledge-preview-open { display: inline-block; margin-top: 0.65rem; color: var(--ed-accent) !important; font-size: 0.7rem; text-decoration: none; }
+.zdd-knowledge-preview-open::after { content: " →"; }
+.zdd-knowledge-preview-open:focus-visible { outline: 1px solid var(--ed-accent); outline-offset: 0.16rem; }
+
+/* ---------- /quiz card ---------- */
+.zdd-quiz-card { padding: 0.9rem 0; border-top: 1px solid var(--ed-rule-strong); color: var(--ed-ink); text-align: left; }
+.zdd-quiz-header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+.zdd-quiz-kind { color: var(--ed-accent); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.08em; }
+.zdd-quiz-title { font-weight: 900; }
+.zdd-quiz-statement, .zdd-quiz-answer { max-height: 22rem; overflow: auto; font-size: 0.8rem; }
+.zdd-quiz-answer { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--ed-rule); }
+.zdd-quiz-answer-title { margin-bottom: 0.3rem; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.zdd-quiz-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.8rem; }
+.zdd-quiz-button { padding: 0.25rem 0.9rem; border: 1px solid var(--ed-rule-strong); border-radius: 0; background: transparent; color: var(--ed-ink); font: inherit; font-size: 0.72rem; cursor: pointer; }
+.zdd-quiz-button:hover { background: var(--ed-ink); color: var(--ed-paper); }
+.zdd-quiz-source { margin-left: auto; font-size: 0.7rem; }
+
+/* ---------- Formula copy toast (math-copy.js) ---------- */
+.zdd-math-copy-toast {
+    position: fixed;
+    z-index: 1000;
+    padding: 0.25rem 0.6rem;
+    background: var(--ed-ink);
+    color: var(--ed-paper);
+    font-family: var(--ed-mono);
+    font-size: 0.62rem;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.zdd-math-copy-toast.is-visible { opacity: 1; transform: none; }
+
+/* ---------- Diagram editor inspector (lab) ---------- */
+.zdd-diagram-edge-equal-gap { fill: none; stroke: var(--zdd-playground-panel); stroke-width: 1.7; vector-effect: non-scaling-stroke; }
+.zdd-diagram-edge-group[data-selected="true"] .zdd-diagram-edge { color: var(--zdd-playground-accent); stroke-width: 2.4; }
+.zdd-diagram-inspector-fields { display: grid; gap: 0.7rem; }
+.zdd-diagram-inspector-field { display: grid; gap: 0.28rem; margin: 0; color: var(--zdd-playground-muted); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.zdd-diagram-inspector-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.42rem; margin-top: 0.8rem; }
+.zdd-diagram-inspector-actions .zdd-lab-button { width: 100%; }
+.zdd-interactive-error { color: var(--ed-accent); }

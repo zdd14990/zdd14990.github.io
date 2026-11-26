@@ -1,0 +1,147 @@
+/* Page-specific layouts that used to live in inline <style> blocks. */
+
+/* ---------- Home (docs/index.md) ---------- */
+body.home-layout .md-footer {
+    display: none !important;
+}
+
+body.home-layout .md-main__inner,
+body.home-layout .md-content,
+body.home-layout .md-content__inner {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+}
+
+body.home-layout .md-content__inner::before,
+body.home-layout .md-content__inner::after {
+    display: none !important;
+    content: none !important;
+}
+
+body.home-layout .minimal-home {
+    position: relative;
+    box-sizing: border-box;
+    min-height: calc(100svh - 3rem - 1px);
+    padding: clamp(7rem, 29vh, 14.5rem) 1rem 3.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+body.home-layout .minimal-home-hero {
+    width: 100%;
+    transform: none;
+}
+
+.zdd-home-recent {
+    width: min(32rem, calc(100vw - 2.4rem));
+    margin: 1.45rem auto 0;
+    text-align: center;
+}
+.md-typeset .zdd-home-recent-title {
+    margin: 0 0 0.3rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--ed-muted, var(--zdd-muted)) !important;
+    font-family: var(--ed-serif, serif);
+    font-size: 0.5rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+.md-typeset .zdd-home-recent-list {
+    list-style: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.md-typeset .zdd-home-recent-list li {
+    margin: 0 !important;
+    border-bottom: 1px solid var(--ed-rule, var(--zdd-line));
+}
+.md-typeset .zdd-home-recent-list a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.06rem;
+    padding: 0.34rem 0.1rem;
+    color: var(--ed-ink-soft, var(--zdd-ink)) !important;
+    text-decoration: none !important;
+    background: none !important;
+}
+.md-typeset .zdd-home-recent-list a:hover .zdd-home-recent-name {
+    color: var(--ed-accent, var(--zdd-ink));
+}
+.zdd-home-recent-date {
+    color: var(--ed-muted, var(--zdd-muted));
+    font-family: var(--ed-serif, serif);
+    font-size: 0.44rem;
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+}
+.zdd-home-recent-name {
+    max-width: 100%;
+    color: var(--ed-ink-soft, var(--zdd-ink));
+    font-family: var(--ed-serif, serif);
+    font-size: 0.5rem;
+    line-height: 1.4;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    transition: color 0.15s ease;
+}
+
+.zdd-home-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1.05rem;
+    text-align: center;
+    font-size: 0.62rem;
+    line-height: 1.4;
+    color: var(--zdd-surface-muted);
+    opacity: 0.72;
+    user-select: none;
+}
+
+body.home-layout .minimal-home:has(.minimal-search-results:not(:empty):not([hidden])) :is(.zdd-home-footer, .zdd-home-recent),
+body.home-layout.home-search-active .zdd-home-recent {
+    display: none;
+}
+
+body.home-layout.home-search-active .minimal-home {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 1.05rem;
+}
+
+body.home-layout.home-search-active .minimal-home-hero {
+    transform: none;
+}
+
+body.home-layout.home-search-active .minimal-home-line {
+    display: none;
+}
+
+/* ---------- 404 (docs/404.md) ---------- */
+
+/* ---------- Footer credit (overrides/main.html) ---------- */
+.zdd-footer-credit {
+    font-size: 0.8rem;
+}
+
+.zdd-footer-heart {
+    display: inline-block;
+    color: var(--zdd-heart);
+    animation: zdd-heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes zdd-heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .zdd-footer-heart { animation: none; }
+}

@@ -1,0 +1,223 @@
+/* Theorem index page, /quiz cards and article backlinks. */
+
+/* ---------- Theorem index (docs/theorems/index.md) ---------- */
+.zdd-statement-index {
+    border-top: 1px solid var(--ed-rule-strong, var(--zdd-surface-border));
+    padding-top: 1.4rem;
+}
+.zdd-statement-controls {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0 0 0.8rem;
+}
+
+.zdd-statement-controls input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--zdd-surface-border);
+    border-radius: 8px;
+    background: var(--zdd-surface);
+    color: var(--zdd-surface-ink);
+    font: inherit;
+}
+
+.zdd-statement-controls input:focus-visible {
+    outline: 2px solid var(--md-accent-fg-color);
+    outline-offset: 1px;
+}
+
+.zdd-statement-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+}
+
+.zdd-statement-kinds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.zdd-statement-kind-filter {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--ed-rule);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ed-muted);
+    font: inherit;
+    font-size: 0.72rem;
+    cursor: pointer;
+}
+
+.zdd-statement-kind-filter:hover { border-color: var(--ed-rule-strong); color: var(--ed-ink); }
+
+.zdd-statement-kind-filter.is-active {
+    background: var(--zdd-nav-bg);
+    color: var(--zdd-nav-ink);
+    border-color: transparent;
+}
+
+/* Book filter: a native select dressed like the kind filter buttons. */
+.zdd-statement-book {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    color: var(--ed-muted);
+    font-family: var(--ed-serif);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+}
+
+.zdd-statement-book-label { white-space: nowrap; }
+
+.zdd-statement-book select {
+    min-width: 0;
+    max-width: min(22rem, 70vw);
+    padding: 0.2rem 1.6rem 0.2rem 0.65rem;
+    border: 1px solid var(--ed-rule);
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    color: var(--ed-ink);
+    font-family: var(--ed-serif);
+    font-size: 0.72rem;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.zdd-statement-book select option {
+    background: var(--ed-paper);
+    color: var(--ed-ink);
+}
+
+.zdd-statement-book::after {
+    content: "";
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    width: 0.32rem;
+    height: 0.32rem;
+    border-right: 1px solid var(--ed-ink);
+    border-bottom: 1px solid var(--ed-ink);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+}
+
+.zdd-statement-book select:hover { border-color: var(--ed-rule-strong); }
+
+.zdd-statement-book select:focus-visible {
+    outline: 1px solid var(--ed-accent);
+    outline-offset: 1px;
+    border-color: var(--ed-accent);
+}
+
+.zdd-statement-summary {
+    color: var(--zdd-surface-muted);
+    font-size: 0.72rem;
+}
+
+.md-typeset ol.zdd-statement-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.md-typeset .zdd-statement-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 0.6rem;
+    margin: 0;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--zdd-line);
+}
+
+.zdd-statement-kind {
+    grid-row: span 3;
+    align-self: start;
+    min-width: 2.6em;
+    padding: 0.05rem 0.4rem;
+    border-radius: 4px;
+    background: var(--zdd-nav-bg);
+    color: var(--zdd-nav-ink);
+    font-size: 0.66rem;
+    text-align: center;
+}
+
+.zdd-statement-item[data-kind="definition"] .zdd-statement-kind { background: var(--zdd-statement-definition); }
+
+.md-typeset a.zdd-statement-kind { text-decoration: none; }
+
+/* Unnamed statements have no title line: the label spans only source and text. */
+.zdd-statement-item:not(.has-name) .zdd-statement-kind { grid-row: span 2; }
+
+.zdd-statement-title { font-weight: 600; }
+
+.zdd-statement-where,
+.zdd-statement-text {
+    color: var(--zdd-surface-muted);
+    font-size: 0.7rem;
+    overflow-wrap: anywhere;
+}
+
+.zdd-statement-more {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.35rem 1.2rem;
+    border: 1px solid var(--zdd-surface-border);
+    border-radius: 8px;
+    background: var(--zdd-surface);
+    color: var(--zdd-surface-ink);
+    font: inherit;
+    cursor: pointer;
+}
+
+/* ---------- /thm results and /quiz cards (command console) ---------- */
+.zdd-statement-result .zdd-search-preview { white-space: normal; }
+
+.zdd-command-more {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 0.72rem;
+}
+
+/* ---------- Backlinks (overrides/partials/backlinks.html) ---------- */
+.zdd-backlinks {
+    margin: 1.6rem 0 0.4rem;
+    padding: 0.7rem 0 0.2rem;
+    border-top: 1px solid var(--zdd-surface-border);
+    font-size: 0.78rem;
+}
+
+.md-typeset .zdd-backlinks ul {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+.md-typeset .zdd-backlinks li { margin: 0.15rem 0; }
+
+/* ---------- Comments (overrides/partials/comments.html) ---------- */
+.zdd-comments {
+    margin-top: 1.6rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--zdd-surface-border);
+}
+
+.md-typeset .zdd-comments-title {
+    margin: 0 0 0.6rem;
+    color: var(--zdd-surface-muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.zdd-comments-frame { min-height: 8rem; }
+
+/* ---------- Click-to-copy LaTeX (javascripts/math-copy.js) ---------- */
+

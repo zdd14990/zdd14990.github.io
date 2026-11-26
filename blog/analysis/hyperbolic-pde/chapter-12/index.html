@@ -1,0 +1,1050 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Half-wave propagators, spherical spreading and null forms, non-stationary and stationary phase, and the frequency-localized dispersive bound on the light cone.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-12/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/400.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/700.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/900.css">
+  <link rel="alternate" type="application/rss+xml" title="zdd14990" href="../../../../feed.xml">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "../../../../assets/vendor/mathjax/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-12/">
+  <meta property="og:title" content="Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion - zdd14990">
+  <meta property="og:description" content="Half-wave propagators, spherical spreading and null forms, non-stationary and stationary phase, and the frequency-localized dispersive bound on the light cone.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-11-13">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="scattering">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-12/">
+  <meta name="twitter:title" content="Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion - zdd14990">
+  <meta name="twitter:description" content="Half-wave propagators, spherical spreading and null forms, non-stationary and stationary phase, and the frequency-localized dispersive bound on the light cone.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion",
+    "description": "Half-wave propagators, spherical spreading and null forms, non-stationary and stationary phase, and the frequency-localized dispersive bound on the light cone.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-12/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-12/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-11-13",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "scattering", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-12" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#half-waves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Half-waves and the characteristic light cone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#energy-and-null-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Energy conservation, spherical spreading, and null forms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nonstationary-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Non-stationary phase
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stationary-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Stationary phase at a nondegenerate critical point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dispersive-estimate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Curvature of the cone and the dispersive wave estimate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 12 of 14</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-12">Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion</h1>
+  </div>
+  <p class="book-standfirst">Unlike the heat multiplier <span class="arithmatex">\(e^{-t|\xi|^2}\)</span>, the wave multiplier <span class="arithmatex">\(e^{\pm it|\xi|}\)</span> has modulus one at every frequency: a free wave never loses <span class="arithmatex">\(L^2\)</span> energy, so any amplitude decay in physical space must come from cancellation among oscillating modes. This chapter connects the half-wave representation to Fourier extension from the characteristic cone, motivates spacetime norms and null forms in nonlinear wave equations, proves non-stationary and stationary phase estimates from scratch, and derives the sharp frequency-localized <span class="arithmatex">\(L^1\to L^\infty\)</span> dispersive decay of the wave equation.</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-11-13">2026-11-13</time></span>
+    
+    <span>2,940 字 · 约 8 分钟</span>
+  </div>
+  
+</header>
+
+<p>We work on <span class="arithmatex">\(\mathbb R^{1+n}\)</span> with <span class="arithmatex">\(n\ge2\)</span>, <span class="arithmatex">\(\Box=\partial_t^2-\Delta_x\)</span>, and the spatial Fourier convention of <a href="../chapter-05/#motivation">Chapter 5</a>:</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^n}e^{-ix\cdot\xi}f(x)\,dx,
+\qquad
+f(x)=\frac1{(2\pi)^n}\int_{\mathbb R^n}e^{ix\cdot\xi}\widehat f(\xi)\,d\xi.
+\]</div>
+<h2 id="half-waves"><span class="book-secnum">§ 01</span>Half-waves and the characteristic light cone</h2>
+<p>Consider the linear Cauchy problem</p>
+<div class="arithmatex">\[
+\Box u=0,\qquad u(0,x)=f(x),\qquad\partial_tu(0,x)=g(x).
+\tag{1.1}
+\]</div>
+<p>Taking the spatial Fourier transform converts (1.1) into a family of harmonic oscillators <span class="arithmatex">\(\partial_t^2\widehat u(t,\xi)+|\xi|^2\widehat u(t,\xi)=0\)</span>, solved for each <span class="arithmatex">\(\xi\in\mathbb R^n\)</span> by</p>
+<div class="arithmatex">\[
+\widehat u(t,\xi)=\cos(t|\xi|)\widehat f(\xi)+\frac{\sin(t|\xi|)}{|\xi|}\widehat g(\xi),
+\tag{1.2}
+\]</div>
+<p>with <span class="arithmatex">\(\sin(t|\xi|)/|\xi|\)</span> equal to <span class="arithmatex">\(t\)</span> at <span class="arithmatex">\(\xi=0\)</span>. Let <span class="arithmatex">\(D=\sqrt{-\Delta_x}\)</span> denote the Fourier multiplier with symbol <span class="arithmatex">\(|\xi|\)</span>. When <span class="arithmatex">\(\widehat f\)</span> and <span class="arithmatex">\(|\xi|^{-1}\widehat g\)</span> are locally integrable (for instance when <span class="arithmatex">\(f,g\)</span> have Fourier support away from the origin, or when <span class="arithmatex">\(f\in\dot H^s\)</span>, <span class="arithmatex">\(g\in\dot H^{s-1}\)</span> with <span class="arithmatex">\(s&gt;1-\frac n2\)</span>), Euler's formulas split <span class="arithmatex">\(u\)</span> into two <strong>half-waves</strong>:</p>
+<div class="arithmatex">\[
+u(t)=e^{itD}f_++e^{-itD}f_-,
+\qquad
+\widehat f_\pm(\xi)=\frac12\left(\widehat f(\xi)\pm\frac{\widehat g(\xi)}{i|\xi|}\right)\quad(\xi\ne0).
+\tag{1.3}
+\]</div>
+<p>Time reversal <span class="arithmatex">\(t\mapsto-t\)</span> exchanges the two branches, so dispersive and mixed-norm estimates for <span class="arithmatex">\(u\)</span> reduce to estimates for the single propagator</p>
+<div class="arithmatex">\[
+e^{itD}h(x)=\frac1{(2\pi)^n}\int_{\mathbb R^n}e^{i(x\cdot\xi+t|\xi|)}\widehat h(\xi)\,d\xi.
+\tag{1.4}
+\]</div>
+<p><strong>Connection with cone extension.</strong> In spacetime Fourier variables <span class="arithmatex">\((\tau,\xi)\in\mathbb R\times\mathbb R^n\)</span>, the distribution <span class="arithmatex">\(e^{itD}h\)</span> is supported on the forward light cone <span class="arithmatex">\(\mathcal C_+=\{(\tau,\xi):\tau=|\xi|\}\)</span>. Specifically, defining the cone measure <span class="arithmatex">\(d\mu_{\mathcal C_+}(\tau,\xi)=\delta(\tau-|\xi|)\,d\tau\,d\xi\)</span> and the extension operator</p>
+<div class="arithmatex">\[
+E_{\mathcal C_+}F(t,x)=\frac1{(2\pi)^n}\int_{\mathbb R^{1+n}}e^{i(t\tau+x\cdot\xi)}F(\xi)\,\delta(\tau-|\xi|)\,d\tau\,d\xi,
+\tag{1.5}
+\]</div>
+<p>integrating out <span class="arithmatex">\(\tau\)</span> recovers <span class="arithmatex">\(e^{itD}h=E_{\mathcal C_+}\widehat h\)</span>, while <span class="arithmatex">\(e^{-itD}\)</span> lives on the backward sheet <span class="arithmatex">\(\mathcal C_-=\{\tau=-|\xi|\}\)</span>. Up to <span class="arithmatex">\((2\pi)\)</span> factors, <span class="arithmatex">\(E_{\mathcal C_+}\)</span> is the formal adjoint of restricting a spacetime Fourier transform <span class="arithmatex">\(\widetilde G(\tau,\xi)\)</span> to <span class="arithmatex">\(\mathcal C_+\)</span>. As in <a href="../chapter-06/#restriction">Chapter 6</a>, the analytical strength of <span class="arithmatex">\(E_{\mathcal C_+}\)</span> is governed by how curved <span class="arithmatex">\(\mathcal C_+\)</span> is.</p>
+<h2 id="energy-and-null-forms"><span class="book-secnum">§ 02</span>Energy conservation, spherical spreading, and null forms</h2>
+<p>Multiplying <span class="arithmatex">\(\Box u=0\)</span> by <span class="arithmatex">\(\partial_tu\)</span> and integrating by parts on <span class="arithmatex">\(\mathbb R^n\)</span> shows that smooth, rapidly decaying real solutions conserve the homogeneous energy:</p>
+<div class="arithmatex">\[
+\frac d{dt}\,\frac12\int_{\mathbb R^n}\big(|\partial_tu(t,x)|^2+|\nabla_xu(t,x)|^2\big)\,dx=0,
+\]</div>
+<p>so <span class="arithmatex">\(\|u(t)\|_{\dot H^1}+\|\partial_tu(t)\|_{L^2}\simeq\|f\|_{\dot H^1}+\|g\|_{L^2}\)</span> for all <span class="arithmatex">\(t\in\mathbb R\)</span>. Conservation fixes the total energy at every instant, but does not by itself prevent energy from concentrating, nor does it capture spatial spreading.</p>
+<p><strong>Outgoing spherical shells in three dimensions.</strong> Suppose a smooth pulse in <span class="arithmatex">\(\mathbb R^3\)</span> propagates outward at unit speed, occupying at large time <span class="arithmatex">\(t&gt;0\)</span> a spherical shell of radius <span class="arithmatex">\(r\simeq t\)</span>, fixed thickness <span class="arithmatex">\(O(1)\)</span>, and surface area <span class="arithmatex">\(4\pi r^2\)</span>. If its spatial gradient inside the shell has amplitude <span class="arithmatex">\(A(r)\)</span>, energy conservation suggests</p>
+<div class="arithmatex">\[
+4\pi r^2A(r)^2\simeq\text{const}
+\quad\Longrightarrow\quad
+A(r)\simeq r^{-1}\simeq t^{-1}.
+\]</div>
+<p>This heuristic is realized explicitly away from the origin by the outgoing radial wave <span class="arithmatex">\(u(t,r)=r^{-1}F(r-t)\)</span> (<span class="arithmatex">\(r=|x|&gt;0\)</span>), whose profile <span class="arithmatex">\(F\)</span> translates undistorted along <span class="arithmatex">\(r=t+\text{const}\)</span> while the geometric factor <span class="arithmatex">\(r^{-1}\)</span> attenuates its amplitude. Turning this picture into a theorem for arbitrary nonradial data requires Fourier analysis on dyadic shells (<a href="#dispersive-estimate">Section 5</a>).</p>
+<p><strong>Why spacetime decay matters for nonlinear waves.</strong> For semilinear power equations <span class="arithmatex">\(\Box u=\pm|u|^{p-1}u\)</span> on <span class="arithmatex">\(\mathbb R^{1+3}\)</span> (such as the energy-subcritical and energy-critical powers <span class="arithmatex">\(2\le p\le5\)</span>), Duhamel's formula measures the nonlinear forcing in <span class="arithmatex">\(L_t^1L_x^2\)</span> when evolving in the energy space <span class="arithmatex">\(\dot H^1\times L^2\)</span>. For <span class="arithmatex">\(p=3\)</span>, as in <a href="../chapter-04/#massless">Chapter 4</a> and <a href="../chapter-07/#nonlinear-motivation">Chapter 7</a>,</p>
+<div class="arithmatex">\[
+\|u^3\|_{L_t^1L_x^2(I\times\mathbb R^3)}=\|u\|_{L_t^3L_x^6(I\times\mathbb R^3)}^3,
+\]</div>
+<p>so finiteness of <span class="arithmatex">\(\|u\|_{L_t^3L_x^6([0,\infty)\times\mathbb R^3)}\)</span> implies energy-space scattering of a global solution to a free wave. Although <span class="arithmatex">\(\|u\|_{L_t^3L_x^6}&lt;\infty\)</span> is a valid scattering criterion for an energy solution of <span class="arithmatex">\(\Box u=\pm u^3\)</span>, the homogeneous free-wave Strichartz bound in <span class="arithmatex">\(L_t^3L_x^6(\mathbb R^{1+3})\)</span> does <em>not</em> sit at energy regularity <span class="arithmatex">\(\dot H^1\times L^2\)</span>: by <a href="../chapter-06/#strichartz">Chapter 6</a> (proved in <a href="../chapter-13/">Chapter 13</a>), <span class="arithmatex">\((q,r)=(3,6)\)</span> in <span class="arithmatex">\(n=3\)</span> requires data in <span class="arithmatex">\(\dot H^{2/3}\times\dot H^{-1/3}\)</span> (<span class="arithmatex">\(s=\frac32-\frac36-\frac13=\frac23\)</span>), and <span class="arithmatex">\(\dot H^1\times L^2\)</span> does not embed into <span class="arithmatex">\(\dot H^{2/3}\times\dot H^{-1/3}\)</span> at low frequencies. Instead, <span class="arithmatex">\(\dot H^1\times L^2\)</span> (<span class="arithmatex">\(s=1\)</span>) is scaling-critical for the <em>quintic</em> wave <span class="arithmatex">\(\Box u=\pm u^5\)</span> (where <span class="arithmatex">\(\|u^5\|_{L_t^1L_x^2}=\|u\|_{L_t^5L_x^{10}}^5\)</span> and <span class="arithmatex">\((5,10)\)</span> has <span class="arithmatex">\(s=1\)</span>), while the <em>cubic</em> wave <span class="arithmatex">\(\Box u=\pm u^3\)</span> is scaling-critical in <span class="arithmatex">\(\dot H^{1/2}\times\dot H^{-1/2}\)</span> via <span class="arithmatex">\(L_{t,x}^4(\mathbb R^{1+3})\)</span> (<a href="../chapter-14/#critical-cubic-wave">Chapter 14</a>); for inhomogeneous <span class="arithmatex">\(H^1\times L^2\)</span> data, local <span class="arithmatex">\(L_t^3L_x^6\)</span> control interpolates between <span class="arithmatex">\(\dot H^1\)</span> and <span class="arithmatex">\(L^2\)</span> on finite time intervals.</p>
+<p><strong>Derivative nonlinearities and null forms.</strong> When the nonlinearity depends on <span class="arithmatex">\(\partial u=(\partial_tu,\nabla_xu)\)</span>, amplitude decay alone may not suffice in three dimensions, because <span class="arithmatex">\(\int_1^\infty t^{-1}\,dt=\infty\)</span> fails to be integrable. Direction of propagation then becomes decisive. Contrast <span class="arithmatex">\((\partial_tu)^2\)</span> with Klainerman's <strong>null form</strong></p>
+<div class="arithmatex">\[
+Q_{ij}(v,w)=\partial_iv\,\partial_jw-\partial_jv\,\partial_iw
+\qquad(0\le i&lt;j\le n,\ \partial_0=\partial_t).
+\tag{2.1}
+\]</div>
+<p>For plane waves <span class="arithmatex">\(v=e^{i\xi_\alpha x^\alpha}\)</span> and <span class="arithmatex">\(w=e^{i\eta_\alpha x^\alpha}\)</span> (<span class="arithmatex">\(x^0=t\)</span>), the bilinear symbol of <span class="arithmatex">\(Q_{ij}\)</span> is <span class="arithmatex">\(-(\xi_i\eta_j-\xi_j\eta_i)\)</span>, which vanishes whenever the spacetime covectors <span class="arithmatex">\(\xi\)</span> and <span class="arithmatex">\(\eta\)</span> are parallel. More generally, a quadratic derivative form <span class="arithmatex">\(N(\partial v,\partial w)\)</span> satisfies the <strong>classical null condition</strong> if its symbol vanishes on <span class="arithmatex">\((\ell,\ell)\)</span> for every null covector <span class="arithmatex">\(\ell\)</span> (<span class="arithmatex">\(\ell_0^2=|\ell'|^2\)</span>). Two wave packets traveling in transverse directions cross rapidly, whereas two packets sharing a null ray remain overlapped for long times; a null form cancels precisely that collinear self-interaction, mirroring the algebraic tensor <span class="arithmatex">\(q_1\otimes q_2-q_2\otimes q_1\)</span> of <a href="../chapter-10/#repeated-source">Chapter 10</a>.</p>
+<p>In semilinear models <span class="arithmatex">\(\Box u=N(\partial u,\partial u)\)</span>, the wave cone is fixed. In <em>quasilinear</em> equations, the principal metric itself depends on <span class="arithmatex">\(u\)</span>: compressible Euler waves deform their sound cones and can form shocks in finite time, whereas Einstein's vacuum equations in wave coordinates combine classical null forms with a subtler <em>weak null structure</em> <a href="#references">[1]</a> that still permits global small-data dispersion.</p>
+<h2 id="nonstationary-phase"><span class="book-secnum">§ 03</span>Non-stationary phase</h2>
+<p>How do rapid oscillations create decay? A one-dimensional improper integral shows the mechanism in miniature: for <span class="arithmatex">\(0\le A&lt;B\)</span>, writing <span class="arithmatex">\(e^{ie^\xi}=(ie^\xi)^{-1}\frac d{d\xi}(e^{ie^\xi})\)</span> and integrating by parts gives</p>
+<div class="arithmatex">\[
+\int_A^Be^{ie^\xi}\,d\xi=\left[\frac{e^{ie^\xi}}{ie^\xi}\right]_A^B+\frac1i\int_A^Be^{-\xi}e^{ie^\xi}\,d\xi,
+\qquad
+\left|\int_A^Be^{ie^\xi}\,d\xi\right|\le e^{-B}+e^{-A}+\int_A^Be^{-\xi}\,d\xi=2e^{-A}.
+\]</div>
+<p>Thus <span class="arithmatex">\(\int_0^\infty e^{ie^\xi}\,d\xi\)</span> converges conditionally by Cauchy's criterion even though <span class="arithmatex">\(|e^{ie^\xi}|\equiv1\)</span>: dividing by the growing phase derivative <span class="arithmatex">\(e^\xi\)</span> produces an integrable weight. On <span class="arithmatex">\(\mathbb R^d\)</span> (<span class="arithmatex">\(d\ge1\)</span>), the same integration-by-parts operator yields rapid decay in a large parameter <span class="arithmatex">\(\lambda\)</span> wherever the phase gradient is nonzero.</p>
+<div class="admonition lemma">
+<p class="admonition-title"><span class="book-label">引理 3.1</span><span class="book-name">Non-stationary phase</span></p>
+<p>Let <span class="arithmatex">\(a\in C_c^\infty(\mathbb R^d)\)</span> and let <span class="arithmatex">\(\phi\)</span> be real-valued and smooth on an open neighborhood <span class="arithmatex">\(U\)</span> of <span class="arithmatex">\(\operatorname{supp}a\)</span>. Put</p>
+<div class="arithmatex">\[
+I(\lambda)=\int_{\mathbb R^d}e^{i\lambda\phi(\xi)}a(\xi)\,d\xi.
+\tag{3.1}
+\]</div>
+<p>If <span class="arithmatex">\(\nabla\phi(\xi)\ne0\)</span> for all <span class="arithmatex">\(\xi\in\operatorname{supp}a\)</span>, then for every integer <span class="arithmatex">\(m\ge0\)</span> there is <span class="arithmatex">\(C_{m,a,\phi}&lt;\infty\)</span> such that</p>
+<div class="arithmatex">\[
+|I(\lambda)|\le C_{m,a,\phi}|\lambda|^{-m}
+\qquad(|\lambda|\ge1).
+\tag{3.2}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>By compactness of <span class="arithmatex">\(\operatorname{supp}a\)</span> and continuity of <span class="arithmatex">\(\nabla\phi\)</span>, there is an open neighborhood <span class="arithmatex">\(U_0\Subset U\)</span> of <span class="arithmatex">\(\operatorname{supp}a\)</span> on which <span class="arithmatex">\(|\nabla\phi(\xi)|\ge c_0&gt;0\)</span>. On <span class="arithmatex">\(U_0\)</span>, the vector field <span class="arithmatex">\(V(\xi)=\nabla\phi(\xi)/|\nabla\phi(\xi)|^2\)</span> is smooth and satisfies <span class="arithmatex">\(V\cdot\nabla\phi=1\)</span>. Define the first-order differential operator</p>
+<div class="arithmatex">\[
+L=\frac1{i\lambda}V(\xi)\cdot\nabla_\xi,
+\qquad
+Le^{i\lambda\phi(\xi)}=e^{i\lambda\phi(\xi)}.
+\]</div>
+<p>Its formal transpose under integration on <span class="arithmatex">\(U_0\)</span> is</p>
+<div class="arithmatex">\[
+(L^{\mathrm t}b)(\xi)=-\frac1{i\lambda}\nabla_\xi\cdot\big(V(\xi)b(\xi)\big).
+\]</div>
+<p>Because <span class="arithmatex">\(a\)</span> is compactly supported inside <span class="arithmatex">\(U_0\)</span>, integrating by parts <span class="arithmatex">\(m\)</span> times produces no boundary terms:</p>
+<div class="arithmatex">\[
+I(\lambda)=\int_{U_0}\big(L^me^{i\lambda\phi(\xi)}\big)a(\xi)\,d\xi
+=\int_{U_0}e^{i\lambda\phi(\xi)}\big((L^{\mathrm t})^ma\big)(\xi)\,d\xi.
+\]</div>
+<p>Each application of <span class="arithmatex">\(L^{\mathrm t}\)</span> brings a factor <span class="arithmatex">\(|\lambda|^{-1}\)</span> and differentiates <span class="arithmatex">\(V\)</span> and <span class="arithmatex">\(a\)</span> on the compact set <span class="arithmatex">\(\operatorname{supp}a\)</span>, where all derivatives of <span class="arithmatex">\(V\)</span> and <span class="arithmatex">\(a\)</span> are bounded. Taking absolute values gives <span class="arithmatex">\(|I(\lambda)|\le\|(L^{\mathrm t})^ma\|_{L^1(\operatorname{supp}a)}\le C_{m,a,\phi}|\lambda|^{-m}\)</span>.</p>
+</details>
+<p>Notice that <span class="arithmatex">\(C_{m,a,\phi}\)</span> depends only on <span class="arithmatex">\(\operatorname{diam}(\operatorname{supp}a)\)</span>, a lower bound <span class="arithmatex">\(c_0\)</span> for <span class="arithmatex">\(|\nabla\phi|\)</span> on <span class="arithmatex">\(\operatorname{supp}a\)</span>, <span class="arithmatex">\(\|\phi\|_{C^{m+1}(\operatorname{supp}a)}\)</span>, and <span class="arithmatex">\(\|a\|_{C^m(\operatorname{supp}a)}\)</span>—so Lemma 12.1 holds uniformly across compact parameter families of phases and amplitudes satisfying those bounds.</p>
+<h2 id="stationary-phase"><span class="book-secnum">§ 04</span>Stationary phase at a nondegenerate critical point</h2>
+<p>At a critical point <span class="arithmatex">\(\nabla\phi(\xi_0)=0\)</span>, the vector field <span class="arithmatex">\(V=\nabla\phi/|\nabla\phi|^2\)</span> becomes singular and Lemma 12.1 breaks down. When the Hessian <span class="arithmatex">\(H=\nabla^2\phi(\xi_0)\)</span> is invertible, <span class="arithmatex">\(\lambda\phi(\xi)-\lambda\phi(\xi_0)\)</span> varies by <span class="arithmatex">\(O(1)\)</span> on a ball of radius <span class="arithmatex">\(|\lambda|^{-1/2}\)</span> around <span class="arithmatex">\(\xi_0\)</span>, where oscillation cannot cancel the integral; outside that ball, quantitative integration by parts matches the volume of the <span class="arithmatex">\(|\lambda|^{-1/2}\)</span>-core.</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 4.1</span><span class="book-name">Stationary phase bound</span></p>
+<p>Let <span class="arithmatex">\(a\in C_c^\infty(\mathbb R^d)\)</span> and let <span class="arithmatex">\(\phi\)</span> be real and smooth near <span class="arithmatex">\(\operatorname{supp}a\)</span>. Suppose <span class="arithmatex">\(\xi_0\in\operatorname{supp}a\)</span> is the unique critical point of <span class="arithmatex">\(\phi\)</span> on <span class="arithmatex">\(\operatorname{supp}a\)</span>, and its Hessian <span class="arithmatex">\(H=\nabla^2\phi(\xi_0)\)</span> is invertible. Then there is <span class="arithmatex">\(C_{a,\phi}&lt;\infty\)</span> such that</p>
+<div class="arithmatex">\[
+\left|\int_{\mathbb R^d}e^{i\lambda\phi(\xi)}a(\xi)\,d\xi\right|\le C_{a,\phi}|\lambda|^{-d/2}
+\qquad(|\lambda|\ge1).
+\tag{4.1}
+\]</div>
+<p>By a smooth partition of unity and Lemma 12.1, the same <span class="arithmatex">\(|\lambda|^{-d/2}\)</span> bound holds whenever <span class="arithmatex">\(\phi\)</span> has finitely many critical points on <span class="arithmatex">\(\operatorname{supp}a\)</span>, all nondegenerate.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Translate <span class="arithmatex">\(\xi_0\)</span> to <span class="arithmatex">\(0\)</span> and factor out the unimodular constant <span class="arithmatex">\(e^{i\lambda\phi(0)}\)</span>, so <span class="arithmatex">\(\phi(0)=0\)</span>, <span class="arithmatex">\(\nabla\phi(0)=0\)</span>, and <span class="arithmatex">\(\Lambda:=|\lambda|\ge1\)</span>. By Taylor's theorem, <span class="arithmatex">\(\nabla\phi(\xi)=H\xi+O(|\xi|^2)\)</span>. Because <span class="arithmatex">\(H\)</span> is invertible, <span class="arithmatex">\(|H\xi|\ge2c_0|\xi|\)</span> for <span class="arithmatex">\(c_0=\frac12\|H^{-1}\|_{\mathrm{op}}^{-1}&gt;0\)</span>, so choosing <span class="arithmatex">\(r_0&gt;0\)</span> small ensures <span class="arithmatex">\(|\nabla\phi(\xi)|\ge c_0|\xi|\)</span> and <span class="arithmatex">\(|\nabla_\zeta\widetilde\phi_r(\zeta)|\ge\frac12c_0\)</span> on <span class="arithmatex">\(\{\frac12\le|\zeta|\le2\}\)</span> for the rescaled phases <span class="arithmatex">\(\widetilde\phi_r(\zeta)=r^{-2}\phi(r\zeta)\)</span> (<span class="arithmatex">\(0&lt;r\le r_0\)</span>). Multiplying <span class="arithmatex">\(a\)</span> by a smooth cutoff <span class="arithmatex">\(\eta_0\in C_c^\infty(B(0,r_0))\)</span> equal to <span class="arithmatex">\(1\)</span> near <span class="arithmatex">\(0\)</span> changes <span class="arithmatex">\(I(\lambda)\)</span> by <span class="arithmatex">\(O_m(\Lambda^{-m})\)</span> via Lemma 12.1; rename <span class="arithmatex">\(\eta_0a\)</span> to <span class="arithmatex">\(a\)</span>.</p>
+<p><em>Splitting at scale <span class="arithmatex">\(\Lambda^{-1/2}\)</span>.</em> Fix <span class="arithmatex">\(\psi\in C_c^\infty(B(0,2))\)</span> with <span class="arithmatex">\(0\le\psi\le1\)</span> and <span class="arithmatex">\(\psi=1\)</span> on <span class="arithmatex">\(B(0,1)\)</span>. Write <span class="arithmatex">\(I(\lambda)=I_{\mathrm{near}}+I_{\mathrm{far}}\)</span> with</p>
+<div class="arithmatex">\[
+I_{\mathrm{near}}=\int_{\mathbb R^d}e^{i\lambda\phi(\xi)}\psi(\sqrt\Lambda\xi)a(\xi)\,d\xi,
+\qquad
+I_{\mathrm{far}}=\int_{\mathbb R^d}e^{i\lambda\phi(\xi)}b(\xi)\,d\xi,
+\qquad b(\xi)=\big(1-\psi(\sqrt\Lambda\xi)\big)a(\xi).
+\]</div>
+<p>On the near piece, the support has volume <span class="arithmatex">\(|B(0,2\Lambda^{-1/2})|\simeq_d\Lambda^{-d/2}\)</span>, so immediately</p>
+<div class="arithmatex">\[
+|I_{\mathrm{near}}|\le\|a\|_{L^\infty}|B(0,2\Lambda^{-1/2})|\lesssim_d\|a\|_{L^\infty}\Lambda^{-d/2}.
+\tag{4.2}
+\]</div>
+<p><em>Derivative bounds on the far piece.</em> If <span class="arithmatex">\(\Lambda^{-1/2}\ge r_0\)</span>, then <span class="arithmatex">\(b\equiv0\)</span> and <span class="arithmatex">\(I_{\mathrm{far}}=0\)</span>. Otherwise <span class="arithmatex">\(\operatorname{supp}b\subset\{\Lambda^{-1/2}\le|\xi|\le r_0\}\)</span>. For any fixed <span class="arithmatex">\(r\in(0,r_0]\)</span> and <span class="arithmatex">\(\frac12\le|\zeta|\le2\)</span>, Taylor's remainder gives <span class="arithmatex">\(\|\widetilde\phi_r\|_{C^k(\{1/2\le|\zeta|\le2\})}\lesssim_k1\)</span> uniformly in <span class="arithmatex">\(r\)</span>, and <span class="arithmatex">\(|\nabla_\zeta\widetilde\phi_r(\zeta)|\ge\frac12c_0\)</span>. Hence <span class="arithmatex">\(\widetilde V_r(\zeta):=\nabla_\zeta\widetilde\phi_r(\zeta)/|\nabla_\zeta\widetilde\phi_r(\zeta)|^2\)</span> has all <span class="arithmatex">\(\zeta\)</span>-derivatives bounded uniformly in <span class="arithmatex">\(r\in(0,r_0]\)</span>. Since <span class="arithmatex">\(V(\xi):=\nabla\phi(\xi)/|\nabla\phi(\xi)|^2=r^{-1}\widetilde V_r(\xi/r)\)</span>, differentiating with respect to <span class="arithmatex">\(\xi\)</span> and setting <span class="arithmatex">\(r=|\xi|\)</span> yields</p>
+<div class="arithmatex">\[
+|\partial_\xi^\alpha V(\xi)|\lesssim_\alpha|\xi|^{-1-|\alpha|}
+\qquad(0&lt;|\xi|\le r_0).
+\]</div>
+<p>Meanwhile, <span class="arithmatex">\(\partial_\xi^\alpha[1-\psi(\sqrt\Lambda\xi)]\)</span> vanishes outside <span class="arithmatex">\(\Lambda^{-1/2}\le|\xi|\le2\Lambda^{-1/2}\)</span>, where <span class="arithmatex">\(\Lambda^{1/2}\le2|\xi|^{-1}\)</span>; together with the smoothness of <span class="arithmatex">\(a\)</span>, the product rule gives <span class="arithmatex">\(|\partial_\xi^\alpha b(\xi)|\lesssim_{\alpha,a}|\xi|^{-|\alpha|}\)</span> on <span class="arithmatex">\(\operatorname{supp}b\)</span>.</p>
+<p><em>Inductive integration by parts.</em> With <span class="arithmatex">\(L^{\mathrm t}c=-\frac1{i\lambda}\nabla_\xi\cdot(Vc)\)</span>, if a smooth function <span class="arithmatex">\(c\)</span> satisfies <span class="arithmatex">\(|\partial^\alpha c(\xi)|\lesssim_\alpha|\xi|^{-k-|\alpha|}\)</span>, then the product rule on <span class="arithmatex">\(\nabla_\xi\cdot(Vc)\)</span> gives <span class="arithmatex">\(|\partial^\alpha(L^{\mathrm t}c)(\xi)|\lesssim_\alpha\Lambda^{-1}|\xi|^{-k-2-|\alpha|}\)</span>. Starting from <span class="arithmatex">\(c=b\)</span> (<span class="arithmatex">\(k=0\)</span>) and iterating <span class="arithmatex">\(m\)</span> times yields</p>
+<div class="arithmatex">\[
+\big|\big((L^{\mathrm t})^mb\big)(\xi)\big|\lesssim_{m,a,\phi}\Lambda^{-m}|\xi|^{-2m}.
+\]</div>
+<p>Choose an integer <span class="arithmatex">\(m&gt;d/2\)</span>. Because <span class="arithmatex">\(b\)</span> vanishes identically in <span class="arithmatex">\(B(0,\Lambda^{-1/2})\)</span> and outside <span class="arithmatex">\(B(0,r_0)\)</span>, <span class="arithmatex">\(m\)</span>-fold integration by parts has no boundary terms, and polar coordinates give</p>
+<div class="arithmatex">\[
+|I_{\mathrm{far}}|\le\int_{\Lambda^{-1/2}\le|\xi|\le r_0}\big|\big((L^{\mathrm t})^mb\big)(\xi)\big|\,d\xi
+\lesssim_{m,a,\phi}\Lambda^{-m}\int_{\Lambda^{-1/2}}^{r_0}r^{d-1-2m}\,dr
+\le\frac1{2m-d}\Lambda^{-m}(\Lambda^{-1/2})^{d-2m}
+=\frac1{2m-d}\Lambda^{-d/2}.
+\tag{4.3}
+\]</div>
+<p>Adding (4.2) and (4.3) proves (4.1).</p>
+</details>
+<h2 id="dispersive-estimate"><span class="book-secnum">§ 05</span>Curvature of the cone and the dispersive wave estimate</h2>
+<p>Return to the frequency-localized half-wave <span class="arithmatex">\(e^{itD}P_Nh\)</span> on <span class="arithmatex">\(\mathbb R^n\)</span> (<span class="arithmatex">\(n\ge2\)</span>), where <span class="arithmatex">\(P_N=\chi(D/N)\)</span> for a smooth radial cutoff <span class="arithmatex">\(\chi\in C_c^\infty((0,\infty))\)</span> supported in <span class="arithmatex">\([1/2,2]\)</span>. Its phase is</p>
+<div class="arithmatex">\[
+\Phi(\xi)=x\cdot\xi+t|\xi|,
+\qquad
+\nabla_\xi\Phi(\xi)=x+t\,\frac\xi{|\xi|},
+\qquad
+\nabla_\xi^2|\xi|=\frac1{|\xi|}(I-\omega\otimes\omega)\quad(\omega=\xi/|\xi|).
+\tag{5.1}
+\]</div>
+<p>Two geometric features of (5.1) control the entire dispersive theory of the wave equation:</p>
+<ol>
+<li>For <span class="arithmatex">\(t\ne0\)</span>, <span class="arithmatex">\(\nabla_\xi\Phi(\xi)=0\)</span> holds if and only if <span class="arithmatex">\(|x|=|t|\)</span> and <span class="arithmatex">\(\omega=-\operatorname{sgn}(t)\,x/|x|\)</span>: stationarity occurs <em>only</em> on the light cone <span class="arithmatex">\(|x|=|t|\)</span>.</li>
+<li>The Hessian <span class="arithmatex">\(\nabla_\xi^2|\xi|\)</span> vanishes along the radial direction <span class="arithmatex">\(\omega\)</span> and equals <span class="arithmatex">\(|\xi|^{-1}I_{\omega^\perp}\)</span> on the <span class="arithmatex">\((n-1)\)</span>-dimensional tangent plane <span class="arithmatex">\(\omega^\perp\)</span>: the cone is radially flat and curved in the <span class="arithmatex">\(n-1\)</span> angular directions.</li>
+</ol>
+<p>Consequently, stationary phase must be applied on the unit sphere <span class="arithmatex">\(\mathbb S^{n-1}\)</span>, not directly on <span class="arithmatex">\(\mathbb R^n\)</span>.</p>
+<div class="admonition lemma">
+<p class="admonition-title"><span class="book-label">引理 5.1</span><span class="book-name">Decay of the spherical Fourier transform</span></p>
+<p>For <span class="arithmatex">\(n\ge2\)</span>, there is a dimensional constant <span class="arithmatex">\(C_n\)</span> such that for all <span class="arithmatex">\(\rho&gt;0\)</span> and <span class="arithmatex">\(x\in\mathbb R^n\)</span>,</p>
+<div class="arithmatex">\[
+|I(\rho,x)|:=\left|\int_{\mathbb S^{n-1}}e^{i\rho x\cdot\omega}\,d\sigma(\omega)\right|
+\le C_n(1+\rho|x|)^{-\frac{n-1}2}.
+\tag{5.2}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>If <span class="arithmatex">\(\rho|x|\le1\)</span>, the trivial area bound <span class="arithmatex">\(|I(\rho,x)|\le|\mathbb S^{n-1}|\)</span> suffices. Assume <span class="arithmatex">\(\lambda:=\rho|x|\ge1\)</span>. By rotational invariance of <span class="arithmatex">\(d\sigma\)</span>, rotate coordinates so that <span class="arithmatex">\(x=|x|e_n\)</span>; then <span class="arithmatex">\(\rho x\cdot\omega=\lambda\omega_n\)</span>.</p>
+<p>Cover <span class="arithmatex">\(\mathbb S^{n-1}\)</span> by a smooth partition of unity <span class="arithmatex">\(\eta_++\eta_-+\eta_{\mathrm{eq}}=1\)</span>, where <span class="arithmatex">\(\eta_\pm\)</span> are supported in the polar caps <span class="arithmatex">\(\{|\omega'|\le\frac12,\ \pm\omega_n&gt;0\}\)</span> (<span class="arithmatex">\(\omega'=(\omega_1,\dots,\omega_{n-1})\)</span>) and <span class="arithmatex">\(\eta_{\mathrm{eq}}\)</span> is supported where <span class="arithmatex">\(|\omega_n|\le\frac{15}{16}\)</span>.</p>
+<p><em>Polar caps.</em> Parameterize the upper cap by <span class="arithmatex">\(z=\omega'\in B(0,1/2)\subset\mathbb R^{n-1}\)</span>, with <span class="arithmatex">\(\omega_n(z)=\sqrt{1-|z|^2}\)</span> and surface measure <span class="arithmatex">\((1-|z|^2)^{-1/2}\,dz\)</span>. On <span class="arithmatex">\(B(0,1/2)\)</span>, <span class="arithmatex">\(\nabla_z\omega_n(z)=-z/\sqrt{1-|z|^2}\)</span> vanishes only at <span class="arithmatex">\(z=0\)</span>, where <span class="arithmatex">\(\nabla_z^2\omega_n(0)=-I_{n-1}\)</span> is invertible. Theorem 12.2 in <span class="arithmatex">\(d=n-1\)</span> variables bounds the upper-cap integral by <span class="arithmatex">\(C_n\lambda^{-(n-1)/2}\)</span>, and the lower cap <span class="arithmatex">\(\omega_n(z)=-\sqrt{1-|z|^2}\)</span> (<span class="arithmatex">\(\nabla_z^2\omega_n(0)=+I_{n-1}\)</span>) gives the same bound.</p>
+<p><em>Equatorial belt.</em> Cover <span class="arithmatex">\(\operatorname{supp}\eta_{\mathrm{eq}}\)</span> by <span class="arithmatex">\(2(n-1)\)</span> coordinate charts projecting onto the remaining coordinate hyperplanes. On a chart where <span class="arithmatex">\(|\omega_j|\ge\frac1{4\sqrt n}\)</span> (<span class="arithmatex">\(1\le j\le n-1\)</span>), write <span class="arithmatex">\(\omega_j=\pm\sqrt{1-\omega_n^2-\sum_{k\notin\{j,n\}}\omega_k^2}\)</span> with <span class="arithmatex">\(\omega_n\)</span> itself as one of the <span class="arithmatex">\(n-1\)</span> local coordinates; the phase <span class="arithmatex">\(\omega_n\)</span> then has unit gradient <span class="arithmatex">\(|\nabla\omega_n|\equiv1\ne0\)</span>, so Lemma 12.1 gives <span class="arithmatex">\(O_m(\lambda^{-m})\)</span> for every <span class="arithmatex">\(m\ge0\)</span>. Summing all pieces yields (5.2).</p>
+</details>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 5.2</span><span class="book-name">Frequency-localized dispersive estimate for the wave equation</span></p>
+<p>Let <span class="arithmatex">\(n\ge2\)</span>, let <span class="arithmatex">\(\chi\in C_c^\infty([1/2,2])\)</span>, and set <span class="arithmatex">\(P_N=\chi(D/N)\)</span> for <span class="arithmatex">\(N&gt;0\)</span>. The convolution kernel <span class="arithmatex">\(K_N(t,x)=(2\pi)^{-n}\int_{\mathbb R^n}e^{i(x\cdot\xi+t|\xi|)}\chi(|\xi|/N)\,d\xi\)</span> of <span class="arithmatex">\(e^{itD}P_N\)</span> satisfies</p>
+<div class="arithmatex">\[
+|K_N(t,x)|\le C_{n,\chi}\,N^n(1+N|t|)^{-\frac{n-1}2}
+\qquad\big(\forall\,(t,x)\in\mathbb R^{1+n}\big).
+\tag{5.3}
+\]</div>
+<p>Consequently, for every <span class="arithmatex">\(h\in L^1(\mathbb R^n)\)</span> and <span class="arithmatex">\(t\in\mathbb R\)</span>,</p>
+<div class="arithmatex">\[
+\|e^{itD}P_Nh\|_{L^\infty(\mathbb R^n)}\le C_{n,\chi}\,N^n(1+N|t|)^{-\frac{n-1}2}\|h\|_{L^1(\mathbb R^n)},
+\tag{5.4}
+\]</div>
+<p>and for <span class="arithmatex">\(t\ne0\)</span> in pure-power form, <span class="arithmatex">\(\|e^{itD}P_Nh\|_{L^\infty(\mathbb R^n)}\le C_{n,\chi}N^{\frac{n+1}2}|t|^{-\frac{n-1}2}\|h\|_{L^1(\mathbb R^n)}\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Substituting <span class="arithmatex">\(\xi=N\rho\omega\)</span> with <span class="arithmatex">\(\rho\in[1/2,2]\)</span> and <span class="arithmatex">\(\omega\in\mathbb S^{n-1}\)</span> gives</p>
+<div class="arithmatex">\[
+K_N(t,x)=\frac{N^n}{(2\pi)^n}\int_{\mathbb S^{n-1}}\int_{1/2}^2e^{iN\rho(t+x\cdot\omega)}\chi(\rho)\rho^{n-1}\,d\rho\,d\omega
+=\frac{N^n}{(2\pi)^n}\int_{1/2}^2e^{iN\rho t}\chi(\rho)\rho^{n-1}I(N\rho,x)\,d\rho.
+\tag{5.5}
+\]</div>
+<p><em>Case 1: Short oscillation times <span class="arithmatex">\(N|t|\le1\)</span>.</em> Taking absolute values inside the first integral in (5.5) gives <span class="arithmatex">\(|K_N(t,x)|\lesssim_{n,\chi}N^n\simeq N^n(1+N|t|)^{-(n-1)/2}\)</span>.</p>
+<p><em>Case 2: Deep inside the light cone, <span class="arithmatex">\(N|t|&gt;1\)</span> and <span class="arithmatex">\(|x|&lt;\frac12|t|\)</span>.</em> For every <span class="arithmatex">\(\omega\in\mathbb S^{n-1}\)</span>, <span class="arithmatex">\(|t+x\cdot\omega|\ge|t|-|x|&gt;\frac12|t|\)</span>. In the inner radial integral <span class="arithmatex">\(\int_{1/2}^2e^{iN(t+x\cdot\omega)\rho}\chi(\rho)\rho^{n-1}\,d\rho\)</span>, the smooth compactly supported amplitude <span class="arithmatex">\(\chi(\rho)\rho^{n-1}\)</span> vanishes near the endpoints <span class="arithmatex">\(1/2\)</span> and <span class="arithmatex">\(2\)</span>, while the linear phase in <span class="arithmatex">\(\rho\)</span> has derivative <span class="arithmatex">\(N(t+x\cdot\omega)\)</span> of modulus at least <span class="arithmatex">\(\frac12N|t|\)</span>. Integrating by parts <span class="arithmatex">\(m\)</span> times in <span class="arithmatex">\(\rho\)</span> gives</p>
+<div class="arithmatex">\[
+|K_N(t,x)|\lesssim_{m,n,\chi}N^n(N|t|)^{-m}.
+\]</div>
+<p>Choosing any integer <span class="arithmatex">\(m\ge\frac{n-1}2\)</span> yields <span class="arithmatex">\(|K_N(t,x)|\lesssim_{n,\chi}N^n(1+N|t|)^{-(n-1)/2}\)</span>.</p>
+<p><em>Case 3: Near or outside the light cone, <span class="arithmatex">\(N|t|&gt;1\)</span> and <span class="arithmatex">\(|x|\ge\frac12|t|\)</span>.</em> For <span class="arithmatex">\(\rho\in[1/2,2]\)</span>, <span class="arithmatex">\(N\rho|x|\ge\frac14N|t|\)</span>, so Lemma 12.3 gives <span class="arithmatex">\(|I(N\rho,x)|\lesssim_n(1+N\rho|x|)^{-(n-1)/2}\lesssim_n(1+N|t|)^{-(n-1)/2}\)</span>. Inserting this into the second expression in (5.5) bounds <span class="arithmatex">\(|K_N(t,x)|\lesssim_{n,\chi}N^n(1+N|t|)^{-(n-1)/2}\)</span>.</p>
+<p>Combining all three cases proves (5.3). Since <span class="arithmatex">\(e^{itD}P_Nh=K_N(t,\cdot)*h\)</span>, Young's inequality <span class="arithmatex">\(\|K_N(t,\cdot)*h\|_{L^\infty}\le\|K_N(t,\cdot)\|_{L^\infty}\|h\|_{L^1}\)</span> gives (5.4), and <span class="arithmatex">\((1+N|t|)^{-(n-1)/2}\le(N|t|)^{-(n-1)/2}\)</span> yields the pure-power bound.</p>
+</details>
+<p>In three dimensions (<span class="arithmatex">\(n=3\)</span>), <span class="arithmatex">\((1+N|t|)^{-(n-1)/2}=(1+N|t|)^{-1}\)</span>, matching the <span class="arithmatex">\(t^{-1}\)</span> spherical-shell decay of <a href="#energy-and-null-forms">Section 2</a>: each of the two curved angular directions contributes <span class="arithmatex">\(t^{-1/2}\)</span>. Deep inside the cone (<span class="arithmatex">\(|x|&lt;\frac12|t|\)</span>), even radial frequencies cancel one another, producing rapid decay <span class="arithmatex">\((N|t|)^{-m}\)</span>; on the front <span class="arithmatex">\(|x|=|t|\)</span>, radial frequencies stay completely in phase along <span class="arithmatex">\(\omega=-\operatorname{sgn}(t)x/|x|\)</span>, and only angular directions within <span class="arithmatex">\((N|t|)^{-1/2}\)</span> of that ray add coherently. In <a href="../chapter-13/">Chapter 13</a>, we combine Theorem 12.4 with <span class="arithmatex">\(L^2\)</span> conservation via the spacetime <span class="arithmatex">\(TT^*\)</span> method to prove the full range of wave Strichartz estimates.</p>
+<h2 id="exercises"><span class="book-secnum">§ 06</span>Exercises</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.1</span><span class="book-name">Degenerate stationary phase in one dimension</span></p>
+<p>Let <span class="arithmatex">\(k\ge2\)</span> be an integer and <span class="arithmatex">\(a\in C_c^\infty(\mathbb R)\)</span>. Prove that there is <span class="arithmatex">\(C_{k,a}&lt;\infty\)</span> such that</p>
+<div class="arithmatex">\[
+\left|\int_{\mathbb R}e^{i\lambda\xi^k}a(\xi)\,d\xi\right|\le C_{k,a}|\lambda|^{-1/k}
+\qquad(|\lambda|\ge1).
+\]</div>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>Put <span class="arithmatex">\(\Lambda=|\lambda|\ge1\)</span> and choose <span class="arithmatex">\(\psi\in C_c^\infty((-2,2))\)</span> with <span class="arithmatex">\(0\le\psi\le1\)</span> and <span class="arithmatex">\(\psi=1\)</span> on <span class="arithmatex">\([-1,1]\)</span>. Split <span class="arithmatex">\(a(\xi)=\psi(\Lambda^{1/k}\xi)a(\xi)+b(\xi)\)</span>, where <span class="arithmatex">\(b(\xi)=(1-\psi(\Lambda^{1/k}\xi))a(\xi)\)</span> is supported in <span class="arithmatex">\(|\xi|\ge\Lambda^{-1/k}\)</span>. The near integral has length <span class="arithmatex">\(4\Lambda^{-1/k}\)</span>, giving <span class="arithmatex">\(|\int e^{i\lambda\xi^k}\psi(\Lambda^{1/k}\xi)a(\xi)\,d\xi|\le4\|a\|_{L^\infty}\Lambda^{-1/k}\)</span>.</p>
+<p>On <span class="arithmatex">\(\operatorname{supp}b\)</span>, <span class="arithmatex">\((\xi^k)'=k\xi^{k-1}\ne0\)</span>. One integration by parts with <span class="arithmatex">\(e^{i\lambda\xi^k}=\frac1{ik\lambda\xi^{k-1}}\frac d{d\xi}(e^{i\lambda\xi^k})\)</span> gives</p>
+<div class="arithmatex">\[
+\int_{\mathbb R}e^{i\lambda\xi^k}b(\xi)\,d\xi
+=-\frac1{ik\lambda}\int_{|\xi|\ge\Lambda^{-1/k}}e^{i\lambda\xi^k}\frac d{d\xi}\big(\xi^{1-k}b(\xi)\big)\,d\xi.
+\]</div>
+<p>Expand <span class="arithmatex">\(\frac d{d\xi}(\xi^{1-k}b)=(1-k)\xi^{-k}b+\xi^{1-k}b'\)</span>. Since <span class="arithmatex">\(|b|\le\|a\|_\infty\)</span> and <span class="arithmatex">\(|b'(\xi)|\le\Lambda^{1/k}\|\psi'\|_\infty\|a\|_\infty\mathbf 1_{\{\Lambda^{-1/k}\le|\xi|\le2\Lambda^{-1/k}\}}+\|a'\|_\infty\mathbf 1_{\operatorname{supp}a}\)</span>, integrating over <span class="arithmatex">\(|\xi|\ge\Lambda^{-1/k}\)</span> (remembering <span class="arithmatex">\(k\ge2\)</span>, so <span class="arithmatex">\(\int_{\Lambda^{-1/k}}^\infty r^{-k}\,dr=\frac1{k-1}\Lambda^{(k-1)/k}\)</span> and <span class="arithmatex">\(\int_{\Lambda^{-1/k}}^{R_a}r^{1-k}\,dr\lesssim_a1+\log\Lambda\)</span> for <span class="arithmatex">\(k=2\)</span> or <span class="arithmatex">\(\Lambda^{(k-2)/k}\)</span> for <span class="arithmatex">\(k\ge3\)</span>) gives</p>
+<div class="arithmatex">\[
+\left|\int_{\mathbb R}e^{i\lambda\xi^k}b(\xi)\,d\xi\right|
+\lesssim_{k,a}\Lambda^{-1}\Big(\Lambda^{\frac{k-1}k}+\Lambda^{\frac1k}\cdot\Lambda^{\frac{k-2}k}+\Lambda^{\frac{k-2}k}(1+\mathbf 1_{\{k=2\}}\log\Lambda)\Big)
+\lesssim_{k,a}\Lambda^{-1/k},
+\]</div>
+<p>because <span class="arithmatex">\(\Lambda^{-1}\log\Lambda\le\Lambda^{-1/2}\)</span> for <span class="arithmatex">\(\Lambda\ge1\)</span>. Thus higher-order vanishing of curvature slows oscillatory decay from <span class="arithmatex">\(\Lambda^{-1/2}\)</span> to <span class="arithmatex">\(\Lambda^{-1/k}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 6.2</span><span class="book-name">Massive Klein–Gordon dispersion versus the massless wave</span></p>
+<p>For the Klein–Gordon dispersion relation <span class="arithmatex">\(\langle\xi\rangle=\sqrt{1+|\xi|^2}\)</span> on <span class="arithmatex">\(\mathbb R^n\)</span> (<span class="arithmatex">\(n\ge1\)</span>) and a fixed unit-annulus cutoff <span class="arithmatex">\(\chi\in C_c^\infty([1/2,2])\)</span>, prove that</p>
+<div class="arithmatex">\[
+\|e^{it\sqrt{1-\Delta}}\chi(D)h\|_{L^\infty(\mathbb R^n)}\le C_{n,\chi}(1+|t|)^{-n/2}\|h\|_{L^1(\mathbb R^n)}
+\qquad(\forall\,t\in\mathbb R),
+\]</div>
+<p>and explain geometrically why the decay rate is <span class="arithmatex">\(|t|^{-n/2}\)</span> rather than <span class="arithmatex">\(|t|^{-(n-1)/2}\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>The kernel is <span class="arithmatex">\(K_{\mathrm{KG}}(t,x)=(2\pi)^{-n}\int_{\mathbb R^n}e^{i(x\cdot\xi+t\langle\xi\rangle)}\chi(|\xi|)\,d\xi\)</span>, bounded trivially by <span class="arithmatex">\(O(1)\)</span> when <span class="arithmatex">\(|t|\le1\)</span>. For <span class="arithmatex">\(|t|&gt;1\)</span>, write the phase as <span class="arithmatex">\(|t|\phi_v(\xi)\)</span> with <span class="arithmatex">\(\phi_v(\xi)=\operatorname{sgn}(t)\langle\xi\rangle+v\cdot\xi\)</span> and <span class="arithmatex">\(v=x/|t|\)</span>. Compute the gradient and Hessian of <span class="arithmatex">\(\langle\xi\rangle\)</span>:</p>
+<div class="arithmatex">\[
+\nabla_\xi\langle\xi\rangle=\frac\xi{\langle\xi\rangle},
+\qquad
+\nabla_\xi^2\langle\xi\rangle=\frac1{\langle\xi\rangle}\left(I-\frac{\xi\otimes\xi}{1+|\xi|^2}\right).
+\]</div>
+<p>On <span class="arithmatex">\(\operatorname{supp}\chi(|\cdot|)\subset\{\frac12\le|\xi|\le2\}\)</span>, <span class="arithmatex">\(\langle\xi\rangle\in[\frac{\sqrt5}2,\sqrt5]\)</span> and <span class="arithmatex">\(|\nabla_\xi\langle\xi\rangle|\le\frac2{\sqrt5}&lt;1\)</span>.</p>
+<p><em>If <span class="arithmatex">\(|v|\ge\frac{1+\frac2{\sqrt5}}2\)</span>:</em> then <span class="arithmatex">\(|\nabla_\xi\phi_v(\xi)|\ge|v|-\frac2{\sqrt5}\ge c_0&gt;0\)</span> uniformly on <span class="arithmatex">\(\operatorname{supp}\chi(|\cdot|)\)</span>, so Lemma 12.1 gives <span class="arithmatex">\(|K_{\mathrm{KG}}(t,x)|\lesssim_m|t|^{-m}\)</span> for every <span class="arithmatex">\(m\)</span> (faster-than-group-velocity exterior).</p>
+<p><em>If <span class="arithmatex">\(|v|&lt;\frac{1+\frac2{\sqrt5}}2\)</span>:</em> for any unit vector <span class="arithmatex">\(w\in\mathbb S^{n-1}\)</span>,</p>
+<div class="arithmatex">\[
+w^T\big(\nabla_\xi^2\langle\xi\rangle\big)w=\frac{1+|\xi|^2-(w\cdot\xi)^2}{\langle\xi\rangle^3}\ge\frac1{\langle\xi\rangle^3}\ge5^{-3/2}&gt;0
+\qquad(|\xi|\le2).
+\]</div>
+<p>Thus <span class="arithmatex">\(\nabla_\xi^2\phi_v=\pm\nabla_\xi^2\langle\xi\rangle\)</span> is strictly definite across <em>all <span class="arithmatex">\(n\)</span> directions</em>, including the radial direction! Strict convexity/concavity on <span class="arithmatex">\(\mathbb R^n\)</span> ensures <span class="arithmatex">\(\nabla_\xi\phi_v(\xi)=0\)</span> has at most one solution <span class="arithmatex">\(\xi_*(v)\)</span> (explicitly <span class="arithmatex">\(\xi_*=-\operatorname{sgn}(t)v/\sqrt{1-|v|^2}\)</span>); whether <span class="arithmatex">\(\xi_*(v)\)</span> lies inside, near, or away from <span class="arithmatex">\(\{\frac12\le|\xi|\le2\}\)</span>, applying Theorem 12.2 in <span class="arithmatex">\(d=n\)</span> variables on a neighborhood of <span class="arithmatex">\(\xi_*(v)\)</span> and Lemma 12.1 outside gives <span class="arithmatex">\(|K_{\mathrm{KG}}(t,x)|\lesssim_{n,\chi}|t|^{-n/2}\)</span> uniformly in <span class="arithmatex">\(v\)</span>. Unlike the cone <span class="arithmatex">\(\tau=|\xi|\)</span>, the hyperboloid <span class="arithmatex">\(\tau=\sqrt{1+|\xi|^2}\)</span> has positive Gaussian curvature in the radial direction as well, dispersing different wavelengths at different group velocities <span class="arithmatex">\(\xi/\langle\xi\rangle\)</span>. (At high frequencies <span class="arithmatex">\(|\xi|\simeq N\gg1\)</span>, radial curvature <span class="arithmatex">\(\langle\xi\rangle^{-3}\simeq N^{-3}\)</span> degenerates, introducing extra powers of <span class="arithmatex">\(N\)</span>.)</p>
+</details>
+<h2 id="references">References</h2>
+<ol>
+<li>H. Lindblad and I. Rodnianski, <em>The weak null condition for Einstein's equations</em>, Comptes Rendus Mathematique <strong>336</strong> (2003), 901–906.</li>
+<li>E. M. Stein, <em>Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals</em>, Princeton University Press, 1993, Chapter VIII.</li>
+</ol>
+<p><a href="../chapter-11/">Previous: criticality, planar interactions, and incompressibility</a> · <a href="../chapter-13/">Next: wave Strichartz estimates and the TT* argument</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-11/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-13/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">Chapter 13: Wave Strichartz Estimates and the TT* Argument</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 12 / 14 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=scattering">#scattering</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-10/">Chapter 10: Multilinear Kakeya, Multilinear Restriction, and Characteristic Null Structure</a></li><li><a href="../chapter-11/">Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility</a></li><li><a href="../chapter-13/">Chapter 13: Wave Strichartz Estimates and the TT* Argument</a></li><li><a href="../chapter-14/">Chapter 14: Critical Cubic Waves, Stein–Tomas Restriction, and Kakeya Dimension</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="../../../../assets/vendor/mathjax/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg><span>目录</span>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="zdd-toc-outline" data-zdd-toc-outline aria-pressed="false" hidden>大纲模式</button>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,42 @@
+Blog Edition 文本附件：保留技术内容，仅适配路径/链接与运行命令。
+
+# Theory Reference Map
+
+参考文件：`https://mlsyscourse.org/slides/04-automatic-differentiation.pdf`，共 26 页。已通过 `pdftotext -layout` 提取全文，并渲染视觉核对第 5、8、9、12、13、14、25 页。
+
+## 页码映射
+
+| 页 | 主题 | 在源码学习中的落点 |
+| ---: | --- | --- |
+| 5 | Numerical Differentiation / central difference | `test_util.py :: make_numerical_jvp`；Lesson 12 |
+| 6 | Numerical Gradient Checking | `check_jvp`, `check_vjp`, `check_grads` |
+| 7 | Symbolic Differentiation | 与运行时 tracing 对比；Lesson 1 |
+| 8 | Computational Graph 与 forward trace | `tracer.py :: trace`, node parents |
+| 9 | Forward Mode AD | `core.py :: make_jvp`, `JVPNode` |
+| 10 | Forward Mode limitations | Lesson 9 的 input basis pass 计数 |
+| 12 | Reverse Mode / adjoint / reverse topo | `make_vjp`, `backward_pass`, `toposort` |
+| 13 | Multiple Pathway / partial adjoints | `add_outgrads`; `x*x` 实验 |
+| 14 | Reverse AD pseudocode | `core.py :: backward_pass` 逐步映射 |
+| 15-20 | 通过扩展图构造 reverse computation | HIPS 的 VJP closure 与可微 backward operations |
+| 21 | Reverse AD 与 backprop 讨论 | 动态 pullback 与 stored node state |
+| 22-23 | Tensor adjoints 与通用算法 | `VSpace`, NumPy VJPs, broadcasting |
+| 25 | Gradient of gradient | nested tracing / higher-order Lesson 10 |
+| 26 | Data-structure adjoints | `builtins.py` container VSpaces/Boxes |
+
+## 与当前实现的关键差异
+
+课程伪代码为每个 node 保存 partial-adjoint list，消费时显式 `sum(list)`；HIPS/autograd 1.9.1 的 `backward_pass` 使用 `outgrads` 字典，并在写入 parent 时调用 `add_outgrads` 增量合并。两者数学等价，但数据结构与累加时机不同。
+
+课程用图节点表示中间值；HIPS 的实现把当前运行值放在 Box，把 reverse state 放在 VJPNode，并通过 Box 的 `_node` 连接。图没有集中式 `Graph` 对象。
+
+## 反复使用的理论主线
+
+```text
+forward execution records local dependencies
+output adjoint starts at 1
+reverse topological traversal
+upstream cotangent × local derivative
+sum partial adjoints at pathway joins
+```
+
+该主线分别在 Lesson 1、5、7、9、10、12 中用不同源码与实验复核。

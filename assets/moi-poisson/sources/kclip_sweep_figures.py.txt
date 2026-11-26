@@ -1,0 +1,56 @@
+"""Plot nine uniform-tree configurations from existing data; no solver execution."""
+from pathlib import Path
+import argparse,csv
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+ROOT=Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser()
+parser.add_argument('--summary',type=Path,default=ROOT/'data/kclip_sweep_20261105_004613/uniform_summary.csv')
+parser.add_argument('--outdir',type=Path,default=ROOT/'figures')
+args=parser.parse_args()
+if args.summary.name.lower() not in {'uniform_summary.csv','fair_summary.csv'}:
+    raise SystemExit('Input must be uniform_summary.csv or fair_summary.csv.')
+with args.summary.open(encoding='utf-8-sig',newline='') as f:
+    rows=[r for r in csv.DictReader(f) if r['tree'].startswith('uniform')]
+expected={(tree,str(leaves),str(source)) for tree,leaves in [('uniform3',64),('uniform4',256),('uniform5',1024)] for source in [1,2,3]}
+assert len(rows)==9 and {(r['tree'],r['leaves'],r['source']) for r in rows}==expected, 'Expected exactly nine uniform-tree/source configurations.'
+assert all(int(r['rounds'])==9 for r in rows), 'Expected nine timing rounds per configuration.'
+rows=sorted(rows,key=lambda r:(int(r['leaves']),int(r['source'])))
+args.outdir.mkdir(parents=True,exist_ok=True)
+plt.rcParams.update({'font.family':'sans-serif','font.sans-serif':['Microsoft YaHei','DejaVu Sans'],'svg.fonttype':'none','axes.unicode_minus':False,'font.size':11,'axes.spines.top':False,'axes.spines.right':False,'savefig.dpi':180})
+colors={'1':'#2864a5','2':'#cf7328','3':'#338756'}
+markers={'1':'o','2':'s','3':'^'}
+labels={'1':r'$f_1$：低频单模态','2':r'$f_2$：较高频单模态','3':r'$f_3=f_1+0.3f_2$：双模态'}
+fig,ax=plt.subplots(figsize=(8,5.4))
+leaves=sorted({int(r['leaves']) for r in rows})
+for source in ['1','2','3']:
+    subset=[r for r in rows if r['source']==source]
+    ax.errorbar([int(r['leaves']) for r in subset],[float(r['clip_dp_mean']) for r in subset],yerr=[float(r['clip_dp_sd']) for r in subset],color=colors[source],marker=markers[source],linestyle='-',capsize=4,linewidth=1.6,markersize=6,label=labels[source])
+ax.axhline(2,color='#777777',linestyle='--',linewidth=1,label='2 倍参考线')
+ax.set_xscale('log',base=2);ax.set_xticks(leaves,labels=[str(n) for n in leaves]);ax.set_xlim(min(leaves)/1.18,max(leaves)*1.18)
+ax.set_title('均匀固定树');ax.set_xlabel('物理叶数（以 2 为底的对数坐标）');ax.grid(axis='y',alpha=.2)
+ax.set_ylabel('裁剪 MOI / DP（完整 Poisson 调用耗时比）')
+ax.legend(loc='best',fontsize=9)
+fig.suptitle('不同源与叶数：裁剪 MOI 相对 DP 的逐轮配对比值',fontsize=14)
+fig.text(.5,.018,'点：9轮配对比值均值；误差棒：轮间样本标准差（不是置信区间）。',ha='center',fontsize=10)
+fig.tight_layout(rect=[0,.065,1,.93])
+for suffix in ['svg','png']:fig.savefig(args.outdir/f'kclip_sweep_ratios.{suffix}')
+plt.close(fig)
+
+fig,ax=plt.subplots(figsize=(14,6))
+x=list(range(len(rows)))
+ax.errorbar([i-.10 for i in x],[float(r['old_dp_mean']) for r in rows],yerr=[float(r['old_dp_sd']) for r in rows],fmt='o',color='#777777',capsize=3,label='原 MOI / DP',markersize=5)
+ax.errorbar([i+.10 for i in x],[float(r['clip_dp_mean']) for r in rows],yerr=[float(r['clip_dp_sd']) for r in rows],fmt='o',color='#2864a5',capsize=3,label='裁剪 MOI / DP',markersize=5)
+ax.axhline(2,color='#aaaaaa',linestyle='--',linewidth=1)
+labels2=[f"均匀\n{r['leaves']}叶 / f{r['source']}" for r in rows]
+ax.set_xticks(x,labels2,rotation=40,ha='right');ax.set_ylabel('相对 DP 的完整 Poisson 调用耗时比');ax.set_title('裁剪前后与 DP 的比较：9 个均匀树配置')
+ax.grid(axis='y',alpha=.2);ax.legend()
+fig.text(.5,.018,'点：9轮逐轮配对比值均值；误差棒：轮间样本标准差。',ha='center',fontsize=10)
+fig.tight_layout(rect=[0,.07,1,1])
+for suffix in ['svg','png']:fig.savefig(args.outdir/f'kclip_sweep_comparison.{suffix}')
+plt.close(fig)
+print('Read',args.summary)
+print('Validated',len(rows),'uniform configurations')
+print('Saved four plot files to',args.outdir)

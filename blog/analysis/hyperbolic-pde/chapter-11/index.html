@@ -1,0 +1,1188 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Critical Sobolev scaling for Navier–Stokes, bounded-congestion packet gains, resonant coplanarity, divergence-free cancellation in aligned regimes, and projected commutator equations.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-11/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/400.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/700.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/900.css">
+  <link rel="alternate" type="application/rss+xml" title="zdd14990" href="../../../../feed.xml">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "../../../../assets/vendor/mathjax/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-11/">
+  <meta property="og:title" content="Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility - zdd14990">
+  <meta property="og:description" content="Critical Sobolev scaling for Navier–Stokes, bounded-congestion packet gains, resonant coplanarity, divergence-free cancellation in aligned regimes, and projected commutator equations.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-11-10">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="navier-stokes">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-11/">
+  <meta name="twitter:title" content="Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility - zdd14990">
+  <meta name="twitter:description" content="Critical Sobolev scaling for Navier–Stokes, bounded-congestion packet gains, resonant coplanarity, divergence-free cancellation in aligned regimes, and projected commutator equations.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility",
+    "description": "Critical Sobolev scaling for Navier\u2013Stokes, bounded-congestion packet gains, resonant coplanarity, divergence-free cancellation in aligned regimes, and projected commutator equations.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-11/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-11/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-11-10",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "navier-stokes", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-11" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#critical-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Critical scaling and the isotropic high–high–high baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packet-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Bounded packet congestion and the transverse tube gain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coplanar-obstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Why resonant triples are nearly coplanar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separated-planar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Planar configurations with a separated pair
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#incompressibility-cancellation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Incompressibility cancellation for nearly aligned triples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regime-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Balancing geometry against incompressibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commutators-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Projected vorticity commutators and directionally organized data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 11 of 14</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-11">Chapter 11: Criticality, Planar Vorticity Interactions, and Incompressibility</h1>
+  </div>
+  <p class="book-standfirst">This chapter completes the geometric analysis of the three-dimensional Navier–Stokes vortex-stretching integral initiated in <a href="../chapter-08/">Chapter 8</a> and <a href="../chapter-09/">Chapter 9</a>. After recording why <span class="arithmatex">\(\dot H^{1/2}(\mathbb R^3)\)</span> is the scale-critical space, we close the packet-to-tube step under a bounded-congestion hypothesis, show that Fourier resonance forces high–high–high interacting directions to be nearly coplanar, and resolve all coplanar configurations by balancing translated frequency-plate overlap against divergence-free cancellation at the dividing angle <span class="arithmatex">\(\theta\simeq\delta^{1/3}\)</span>.</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-11-10">2026-11-10</time></span>
+    
+    <span>5,485 字 · 约 16 分钟</span>
+  </div>
+  
+</header>
+
+<p>We use the standard Fourier normalization of <a href="../chapter-08/#directions">Chapter 8</a> on <span class="arithmatex">\(\mathbb R^3\)</span>:</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^3}e^{-ix\cdot\xi}f(x)\,dx,
+\qquad
+f(x)=(2\pi)^{-3}\int_{\mathbb R^3}e^{ix\cdot\xi}\widehat f(\xi)\,d\xi,
+\]</div>
+<p>so <span class="arithmatex">\(\|f\|_{L^2}^2=(2\pi)^{-3}\|\widehat f\|_{L^2}^2\)</span> and <span class="arithmatex">\(\widehat{fg}=(2\pi)^{-3}\widehat f*\widehat g\)</span>. Unless stated otherwise, viscosity is normalized to <span class="arithmatex">\(\nu=1\)</span>, <span class="arithmatex">\(u_0\in C_c^\infty(\mathbb R^3)\)</span> is smooth and divergence-free, <span class="arithmatex">\(\omega=\nabla\times u\)</span>, and Biot–Savart recovery reads</p>
+<div class="arithmatex">\[
+u_g=(-\Delta)^{-1}\nabla\times g,\qquad
+\nabla u=\nabla(-\Delta)^{-1}\nabla\times\omega=:\mathcal R\omega,\qquad
+\mathcal T(f,g,h)=\int_{\mathbb R^3}(f\cdot\nabla u_g)\cdot h\,dx.
+\tag{1.1}
+\]</div>
+<p>Thus the global enstrophy identity is <span class="arithmatex">\(\frac12\frac d{dt}\|\omega\|_{L^2}^2+\|\nabla\omega\|_{L^2}^2=\mathcal T(\omega,\omega,\omega)\)</span>.</p>
+<h2 id="critical-scaling"><span class="book-secnum">§ 01</span>Critical scaling and the isotropic high–high–high baseline</h2>
+<p>On <span class="arithmatex">\(\mathbb R^d\)</span>, the incompressible Navier–Stokes system <span class="arithmatex">\(\partial_tu+u\cdot\nabla u=-\nabla p+\Delta u\)</span>, <span class="arithmatex">\(\nabla\cdot u=0\)</span>, is invariant under the parabolic rescaling</p>
+<div class="arithmatex">\[
+u_\lambda(t,x)=\lambda u(\lambda^2t,\lambda x),
+\qquad
+p_\lambda(t,x)=\lambda^2p(\lambda^2t,\lambda x)
+\qquad(\lambda&gt;0).
+\tag{1.2}
+\]</div>
+<p>Since <span class="arithmatex">\(\widehat{u_\lambda}(t,\xi)=\lambda^{1-d}\widehat u(\lambda^2t,\lambda^{-1}\xi)\)</span>, changing variables <span class="arithmatex">\(\eta=\lambda^{-1}\xi\)</span> gives</p>
+<div class="arithmatex">\[
+\|u_\lambda(t)\|_{\dot H^s(\mathbb R^d)}^2
+=(2\pi)^{-d}\int_{\mathbb R^d}|\xi|^{2s}|\widehat{u_\lambda}(t,\xi)|^2\,d\xi
+=\lambda^{2s+2-d}\|u(\lambda^2t)\|_{\dot H^s(\mathbb R^d)}^2.
+\]</div>
+<p>The scale-invariant Sobolev exponent is therefore</p>
+<div class="arithmatex">\[
+s_c=\frac d2-1.
+\tag{1.3}
+\]</div>
+<p><strong>Two versus three dimensions.</strong> In dimension <span class="arithmatex">\(d=2\)</span>, <span class="arithmatex">\(s_c=0\)</span>: the critical space <span class="arithmatex">\(\dot H^0=L^2(\mathbb R^2)\)</span> coincides with the conserved kinetic-energy norm. Correspondingly, the scalar vorticity <span class="arithmatex">\(\omega=\partial_1u_2-\partial_2u_1\)</span> satisfies <span class="arithmatex">\(\partial_t\omega+u\cdot\nabla\omega=\Delta\omega\)</span> with <em>no</em> stretching term, so both <span class="arithmatex">\(\frac12\frac d{dt}\|u\|_2^2+\|\nabla u\|_2^2=0\)</span> and <span class="arithmatex">\(\frac12\frac d{dt}\|\omega\|_2^2+\|\nabla\omega\|_2^2=0\)</span> hold unconditionally, yielding global regularity for arbitrary divergence-free <span class="arithmatex">\(L^2\)</span> data. In dimension <span class="arithmatex">\(d=3\)</span>, <span class="arithmatex">\(s_c=\frac12\)</span>, whereas the kinetic energy controls <span class="arithmatex">\(L_t^\infty L_x^2\cap L_t^2\dot H_x^1\)</span>: at <span class="arithmatex">\(L^\infty\)</span> in time it lies half a derivative below criticality.</p>
+<p><strong>The isotropic H–H–H estimate.</strong> Let <span class="arithmatex">\(P_k\)</span> localize to <span class="arithmatex">\(|\xi|\simeq N:=2^k\)</span>, and set <span class="arithmatex">\(u_k=P_ku\)</span>, <span class="arithmatex">\(\omega_k=P_k\omega\)</span>. For three fields <span class="arithmatex">\(a,b,c\)</span> localized to <span class="arithmatex">\(|\xi|\simeq N\)</span>, Calderón–Zygmund boundedness <span class="arithmatex">\(\|\nabla u_b\|_{L^2}\lesssim\|b\|_{L^2}\)</span> and the three-dimensional Bernstein bound <span class="arithmatex">\(\|a\|_{L^\infty}\lesssim N^{3/2}\|a\|_{L^2}\)</span> (<a href="../chapter-05/#bernstein">Chapter 5</a>) give</p>
+<div class="arithmatex">\[
+|\mathcal T(a,b,c)|\le\|a\|_{L^\infty}\|\nabla u_b\|_{L^2}\|c\|_{L^2}
+\lesssim N^{3/2}\|a\|_{L^2}\|b\|_{L^2}\|c\|_{L^2}.
+\tag{1.4}
+\]</div>
+<p>In particular, a representative high–high–high piece obeys <span class="arithmatex">\(|\mathcal T(\omega_k,\omega_k,\omega_k)|\lesssim N^{3/2}\|\omega_k\|_{L^2}^3\)</span>, while viscous dissipation on the shell satisfies <span class="arithmatex">\(\|\nabla\omega_k\|_{L^2}^2\simeq N^2\|\omega_k\|_{L^2}^2\)</span>. In the model inequality</p>
+<div class="arithmatex">\[
+\frac12\frac d{dt}\|\omega_k\|_{L^2}^2+cN^2\|\omega_k\|_{L^2}^2\le CN^{3/2}\|\omega_k\|_{L^2}^3,
+\]</div>
+<p>dissipation absorbs stretching precisely when <span class="arithmatex">\(\|\omega_k\|_{L^2}\le\frac c{2C}N^{1/2}\)</span>. Because <span class="arithmatex">\(\nabla\cdot u_k=0\)</span> implies <span class="arithmatex">\(\|\omega_k\|_{L^2}=\|\nabla u_k\|_{L^2}\simeq N\|u_k\|_{L^2}\)</span>, this condition is equivalent to</p>
+<div class="arithmatex">\[
+\|u_k\|_{\dot H^{1/2}}\simeq N^{1/2}\|u_k\|_{L^2}\le c_*,
+\tag{1.5}
+\]</div>
+<p>recovering the critical <span class="arithmatex">\(\dot H^{1/2}\)</span> smallness scale shell by shell. Any improvement over (1.5) at high frequency must exploit directional structure or equation-specific cancellation rather than isotropic Sobolev inequalities.</p>
+<h2 id="packet-gain"><span class="book-secnum">§ 02</span>Bounded packet congestion and the transverse tube gain</h2>
+<p>Fix <span class="arithmatex">\(N=2^k\gg1\)</span> and a small angular parameter <span class="arithmatex">\(0&lt;\delta\ll1\)</span>. To avoid conflating reciprocal scales across lecture sources, we fix one notation throughout this chapter:</p>
+<ul>
+<li><strong>Frequency plates (boxes) <span class="arithmatex">\(B\)</span></strong>: radial thickness <span class="arithmatex">\(h=N\delta^2\)</span> along a unit frequency axis <span class="arithmatex">\(\nu\in\mathbb S^2\)</span>, and two transverse widths <span class="arithmatex">\(a=N\delta\)</span>, with volume <span class="arithmatex">\(|B|\simeq ha^2=N^3\delta^4\)</span>.</li>
+<li><strong>Dual physical tubes <span class="arithmatex">\(T\)</span></strong>: longitudinal length <span class="arithmatex">\(\ell=h^{-1}=(N\delta^2)^{-1}\)</span> along <span class="arithmatex">\(\nu\)</span>, and transverse radius <span class="arithmatex">\(\rho=a^{-1}=(N\delta)^{-1}\)</span>, with aspect ratio <span class="arithmatex">\(\rho/\ell=\delta\)</span> and volume <span class="arithmatex">\(V=\ell\rho^2=N^{-3}\delta^{-4}\)</span>.</li>
+</ul>
+<p><a href="../chapter-09/#multilinear-kakeya">Chapter 9</a> showed that Guth's endpoint multilinear Kakeya inequality controls products of <em>square-sum</em> envelopes, but warned that coherent packet overlap prevents replacing <span class="arithmatex">\(|\sum_Tc_T\phi_T|\)</span> by <span class="arithmatex">\((\sum_T|c_T|^2W_T)^{1/2}\)</span> without an extra hypothesis. Suppose three scalar or component fields <span class="arithmatex">\(F_1,F_2,F_3\)</span> at scale <span class="arithmatex">\((N,\delta)\)</span> satisfy the following five packet assumptions:</p>
+<ol>
+<li>
+<p><strong>Expansion and rapid decay:</strong> <span class="arithmatex">\(F_i=\sum_{T\in\mathcal T_i}c_T\phi_T\)</span> (finite or <span class="arithmatex">\(L^2\)</span>-convergent countable sum), where each <span class="arithmatex">\(T\in\mathcal T_i\)</span> has center <span class="arithmatex">\(x_T\)</span>, unit axis <span class="arithmatex">\(v(T)\)</span>, length <span class="arithmatex">\(\ell\)</span>, and radius <span class="arithmatex">\(\rho\)</span>, and for a fixed <span class="arithmatex">\(A&gt;10\)</span>,</p>
+<div class="arithmatex">\[
+|\phi_T(x)|\le C_AV^{-1/2}\big(1+d_T(x)\big)^{-A},
+\qquad
+d_T(x)=\frac{|(x-x_T)_\parallel|}{\ell}+\frac{|(x-x_T)_\perp|}{\rho}.
+\tag{2.1}
+\]</div>
+</li>
+<li>
+<p><strong>Bessel bound:</strong> <span class="arithmatex">\(\sum_{T\in\mathcal T_i}|c_T|^2\le C_0\|F_i\|_{L^2}^2\)</span> for <span class="arithmatex">\(i=1,2,3\)</span>.</p>
+</li>
+<li><strong>Single-cap angular confinement:</strong> Within each family <span class="arithmatex">\(\mathcal T_i\)</span>, there is a fixed unit vector <span class="arithmatex">\(\nu_i\in\mathbb S^2\)</span> such that <span class="arithmatex">\(|v(T)-\nu_i|\le C_1\delta\)</span> for all <span class="arithmatex">\(T\in\mathcal T_i\)</span>.</li>
+<li><strong>Bounded spatial congestion:</strong> <span class="arithmatex">\(\sum_{T\in\mathcal T_i}\mathbf 1_T(x)\le M\)</span> for all <span class="arithmatex">\(x\in\mathbb R^3\)</span> and <span class="arithmatex">\(i=1,2,3\)</span>.</li>
+<li><strong>Uniform three-family transversality:</strong> <span class="arithmatex">\(|\det(v(T_1),v(T_2),v(T_3))|\ge\kappa&gt;0\)</span> for all <span class="arithmatex">\(T_i\in\mathcal T_i\)</span>.</li>
+</ol>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 2.1</span><span class="book-name">Trilinear packet gain under bounded congestion</span></p>
+<p>Under hypotheses 1–5 above with <span class="arithmatex">\(V=\ell\rho^2=(N\delta^2)^{-1}(N\delta)^{-2}\)</span>,</p>
+<div class="arithmatex">\[
+\left|\int_{\mathbb R^3}F_1(x)F_2(x)F_3(x)\,dx\right|
+\le C\,M^{3/2}\kappa^{-1/2}V^{-3/2}\rho^3\prod_{i=1}^3\|F_i\|_{L^2}
+=C\,M^{3/2}\kappa^{-1/2}N^{3/2}\delta^3\prod_{i=1}^3\|F_i\|_{L^2},
+\tag{2.2}
+\]</div>
+<p>where <span class="arithmatex">\(C\)</span> depends only on <span class="arithmatex">\(A,C_A,C_0,C_1\)</span>.</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>For each integer <span class="arithmatex">\(m\ge0\)</span> and <span class="arithmatex">\(T\in\mathcal T_i\)</span>, let <span class="arithmatex">\(T^{(m)}=\{x:|(x-x_T)_\parallel|\le2^m\ell,\ |(x-x_T)_\perp|\le2^m\rho\}\)</span> be the tube dilated by <span class="arithmatex">\(2^m\)</span> in all directions. Dividing <span class="arithmatex">\(d_T(x)\)</span> into dyadic shells gives</p>
+<div class="arithmatex">\[
+|F_i(x)|\le2^AC_AV^{-1/2}\sum_{m=0}^\infty2^{-Am}\sum_{T\in\mathcal T_i}|c_T|\mathbf 1_{T^{(m)}}(x).
+\tag{2.3}
+\]</div>
+<p><em>Multiplicity of dilated tubes.</em> Fix <span class="arithmatex">\(x\in\mathbb R^3\)</span> and suppose <span class="arithmatex">\(x\in T^{(m)}\)</span> for some <span class="arithmatex">\(T\in\mathcal T_i\)</span>. Let <span class="arithmatex">\(y\in T\)</span> be any point of the original undilated tube. Since <span class="arithmatex">\(|v(T)-\nu_i|\le C_1\delta\)</span> and <span class="arithmatex">\(\delta\ell=\rho\)</span>, projecting <span class="arithmatex">\(y-x=(y-x_T)-(x-x_T)\)</span> onto <span class="arithmatex">\(\nu_i\)</span> and <span class="arithmatex">\(\nu_i^\perp\)</span> gives</p>
+<div class="arithmatex">\[
+|(y-x)\cdot\nu_i|\le|(y-x_T)_\parallel|+|(x-x_T)_\parallel|+C_1\delta\big(|(y-x_T)_\perp|+|(x-x_T)_\perp|\big)\lesssim2^m\ell,
+\]</div>
+<div class="arithmatex">\[
+|(y-x)_\perp|\le|(y-x_T)_\perp|+|(x-x_T)_\perp|+C_1\delta\big(|(y-x_T)_\parallel|+|(x-x_T)_\parallel|\big)
+\lesssim2^m\rho+C_1\delta\cdot2^m\ell\simeq2^m\rho.
+\]</div>
+<p>Hence <em>every</em> original tube <span class="arithmatex">\(T\in\mathcal T_i\)</span> with <span class="arithmatex">\(x\in T^{(m)}\)</span> is contained inside one fixed cylinder <span class="arithmatex">\(Q_i^{(m)}(x)\)</span> around <span class="arithmatex">\(x\)</span> aligned with <span class="arithmatex">\(\nu_i\)</span> of volume <span class="arithmatex">\(|Q_i^{(m)}(x)|\lesssim(2^m\ell)(2^m\rho)^2=2^{3m}V\)</span>. Integrating hypothesis 4 over <span class="arithmatex">\(Q_i^{(m)}(x)\)</span> yields</p>
+<div class="arithmatex">\[
+V\sum_{T\in\mathcal T_i}\mathbf 1_{T^{(m)}}(x)
+=\sum_{T\in\mathcal T_i:\,x\in T^{(m)}}|T|
+\le\int_{Q_i^{(m)}(x)}\sum_{T\in\mathcal T_i}\mathbf 1_T(y)\,dy
+\le M\,|Q_i^{(m)}(x)|
+\lesssim2^{3m}MV,
+\]</div>
+<p>so <span class="arithmatex">\(\sum_{T\in\mathcal T_i}\mathbf 1_{T^{(m)}}(x)\lesssim2^{3m}M\)</span>. Pointwise Cauchy–Schwarz in <span class="arithmatex">\(T\)</span> now converts the linear sum into a weighted square root:</p>
+<div class="arithmatex">\[
+\sum_{T\in\mathcal T_i}|c_T|\mathbf 1_{T^{(m)}}(x)
+\le\left(\sum_{T\in\mathcal T_i}\mathbf 1_{T^{(m)}}(x)\right)^{1/2}
+\left(\sum_{T\in\mathcal T_i}|c_T|^2\mathbf 1_{T^{(m)}}(x)\right)^{1/2}
+\lesssim2^{3m/2}M^{1/2}\left(\sum_{T\in\mathcal T_i}|c_T|^2\mathbf 1_{T^{(m)}}(x)\right)^{1/2}.
+\]</div>
+<p>Substitute this into (2.3) and expand the product over <span class="arithmatex">\(m_1,m_2,m_3\ge0\)</span>. For a fixed triple <span class="arithmatex">\((m_1,m_2,m_3)\)</span>, put <span class="arithmatex">\(m_*=\max(m_1,m_2,m_3)\)</span> and enlarge every <span class="arithmatex">\(T^{(m_i)}\)</span> to the infinite cylinder of radius <span class="arithmatex">\(2^{m_*}\rho\)</span> along <span class="arithmatex">\(v(T)\)</span>. Because directions are unchanged, the weighted endpoint Kakeya inequality (<a href="../chapter-09/#multilinear-kakeya">Theorem 9.1</a>, equation (4.4)) bounds that triple's integral by</p>
+<div class="arithmatex">\[
+C\,V^{-3/2}M^{3/2}2^{\frac32(m_1+m_2+m_3)}\kappa^{-1/2}(2^{m_*}\rho)^3\prod_{i=1}^3\left(\sum_{T\in\mathcal T_i}|c_T|^2\right)^{1/2}.
+\]</div>
+<p>Since <span class="arithmatex">\(3m_*\le3(m_1+m_2+m_3)\)</span> and <span class="arithmatex">\(A&gt;10&gt;\frac92\)</span>, the numerical factor <span class="arithmatex">\(\sum_{m_1,m_2,m_3\ge0}2^{-(A-9/2)(m_1+m_2+m_3)}\)</span> converges. Applying the Bessel bound 2 and computing <span class="arithmatex">\(V^{-3/2}\rho^3=(N^{-3}\delta^{-4})^{-3/2}(N\delta)^{-3}=N^{3/2}\delta^3\)</span> gives (2.2).</p>
+</details>
+<p>Notice that Hypothesis 3 (<span class="arithmatex">\(|v(T)-\nu_i|\lesssim\delta\)</span>) is essential in bounding <span class="arithmatex">\(\sum_T\mathbf 1_{T^{(m)}}(x)\lesssim2^{3m}M\)</span>: without angular alignment inside each family, tubes of length <span class="arithmatex">\(\ell\)</span> meeting <span class="arithmatex">\(B(x,2^m\ell)\)</span> could sweep out a ball of volume <span class="arithmatex">\(\simeq(2^m\ell)^3\simeq\delta^{-2}2^{3m}V\)</span>, costing an extra factor <span class="arithmatex">\(\delta^{-1}\)</span> per family.</p>
+<p>Compared with the isotropic estimate (1.4), Proposition 11.1 multiplies <span class="arithmatex">\(N^{3/2}\)</span> by the dimensionless factor</p>
+<div class="arithmatex">\[
+G:=M^{3/2}\kappa^{-1/2}\delta^3.
+\tag{2.4}
+\]</div>
+<p>Whenever a designated transverse packet contribution <span class="arithmatex">\(\mathcal T_{\mathrm{HHH},k}^{\mathrm{tr}}\)</span> obeys (2.2) without additional sector-summation loss, viscous dissipation <span class="arithmatex">\(cN^2\|\omega_k\|_{L^2}^2\)</span> absorbs it under the relaxed per-shell threshold</p>
+<div class="arithmatex">\[
+\|u_k\|_{\dot H^{1/2}}\simeq N^{1/2}\|u_k\|_{L^2}\le c_*'M^{-3/2}\kappa^{1/2}\delta^{-3}.
+\tag{2.5}
+\]</div>
+<p>When <span class="arithmatex">\(G\ll1\)</span>, this threshold is much larger than the universal constant <span class="arithmatex">\(c_*\)</span> of (1.5). Still, (2.5) concerns only transverse triples and leaves open what happens when <span class="arithmatex">\(\kappa\)</span> degenerates.</p>
+<h2 id="coplanar-obstruction"><span class="book-secnum">§ 03</span>Why resonant triples are nearly coplanar</h2>
+<p>A nonzero spatial integral of three frequency-localized functions cannot have arbitrarily transverse central frequencies as <span class="arithmatex">\(\delta\to0\)</span>. Expanding in Fourier space,</p>
+<div class="arithmatex">\[
+\int_{\mathbb R^3}F_1(x)F_2(x)F_3(x)\,dx
+=(2\pi)^{-6}\iint_{\mathbb R^3\times\mathbb R^3}\widehat F_1(\xi_1)\widehat F_2(\xi_2)\widehat F_3(-\xi_1-\xi_2)\,d\xi_1\,d\xi_2.
+\tag{3.1}
+\]</div>
+<p>Only resonant triples <span class="arithmatex">\(\xi_1+\xi_2+\xi_3=0\)</span> contribute, and any three vectors summing to zero lie in a two-dimensional plane: <span class="arithmatex">\(\det(\xi_1,\xi_2,\xi_3)=0\)</span>.</p>
+<div class="admonition lemma">
+<p class="admonition-title"><span class="book-label">引理 3.1</span><span class="book-name">Angular coplanarity of resonant H–H–H triples</span></p>
+<p>Suppose <span class="arithmatex">\(F_1,F_2,F_3\in L^2(\mathbb R^3)\)</span> have Fourier supports in <span class="arithmatex">\(\{c_0N\le|\xi|\le C_0N\}\)</span> and within cones (or double cones, for real-valued fields) of angular width <span class="arithmatex">\(C_1\delta\)</span> around unit vectors <span class="arithmatex">\(\nu_1,\nu_2,\nu_3\in\mathbb S^2\)</span>, meaning <span class="arithmatex">\(|\frac\xi{|\xi|}\times\nu_i|\le C_1\delta\)</span> on <span class="arithmatex">\(\operatorname{supp}\widehat F_i\)</span>. If <span class="arithmatex">\(\int_{\mathbb R^3}F_1F_2F_3\,dx\ne0\)</span>, then</p>
+<div class="arithmatex">\[
+|\det(\nu_1,\nu_2,\nu_3)|\lesssim\delta.
+\tag{3.2}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>By (3.1), there exist <span class="arithmatex">\(\xi_i\in\operatorname{supp}\widehat F_i\)</span> with <span class="arithmatex">\(\xi_1+\xi_2+\xi_3=0\)</span>. For each <span class="arithmatex">\(i\)</span>, choose <span class="arithmatex">\(\sigma_i\in\{\pm1\}\)</span> so that <span class="arithmatex">\(\sigma_i\nu_i\)</span> lies in the same hemisphere as <span class="arithmatex">\(\xi_i\)</span>; then <span class="arithmatex">\(|\frac{\xi_i}{|\xi_i|}-\sigma_i\nu_i|\le\sqrt2|\frac{\xi_i}{|\xi_i|}\times\nu_i|\le\sqrt2C_1\delta\)</span>. Set <span class="arithmatex">\(\widetilde\eta_i=|\xi_i|\sigma_i\nu_i\)</span>. Note that no radial thinness is needed: <span class="arithmatex">\(|\xi_i-\widetilde\eta_i|=|\xi_i|\,|\frac{\xi_i}{|\xi_i|}-\sigma_i\nu_i|\le\sqrt2C_0C_1N\delta\)</span>. Summing over <span class="arithmatex">\(i\)</span> and using <span class="arithmatex">\(\xi_1+\xi_2+\xi_3=0\)</span> gives</p>
+<div class="arithmatex">\[
+|\widetilde\eta_1+\widetilde\eta_2+\widetilde\eta_3|\le\sum_{i=1}^3|\widetilde\eta_i-\xi_i|\lesssim N\delta.
+\]</div>
+<p>By multilinearity and alternating symmetry of the determinant,</p>
+<div class="arithmatex">\[
+|\det(\widetilde\eta_1,\widetilde\eta_2,\widetilde\eta_3)|
+=|\det(\widetilde\eta_1,\widetilde\eta_2,\widetilde\eta_1+\widetilde\eta_2+\widetilde\eta_3)|
+\le|\widetilde\eta_1|\,|\widetilde\eta_2|\,|\widetilde\eta_1+\widetilde\eta_2+\widetilde\eta_3|
+\lesssim N^3\delta.
+\]</div>
+<p>Dividing by <span class="arithmatex">\(|\widetilde\eta_1|\,|\widetilde\eta_2|\,|\widetilde\eta_3|=|\xi_1|\,|\xi_2|\,|\xi_3|\ge c_0^3N^3\)</span> gives <span class="arithmatex">\(|\det(\nu_1,\nu_2,\nu_3)|\lesssim\delta\)</span>.</p>
+</details>
+<p>Thus one <em>cannot</em> assume a <span class="arithmatex">\(\delta\)</span>-independent lower bound <span class="arithmatex">\(\kappa\ge\kappa_0&gt;0\)</span> across every interacting triple; on exact planar frequency triangles <span class="arithmatex">\(\kappa\)</span> vanishes altogether. When <span class="arithmatex">\(|\det(\nu_1,\nu_2,\nu_3)|\)</span> is small or zero, the three axes fall into two geometric regimes relative to an angular threshold <span class="arithmatex">\(\theta\in[\delta,1]\)</span>:</p>
+<ol>
+<li><strong>Separated-pair regime:</strong> <span class="arithmatex">\(\max_{i\ne j}|\nu_i\times\nu_j|\ge\theta\)</span> (covering both triangles with three separated coplanar sides and configurations where two axes align while the third is transverse to them).</li>
+<li><strong>Nearly aligned regime:</strong> <span class="arithmatex">\(|\nu_i\times\nu_j|&lt;\theta\)</span> for all <span class="arithmatex">\(i\ne j\)</span>, so all three axes lie within angle <span class="arithmatex">\(O(\theta)\)</span> of a single line.</li>
+</ol>
+<h2 id="separated-planar"><span class="book-secnum">§ 04</span>Planar configurations with a separated pair</h2>
+<p>In the separated-pair regime, two of the three Fourier supports have unit normals separated by <span class="arithmatex">\(|\nu_i\times\nu_j|\ge\theta\)</span>, even if all three axes lie in a common plane. Keeping track of reciprocal dimensions is essential here:</p>
+<ul>
+<li>Two <strong>physical tubes</strong> <span class="arithmatex">\(T,S\)</span> of length <span class="arithmatex">\(\ell\)</span> and radius <span class="arithmatex">\(\rho\)</span> meeting at angle <span class="arithmatex">\(\alpha\)</span> satisfy <span class="arithmatex">\(|T\cap S|\lesssim\min(\ell\rho^2,\rho^3/|\sin\alpha|)\)</span>.</li>
+<li>
+<p>Two <strong>frequency plates</strong> <span class="arithmatex">\(B_1,B_2\)</span> of short radial thickness <span class="arithmatex">\(h=N\delta^2\)</span> and broad transverse widths <span class="arithmatex">\(a=N\delta\)</span> with normals meeting at angle <span class="arithmatex">\(\alpha\)</span> satisfy the translated intersection bound (<a href="../chapter-09/#fourier-overlap">Chapter 9</a>, equations (5.2)–(5.3))</p>
+<div class="arithmatex">\[
+\Omega(B_1,B_2):=\sup_{\zeta\in\mathbb R^3}|B_1\cap(\zeta-B_2)|
+\lesssim\min\left(ha^2,\frac{h^2a}{|\sin\alpha|}\right)
+=N^3\min\left(\delta^4,\frac{\delta^5}{|\sin\alpha|}\right).
+\tag{4.1}
+\]</div>
+</li>
+</ul>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 4.1</span><span class="book-name">Separated-pair trilinear estimate</span></p>
+<p>Let <span class="arithmatex">\(f,g,h\in L^2(\mathbb R^3)\)</span> be vector fields localized to <span class="arithmatex">\(|\xi|\simeq N\)</span> whose Fourier supports each lie in a finite union of <span class="arithmatex">\(O(1)\)</span> plates of dimensions <span class="arithmatex">\(N\delta^2\times N\delta\times N\delta\)</span> with unit normals <span class="arithmatex">\(\nu_f,\nu_g,\nu_h\)</span>. If <span class="arithmatex">\(\max(|\nu_f\times\nu_g|,|\nu_f\times\nu_h|,|\nu_g\times\nu_h|)\ge\theta&gt;0\)</span>, then</p>
+<div class="arithmatex">\[
+|\mathcal T(f,g,h)|\lesssim N^{3/2}\min\big(\delta^2,\delta^{5/2}\theta^{-1/2}\big)\|f\|_{L^2}\|g\|_{L^2}\|h\|_{L^2}.
+\tag{4.2}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>The multiplier <span class="arithmatex">\(g\mapsto\nabla u_g=\mathcal Rg\)</span> preserves <span class="arithmatex">\(\operatorname{supp}\widehat g\)</span> and satisfies <span class="arithmatex">\(\|\nabla u_g\|_{L^2}\le\|g\|_{L^2}\)</span>. Writing <span class="arithmatex">\(\mathcal T(f,g,h)=\sum_{i,j=1}^3\int_{\mathbb R^3}f_i(\partial_iu_{g,j})h_j\,dx\)</span>, pick whichever pair of <span class="arithmatex">\(\{f,\nabla u_g,h\}\)</span> achieves normal separation at least <span class="arithmatex">\(\theta\)</span>, apply Cauchy–Schwarz against the <span class="arithmatex">\(L^2\)</span> norm of the remaining factor, and bound the <span class="arithmatex">\(L^2\)</span> norm of the product of the separated pair by <span class="arithmatex">\(\Omega(B_1,B_2)^{1/2}\)</span> via <a href="../chapter-09/#fourier-overlap">Lemma 9.2</a> and (4.1).</p>
+</details>
+<p>Proposition 11.3 requires only <em>two</em> separated axes and needs no determinant lower bound, so coplanarity causes no loss as long as <span class="arithmatex">\(\theta\gg\delta\)</span>.</p>
+<h2 id="incompressibility-cancellation"><span class="book-secnum">§ 05</span>Incompressibility cancellation for nearly aligned triples</h2>
+<p>When all three axes nearly align (<span class="arithmatex">\(|\nu_i\times\nu_j|\lesssim\theta\)</span> with <span class="arithmatex">\(\theta\)</span> small), frequency-plate overlap deteriorates toward the single-plate bound <span class="arithmatex">\(N^{3/2}\delta^2\)</span>. Geometry alone offers no further improvement; instead, the <strong>incompressibility</strong> of the vorticity and velocity fields weakens the stretching operator itself.</p>
+<p><strong>Plane-wave mechanism.</strong> Consider two monochromatic divergence-free plane waves <span class="arithmatex">\(f(x)=ae^{i\xi\cdot x}\)</span> and <span class="arithmatex">\(g(x)=be^{i\eta\cdot x}\)</span> (<span class="arithmatex">\(\xi,\eta\ne0\)</span>). Incompressibility <span class="arithmatex">\(\nabla\cdot f=0\)</span> means <span class="arithmatex">\(\xi\cdot a=0\)</span>, while Biot–Savart gives <span class="arithmatex">\(u_g(x)=\frac{i(\eta\times b)}{|\eta|^2}e^{i\eta\cdot x}\)</span> and</p>
+<div class="arithmatex">\[
+(f\cdot\nabla)u_g(x)=-\frac{(a\cdot\eta)(\eta\times b)}{|\eta|^2}e^{i(\xi+\eta)\cdot x}.
+\]</div>
+<p>Because <span class="arithmatex">\(a\perp\xi\)</span>, only the component of <span class="arithmatex">\(\eta\)</span> perpendicular to <span class="arithmatex">\(\xi\)</span> pairs with <span class="arithmatex">\(a\)</span>: if <span class="arithmatex">\(\beta\)</span> is the angle between the lines <span class="arithmatex">\(\mathbb R\xi\)</span> and <span class="arithmatex">\(\mathbb R\eta\)</span>, then <span class="arithmatex">\(|a\cdot\eta|\le|a|\,|\eta|\,|\sin\beta|\)</span>, so</p>
+<div class="arithmatex">\[
+|(f\cdot\nabla)u_g(x)|\le|a|\,|b|\,|\sin\beta|.
+\tag{5.1}
+\]</div>
+<p>Physically, <span class="arithmatex">\(f\)</span> oscillates along <span class="arithmatex">\(\xi\)</span> so its vector amplitude points <em>across</em> <span class="arithmatex">\(\xi\)</span>; when <span class="arithmatex">\(\eta\)</span> is nearly parallel to <span class="arithmatex">\(\xi\)</span>, <span class="arithmatex">\(f\)</span> points nearly parallel to the constant-phase wavefronts of <span class="arithmatex">\(u_g\)</span>, where directional derivatives of <span class="arithmatex">\(u_g\)</span> are small. At exact alignment (<span class="arithmatex">\(\eta\parallel\xi\)</span>), the plane-wave stretching vanishes identically.</p>
+<p>For genuine <span class="arithmatex">\(L^2\)</span> packets localized to cones of aperture <span class="arithmatex">\(O(\delta)\)</span>, two small angles appear: the angle <span class="arithmatex">\(\theta\)</span> between central axes and the angular spread <span class="arithmatex">\(\delta\)</span> inside each cone.</p>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 5.1</span><span class="book-name">Divergence-free cancellation estimate</span></p>
+<p>Let <span class="arithmatex">\(f,g\in L^2(\mathbb R^3)\)</span> be divergence-free vector fields (<span class="arithmatex">\(\xi\cdot\widehat f(\xi)=\xi\cdot\widehat g(\xi)=0\)</span>) with <span class="arithmatex">\(\operatorname{supp}\widehat g\subset\{c_0N\le|\xi|\le C_0N\}\)</span>. Suppose <span class="arithmatex">\(\widehat f\)</span> and <span class="arithmatex">\(\widehat g\)</span> are supported in double cones of aperture <span class="arithmatex">\(C_1\delta\)</span> around unit axes <span class="arithmatex">\(\nu_f,\nu_g\in\mathbb S^2\)</span>:</p>
+<div class="arithmatex">\[
+\left|\frac\xi{|\xi|}\times\nu_f\right|\le C_1\delta\quad(\xi\in\operatorname{supp}\widehat f),
+\qquad
+\left|\frac\xi{|\xi|}\times\nu_g\right|\le C_1\delta\quad(\xi\in\operatorname{supp}\widehat g),
+\]</div>
+<p>and assume <span class="arithmatex">\(|\nu_f\times\nu_g|\le\theta\)</span>. Then</p>
+<div class="arithmatex">\[
+\|(f\cdot\nabla)u_g\|_{L^1(\mathbb R^3)}\lesssim(\theta+\delta)\|f\|_{L^2(\mathbb R^3)}\|g\|_{L^2(\mathbb R^3)}.
+\tag{5.2}
+\]</div>
+<p>(Allowing double cones about <span class="arithmatex">\(\pm\nu_f\)</span> and <span class="arithmatex">\(\pm\nu_g\)</span> covers real-valued fields directly.)</p>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Set <span class="arithmatex">\(\Pi_\perp=I-\nu_g\otimes\nu_g\)</span>, <span class="arithmatex">\(f_\perp=\Pi_\perp f\)</span>, and <span class="arithmatex">\(\nabla_\perp=\Pi_\perp\nabla\)</span>, so the directional derivative decomposes into axial and transverse parts relative to <span class="arithmatex">\(\nu_g\)</span>:</p>
+<div class="arithmatex">\[
+(f\cdot\nabla)u_g=(f\cdot\nu_g)\partial_{\nu_g}u_g+(f_\perp\cdot\nabla_\perp)u_g.
+\tag{5.3}
+\]</div>
+<p><em>Step 1: Smallness of the axial component <span class="arithmatex">\(f\cdot\nu_g\)</span>.</em> Because <span class="arithmatex">\(\xi\cdot\widehat f(\xi)=0\)</span>, for every nonzero <span class="arithmatex">\(\xi\in\operatorname{supp}\widehat f\)</span> the vector <span class="arithmatex">\(\widehat f(\xi)\)</span> lies in <span class="arithmatex">\(\xi^\perp\)</span>, so orthogonal projection onto <span class="arithmatex">\(\xi^\perp\)</span> gives</p>
+<div class="arithmatex">\[
+|\widehat f(\xi)\cdot\nu_g|=\big|\widehat f(\xi)\cdot\big(\nu_g-(\tfrac\xi{|\xi|}\cdot\nu_g)\tfrac\xi{|\xi|}\big)\big|
+\le|\widehat f(\xi)|\,\left|\frac\xi{|\xi|}\times\nu_g\right|.
+\]</div>
+<p>For any unit vectors <span class="arithmatex">\(u,v,w\in\mathbb S^2\)</span>, choosing the sign <span class="arithmatex">\(\sigma\in\{\pm1\}\)</span> with <span class="arithmatex">\(v\cdot(\sigma w)\ge0\)</span> gives <span class="arithmatex">\(|u\times w|=|u\times(\sigma w)|\le|u\times v|+|v\times w|\)</span> (indeed, <span class="arithmatex">\(|u\times v|=|\sin\angle(\mathbb Ru,\mathbb Rv)|\)</span> is the sine metric on <span class="arithmatex">\(\mathbb RP^2\)</span>, which satisfies the triangle inequality!). Applying this with <span class="arithmatex">\(u=\xi/|\xi|\)</span>, <span class="arithmatex">\(v=\nu_f\)</span>, <span class="arithmatex">\(w=\nu_g\)</span> yields <span class="arithmatex">\(|\frac\xi{|\xi|}\times\nu_g|\le C_1\delta+\theta\)</span> on <span class="arithmatex">\(\operatorname{supp}\widehat f\)</span>. Plancherel gives</p>
+<div class="arithmatex">\[
+\|f\cdot\nu_g\|_{L^2(\mathbb R^3)}\le(\theta+C_1\delta)\|f\|_{L^2(\mathbb R^3)}.
+\tag{5.4}
+\]</div>
+<p><em>Step 2: Directional derivatives of <span class="arithmatex">\(u_g\)</span>.</em> On <span class="arithmatex">\(\operatorname{supp}\widehat g\subset\{c_0N\le|\xi|\le C_0N\}\)</span>, Biot–Savart <span class="arithmatex">\(|\widehat u_g(\xi)|\le|\xi|^{-1}|\widehat g(\xi)|\)</span> gives <span class="arithmatex">\(\|u_g\|_{L^2}\le c_0^{-1}N^{-1}\|g\|_{L^2}\)</span>. Along <span class="arithmatex">\(\nu_g\)</span>, <span class="arithmatex">\(|\nu_g\cdot\xi|\le C_0N\)</span>, so</p>
+<div class="arithmatex">\[
+\|\partial_{\nu_g}u_g\|_{L^2(\mathbb R^3)}\le\frac{C_0}{c_0}\|g\|_{L^2(\mathbb R^3)}.
+\]</div>
+<p>Across <span class="arithmatex">\(\nu_g\)</span>, the cone assumption on <span class="arithmatex">\(\widehat g\)</span> gives <span class="arithmatex">\(|\Pi_\perp\xi|=|\xi|\,|\frac\xi{|\xi|}\times\nu_g|\le C_0C_1\delta N\)</span>, so</p>
+<div class="arithmatex">\[
+\|\nabla_\perp u_g\|_{L^2(\mathbb R^3)}\le\frac{C_0C_1}{c_0}\delta\|g\|_{L^2(\mathbb R^3)}.
+\]</div>
+<p><em>Step 3: Combine in <span class="arithmatex">\(L^1\)</span>.</em> Applying Cauchy–Schwarz to each piece of (5.3) and using <span class="arithmatex">\(\|f_\perp\|_{L^2}\le\|f\|_{L^2}\)</span>,</p>
+<div class="arithmatex">\[
+\|(f\cdot\nabla)u_g\|_{L^1}
+\le\|f\cdot\nu_g\|_{L^2}\|\partial_{\nu_g}u_g\|_{L^2}+\|f_\perp\|_{L^2}\|\nabla_\perp u_g\|_{L^2}
+\lesssim(\theta+\delta)\|f\|_{L^2}\|g\|_{L^2}.
+\]</div>
+</details>
+<p>Along <span class="arithmatex">\(\nu_g\)</span> the velocity gradient has full strength <span class="arithmatex">\(O(1)\)</span> relative to <span class="arithmatex">\(g\)</span> while the component of <span class="arithmatex">\(f\)</span> is <span class="arithmatex">\(O(\theta+\delta)\)</span>; across <span class="arithmatex">\(\nu_g\)</span> the component of <span class="arithmatex">\(f\)</span> is <span class="arithmatex">\(O(1)\)</span> while the velocity gradient is <span class="arithmatex">\(O(\delta)\)</span>. Both pieces gain a small angle.</p>
+<div class="admonition proposition">
+<p class="admonition-title"><span class="book-label">命题 5.2</span><span class="book-name">Nearly aligned trilinear estimate</span></p>
+<p>Let <span class="arithmatex">\(f,g\)</span> satisfy the hypotheses of Proposition 11.4, and let <span class="arithmatex">\(h\in L^2(\mathbb R^3)\)</span> have Fourier support of Lebesgue measure <span class="arithmatex">\(|\operatorname{supp}\widehat h|\le C_2N^3\delta^4\)</span> (for instance a finite union of plates of dimensions <span class="arithmatex">\(N\delta^2\times N\delta\times N\delta\)</span>). Then</p>
+<div class="arithmatex">\[
+|\mathcal T(f,g,h)|\lesssim N^{3/2}\delta^2(\theta+\delta)\|f\|_{L^2}\|g\|_{L^2}\|h\|_{L^2}.
+\tag{5.5}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Fourier inversion and Cauchy–Schwarz on <span class="arithmatex">\(\operatorname{supp}\widehat h\)</span> give</p>
+<div class="arithmatex">\[
+\|h\|_{L^\infty(\mathbb R^3)}\le(2\pi)^{-3}\int_{\operatorname{supp}\widehat h}|\widehat h(\xi)|\,d\xi
+\le(2\pi)^{-3/2}|\operatorname{supp}\widehat h|^{1/2}\|h\|_{L^2(\mathbb R^3)}
+\lesssim N^{3/2}\delta^2\|h\|_{L^2(\mathbb R^3)}.
+\]</div>
+<p>Pair <span class="arithmatex">\((f\cdot\nabla)u_g\in L^1\)</span> against <span class="arithmatex">\(h\in L^\infty\)</span> using Proposition 11.4: <span class="arithmatex">\(|\mathcal T(f,g,h)|\le\|(f\cdot\nabla)u_g\|_{L^1}\|h\|_{L^\infty}\lesssim(\theta+\delta)N^{3/2}\delta^2\|f\|_{L^2}\|g\|_{L^2}\|h\|_{L^2}\)</span>.</p>
+</details>
+<h2 id="regime-balance"><span class="book-secnum">§ 06</span>Balancing geometry against incompressibility</h2>
+<p>For a single localized triple <span class="arithmatex">\((f,g,h)\)</span> supported in plates of volume <span class="arithmatex">\(\simeq N^3\delta^4\)</span> (with <span class="arithmatex">\(f,g\)</span> divergence-free), Propositions 11.3 and 11.5 provide complementary bounds at any dividing angle <span class="arithmatex">\(\theta\in[\delta,1]\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Angular configuration</th>
+<th>Mechanism</th>
+<th>Coefficient multiplying <span class="arithmatex">\(\lVert f\rVert_2\lVert g\rVert_2\lVert h\rVert_2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>At least one pair with <span class="arithmatex">\(\lvert\nu_i\times\nu_j\rvert\ge\theta\)</span></td>
+<td>Translated frequency-plate overlap</td>
+<td><span class="arithmatex">\(N^{3/2}\delta^{5/2}\theta^{-1/2}\)</span></td>
+</tr>
+<tr>
+<td>All pairs nearly aligned, <span class="arithmatex">\(\lvert\nu_i\times\nu_j\rvert&lt;\theta\)</span></td>
+<td>Divergence-free cancellation (<span class="arithmatex">\(\nabla\cdot f=0\)</span>)</td>
+<td><span class="arithmatex">\(N^{3/2}\delta^2(\theta+\delta)\simeq N^{3/2}\delta^2\theta\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Equating the two powers of <span class="arithmatex">\(\delta\)</span> and <span class="arithmatex">\(\theta\)</span> for <span class="arithmatex">\(\delta\le\theta\le1\)</span>,</p>
+<div class="arithmatex">\[
+\delta^{5/2}\theta^{-1/2}\simeq\delta^2\theta
+\quad\Longleftrightarrow\quad
+\theta^{3/2}\simeq\delta^{1/2}
+\quad\Longleftrightarrow\quad
+\theta\simeq\delta^{1/3}.
+\tag{6.1}
+\]</div>
+<p>At the optimal dividing angle <span class="arithmatex">\(\theta=\delta^{1/3}\)</span> (which satisfies <span class="arithmatex">\(\delta\le\delta^{1/3}\le1\)</span> whenever <span class="arithmatex">\(0&lt;\delta\le1\)</span>), <em>every</em> localized plate triple—transverse, coplanar with separated pairs, or nearly collinear—satisfies</p>
+<div class="arithmatex">\[
+|\mathcal T(f,g,h)|\lesssim N^{3/2}\delta^{7/3}\|f\|_{L^2}\|g\|_{L^2}\|h\|_{L^2},
+\tag{6.2}
+\]</div>
+<p>improving the single-plate Bernstein bound <span class="arithmatex">\(N^{3/2}\delta^2\)</span> by an unconditional factor <span class="arithmatex">\(\delta^{1/3}\)</span> across all orientations.</p>
+<p><strong>Single-triple bounds versus summed dyadic shells.</strong> In lecture shorthand one often records the conditional packet-summed counterparts</p>
+<div class="arithmatex">\[
+|S_k^{\mathrm{sep}}|\lesssim M^{3/2}N^{3/2}\delta^{5/2}\theta^{-1/2}\|\omega_k\|_{L^2}^3,
+\qquad
+|S_k^{\mathrm{near}}|\lesssim M^{3/2}N^{3/2}\delta^2(\theta+\delta)\|\omega_k\|_{L^2}^3,
+\]</div>
+<p>balanced at <span class="arithmatex">\(\theta=\delta^{1/3}\)</span> to <span class="arithmatex">\(M^{3/2}N^{3/2}\delta^{7/3}\|\omega_k\|_{L^2}^3\)</span>. Unlike Proposition 11.1—where Guth's theorem integrated the product of three square-sum envelopes directly—Propositions 11.3 and 11.5 are proved here for <em>individual</em> plate triples, not for arbitrary sums over all <span class="arithmatex">\(O(\delta^{-4})\)</span> boxes on the annulus. Moreover, Proposition 11.4 uses the signed cancellation <span class="arithmatex">\(\xi\cdot\widehat f(\xi)=0\)</span>, which must be preserved before absolute values of packet envelopes are taken. Applying the <span class="arithmatex">\(\delta^{7/3}\)</span> bound to a full shell therefore requires either Initial Data / Evolution hypotheses restricting the active frequency boxes to boundedly many channels, or an explicit almost-orthogonality summation proof compatible with divergence-free cancellation.</p>
+<h2 id="commutators-and-data"><span class="book-secnum">§ 07</span>Projected vorticity commutators and directionally organized data</h2>
+<p>To place localized high-frequency bounds inside the Navier–Stokes evolution, apply <span class="arithmatex">\(P_k\)</span> (<span class="arithmatex">\([A,B]=AB-BA\)</span>) to <span class="arithmatex">\(\partial_t\omega+u\cdot\nabla\omega=\omega\cdot\nabla u+\Delta\omega\)</span>. Since <span class="arithmatex">\(P_k\)</span> commutes with <span class="arithmatex">\(\partial_t\)</span> and <span class="arithmatex">\(\Delta\)</span>, pulling transport outside <span class="arithmatex">\(P_k\)</span> via <span class="arithmatex">\(P_k(u\cdot\nabla\omega)=u\cdot\nabla\omega_k+[P_k,u\cdot\nabla]\omega\)</span> yields the exact projected identity</p>
+<div class="arithmatex">\[
+\partial_t\omega_k+u\cdot\nabla\omega_k
+=P_k(\omega\cdot\nabla u)+\Delta\omega_k-[P_k,u\cdot\nabla]\omega.
+\tag{7.1}
+\]</div>
+<p>Testing (7.1) against <span class="arithmatex">\(\omega_k\)</span> in <span class="arithmatex">\(L^2(\mathbb R^3)\)</span>, the transport term <span class="arithmatex">\(\langle u\cdot\nabla\omega_k,\omega_k\rangle=0\)</span> cancels by <span class="arithmatex">\(\nabla\cdot u=0\)</span>, while the commutator <span class="arithmatex">\(-\langle[P_k,u\cdot\nabla]\omega,\omega_k\rangle\)</span> records scale transfer driven by velocity shear across band <span class="arithmatex">\(k\)</span>. Depending on which factor is localized in the stretching term, (7.1) can be rewritten in two exact forms:</p>
+<div class="arithmatex">\[
+\partial_t\omega_k+u\cdot\nabla\omega_k
+=\omega\cdot\nabla u_k+\Delta\omega_k+[P_k,\omega\cdot\nabla]u-[P_k,u\cdot\nabla]\omega,
+\tag{7.2}
+\]</div>
+<p>or, isolating <span class="arithmatex">\(\omega_k\cdot\nabla u\)</span>,</p>
+<div class="arithmatex">\[
+\partial_t\omega_k+u\cdot\nabla\omega_k
+=\omega_k\cdot\nabla u+\Delta\omega_k+\big(P_k(\omega\cdot\nabla u)-\omega_k\cdot\nabla u\big)-[P_k,u\cdot\nabla]\omega,
+\tag{7.3}
+\]</div>
+<p>where componentwise <span class="arithmatex">\(\big(P_k(\omega\cdot\nabla u)-\omega_k\cdot\nabla u\big)_j=\sum_{i=1}^3[P_k,\partial_iu_j]\omega_i\)</span> (viewing <span class="arithmatex">\(\partial_iu_j\)</span> as a multiplication operator). Neither commutator can be discarded when closing an a priori estimate across scales.</p>
+<p><strong>The geometric initial-data problem.</strong> Together, Proposition 11.1, Lemma 11.2, and the balanced planar estimate (6.2) motivate a constructive PDE question: can one build families of open sets <span class="arithmatex">\(\mathcal U_a\)</span> of smooth divergence-free initial data (open in a chosen Banach topology) with representatives <span class="arithmatex">\(u_0^{(a)}\in\mathcal U_a\)</span> satisfying</p>
+<div class="arithmatex">\[
+T_*(u_0)=\infty\quad(\forall\,u_0\in\mathcal U_a),
+\qquad
+\lim_{a\to\infty}\|u_0^{(a)}\|_{\dot H^{1/2}(\mathbb R^3)}=\infty\,?
+\tag{7.4}
+\]</div>
+<p>The estimates of this chapter explain why directional concentration of high-frequency vorticity suppresses instant self-stretching—either by small plate volume <span class="arithmatex">\(N^3\delta^4\)</span> and divergence-free alignment cancellation (Proposition 11.5), or by transverse packet crossing (Proposition 11.1). Turning that instant suppression into a global theorem on an open neighborhood requires choosing a norm topology strong enough to propagate directional localization over the dissipative lifetime <span class="arithmatex">\(t\lesssim N^{-2}\log(\cdots)\)</span> of the high-frequency shell while controlling the low-frequency remainders and commutators in (7.1).</p>
+<h2 id="exercises"><span class="book-secnum">§ 08</span>Exercises</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.1</span><span class="book-name">A kernel bound for the Littlewood–Paley transport commutator</span></p>
+<p>Let <span class="arithmatex">\(P_kf=K_k*f\)</span> with <span class="arithmatex">\(K_k(z)=2^{3k}K(2^kz)\)</span>, <span class="arithmatex">\(K\in\mathcal S(\mathbb R^3)\)</span>, and let <span class="arithmatex">\(v,f\in\mathcal S(\mathbb R^3)\)</span> be smooth vector fields with <span class="arithmatex">\(\nabla\cdot v=0\)</span>.</p>
+<p>(a) Show that <span class="arithmatex">\(([P_k,v\cdot\nabla]f)(x)=\sum_{j=1}^3\int_{\mathbb R^3}\partial_jK_k(x-y)\big(v_j(y)-v_j(x)\big)f(y)\,dy\)</span>.</p>
+<p>(b) Prove the scale-independent Calderón–Zygmund commutator bound</p>
+<div class="arithmatex">\[
+\|[P_k,v\cdot\nabla]f\|_{L^p(\mathbb R^3)}\le C\|\nabla v\|_{L^\infty(\mathbb R^3)}\|f\|_{L^p(\mathbb R^3)}
+\qquad(1\le p\le\infty),
+\]</div>
+<p>with <span class="arithmatex">\(C=\int_{\mathbb R^3}|z|\,|\nabla K(z)|\,dz\)</span> independent of <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(p\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>(a) Because <span class="arithmatex">\(\nabla\cdot v=0\)</span>, <span class="arithmatex">\((v\cdot\nabla f)(y)=\sum_{j=1}^3\partial_{y_j}(v_j(y)f(y))\)</span>. Since <span class="arithmatex">\(\partial_{y_j}[K_k(x-y)]=-(\partial_jK_k)(x-y)\)</span>, integrating by parts in <span class="arithmatex">\(y\)</span> inside <span class="arithmatex">\(P_k(v\cdot\nabla f)(x)=\int_{\mathbb R^3}K_k(x-y)(v\cdot\nabla f)(y)\,dy\)</span> gives</p>
+<div class="arithmatex">\[
+P_k(v\cdot\nabla f)(x)=\sum_{j=1}^3\int_{\mathbb R^3}(\partial_jK_k)(x-y)v_j(y)f(y)\,dy.
+\]</div>
+<p>Meanwhile, <span class="arithmatex">\((v\cdot\nabla P_kf)(x)=\sum_{j=1}^3v_j(x)\int_{\mathbb R^3}(\partial_jK_k)(x-y)f(y)\,dy\)</span>. Subtracting the second expression from the first yields the identity.</p>
+<p>(b) By the mean value theorem, <span class="arithmatex">\(|v(x)-v(y)|\le\|\nabla v\|_{L^\infty}|x-y|\)</span>. Hence</p>
+<div class="arithmatex">\[
+\big|([P_k,v\cdot\nabla]f)(x)\big|
+\le\|\nabla v\|_{L^\infty}\int_{\mathbb R^3}|x-y|\,|\nabla K_k(x-y)|\,|f(y)|\,dy.
+\]</div>
+<p>Since <span class="arithmatex">\(\nabla K_k(w)=2^{4k}(\nabla K)(2^kw)\)</span>, changing variables <span class="arithmatex">\(z=2^kw\)</span> (<span class="arithmatex">\(dw=2^{-3k}dz\)</span>) makes the <span class="arithmatex">\(L^1\)</span> norm of <span class="arithmatex">\(w\mapsto|w|\,|\nabla K_k(w)|\)</span> equal to <span class="arithmatex">\(\int_{\mathbb R^3}|z|\,|\nabla K(z)|\,dz=C&lt;\infty\)</span>, independent of <span class="arithmatex">\(k\)</span>. Young's convolution inequality yields the bound for all <span class="arithmatex">\(1\le p\le\infty\)</span>. (In a paraproduct refinement, replacing <span class="arithmatex">\(v\)</span> by <span class="arithmatex">\(P_{\le k-10}v\)</span> turns <span class="arithmatex">\(\|\nabla P_{\le k-10}v\|_{L^\infty}\)</span> into the low-frequency shear rate; high-frequency pieces of <span class="arithmatex">\(v\)</span> are estimated without moving derivatives onto <span class="arithmatex">\(K_k\)</span>.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 8.2</span><span class="book-name">Large critical norm with depleted self-stretching in one plate</span></p>
+<p>Fix <span class="arithmatex">\(N\gg1\)</span>, <span class="arithmatex">\(0&lt;\delta\ll1\)</span>, and a smooth real-valued divergence-free packet <span class="arithmatex">\(u_0\)</span> whose Fourier transform is supported in the symmetric pair of plates <span class="arithmatex">\(\pm B\)</span>, where <span class="arithmatex">\(B=[N,N+N\delta^2]\times[-N\delta,N\delta]^2\)</span> has axis <span class="arithmatex">\(e_1\)</span>. Normalize <span class="arithmatex">\(\|u_0\|_{\dot H^{1/2}(\mathbb R^3)}=A\gg1\)</span>.</p>
+<p>(a) Compute the orders of <span class="arithmatex">\(\|u_0\|_{L^2}\)</span>, <span class="arithmatex">\(\|\omega_0\|_{L^2}\)</span>, and the global small-data invariant <span class="arithmatex">\(\|u_0\|_{L^2}\|\omega_0\|_{L^2}\)</span> of <a href="../chapter-09/#energy-comparison">Chapter 9</a> in terms of <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(N\)</span>.</p>
+<p>(b) Bound the initial stretching integral <span class="arithmatex">\(|\mathcal T(\omega_0,\omega_0,\omega_0)|\)</span> relative to the initial viscous dissipation <span class="arithmatex">\(\|\nabla\omega_0\|_{L^2}^2\)</span>, and find how small <span class="arithmatex">\(\delta\)</span> must be in terms of <span class="arithmatex">\(A\)</span> so that <span class="arithmatex">\(|\mathcal T(\omega_0,\omega_0,\omega_0)|\ll\|\nabla\omega_0\|_{L^2}^2\)</span> at <span class="arithmatex">\(t=0\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>(a) Since <span class="arithmatex">\(|\xi|\simeq N\)</span> on <span class="arithmatex">\(\pm B\)</span> and <span class="arithmatex">\(\nabla\cdot u_0=0\)</span>, we have <span class="arithmatex">\(\|u_0\|_{L^2}\simeq N^{-1/2}A\)</span>, <span class="arithmatex">\(\|\omega_0\|_{L^2}=\|\nabla u_0\|_{L^2}\simeq N^{1/2}A\)</span>, and</p>
+<div class="arithmatex">\[
+\|u_0\|_{L^2}\|\omega_0\|_{L^2}\simeq A^2\gg1,
+\]</div>
+<p>independent of <span class="arithmatex">\(N\)</span> and <span class="arithmatex">\(\delta\)</span>. Thus <span class="arithmatex">\(u_0\)</span> lies far outside the isotropic small-data region <span class="arithmatex">\(\|u_0\|_{L^2}\|\omega_0\|_{L^2}\le c\)</span> of Chapter 9.</p>
+<p>(b) Here <span class="arithmatex">\(\omega_0=\nabla\times u_0\)</span> is also divergence-free and has Fourier support in the same double plate <span class="arithmatex">\(\pm B\)</span> of volume <span class="arithmatex">\(\simeq N^3\delta^4\)</span> and angular width <span class="arithmatex">\(O(\delta)\)</span> around <span class="arithmatex">\(e_1\)</span> (<span class="arithmatex">\(\theta=0\)</span>). Proposition 11.5 with <span class="arithmatex">\(f=g=h=\omega_0\)</span> and <span class="arithmatex">\(\theta=0\)</span> gives</p>
+<div class="arithmatex">\[
+|\mathcal T(\omega_0,\omega_0,\omega_0)|\lesssim N^{3/2}\delta^3\|\omega_0\|_{L^2}^3\simeq N^3\delta^3A^3,
+\]</div>
+<p>whereas initial viscous dissipation satisfies <span class="arithmatex">\(\|\nabla\omega_0\|_{L^2}^2\simeq N^2\|\omega_0\|_{L^2}^2\simeq N^3A^2\)</span>. Their ratio is</p>
+<div class="arithmatex">\[
+\frac{|\mathcal T(\omega_0,\omega_0,\omega_0)|}{\|\nabla\omega_0\|_{L^2}^2}\lesssim\delta^3A.
+\]</div>
+<p>Choosing <span class="arithmatex">\(\delta\ll A^{-1/3}\)</span> makes initial vortex stretching negligible compared with initial viscous dissipation despite <span class="arithmatex">\(\|u_0\|_{\dot H^{1/2}}=A\gg1\)</span>. (Actually, by <a href="../chapter-08/#exercise">Chapter 8, Exercise</a>, if <span class="arithmatex">\(\operatorname{supp}\widehat\omega_0\subset+B\cup(-B)\)</span> with <span class="arithmatex">\(B\subset\{N\le\xi_1\le N(1+\delta^2)\}\)</span>, any three frequencies in <span class="arithmatex">\(\pm B\)</span> have <span class="arithmatex">\(\xi_1\)</span>-sum near <span class="arithmatex">\(\pm N\)</span> or <span class="arithmatex">\(\pm3N\)</span>, never zero! Thus <span class="arithmatex">\(\mathcal T(\omega_0,\omega_0,\omega_0)=0\)</span> <em>identically</em> at <span class="arithmatex">\(t=0\)</span>; quadratic transport <span class="arithmatex">\(u_0\cdot\nabla\omega_0\)</span> first generates harmonics near <span class="arithmatex">\(0\)</span> and <span class="arithmatex">\(\pm2N\)</span>, and Proposition 11.5 governs aligned interactions once neighboring shells are populated.)</p>
+</details>
+<p><a href="../chapter-10/">Previous: multilinear restriction and transport null structure</a> · <a href="../chapter-12/">Next: stationary phase and wave dispersion</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-10/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 10: Multilinear Kakeya, Multilinear Restriction, and Characteristic Null Structure</span>
+    </a>
+    
+    
+    <a class="zdd-pager-link is-next" href="../chapter-12/" rel="next">
+      <span class="zdd-pager-label">下一章 →</span>
+      <span class="zdd-pager-title">Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion</span>
+    </a>
+    
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 11 / 14 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=navier-stokes">#navier-stokes</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-10/">Chapter 10: Multilinear Kakeya, Multilinear Restriction, and Characteristic Null Structure</a></li><li><a href="../chapter-12/">Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="../../../../assets/vendor/mathjax/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg><span>目录</span>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="zdd-toc-outline" data-zdd-toc-outline aria-pressed="false" hidden>大纲模式</button>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>

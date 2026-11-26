@@ -1,0 +1,61 @@
+import os,sys,time,json,subprocess,ctypes,hashlib,platform,csv,statistics
+from pathlib import Path
+p=Path(__file__).resolve().parent
+root=p.parents[1]; repo=root.parents[1]
+data=root/'data'/p.name
+phase=sys.argv[1]
+if phase=='smoke': data.mkdir(exist_ok=False)
+exe=p/'build/kclip_sweep.exe'
+k=ctypes.windll.kernel32;k.GetCurrentProcess.restype=ctypes.c_void_p
+h=k.GetCurrentProcess();a=ctypes.c_size_t();s=ctypes.c_size_t()
+assert k.GetProcessAffinityMask(ctypes.c_void_p(h),ctypes.byref(a),ctypes.byref(s))
+mask=a.value & -a.value
+assert k.SetProcessAffinityMask(ctypes.c_void_p(h),ctypes.c_size_t(mask))
+assert k.SetPriorityClass(ctypes.c_void_p(h),0x20)
+env=os.environ.copy();env['PATH']='C:/msys64/ucrt64/bin;'+str(repo/'learning/rb_plan_2D/third_party/runtime')+';'+env['PATH']
+for v in ['OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS']:env[v]='1'
+files=list((root/'src').glob('*.f90'))+list((repo/'code/src/advisor_poisson').glob('*.f'))+list((repo/'code/build/advisor_poisson').glob('*.o'))+[repo/'learning/rb_plan_2D/third_party/fgt/libadvisor_fgt.a',repo/'learning/rb_plan_2D/third_party/runtime/libfinufft.dll']+list((root/'prototypes/kclip_20261104').glob('*'))
+def hashes():return {str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in files if f.is_file()}
+before=hashes()
+meta={'phase':phase,'affinity_mask':mask,'priority':'normal','python':sys.version,'platform':platform.platform(),'environment':env,'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'readonly_sha256_before':before,'start':time.time(),'runs':[],'timeout_seconds':540,'batch_budget_seconds':2700,'preflight':'No python/probe/kclip/gfortran/bench processes found via Get-CimInstance before setup','setup_failures':['make_driver first invocation: whitespace substring missing; no driver produced','make_driver second invocation: print whitespace substring missing; no driver produced'],'commands_prior':['pwd','date +%Y%m%d_%H%M%S','python prototypes/kclip_sweep_20261105_004613/make_driver.py (two failed, third succeeded)','bash prototypes/kclip_sweep_20261105_004613/build.sh']}
+configs=[(1,1,4,2)] if phase=='smoke' else [(it,m,n,9) for it,n in [(1,16),(2,8),(5,3),(4,10),(6,4)] for m in [1,2,3]]
+failed=False
+for it,m,n,nround in configs:
+    if time.time()-meta['start']>2400:failed=True;break
+    label=f'{phase}_tree{it}_f{m}'
+    cmd=[str(exe),str(it),str(m),str(data/(label+'.csv')),str(n),str(nround)]
+    run={'label':label,'command':cmd,'start':time.time()}
+    with (data/(label+'.log')).open('x',encoding='utf-8') as out:
+        try:run['returncode']=subprocess.run(cmd,stdout=out,stderr=subprocess.STDOUT,env=env,timeout=min(540,2700-(time.time()-meta['start']))).returncode
+        except subprocess.TimeoutExpired:run['returncode']=-999;run['timeout']=True
+    run['elapsed_seconds']=time.time()-run['start'];meta['runs'].append(run)
+    print(label,run['returncode'],round(run['elapsed_seconds'],3),flush=True)
+    (data/(phase+'_run.json')).write_text(json.dumps(meta,indent=2))
+    if run['returncode']!=0:failed=True;break
+meta['elapsed_seconds']=time.time()-meta['start'];meta['readonly_sha256_after']=hashes();meta['readonly_unchanged']=before==meta['readonly_sha256_after']
+meta['new_source_sha256']={str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in p.glob('*') if f.is_file()}
+(data/(phase+'_run.json')).write_text(json.dumps(meta,indent=2))
+if failed or not meta['readonly_unchanged']:sys.exit(1)
+if phase!='smoke':
+    raw=[];paired=[];summary=[]
+    def stats(v):return {'mean':statistics.mean(v),'median':statistics.median(v),'sd':statistics.stdev(v),'min':min(v),'max':max(v),'n':len(v)}
+    for run in meta['runs']:
+        rows=list(csv.DictReader((data/(run['label']+'.csv')).open()))
+        raw+=rows; rr=[]
+        for rep in range(1,10):
+            times={md:statistics.mean(float(r['seconds_per_full_call']) for r in rows if int(r['rep'])==rep and int(r['mode'])==md) for md in [1,2,3]}
+            record={'tree':rows[0]['tree'],'nleaf':int(rows[0]['nleaf']),'source':int(rows[0]['source']),'rep':rep,'old_ms':times[1]*1000,'clip_ms':times[2]*1000,'dp_ms':times[3]*1000,'clip_dp':times[2]/times[3],'old_dp':times[1]/times[3],'clip_old':times[2]/times[1]}
+            rr.append(record);paired.append(record)
+        out={k:rr[0][k] for k in ['tree','nleaf','source']}
+        out['rounds']=9;out['calls_per_block']=int(rows[0]['calls']);out['warmup_seconds']=float(rows[0]['warmup_seconds'])
+        for name,md in [('old',1),('clip',2),('dp',3)]:out[name+'_rel_inf']=max(float(r['relative_linf']) for r in rows if int(r['mode'])==md)
+        out['clip_old_rel_inf']=max(float(r['clip_old_rel_inf']) for r in rows)
+        for metric in ['old_ms','clip_ms','dp_ms','clip_dp','old_dp','clip_old']:
+            for key,val in stats([r[metric] for r in rr]).items():out[metric+'_'+key]=val
+        out.update(leaves=out['nleaf'],saving_mean=1-out['clip_old_mean'],err_old=out['old_rel_inf'],err_clip=out['clip_rel_inf'],err_dp=out['dp_rel_inf'],diff_clip_old=out['clip_old_rel_inf'])
+        summary.append(out)
+    for name,rows in [('raw.csv',raw),('paired_rounds.csv',paired),('summary.csv',summary)]:
+        with (data/name).open('x',newline='') as out:
+            w=csv.DictWriter(out,fieldnames=rows[0].keys());w.writeheader();w.writerows(rows)
+    (data/'summary.json').write_text(json.dumps({'configurations':summary,'method':'9 rotating palindrome rounds; each mode is average of two symmetric blocks; paired ratios computed per round, sample SD across rounds; full op_K wrapper including driver output clear, no tree construction; 8x8 Chebyshev; iprec4; same cached executable and advisor objects','sources':{'1':'sin(2pi*x)sin(2pi*z)','2':'sin(6pi*x)sin(4pi*z)','3':'f1+0.3*f2'},'caveats':['SD is not confidence interval; rounds share process/cache','DP toroidal sampled adjacency jumps logged; do not claim exhaustive balance','Known latent precompiled advisor bounds risks not fixed; front-end bounds checks do not certify library'],'runtime':{'sweep_seconds':meta['elapsed_seconds'],'max_single_seconds':max(r['elapsed_seconds'] for r in meta['runs'])}},indent=2))
+    print(data,flush=True)

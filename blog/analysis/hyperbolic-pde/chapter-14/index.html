@@ -1,0 +1,1202 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Critical small-data cubic waves, weak-limit defects, the Stein–Tomas sphere restriction theorem, far-field radiation and Knapp beams, and the derivation of Kakeya Minkowski dimension from restriction.">
+      
+      
+        <meta name="author" content="zdd">
+      
+      
+        <link rel="canonical" href="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-14/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+  <style>html { background: #f4f1ea !important; color-scheme: light; }</style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('zdd-js');
+      var scheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'slate' : 'default';
+      try {
+        var scope = new URL("../../../..", location);
+        var saved = JSON.parse(localStorage.getItem(scope.pathname + '.__palette'));
+        if (saved && saved.color && saved.color.media !== '(prefers-color-scheme)') {
+          scheme = saved.color.scheme === 'slate' ? 'slate' : 'default';
+        }
+      } catch (error) {}
+      root.dataset.zddScheme = scheme;
+      root.style.setProperty('background', scheme === 'slate' ? '#151412' : '#f4f1ea', 'important');
+      root.style.colorScheme = scheme === 'slate' ? 'dark' : 'light';
+      // Remove data left by the retired reading controls without touching other settings.
+      try {
+        localStorage.removeItem('zdd.readingRecords');
+        localStorage.removeItem('zdd.readingPreferences');
+      } catch (error) {}
+    })();
+  </script>
+
+    
+      
+        <title>Chapter 14: Critical Cubic Waves, Stein–Tomas Restriction, and Kakeya Dimension - zdd14990</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/theme-tokens.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/solid-background.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/site-layout.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/article-toc.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/pages.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/knowledge.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/polish.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/editorial.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/reading-aids.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/console.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/zdd-story.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/blog-shelf.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+  <script src="../../../../javascripts/page-transitions.js"></script>
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/400.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/700.css">
+  <link rel="stylesheet" href="../../../../assets/fonts/noto-serif-sc/900.css">
+  <link rel="alternate" type="application/rss+xml" title="zdd14990" href="../../../../feed.xml">
+
+
+  <script>
+    window.zddContentCatalogUrl = "../../../../assets/zdd-content-catalog.json";
+    window.zddPublicSearchIndexUrl = "../../../../assets/zdd-public-search-index.json";
+    window.zddStatementsUrl = "../../../../assets/zdd-statements.json";
+    window.zddQuizUrl = "../../../../assets/zdd-quiz.json";
+    window.zddMathJaxConfigUrl = "../../../../javascripts/mathjax.js";
+    window.zddMathJaxUrl = "../../../../assets/vendor/mathjax/tex-mml-chtml.js";
+  </script>
+
+  <meta property="og:site_name" content="zdd14990">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-14/">
+  <meta property="og:title" content="Chapter 14: Critical Cubic Waves, Stein–Tomas Restriction, and Kakeya Dimension - zdd14990">
+  <meta property="og:description" content="Critical small-data cubic waves, weak-limit defects, the Stein–Tomas sphere restriction theorem, far-field radiation and Knapp beams, and the derivation of Kakeya Minkowski dimension from restriction.">
+  <meta property="og:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <meta property="article:published_time" content="2026-11-24">
+
+
+
+
+  <meta property="article:tag" content="hyperbolic-pde">
+
+  <meta property="article:tag" content="harmonic-analysis">
+
+  <meta property="article:tag" content="wave-packets">
+
+  <meta property="article:tag" content="scattering">
+
+  <meta property="article:tag" content="course">
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="zdd14990.github.io">
+  <meta property="twitter:url" content="https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-14/">
+  <meta name="twitter:title" content="Chapter 14: Critical Cubic Waves, Stein–Tomas Restriction, and Kakeya Dimension - zdd14990">
+  <meta name="twitter:description" content="Critical small-data cubic waves, weak-limit defects, the Stein–Tomas sphere restriction theorem, far-field radiation and Knapp beams, and the derivation of Kakeya Minkowski dimension from restriction.">
+  <meta name="twitter:image" content="https://zdd14990.github.io/assets/cover.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Chapter 14: Critical Cubic Waves, Stein\u2013Tomas Restriction, and Kakeya Dimension",
+    "description": "Critical small-data cubic waves, weak-limit defects, the Stein\u2013Tomas sphere restriction theorem, far-field radiation and Knapp beams, and the derivation of Kakeya Minkowski dimension from restriction.",
+    "url": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-14/",
+    "mainEntityOfPage": "https://zdd14990.github.io/blog/analysis/hyperbolic-pde/chapter-14/",
+    "image": "https://zdd14990.github.io/assets/cover.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "zdd"
+    },
+    "datePublished": "2026-11-24",
+    "keywords": ["hyperbolic-pde", "harmonic-analysis", "wave-packets", "scattering", "course"]
+  }
+  </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-14" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+  <script>
+    document.body.setAttribute('data-md-color-scheme', document.documentElement.dataset.zddScheme);
+    document.body.classList.add('zdd-minimal-layout', "article-layout");
+  </script>
+  
+      
+
+
+<header class="md-header md-header--shadow" data-md-component="header" data-zdd-place='[["\u5206\u6790", "analysis"], ["Topics in Modern Hyperbolic PDEs", "hyperbolic-pde"]]'>
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          
+          <a class="md-ellipsis zdd-wordmark" href="../../../.." title="zdd14990">zdd14990</a>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    <div class="zdd-header-nav" aria-label="Primary navigation">
+      <a href="../../../../index.html" data-zdd-nav="home">Home</a>
+      <a href="../../../" data-zdd-nav="blog" aria-current="true">Blog</a>
+      <a href="../../../../tags/" data-zdd-nav="tags">Tags</a>
+      <a href="../../../../friends/friends/" data-zdd-nav="friends">Friends</a>
+      <button type="button" class="zdd-header-search" data-zdd-open-search>Search</button>
+    </div>
+  </nav>
+</header>
+    
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="zdd14990" class="md-nav__button md-logo" aria-label="zdd14990" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 8-1.33.09C9.81 7.07 7.4 4.5 5 4.5c0 0-1.97 2.96-.04 6.91-.55.83-.89 1.26-.96 2.25l-1.93.29.21.98 1.76-.26.14.71-1.57.94.47.89 1.45-.89C5.68 18.76 8.59 20 12 20s6.32-1.24 7.47-3.68l1.45.89.47-.89-1.57-.94.14-.71 1.76.26.21-.98-1.93-.29c-.07-.99-.41-1.42-.96-2.25C20.97 7.46 19 4.5 19 4.5c-2.4 0-4.81 2.57-5.67 3.59zm-3 3a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m6 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 3h2l-.7 1.39c.2.64.76 1.11 1.45 1.11a1.5 1.5 0 0 0 1.5-1.5h.5a2 2 0 0 1-2 2c-.75 0-1.4-.41-1.75-1-.35.59-1 1-1.75 1a2 2 0 0 1-2-2h.5a1.5 1.5 0 0 0 1.5 1.5c.69 0 1.25-.47 1.45-1.11z"/></svg>
+
+    </a>
+    zdd14990
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../friends/friends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Friends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inhomogeneous-strichartz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Inhomogeneous Strichartz estimates and variable-coefficient waves
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-cubic-wave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Critical small-data theory and weak solutions for the cubic wave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stein-tomas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Restriction to the sphere and the Stein–Tomas theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Waves, radiation fields, and Knapp beams
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Waves, radiation fields, and Knapp beams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-monochromatic-waves-and-spherical-slices-of-a-moving-wave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Monochromatic waves and spherical slices of a moving wave
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-far-field-of-a-localized-helmholtz-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Far field of a localized Helmholtz source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-knapp-caps-and-wave-packet-beams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Knapp caps and wave-packet beams
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restriction-conjecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Necessary exponents and the sphere restriction conjecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restriction-to-kakeya" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. From local endpoint restriction to Kakeya dimension
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+
+
+
+
+
+
+<header class="book-opener">
+  <div class="book-runhead">
+    
+    <a href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+    <span>Part 14 of 14</span>
+    
+  </div>
+  <div class="book-title-row">
+    
+    <h1 id="chapter-14">Chapter 14: Critical Cubic Waves, Stein–Tomas Restriction, and Kakeya Dimension</h1>
+  </div>
+  <p class="book-standfirst">This closing chapter brings the analytic chain of <a href="../chapter-01/">Chapter 1</a> and <a href="../chapter-06/">Chapter 6</a> full circle. Using the inhomogeneous wave Strichartz estimate, we solve the scale-critical three-dimensional cubic wave equation globally for small <span class="arithmatex">\(\dot H^{1/2}\times\dot H^{-1/2}\)</span> data and contrast strong contraction limits against weak-convergence defects. Turning to a single wavelength, we prove the Stein–Tomas restriction theorem on <span class="arithmatex">\(\mathbb S^{d-1}\)</span> by parallel spatial slicing, examine three geometric and physical manifestations of sphere extension, identify the necessary exponent region of the Restriction Conjecture, and prove via Rademacher randomization that local endpoint restriction implies full Minkowski dimension <span class="arithmatex">\(d\)</span> for Kakeya sets.</p>
+  
+  <div class="book-meta">
+    <span>发布于 <time datetime="2026-11-24">2026-11-24</time></span>
+    
+    <span>3,261 字 · 约 9 分钟</span>
+  </div>
+  
+</header>
+
+<p class="has-dropcap">We work in spatial dimension <span class="arithmatex">\(d\ge2\)</span> with <span class="arithmatex">\(\Box=\partial_t^2-\Delta\)</span>, <span class="arithmatex">\(D=\sqrt{-\Delta}\)</span>, and the Fourier normalization</p>
+<div class="arithmatex">\[
+\widehat f(\xi)=\int_{\mathbb R^d}e^{-ix\cdot\xi}f(x)\,dx,
+\qquad
+f(x)=\frac1{(2\pi)^d}\int_{\mathbb R^d}e^{ix\cdot\xi}\widehat f(\xi)\,d\xi.
+\]</div>
+<p>To match standard restriction conventions in Sections 3–6, mixed wave norms in Sections 1–2 are written <span class="arithmatex">\(L_t^aL_x^b\)</span>, reserving <span class="arithmatex">\((p,q)\)</span> for the sphere extension map <span class="arithmatex">\(E:L^q(\mathbb S^{d-1})\to L^p(\mathbb R^d)\)</span>.</p>
+<h2 id="inhomogeneous-strichartz"><span class="book-secnum">§ 01</span>Inhomogeneous Strichartz estimates and variable-coefficient waves</h2>
+<p>Consider the forced Euclidean wave equation on a forward interval <span class="arithmatex">\(I=[0,T)\)</span> or <span class="arithmatex">\([0,\infty)\)</span>:</p>
+<div class="arithmatex">\[
+\Box u=F,\qquad u(0)=f,\qquad\partial_tu(0)=g.
+\tag{1.1}
+\]</div>
+<p>Let <span class="arithmatex">\((a,b)\)</span> and <span class="arithmatex">\((\widetilde a,\widetilde b)\)</span> both satisfy the wave-admissibility conditions of <a href="../chapter-13/#dyadic-reduction">Theorem 13.1</a> on <span class="arithmatex">\(\mathbb R^{1+d}\)</span>:</p>
+<div class="arithmatex">\[
+2\le a,\widetilde a\le\infty,\qquad 2\le b,\widetilde b&lt;\infty,\qquad
+\frac2a\le\frac{d-1}2\left(1-\frac2b\right),\qquad
+\frac2{\widetilde a}\le\frac{d-1}2\left(1-\frac2{\widetilde b}\right),
+\]</div>
+<p>with complementary scaling regularities</p>
+<div class="arithmatex">\[
+s=\frac d2-\frac1a-\frac db,
+\qquad
+1-s=\frac d2-\frac1{\widetilde a}-\frac d{\widetilde b}.
+\tag{1.2}
+\]</div>
+<p>Combining Theorem 13.1 with the Keel–Tao retarded Duhamel estimate <a href="#references">[2]</a> (proved directly for the diagonal exponent <span class="arithmatex">\(a=b=\widetilde a=\widetilde b=\frac{2(d+1)}{d-1}\)</span>, <span class="arithmatex">\(s=\frac12\)</span>, in <a href="../chapter-13/#exercises">Chapter 13, Exercise 1</a>) gives</p>
+<div class="arithmatex">\[
+\|u\|_{L_t^aL_x^b(I\times\mathbb R^d)}
+\lesssim\|f\|_{\dot H^s(\mathbb R^d)}+\|g\|_{\dot H^{s-1}(\mathbb R^d)}+\|F\|_{L_t^{\widetilde a'}L_x^{\widetilde b'}(I\times\mathbb R^d)}.
+\tag{1.3}
+\]</div>
+<p>Notice that taking <span class="arithmatex">\((\widetilde a,\widetilde b)=(a,b)\)</span> satisfies (1.2) precisely when <span class="arithmatex">\(s=\frac12\)</span>; in <span class="arithmatex">\(d=3\)</span>, <span class="arithmatex">\((a,b)=(4,4)\)</span> gives <span class="arithmatex">\(s=\frac32-\frac14-\frac34=\frac12\)</span> and dual forcing norm <span class="arithmatex">\(L_{t,x}^{4/3}\)</span>.</p>
+<p><strong>Variable-coefficient wave operators and manifold trapping.</strong> On a time-independent Riemannian manifold <span class="arithmatex">\((M,g)\)</span>, the geometric wave operator is <span class="arithmatex">\(\Box_g=\partial_t^2-\Delta_g\)</span>, where in local coordinates <span class="arithmatex">\(\Delta_gu=g^{ij}\nabla_i\nabla_ju=g^{ij}\partial_i\partial_ju+b^j\partial_ju\)</span>. A Euclidean chart cutoff <span class="arithmatex">\(P_N\)</span> with convolution kernel <span class="arithmatex">\(k_N(x-y)\)</span> commutes with <span class="arithmatex">\(\partial_i\)</span> but <em>not</em> with variable metric coefficients:</p>
+<div class="arithmatex">\[
+[P_N,\Box_g]u=-[P_N,g^{ij}]\partial_i\partial_ju-[P_N,b^j]\partial_ju,
+\qquad
+([P_N,c]v)(x)=\int k_N(x-y)\big(c(y)-c(x)\big)v(y)\,dy.
+\]</div>
+<p>Metric variation across the <span class="arithmatex">\(N^{-1}\)</span> packet scale enters directly as a commutator error. Replacing <span class="arithmatex">\(P_N\)</span> by a <em>spectral</em> cutoff <span class="arithmatex">\(\psi(\sqrt{-\Delta_g}/N)\)</span> restores exact commutation <span class="arithmatex">\([\psi(\sqrt{-\Delta_g}/N),\Box_g]=0\)</span> via functional calculus, yet commutation alone does not produce dispersion: on a compact manifold without boundary (such as <span class="arithmatex">\(\mathbb S^d\)</span>), standing eigenmodes <span class="arithmatex">\(\Delta_g\phi_\lambda=-\lambda^2\phi_\lambda\)</span> oscillate periodically as <span class="arithmatex">\(\cos(\lambda t)\phi_\lambda(x)\)</span>, refocusing infinitely often and ruling out global-in-time <span class="arithmatex">\(L_t^aL_x^b(\mathbb R\times M)\)</span> bounds.</p>
+<h2 id="critical-cubic-wave"><span class="book-secnum">§ 02</span>Critical small-data theory and weak solutions for the cubic wave</h2>
+<p>In <span class="arithmatex">\(\mathbb R^{1+3}\)</span>, consider the real-valued cubic wave equation</p>
+<div class="arithmatex">\[
+\Box u=u^3,\qquad u(0)=f,\qquad\partial_tu(0)=g.
+\tag{2.1}
+\]</div>
+<p>The rescaling <span class="arithmatex">\(u_\lambda(t,x)=\lambda u(\lambda t,\lambda x)\)</span> preserves (2.1) together with <span class="arithmatex">\(\|f\|_{\dot H^{1/2}(\mathbb R^3)}\)</span>, <span class="arithmatex">\(\|g\|_{\dot H^{-1/2}(\mathbb R^3)}\)</span>, and <span class="arithmatex">\(\|u\|_{L_{t,x}^4([0,\infty)\times\mathbb R^3)}\)</span>. Notice that the negative homogeneous norm <span class="arithmatex">\(\|g\|_{\dot H^{-1/2}}=\|D^{-1/2}g\|_{L^2}\)</span> penalizes low frequencies and cannot be replaced globally in time by an inhomogeneous norm.</p>
+<div id="thm-1" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 2.1</span><span class="book-name">Global small-data well-posedness at critical regularity</span></p>
+<p>There exists <span class="arithmatex">\(\varepsilon_0&gt;0\)</span> such that whenever <span class="arithmatex">\((f,g)\in\dot H^{1/2}(\mathbb R^3)\times\dot H^{-1/2}(\mathbb R^3)\)</span> satisfies <span class="arithmatex">\(A:=\|f\|_{\dot H^{1/2}}+\|g\|_{\dot H^{-1/2}}\le\varepsilon_0\)</span>, the integral equation</p>
+<div class="arithmatex">\[
+u(t)=(\Phi u)(t):=\cos(tD)f+\frac{\sin(tD)}Dg+\int_0^t\frac{\sin((t-\tau)D)}Du(\tau)^3\,d\tau
+\tag{2.2}
+\]</div>
+<p>has a unique global fixed point in a small closed ball of <span class="arithmatex">\(L_{t,x}^4([0,\infty)\times\mathbb R^3)\)</span>, with <span class="arithmatex">\((u,\partial_tu)\in C([0,\infty);\dot H^{1/2}\times\dot H^{-1/2})\)</span> and <span class="arithmatex">\(\|u\|_{L_{t,x}^4([0,\infty)\times\mathbb R^3)}\lesssim A\)</span>. Moreover, <span class="arithmatex">\(u\)</span> is a global distributional weak solution on <span class="arithmatex">\([0,\infty)\times\mathbb R^3\)</span>: for every <span class="arithmatex">\(\varphi\in C_c^\infty([0,\infty)\times\mathbb R^3)\)</span> (not required to vanish at <span class="arithmatex">\(t=0\)</span>),</p>
+<div class="arithmatex">\[
+\iint_{[0,\infty)\times\mathbb R^3}u(\partial_t^2\varphi-\Delta\varphi)\,dx\,dt
+=\iint_{[0,\infty)\times\mathbb R^3}u^3\varphi\,dx\,dt+\langle g,\varphi(0)\rangle-\langle f,\partial_t\varphi(0)\rangle.
+\tag{2.3}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Write <span class="arithmatex">\(\|\cdot\|_4=\|\cdot\|_{L_{t,x}^4([0,\infty)\times\mathbb R^3)}\)</span> and <span class="arithmatex">\(\|\cdot\|_{4/3}=\|\cdot\|_{L_{t,x}^{4/3}([0,\infty)\times\mathbb R^3)}\)</span>. Since <span class="arithmatex">\(\|v^3\|_{4/3}=\|v\|_4^3\)</span> and <span class="arithmatex">\(|v^3-w^3|\le(|v|^2+|v||w|+|w|^2)|v-w|\)</span>, applying (1.3) at <span class="arithmatex">\((a,b)=(\widetilde a,\widetilde b)=(4,4)\)</span> (<span class="arithmatex">\(s=\frac12\)</span>) and Hölder's inequality with <span class="arithmatex">\(\frac34=\frac24+\frac14\)</span> gives a constant <span class="arithmatex">\(C\ge1\)</span> such that</p>
+<div class="arithmatex">\[
+\|\Phi(v)\|_4\le CA+C\|v\|_4^3,
+\qquad
+\|\Phi(v)-\Phi(w)\|_4\le C\big(\|v\|_4^2+\|v\|_4\|w\|_4+\|w\|_4^2\big)\|v-w\|_4.
+\]</div>
+<p>Set <span class="arithmatex">\(B=2CA\)</span> and choose <span class="arithmatex">\(\varepsilon_0=(24C^3)^{-1/2}\)</span>, so <span class="arithmatex">\(A\le\varepsilon_0\)</span> implies <span class="arithmatex">\(3CB^2\le\frac12\)</span>. On the complete ball <span class="arithmatex">\(\mathcal B=\{v\in L_{t,x}^4([0,\infty)\times\mathbb R^3):\|v\|_4\le B\}\)</span>, we have <span class="arithmatex">\(\|\Phi(v)\|_4\le\frac B2+\frac B6&lt;B\)</span> and <span class="arithmatex">\(\|\Phi(v)-\Phi(w)\|_4\le\frac12\|v-w\|_4\)</span>. Banach's fixed-point theorem yields a unique fixed point <span class="arithmatex">\(u\in\mathcal B\)</span>. Applying (1.3) with <span class="arithmatex">\((a,b)=(\infty,2)\)</span> to <span class="arithmatex">\(D^{1/2}u\)</span> (keeping <span class="arithmatex">\((\widetilde a,\widetilde b)=(4,4)\)</span> so <span class="arithmatex">\(1-\frac12=\frac12\)</span>) shows <span class="arithmatex">\((u,\partial_tu)\in C([0,\infty);\dot H^{1/2}\times\dot H^{-1/2})\)</span> (and scatters in <span class="arithmatex">\(\dot H^{1/2}\times\dot H^{-1/2}\)</span> as <span class="arithmatex">\(t\to\infty\)</span> because <span class="arithmatex">\(\|u^3\|_{L_{t,x}^{4/3}}=\|u\|_4^3&lt;\infty\)</span>).</p>
+<p><em>Weak formulation and initial boundary signs.</em> Approximate <span class="arithmatex">\((f,g)\)</span> in <span class="arithmatex">\(\dot H^{1/2}\times\dot H^{-1/2}\)</span> by <span class="arithmatex">\((f_n,g_n)\in\mathcal S(\mathbb R^3)^2\)</span> with Fourier supports away from <span class="arithmatex">\(0\)</span>. For small <span class="arithmatex">\(A\)</span>, the corresponding smooth solutions <span class="arithmatex">\(u_n\)</span> lie in <span class="arithmatex">\(\mathcal B\)</span>, and the contraction inequality gives <span class="arithmatex">\(\|u_n-u\|_4\lesssim\|f_n-f\|_{\dot H^{1/2}}+\|g_n-g\|_{\dot H^{-1/2}}\to0\)</span>, hence <span class="arithmatex">\(\|u_n^3-u^3\|_{4/3}\to0\)</span>. For each smooth <span class="arithmatex">\(u_n\)</span> and <span class="arithmatex">\(\varphi\in C_c^\infty([0,\infty)\times\mathbb R^3)\)</span>, integrating by parts twice in <span class="arithmatex">\(t\)</span> on <span class="arithmatex">\([0,\infty)\)</span> gives</p>
+<div class="arithmatex">\[
+\int_0^\infty(\partial_t^2u_n)\varphi\,dt
+=\big[(\partial_tu_n)\varphi-u_n\partial_t\varphi\big]_0^\infty+\int_0^\infty u_n\partial_t^2\varphi\,dt
+=-g_n\varphi(0)+f_n\partial_t\varphi(0)+\int_0^\infty u_n\partial_t^2\varphi\,dt.
+\]</div>
+<p>Integrating in <span class="arithmatex">\(x\)</span> (no spatial boundary), moving the <span class="arithmatex">\(t=0\)</span> terms to the right side of <span class="arithmatex">\(\Box u_n=u_n^3\)</span>, and passing to the limit <span class="arithmatex">\(n\to\infty\)</span> via <span class="arithmatex">\(u_n\to u\)</span> in <span class="arithmatex">\(L_{t,x}^4\)</span>, <span class="arithmatex">\(u_n^3\to u^3\)</span> in <span class="arithmatex">\(L_{t,x}^{4/3}\)</span>, and <span class="arithmatex">\((f_n,g_n)\to(f,g)\)</span> in <span class="arithmatex">\(\dot H^{1/2}\times\dot H^{-1/2}\)</span> (paired against <span class="arithmatex">\(\partial_t\varphi(0),\varphi(0)\in\mathcal S(\mathbb R^3)\)</span>) yields (2.3).</p>
+</details>
+<p><strong>Why strong convergence cannot be replaced by weak limits.</strong> Boundedness of <span class="arithmatex">\(u_n\)</span> in <span class="arithmatex">\(L_{t,x}^4\)</span> alone supplies only a weakly convergent subsequence <span class="arithmatex">\(u_{n_k}\rightharpoonup u\)</span>, which does <em>not</em> identify the weak limit of <span class="arithmatex">\(u_{n_k}^3\)</span>:</p>
+<ul>
+<li>
+<p><em>Cubic weak-limit shift:</em> Fix <span class="arithmatex">\(\chi\in C_c^\infty(\mathbb R^{1+3})\setminus\{0\}\)</span> and set <span class="arithmatex">\(u_j(t,x)=\chi(t,x)(1+\sin(jx_1))\)</span>. By the Riemann–Lebesgue lemma, <span class="arithmatex">\(\sin(jx_1)\rightharpoonup0\)</span>, <span class="arithmatex">\(\sin^2(jx_1)=\frac12-\frac12\cos(2jx_1)\rightharpoonup\frac12\)</span>, and <span class="arithmatex">\(\sin^3(jx_1)=\frac34\sin(jx_1)-\frac14\sin(3jx_1)\rightharpoonup0\)</span>. Hence</p>
+<div class="arithmatex">\[
+u_j\rightharpoonup\chi\quad\text{in }L^4,
+\qquad
+u_j^3=\chi^3(1+3\sin(jx_1)+3\sin^2(jx_1)+\sin^3(jx_1))\rightharpoonup\frac52\chi^3\ne\chi^3\quad\text{in }L^{4/3}.
+\]</div>
+</li>
+<li>
+<p><em>Quadratic derivative defect measures:</em> If real sequences <span class="arithmatex">\(v_j=\partial_\alpha u_j\rightharpoonup v\)</span> weakly in <span class="arithmatex">\(L_{\mathrm{loc}}^2(\mathbb R^{1+3})\)</span> (as for finite-energy solutions of <span class="arithmatex">\(\Box u_j=(\partial u_j)^2\)</span>), then <span class="arithmatex">\(v_j^2\)</span> is bounded only in <span class="arithmatex">\(L_{\mathrm{loc}}^1\)</span>. Along a weak-<span class="arithmatex">\(*\)</span> convergent subsequence of Radon measures, lower semicontinuity <span class="arithmatex">\(\int\psi v^2\le\liminf_j\int\psi v_j^2\)</span> for <span class="arithmatex">\(\psi\in C_c^\infty\)</span>, <span class="arithmatex">\(\psi\ge0\)</span>, forces</p>
+<div class="arithmatex">\[
+v_j^2\,dx\,dt\overset{*}{\rightharpoonup}v^2\,dx\,dt+\mu,
+\qquad\mu\ge0,
+\]</div>
+<p>while mixed products <span class="arithmatex">\(\partial_\alpha u_j\partial_\beta u_j\)</span> acquire signed defect measures by polarization. For <span class="arithmatex">\(u_j(t,x)=j^{-1}\chi(t,x)\sin(jx_1)\)</span>, <span class="arithmatex">\(u_j\to0\)</span> uniformly while <span class="arithmatex">\((\partial_1u_j)^2=\chi^2\cos^2(jx_1)+O(j^{-1})\to\frac12\chi^2\)</span> in <span class="arithmatex">\(\mathcal D'\)</span>: high-frequency oscillations vanish from the weak limit while depositing macroscopic energy density.</p>
+</li>
+</ul>
+<h2 id="stein-tomas"><span class="book-secnum">§ 03</span>Restriction to the sphere and the Stein–Tomas theorem</h2>
+<p>Fix <span class="arithmatex">\(d\ge2\)</span> and let <span class="arithmatex">\(d\sigma\)</span> denote surface area on the unit sphere <span class="arithmatex">\(\mathbb S^{d-1}=\{\omega\in\mathbb R^d:|\omega|=1\}\)</span>. For <span class="arithmatex">\(f\in\mathcal S(\mathbb R^d)\)</span> and <span class="arithmatex">\(h\in L^1(\mathbb S^{d-1})\)</span>, define the <strong>restriction</strong> and <strong>extension</strong> operators</p>
+<div class="arithmatex">\[
+(Rf)(\omega)=\widehat f(\omega)\quad(\omega\in\mathbb S^{d-1}),
+\qquad
+(Eh)(x)=\int_{\mathbb S^{d-1}}e^{ix\cdot\omega}h(\omega)\,d\sigma(\omega)\quad(x\in\mathbb R^d).
+\tag{3.1}
+\]</div>
+<p>(Omitting <span class="arithmatex">\((2\pi)^{-d}\)</span> from <span class="arithmatex">\(E\)</span> makes <span class="arithmatex">\(E^*=R\)</span> exact with constant <span class="arithmatex">\(1\)</span>: Fubini gives <span class="arithmatex">\(\int_{\mathbb R^d}(Eh)\overline f\,dx=\int_{\mathbb S^{d-1}}h\overline{Rf}\,d\sigma\)</span>.)</p>
+<p><strong>Elementary endpoints.</strong> At <span class="arithmatex">\(L^1(\mathbb R^d)\)</span>, <span class="arithmatex">\(|Rf(\omega)|\le\|f\|_{L^1(\mathbb R^d)}\)</span> gives <span class="arithmatex">\(\|Rf\|_{L^2(\mathbb S^{d-1})}\le|\mathbb S^{d-1}|^{1/2}\|f\|_{L^1(\mathbb R^d)}\)</span>. At <span class="arithmatex">\(L^2(\mathbb R^d)\)</span>, however, <em>no</em> continuous restriction <span class="arithmatex">\(L^2(\mathbb R^d)\to L^q(\mathbb S^{d-1})\)</span> exists: choose <span class="arithmatex">\(\zeta\in C_c^\infty((-1,1))\)</span> with <span class="arithmatex">\(\zeta(0)=1\)</span>, and set <span class="arithmatex">\(\widehat f_\varepsilon(\xi)=\zeta\big(\frac{|\xi|-1}\varepsilon\big)\)</span> for <span class="arithmatex">\(0&lt;\varepsilon&lt;\frac12\)</span>. Then <span class="arithmatex">\(Rf_\varepsilon\equiv1\)</span> on <span class="arithmatex">\(\mathbb S^{d-1}\)</span>, while Plancherel in polar coordinates gives</p>
+<div class="arithmatex">\[
+\|f_\varepsilon\|_{L^2(\mathbb R^d)}^2
+=(2\pi)^{-d}|\mathbb S^{d-1}|\int_0^\infty\left|\zeta\left(\frac{\rho-1}\varepsilon\right)\right|^2\rho^{d-1}\,d\rho
+\simeq_d\varepsilon\longrightarrow0
+\qquad(\varepsilon\downarrow0).
+\]</div>
+<p>Between <span class="arithmatex">\(p'=1\)</span> and <span class="arithmatex">\(p'=2\)</span>, curvature of <span class="arithmatex">\(\mathbb S^{d-1}\)</span> yields the sharp <span class="arithmatex">\(L^2(\mathbb S^{d-1})\)</span> restriction range.</p>
+<div id="thm-2" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 3.1</span><span class="book-name">Stein–Tomas restriction theorem</span></p>
+<p>Let <span class="arithmatex">\(d\ge2\)</span> and put <span class="arithmatex">\(P=\frac{2(d+1)}{d-1}\)</span>, so <span class="arithmatex">\(P'=\frac{2(d+1)}{d+3}\)</span>. For every <span class="arithmatex">\(1\le p'\le\frac{2(d+1)}{d+3}\)</span> (equivalently <span class="arithmatex">\(p\ge P\)</span>),</p>
+<div class="arithmatex">\[
+\|Rf\|_{L^2(\mathbb S^{d-1})}\lesssim_{d,p}\|f\|_{L^{p'}(\mathbb R^d)},
+\qquad\text{equivalently}\qquad
+\|Eh\|_{L^p(\mathbb R^d)}\lesssim_{d,p}\|h\|_{L^2(\mathbb S^{d-1})}.
+\tag{3.2}
+\]</div>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>By duality <span class="arithmatex">\(E^*=R\)</span> and the same <span class="arithmatex">\(TT^*\)</span> equivalence as <a href="../chapter-13/#ttstar-duality">Lemma 13.2</a>, <span class="arithmatex">\(\|E\|_{L^2(\mathbb S^{d-1})\to L^p(\mathbb R^d)}^2=\|ER\|_{L^{p'}(\mathbb R^d)\to L^p(\mathbb R^d)}\)</span>, where <span class="arithmatex">\((ERf)(x)=((E1)*f)(x)\)</span>. Since the <span class="arithmatex">\(p'=1\)</span> bound <span class="arithmatex">\(\|Rf\|_{L^2(\mathbb S^{d-1})}\lesssim\|f\|_{L^1(\mathbb R^d)}\)</span> holds trivially, Riesz–Thorin interpolation reduces the theorem to the endpoint <span class="arithmatex">\(p=P\)</span>.</p>
+<p>Cover <span class="arithmatex">\(\mathbb S^{d-1}\)</span> by finitely many small smooth patches. Rotating coordinates, write one patch as the graph <span class="arithmatex">\(\omega=(\eta,\phi(\eta))\)</span> with <span class="arithmatex">\(\phi(\eta)=\sqrt{1-|\eta|^2}\)</span> and <span class="arithmatex">\(|\eta|\le\frac12\)</span> in <span class="arithmatex">\(\mathbb R^{d-1}\)</span>, where the surface-area factor <span class="arithmatex">\(d\sigma=\phi(\eta)^{-1}\,d\eta\)</span> is smooth and bounded above and below. Absorbing <span class="arithmatex">\(\phi(\eta)^{-1/2}\)</span> into the <span class="arithmatex">\(L^2\)</span> datum and inserting a smooth patch cutoff <span class="arithmatex">\(\chi\in C_c^\infty(B(0,1/2))\)</span>, split <span class="arithmatex">\(x=(y,z)\in\mathbb R^{d-1}\times\mathbb R\)</span> into <strong>parallel spatial observation planes</strong> and define</p>
+<div class="arithmatex">\[
+(T_zb)(y)=\int_{\mathbb R^{d-1}}e^{i(y\cdot\eta+z\phi(\eta))}\chi(\eta)b(\eta)\,d\eta.
+\]</div>
+<p>For <span class="arithmatex">\(F(y,z)\in\mathcal S(\mathbb R^d)\)</span>, the composition <span class="arithmatex">\((TT^*F)(y,z)=\int_{\mathbb R}(T_zT_w^*F(\cdot,w))(y)\,dw\)</span> has slice operator</p>
+<div class="arithmatex">\[
+(T_zT_w^*v)(y)=(k_{z-w}*_yv)(y),
+\qquad
+k_h(y)=(2\pi)^{d-1}\int_{\mathbb R^{d-1}}e^{i(y\cdot\eta+h\phi(\eta))}|\chi(\eta)|^2\,d\eta.
+\]</div>
+<p>For each <span class="arithmatex">\(h=z-w\in\mathbb R\)</span>:</p>
+<ol>
+<li><em>Plancherel on <span class="arithmatex">\(\mathbb R^{d-1}\)</span>:</em> <span class="arithmatex">\(|\mathcal F_yk_h(\eta)|=(2\pi)^{d-1}|\chi(-\eta)|^2\lesssim1\)</span>, so <span class="arithmatex">\(\|T_zT_w^*\|_{L_y^2\to L_y^2}\lesssim1\)</span>.</li>
+<li><em>Stationary phase on the patch:</em> For <span class="arithmatex">\(|h|\le1\)</span>, <span class="arithmatex">\(\|k_h\|_{L_y^\infty}\lesssim1\)</span>. For <span class="arithmatex">\(|h|&gt;1\)</span>, write <span class="arithmatex">\(y\cdot\eta+h\phi(\eta)=h(\phi(\eta)+u\cdot\eta)\)</span> with <span class="arithmatex">\(u=y/h\)</span>. On <span class="arithmatex">\(|\eta|\le\frac12\)</span>, <span class="arithmatex">\(\nabla_\eta\phi(\eta)=-\eta/\phi(\eta)\)</span> has modulus at most <span class="arithmatex">\(1/\sqrt3\)</span>, while <span class="arithmatex">\(\nabla_\eta^2\phi(\eta)=-\phi(\eta)^{-1}(I_{d-1}+\frac{\eta\otimes\eta}{\phi(\eta)^2})\preceq-I_{d-1}\)</span> is uniformly negative definite! Thus if <span class="arithmatex">\(|u|&gt;2\)</span>, <span class="arithmatex">\(|\nabla_\eta(\phi+u\cdot\eta)|\ge1\)</span> and <a href="../chapter-12/#nonstationary-phase">Lemma 12.1</a> gives <span class="arithmatex">\(O_m(|h|^{-m})\)</span>; if <span class="arithmatex">\(|u|\le2\)</span>, strict concavity ensures at most one critical point <span class="arithmatex">\(\eta_*(u)=-u/\sqrt{1+|u|^2}\)</span>, and <a href="../chapter-12/#stationary-phase">Theorem 12.2</a> (uniformly in <span class="arithmatex">\(|u|\le2\)</span>) gives <span class="arithmatex">\(\|k_h\|_{L_y^\infty}\lesssim_d(1+|h|)^{-(d-1)/2}\)</span>. Hence <span class="arithmatex">\(\|T_zT_w^*\|_{L_y^1\to L_y^\infty}\lesssim_d(1+|z-w|)^{-(d-1)/2}\)</span>.</li>
+</ol>
+<p>Riesz–Thorin interpolation between <span class="arithmatex">\((1,\infty)\)</span> and <span class="arithmatex">\((2,2)\)</span> at <span class="arithmatex">\(P=\frac{2(d+1)}{d-1}\)</span> puts weight <span class="arithmatex">\(1-\frac2P=1-\frac{d-1}{d+1}=\frac2{d+1}\)</span> on the dispersive bound, so</p>
+<div class="arithmatex">\[
+\frac{d-1}2\left(1-\frac2P\right)=\frac{d-1}{d+1}=\frac2P,
+\qquad
+\|T_zT_w^*v\|_{L_y^P}\lesssim_d|z-w|^{-2/P}\|v\|_{L_y^{P'}}.
+\]</div>
+<p>Since <span class="arithmatex">\(0&lt;\frac2P=\frac{d-1}{d+1}&lt;1\)</span> and <span class="arithmatex">\(\frac1P=\frac1{P'}-(1-\frac2P)\)</span>, Minkowski in <span class="arithmatex">\(L_y^P\)</span> and the one-dimensional Hardy–Littlewood–Sobolev inequality (<a href="../chapter-13/#time-integration">Lemma 13.4</a>) in <span class="arithmatex">\(z\)</span> yield <span class="arithmatex">\(\|TT^*F\|_{L_{y,z}^P}\lesssim_d\|F\|_{L_{y,z}^{P'}}\)</span>. Summing finitely many patches completes the proof.</p>
+</details>
+<h2 id="three-examples"><span class="book-secnum">§ 04</span>Waves, radiation fields, and Knapp beams</h2>
+<p>Three concrete constructions illuminate what <span class="arithmatex">\(E\)</span> and <span class="arithmatex">\(R\)</span> measure in physical space.</p>
+<h3 id="41-monochromatic-waves-and-spherical-slices-of-a-moving-wave">4.1 Monochromatic waves and spherical slices of a moving wave</h3>
+<p>Since <span class="arithmatex">\(\Delta(e^{ix\cdot\omega})=-|\omega|^2e^{ix\cdot\omega}=-e^{ix\cdot\omega}\)</span> for <span class="arithmatex">\(\omega\in\mathbb S^{d-1}\)</span>, every extension field <span class="arithmatex">\(u=Eh\)</span> solves the homogeneous <strong>Helmholtz equation</strong> <span class="arithmatex">\((\Delta+1)u=0\)</span>. Illuminating uniformly from all directions (<span class="arithmatex">\(h\equiv1\)</span>) produces the regular standing wave <span class="arithmatex">\(I(x)=(E1)(x)\)</span>, bounded by <span class="arithmatex">\((1+|x|)^{-(d-1)/2}\)</span> by <a href="../chapter-12/#dispersive-estimate">Lemma 12.3</a>; in <span class="arithmatex">\(d=3\)</span>, integrating over zonal bands <span class="arithmatex">\(s=\omega\cdot x/r\in[-1,1]\)</span> (<span class="arithmatex">\(r=|x|\)</span>) gives the exact formula</p>
+<div class="arithmatex">\[
+I(x)=2\pi\int_{-1}^1e^{irs}\,ds=4\pi\frac{\sin r}r.
+\]</div>
+<p>Now place spherical extensions inside the dyadic half-wave <span class="arithmatex">\(T_Nf(t,x)=e^{itD}P_Nf(x)\)</span> (<span class="arithmatex">\(\operatorname{supp}\psi_N\subset(N/2,2N)\)</span>). Writing <span class="arithmatex">\(\xi=\rho\omega\)</span> (<span class="arithmatex">\(\rho&gt;0\)</span>, <span class="arithmatex">\(\omega\in\mathbb S^{d-1}\)</span>), <span class="arithmatex">\(c_d=(2\pi)^{-d}\)</span>, and <span class="arithmatex">\(h_\rho(\omega)=\widehat f(\rho\omega)\)</span> slices the annulus into concentric spheres:</p>
+<div class="arithmatex">\[
+T_Nf(t,x)=c_d\int_0^\infty e^{it\rho}\psi_N(\rho)(Eh_\rho)(\rho x)\rho^{d-1}\,d\rho.
+\tag{4.1}
+\]</div>
+<p>At the Stein–Tomas exponent <span class="arithmatex">\(P=\frac{2(d+1)}{d-1}\)</span>, for each fixed <span class="arithmatex">\(x\in\mathbb R^d\)</span> the temporal Fourier transform of <span class="arithmatex">\(t\mapsto T_Nf(t,x)\)</span> is supported in <span class="arithmatex">\([N/2,2N]\)</span>, an interval of length <span class="arithmatex">\(\frac32N\)</span>. One-dimensional Bernstein in <span class="arithmatex">\(t\)</span> (<span class="arithmatex">\(\|\cdot\|_{L_t^P}\lesssim N^{\frac12-\frac1P}\|\cdot\|_{L_t^2}\)</span>) and temporal Plancherel give</p>
+<div class="arithmatex">\[
+\|T_Nf(\cdot,x)\|_{L_t^P}\lesssim N^{\frac12-\frac1P}\left(\int_0^\infty|\psi_N(\rho)|^2|(Eh_\rho)(\rho x)|^2\rho^{2(d-1)}\,d\rho\right)^{1/2}.
+\]</div>
+<p>Take the <span class="arithmatex">\(L_x^P\)</span> norm, apply Minkowski's inequality in <span class="arithmatex">\(L_x^{P/2}\)</span> (<span class="arithmatex">\(P&gt;2\)</span>) to pull the <span class="arithmatex">\(\rho\)</span>-integral outside, and apply Theorem 14.2 after rescaling <span class="arithmatex">\(y=\rho x\)</span> (<span class="arithmatex">\(\|(Eh_\rho)(\rho\cdot)\|_{L_x^P}=\rho^{-d/P}\|Eh_\rho\|_{L^P}\lesssim\rho^{-d/P}\|h_\rho\|_{L^2(\mathbb S^{d-1})}\)</span>):</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\|T_Nf\|_{L_{t,x}^P}
+&amp;\lesssim N^{\frac12-\frac1P}\left(\int_{N/2}^{2N}|\psi_N(\rho)|^2\rho^{2(d-1)-2d/P}\|h_\rho\|_{L^2(\mathbb S^{d-1})}^2\,d\rho\right)^{1/2}\\
+&amp;\simeq N^{\frac12-\frac1P+\frac{d-1}2-\frac dP}\left(c_d\int_0^\infty|\psi_N(\rho)|^2\|h_\rho\|_{L^2(\mathbb S^{d-1})}^2\rho^{d-1}\,d\rho\right)^{1/2}
+=N^{1/2}\|P_Nf\|_{L^2(\mathbb R^d)},
+\end{aligned}
+\]</div>
+<p>because <span class="arithmatex">\(\frac12-\frac1P+\frac{d-1}2-\frac dP=\frac d2-\frac{d+1}P=\frac d2-\frac{d-1}2=\frac12\)</span>. Thus Stein–Tomas on spheres plus one-dimensional time Plancherel directly recovers the diagonal wave Strichartz bound! Notice the structural contrast: <span class="arithmatex">\(ER\)</span> in Section 3 acts on spatial functions alone, whereas <span class="arithmatex">\(T_NT_N^*\)</span> in <a href="../chapter-13/#ttstar-duality">Chapter 13</a> acts on spacetime functions by integrating over all radial frequencies simultaneously.</p>
+<h3 id="42-far-field-of-a-localized-helmholtz-source">4.2 Far field of a localized Helmholtz source</h3>
+<p>Let <span class="arithmatex">\(F\in C_c^\infty(B_R(0))\)</span> be a compactly supported source in <span class="arithmatex">\(\mathbb R^3\)</span>, and consider the outgoing solution of <span class="arithmatex">\((\Delta+1)u=F\)</span> (matching time dependence <span class="arithmatex">\(e^{-it}\)</span>, so outgoing spherical waves carry <span class="arithmatex">\(e^{ir}\)</span>):</p>
+<div class="arithmatex">\[
+u(x)=-\frac1{4\pi}\int_{B_R(0)}\frac{e^{i|x-y|}}{|x-y|}F(y)\,dy
+\qquad\big((\Delta+1)(e^{ir}/r)=-4\pi\delta_0;\text{ Exercise 1}\big).
+\tag{4.2}
+\]</div>
+<p>Observe at <span class="arithmatex">\(x=r\omega\)</span> (<span class="arithmatex">\(\omega\in\mathbb S^2\)</span>, <span class="arithmatex">\(r&gt;2R\)</span>). For <span class="arithmatex">\(|y|\le R\)</span>, write <span class="arithmatex">\(s=|r\omega-y|=\sqrt{(r-\omega\cdot y)^2+|y|^2-(\omega\cdot y)^2}\)</span>. Since <span class="arithmatex">\(s\ge r-R&gt;\frac r2\)</span> and <span class="arithmatex">\(r-\omega\cdot y\ge r-R&gt;\frac r2\)</span>, rationalizing the difference gives the exact remainder</p>
+<div class="arithmatex">\[
+0\le s-(r-\omega\cdot y)=\frac{|y|^2-(\omega\cdot y)^2}{s+r-\omega\cdot y}\le\frac{R^2}r,
+\qquad
+\left|\frac rs-1\right|=\frac{|r-s|}s\le\frac{2R}r.
+\]</div>
+<p>Using <span class="arithmatex">\(|e^{i\alpha}-e^{i\beta}|\le|\alpha-\beta|\)</span>, we obtain uniformly for <span class="arithmatex">\(\omega\in\mathbb S^2\)</span> and <span class="arithmatex">\(|y|\le R\)</span>:</p>
+<div class="arithmatex">\[
+\left|\frac rse^{i(s-r)}-e^{-i\omega\cdot y}\right|
+\le\left|\frac rs-1\right|+\big|e^{i[s-(r-\omega\cdot y)]}-1\big|
+\le\frac{2R+R^2}r.
+\]</div>
+<p>Multiplying (4.2) by <span class="arithmatex">\(-4\pi re^{-ir}\)</span> and integrating over <span class="arithmatex">\(B_R(0)\)</span> proves the quantitative radiation asymptotic</p>
+<div class="arithmatex">\[
+-4\pi re^{-ir}u(r\omega)=RF(\omega)+O\!\left(\frac{R+R^2}r\|F\|_{L^1(\mathbb R^3)}\right).
+\tag{4.3}
+\]</div>
+<p>Stripping off the spherical phase <span class="arithmatex">\(e^{ir}\)</span> and geometric spreading <span class="arithmatex">\(r^{-1}\)</span> reveals the exact Fourier restriction <span class="arithmatex">\(RF(\omega)\)</span> of the source! Consequently, Theorem 14.2 bounds the total far-field energy flux by an <span class="arithmatex">\(L^{4/3}\)</span> norm without requiring support-dependent factors:</p>
+<div class="arithmatex">\[
+\lim_{r\to\infty}r^2\int_{\mathbb S^2}|u(r\omega)|^2\,d\sigma(\omega)
+=\frac{\|RF\|_{L^2(\mathbb S^2)}^2}{16\pi^2}
+\lesssim\|F\|_{L^{4/3}(\mathbb R^3)}^2.
+\]</div>
+<p>In general dimension <span class="arithmatex">\(d\ge2\)</span>, the outgoing fundamental solution of <span class="arithmatex">\(-\Delta-1\)</span> is <span class="arithmatex">\(G_d(r)=\frac i4(2\pi r)^{-\nu}H_\nu^{(1)}(r)\)</span> with <span class="arithmatex">\(\nu=\frac{d-2}2\)</span> and Hankel asymptotic <span class="arithmatex">\(G_d(r)=b_de^{ir}r^{-(d-1)/2}(1+O_d(r^{-1}))\)</span>, <span class="arithmatex">\(b_d=\frac i4(2\pi)^{-\nu}\sqrt{2/\pi}\,e^{-i(\pi\nu/2+\pi/4)}\)</span>, giving <span class="arithmatex">\(r^{(d-1)/2}e^{-ir}u(r\omega)=-b_dRF(\omega)+O_{d,R}(r^{-1}\|F\|_{L^1})\)</span> for <span class="arithmatex">\((\Delta+1)u=F\)</span>.</p>
+<h3 id="43-knapp-caps-and-wave-packet-beams">4.3 Knapp caps and wave-packet beams</h3>
+<p>Let <span class="arithmatex">\(\theta=\{(\eta,\sqrt{1-|\eta|^2}):|\eta|\le\delta\}\subset\mathbb S^{d-1}\)</span> (<span class="arithmatex">\(0&lt;\delta\le\frac12\)</span>) be a north-pole cap of aperture <span class="arithmatex">\(\delta\)</span>, with surface area <span class="arithmatex">\(\sigma(\theta)\simeq_d\delta^{d-1}\)</span>. For <span class="arithmatex">\(u=Ea\)</span> supported in <span class="arithmatex">\(\theta\)</span> and <span class="arithmatex">\(x=(x',x_d)\in\mathbb R^{d-1}\times\mathbb R\)</span>, factor out the central plane wave <span class="arithmatex">\(e^{ix_d}\)</span>:</p>
+<div class="arithmatex">\[
+e^{-ix_d}u(x)=\int_\theta e^{i\left[x'\cdot\eta+x_d\big(\sqrt{1-|\eta|^2}-1\big)\right]}a(\omega)\,d\sigma(\omega).
+\tag{4.4}
+\]</div>
+<p>Because <span class="arithmatex">\(0\le1-\sqrt{1-|\eta|^2}=\frac{|\eta|^2}{1+\sqrt{1-|\eta|^2}}\le\delta^2\)</span> on <span class="arithmatex">\(\theta\)</span>, inside the physical tube</p>
+<div class="arithmatex">\[
+T=\big\{(x',x_d):|x'|\le\tfrac1{10}\delta^{-1},\ |x_d|\le\tfrac1{10}\delta^{-2}\big\}
+\tag{4.5}
+\]</div>
+<p>the residual phase in (4.4) has modulus at most <span class="arithmatex">\(\frac1{10}+\frac1{10}=\frac15\)</span>. Taking <span class="arithmatex">\(a=\mathbf 1_\theta\)</span> and real parts gives the coherent lower bound</p>
+<div class="arithmatex">\[
+|E\mathbf 1_\theta(x)|\ge\cos\left(\frac15\right)\sigma(\theta)\gtrsim_d\delta^{d-1}
+\qquad(\forall\,x\in T).
+\tag{4.6}
+\]</div>
+<p>For a <em>smooth</em> cap amplitude <span class="arithmatex">\(a(\omega)=b(\eta/\delta)\sqrt{1-|\eta|^2}\)</span> with <span class="arithmatex">\(b\in C_c^\infty(B(0,1))\)</span>, substituting <span class="arithmatex">\(\eta=\delta v\)</span> gives <span class="arithmatex">\(e^{-ix_d}u(x)=\delta^{d-1}\int_{B(0,1)}e^{i\Phi(v)}b(v)\,dv\)</span>, where <span class="arithmatex">\(\Phi(v)=Y\cdot v+Z\phi_\delta(v)\)</span>, <span class="arithmatex">\(Y=\delta x'\)</span>, <span class="arithmatex">\(Z=\delta^2x_d\)</span>, and <span class="arithmatex">\(\phi_\delta(v)=-|v|^2/(1+\sqrt{1-\delta^2|v|^2})\)</span> has all derivatives uniformly bounded on <span class="arithmatex">\(B(0,1)\)</span> for <span class="arithmatex">\(\delta\le\frac12\)</span>. Whenever <span class="arithmatex">\(|Y|\ge4(1+|Z|)\)</span>, <span class="arithmatex">\(|\nabla_v\Phi(v)|\ge|Y|-2|Z|\ge\frac12|Y|\)</span>; <span class="arithmatex">\(M\)</span>-fold integration by parts (<a href="../chapter-12/#nonstationary-phase">Lemma 12.1</a> with parameter <span class="arithmatex">\(|Y|\)</span>) yields rapid <em>transverse</em> decay away from the beam:</p>
+<div class="arithmatex">\[
+|Ea(x)|\le C_{M,b}\,\delta^{d-1}\big(1+\delta|x'|\big)^{-M}
+\qquad\big(\delta|x'|\ge4(1+\delta^2|x_d|)\big).
+\tag{4.7}
+\]</div>
+<p>Note carefully that (4.7) holds on the natural axial scale <span class="arithmatex">\(|x_d|\lesssim\delta^{-2}\)</span> (and outside the wider cone <span class="arithmatex">\(|x'|\gtrsim\delta|x_d|\)</span> when <span class="arithmatex">\(|x_d|\gg\delta^{-2}\)</span>): along the axis <span class="arithmatex">\(x'=0\)</span> for <span class="arithmatex">\(|x_d|\gg\delta^{-2}\)</span>, <span class="arithmatex">\(v=0\)</span> remains a stationary point where <span class="arithmatex">\(Ea(0,x_d)\)</span> decays only algebraically like <span class="arithmatex">\(|x_d|^{-(d-1)/2}\)</span>, while a sharp indicator <span class="arithmatex">\(\mathbf 1_\theta\)</span> also picks up boundary oscillations from <span class="arithmatex">\(\partial\theta\)</span>.</p>
+<h2 id="restriction-conjecture"><span class="book-secnum">§ 05</span>Necessary exponents and the sphere restriction conjecture</h2>
+<p>For which <span class="arithmatex">\(1\le p,q\le\infty\)</span> can a global strong bound <span class="arithmatex">\(\|Eh\|_{L^p(\mathbb R^d)}\le C\|h\|_{L^q(\mathbb S^{d-1})}\)</span> (dually <span class="arithmatex">\(\|Rf\|_{L^{q'}(\mathbb S^{d-1})}\le C\|f\|_{L^{p'}(\mathbb R^d)}\)</span>) hold? Two contrasting tests give sharp necessary conditions:</p>
+<ol>
+<li>
+<p><strong>Single-cap concentration (Knapp's example).</strong> Take <span class="arithmatex">\(h=\mathbf 1_\theta\)</span> on the <span class="arithmatex">\(\delta\)</span>-cap of Section 4.3. Then <span class="arithmatex">\(\|\mathbf 1_\theta\|_{L^q(\mathbb S^{d-1})}=\sigma(\theta)^{1/q}\simeq_d\delta^{(d-1)/q}\)</span> (equal to <span class="arithmatex">\(1\)</span> if <span class="arithmatex">\(q=\infty\)</span>), while <span class="arithmatex">\(|T|\simeq_d(\delta^{-1})^{d-1}\delta^{-2}=\delta^{-(d+1)}\)</span>, so (4.6) gives</p>
+<div class="arithmatex">\[
+\delta^{d-1-\frac{d+1}p}\simeq_d\delta^{d-1}|T|^{1/p}\le\|E\mathbf 1_\theta\|_{L^p(\mathbb R^d)}\lesssim\|\mathbf 1_\theta\|_{L^q(\mathbb S^{d-1})}\simeq_d\delta^{\frac{d-1}q}.
+\]</div>
+<p>Sending <span class="arithmatex">\(\delta\downarrow0\)</span> forces the left exponent to be at least the right exponent:</p>
+<div class="arithmatex">\[
+(d-1)\left(1-\frac1q\right)\ge\frac{d+1}p.
+\tag{5.1}
+\]</div>
+<p>At <span class="arithmatex">\(q=2\)</span>, (5.1) reads <span class="arithmatex">\(p\ge\frac{2(d+1)}{d-1}=P\)</span>: Stein–Tomas achieves the exact Knapp threshold.</p>
+</li>
+<li>
+<p><strong>Isotropic radial tail (<span class="arithmatex">\(h\equiv1\)</span>).</strong> Stationary phase at the two poles <span class="arithmatex">\(\omega=\pm x/|x|\)</span> gives the asymptotic</p>
+<div class="arithmatex">\[
+(E1)(x)=c_d\,r^{-\frac{d-1}2}\cos\!\left(r-\frac{\pi(d-1)}4\right)+O_d\big(r^{-\frac{d+1}2}\big)
+\qquad(r=|x|\to\infty,\ c_d\ne0).
+\]</div>
+<p>On every radial interval of length <span class="arithmatex">\(2\pi\)</span> at large <span class="arithmatex">\(r\)</span>, <span class="arithmatex">\(|\cos(r-\frac{\pi(d-1)}4)|\ge\frac12\)</span> on a subinterval of fixed positive length, where <span class="arithmatex">\(|E1(x)|\gtrsim_dr^{-(d-1)/2}\)</span>. Hence <span class="arithmatex">\(E1\in L^p(\mathbb R^d)\)</span> requires <span class="arithmatex">\(\int_1^\infty r^{d-1-p(d-1)/2}\,dr&lt;\infty\)</span>, which forces the strict inequality</p>
+<div class="arithmatex">\[
+p&gt;\frac{2d}{d-1},
+\qquad\text{equivalently}\qquad
+p'&lt;\frac{2d}{d+1}.
+\tag{5.2}
+\]</div>
+<p>At <span class="arithmatex">\(p=\frac{2d}{d-1}\)</span> itself, <span class="arithmatex">\(\|E1\|_{L^p(B_L)}^p\simeq_d\log L\)</span> diverges logarithmically as <span class="arithmatex">\(L\to\infty\)</span>.</p>
+</li>
+</ol>
+<p><strong>The Sphere Restriction Conjecture.</strong> For every <span class="arithmatex">\(d\ge2\)</span>, it is conjectured that <span class="arithmatex">\(\|Eh\|_{L^p(\mathbb R^d)}\le C_{d,p,q}\|h\|_{L^q(\mathbb S^{d-1})}\)</span> holds for <em>all</em> <span class="arithmatex">\(1\le p,q\le\infty\)</span> satisfying both (5.1) and (5.2) (proved in <span class="arithmatex">\(d=2\)</span> by Fefferman and Stein; open for <span class="arithmatex">\(d\ge3\)</span>, see <a href="#references">[3]</a>). Setting equality in both conditions meets at the critical corner</p>
+<div class="arithmatex">\[
+p_c=q_c=\frac{2d}{d-1},
+\qquad
+p_c'=q_c'=\frac{2d}{d+1}
+\]</div>
+<p>(in <span class="arithmatex">\(d=3\)</span>: <span class="arithmatex">\((p_c,q_c)=(3,3)\)</span>, distinct from the Stein–Tomas point <span class="arithmatex">\((4,2)\)</span>). Although global boundedness on <span class="arithmatex">\(\mathbb R^d\)</span> fails at <span class="arithmatex">\((p_c,q_c)\)</span> due to the logarithmic radial tail of <span class="arithmatex">\(E1\)</span>, restricting observation to balls <span class="arithmatex">\(B_L\)</span> with an <span class="arithmatex">\(L^\alpha\)</span> loss remains open for <span class="arithmatex">\(d\ge3\)</span> and directly controls Kakeya tube geometry.</p>
+<h2 id="restriction-to-kakeya"><span class="book-secnum">§ 06</span>From local endpoint restriction to Kakeya dimension</h2>
+<p>Consider the local endpoint extension hypothesis at <span class="arithmatex">\(p_c=q_c=\frac{2d}{d-1}\)</span>:</p>
+<div class="arithmatex">\[
+\text{For every }\alpha&gt;0\text{ and every ball }B_L\subset\mathbb R^d\text{ of radius }L\ge1,\quad
+\|Eh\|_{L^{p_c}(B_L)}\le C_{\alpha,d}\,L^\alpha\|h\|_{L^{q_c}(\mathbb S^{d-1})}.
+\tag{H}
+\]</div>
+<div id="thm-3" class="admonition theorem">
+<p class="admonition-title"><span class="book-label">定理 6.1</span><span class="book-name">Local endpoint restriction implies Kakeya multiplicity and full Minkowski dimension</span></p>
+<p>Assume Hypothesis (H) holds in dimension <span class="arithmatex">\(d\ge2\)</span>. Let <span class="arithmatex">\(0&lt;\delta\le\frac12\)</span>, let <span class="arithmatex">\(\{\omega_j\}_{j=1}^J\subset\mathbb S^{d-1}\)</span> be a <span class="arithmatex">\(\delta\)</span>-separated set of unit directions, and let <span class="arithmatex">\(T_j\subset\mathbb R^d\)</span> be cylindrical tubes of length <span class="arithmatex">\(1\)</span> and radius <span class="arithmatex">\(\delta\)</span> with axis direction <span class="arithmatex">\(\omega_j\)</span> (placed at arbitrary centers in <span class="arithmatex">\(\mathbb R^d\)</span>). Write <span class="arithmatex">\(m(y)=\sum_{j=1}^J\mathbf 1_{T_j}(y)\)</span> and <span class="arithmatex">\(U=\bigcup_{j=1}^JT_j\)</span>.</p>
+<ol>
+<li>
+<p>For every <span class="arithmatex">\(\varepsilon&gt;0\)</span>,</p>
+<div class="arithmatex">\[
+\|m\|_{L^{\frac d{d-1}}(\mathbb R^d)}\lesssim_{\varepsilon,d}\delta^{-\varepsilon}(J\delta^{d-1})^{\frac{d-1}d}.
+\tag{6.1}
+\]</div>
+<p>In particular, for a maximal <span class="arithmatex">\(\delta\)</span>-separated direction set (<span class="arithmatex">\(J\simeq_d\delta^{-(d-1)}\)</span>), <span class="arithmatex">\(\|m\|_{L^{d/(d-1)}(\mathbb R^d)}\lesssim_{\varepsilon,d}\delta^{-\varepsilon}\)</span> and <span class="arithmatex">\(|U|\gtrsim_{\eta,d}\delta^\eta\)</span> for every <span class="arithmatex">\(\eta&gt;0\)</span>.</p>
+</li>
+<li>
+<p>Every bounded <strong>Kakeya (Besicovitch) set</strong> <span class="arithmatex">\(K\subset\mathbb R^d\)</span> containing a unit line segment in every direction has lower (hence full) Minkowski dimension <span class="arithmatex">\(\underline{\dim}_{\mathrm M}(K)=d\)</span>.</p>
+</li>
+</ol>
+</div>
+<details class="proof">
+<summary>Proof</summary>
+<p>Cover <span class="arithmatex">\(\mathbb S^{d-1}\)</span> by finitely many small patches so that on each patch the Knapp cap bound (4.6) applies; by triangle inequality in <span class="arithmatex">\(L^{\frac d{d-1}}\)</span>, restrict to one patch. Suppose first that all tube centers <span class="arithmatex">\(c_j\in\mathbb R^d\)</span> lie inside a single unit cube <span class="arithmatex">\(Q_0\)</span>, so <span class="arithmatex">\(U\subset B(y_0,2)\)</span> for the center <span class="arithmatex">\(y_0\)</span> of <span class="arithmatex">\(Q_0\)</span>.</p>
+<p><em>Step 1: Rescaling to wave-packet scale <span class="arithmatex">\(\delta^{-2}\)</span>.</em> Set <span class="arithmatex">\(x=\delta^{-2}y\)</span> (<span class="arithmatex">\(dx=\delta^{-2d}\,dy\)</span>). The rescaled tube <span class="arithmatex">\(\widetilde T_j=\delta^{-2}T_j\)</span> has center <span class="arithmatex">\(b_j=\delta^{-2}c_j\)</span>, length <span class="arithmatex">\(\delta^{-2}\)</span>, and radius <span class="arithmatex">\(\delta^{-1}\)</span>, and all <span class="arithmatex">\(\widetilde T_j\)</span> lie inside <span class="arithmatex">\(B_L:=B(\delta^{-2}y_0,2\delta^{-2})\)</span> of radius <span class="arithmatex">\(L=2\delta^{-2}\ge8\)</span>. Choose a small dimensional constant <span class="arithmatex">\(c_0\in(0,\frac1{20}]\)</span> so that the spherical caps <span class="arithmatex">\(\theta_j=\{\omega\in\mathbb S^{d-1}:|\omega-\omega_j|\le c_0\delta\}\)</span> are pairwise disjoint (since <span class="arithmatex">\(|\omega_j-\omega_k|\ge\delta\)</span> for <span class="arithmatex">\(j\ne k\)</span>) and so that <span class="arithmatex">\(|E\mathbf 1_{\theta_j}(z)|\gtrsim_d\delta^{d-1}\)</span> whenever <span class="arithmatex">\(|z_\perp|\le\delta^{-1}\)</span> and <span class="arithmatex">\(|z_\parallel|\le\frac12\delta^{-2}\)</span> relative to <span class="arithmatex">\(\omega_j\)</span> (covering <span class="arithmatex">\(\widetilde T_j\)</span> directly, or after splitting each unit tube into <span class="arithmatex">\(\lceil10/c_0^2\rceil=O_d(1)\)</span> longitudinal segments). Modulate each cap by its tube center:</p>
+<div class="arithmatex">\[
+h_j(\omega)=e^{-ib_j\cdot\omega}\mathbf 1_{\theta_j}(\omega),
+\qquad
+(Eh_j)(x)=(E\mathbf 1_{\theta_j})(x-b_j),
+\qquad
+|Eh_j(x)|\gtrsim_d\delta^{d-1}\mathbf 1_{\widetilde T_j}(x).
+\]</div>
+<p><em>Step 2: Rademacher randomization and Jensen's inequality.</em> Let <span class="arithmatex">\(\varepsilon_1,\dots,\varepsilon_J\in\{\pm1\}\)</span> be independent symmetric random signs and set <span class="arithmatex">\(h_\varepsilon(\omega)=\sum_{j=1}^J\varepsilon_jh_j(\omega)\)</span>. Because the caps <span class="arithmatex">\(\theta_j\)</span> are disjoint, <span class="arithmatex">\(|h_\varepsilon(\omega)|=\sum_{j=1}^J\mathbf 1_{\theta_j}(\omega)\)</span> for every sign choice <span class="arithmatex">\(\varepsilon\)</span>, so</p>
+<div class="arithmatex">\[
+\|h_\varepsilon\|_{L^{q_c}(\mathbb S^{d-1})}^{q_c}=\sum_{j=1}^J\sigma(\theta_j)\lesssim_dJ\delta^{d-1}.
+\]</div>
+<p>Pointwise in <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(\mathbb E_\varepsilon|Eh_\varepsilon(x)|^2=\sum_{j=1}^J|Eh_j(x)|^2\)</span>. Because <span class="arithmatex">\(\frac{p_c}2=\frac d{d-1}&gt;1\)</span>, <span class="arithmatex">\(t\mapsto t^{p_c/2}\)</span> is convex on <span class="arithmatex">\([0,\infty)\)</span>, so Jensen's inequality gives</p>
+<div class="arithmatex">\[
+\mathbb E_\varepsilon|Eh_\varepsilon(x)|^{p_c}
+\ge\big(\mathbb E_\varepsilon|Eh_\varepsilon(x)|^2\big)^{p_c/2}
+=\left(\sum_{j=1}^J|Eh_j(x)|^2\right)^{p_c/2}
+\gtrsim_d\delta^{(d-1)p_c}\,m(\delta^2x)^{\frac d{d-1}}.
+\]</div>
+<p>Integrate over <span class="arithmatex">\(x\in B_L\)</span>, interchange <span class="arithmatex">\(\mathbb E_\varepsilon\)</span> with <span class="arithmatex">\(\int_{B_L}\)</span> by Tonelli, apply Hypothesis (H) at <span class="arithmatex">\(p_c=q_c=\frac{2d}{d-1}\)</span>, and substitute <span class="arithmatex">\(x=\delta^{-2}y\)</span>:</p>
+<div class="arithmatex">\[
+\delta^{(d-1)p_c-2d}\int_{\mathbb R^d}m(y)^{\frac d{d-1}}\,dy
+\lesssim_d\mathbb E_\varepsilon\|Eh_\varepsilon\|_{L^{p_c}(B_L)}^{p_c}
+\le C_{\alpha,d}^{p_c}(2\delta^{-2})^{\alpha p_c}(J\delta^{d-1}).
+\]</div>
+<p>Miraculously, <span class="arithmatex">\((d-1)p_c-2d=(d-1)\frac{2d}{d-1}-2d=0\)</span>: all powers of <span class="arithmatex">\(\delta\)</span> on the left cancel! Raising both sides to <span class="arithmatex">\(\frac{d-1}d=\frac2{p_c}\)</span> and choosing <span class="arithmatex">\(\alpha=\varepsilon/4\)</span> proves (6.1) when all centers lie in <span class="arithmatex">\(Q_0\)</span>.</p>
+<p><em>Step 3: Arbitrary tube centers.</em> Partition <span class="arithmatex">\(\mathbb R^d\)</span> into unit lattice cubes <span class="arithmatex">\(Q_z=z+[0,1)^d\)</span>, <span class="arithmatex">\(z\in\mathbb Z^d\)</span>, and group the tubes by the cube <span class="arithmatex">\(Q_z\)</span> containing their center (<span class="arithmatex">\(J_z\)</span> tubes in group <span class="arithmatex">\(z\)</span>, <span class="arithmatex">\(\sum_zJ_z=J\)</span>, <span class="arithmatex">\(m=\sum_zm_z\)</span>). Each <span class="arithmatex">\(m_z\)</span> is supported in the <span class="arithmatex">\(2\)</span>-enlargement <span class="arithmatex">\(\widetilde Q_z\)</span> of <span class="arithmatex">\(Q_z\)</span>, and the family <span class="arithmatex">\(\{\widetilde Q_z\}_{z\in\mathbb Z^d}\)</span> has bounded overlap <span class="arithmatex">\(M_d\le5^d\)</span>. Hence pointwise <span class="arithmatex">\(m(y)^{\frac d{d-1}}\le M_d^{\frac1{d-1}}\sum_zm_z(y)^{\frac d{d-1}}\)</span>, and summing the pre-root estimate <span class="arithmatex">\(\int m_z^{d/(d-1)}\,dy\lesssim_{\varepsilon,d}\delta^{-\frac{d\varepsilon}{d-1}}J_z\delta^{d-1}\)</span> over <span class="arithmatex">\(z\in\mathbb Z^d\)</span> recovers (6.1) in general.</p>
+<p><em>Step 4: Union volume and Minkowski dimension.</em> When <span class="arithmatex">\(\{\omega_j\}_{j=1}^J\)</span> is maximal <span class="arithmatex">\(\delta\)</span>-separated on <span class="arithmatex">\(\mathbb S^{d-1}\)</span>, area comparison gives <span class="arithmatex">\(J\delta^{d-1}\simeq_d1\)</span>, while <span class="arithmatex">\(|T_j|\simeq_d\delta^{d-1}\)</span>. By Hölder's inequality with exponents <span class="arithmatex">\(\frac d{d-1}\)</span> and <span class="arithmatex">\(d\)</span> on <span class="arithmatex">\(U\)</span>,</p>
+<div class="arithmatex">\[
+1\simeq_dJ\delta^{d-1}\simeq_d\sum_{j=1}^J|T_j|=\int_Um(y)\,dy\le\|m\|_{L^{\frac d{d-1}}(\mathbb R^d)}|U|^{1/d}
+\lesssim_{\varepsilon,d}\delta^{-\varepsilon}|U|^{1/d},
+\]</div>
+<p>giving <span class="arithmatex">\(|U|\gtrsim_{\varepsilon,d}\delta^{d\varepsilon}\)</span>, i.e. <span class="arithmatex">\(|U|\gtrsim_{\eta,d}\delta^\eta\)</span> for every <span class="arithmatex">\(\eta&gt;0\)</span>. Finally, if <span class="arithmatex">\(K\subset\mathbb R^d\)</span> is bounded and contains a unit segment <span class="arithmatex">\(I_\omega\)</span> in every direction <span class="arithmatex">\(\omega\in\mathbb S^{d-1}\)</span>, then for each <span class="arithmatex">\(\delta\in(0,\frac12]\)</span> the tubes <span class="arithmatex">\(T_j=\mathcal N_\delta(I_{\omega_j})\)</span> lie inside the <span class="arithmatex">\(2\delta\)</span>-neighborhood <span class="arithmatex">\(K_{2\delta}\)</span> of <span class="arithmatex">\(K\)</span>, so <span class="arithmatex">\(|K_{2\delta}|\ge|U|\gtrsim_{\eta,d}\delta^\eta\)</span> (Exercise 2), forcing <span class="arithmatex">\(\underline{\dim}_{\mathrm M}(K)=d\)</span>. Note that <span class="arithmatex">\(\delta^\eta\)</span> rules out any dimension drop below <span class="arithmatex">\(d\)</span>, though it does not assert positive <span class="arithmatex">\(d\)</span>-dimensional Lebesgue measure of <span class="arithmatex">\(K\)</span> itself (which fails already in <span class="arithmatex">\(d=2\)</span> by Besicovitch's construction).</p>
+</details>
+<h2 id="exercises"><span class="book-secnum">§ 07</span>Exercises</h2>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.1</span><span class="book-name">Distributional verification of the outgoing Helmholtz Green&#x27;s function</span></p>
+<p>Verify that <span class="arithmatex">\(G(x)=\frac{e^{i|x|}}{|x|}\)</span> satisfies <span class="arithmatex">\((\Delta+1)G=-4\pi\delta_0\)</span> in <span class="arithmatex">\(\mathcal D'(\mathbb R^3)\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>Since <span class="arithmatex">\(|G(x)|=|x|^{-1}\)</span> is locally integrable on <span class="arithmatex">\(\mathbb R^3\)</span>, <span class="arithmatex">\(G\)</span> defines a distribution. For <span class="arithmatex">\(r=|x|&gt;0\)</span>, radial differentiation gives</p>
+<div class="arithmatex">\[
+\Delta\left(\frac{e^{ir}}r\right)=\frac1r\frac{d^2}{dr^2}\left(r\cdot\frac{e^{ir}}r\right)=\frac1r\frac{d^2}{dr^2}(e^{ir})=-\frac{e^{ir}}r,
+\]</div>
+<p>so <span class="arithmatex">\((\Delta+1)G=0\)</span> classically on <span class="arithmatex">\(\mathbb R^3\setminus\{0\}\)</span>. For <span class="arithmatex">\(\varphi\in C_c^\infty(\mathbb R^3)\)</span>, dominated convergence and Green's second identity on <span class="arithmatex">\(\Omega_\varepsilon=\mathbb R^3\setminus\overline{B_\varepsilon(0)}\)</span> (with inward normal <span class="arithmatex">\(-\frac x\varepsilon\)</span> on <span class="arithmatex">\(\partial\Omega_\varepsilon=\partial B_\varepsilon(0)\)</span>) give</p>
+<div class="arithmatex">\[
+\langle(\Delta+1)G,\varphi\rangle
+=\lim_{\varepsilon\downarrow0}\int_{|x|&gt;\varepsilon}G(x)(\Delta\varphi+\varphi)(x)\,dx
+=\lim_{\varepsilon\downarrow0}\int_{|x|=\varepsilon}\left(\frac{\partial G}{\partial r}\varphi-G\frac{\partial\varphi}{\partial r}\right)d\sigma.
+\]</div>
+<p>On <span class="arithmatex">\(|x|=\varepsilon\)</span>, <span class="arithmatex">\(G=e^{i\varepsilon}/\varepsilon\)</span>, <span class="arithmatex">\(\partial_rG=e^{i\varepsilon}(i\varepsilon-1)/\varepsilon^2\)</span>, <span class="arithmatex">\(|\partial_r\varphi|\le\|\nabla\varphi\|_\infty\)</span>, and <span class="arithmatex">\(\varphi(x)=\varphi(0)+O(\varepsilon)\)</span>. The second surface term is <span class="arithmatex">\(O(\varepsilon)\to0\)</span>, while the first equals <span class="arithmatex">\(4\pi\varepsilon^2\cdot\frac{e^{i\varepsilon}(i\varepsilon-1)}{\varepsilon^2}(\varphi(0)+O(\varepsilon))\to-4\pi\varphi(0)\)</span>. Hence <span class="arithmatex">\((\Delta+1)G=-4\pi\delta_0\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title"><span class="book-label">例 7.2</span><span class="book-name">Covering numbers and lower Minkowski dimension from neighborhood volume</span></p>
+<p>For a nonempty bounded set <span class="arithmatex">\(K\subset\mathbb R^d\)</span> and <span class="arithmatex">\(\delta&gt;0\)</span>, let <span class="arithmatex">\(N(K,\delta)\)</span> denote the minimum number of closed balls of radius <span class="arithmatex">\(\delta\)</span> needed to cover <span class="arithmatex">\(K\)</span>, so the lower Minkowski (box-counting) dimension is</p>
+<div class="arithmatex">\[
+\underline{\dim}_{\mathrm M}(K)=\liminf_{\delta\downarrow0}\frac{\log N(K,\delta)}{\log(1/\delta)}.
+\]</div>
+<p>Prove that if the <span class="arithmatex">\(2\delta\)</span>-neighborhood <span class="arithmatex">\(K_{2\delta}=\{y\in\mathbb R^d:\operatorname{dist}(y,K)&lt;2\delta\}\)</span> satisfies <span class="arithmatex">\(|K_{2\delta}|\ge c_\eta\delta^\eta\)</span> for every <span class="arithmatex">\(\eta&gt;0\)</span> and <span class="arithmatex">\(0&lt;\delta\le\frac12\)</span>, then <span class="arithmatex">\(\underline{\dim}_{\mathrm M}(K)=d\)</span>.</p>
+</div>
+<details class="solution">
+<summary>Solution</summary>
+<p>Let <span class="arithmatex">\(B(x_1,\delta),\dots,B(x_N,\delta)\)</span> be a minimal covering of <span class="arithmatex">\(K\)</span> by balls of radius <span class="arithmatex">\(\delta\)</span>, with <span class="arithmatex">\(N=N(K,\delta)\)</span>. For every <span class="arithmatex">\(y\in K_{2\delta}\)</span> there exists <span class="arithmatex">\(x\in K\)</span> with <span class="arithmatex">\(|y-x|&lt;2\delta\)</span>, and some covering center <span class="arithmatex">\(x_m\)</span> satisfies <span class="arithmatex">\(|x-x_m|\le\delta\)</span>; by the triangle inequality, <span class="arithmatex">\(|y-x_m|&lt;3\delta\)</span>. Thus <span class="arithmatex">\(K_{2\delta}\subset\bigcup_{m=1}^NB(x_m,3\delta)\)</span>, and subadditivity of Lebesgue measure gives</p>
+<div class="arithmatex">\[
+c_\eta\delta^\eta\le|K_{2\delta}|\le N(K,\delta)\,\omega_d(3\delta)^d=3^d\omega_d\,\delta^dN(K,\delta).
+\]</div>
+<p>Hence <span class="arithmatex">\(N(K,\delta)\ge(3^d\omega_d)^{-1}c_\eta\delta^{-(d-\eta)}\)</span>, and taking logarithms yields</p>
+<div class="arithmatex">\[
+\underline{\dim}_{\mathrm M}(K)\ge d-\eta
+\qquad(\forall\,\eta&gt;0).
+\]</div>
+<p>Sending <span class="arithmatex">\(\eta\downarrow0\)</span> gives <span class="arithmatex">\(\underline{\dim}_{\mathrm M}(K)\ge d\)</span>. Conversely, since <span class="arithmatex">\(K\)</span> is bounded, covering a containing cube of side <span class="arithmatex">\(L\)</span> by <span class="arithmatex">\(O_d((L/\delta)^d)\)</span> balls of radius <span class="arithmatex">\(\delta\)</span> gives <span class="arithmatex">\(\overline{\dim}_{\mathrm M}(K)\le d\)</span>, so <span class="arithmatex">\(\underline{\dim}_{\mathrm M}(K)=\overline{\dim}_{\mathrm M}(K)=d\)</span>.</p>
+</details>
+<h2 id="references">References</h2>
+<ol>
+<li>P. Tomas, <em>A restriction theorem for the Fourier transform</em>, Bulletin of the American Mathematical Society <strong>81</strong> (1975), 477–478; and E. M. Stein, <em>Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals</em>, Princeton University Press, 1993, Chapter IX.</li>
+<li>M. Keel and T. Tao, <em>Endpoint Strichartz estimates</em>, American Journal of Mathematics <strong>120</strong> (1998), 955–980. <a href="https://arxiv.org/abs/math/9803054">arXiv:math/9803054</a>.</li>
+<li>T. Tao, <em>Some recent progress on the restriction conjecture</em>, in <em>Fourier Analysis and Convexity</em>, Birkhäuser, 2004, 217–243. <a href="https://arxiv.org/abs/math/0311181">arXiv:math/0311181</a>.</li>
+</ol>
+<p><a href="../chapter-13/">Previous: wave Strichartz estimates and the TT* argument</a></p>
+
+<p class="zdd-colophon" aria-label="正文完"><span>完</span></p>
+
+
+
+
+
+<footer class="zdd-article-end">
+  
+  <nav class="zdd-course-navigation zdd-pager" aria-label="Topics in Modern Hyperbolic PDEs章节导航">
+    
+    <a class="zdd-pager-link is-prev" href="../chapter-13/" rel="prev">
+      <span class="zdd-pager-label">← 上一章</span>
+      <span class="zdd-pager-title">Chapter 13: Wave Strichartz Estimates and the TT* Argument</span>
+    </a>
+    
+    <span class="zdd-pager-link is-empty" aria-hidden="true"></span>
+    <a class="zdd-pager-catalog" href="../../../#hyperbolic-pde">Topics in Modern Hyperbolic PDEs · 第 14 / 14 章 · 系列目录</a>
+  </nav>
+  
+  
+  <div class="zdd-article-taxonomy zdd-end-row">
+    <span class="zdd-end-label">归档</span>
+    <div class="zdd-end-chips">
+      <a class="zdd-end-chip is-category" href="../../../../blog/#analysis">分析</a><a class="zdd-end-chip is-category" href="../../../../blog/#hyperbolic-pde">Topics in Modern Hyperbolic PDEs</a>
+      <a class="zdd-end-chip" href="../../../../tags/?tag=hyperbolic-pde">#hyperbolic-pde</a><a class="zdd-end-chip" href="../../../../tags/?tag=harmonic-analysis">#harmonic-analysis</a><a class="zdd-end-chip" href="../../../../tags/?tag=wave-packets">#wave-packets</a><a class="zdd-end-chip" href="../../../../tags/?tag=scattering">#scattering</a><a class="zdd-end-chip" href="../../../../tags/?tag=course">#course</a>
+    </div>
+  </div>
+  
+  
+  <div class="zdd-backlinks zdd-end-row">
+    <span class="zdd-end-label">被引用</span>
+    <ul class="zdd-end-links">
+      <li><a href="../chapter-12/">Chapter 12: Stationary Phase, Light-Cone Geometry, and Wave Dispersion</a></li><li><a href="../chapter-13/">Chapter 13: Wave Strichartz Estimates and the TT* Argument</a></li>
+    </ul>
+  </div>
+  
+</footer>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+
+<section class="zdd-comments" aria-labelledby="zdd-comments-title">
+  <h2 id="zdd-comments-title" class="zdd-comments-title">评论</h2>
+  <div class="zdd-comments-frame" data-zdd-giscus></div>
+</section>
+<script>
+  (function () {
+    var holder = document.querySelector("[data-zdd-giscus]");
+    if (!holder) return;
+    function theme() {
+      return document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark_dimmed" : "light";
+    }
+    var config = {"category": "Announcements", "category_id": "DIC_kwDOQYFCW84CyE0w", "repo": "zdd14990/zdd14990.github.io", "repo_id": "R_kgDOQYFCWw"};
+    var script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    var attrs = {
+      "data-repo": config.repo,
+      "data-repo-id": config.repo_id,
+      "data-category": config.category,
+      "data-category-id": config.category_id,
+      "data-mapping": "pathname",
+      "data-strict": "1",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": theme(),
+      "data-lang": "zh-CN",
+      "data-loading": "lazy"
+    };
+    Object.keys(attrs).forEach(function (name) { script.setAttribute(name, attrs[name]); });
+    holder.appendChild(script);
+
+    // Follow the site light/dark switch without reloading the iframe.
+    new MutationObserver(function () {
+      var frame = document.querySelector("iframe.giscus-frame");
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({giscus: {setConfig: {theme: theme()}}}, "https://giscus.app");
+      }
+    }).observe(document.body, {attributes: true, attributeFilter: ["data-md-color-scheme"]});
+  })();
+</script>
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">Copyright © zdd. All rights reserved.</div>
+  
+  <div class="zdd-footer-credit">Made with <span class="zdd-footer-heart" aria-label="love">❤</span> by zdd</div>
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/zdd14990" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.top", "navigation.tracking", "toc.follow", "navigation.indexes", "navigation.expand", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+
+  <script src="../../../../javascripts/mathjax.js"></script>
+  <script defer src="../../../../assets/vendor/mathjax/tex-mml-chtml.js"></script>
+
+  
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/theme-fade.js"></script>
+      
+        <script src="../../../../javascripts/zdd-content-data.js"></script>
+      
+        <script src="../../../../javascripts/zdd-search-core.js"></script>
+      
+        <script src="../../../../javascripts/zdd-command-search.js"></script>
+      
+        <script src="../../../../javascripts/zdd-story.js"></script>
+      
+        <script src="../../../../javascripts/knowledge-preview.js"></script>
+      
+        <script src="../../../../javascripts/math-copy.js"></script>
+      
+        <script src="../../../../javascripts/reading-aids.js"></script>
+      
+        <script src="../../../../javascripts/blog-shelf.js"></script>
+      
+    
+
+  <script src="../../../../javascripts/site-shell.js"></script>
+
+  <template id="zdd-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zm3 9h2v5h-5v-2h3zm-7 3v2H5v-5h2v3z"/></svg></template>
+<dialog id="zdd-media-dialog" class="zdd-reader-dialog zdd-media-dialog" aria-labelledby="zdd-media-title">
+  <div class="zdd-reader-dialog-header"><strong id="zdd-media-title">查看图表</strong><a class="md-icon" data-media-download title="下载原图" aria-label="下载原图" download><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></a><button type="button" class="md-icon" data-reader-close title="关闭" aria-label="关闭图表"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+  <div class="zdd-media-viewport" tabindex="0"></div>
+</dialog>
+  <script src="../../../../javascripts/reading.js"></script>
+
+
+
+  <button type="button" class="zdd-toc-toggle" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6 1.5 1.5 0 0 1 4 7.5 1.5 1.5 0 0 1 2.5 6 1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12 1.5 1.5 0 0 1 4 13.5 1.5 1.5 0 0 1 2.5 12 1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18 1.5 1.5 0 0 1 4 19.5 1.5 1.5 0 0 1 2.5 18 1.5 1.5 0 0 1 4 16.5"/></svg><span>目录</span>
+  </button>
+  <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
+    <div class="zdd-toc-header">
+      <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="zdd-toc-outline" data-zdd-toc-outline aria-pressed="false" hidden>大纲模式</button>
+      <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <nav aria-label="本文目录"><ol class="zdd-toc-list"></ol></nav>
+  </dialog>
+  <script src="../../../../javascripts/article-toc.js"></script>
+
+
+  </body>
+</html>
