@@ -24,6 +24,8 @@ _CN = {"零": 0, "〇": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "�
 
 _H1 = re.compile(r'^\s*<h1(?: id="(?P<id>[^"]*)")?>(?P<title>.*?)</h1>\s*', re.S)
 _LEAD_PARAGRAPH = re.compile(r'^(\s*(?:<h2[^>]*>.*?</h2>\s*)?)<p>((?:(?!</p>).)*)</p>\s*', re.S)
+_FIRST_PARAGRAPH = re.compile(r'^(?P<ws>\s*)<p>(?P<body>(?:(?!</p>).)*)</p>', re.S)
+_INLINE_HEAD = re.compile(r'^\s*<(?:strong|b|em|code|a|img|span|br)\b', re.I)
 _CHAPTER = re.compile(r"^第([零〇一二三四五六七八九十\d]+)章[：:\s]\s*(.+)$")
 _TOKENS = re.compile(
     r'(?P<h2><h2(?P<h2attrs>[^>]*)>(?P<num>\d+)[.．、]\s*)'
@@ -96,6 +98,20 @@ def _statement_title(kind, title_html):
     return word, stripped if plain_text(stripped).strip() == name else title_html
 
 
+def _mark_dropcap(content):
+    """Give an opening body paragraph ``has-dropcap`` only when a two-line initial fits."""
+    match = _FIRST_PARAGRAPH.match(content)
+    if not match:
+        return content
+    body = match.group("body")
+    if _INLINE_HEAD.match(body) or "<br" in body.lower():
+        return content
+    plain = plain_text(body).strip()
+    if len(plain) < 60 or plain.endswith(("：", ":")) or not re.match(r"[\u4e00-\u9fffA-Za-z]", plain):
+        return content
+    return f'{match.group("ws")}<p class="has-dropcap">{body}</p>{content[match.end():]}'
+
+
 def apply_book_layout(content, page_title):
     """Return ``(html, opener, numbers)``; ``numbers`` maps anchors to labels."""
     content, opener = _lift_opener(content, page_title)
@@ -135,4 +151,4 @@ def apply_book_layout(content, page_title):
         close = "</p>" if match.group("div") else "</summary>"
         return f'{head}<span class="book-label">{word} {label}</span>{name_html}{close}'
 
-    return _TOKENS.sub(replace, content), opener, numbers
+    return _mark_dropcap(_TOKENS.sub(replace, content)), opener, numbers

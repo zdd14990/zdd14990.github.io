@@ -160,6 +160,9 @@
     transition(function () {
       document.body.classList.toggle("zdd-outline", on);
       button.setAttribute("aria-pressed", String(on));
+      document.querySelectorAll("[data-zdd-toc-outline]").forEach(function (el) {
+        el.setAttribute("aria-pressed", String(on));
+      });
       layout();
       if (!anchor) return;
       if (target && !on) {
@@ -189,4 +192,9 @@
     if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
     setOutline(!document.body.classList.contains("zdd-outline"));
   });
+  window.zddOutline = {
+    isActive: function () { return document.body.classList.contains("zdd-outline"); },
+    set: function (on) { setOutline(Boolean(on)); },
+    toggle: function () { setOutline(!document.body.classList.contains("zdd-outline")); }
+  };
 })();

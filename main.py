@@ -4,7 +4,8 @@ import gzip
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from email.utils import format_datetime
 from pathlib import Path
 from urllib.parse import urljoin
 from xml.etree import ElementTree
@@ -16,6 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from zdd_build.blog_content import content_store, parse_document
+from zdd_build.blog_taxonomy import tag_display_name, tag_initial
 from zdd_build.blog_text import (
     article_description, plain_markdown as _plain_markdown,
     chunk_passage_text as _chunk_passage_text, display_chunks as _display_chunks,
@@ -191,8 +193,9 @@ def _lab_catalog():
             for tag in item.get("tags", [])
         )
         status = item.get("status", "")
+        status_names = {"stable": "稳定", "experimental": "实验", "beta": "测试"}
         status_label = (
-            f'<span class="zdd-lab-status" data-status="{html.escape(status)}">{html.escape(status)}</span>'
+            f'<span class="zdd-lab-status" data-status="{html.escape(status)}">{html.escape(status_names.get(status, status))}</span>'
             if status
             else ""
         )
@@ -337,7 +340,7 @@ def _public_search_index(compact=False):
             "contentType": "interactive",
             "visibility": "public",
             "title": item["title"],
-            "subtitle": "Lab",
+            "subtitle": "实验室",
             "url": url,
             "prev_url": "",
             "next_url": "",
@@ -345,7 +348,7 @@ def _public_search_index(compact=False):
             "date": item.get("date", ""),
             "published": bool(_date_obj(item.get("date", ""))),
             "words": len(item["description"].split()),
-            "categories": ["Lab"],
+            "categories": ["实验室"],
             "tags": item.get("tags", []),
             "content": item["description"],
             "source": item["description"],
@@ -402,11 +405,11 @@ def _tag_counts(articles):
 
 
 def _tag_index(counts):
-    """All tags in one alphabetical index, grouped under their initial letter."""
+    """All tags in one index, grouped under the pinyin initial of their Chinese name."""
     letters = {}
-    for tag in sorted(counts, key=str.casefold):
-        initial = tag[:1].upper()
-        letters.setdefault(initial if "A" <= initial <= "Z" else "#", []).append(tag)
+    for tag in sorted(counts, key=lambda slug: (tag_initial(slug), tag_display_name(slug).casefold(), slug)):
+        letters.setdefault(tag_initial(tag), []).append(tag)
+    letters = {letter: letters[letter] for letter in sorted(letters, key=lambda value: (value == "#", value))}
     anchor = {letter: "tag-" + ("other" if letter == "#" else letter.lower()) for letter in letters}
     blocks = "".join(
         f'<div class="zdd-tag-letter" id="{anchor[letter]}"><h2>{html.escape(letter)}</h2>'
@@ -419,36 +422,48 @@ def _tag_index(counts):
         for letter in [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ", *(["#"] if "#" in letters else [])]
     )
     return (f'<section class="zdd-tag-index" aria-label="标签索引">'
-            f'<header class="zdd-tag-index-head"><span>Index</span><span>{len(counts)} 个标签</span></header>'
+            f'<header class="zdd-tag-index-head"><span>索引</span><span>{len(counts)} 个标签</span></header>'
             f'<nav class="zdd-tag-thumbs" aria-label="按首字母跳转">{thumbs}</nav>'
             f'{blocks}</section>')
 
 
 def _tag_option(tag, count):
     size = "is-large" if count >= 8 else "is-medium" if count >= 3 else ""
-    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}"><span>{html.escape(tag)}</span>'
+    return (f'<a class="{size}" href="/tags/?tag={html.escape(tag)}" data-tag="{html.escape(tag)}">'
+            f'<span>{html.escape(tag_display_name(tag))}</span>'
             f'<small>{count}</small></a>')
+
+
+def _script_json(value):
+    """JSON safe to inline in a <script> element."""
+    return json.dumps(value, ensure_ascii=False).replace("</", "<\\/")
 
 
 def _tag_explorer():
     articles = _article_data()
-    options = _tag_index(_tag_counts(articles))
+    counts = _tag_counts(articles)
+    options = _tag_index(counts)
+    names = _script_json({tag: tag_display_name(tag) for tag in sorted(counts)})
     cards = "".join(_post_card(article, "tagged") for article in sorted(articles, key=lambda x: x["sort_key"], reverse=True))
     return f"""
 <div class="zdd-tag-page">
-  <div id="zdd-tag-heading" class="zdd-tag-heading">All Tags</div>
+  <header class="zdd-band">
+    <div class="zdd-band-row"><h1 id="zdd-tag-heading" class="zdd-band-title">标签</h1></div>
+    <p class="zdd-band-line">{len(counts)} 个标签 · {len(articles)} 篇笔记</p>
+  </header>
   <div class="zdd-post-list zdd-tag-results">{cards}</div>
   <div class="zdd-tag-cloud">{options}</div>
 </div>
 <script>
 (function() {{
+  var names = {names};
   var params = new URLSearchParams(window.location.search);
   var tag = params.get("tag");
   var heading = document.getElementById("zdd-tag-heading");
   var list = document.querySelector(".zdd-tag-results");
   var cards = document.querySelectorAll(".zdd-tag-results .zdd-post-card");
   if (tag) {{
-    heading.textContent = "#" + tag;
+    heading.textContent = "# " + (Object.prototype.hasOwnProperty.call(names, tag) ? names[tag] : tag);
     cards.forEach(function(card) {{
       var tags = (card.getAttribute("data-tags") || "").split(/\\s+/);
       card.style.display = tags.indexOf(tag) >= 0 ? "" : "none";
@@ -476,6 +491,13 @@ def _truncate_math_text(text, limit):
     return cut.rstrip() + "…"
 
 
+def _statement_book(record):
+    """Book holding a statement on the shelf map; its article title otherwise."""
+    source = record["id"].split("#", 1)[0] + ".md"
+    _, book = shelf_for_source(source)
+    return book["name"] if book else record["article"]
+
+
 def _statement_payloads():
     """Split extracted statements into a light index and the quiz card deck."""
     store = content_store()
@@ -490,6 +512,7 @@ def _statement_payloads():
     cards = []
     for record in records:
         item = {key: record[key] for key in STATEMENT_INDEX_FIELDS}
+        item["book"] = _statement_book(record)
         item["text"] = _truncate_math_text(record["text"], STATEMENT_TEXT_LIMIT)
         index.append(item)
         has_answer = bool(record.get("answer_html"))
@@ -511,7 +534,13 @@ def _statement_index_shell():
 <div class="zdd-statement-index" data-zdd-statements>
   <form class="zdd-statement-controls" role="search" onsubmit="return false">
     <input type="search" data-zdd-statement-query placeholder="搜索定理、定义、习题，如：Hahn-Banach" aria-label="搜索定理、定义与习题" autocomplete="off">
-    <div class="zdd-statement-kinds" role="group" aria-label="类型筛选"></div>
+    <div class="zdd-statement-filters">
+      <div class="zdd-statement-kinds" role="group" aria-label="类型筛选"></div>
+      <label class="zdd-statement-book">
+        <span class="zdd-statement-book-label">按书筛选</span>
+        <select data-zdd-statement-book><option value="">全部书目</option></select>
+      </label>
+    </div>
   </form>
   <p class="zdd-statement-summary" role="status" aria-live="polite">正在加载索引…</p>
   <ol class="zdd-statement-list"></ol>
@@ -555,6 +584,65 @@ def _exclude_sitemap_urls(site_dir, site_url, excluded_paths):
     return removed
 
 
+FEED_ITEM_LIMIT = 20
+FEED_TIMEZONE = timezone(timedelta(hours=8))
+ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
+
+
+def _rss_date(value):
+    """RFC 822 date of a YYYY-MM-DD string (midnight, site time zone) or a datetime."""
+    if isinstance(value, str):
+        value = datetime.strptime(value, "%Y-%m-%d")
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=FEED_TIMEZONE)
+    return format_datetime(value)
+
+
+def _rss_feed(articles, site_name, site_url, site_description, now=None, limit=FEED_ITEM_LIMIT):
+    """RSS 2.0 document (UTF-8 bytes) for the most recently published articles."""
+    base = (site_url or "").rstrip("/") + "/"
+    posts = sorted((a for a in articles if a["published"]), key=lambda a: a["sort_key"], reverse=True)[:limit]
+    ElementTree.register_namespace("atom", ATOM_NAMESPACE)
+    rss = ElementTree.Element("rss", {"version": "2.0"})
+    channel = ElementTree.SubElement(rss, "channel")
+
+    def text(parent, tag, value, **attrs):
+        element = ElementTree.SubElement(parent, tag, attrs)
+        element.text = value
+        return element
+
+    text(channel, "title", site_name or "")
+    text(channel, "link", base)
+    text(channel, "description", site_description or site_name or "")
+    text(channel, "language", "zh-CN")
+    text(channel, "lastBuildDate", _rss_date(now or datetime.now().astimezone()))
+    ElementTree.SubElement(channel, f"{{{ATOM_NAMESPACE}}}link",
+                           {"href": urljoin(base, "feed.xml"), "rel": "self", "type": "application/rss+xml"})
+    for article in posts:
+        link = urljoin(base, article["url"].lstrip("/"))
+        item = ElementTree.SubElement(channel, "item")
+        text(item, "title", article["title"])
+        text(item, "link", link)
+        text(item, "guid", link, isPermaLink="true")
+        text(item, "pubDate", _rss_date(article["date"]))
+        text(item, "description", article.get("description") or "")
+        for tag in article["tags"]:
+            text(item, "category", tag)
+    ElementTree.indent(rss, space="  ")
+    return ElementTree.tostring(rss, encoding="utf-8", xml_declaration=True)
+
+
+def _write_feed(site_dir, config):
+    def setting(key):
+        value = config.get(key, "") if hasattr(config, "get") else getattr(config, key, "")
+        return value or ""
+
+    feed = _rss_feed(_article_data(), setting("site_name"), setting("site_url"), setting("site_description"))
+    output = Path(site_dir) / "feed.xml"
+    output.write_bytes(feed)
+    return output
+
+
 
 
 def on_post_build(env=None, config=None, **kwargs):
@@ -584,7 +672,26 @@ def on_post_build(env=None, config=None, **kwargs):
 
     extra = config.get("extra", {}) if hasattr(config, "get") else getattr(config, "extra", {})
     site_url = config.get("site_url", "") if hasattr(config, "get") else getattr(config, "site_url", "")
+    _write_feed(site_dir, config)
     _exclude_sitemap_urls(site_dir, site_url, extra.get("sitemap_exclude", []))
+
+
+def _recent_updates(articles, max_items=3):
+    """Compact list of the most recently updated published articles for the home page."""
+    posts = sorted(
+        (a for a in articles if a["published"]),
+        key=lambda a: (a.get("modified") or a["date"], a["sort_key"]),
+        reverse=True,
+    )[:max_items]
+    items = "".join(
+        f'<li><a href="{html.escape(post["url"])}">'
+        f'<span class="zdd-home-recent-name">{html.escape(post["title"])}</span>'
+        f'<span class="zdd-home-recent-meta">{html.escape(post["categories"][-1] if post["categories"] else "未分类")}'
+        f' · {html.escape(post.get("modified") or post["date"])}</span></a></li>'
+        for post in posts
+    )
+    return ('<section class="zdd-home-recent" aria-label="最近更新"><h2 class="zdd-home-recent-title">最近更新</h2>'
+            f'<ol class="zdd-home-recent-list">{items}</ol></section>')
 
 
 def define_env(env):
@@ -601,6 +708,10 @@ def define_env(env):
         posts = [article for article in _article_data() if article["published"]]
         posts = sorted(posts, key=lambda x: x["sort_key"], reverse=True)[:max_items]
         return '<div class="zdd-post-list">' + "".join(_post_card(post, "recent") for post in posts) + "</div>"
+
+    @env.macro
+    def recent_updates(max_items=3):
+        return _recent_updates(_article_data(), max_items)
 
     @env.macro
     def search_index_data():

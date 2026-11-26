@@ -3,7 +3,7 @@
 {% set zdd_description = page.meta.description if page and page.meta and page.meta.description else config.site_description %}
 {% set zdd_is_article = page and page.url and page.url.startswith("blog/") and page.url != "blog/" %}
 {% set zdd_share_image = config.site_url ~ config.extra.meta.site_image %}
-{% set zdd_mathjax_cdn = "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" %}
+{% set zdd_mathjax_url = ('assets/vendor/mathjax/tex-mml-chtml.js' | url) %}
 
 {% block site_meta %}
 {{ super() }}
@@ -46,9 +46,10 @@
   <link rel="stylesheet" href="{{ 'stylesheets/code-notes.css' | url }}">
 {% endif %}
   <script src="{{ 'javascripts/page-transitions.js' | url }}"></script>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/900.css">
+  <link rel="stylesheet" href="{{ 'assets/fonts/noto-serif-sc/400.css' | url }}">
+  <link rel="stylesheet" href="{{ 'assets/fonts/noto-serif-sc/700.css' | url }}">
+  <link rel="stylesheet" href="{{ 'assets/fonts/noto-serif-sc/900.css' | url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ config.site_name }}" href="{{ 'feed.xml' | url }}">
 {% for asset in zdd_assets %}
 {% for style in config.extra.page_assets[asset].get('styles', []) %}
   <link rel="stylesheet" href="{{ style | url }}">
@@ -67,7 +68,7 @@
     window.zddStatementsUrl = "{{ 'assets/zdd-statements.json' | url }}";
     window.zddQuizUrl = "{{ 'assets/zdd-quiz.json' | url }}";
     window.zddMathJaxConfigUrl = "{{ 'javascripts/mathjax.js' | url }}";
-    window.zddMathJaxUrl = "{{ zdd_mathjax_cdn }}";
+    window.zddMathJaxUrl = "{{ zdd_mathjax_url }}";
   </script>
 
   <meta property="og:site_name" content="{{ config.site_name }}">
@@ -120,7 +121,7 @@
 {% block scripts %}
 {% if page and page.meta.reading_math %}
   <script src="{{ 'javascripts/mathjax.js' | url }}"></script>
-  <script defer src="{{ zdd_mathjax_cdn }}"></script>
+  <script defer src="{{ zdd_mathjax_url }}"></script>
 {% endif %}
   {{ super() }}
 {% for asset in zdd_assets %}
@@ -137,12 +138,13 @@
 {% endif %}
 {% endif %}
 {% if zdd_is_article and page.toc and 'toc' not in page.meta.get('hide', []) %}
-  <button type="button" class="zdd-toc-toggle md-icon" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
-    {% include ".icons/material/format-list-bulleted.svg" %}
+  <button type="button" class="zdd-toc-toggle" aria-label="打开本文目录" title="本文目录" aria-haspopup="dialog" aria-controls="zdd-toc-dialog" aria-expanded="false" hidden>
+    {% include ".icons/material/format-list-bulleted.svg" %}<span>目录</span>
   </button>
   <dialog id="zdd-toc-dialog" class="zdd-toc-dialog" aria-labelledby="zdd-toc-title">
     <div class="zdd-toc-header">
       <strong id="zdd-toc-title">本文目录</strong>
+      <button type="button" class="zdd-toc-outline" data-zdd-toc-outline aria-pressed="false" hidden>大纲模式</button>
       <button type="button" class="md-icon" aria-label="关闭目录" title="关闭目录" data-zdd-toc-close>
         {% include ".icons/material/close.svg" %}
       </button>

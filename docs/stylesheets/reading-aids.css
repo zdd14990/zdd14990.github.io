@@ -204,20 +204,17 @@ body .md-typeset details.proof[open]::details-content { block-size: auto; }
 .zdd-rail { display: none; }
 
 @media screen and (min-width: 76.25em) {
+    /* Column widths and the gutter (--art-gutter) are set in editorial.css. */
     body.article-layout {
-        --ed-margin: 32px;
         --rail-gap: 18px;
-        --gutter-w: 104px;
+        --gutter-w: calc(var(--art-gutter) - 1.2rem);
     }
-    body.article-layout .md-main__inner.md-grid { max-width: 1320px; }
-    body.article-layout .md-sidebar--secondary { margin-right: 30px; }
-    body.article-layout .md-content { flex-basis: 1100px; max-width: 1100px; }
-    body.article-layout .md-content__inner { position: relative; padding-left: 120px !important; }
+    body.article-layout .md-content__inner { position: relative; }
 
     .zdd-rail {
         display: block;
         position: absolute;
-        left: calc(120px - var(--rail-gap));
+        left: calc(var(--art-gutter) - var(--rail-gap));
         top: var(--rail-top, 0);
         height: var(--rail-height, 0);
         width: 1px;

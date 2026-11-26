@@ -59,6 +59,20 @@ class BookLayoutTests(unittest.TestCase):
         self.assertEqual(numbers, {"thm-1": "定理 1"})
         self.assertNotIn("book-secnum", html)
 
+    def test_dropcap_only_marks_long_plain_body_paragraphs(self):
+        lead = "<p>" + "导语" * 20 + "。</p>\n"
+        prose = "<p>" + "正文的叙述应当足够长才能容纳两行高的下沉首字而不在下方留下空白。" * 3 + "</p>"
+        html, _, _ = apply_book_layout("<h1>第一章：导引</h1>\n" + lead + prose, "导引")
+        self.assertIn('<p class="has-dropcap">', html)
+
+        for non_dropcap in (
+            "<p><strong>写在前面</strong><br />这一段有小标题和换行，不该拆开首字。</p>",
+            "<p>短句引出公式：</p>",
+            '<p><span class="arithmatex">\\(x\\)</span> ' + "以公式开头的长段落也不应当做首字下沉。" * 4 + "</p>",
+        ):
+            html, _, _ = apply_book_layout("<h1>第一章：导引</h1>\n" + lead + non_dropcap, "导引")
+            self.assertNotIn("has-dropcap", html)
+
 
 if __name__ == "__main__":
     unittest.main()

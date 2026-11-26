@@ -1237,9 +1237,9 @@
     overlay.className = "zdd-global-search";
     overlay.hidden = true;
     overlay.innerHTML = '<div class="zdd-global-search-backdrop" data-zdd-close-search></div>'
-      + '<div class="zdd-global-search-dialog" role="dialog" aria-modal="true" aria-label="Search">'
+      + '<div class="zdd-global-search-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">'
       + '<form class="minimal-search" id="zdd-global-search-form">'
-      + '<input id="zdd-global-search-input" type="search" placeholder="Search or type /help" autocomplete="off" aria-label="Search articles or commands">'
+      + '<input id="zdd-global-search-input" type="search" placeholder="搜索笔记，或输入 /help 查看命令" autocomplete="off" aria-label="搜索文章或输入命令">'
       + '</form>'
       + '<div class="minimal-search-ghost" id="zdd-global-search-ghost" aria-hidden="true"></div>'
       + '<div class="minimal-search-results" id="zdd-global-search-results"></div>'
@@ -1313,12 +1313,12 @@
     var timer = 0;
     var currentText = "";
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    function type(text) {
-      // Material re-sets the scheme attribute on load; only a real change retypes.
+    function type(text, animate) {
+      // Material re-sets the scheme attribute on load; only a real change updates.
       if (text === currentText) return;
       currentText = text;
       window.clearTimeout(timer);
-      if (reduceMotion) {
+      if (!animate || reduceMotion) {
         target.textContent = text;
         return;
       }
@@ -1326,16 +1326,16 @@
       var i = 0;
       function next() {
         target.textContent += text.charAt(i++);
-        if (i < text.length) timer = window.setTimeout(next, 90);
+        if (i < text.length) timer = window.setTimeout(next, 70);
       }
       next();
     }
-    function refreshTitle() {
-      type(document.body.getAttribute("data-md-color-scheme") === "slate" ? textDark : textLight);
+    function refreshTitle(animate) {
+      type(document.body.getAttribute("data-md-color-scheme") === "slate" ? textDark : textLight, animate);
     }
-    // Start at once: a delay showed the static title, cleared it, then retyped it.
-    refreshTitle();
-    new MutationObserver(refreshTitle).observe(document.body, {
+    // Render the full quote immediately on load so the hero is never empty.
+    refreshTitle(false);
+    new MutationObserver(function() { refreshTitle(true); }).observe(document.body, {
       attributes: true,
       attributeFilter: ["data-md-color-scheme"]
     });

@@ -1,4 +1,4 @@
-(function() {
+(function(root) {
   "use strict";
 
   var PAGE_SIZE = 60;
@@ -25,7 +25,7 @@
   function score(item, terms) {
     if (!terms.length) return 1;
     var head = normalize(item.title + " " + item.name);
-    var context = normalize(item.section + " " + item.article + " " + (item.tags || []).join(" "));
+    var context = normalize(item.section + " " + item.article + " " + (item.book || "") + " " + (item.tags || []).join(" "));
     var body = normalize(item.text);
     var total = 0;
     for (var i = 0; i < terms.length; i += 1) {
@@ -37,14 +37,61 @@
     return total + (item.name ? 1 : 0);
   }
 
+  // "代数学 · 第一章：域 · 1. 域扩张": book, then the article when it is not the book itself, then the section.
+  function whereText(item) {
+    var parts = [];
+    [item.book, item.article, item.section].forEach(function(part) {
+      if (part && parts.indexOf(part) < 0) parts.push(part);
+    });
+    return parts.join(" · ");
+  }
+
   function itemHtml(item) {
-    var where = [item.article, item.section].filter(Boolean).join(" · ");
-    return '<li class="zdd-statement-item" data-kind="' + escapeHtml(item.kind) + '">'
-      + '<span class="zdd-statement-kind">' + escapeHtml(item.number || item.label) + '</span>'
-      + '<a class="zdd-statement-title" href="' + escapeHtml(item.url) + '">' + escapeHtml(item.title) + '</a>'
-      + '<span class="zdd-statement-where">' + escapeHtml(where) + '</span>'
+    var name = String(item.name || "").trim();
+    var label = escapeHtml(item.number || item.label);
+    var url = escapeHtml(item.url);
+    // The label always links to the statement; when a named title link follows,
+    // keep the label out of the tab order so each item is one stop.
+    var kind = '<a class="zdd-statement-kind" href="' + url + '"'
+      + (name ? ' tabindex="-1" aria-hidden="true"' : "") + '>' + label + '</a>';
+    return '<li class="zdd-statement-item' + (name ? " has-name" : "") + '" data-kind="' + escapeHtml(item.kind) + '">'
+      + kind
+      + (name ? '<a class="zdd-statement-title" href="' + url + '">' + escapeHtml(name) + '</a>' : "")
+      + '<span class="zdd-statement-where">' + escapeHtml(whereText(item)) + '</span>'
       + '<span class="zdd-statement-text arithmatex">' + escapeHtml(item.text) + '</span>'
       + '</li>';
+  }
+
+  // Books in order of first appearance, with how many statements each holds.
+  function bookCounts(items) {
+    var counts = {};
+    var order = [];
+    items.forEach(function(item) {
+      var book = item.book || "";
+      if (!book) return;
+      if (!Object.prototype.hasOwnProperty.call(counts, book)) {
+        counts[book] = 0;
+        order.push(book);
+      }
+      counts[book] += 1;
+    });
+    return order.map(function(book) { return [book, counts[book]]; });
+  }
+
+  // Items matching the kind filter, the book filter and every query term, best match first when searching.
+  function filterItems(items, filters) {
+    var terms = normalize(filters.query).split(/\s+/).filter(Boolean);
+    var kind = filters.kind || "all";
+    var book = filters.book || "";
+    var matches = [];
+    items.forEach(function(item, index) {
+      if (kind !== "all" && item.kind !== kind) return;
+      if (book && item.book !== book) return;
+      var value = score(item, terms);
+      if (value > 0) matches.push({item: item, score: value, index: index});
+    });
+    if (terms.length) matches.sort(function(a, b) { return b.score - a.score || a.index - b.index; });
+    return matches.map(function(entry) { return entry.item; });
   }
 
   function typeset(nodes) {
@@ -59,11 +106,12 @@
   function init(root) {
     var input = root.querySelector("[data-zdd-statement-query]");
     var kindsBox = root.querySelector(".zdd-statement-kinds");
+    var bookSelect = root.querySelector("[data-zdd-statement-book]");
     var summary = root.querySelector(".zdd-statement-summary");
     var list = root.querySelector(".zdd-statement-list");
     var more = root.querySelector(".zdd-statement-more");
     var params = new URLSearchParams(window.location.search);
-    var state = {items: [], matches: [], shown: 0, kind: params.get("kind") || "all"};
+    var state = {items: [], matches: [], shown: 0, kind: params.get("kind") || "all", book: params.get("book") || ""};
     var timer = null;
     input.value = params.get("q") || "";
 
@@ -71,6 +119,7 @@
       var next = new URLSearchParams();
       if (input.value.trim()) next.set("q", input.value.trim());
       if (state.kind !== "all") next.set("kind", state.kind);
+      if (state.book) next.set("book", state.book);
       var query = next.toString();
       window.history.replaceState(null, "", window.location.pathname + (query ? "?" + query : ""));
     }
@@ -88,6 +137,16 @@
       }).join("");
     }
 
+    function renderBooks() {
+      if (!bookSelect) return;
+      var books = bookCounts(state.items);
+      if (!books.some(function(pair) { return pair[0] === state.book; })) state.book = "";
+      bookSelect.innerHTML = '<option value="">全部书目</option>' + books.map(function(pair) {
+        return '<option value="' + escapeHtml(pair[0]) + '">' + escapeHtml(pair[0]) + "（" + pair[1] + "）</option>";
+      }).join("");
+      bookSelect.value = state.book;
+    }
+
     function renderMore() {
       var batch = state.matches.slice(state.shown, state.shown + PAGE_SIZE);
       var holder = document.createElement("ol");
@@ -100,17 +159,10 @@
     }
 
     function render() {
-      var terms = normalize(input.value).split(/\s+/).filter(Boolean);
-      state.matches = state.items.map(function(item) {
-        return {item: item, score: state.kind === "all" || item.kind === state.kind ? score(item, terms) : 0};
-      }).filter(function(entry) {
-        return entry.score > 0;
-      });
-      if (terms.length) state.matches.sort(function(a, b) { return b.score - a.score; });
-      state.matches = state.matches.map(function(entry) { return entry.item; });
+      state.matches = filterItems(state.items, {query: input.value, kind: state.kind, book: state.book});
       summary.textContent = state.matches.length
-        ? "共 " + state.matches.length + " 条"
-        : "没有匹配的条目，换个更短的关键词试试。";
+        ? "共 " + state.matches.length + " 条" + (state.book ? "（" + state.book + "）" : "")
+        : "没有匹配的条目，换个更短的关键词或其他书目试试。";
       list.innerHTML = "";
       state.shown = 0;
       renderMore();
@@ -124,6 +176,12 @@
       renderKinds();
       render();
     });
+    if (bookSelect) {
+      bookSelect.addEventListener("change", function() {
+        state.book = bookSelect.value;
+        render();
+      });
+    }
     input.addEventListener("input", function() {
       window.clearTimeout(timer);
       timer = window.setTimeout(render, 160);
@@ -137,6 +195,7 @@
       state.items = data.statements || [];
       if (!KIND_ORDER.some(function(pair) { return pair[0] === state.kind; })) state.kind = "all";
       renderKinds();
+      renderBooks();
       render();
     }).catch(function() {
       summary.textContent = "索引加载失败，请刷新重试。";
@@ -144,13 +203,17 @@
   }
 
   function start() {
-    var root = document.querySelector("[data-zdd-statements]");
-    if (root && !root.dataset.ready) {
-      root.dataset.ready = "1";
-      init(root);
+    var node = document.querySelector("[data-zdd-statements]");
+    if (node && !node.dataset.ready) {
+      node.dataset.ready = "1";
+      init(node);
     }
   }
 
+  var api = {PAGE_SIZE: PAGE_SIZE, itemHtml: itemHtml, whereText: whereText, bookCounts: bookCounts, filterItems: filterItems};
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  if (typeof document === "undefined") return;
+  root.ZddStatements = api;
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
-})();
+})(typeof window !== "undefined" ? window : this);

@@ -8,6 +8,9 @@ zdd_assets:
   - statements
 ---
 
-# 定理索引
+<header class="zdd-band">
+  <div class="zdd-band-row"><h1 class="zdd-band-title">定理索引</h1></div>
+  <p class="zdd-band-line">全站笔记中的定义、定理、命题、引理、推论与习题</p>
+</header>
 
 {{ statement_index() }}

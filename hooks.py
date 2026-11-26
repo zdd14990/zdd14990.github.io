@@ -3,7 +3,7 @@ import html
 import os
 import re
 
-from zdd_build.blog_taxonomy import article_tags
+from zdd_build.blog_taxonomy import article_tags, tag_display_name
 from zdd_build.book_layout import apply_book_layout
 from zdd_build.blog_content import begin_build, end_build, content_store, normalize_metadata
 from zdd_build.blog_links import backlink_map
@@ -95,7 +95,7 @@ def _append_taxonomy(markdown, page):
     tags_url = get_relative_url("tags/", page.url)
     page.meta["taxonomy"] = {
         "categories": categories,
-        "tags": [{"name": tag, "url": f"{tags_url}?tag={tag}"} for tag in tags],
+        "tags": [{"name": tag_display_name(tag), "slug": tag, "url": f"{tags_url}?tag={tag}"} for tag in tags],
     }
     return markdown
 

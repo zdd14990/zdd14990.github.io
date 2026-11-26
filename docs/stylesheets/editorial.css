@@ -1,5 +1,6 @@
 /* Editorial theme: paper, one ink, one accent, hairline rules, serif text and
-   monospaced labels. Loaded last; overrides the earlier blue card theme.
+   monospaced labels. Loaded after the base sheets; reading-aids.css, console.css,
+   zdd-story.css and blog-shelf.css follow it and consume its --ed-* tokens.
    Article structure (opener, § numbers, statement labels, figure captions)
    is produced by zdd_build/book_layout.py and overrides/partials/book-opener.html. */
 
@@ -186,6 +187,14 @@ body .zdd-header-nav a {
     text-transform: uppercase;
 }
 
+/* Chinese menu labels: serif, slightly larger, spaced like a running head. */
+body .zdd-header-search,
+body .zdd-header-nav a {
+    font-family: var(--ed-serif) !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.2em;
+}
+
 body .zdd-header-nav a:hover,
 body .zdd-header-search:hover { color: var(--ed-accent) !important; }
 body .zdd-header-nav a[aria-current] {
@@ -213,9 +222,24 @@ body .md-footer .md-copyright,
 body .md-footer .md-copyright * {
     color: var(--ed-muted) !important;
     font-family: var(--ed-mono);
-    font-size: 0.56rem;
+    font-size: 0.62rem;
     letter-spacing: 0.08em;
 }
+body .md-footer .zdd-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem 1.2rem;
+    margin-bottom: 0.35rem;
+}
+body .md-footer .zdd-footer-links a {
+    color: var(--ed-ink) !important;
+    font-family: var(--ed-serif);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+}
+body .md-footer .zdd-footer-links a:hover { color: var(--ed-accent) !important; }
 
 body .md-footer .md-social__link { color: var(--ed-ink); }
 
@@ -226,7 +250,7 @@ body .md-top {
     box-shadow: none;
     color: var(--ed-ink);
     font-family: var(--ed-mono);
-    font-size: 0.56rem;
+    font-size: 0.62rem;
     letter-spacing: 0.12em;
 }
 
@@ -296,8 +320,11 @@ body .md-typeset table:not([class]) tr:hover { background: var(--ed-paper-deep);
 
 /* ---------- Article body ---------- */
 body.article-layout .md-typeset {
-    font-size: 0.84rem;
-    line-height: 1.95;
+    font-size: 0.9rem;             /* 18px; serif CJK text reads poorly below 17px */
+    line-height: 1.9;
+}
+@media screen and (max-width: 44.9375em) {
+    body.article-layout .md-typeset { font-size: 0.85rem; }
 }
 
 body.article-layout .md-typeset strong { font-weight: 700; }
@@ -335,7 +362,7 @@ body.article-layout .md-typeset h3 { margin: 2.4em 0 0.7em; }
     padding-bottom: 0.55rem;
     border-bottom: 1px solid var(--ed-rule-strong);
     font-family: var(--ed-mono);
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
 }
@@ -384,7 +411,7 @@ body.article-layout .md-typeset h3 { margin: 2.4em 0 0.7em; }
     border-bottom: 1px solid var(--ed-rule);
     color: var(--ed-muted);
     font-family: var(--ed-mono);
-    font-size: 0.56rem;
+    font-size: 0.62rem;
     letter-spacing: 0.08em;
 }
 
@@ -397,7 +424,7 @@ body.article-layout .md-typeset h3 { margin: 2.4em 0 0.7em; }
 .book-meta span:last-child { border-right: 0; }
 
 /* Older article heads (series catalogs) */
-body.article-layout .zdd-reading-dates { font-family: var(--ed-mono); font-size: 0.58rem; letter-spacing: 0.08em; color: var(--ed-muted); }
+body.article-layout .zdd-reading-dates { font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--ed-muted); }
 body .zdd-course-crumb, body .zdd-course-crumb a { font-family: var(--ed-mono); letter-spacing: 0.12em; color: var(--ed-ink); }
 
 /* ---------- Statements ---------- */
@@ -563,8 +590,9 @@ body .md-typeset p.book-figure:hover .zdd-media-expand,
 body .md-typeset p.book-figure .zdd-media-expand:focus-visible { opacity: 1; }
 
 /* ---------- Table of contents ---------- */
+/* A quiet list on a hairline; the current section is marked on the line. */
 body .md-sidebar--secondary .md-nav--secondary {
-    padding: 0.55rem 0 0 !important;
+    padding: 0.7rem 0 0 !important;
     border: 0 !important;
     border-top: 1px solid var(--ed-rule-strong) !important;
     border-radius: 0 !important;
@@ -573,29 +601,37 @@ body .md-sidebar--secondary .md-nav--secondary {
 }
 
 body .md-sidebar--secondary .md-nav--secondary .md-nav__title {
-    padding: 0 0 0.6rem;
+    padding: 0 0 0.9rem;
     background: transparent;
     box-shadow: none;
     color: var(--ed-ink);
-    font-family: var(--ed-mono);
-    font-size: 0.56rem;
-    font-weight: 400;
-    letter-spacing: 0.16em;
+    font-family: var(--ed-serif);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
 }
 
+body .md-sidebar--secondary .md-nav--secondary > .md-nav__list {
+    border-left: 1px solid var(--ed-rule);
+}
+body .md-sidebar--secondary .md-nav--secondary .md-nav__list .md-nav__list { border-left: 0; }
+
 body .md-sidebar--secondary .md-nav--secondary .md-nav__link {
-    padding-left: 0;
+    margin: 0;
+    padding: 0.28rem 0 0.28rem 0.8rem;
     border-left: 0 !important;
     color: var(--ed-muted);
     font-family: var(--ed-serif);
-    font-size: 0.64rem;
+    font-size: 0.65rem;
+    line-height: 1.55;
+    transition: color 0.15s ease;
 }
+body .md-sidebar--secondary .md-nav--secondary .md-nav__list .md-nav__list .md-nav__link { padding-left: 1.6rem; font-size: 0.62rem; }
 
 body .md-sidebar--secondary .md-nav--secondary .md-nav__link:hover { color: var(--ed-ink); }
 
 body .md-sidebar--secondary .md-nav--secondary .md-nav__link--active {
-    margin-left: -0.6rem;
-    padding-left: 0.5rem;
+    margin-left: -1px;
     box-shadow: inset 2px 0 0 var(--ed-accent);
     color: var(--ed-ink);
     font-weight: 700;
@@ -702,32 +738,81 @@ body .md-typeset .zdd-tag-group h2 {
 
 body .friend-avatar { border-radius: 0 !important; }
 
-/* ---------- Wide layout: contents | text ---------- */
-@media screen and (min-width: 76.25em) {
-    body.article-layout .md-main__inner.md-grid { max-width: 1320px; }
+/* ---------- Unified directory width (笔记 / 标签 / 定理索引 / 实验室 / 友链) ---------- */
+body:is(.blog-index-layout, .tag-layout, .zdd-page-layout) .md-main__inner.md-grid,
+body.lab-layout:has(.zdd-lab-list) .md-main__inner.md-grid {
+    max-width: var(--zdd-page, 50rem);
+}
+body:is(.blog-index-layout, .tag-layout, .zdd-page-layout) .md-content__inner,
+body.lab-layout:has(.zdd-lab-list) .md-content__inner {
+    max-width: none;
+    margin: 0 1.2rem 2.6rem !important;
+    padding-top: 0 !important;
+}
+
+/* ---------- Article layout: contents | gutter | text ----------
+   The text column has a fixed measure (about 40 characters) and sits on the
+   optical centre of the window; the contents list tucks closer to the left
+   edge so it never pushes the text rightward. Equations, tables, code and wide
+   figures may extend into the right margin. reading-aids.css hangs statement
+   labels and section numbers in the gutter. */
+body.article-layout {
+    --art-measure: var(--zdd-measure, 36rem); /* 40em of the 0.9rem body text */
+    --art-wide: 46rem;                        /* equations, tables, code, wide figures */
+    --art-gutter: 0px;                        /* label room left of the text (wide screens) */
+    --art-toc-w: 8.8rem;
+    --art-toc-x: 1.5rem;                      /* distance of the contents from the window edge */
+}
+
+/* Every block keeps to the measure; equations, tables, code and wide figures may run wider. */
+body.article-layout .md-content__inner > * { max-width: var(--art-measure); }
+body.article-layout .md-content__inner > :is(div.arithmatex, .md-typeset__scrollwrap, p.book-figure.is-wide, .highlight, [class^="language-"], embed, iframe) {
+    max-width: min(var(--art-wide), 100%);
+}
+body.article-layout .md-content__inner > .zdd-rail { max-width: none; }
+@media screen and (max-width: 59.984375em) {
+    body.article-layout .md-content__inner {
+        box-sizing: border-box;
+        max-width: calc(var(--art-measure) + 2.2rem);
+        margin-inline: auto !important;
+        padding-inline: 1.1rem !important;
+    }
+}
+
+@media screen and (min-width: 60em) {
+    body.article-layout .md-main__inner.md-grid { max-width: none; margin: 0; }
 
     body.article-layout .md-sidebar--secondary {
         order: -1;
-        width: 190px;
-        margin-right: 56px;
+        flex: none;
+        width: var(--art-toc-w);
+        margin: 0 0 0 var(--art-toc-x);
     }
+    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap { margin-top: 2.6rem !important; }
 
-    body.article-layout .md-sidebar--secondary .md-sidebar__scrollwrap { margin-top: 2.2rem; }
-
-    body.article-layout .md-content {
-        flex: 0 1 1100px;
-        max-width: 1100px;
-    }
-
+    body.article-layout .md-content { flex: 1 1 auto; min-width: 0; max-width: none; }
     body.article-layout .md-content__inner {
-        margin: 0 var(--ed-margin) 3rem 0 !important;
-        padding-top: 1.6rem !important;
+        box-sizing: content-box;
+        max-width: var(--art-measure);
+        margin: 0 auto 3rem !important;
+        padding: 1.6rem 1.6rem 0 !important;
     }
+}
 
-    body.article-layout .book-opener,
-    body.article-layout .md-typeset p.book-figure.is-wide,
-    body.article-layout .zdd-article-end,
-    body.article-layout .zdd-comments { margin-right: 0; }
+@media screen and (min-width: 76.25em) {
+    body.article-layout {
+        --art-gutter: 5.8rem;
+        /* where the text starts when optically centred in the window */
+        --art-centre: calc((100vw - var(--art-measure)) / 2);
+        /* keep the contents near the left edge; only pull inward on ultrawide screens */
+        --art-toc-x: max(1.8rem, calc(var(--art-centre) - var(--art-gutter) - 3.2rem - var(--art-toc-w)));
+    }
+    body.article-layout .md-content__inner {
+        box-sizing: border-box;
+        max-width: none;
+        margin: 0 2rem 3rem max(1.4rem, calc(var(--art-centre) - var(--art-toc-x) - var(--art-toc-w) - var(--art-gutter))) !important;
+        padding: 1.6rem 0 0 var(--art-gutter) !important;
+    }
 }
 
 @media screen and (max-width: 44.9375em) {
@@ -735,6 +820,14 @@ body .friend-avatar { border-radius: 0 !important; }
     .book-numeral { font-size: 4.2rem; }
     .md-typeset .book-opener h1 { font-size: 1.8em; }
     .md-typeset .book-standfirst { font-size: 1.04em; }
+    /* Dates and length wrap as plain items; dividers would dangle at line ends. */
+    .book-meta { gap: 0.1rem 1.2rem; padding: 0.45rem 0; }
+    .book-meta span { margin: 0; padding: 0; border-right: 0; }
+}
+
+/* Figures on paper: in light mode white scans take the paper's tone. */
+body:not([data-md-color-scheme="slate"]) .md-typeset p.book-figure:not(.book-diagram) img {
+    mix-blend-mode: multiply;
 }
 
 /* ---------- Component clean-up: square corners, ink and accent only ---------- */
@@ -805,14 +898,14 @@ body .md-typeset .md-button--primary,
 body .md-typeset .md-button:hover { background: var(--ed-ink); border-color: var(--ed-ink); color: var(--ed-paper); }
 
 body.article-layout .md-sidebar--secondary .md-nav--secondary,
-body .md-sidebar--secondary .md-nav--secondary { border-radius: 0 !important; padding: 0.55rem 0 0 !important; }
+body .md-sidebar--secondary .md-nav--secondary { border-radius: 0 !important; padding: 0.7rem 0 0 !important; }
 body .md-sidebar--secondary .md-nav--secondary .md-nav__title { padding-left: 0 !important; }
 
 body .md-typeset .zdd-end-label { color: var(--ed-muted) !important; white-space: nowrap; }
 body .md-typeset .md-button { text-decoration: none; font-family: var(--ed-mono); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.12em; border-width: 1px; }
 body .md-typeset .zdd-end-links a { color: var(--ed-ink); }
 body .md-typeset .zdd-end-links a:hover { color: var(--ed-accent); }
-body .md-typeset .zdd-catalog-folder > summary .zdd-folder-meta { font-family: var(--ed-mono); font-weight: 400; font-size: 0.58rem; letter-spacing: 0.06em; }
+body .md-typeset .zdd-catalog-folder > summary .zdd-folder-meta { font-family: var(--ed-mono); font-weight: 400; font-size: 0.62rem; letter-spacing: 0.06em; }
 body .md-typeset .zdd-catalog-folder > summary { padding-top: 0.9rem !important; padding-bottom: 0.9rem !important; min-height: 0 !important; align-items: baseline; }
 body .md-typeset .zdd-catalog-folder > summary .zdd-folder-name { font-weight: 900; }
 body .md-typeset .zdd-catalog-folder[data-level="1"] { border-top-color: var(--ed-rule) !important; }
@@ -891,7 +984,7 @@ html body :is(.zdd-search-hit, .zdd-search-landing-hit) {
 }
 html body .minimal-search input::placeholder { color: var(--ed-muted) !important; }
 
-/* Mobile contents button and dialog. */
+/* Mobile contents button and bottom-sheet drawer. */
 @media screen and (max-width: 59.984375em) {
     html body .zdd-toc-toggle {
         border-radius: 0;
@@ -900,8 +993,19 @@ html body .minimal-search input::placeholder { color: var(--ed-muted) !important
         color: var(--ed-ink);
         box-shadow: none;
     }
-    /* Keep the last lines of an article clear of the floating buttons. */
+    /* Keep the last lines of an article clear of the floating button. */
     body.article-layout .md-content__inner { padding-bottom: 4.5rem !important; }
+}
+@media screen and (max-width: 44.9375em) {
+    html body .zdd-toc-dialog {
+        width: 100%;
+        max-width: none;
+        max-height: 75dvh;
+        margin: auto 0 0;
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+    }
 }
 html body .zdd-toc-dialog,
 html body .zdd-toc-header { border-radius: 0; background: var(--ed-paper); color: var(--ed-ink); border-color: var(--ed-rule-strong); }
@@ -979,8 +1083,9 @@ body .md-typeset .zdd-colophon {
 }
 body .md-typeset .zdd-colophon::before { content: ""; flex: 0 0 3rem; height: 1px; background: var(--ed-rule-strong); }
 
-/* First paragraph after a chapter opener: a two-line drop initial. */
-body.article-layout .md-typeset .book-opener + p::first-letter {
+/* First paragraph after a chapter opener: a two-line drop initial, only where
+   book_layout.py judged the paragraph long enough and plain (has-dropcap). */
+body.article-layout .md-typeset .book-opener + p.has-dropcap::first-letter {
     float: left;
     margin: 0.12em 0.14em 0 0;
     color: var(--ed-accent);

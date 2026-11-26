@@ -35,9 +35,22 @@
     });
   }
   toggle.hidden = false;
+  var outlineToggle = dialog.querySelector("[data-zdd-toc-outline]");
+  if (outlineToggle && window.zddOutline) {
+    outlineToggle.hidden = false;
+    outlineToggle.setAttribute("aria-pressed", String(window.zddOutline.isActive()));
+    outlineToggle.addEventListener("click", function () {
+      var next = !window.zddOutline.isActive();
+      dialog.close();
+      window.zddOutline.set(next);
+    });
+  }
   var typeset = false;
   toggle.addEventListener("click", function () {
     updateActive();
+    if (outlineToggle && window.zddOutline) {
+      outlineToggle.setAttribute("aria-pressed", String(window.zddOutline.isActive()));
+    }
     dialog.showModal();
     if (!typeset && window.MathJax && typeof MathJax.typesetPromise === "function" && list.querySelector(".arithmatex")) {
       typeset = true;

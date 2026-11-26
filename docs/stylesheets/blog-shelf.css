@@ -16,17 +16,17 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
 .zdd-library { --shelf-bg: var(--ed-paper); }
 .zdd-library [hidden] { display: none !important; }
 
-/* Title band: a large serif title on a rule, a line of figures to its right. */
+/* Unified page band: a ~2.85rem serif title, a quiet figure or summary line to its right. */
 .zdd-band {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
-    gap: 0.6rem 2rem;
-    min-height: clamp(9rem, 26vh, 15rem);
-    padding: 0 0 1.4rem;
+    gap: 0.5rem 2rem;
+    min-height: 0;
+    padding: 2.2rem 0 1.25rem;
 }
-.zdd-band-row { display: flex; align-items: center; gap: 0.25em; min-width: 0; font-size: clamp(2.6rem, 8vw, 5.6rem); }
+.zdd-band-row { display: flex; align-items: baseline; gap: 0.25em; min-width: 0; font-size: clamp(2rem, 4vw, 2.85rem); }
 .md-typeset .zdd-band-title {
     margin: 0 !important;
     padding: 0 !important;
@@ -34,24 +34,29 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
     color: var(--ed-ink) !important;
     font-family: var(--ed-serif) !important;
     font-size: inherit !important;
-    font-weight: 400 !important;
-    line-height: 1.05 !important;
-    letter-spacing: -0.01em !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.01em !important;
 }
 .md-typeset .zdd-band-line {
-    margin: 0 0 0.45em auto !important;
-    max-width: 24rem;
+    margin: 0 0 0 auto !important;
+    max-width: 28rem;
     color: var(--ed-muted);
-    font-family: var(--ed-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-    line-height: 1.8;
+    font-family: var(--ed-serif);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
     text-align: right;
+}
+@media screen and (max-width: 44.9375em) {
+    .zdd-band { padding: 1.4rem 0 1rem; }
+    .md-typeset .zdd-band-line { margin-left: 0 !important; text-align: left; }
 }
 
 /* Strips: one per shelf, each a full-width band between rules. On hover the
    name shrinks to a heading and the books and figures slide out beneath it. */
 .zdd-strips { border-bottom: 1px solid var(--ed-rule); }
+.zdd-strips > a.zdd-strip:first-child { border-top-color: var(--ed-rule-strong); }
 .md-typeset a.zdd-strip {
     --strip-zone: 4.4rem;
     position: relative;
@@ -70,7 +75,7 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
     letter-spacing: 0.16em;
 }
 .zdd-strip-name i { margin-right: 1.1em; font-style: normal; }
-.zdd-strip-meta { flex: none; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.1em; }
+.zdd-strip-meta { flex: none; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.1em; }
 .zdd-strip-zone { position: relative; display: block; height: var(--strip-zone); margin-top: 0.5rem; }
 .zdd-strip-title {
     position: absolute;
@@ -98,7 +103,7 @@ body.blog-index-layout .md-content__inner:has(.zdd-blog-catalog.is-library) > h1
     transition: opacity 0.14s ease-in-out, clip-path 0.14s ease-in-out;
 }
 .zdd-strip-books { display: block; }
-.zdd-strip-figures { display: block; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.06em; }
+.zdd-strip-figures { display: block; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.06em; }
 .zdd-strip-chevron {
     position: absolute;
     inset-block: 0;
@@ -231,7 +236,7 @@ body.blog-index-layout .md-typeset .zdd-catalog-folder.is-shelved > .zdd-folder-
 .zdd-cover[aria-expanded="true"] .zdd-cover-motif { color: var(--ed-ink-soft); }
 .zdd-cover-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 0.4rem; margin-top: auto; }
 .zdd-cover-count { font-family: var(--ed-serif); font-size: 1.7rem; font-weight: 300; line-height: 1; font-variant-numeric: lining-nums; }
-.zdd-cover-count small { margin-left: 0.3em; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.1em; }
+.zdd-cover-count small { margin-left: 0.3em; color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.1em; }
 .zdd-cover-year { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.5rem; letter-spacing: 0.08em; }
 
 .zdd-cover:hover { translate: 0 -4px; }
@@ -286,7 +291,7 @@ body.blog-index-layout .md-typeset .is-open-book .zdd-post-title[data-vol]::befo
 
 .zdd-book-head { display: flex; align-items: baseline; gap: 1rem; padding: 1.5rem 0.8rem 1.1rem; }
 .zdd-book-head b { font-family: var(--ed-serif); font-size: 1.05rem; font-weight: 900; line-height: 1.3; }
-.zdd-book-head span { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.56rem; letter-spacing: 0.06em; }
+.zdd-book-head span { color: var(--ed-muted); font-family: var(--ed-mono); font-size: 0.62rem; letter-spacing: 0.06em; }
 
 /* close: a hairline cross that turns on hover */
 .zdd-book-close {
@@ -331,7 +336,7 @@ body.blog-index-layout .md-typeset .is-open-book .zdd-post-title[data-vol]::befo
     background: none;
     color: var(--ed-muted);
     font-family: var(--ed-mono);
-    font-size: 0.56rem;
+    font-size: 0.62rem;
     letter-spacing: 0.3em;
     cursor: pointer;
 }
@@ -346,7 +351,7 @@ body.blog-index-layout .md-typeset .is-open-book.is-entering > .zdd-folder-conte
 @keyframes zdd-book-in { from { opacity: 0; translate: 0 -10px; } }
 
 /* ===== 4. Tags: one alphabetical index ===== */
-body .md-typeset .zdd-tag-cloud:has(.zdd-tag-index) { display: block !important; max-width: 52rem; margin: 2rem auto 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
+body .md-typeset .zdd-tag-cloud:has(.zdd-tag-index) { display: block !important; max-width: none; margin: 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
 body .md-typeset .zdd-tag-index {
     columns: 3 13.5rem;
     column-gap: 2.4rem;
@@ -361,7 +366,7 @@ body .md-typeset .zdd-tag-index-head {
     margin: 0 0 1rem;
     color: var(--ed-muted);
     font-family: var(--ed-mono);
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 }
